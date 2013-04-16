@@ -97,14 +97,15 @@ public class ContextPanel extends javax.swing.JPanel {
 
         @Override
         public void run() {
-            Graph visibleGraph = model.getGraph(model.getVisibleView());
-            Graph fullGraph = model.getGraph(model.getVisibleView());
+            Graph visibleGraph = model.getGraphVisible();
+            Graph fullGraph = model.getGraph();
             final int nodesFull = fullGraph.getNodeCount();
             final int nodesVisible = visibleGraph.getNodeCount();
             final int edgesFull = fullGraph.getEdgeCount();
             final int edgesVisible = visibleGraph.getEdgeCount();
             final GraphType graphType = model.isDirected() ? GraphType.DIRECTED : model.isUndirected() ? GraphType.UNDIRECTED : GraphType.MIXED;
             SwingUtilities.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     String visible = NbBundle.getMessage(ContextPanel.class, "ContextPanel.visible");
                     String nodeText = String.valueOf(nodesVisible);

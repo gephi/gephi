@@ -95,7 +95,7 @@ public class ForceAtlas2 implements Layout {
     public void initAlgo() {
         speed = 1.;
 
-        graph = graphModel.getGraph(graphModel.getVisibleView());
+        graph = graphModel.getGraphVisible();
 
         graph.readLock();
         Node[] nodes = graph.getNodes().toArray();
@@ -124,7 +124,7 @@ public class ForceAtlas2 implements Layout {
         if (graphModel == null) {
             return;
         }
-        graph = graphModel.getGraph(graphModel.getVisibleView());
+        graph = graphModel.getGraphVisible();
 
         graph.readLock();
         Node[] nodes = graph.getNodes().toArray();
@@ -384,7 +384,7 @@ public class ForceAtlas2 implements Layout {
         int nodesCount = 0;
 
         if (graphModel != null) {
-            nodesCount = graphModel.getGraph(graphModel.getVisibleView()).getNodeCount();
+            nodesCount = graphModel.getGraphVisible().getNodeCount();
         }
 
         // Tuning

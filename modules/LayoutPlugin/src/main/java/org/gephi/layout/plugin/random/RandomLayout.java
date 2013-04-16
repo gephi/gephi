@@ -76,7 +76,7 @@ public class RandomLayout extends AbstractLayout implements Layout {
 
     @Override
     public void goAlgo() {
-        graph = graphModel.getGraph(graphModel.getVisibleView());
+        graph = graphModel.getGraphVisible();
         for (Node n : graph.getNodes()) {
             n.setX((float) (-size / 2 + size * random.nextDouble()));
             n.setY((float) (-size / 2 + size * random.nextDouble()));

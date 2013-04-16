@@ -113,7 +113,7 @@ public class ActionsToolbar extends JToolBar {
                 color = resetColorButton.getColor();
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                 GraphModel gm = gc.getGraphModel();
-                Graph graph = gm.getGraph(gm.getVisibleView());
+                Graph graph = gm.getGraphVisible();
                 for (Node n : graph.getNodes()) {
                     n.setR(color.getRed() / 255f);
                     n.setG(color.getGreen() / 255f);
@@ -139,7 +139,7 @@ public class ActionsToolbar extends JToolBar {
             public void actionPerformed(ActionEvent e) {
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                 GraphModel gm = gc.getGraphModel();
-                Graph graph = gm.getGraph(gm.getVisibleView());
+                Graph graph = gm.getGraphVisible();
                 for (Node n : graph.getNodes()) {
                     n.setSize(size);
                 }
@@ -171,7 +171,7 @@ public class ActionsToolbar extends JToolBar {
             public void actionPerformed(ActionEvent evt) {
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                 GraphModel gm = gc.getGraphModel();
-                Graph graph = gm.getGraph(gm.getVisibleView());
+                Graph graph = gm.getGraphVisible();
                 for (Node n : graph.getNodes().toArray()) {
                     n.getTextProperties().setColor(null);
                 }
@@ -191,7 +191,7 @@ public class ActionsToolbar extends JToolBar {
             public void actionPerformed(ActionEvent evt) {
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                 GraphModel gm = gc.getGraphModel();
-                Graph graph = gm.getGraph(gm.getVisibleView());
+                Graph graph = gm.getGraphVisible();
                 for (Node n : graph.getNodes()) {
                     n.getTextProperties().setVisible(true);
                 }
@@ -211,7 +211,7 @@ public class ActionsToolbar extends JToolBar {
             public void actionPerformed(ActionEvent e) {
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                 GraphModel gm = gc.getGraphModel();
-                Graph graph = gm.getGraph(gm.getVisibleView());
+                Graph graph = gm.getGraphVisible();
                 for (Node n : graph.getNodes()) {
                     n.getTextProperties().setSize(1f);
                 }

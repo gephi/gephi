@@ -73,7 +73,7 @@ public class RotateLayout extends AbstractLayout implements Layout {
 
     @Override
     public void goAlgo() {
-        graph = graphModel.getGraph(graphModel.getVisibleView());
+        graph = graphModel.getGraphVisible();
         double sin = Math.sin(getAngle() * Math.PI / 180);
         double cos = Math.cos(getAngle() * Math.PI / 180);
         double px = 0f;

@@ -46,10 +46,9 @@ import java.util.List;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
-
 import org.gephi.layout.plugin.AbstractLayout;
-import org.gephi.layout.plugin.ForceVectorUtils;
 import org.gephi.layout.plugin.ForceVectorNodeLayoutData;
+import org.gephi.layout.plugin.ForceVectorUtils;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
@@ -103,7 +102,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
     @Override
     public void goAlgo() {
-        this.graph = graphModel.getGraph(graphModel.getVisibleView());
+        this.graph = graphModel.getGraphVisible();
         graph.readLock();
         Node[] nodes = graph.getNodes().toArray();
         Edge[] edges = graph.getEdges().toArray();

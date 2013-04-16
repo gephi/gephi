@@ -73,7 +73,7 @@ public class ScaleLayout extends AbstractLayout implements Layout {
 
     @Override
     public void goAlgo() {
-        graph = graphModel.getGraph(graphModel.getVisibleView());
+        graph = graphModel.getGraphVisible();
         double xMean = 0, yMean = 0;
         for (Node n : graph.getNodes()) {
             xMean += n.x();
