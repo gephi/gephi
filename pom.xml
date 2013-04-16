@@ -1176,51 +1176,22 @@
         <module>modules/branding</module>
         <module>modules/application</module>
         <module>modules/LongTaskAPI</module>
-        <module>modules/AlgorithmsPlugin</module>
-        <module>modules/AttributeColumnPropertyEditor</module>
-        <module>modules/AttributesAPI</module>
-        <module>modules/AttributesImpl</module>
-        <module>modules/ClusteringAPI</module>
-        <module>modules/ClusteringPlugin</module>
-        <module>modules/CollectionUtils</module>
-        <module>modules/DataLaboratoryAPI</module>
-        <module>modules/DataLaboratoryPlugin</module>
         <module>modules/DBDrivers</module>
         <module>modules/DesktopBranding</module>
-        <module>modules/DesktopClustering</module>
         <module>modules/DesktopContext</module>
-        <module>modules/DesktopDataLaboratory</module>
-        <module>modules/DesktopExport</module>
-        <module>modules/DesktopFilters</module>
         <module>modules/DesktopGenerate</module>
-        <module>modules/DesktopHierarchy</module>
         <module>modules/DesktopImport</module>
         <module>modules/DesktopLayout</module>
-        <module>modules/DesktopPartition</module>
         <module>modules/DesktopPerspective</module>
-        <module>modules/DesktopPreview</module>
         <module>modules/DesktopProgress</module>
         <module>modules/DesktopProject</module>
-        <module>modules/DesktopRanking</module>
         <module>modules/DesktopRecentFiles</module>
-        <module>modules/DesktopSpigot</module>
-        <module>modules/DesktopStatistics</module>
-        <module>modules/DesktopTimeline</module>
-        <module>modules/DesktopTools</module>
-        <module>modules/DHNSGraph</module>
         <module>modules/DirectoryChooser</module>
         <module>modules/DynamicAPI</module>
-        <module>modules/DynamicImpl</module>
-        <module>modules/ExportAPI</module>
-        <module>modules/ExportPlugin</module>
-        <module>modules/ExportPluginUI</module>
-        <module>modules/FiltersAPI</module>
-        <module>modules/FiltersImpl</module>
-        <module>modules/FiltersPlugin</module>
-        <module>modules/FiltersPluginUI</module>
         <module>modules/GeneratorAPI</module>
         <module>modules/GeneratorPlugin</module>
         <module>modules/GeneratorPluginUI</module>
+        <module>modules/Gleem</module>
         <module>modules/GraphAPI</module>
         <module>modules/ImportAPI</module>
         <module>modules/ImportPlugin</module>
@@ -1228,31 +1199,13 @@
         <module>modules/LayoutAPI</module>
         <module>modules/LayoutPlugin</module>
         <module>modules/MostRecentFilesAPI</module>
-        <module>modules/PartitionAPI</module>
-        <module>modules/PartitionPlugin</module>
-        <module>modules/PartitionPluginUI</module>
         <module>modules/PerspectiveAPI</module>
-        <module>modules/PreviewAPI</module>
-        <module>modules/PreviewExport</module>
-        <module>modules/PreviewExportUI</module>
-        <module>modules/PreviewPlugin</module>
         <module>modules/ProcessorPlugin</module>
         <module>modules/ProcessorPluginUI</module>
         <module>modules/ProjectAPI</module>
         <module>modules/ProjectUI</module>
-        <module>modules/RankingAPI</module>
-        <module>modules/RankingPlugin</module>
-        <module>modules/RankingPluginUI</module>
         <module>modules/SettingsUpgrader</module>
-        <module>modules/SpigotPlugin</module>
-        <module>modules/SpigotPluginUI</module>
-        <module>modules/SplineEditor</module>
-        <module>modules/StatisticsAPI</module>
-        <module>modules/StatisticsPlugin</module>
-        <module>modules/StatisticsPluginUI</module>
-        <module>modules/TimelineAPI</module>
         <module>modules/ToolsAPI</module>
-        <module>modules/ToolsPlugin</module>
         <module>modules/UIComponents</module>
         <module>modules/UIUtils</module>
         <module>modules/Utils</module>
@@ -1261,7 +1214,6 @@
         <module>modules/VisualizationImpl</module>
         <module>modules/WelcomeScreen</module>
         <module>modules/WorkspaceUI</module>
-        <module>modules/Gleem</module>
         <module>modules/CoreLibraryWrapper</module>
         <module>modules/UILibraryWrapper</module>
     </modules>
