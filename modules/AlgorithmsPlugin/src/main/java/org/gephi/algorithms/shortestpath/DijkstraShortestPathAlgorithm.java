@@ -44,104 +44,93 @@ package org.gephi.algorithms.shortestpath;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.dynamic.DynamicUtilities;
-import org.gephi.dynamic.api.DynamicController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
-import org.openide.util.Lookup;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public class DijkstraShortestPathAlgorithm extends AbstractShortestPathAlgorithm {
-    
+
     protected final Graph graph;
-    protected final HashMap<NodeData, Edge> predecessors;
-    protected TimeInterval timeInterval;
-    
+    protected final HashMap<Node, Edge> predecessors;
+
     public DijkstraShortestPathAlgorithm(Graph graph, Node sourceNode) {
         super(sourceNode);
         this.graph = graph;
-        predecessors = new HashMap<NodeData, Edge>();
-        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-        if (dynamicController != null) {
-            timeInterval = DynamicUtilities.getVisibleInterval(dynamicController.getModel(graph.getGraphModel().getWorkspace()));
-        }
+        predecessors = new HashMap<Node, Edge>();
     }
-    
+
+    @Override
     public void compute() {
-        
+
         graph.readLock();
         Set<Node> unsettledNodes = new HashSet<Node>();
-        Set<NodeData> settledNodes = new HashSet<NodeData>();
+        Set<Node> settledNodes = new HashSet<Node>();
 
         //Initialize
         for (Node node : graph.getNodes()) {
-            distances.put(node.getNodeData(), Double.POSITIVE_INFINITY);
+            distances.put(node, Double.POSITIVE_INFINITY);
         }
-        distances.put(sourceNode.getNodeData(), 0d);
+        distances.put(sourceNode, 0d);
         unsettledNodes.add(sourceNode);
-        
+
         while (!unsettledNodes.isEmpty()) {
 
             // find node with smallest distance value
             Double minDistance = Double.POSITIVE_INFINITY;
             Node minDistanceNode = null;
             for (Node k : unsettledNodes) {
-                Double dist = distances.get(k.getNodeData());
+                Double dist = distances.get(k);
                 if (minDistanceNode == null) {
                     minDistanceNode = k;
                 }
-                
+
                 if (dist.compareTo(minDistance) < 0) {
                     minDistance = dist;
                     minDistanceNode = k;
                 }
             }
             unsettledNodes.remove(minDistanceNode);
-            settledNodes.add(minDistanceNode.getNodeData());
-            
+            settledNodes.add(minDistanceNode);
+
             for (Edge edge : graph.getEdges(minDistanceNode)) {
                 Node neighbor = graph.getOpposite(minDistanceNode, edge);
-                if (!settledNodes.contains(neighbor.getNodeData())) {
+                if (!settledNodes.contains(neighbor)) {
                     double dist = getShortestDistance(minDistanceNode) + edgeWeight(edge);
                     if (getShortestDistance(neighbor) > dist) {
-                        
-                        distances.put(neighbor.getNodeData(), dist);
-                        predecessors.put(neighbor.getNodeData(), edge);
+
+                        distances.put(neighbor, dist);
+                        predecessors.put(neighbor, edge);
                         unsettledNodes.add(neighbor);
                         maxDistance = Math.max(maxDistance, dist);
                     }
                 }
             }
         }
-        
+
         graph.readUnlock();
     }
-    
+
     private double getShortestDistance(Node destination) {
-        Double d = distances.get(destination.getNodeData());
+        Double d = distances.get(destination);
         if (d == null) {
             return Double.POSITIVE_INFINITY;
         } else {
             return d;
         }
     }
-    
+
     @Override
     protected double edgeWeight(Edge edge) {
-        if (timeInterval != null) {
-            return edge.getWeight(timeInterval.getLow(), timeInterval.getHigh());
-        }
         return edge.getWeight();
     }
-    
+
+    @Override
     public Node getPredecessor(Node node) {
-        Edge edge = predecessors.get(node.getNodeData());
+        Edge edge = predecessors.get(node);
         if (edge != null) {
             if (edge.getSource() != node) {
                 return edge.getSource();
@@ -151,8 +140,9 @@ public class DijkstraShortestPathAlgorithm extends AbstractShortestPathAlgorithm
         }
         return null;
     }
-    
+
+    @Override
     public Edge getPredecessorIncoming(Node node) {
-        return predecessors.get(node.getNodeData());
+        return predecessors.get(node);
     }
 }

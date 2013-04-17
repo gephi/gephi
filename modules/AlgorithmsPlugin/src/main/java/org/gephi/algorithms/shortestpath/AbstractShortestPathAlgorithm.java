@@ -45,7 +45,6 @@ import java.awt.Color;
 import java.util.HashMap;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
 
 /**
  *
@@ -53,27 +52,27 @@ import org.gephi.graph.api.NodeData;
  */
 public abstract class AbstractShortestPathAlgorithm {
 
-    protected final HashMap<NodeData, Color> colors;
-    protected final HashMap<NodeData, Double> distances;
+    protected final HashMap<Node, Color> colors;
+    protected final HashMap<Node, Double> distances;
     protected final Node sourceNode;
     protected double maxDistance = 0;
 
     public AbstractShortestPathAlgorithm(Node sourceNode) {
         this.sourceNode = sourceNode;
-        colors = new HashMap<NodeData, Color>();
-        distances = new HashMap<NodeData, Double>();
+        colors = new HashMap<Node, Color>();
+        distances = new HashMap<Node, Double>();
     }
 
     protected boolean relax(Edge edge) {
         Node source = edge.getSource();
         Node target = edge.getTarget();
-        double distSource = distances.get(source.getNodeData());
-        double distTarget = distances.get(target.getNodeData());
+        double distSource = distances.get(source);
+        double distTarget = distances.get(target);
         double weight = edgeWeight(edge);
 
         double sourceWeight = distSource + weight;
         if (sourceWeight < distTarget) {
-            distances.put(target.getNodeData(), sourceWeight);
+            distances.put(target, sourceWeight);
             maxDistance = Math.max(maxDistance, sourceWeight);
             return true;
         } else {
@@ -91,7 +90,7 @@ public abstract class AbstractShortestPathAlgorithm {
 
     public abstract Edge getPredecessorIncoming(Node node);
 
-    public HashMap<NodeData, Double> getDistances() {
+    public HashMap<Node, Double> getDistances() {
         return distances;
     }
 
