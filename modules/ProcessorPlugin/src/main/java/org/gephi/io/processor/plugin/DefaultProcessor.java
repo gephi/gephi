@@ -132,7 +132,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
                     edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), true);
                     break;
                 case MIXED:
-                    boolean directed = draftEdge.getDirection().equals(EdgeDirection.UNDIRECTED) ? false : true;
+                    boolean directed = draftEdge.getDirection() != null && draftEdge.getDirection().equals(EdgeDirection.UNDIRECTED) ? false : true;
                     edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), directed);
             }
             edgeCount++;
