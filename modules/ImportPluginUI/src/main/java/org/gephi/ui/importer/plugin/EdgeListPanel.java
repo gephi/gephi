@@ -88,6 +88,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
         driverComboBox.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent ie) {
                 initDriverType((SQLDriver) ie.getItem());
             }
@@ -96,6 +97,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         browseButton.setVisible(false);
         browseButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent ae) {
                 String lastPath = NbPreferences.forModule(EdgeListPanel.class).get(LAST_PATH, "");
                 final JFileChooser chooser = new JFileChooser(lastPath);
@@ -142,6 +144,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
     private void initDriverType(final SQLDriver driver) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 if (driver != null && driver.getPrefix().equals("sqlite")) {
                     hostLabel.setText(NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.fileLabel.text"));

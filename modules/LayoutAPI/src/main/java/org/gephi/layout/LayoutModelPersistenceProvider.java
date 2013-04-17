@@ -55,6 +55,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = WorkspacePersistenceProvider.class)
 public class LayoutModelPersistenceProvider implements WorkspacePersistenceProvider {
 
+    @Override
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {
         LayoutModelImpl model = workspace.getLookup().lookup(LayoutModelImpl.class);
         if (model != null) {
@@ -66,6 +67,7 @@ public class LayoutModelPersistenceProvider implements WorkspacePersistenceProvi
         }
     }
 
+    @Override
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         LayoutModelImpl model = workspace.getLookup().lookup(LayoutModelImpl.class);
         if (model == null) {
@@ -79,6 +81,7 @@ public class LayoutModelPersistenceProvider implements WorkspacePersistenceProvi
         }
     }
 
+    @Override
     public String getIdentifier() {
         return "layoutmodel";
     }

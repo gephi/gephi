@@ -161,6 +161,7 @@ public class SwapListPanel extends javax.swing.JPanel {
 
             leftButton.addActionListener(new ActionListener() {
 
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     fromRightToLeftAction();
                 }
@@ -168,6 +169,7 @@ public class SwapListPanel extends javax.swing.JPanel {
 
             rightButton.addActionListener(new ActionListener() {
 
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     fromLeftToRightAction();
                 }

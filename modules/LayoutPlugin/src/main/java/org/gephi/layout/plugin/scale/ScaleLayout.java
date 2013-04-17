@@ -96,6 +96,7 @@ public class ScaleLayout extends AbstractLayout implements Layout {
     public void endAlgo() {
     }
 
+    @Override
     public LayoutProperty[] getProperties() {
         List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
         try {

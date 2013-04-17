@@ -210,6 +210,7 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
         return new Dimension(400, 400);
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         repaint();
     }
@@ -455,6 +456,7 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
 
     private class ZoomHandler implements MouseWheelListener {
 
+        @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
             double distanceX = maxX - minX;
             double distanceY = maxY - minY;

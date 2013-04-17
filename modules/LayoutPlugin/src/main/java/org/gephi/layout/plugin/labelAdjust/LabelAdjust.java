@@ -258,12 +258,14 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         return collision;
     }
 
+    @Override
     public void endAlgo() {
         for (Node n : graph.getNodes()) {
             n.setLayoutData(null);
         }
     }
 
+    @Override
     public LayoutProperty[] getProperties() {
         List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
         final String LABELADJUST_CATEGORY = "LabelAdjust";

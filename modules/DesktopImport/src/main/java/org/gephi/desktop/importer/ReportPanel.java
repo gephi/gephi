@@ -101,6 +101,7 @@ public class ReportPanel extends javax.swing.JPanel {
     public ReportPanel() {
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
+                @Override
                 public void run() {
                     initComponents();
                     initIcons();
@@ -116,6 +117,7 @@ public class ReportPanel extends javax.swing.JPanel {
         fillingThreads = new ThreadGroup("Report Panel Issues");
 
         graphTypeCombo.addItemListener(new ItemListener() {
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 int g = graphTypeCombo.getSelectedIndex();
                 switch (g) {
@@ -133,6 +135,7 @@ public class ReportPanel extends javax.swing.JPanel {
         });
 
         autoscaleCheckbox.addItemListener(new ItemListener() {
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 if (autoscaleCheckbox.isSelected() != container.isAutoScale()) {
                     container.setAutoScale(autoscaleCheckbox.isSelected());
@@ -141,6 +144,7 @@ public class ReportPanel extends javax.swing.JPanel {
         });
 
         createMissingNodesCheckbox.addItemListener(new ItemListener() {
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 if (createMissingNodesCheckbox.isSelected() != container.getUnloader().allowAutoNode()) {
                     container.setAllowAutoNode(createMissingNodesCheckbox.isSelected());
@@ -185,12 +189,14 @@ public class ReportPanel extends javax.swing.JPanel {
 
             //Thread
             Thread thread = new Thread(fillingThreads, new Runnable() {
+                @Override
                 public void run() {
                     busyLabel.setBusy(true);
                     final TreeModel treeMdl = new IssueTreeModel(issues);
                     final OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new IssueRowModel(), true);
 
                     SwingUtilities.invokeLater(new Runnable() {
+                        @Override
                         public void run() {
                             issuesOutline.setRootVisible(false);
                             issuesOutline.setRenderDataProvider(new IssueRenderer());
@@ -208,9 +214,11 @@ public class ReportPanel extends javax.swing.JPanel {
 
     private void fillReport(final Report report) {
         Thread thread = new Thread(fillingThreads, new Runnable() {
+            @Override
             public void run() {
                 final String str = report.getText();
                 SwingUtilities.invokeLater(new Runnable() {
+                    @Override
                     public void run() {
                         reportEditor.setText(str);
                     }
@@ -224,6 +232,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
     private void fillStats(final Container container) {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 //Source
                 String source = container.getSource();
@@ -515,18 +524,22 @@ public class ReportPanel extends javax.swing.JPanel {
             this.issues = issues;
         }
 
+        @Override
         public Object getRoot() {
             return "root";
         }
 
+        @Override
         public Object getChild(Object parent, int index) {
             return issues.get(index);
         }
 
+        @Override
         public int getChildCount(Object parent) {
             return issues.size();
         }
 
+        @Override
         public boolean isLeaf(Object node) {
             if (node instanceof Issue) {
                 return true;
@@ -534,26 +547,32 @@ public class ReportPanel extends javax.swing.JPanel {
             return false;
         }
 
+        @Override
         public void valueForPathChanged(TreePath path, Object newValue) {
         }
 
+        @Override
         public int getIndexOfChild(Object parent, Object child) {
             return issues.indexOf(child);
         }
 
+        @Override
         public void addTreeModelListener(TreeModelListener l) {
         }
 
+        @Override
         public void removeTreeModelListener(TreeModelListener l) {
         }
     }
 
     private class IssueRowModel implements RowModel {
 
+        @Override
         public int getColumnCount() {
             return 1;
         }
 
+        @Override
         public Object getValueFor(Object node, int column) {
             if (node instanceof Issue) {
                 Issue issue = (Issue) node;
@@ -562,17 +581,21 @@ public class ReportPanel extends javax.swing.JPanel {
             return "";
         }
 
+        @Override
         public Class getColumnClass(int column) {
             return String.class;
         }
 
+        @Override
         public boolean isCellEditable(Object node, int column) {
             return false;
         }
 
+        @Override
         public void setValueFor(Object node, int column, Object value) {
         }
 
+        @Override
         public String getColumnName(int column) {
             return "Issues";
         }
@@ -580,27 +603,33 @@ public class ReportPanel extends javax.swing.JPanel {
 
     private class IssueRenderer implements RenderDataProvider {
 
+        @Override
         public String getDisplayName(Object o) {
             Issue issue = (Issue) o;
             return issue.getMessage();
         }
 
+        @Override
         public boolean isHtmlDisplayName(Object o) {
             return false;
         }
 
+        @Override
         public Color getBackground(Object o) {
             return null;
         }
 
+        @Override
         public Color getForeground(Object o) {
             return null;
         }
 
+        @Override
         public String getTooltipText(Object o) {
             return "";
         }
 
+        @Override
         public Icon getIcon(Object o) {
             Issue issue = (Issue) o;
             switch (issue.getLevel()) {

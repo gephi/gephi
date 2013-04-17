@@ -57,19 +57,23 @@ public class ImporterBuilderGDF implements FileImporterBuilder {
 
     public static final String IDENTIFER = "gdf";
 
+    @Override
     public FileImporter buildImporter() {
         return new ImporterGDF();
     }
 
+    @Override
     public String getName() {
         return IDENTIFER;
     }
 
+    @Override
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gdf", NbBundle.getMessage(getClass(), "fileType_GDF_Name"));
         return new FileType[]{ft};
     }
 
+    @Override
     public boolean isMatchingImporter(FileObject fileObject) {
         return fileObject.getExt().equalsIgnoreCase("gdf");
     }

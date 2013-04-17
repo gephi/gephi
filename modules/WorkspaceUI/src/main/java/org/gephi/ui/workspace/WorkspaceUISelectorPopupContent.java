@@ -82,14 +82,17 @@ public class WorkspaceUISelectorPopupContent extends JPanel {
         public BottomLineBorder() {
         }
 
+        @Override
         public Insets getBorderInsets(Component c) {
             return ins;
         }
 
+        @Override
         public boolean isBorderOpaque() {
             return false;
         }
 
+        @Override
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
             Color old = g.getColor();
             g.setColor(col);

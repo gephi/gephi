@@ -43,15 +43,15 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>graph-api</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-exporter-api</artifactId>
         </dependency>-->
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>preview-api</artifactId>
         </dependency>-->
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-exporter-preview</artifactId>
         </dependency>-->
@@ -59,11 +59,11 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>lib.validation</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>preview-export-ui</artifactId>
         </dependency>-->
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dynamic-api</artifactId>
         </dependency>-->
@@ -71,7 +71,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>utils</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>datalab-api</artifactId>
         </dependency>-->
@@ -79,7 +79,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization-api</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>preview-plugin</artifactId>
         </dependency>-->
@@ -103,7 +103,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>project-ui</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ranking-api</artifactId>
         </dependency>
@@ -119,7 +119,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-components</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ranking-plugin-ui</artifactId>
         </dependency>-->
@@ -127,7 +127,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>settings-upgrader</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>spigot-plugin</artifactId>
         </dependency>
@@ -135,34 +135,35 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>spigot-plugin-ui</artifactId>
         </dependency>-->
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>spline-editor</artifactId>
         </dependency>-->
-<!--        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>statistics-api</artifactId>
-        </dependency>
+        <!--        <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>statistics-api</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>statistics-plugin</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>statistics-plugin-ui</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>timeline</artifactId>
+                </dependency>
+        -->        
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>statistics-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>statistics-plugin-ui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>timeline</artifactId>
-        </dependency>
--->        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>tools-api</artifactId>
-        </dependency><!--
+        </dependency>       
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>algorithms-plugin</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>gleem</artifactId>
@@ -179,7 +180,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>tools-plugin</artifactId>
         </dependency>-->
@@ -219,11 +220,11 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>generator-plugin-ui</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-exporter-plugin</artifactId>
         </dependency>-->
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-ranking</artifactId>
         </dependency>
@@ -231,7 +232,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-statistics</artifactId>
         </dependency>-->
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-api</artifactId>
         </dependency>
@@ -239,7 +240,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>clustering-api</artifactId>
         </dependency>-->
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-propertyeditor</artifactId>
         </dependency>-->
@@ -247,7 +248,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>layout-plugin</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-spigot</artifactId>
         </dependency>-->
@@ -255,7 +256,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-generate</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>partition-api</artifactId>
         </dependency>
@@ -263,7 +264,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-partition</artifactId>
         </dependency>-->
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-importer-plugin</artifactId>
         </dependency>
@@ -287,7 +288,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-recent-files</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-io-export</artifactId>
         </dependency>-->
@@ -295,7 +296,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>perspective-api</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-clustering</artifactId>
         </dependency>-->
@@ -307,7 +308,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-perspective</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-plugin-ui</artifactId>
         </dependency>
@@ -319,7 +320,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-layout</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dynamic-impl</artifactId>
         </dependency>-->
@@ -327,7 +328,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-import</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-preview</artifactId>
         </dependency>
@@ -351,7 +352,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>directory-chooser</artifactId>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-filters</artifactId>
         </dependency>

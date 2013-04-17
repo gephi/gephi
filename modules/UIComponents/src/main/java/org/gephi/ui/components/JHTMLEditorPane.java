@@ -102,6 +102,7 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
             return false;
         }
 
+        @Override
         protected void emptyTag(Element elem) throws BadLocationException, IOException {
             if (isSupportedBreakFlowTag(elem.getAttributes())) {
                 writeLineSeparator();
@@ -112,12 +113,14 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
             }
         }
 
+        @Override
         protected void endTag(Element elem) throws IOException {
             if (isSupportedBreakFlowTag(elem.getAttributes())) {
                 writeLineSeparator();
             }
         }
 
+        @Override
         protected void startTag(Element elem) throws IOException, BadLocationException {
         }
     }
@@ -130,6 +133,7 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
     private class HTMLTextAreaTransferHandler extends TransferHandler {
         //~ Methods --------------------------------------------------------------------------------------------------------------
 
+        @Override
         public void exportToClipboard(JComponent comp, Clipboard clip, int action) {
             try {
                 int selStart = getSelectionStart();
@@ -573,6 +577,7 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
     }
 
     //~ Methods ------------------------------------------------------------------------------------------------------------------
+    @Override
     public void setForeground(Color color) {
         super.setForeground(color);
         setText(originalText);
@@ -586,6 +591,7 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
         return showPopup;
     }
 
+    @Override
     public void setText(String value) {
         if (value == null) {
             return;
@@ -611,6 +617,7 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
         ;
     }
 
+    @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
         if (!isEnabled()) {
             return;
@@ -625,6 +632,7 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
         }
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
             if (isEnabled() && isFocusable() && showPopup) {
@@ -643,18 +651,23 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
         }
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
     }
 
+    @Override
     public void paste() {
         try {
             replaceSelection(Toolkit.getDefaultToolkit().getSystemClipboard().getContents(this).getTransferData(DataFlavor.stringFlavor).toString());
@@ -731,6 +744,7 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
     private ActionListener createPopupListener() {
         return new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == itemCut) {
                     cut();

@@ -68,10 +68,12 @@ public class LayoutControllerImpl implements LayoutController {
     public LayoutControllerImpl() {
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
 
+            @Override
             public void initialize(Workspace workspace) {
                 workspace.add(new LayoutModelImpl());
             }
 
+            @Override
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(LayoutModelImpl.class);
                 if (model == null) {
@@ -80,12 +82,14 @@ public class LayoutControllerImpl implements LayoutController {
                 workspace.add(model);
             }
 
+            @Override
             public void unselect(Workspace workspace) {
                 if (model != null && model.getSelectedLayout() != null) {
                     model.saveProperties(model.getSelectedLayout());
                 }
             }
 
+            @Override
             public void close(Workspace workspace) {
                 LayoutModelImpl layoutModel = workspace.getLookup().lookup(LayoutModelImpl.class);
                 if (layoutModel != null) {
@@ -93,6 +97,7 @@ public class LayoutControllerImpl implements LayoutController {
                 }
             }
 
+            @Override
             public void disable() {
                 model = null;
             }
@@ -108,14 +113,17 @@ public class LayoutControllerImpl implements LayoutController {
         }
     }
 
+    @Override
     public LayoutModel getModel() {
         return model;
     }
 
+    @Override
     public void setLayout(Layout layout) {
         model.setSelectedLayout(layout);
     }
 
+    @Override
     public void executeLayout() {
         if (model.getSelectedLayout() != null) {
             layoutRun = new LayoutRun(model.getSelectedLayout());
@@ -124,6 +132,7 @@ public class LayoutControllerImpl implements LayoutController {
         }
     }
 
+    @Override
     public void executeLayout(int numIterations) {
         if (model.getSelectedLayout() != null) {
             layoutRun = new LayoutRun(model.getSelectedLayout(), numIterations);
@@ -132,14 +141,17 @@ public class LayoutControllerImpl implements LayoutController {
         }
     }
 
+    @Override
     public boolean canExecute() {
         return model.getSelectedLayout() != null && !model.isRunning();
     }
 
+    @Override
     public boolean canStop() {
         return model.isRunning();
     }
 
+    @Override
     public void stopLayout() {
         model.getExecutor().cancel();
     }
@@ -161,6 +173,7 @@ public class LayoutControllerImpl implements LayoutController {
             this.iterations = numIterations;
         }
 
+        @Override
         public void run() {
             Progress.setDisplayName(progressTicket, layout.getBuilder().getName());
             Progress.start(progressTicket);
@@ -181,11 +194,13 @@ public class LayoutControllerImpl implements LayoutController {
             }
         }
 
+        @Override
         public boolean cancel() {
             stopRun = true;
             return true;
         }
 
+        @Override
         public void setProgressTicket(ProgressTicket progressTicket) {
             this.progressTicket = progressTicket;
             if (layout instanceof LongTask) {

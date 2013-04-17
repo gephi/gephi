@@ -773,6 +773,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     }
 
+    @Override
     public boolean isDynamicGraph() {
         return dynamicGraph;
     }

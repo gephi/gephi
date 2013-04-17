@@ -69,6 +69,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
     /**
      * Finish the task.
      */
+    @Override
     public void finish() {
         if (handle != null && started && !finished) {
             try {
@@ -84,6 +85,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
      * Finish the task and display a statusbar message
      * @param finishMessage 
      */
+    @Override
     public void finish(String finishMessage) {
         if (handle != null && started && !finished) {
             try {
@@ -99,6 +101,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
     /**
      * Notify the user about a new completed unit. Equivalent to incrementing workunits by one.
      */
+    @Override
     public void progress() {
         progress(currentUnit + 1);
     }
@@ -107,6 +110,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
      * Notify the user about completed workunits.
      * @param a cumulative number of workunits completed so far
      */
+    @Override
     public void progress(int workunit) {
         this.currentUnit = workunit;
         if (handle != null) {
@@ -122,6 +126,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
      * Notify the user about progress by showing message with details.
      * @param details about the status of the task
      */
+    @Override
     public void progress(String message) {
         if (handle != null) {
             handle.progress(message);
@@ -133,6 +138,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
      * @param message details about the status of the task
      * @param workunit a cumulative number of workunits completed so far
      */
+    @Override
     public void progress(String message, int workunit) {
         currentUnit = workunit;
         if (handle != null) {
@@ -148,6 +154,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
      * Change the display name of the progress task. Use with care, please make sure the changed name is not completely different, or otherwise it might appear to the user as a different task.
      * @param newDisplayName the new display name
      */
+    @Override
     public void setDisplayName(String newDisplayName) {
         if (handle != null) {
             handle.setDisplayName(newDisplayName);
@@ -159,6 +166,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
      * Returns the current display name.
      * @return the current task's display name
      */
+    @Override
     public String getDisplayName() {
         return displayName;
     }
@@ -166,6 +174,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
     /**
      * Start the progress indication for indeterminate task.
      */
+    @Override
     public void start() {
         if (handle != null) {
             started = true;
@@ -177,6 +186,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
      * Start the progress indication for a task with known number of steps.
      * @param workunits total number of workunits that will be processed
      */
+    @Override
     public void start(int workunits) {
         if (handle != null) {
             started = true;
@@ -189,6 +199,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
      * Currently indeterminate task can be switched to show percentage completed.
      * @param workunits workunits total number of workunits that will be processed
      */
+    @Override
     public void switchToDeterminate(int workunits) {
         if (handle != null) {
             if (started) {
@@ -203,6 +214,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
     /**
      * Currently determinate task can be switched to indeterminate mode.
      */
+    @Override
     public void switchToIndeterminate() {
         if (handle != null) {
             handle.switchToIndeterminate();

@@ -58,6 +58,7 @@ public class DynamicGraph implements Generator {
     protected int numberOfNodes = 50;
     protected double wiringProbability = 0.05;
 
+    @Override
     public void generate(ContainerLoader container) {
 //        Random random = new Random();
 //
@@ -114,18 +115,22 @@ public class DynamicGraph implements Generator {
 //        }
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(DynamicGraph.class, "DynamicGraph.name");
     }
 
+    @Override
     public GeneratorUI getUI() {
         return null;
     }
 
+    @Override
     public boolean cancel() {
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
     }
 }

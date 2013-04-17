@@ -52,5 +52,6 @@ public interface SpigotImporterBuilder extends ImporterBuilder {
      * Builds a new spigot importer instance, ready to be used.
      * @return  a new spigot importer
      */
+    @Override
     public SpigotImporter buildImporter();
 }

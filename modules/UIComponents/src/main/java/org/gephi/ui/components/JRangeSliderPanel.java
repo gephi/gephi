@@ -81,6 +81,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
         });
         lowerBoundTextField.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (!lowerBoundTextField.getText().equals(lowerBound)) {
                     lowerBound = lowerBoundTextField.getText();
@@ -112,6 +113,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
         });
         upperBoundTextField.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (!upperBoundTextField.getText().equals(upperBound)) {
                     upperBound = upperBoundTextField.getText();
@@ -136,6 +138,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
 
         rangeSlider.addChangeListener(new ChangeListener() {
 
+            @Override
             public void stateChanged(ChangeEvent e) {
                 JRangeSlider source = (JRangeSlider) e.getSource();
                 if (!source.getValueIsAdjusting()) {

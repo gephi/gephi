@@ -303,6 +303,7 @@ class SplineControlPanel extends JPanel {
 
     private class TemplateSelectionHandler implements ListSelectionListener {
 
+        @Override
         public void valueChanged(ListSelectionEvent e) {
             if (e.getValueIsAdjusting()) {
                 return;

@@ -1175,6 +1175,7 @@
     <modules>
         <module>modules/branding</module>
         <module>modules/application</module>
+        <module>modules/AlgorithmsPlugin</module>
         <module>modules/LongTaskAPI</module>
         <module>modules/DBDrivers</module>
         <module>modules/DesktopBranding</module>

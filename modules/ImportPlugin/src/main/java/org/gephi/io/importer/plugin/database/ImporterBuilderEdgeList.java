@@ -54,10 +54,12 @@ public class ImporterBuilderEdgeList implements DatabaseImporterBuilder {
 
     public static final String IDENTIFER = "edgelist";
 
+    @Override
     public DatabaseImporter buildImporter() {
         return new ImporterEdgeList();
     }
 
+    @Override
     public String getName() {
         return IDENTIFER;
     }

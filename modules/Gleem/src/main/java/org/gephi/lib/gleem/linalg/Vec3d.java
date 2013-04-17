@@ -169,6 +169,7 @@ public class Vec3d {
     z = a.x * b.y - a.y * b.x;
   }
 
+  @Override
   public String toString() {
     return "(" + x + ", " + y + ", " + z + ")";
   }

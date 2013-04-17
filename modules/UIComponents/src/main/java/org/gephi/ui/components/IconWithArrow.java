@@ -63,6 +63,7 @@ public class IconWithArrow implements Icon {
         this.paintRollOver = paintRollOver;
     }
 
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         int height = getIconHeight();
         orig.paintIcon(c, g, x, y + (height - orig.getIconHeight()) / 2);
@@ -87,10 +88,12 @@ public class IconWithArrow implements Icon {
         }
     }
 
+    @Override
     public int getIconWidth() {
         return orig.getIconWidth() + GAP + arrow.getIconWidth();
     }
 
+    @Override
     public int getIconHeight() {
         return Math.max(orig.getIconHeight(), arrow.getIconHeight());
     }

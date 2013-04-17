@@ -59,9 +59,11 @@ public class WorkspaceUISelector implements StatusLineElementProvider, Workspace
 
     private WorkspaceUISelectorPanel panel;
 
+    @Override
     public Component getStatusLineElement() {
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
 
+            @Override
             public void run() {
                 ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
                 pc.addWorkspaceListener(WorkspaceUISelector.this);
@@ -76,21 +78,26 @@ public class WorkspaceUISelector implements StatusLineElementProvider, Workspace
         return panel;
     }
 
+    @Override
     public void initialize(Workspace workspace) {
         panel.refreshList();
     }
 
+    @Override
     public void select(Workspace workspace) {
         panel.setSelectedWorkspace(workspace);
     }
 
+    @Override
     public void unselect(Workspace workspace) {
     }
 
+    @Override
     public void close(Workspace workspace) {
         panel.refreshList();
     }
 
+    @Override
     public void disable() {
         panel.noSelectedWorkspace();
     }

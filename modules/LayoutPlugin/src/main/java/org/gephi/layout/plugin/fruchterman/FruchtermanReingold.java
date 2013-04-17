@@ -169,6 +169,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
         graph.readUnlock();
     }
 
+    @Override
     public void endAlgo() {
         for (Node n : graph.getNodes()) {
             n.setLayoutData(null);
@@ -180,6 +181,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
         return true;
     }
 
+    @Override
     public LayoutProperty[] getProperties() {
         List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
         final String FRUCHTERMAN_REINGOLD = "Fruchterman Reingold";

@@ -111,6 +111,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
     private ProgressTicket progress;
     private XMLStreamReader xmlReader;
 
+    @Override
     public boolean execute(ContainerLoader container) {
         this.container = container;
         this.report = new Report();

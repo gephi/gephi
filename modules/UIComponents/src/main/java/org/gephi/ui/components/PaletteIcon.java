@@ -61,14 +61,17 @@ public class PaletteIcon implements Icon {
         this.colors = colors;
     }
 
+    @Override
     public int getIconWidth() {
         return COLOR_WIDTH * colors.length;
     }
 
+    @Override
     public int getIconHeight() {
         return COLOR_HEIGHT + 2;
     }
 
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
 
         for (int i = 0; i < colors.length; i++) {

@@ -77,14 +77,17 @@ public class JColorButton extends JButton {
         this.color = originalColor;
         setIcon(new Icon() {
 
+            @Override
             public int getIconWidth() {
                 return ICON_WIDTH;
             }
 
+            @Override
             public int getIconHeight() {
                 return ICON_HEIGHT;
             }
 
+            @Override
             public void paintIcon(Component c, Graphics g, int x, int y) {
                 if (c.isEnabled()) {
                     g.setColor(Color.BLACK);
@@ -119,6 +122,7 @@ public class JColorButton extends JButton {
         } else {
             addActionListener(new ActionListener() {
 
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color, JColorButton.this.includeOpacity);
                     if (newColor != null) {

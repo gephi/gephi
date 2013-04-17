@@ -225,6 +225,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
         graph.readUnlock();
     }
 
+    @Override
     public void endAlgo() {
         for (Node n : graph.getNodes()) {
             n.setLayoutData(null);

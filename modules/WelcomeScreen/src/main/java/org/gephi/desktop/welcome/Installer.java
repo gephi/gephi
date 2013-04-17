@@ -57,6 +57,7 @@ public class Installer extends ModuleInstall {
         if (NbPreferences.forModule(WelcomeTopComponent.class).getBoolean(WelcomeTopComponent.STARTUP_PREF, Boolean.TRUE)) {
             WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
 
+                @Override
                 public void run() {
                     WelcomeTopComponent component = WelcomeTopComponent.getInstance();
                     JDialog dialog = new JDialog(WindowManager.getDefault().getMainWindow(),

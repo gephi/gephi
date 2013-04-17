@@ -88,6 +88,7 @@ public class ImportDB extends CallableSystemAction {
                 }
                 JMenuItem menuItem = new JMenuItem(new AbstractAction(menuName) {
 
+                    @Override
                     public void actionPerformed(ActionEvent e) {
                         importController.importDatabase(dbb.buildImporter());
                     }
