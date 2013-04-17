@@ -103,7 +103,6 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
 
         int nodeCount = 0;
         //Create all nodes
-        //Create all nodes
         for (NodeDraft draftNode : container.getNodes()) {
             String id = draftNode.getId();
             Node node = factory.newNode(id);
@@ -129,7 +128,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
                     edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), true);
                     break;
                 case UNDIRECTED:
-                    edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), true);
+                    edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), false);
                     break;
                 case MIXED:
                     boolean directed = draftEdge.getDirection() != null && draftEdge.getDirection().equals(EdgeDirection.UNDIRECTED) ? false : true;

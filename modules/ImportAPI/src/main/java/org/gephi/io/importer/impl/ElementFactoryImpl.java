@@ -51,8 +51,8 @@ import org.gephi.io.importer.api.ElementDraftFactory;
 public class ElementFactoryImpl implements ElementDraftFactory {
 
     protected final ImportContainerImpl container;
-    protected final AtomicInteger NODE_IDS = new AtomicInteger();
-    protected final AtomicInteger EDGE_IDS = new AtomicInteger();
+    protected final static AtomicInteger NODE_IDS = new AtomicInteger();
+    protected final static AtomicInteger EDGE_IDS = new AtomicInteger();
 
     public ElementFactoryImpl(ImportContainerImpl container) {
         this.container = container;
