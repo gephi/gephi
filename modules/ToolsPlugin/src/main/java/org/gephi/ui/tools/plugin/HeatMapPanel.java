@@ -98,6 +98,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
         invertPaletteCheckbox.setPreferredSize(new java.awt.Dimension(139, 28));
         invertPaletteCheckbox.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 paletteComboBox.initReverse();
             }
@@ -111,6 +112,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
         //Init events
         modeComboBox.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (modeComboBox.getSelectedIndex() == 0) {
                     usePalette = false;
@@ -271,6 +273,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
         //Renderer
         private class PaletteListCellRenderer extends JLabel implements ListCellRenderer {
 
+            @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 //int selectedIndex = ((Integer) value).intValue();
 
@@ -302,14 +305,17 @@ public class HeatMapPanel extends javax.swing.JPanel {
             this.colors = colors;
         }
 
+        @Override
         public int getIconWidth() {
             return COLOR_WIDTH * colors.length;
         }
 
+        @Override
         public int getIconHeight() {
             return COLOR_HEIGHT + 2;
         }
 
+        @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
 
             for (int i = 0; i < colors.length; i++) {

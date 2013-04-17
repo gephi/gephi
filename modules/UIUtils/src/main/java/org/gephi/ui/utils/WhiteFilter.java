@@ -84,6 +84,7 @@ public final class WhiteFilter extends RGBImageFilter {
     /**
      * Overrides <code>RGBImageFilter.filterRGB</code>.
      */
+    @Override
     public int filterRGB(final int x, final int y, final int rgb) {
         int transparency = (rgb >> 24) & 0xFF;
 

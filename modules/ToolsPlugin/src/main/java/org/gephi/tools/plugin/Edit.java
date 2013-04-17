@@ -63,19 +63,23 @@ import org.openide.util.lookup.ServiceProvider;
 public class Edit implements Tool {
     private EditWindowController edc;
 
+    @Override
     public void select() {
         edc=Lookup.getDefault().lookup(EditWindowController.class);
         edc.openEditWindow();
     }
 
+    @Override
     public void unselect() {
         edc.disableEdit();
         edc.closeEditWindow();
     }
 
+    @Override
     public ToolEventListener[] getListeners() {
         return new ToolEventListener[]{new NodeClickEventListener() {
 
+                @Override
                 public void clickNodes(Node[] nodes) {
                     if (nodes.length > 0) {
                         edc.editNode(nodes[0]);
@@ -86,31 +90,38 @@ public class Edit implements Tool {
             }};
     }
 
+    @Override
     public ToolUI getUI() {
         return new ToolUI() {
 
+            @Override
             public JPanel getPropertiesBar(Tool tool) {
                 return new JPanel();
             }
 
+            @Override
             public Icon getIcon() {
                 return new ImageIcon(getClass().getResource("/org/gephi/ui/tools/plugin/edit/edit.png"));
             }
 
+            @Override
             public String getName() {
                 return NbBundle.getMessage(Edit.class, "Edit.name");
             }
 
+            @Override
             public String getDescription() {
                 return NbBundle.getMessage(Edit.class, "Edit.description");
             }
 
+            @Override
             public int getPosition() {
                 return 200;
             }
         };
     }
 
+    @Override
     public ToolSelectionType getSelectionType() {
         return ToolSelectionType.SELECTION;
     }

@@ -85,82 +85,102 @@ public class MultipleRowsAttributeValueWrapper implements AttributeValueWrapper 
         }
     }
 
+    @Override
     public Byte getValueByte() {
         return (Byte) value;
     }
 
+    @Override
     public void setValueByte(Byte object) {
         setValueToAllEdges(object);
     }
 
+    @Override
     public Short getValueShort() {
         return (Short) value;
     }
 
+    @Override
     public void setValueShort(Short object) {
         setValueToAllEdges(object);
     }
 
+    @Override
     public Character getValueCharacter() {
         return (Character) value;
     }
 
+    @Override
     public void setValueCharacter(Character object) {
         setValueToAllEdges(object);
     }
 
+    @Override
     public String getValueString() {
         return (String) value;
     }
 
+    @Override
     public void setValueString(String object) {
         setValueToAllEdges(object);
     }
 
+    @Override
     public Double getValueDouble() {
         return (Double) value;
     }
 
+    @Override
     public void setValueDouble(Double object) {
         setValueToAllEdges(object);
     }
 
+    @Override
     public Float getValueFloat() {
         return (Float) value;
     }
 
+    @Override
     public void setValueFloat(Float object) {
         setValueToAllEdges(object);
     }
 
+    @Override
     public Integer getValueInteger() {
         return (Integer) value;
     }
 
+    @Override
     public void setValueInteger(Integer object) {
         setValueToAllEdges(object);
     }
 
+    @Override
     public Boolean getValueBoolean() {
         return (Boolean) value;
     }
 
+    @Override
     public void setValueBoolean(Boolean object) {
         setValueToAllEdges(object);
     }
 
+    @Override
     public Long getValueLong() {
         return (Long) value;
     }
 
+    @Override
     public void setValueLong(Long object) {
         setValueToAllEdges(object);
     }
 
+    @Override
     public String getValueAsString() {
         return convertToStringIfNotNull();
     }
 
+    @Override
     public void setValueAsString(String value) {
         setValueToAllEdges(column.getType().parse(value));
     }
