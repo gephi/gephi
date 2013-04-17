@@ -48,7 +48,6 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.initializer.Modeler;
-import org.gephi.visualization.model.Model;
 
 /**
  *
@@ -80,7 +79,7 @@ public class ModelClass {
         modelers = new ArrayList<Modeler>();
     }
 
-    public void lod(Iterator<Model> iterator) {
+    public void lod(Iterator<? extends Model> iterator) {
         for (; iterator.hasNext();) {
             Model obj = iterator.next();
             currentModeler.chooseModel(obj);

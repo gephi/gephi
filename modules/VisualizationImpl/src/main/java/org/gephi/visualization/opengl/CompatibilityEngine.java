@@ -66,8 +66,7 @@ import org.gephi.visualization.selection.Rectangle;
 public class CompatibilityEngine extends AbstractEngine {
 
     private CompatibilityScheduler scheduler;
-    private long markTime = 0;
-    private long markTime2 = 0;
+    private int markTime = 0;
     //Selection
 //    private ConcurrentLinkedQueue<ModelImpl>[] selectedObjects;
     private boolean anySelected = false;
@@ -275,7 +274,7 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
 
-        //octree.displayOctree(gl, glu);
+        octree.displayOctree(gl, glu);
     }
 
     @Override
@@ -644,7 +643,6 @@ public class CompatibilityEngine extends AbstractEngine {
         FloatBuffer diffuse_metal = FloatBuffer.wrap(noirCasse);
         FloatBuffer specular_metal = FloatBuffer.wrap(blancCasse);
         FloatBuffer shininess_metal = FloatBuffer.wrap(shine_low);
-
         //End
 
         //Quadric for all the glu models
@@ -661,13 +659,11 @@ public class CompatibilityEngine extends AbstractEngine {
         gl.glEndList();
         //Fin
 
+        //Display lists
         for (Modeler cis : nodeClass.getModelers()) {
             int newPtr = cis.initDisplayLists(gl, glu, quadric, ptr);
             ptr = newPtr;
         }
-
-        //modelClasses[CLASS_POTATO].getCurrentModeler().initDisplayLists(gl, glu, quadric, ptr);
-
         //Fin
 
         // Sphere with a texture

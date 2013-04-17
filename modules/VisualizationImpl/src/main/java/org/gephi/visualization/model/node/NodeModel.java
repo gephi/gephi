@@ -67,8 +67,7 @@ public abstract class NodeModel implements Model, TextModel {
     //Flags
     protected boolean selected;
     protected boolean highlight;
-    public long markTime;
-    public long selectionMark;
+    public int markTime;
     public boolean mark;
     //Text
     protected Rectangle2D bounds;
@@ -81,7 +80,6 @@ public abstract class NodeModel implements Model, TextModel {
         selected = false;
         mark = false;
         markTime = 0;
-        selectionMark = 0;
     }
 
     public int octreePosition(float centerX, float centerY, float centerZ, float size) {

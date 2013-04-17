@@ -365,7 +365,27 @@ public class Octree {
         }
     }
 
-    private class OctantIterator implements Iterator<NodeModel> {
+    public void displayOctree(GL2 gl, GLU glu) {
+        gl.glDisable(GL2.GL_CULL_FACE);
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+        for (Octant o : leaves) {
+            if (o.visible) {
+                gl.glColor3f(1, 0.5f, 0.5f);
+                o.displayOctant(gl);
+                o.displayOctantInfo(gl, glu);
+            }
+        }
+        if (!vizController.getVizConfig().isWireFrame()) {
+            gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+        }
+
+        if (vizController.getVizModel().isCulling()) {
+            gl.glEnable(GL2.GL_CULL_FACE);
+            gl.glCullFace(GL2.GL_BACK);
+        }
+    }
+
+    protected final class OctantIterator implements Iterator<NodeModel> {
 
         private int leafId;
         private Octant octant;
@@ -386,7 +406,8 @@ public class Octree {
                     pointer = nodes[nodesId++];
                 }
                 if (pointer == null) {
-                    while (leafId < leavesLength && !octant.visible) {
+                    octant = null;
+                    while (leafId < leavesLength && (octant == null || !octant.visible)) {
                         octant = leaves[leafId++];
                     }
                     if (octant == null || !octant.visible) {
@@ -394,7 +415,7 @@ public class Octree {
                     }
                     nodes = octant.nodes;
                     nodesId = 0;
-                    nodesLength = nodes.length;
+                    nodesLength = octant.length;
                 }
             }
             return true;

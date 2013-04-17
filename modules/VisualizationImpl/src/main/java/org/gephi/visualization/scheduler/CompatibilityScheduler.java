@@ -138,8 +138,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
             //Objects iterators in octree are ready
 
             //Task MODEL - LOD
-//            pool1.execute(modelSegment);
-
+            engine.getNodeClass().lod(engine.getOctree().getNodeIterator());
         }
 
         //Task SELECTED

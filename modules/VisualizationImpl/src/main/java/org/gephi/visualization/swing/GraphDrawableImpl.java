@@ -78,6 +78,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
         this.vizController = VizController.getInstance();
     }
 
+    @Override
     public void initArchitecture() {
         this.engine = VizController.getInstance().getEngine();
         this.scheduler = VizController.getInstance().getScheduler();
@@ -314,46 +315,57 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
         return new double[]{(double) buffer.get(0), (double) buffer.get(1), (double) buffer.get(2)};
     }
 
+    @Override
     public float[] getCameraLocation() {
         return cameraLocation;
     }
 
+    @Override
     public void setCameraLocation(float[] cameraLocation) {
         this.cameraLocation = cameraLocation;
     }
 
+    @Override
     public float[] getCameraTarget() {
         return cameraTarget;
     }
 
+    @Override
     public void setCameraTarget(float[] cameraTarget) {
         this.cameraTarget = cameraTarget;
     }
 
+    @Override
     public Component getGraphComponent() {
         return graphComponent;
     }
 
+    @Override
     public Vec3f getCameraVector() {
         return cameraVector;
     }
 
+    @Override
     public int getViewportHeight() {
         return viewport.get(3);
     }
 
+    @Override
     public int getViewportWidth() {
         return viewport.get(2);
     }
 
+    @Override
     public double getDraggingMarkerX() {
         return draggingMarker[0];
     }
 
+    @Override
     public double getDraggingMarkerY() {
         return draggingMarker[1];
     }
 
+    @Override
     public DoubleBuffer getProjectionMatrix() {
         return projMatrix;
     }
@@ -362,6 +374,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
         return modelMatrix;
     }
 
+    @Override
     public IntBuffer getViewport() {
         return viewport;
     }

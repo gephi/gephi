@@ -59,9 +59,14 @@ public abstract class EdgeModel implements Model, TextModel {
     protected boolean selected;
     //Text
     protected Rectangle2D bounds;
+    //Mark
+    public int markTime;
 
     public EdgeModel(Edge edge) {
         this.edge = edge;
+
+        //Default
+        markTime = 0;
     }
 
     public abstract NodeModel getSourceModel();

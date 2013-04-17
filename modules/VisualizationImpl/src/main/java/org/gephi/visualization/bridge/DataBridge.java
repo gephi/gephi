@@ -51,6 +51,9 @@ import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
+import org.gephi.visualization.model.node.NodeModel;
+import org.gephi.visualization.model.node.NodeModeler;
+import org.gephi.visualization.octree.Octree;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.openide.util.Lookup;
 
@@ -80,7 +83,11 @@ public class DataBridge implements VizArchitecture {
     public synchronized boolean updateWorld() {
         if (observer != null && observer.hasGraphChanged()) {
             GraphDiff diff = observer.getDiff();
+            NodeModeler nodeModeler = (NodeModeler) engine.getNodeClass().getCurrentModeler();
+            Octree octree = engine.getOctree();
             for (Node node : diff.getAddedNodes()) {
+                NodeModel model = nodeModeler.initModel(node);
+                octree.addNode(model);
             }
             return true;
         }

@@ -162,8 +162,8 @@ public class Octant {
     private void growNodes(final int index) {
         if (nodes == null) {
             nodes = new NodeModel[10];
-        } else if (index > nodes.length) {
-            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * nodes.length) >>> 16, index), Integer.MAX_VALUE);
+        } else if (index >= nodes.length) {
+            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * nodes.length) >>> 16, index + 1), Integer.MAX_VALUE);
             final NodeModel t[] = new NodeModel[newLength];
             System.arraycopy(nodes, 0, t, 0, nodes.length);
             nodes = t;

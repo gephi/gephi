@@ -259,6 +259,7 @@ public abstract class GLAbstractListener implements GLEventListener {
         render3DScene(gl, glu);
     }
 
+    @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         if (!resizing) {
             if (viewport.get(2) == width && viewport.get(3) == height)//NO need

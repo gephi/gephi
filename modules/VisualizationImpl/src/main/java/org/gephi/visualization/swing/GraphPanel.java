@@ -67,6 +67,7 @@ public class GraphPanel extends GraphDrawableImpl {
         //Init GLJPanel as the drawable
         gljPanel = new GLJPanel(getCaps(), null, null) {
             //@Override
+            @Override
             public void paintComponent(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g;
                 render2DBackground(g2d);
