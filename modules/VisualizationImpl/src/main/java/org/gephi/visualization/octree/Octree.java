@@ -36,6 +36,7 @@ public class Octree {
     //Leaves
     protected final IntSortedSet garbageQueue;
     protected Octant[] leaves;
+    protected int leavesCount;
     protected int length;
     protected int visibleLeaves;
     //Selected
@@ -64,6 +65,9 @@ public class Octree {
     }
 
     public void addNode(NodeModel node) {
+        if (node.getOctant() != null) {
+            throw new RuntimeException("Can't add a node to two octants");
+        }
         Octant octant = root;
         int depth = octant.depth;
 
@@ -85,14 +89,44 @@ public class Octree {
 
         octant.addNode(node);
         node.setOctant(octant);
+        System.out.println("Added node " + node.getNode().getLabel() + "  to octant " + octant.leafId + " at position " + node.getOctantId());
     }
 
     public void removeNode(NodeModel node) {
         Octant octant = node.getOctant();
+        System.out.println("Removed node " + node.getNode().getLabel() + " from octant " + octant.leafId + " at position " + node.getOctantId());
         octant.removeNode(node);
         if (octant.isEmpty()) {
             removeLeaf(octant);
         }
+        node.setOctant(null);
+    }
+
+    public boolean repositionNodes() {
+        List<NodeModel> movedNodes = new ArrayList<NodeModel>();
+        for (int i = 0; i < length; i++) {
+            Octant leaf = leaves[i];
+            if (leaf != null) {
+                int l = leaf.length;
+                NodeModel[] nodes = leaf.nodes;
+                for (int j = 0; j < l; j++) {
+                    NodeModel node = nodes[j];
+                    if (node != null) {
+                        if (!node.isInOctreeLeaf(leaf)) {
+                            removeNode(node);
+                            movedNodes.add(node);
+                        }
+                    }
+                }
+            }
+        }
+        if (!movedNodes.isEmpty()) {
+            for (NodeModel node : movedNodes) {
+                addNode(node);
+            }
+            return true;
+        }
+        return false;
     }
 
     public Iterator<NodeModel> getNodeIterator() {
@@ -110,6 +144,7 @@ public class Octree {
             ensureArraySize(id);
         }
         leaves[id] = octant;
+        leavesCount++;
         octant.leafId = id;
         return id;
     }
@@ -117,6 +152,7 @@ public class Octree {
     protected void removeLeaf(final Octant octant) {
         int id = octant.leafId;
         leaves[id] = null;
+        leavesCount--;
         garbageQueue.add(id);
         octant.leafId = NULL_ID;
     }
@@ -266,7 +302,7 @@ public class Octree {
         refreshLimits();
 
         //Switch to OpenGL2 select mode
-        int capacity = 1 * 4 * leaves.length;      //Each object take in maximium : 4 * name stack depth
+        int capacity = 1 * 4 * leavesCount;      //Each object take in maximium : 4 * name stack depth
         IntBuffer hitsBuffer = Buffers.newDirectIntBuffer(capacity);
         gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
         gl.glRenderMode(GL2.GL_SELECT);
@@ -275,9 +311,11 @@ public class Octree {
         gl.glDisable(GL2.GL_CULL_FACE);      //Disable flags
         //Draw the nodes cube in the select buffer
         for (Octant n : leaves) {
-            gl.glLoadName(n.leafId);
-            n.displayOctant(gl);
-            n.visible = false;
+            if (n != null) {
+                gl.glLoadName(n.leafId);
+                n.displayOctant(gl);
+                n.visible = false;
+            }
         }
         visibleLeaves = 0;
         int nbRecords = gl.glRenderMode(GL2.GL_RENDER);
@@ -333,7 +371,7 @@ public class Octree {
         int hitName = 1;
         for (int i = 0; i < leaves.length; i++) {
             Octant node = leaves[i];
-            if (node.visible) {
+            if (node != null && node.visible) {
                 gl.glLoadName(hitName);
                 node.displayOctant(gl);
                 hitName++;
@@ -369,7 +407,7 @@ public class Octree {
         gl.glDisable(GL2.GL_CULL_FACE);
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
         for (Octant o : leaves) {
-            if (o.visible) {
+            if (o != null && o.visible) {
                 gl.glColor3f(1, 0.5f, 0.5f);
                 o.displayOctant(gl);
                 o.displayOctantInfo(gl, glu);
@@ -401,6 +439,7 @@ public class Octree {
 
         @Override
         public boolean hasNext() {
+            pointer = null;
             while (pointer == null) {
                 while (nodesId < nodesLength && pointer == null) {
                     pointer = nodes[nodesId++];
@@ -423,9 +462,7 @@ public class Octree {
 
         @Override
         public NodeModel next() {
-            NodeModel r = pointer;
-            pointer = null;
-            return r;
+            return pointer;
         }
 
         public void reset() {

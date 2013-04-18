@@ -58,6 +58,7 @@ public class Octant {
 
     protected void removeNode(NodeModel nodeModel) {
         int id = nodeModel.getOctantId();
+        nodeModel.setOctantId(Octree.NULL_ID);
         nodes[id] = null;
         nodeCount--;
         addGarbage(id);
@@ -156,7 +157,7 @@ public class Octant {
     }
 
     private int removeGarbage() {
-        return garbage[garbageLength--];
+        return garbage[--garbageLength];
     }
 
     private void growNodes(final int index) {

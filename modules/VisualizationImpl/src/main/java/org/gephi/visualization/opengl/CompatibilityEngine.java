@@ -100,7 +100,9 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public boolean updateWorld() {
-        return dataBridge.updateWorld();
+        boolean repositioned = octree.repositionNodes();
+        boolean updated = dataBridge.updateWorld();
+        return repositioned || updated;
 //        boolean res = false;
 //        boolean newConfig = configChanged;
 //        if (newConfig) {

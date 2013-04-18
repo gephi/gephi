@@ -100,10 +100,10 @@ public abstract class NodeModel implements Model, TextModel {
     }
 
     public boolean isInOctreeLeaf(Octant leaf) {
-        float radius = node.size() / 2f;
-        if (Math.abs(node.x() - leaf.getPosX()) > (leaf.getSize() / 2 - radius)
-                || Math.abs(node.y() - leaf.getPosY()) > (leaf.getSize() / 2 - radius)
-                || Math.abs(node.z() - leaf.getPosZ()) > (leaf.getSize() / 2 - radius)) {
+//        float radius = node.size() / 2f;
+        if (Math.abs(node.x() - leaf.getPosX()) > (leaf.getSize() / 2)
+                || Math.abs(node.y() - leaf.getPosY()) > (leaf.getSize() / 2)
+                || Math.abs(node.z() - leaf.getPosZ()) > (leaf.getSize() / 2)) {
             return false;
         }
         return true;
