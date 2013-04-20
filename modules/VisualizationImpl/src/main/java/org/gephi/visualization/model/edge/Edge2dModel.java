@@ -45,6 +45,7 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.lib.gleem.linalg.Vec2f;
 import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.model.node.NodeModel;
@@ -93,7 +94,6 @@ public class Edge2dModel extends EdgeModel {
         float edgeScale = vizModel.getEdgeScale();
         w = (float) edge.getWeight();
         w = ((w - limits.getMinWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
-
         //
 
         float x1 = edge.getSource().x();
@@ -189,6 +189,139 @@ public class Edge2dModel extends EdgeModel {
         gl.glVertex2f(x2 - x2Thick, y2 - y2Thick);
         gl.glVertex2f(x2 + x2Thick, y2 + y2Thick);
         gl.glVertex2f(x1 + x1Thick, y1 + y1Thick);
+    }
+
+    @Override
+    public void displayArrow(GL2 gl, GLU glu, VizModel vizModel) {
+        if (!selected && vizModel.isHideNonSelectedEdges()) {
+            return;
+        }
+
+        Node nodeFrom = edge.getSource();
+        Node nodeTo = edge.getTarget();
+
+        //Edge weight
+        GraphLimits limits = vizModel.getLimits();
+        float w;
+
+        float weightRatio;
+        if (limits.getMinWeight() == limits.getMaxWeight()) {
+            weightRatio = Edge2dModel.WEIGHT_MINIMUM / limits.getMinWeight();
+        } else {
+            weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+        }
+        float edgeScale = vizModel.getEdgeScale();
+        w = (float) edge.getWeight();
+        w = ((w - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
+
+        //
+
+        //Edge size
+        float arrowWidth = ARROW_WIDTH * w * 2f;
+        float arrowHeight = ARROW_HEIGHT * w * 2f;
+
+        float x2 = nodeTo.x();
+        float y2 = nodeTo.y();
+        float x1 = nodeFrom.x();
+        float y1 = nodeFrom.y();
+
+        //Edge vector
+        Vec2f edgeVector = new Vec2f(x2 - x1, y2 - y1);
+        edgeVector.normalize();
+
+        //Get collision distance between nodeTo and arrow point
+        double angle = Math.atan2(y2 - y1, x2 - x1);
+        float collisionDistance = targetModel.getCollisionDistance(angle);
+
+        //Point of the arrow
+        float targetX = x2 - edgeVector.x() * collisionDistance;
+        float targetY = y2 - edgeVector.y() * collisionDistance;
+
+        //Base of the arrow
+        float baseX = targetX - edgeVector.x() * arrowHeight * 2f;
+        float baseY = targetY - edgeVector.y() * arrowHeight * 2f;
+
+        //Side vector
+        float sideVectorX = y1 - y2;
+        float sideVectorY = x2 - x1;
+        float norm = (float) Math.sqrt(sideVectorX * sideVectorX + sideVectorY * sideVectorY);
+        sideVectorX /= norm;
+        sideVectorY /= norm;
+
+        //Color
+        if (!selected) {
+            float r;
+            float g;
+            float b;
+            float a;
+            r = edge.r();
+            if (r == -1f) {
+                if (vizModel.isEdgeHasUniColor()) {
+                    float[] uni = vizModel.getEdgeUniColor();
+                    r = uni[0];
+                    g = uni[1];
+                    b = uni[2];
+                    a = uni[3];
+                } else {
+                    Node source = edge.getSource();
+                    r = 0.498f * source.r();
+                    g = 0.498f * source.g();
+                    b = 0.498f * source.b();
+                    a = edge.alpha();
+                }
+            } else {
+                g = 0.498f * edge.g();
+                b = 0.498f * edge.b();
+                r *= 0.498f;
+                a = edge.alpha();
+            }
+            if (vizModel.getConfig().isLightenNonSelected()) {
+                float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
+                a = a - (a - 0.01f) * lightColorFactor;
+                gl.glColor4f(r, g, b, a);
+            } else {
+                gl.glColor4f(r, g, b, a);
+            }
+        } else {
+            float r = 0f;
+            float g = 0f;
+            float b = 0f;
+            if (vizModel.isEdgeSelectionColor()) {
+                if (sourceModel.isSelected() && targetModel.isSelected()) {
+                    float[] both = vizModel.getEdgeBothSelectionColor();
+                    r = both[0];
+                    g = both[1];
+                    b = both[2];
+                } else if (sourceModel.isSelected()) {
+                    float[] out = vizModel.getEdgeOutSelectionColor();
+                    r = out[0];
+                    g = out[1];
+                    b = out[2];
+                } else if (targetModel.isSelected()) {
+                    float[] in = vizModel.getEdgeInSelectionColor();
+                    r = in[0];
+                    g = in[1];
+                    b = in[2];
+                }
+            } else {
+                r = edge.r();
+                if (r == -1f) {
+                    Node source = edge.getSource();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
+                } else {
+                    g = edge.g();
+                    b = edge.b();
+                }
+            }
+            gl.glColor4f(r, g, b, 1f);
+        }
+
+        //Draw the triangle
+        gl.glVertex2d(baseX + sideVectorX * arrowWidth, baseY + sideVectorY * arrowWidth);
+        gl.glVertex2d(baseX - sideVectorX * arrowWidth, baseY - sideVectorY * arrowWidth);
+        gl.glVertex2d(targetX, targetY);
     }
 
     @Override

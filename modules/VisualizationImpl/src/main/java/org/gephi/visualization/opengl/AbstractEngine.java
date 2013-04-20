@@ -98,7 +98,6 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     //User config
     protected ModelClass nodeClass;
     protected ModelClass edgeClass;
-    protected ModelClass arrowClass;
 
     @Override
     public void initArchitecture() {
@@ -124,7 +123,6 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
                 }
 
                 edgeClass.setEnabled(vizController.getVizModel().isShowEdges());
-                arrowClass.setEnabled(vizController.getVizModel().isShowEdges() && vizConfig.isShowArrows());
             }
         });
     }
@@ -239,6 +237,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public ModelClass getNodeClass() {
         return nodeClass;
+    }
+
+    public ModelClass getEdgeClass() {
+        return edgeClass;
     }
 
     protected class EngineLifeCycle {

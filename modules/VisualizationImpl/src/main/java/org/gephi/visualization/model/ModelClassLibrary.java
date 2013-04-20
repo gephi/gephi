@@ -42,7 +42,6 @@
 package org.gephi.visualization.model;
 
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.model.edge.ArrowModeler;
 import org.gephi.visualization.model.edge.EdgeModeler;
 import org.gephi.visualization.model.node.NodeDiskModeler;
 import org.gephi.visualization.model.node.NodeRectangleModeler;
@@ -55,14 +54,12 @@ import org.gephi.visualization.opengl.CompatibilityEngine;
  */
 public class ModelClassLibrary {
 
-    private ModelClass[] compatibilityModelClasses;
+    private ModelClass nodeClass;
+    private ModelClass edgeClass;
 
     public void createModelClassesCompatibility(CompatibilityEngine engine) {
-        compatibilityModelClasses = new ModelClass[3];
-        int classIds = 0;
-
         //NODE
-        ModelClass nodeClass = new ModelClass(classIds++, "NODE", true, true, true, false);
+        nodeClass = new ModelClass(0, "NODE", true, true, true, false);
         NodeSphereModeler modeler3d = new NodeSphereModeler(engine);
         NodeDiskModeler modeler2d = new NodeDiskModeler(engine);
         NodeRectangleModeler modelerRect = new NodeRectangleModeler(engine);
@@ -74,32 +71,19 @@ public class ModelClassLibrary {
         } else {
             nodeClass.setCurrentModeler(modeler2d);
         }
-        compatibilityModelClasses[0] = nodeClass;
 
         //EDGE
-        ModelClass edgeClass = new ModelClass(classIds++, "EDGE", false, true, false, true);
+        edgeClass = new ModelClass(1, "EDGE", false, true, false, true);
         EdgeModeler edgeModeler = new EdgeModeler(engine);
         edgeClass.addModeler(edgeModeler);
         edgeClass.setCurrentModeler(edgeModeler);
-        compatibilityModelClasses[1] = edgeClass;
-
-        //ARROW
-        ModelClass arrowClass = new ModelClass(classIds++, "ARROW", true, false, false, false);
-        ArrowModeler arrowModeler = new ArrowModeler(engine);
-        arrowClass.addModeler(arrowModeler);
-        arrowClass.setCurrentModeler(arrowModeler);
-        compatibilityModelClasses[2] = arrowClass;
     }
 
     public ModelClass getNodeClass() {
-        return compatibilityModelClasses[0];
+        return nodeClass;
     }
 
     public ModelClass getEdgeClass() {
-        return compatibilityModelClasses[1];
-    }
-
-    public ModelClass getArrowClass() {
-        return compatibilityModelClasses[2];
+        return edgeClass;
     }
 }

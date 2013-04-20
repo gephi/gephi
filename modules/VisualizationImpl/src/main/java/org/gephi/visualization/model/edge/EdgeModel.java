@@ -42,8 +42,11 @@
 package org.gephi.visualization.model.edge;
 
 import java.awt.geom.Rectangle2D;
+import javax.media.opengl.GL2;
+import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.ElementProperties;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.model.Model;
 import org.gephi.visualization.model.TextModel;
 import org.gephi.visualization.model.node.NodeModel;
@@ -61,6 +64,9 @@ public abstract class EdgeModel implements Model, TextModel {
     protected Rectangle2D bounds;
     //Mark
     public int markTime;
+    //Id
+    protected int octantSourceId;
+    protected int octantTargetId;
 
     public EdgeModel(Edge edge) {
         this.edge = edge;
@@ -74,6 +80,8 @@ public abstract class EdgeModel implements Model, TextModel {
     public abstract NodeModel getTargetModel();
 
     public abstract boolean isAutoSelected();
+
+    public abstract void displayArrow(GL2 gl, GLU glu, VizModel model);
 
     public Edge getEdge() {
         return edge;
@@ -162,5 +170,21 @@ public abstract class EdgeModel implements Model, TextModel {
     @Override
     public ElementProperties getElementProperties() {
         return edge;
+    }
+
+    public int getOctantSourceId() {
+        return octantSourceId;
+    }
+
+    public int getOctantTargetId() {
+        return octantTargetId;
+    }
+
+    public void setOctantSourceId(int octantSourceId) {
+        this.octantSourceId = octantSourceId;
+    }
+
+    public void setOctantTargetId(int octantTargetId) {
+        this.octantTargetId = octantTargetId;
     }
 }

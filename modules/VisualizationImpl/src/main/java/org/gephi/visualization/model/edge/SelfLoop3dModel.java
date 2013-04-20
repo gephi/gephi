@@ -113,7 +113,7 @@ public class SelfLoop3dModel extends SelfLoop2dModel {
         float baseBottomZ = z - upVector.z() * w / 2;
 
         //Calculate control points
-        float height = (node.size() / 2f) * 3;
+        float height = node.size() * 3;
         float controlExterior1X = baseLeftX + upVector.x() * height;
         float controlExterior1Y = baseLeftY + upVector.y() * height;
         float controlExterior1Z = baseLeftZ + upVector.z() * height;

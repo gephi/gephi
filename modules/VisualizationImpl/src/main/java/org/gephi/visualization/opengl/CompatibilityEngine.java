@@ -53,7 +53,9 @@ import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.initializer.Modeler;
 import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.model.ModelClass;
+import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.node.NodeModel;
+import org.gephi.visualization.model.node.NodeModeler;
 import org.gephi.visualization.octree.Octree;
 import org.gephi.visualization.scheduler.CompatibilityScheduler;
 import org.gephi.visualization.selection.Cylinder;
@@ -102,6 +104,7 @@ public class CompatibilityEngine extends AbstractEngine {
     public boolean updateWorld() {
         boolean repositioned = octree.repositionNodes();
         boolean updated = dataBridge.updateWorld();
+
         return repositioned || updated;
 //        boolean res = false;
 //        boolean newConfig = configChanged;
@@ -165,11 +168,12 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void display(GL2 gl, GLU glu) {
-//        for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {       //TODO Move this
-//            ModelImpl obj = itr.next();
-//            modelClasses[AbstractEngine.CLASS_NODE].getCurrentModeler().chooseModel(obj);
-//            setViewportPosition(obj);
-//        }
+        //Update viewpoer
+        NodeModeler nodeModeler = (NodeModeler) nodeClass.getCurrentModeler();
+        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {       //TODO Move this
+            NodeModel obj = itr.next();
+            nodeModeler.setViewportPosition(obj);
+        }
 
         markTime++;
 
@@ -177,32 +181,32 @@ public class CompatibilityEngine extends AbstractEngine {
 
         //Edges
         if (edgeClass.isEnabled()) {
-//            edgeClass.beforeDisplay(gl, glu);
-//
-//            for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
-//                ModelImpl obj = itr.next();
-//                //Renderable renderable = obj.getObj();
-//
-//                if (obj.markTime != markTime) {
-//                    obj.display(gl, glu, vizModel);
-//                    obj.markTime = markTime;
-//                }
-//
-//            }
-//            edgeClass.afterDisplay(gl, glu);
+            edgeClass.beforeDisplay(gl, glu);
+
+            for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
+                EdgeModel obj = itr.next();
+
+                if (obj.markTime != markTime) {
+                    obj.display(gl, glu, vizModel);
+                    obj.markTime = markTime;
+                }
+            }
+            edgeClass.afterDisplay(gl, glu);
         }
 
+        markTime++;
+
         //Arrows
-        if (arrowClass.isEnabled()) {
-//            arrowClass.beforeDisplay(gl, glu);
-//            for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_ARROW); itr.hasNext();) {
-//                ModelImpl obj = itr.next();
-//                if (obj.markTime != markTime) {
-//                    obj.display(gl, glu, vizModel);
-//                    obj.markTime = markTime;
-//                }
-//            }
-//            arrowClass.afterDisplay(gl, glu);
+        if (vizConfig.isShowArrows() && dataBridge.isDirected()) {
+            gl.glBegin(GL2.GL_TRIANGLES);
+            for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
+                EdgeModel obj = itr.next();
+                if (obj.getEdge().isDirected() && obj.markTime != markTime) {
+                    obj.displayArrow(gl, glu, vizModel);
+                    obj.markTime = markTime;
+                }
+            }
+            gl.glEnd();
         }
 
         //Nodes
@@ -276,7 +280,7 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
 
-        octree.displayOctree(gl, glu);
+//        octree.displayOctree(gl, glu);
     }
 
     @Override
@@ -401,18 +405,18 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void mouseMove() {
-//        //Selection
-//        if (vizConfig.isSelectionEnable() && rectangleSelection) {
-//            Rectangle rectangle = (Rectangle) currentSelectionArea;
-//            rectangle.setMousePosition(graphIO.getMousePosition());
-//            if (rectangle.isStop()) {
-//                return;
-//            }
-//        }
-//
-//        if (customSelection || currentSelectionArea.blockSelection()) {
-//            return;
-//        }
+        //Selection
+        if (vizConfig.isSelectionEnable() && rectangleSelection) {
+            Rectangle rectangle = (Rectangle) currentSelectionArea;
+            rectangle.setMousePosition(graphIO.getMousePosition());
+            if (rectangle.isStop()) {
+                return;
+            }
+        }
+
+        if (customSelection || currentSelectionArea.blockSelection()) {
+            return;
+        }
 //
 //
 //        /*List<ModelImpl> newSelectedObjects = null;
@@ -423,10 +427,20 @@ public class CompatibilityEngine extends AbstractEngine {
 //         unSelectedObjects = new ArrayList<ModelImpl>();
 //         }*/
 //
-//        markTime2++;
-//        int i = 0;
-//        boolean someSelection = false;
-//        boolean forceUnselect = false;
+        boolean someSelection = false;
+        for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext();) {
+            NodeModel obj = itr.next();
+            if (isUnderMouse(obj)) {
+                if (!obj.isSelected()) {
+                    //New selected
+                    obj.setSelected(true);
+                    someSelection = true;
+                }
+            } else if (obj.isSelected()) {
+                obj.setSelected(false);
+            }
+        }
+//
 //        for (ModelClass objClass : selectableClasses) {
 //            forceUnselect = objClass.isAloneSelection() && someSelection;
 //            for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(objClass.getClassId()); itr.hasNext();) {
@@ -460,7 +474,6 @@ public class CompatibilityEngine extends AbstractEngine {
 //                    o.setSelected(false);
 //                }
 //            }
-//            i++;
 //        }
 //
 //        if (vizController.getVizModel().isLightenNonSelectedAuto()) {
@@ -696,11 +709,9 @@ public class CompatibilityEngine extends AbstractEngine {
         modelClassLibrary.createModelClassesCompatibility(this);
         nodeClass = modelClassLibrary.getNodeClass();
         edgeClass = modelClassLibrary.getEdgeClass();
-        arrowClass = modelClassLibrary.getArrowClass();
 
         nodeClass.setEnabled(true);
         edgeClass.setEnabled(vizController.getVizModel().isShowEdges());
-        arrowClass.setEnabled(vizConfig.isShowArrows());
 
 //        //LOD
 //        ArrayList<ModelClass> classList = new ArrayList<ModelClass>();
