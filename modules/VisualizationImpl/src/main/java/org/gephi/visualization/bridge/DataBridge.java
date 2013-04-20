@@ -41,9 +41,9 @@
  */
 package org.gephi.visualization.bridge;
 
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphDiff;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphObserver;
 import org.gephi.graph.api.Node;
@@ -51,6 +51,8 @@ import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
+import org.gephi.visualization.model.edge.EdgeModel;
+import org.gephi.visualization.model.edge.EdgeModeler;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.model.node.NodeModeler;
 import org.gephi.visualization.octree.Octree;
@@ -63,6 +65,9 @@ import org.openide.util.Lookup;
  */
 public class DataBridge implements VizArchitecture {
 
+    //Const
+    protected static final long ONEOVERPHI = 106039;
+    //Architecture
     protected AbstractEngine engine;
     protected GraphController controller;
     private VizConfig vizConfig;
@@ -71,6 +76,9 @@ public class DataBridge implements VizArchitecture {
     protected GraphModel graphModel;
     protected Graph graph;
     protected GraphObserver observer;
+    //Data
+    protected NodeModel[] nodes;
+    protected EdgeModel[] edges;
 
     @Override
     public void initArchitecture() {
@@ -82,13 +90,77 @@ public class DataBridge implements VizArchitecture {
 
     public synchronized boolean updateWorld() {
         if (observer != null && observer.hasGraphChanged()) {
-            GraphDiff diff = observer.getDiff();
             NodeModeler nodeModeler = (NodeModeler) engine.getNodeClass().getCurrentModeler();
+            EdgeModeler edgeModeler = (EdgeModeler) engine.getEdgeClass().getCurrentModeler();
             Octree octree = engine.getOctree();
-            for (Node node : diff.getAddedNodes()) {
-                NodeModel model = nodeModeler.initModel(node);
-                octree.addNode(model);
+
+            //Stats
+            int removedNodes = 0;
+            int addedNodes = 0;
+            int removedEdges = 0;
+            int addedEdges = 0;
+
+            for (int i = 0; i < nodes.length; i++) {
+                NodeModel node = nodes[i];
+                if (node != null && node.getNode().getStoreId() == -1) {
+                    //Removed
+                    octree.removeNode(node);
+                    nodes[i] = null;
+                    removedNodes++;
+                }
             }
+            for (Node node : graph.getNodes()) {
+                int id = node.getStoreId();
+                if (id >= nodes.length || nodes[id] == null) {
+                    growNodes(id);
+                    NodeModel model = nodeModeler.initModel(node);
+                    octree.addNode(model);
+                    nodes[id] = model;
+                    addedNodes++;
+                }
+            }
+            for (int i = 0; i < edges.length; i++) {
+                EdgeModel edge = edges[i];
+                if (edge != null && edge.getEdge().getStoreId() == -1) {
+                    //Removed
+                    NodeModel sourceModel = nodes[edge.getEdge().getSource().getStoreId()];
+                    NodeModel targetModel = nodes[edge.getEdge().getTarget().getStoreId()];
+                    if (sourceModel != null) {
+                        sourceModel.removeEdge(edge);
+                    }
+                    if (targetModel != null) {
+                        targetModel.removeEdge(edge);
+                    }
+                    edges[i] = null;
+                    removedEdges++;
+                }
+            }
+            float minWeight = Float.MAX_VALUE;
+            float maxWeight = Float.MIN_VALUE;
+            for (Edge edge : graph.getEdges()) {
+                int id = edge.getStoreId();
+                if (id >= edges.length || edges[id] == null) {
+                    growEdges(id);
+                    NodeModel sourceModel = nodes[edge.getSource().getStoreId()];
+                    NodeModel targetModel = nodes[edge.getTarget().getStoreId()];
+                    EdgeModel model = edgeModeler.initModel(edge, sourceModel, targetModel);
+                    sourceModel.addEdge(model);
+                    targetModel.addEdge(model);
+                    edges[id] = model;
+                    addedEdges++;
+                }
+                float w = (float) edge.getWeight();
+                minWeight = Math.min(w, minWeight);
+                maxWeight = Math.max(w, maxWeight);
+            }
+            limits.setMaxWeight(maxWeight);
+            limits.setMinWeight(minWeight);
+
+            System.out.println("Removed Edges: " + removedEdges);
+            System.out.println("Added Edges: " + addedEdges);
+            System.out.println("Removed Nodes: " + removedNodes);
+            System.out.println("Added Nodes: " + addedNodes);
+
             return true;
         }
         return false;
@@ -102,8 +174,36 @@ public class DataBridge implements VizArchitecture {
         if (observer != null && observer.getGraph() != graph) {
             observer.destroy();
         }
+        nodes = new NodeModel[0];
+        edges = new EdgeModel[0];
         if (graphModel != null) {
-            observer = graphModel.getGraphObserver(graph, true);
+            observer = graphModel.getGraphObserver(graph, false);
+        }
+    }
+
+    public boolean isDirected() {
+        return graphModel != null && !graphModel.isUndirected();
+    }
+
+    private void growNodes(final int index) {
+        if (nodes == null) {
+            nodes = new NodeModel[10];
+        } else if (index >= nodes.length) {
+            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * nodes.length) >>> 16, index + 1), Integer.MAX_VALUE);
+            final NodeModel t[] = new NodeModel[newLength];
+            System.arraycopy(nodes, 0, t, 0, nodes.length);
+            nodes = t;
+        }
+    }
+
+    private void growEdges(final int index) {
+        if (edges == null) {
+            edges = new EdgeModel[10];
+        } else if (index >= edges.length) {
+            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * nodes.length) >>> 16, index + 1), Integer.MAX_VALUE);
+            final EdgeModel t[] = new EdgeModel[newLength];
+            System.arraycopy(edges, 0, t, 0, edges.length);
+            edges = t;
         }
     }
 }

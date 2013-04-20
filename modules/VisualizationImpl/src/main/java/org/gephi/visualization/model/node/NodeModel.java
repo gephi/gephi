@@ -47,6 +47,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.model.Model;
 import org.gephi.visualization.model.TextModel;
+import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.octree.Octant;
 
 /**
@@ -71,6 +72,10 @@ public abstract class NodeModel implements Model, TextModel {
     public boolean mark;
     //Text
     protected Rectangle2D bounds;
+    //Edges
+    protected EdgeModel[] edges;
+    protected int edgeLength;
+    protected int edgeCount;
 
     public NodeModel(Node node) {
         this.node = node;
@@ -80,6 +85,9 @@ public abstract class NodeModel implements Model, TextModel {
         selected = false;
         mark = false;
         markTime = 0;
+
+        //Edges
+        edges = new EdgeModel[0];
     }
 
     public int octreePosition(float centerX, float centerY, float centerZ, float size) {
@@ -248,5 +256,42 @@ public abstract class NodeModel implements Model, TextModel {
     @Override
     public ElementProperties getElementProperties() {
         return node;
+    }
+
+    public void addEdge(EdgeModel model) {
+        int id = edgeLength++;
+        growEdges(id);
+        edges[id] = model;
+        edgeCount++;
+        if (model.getSourceModel() == this) {
+            model.setOctantSourceId(id);
+        } else {
+            model.setOctantTargetId(id);
+        }
+    }
+
+    public void removeEdge(EdgeModel model) {
+        int id;
+        if (model.getSourceModel() == this) {
+            id = model.getOctantSourceId();
+        } else {
+            id = model.getOctantTargetId();
+        }
+        edges[id] = null;
+        edgeCount--;
+    }
+
+    public EdgeModel[] getEdges() {
+        return edges;
+    }
+    protected static final long ONEOVERPHI = 106039;
+
+    private void growEdges(final int index) {
+        if (index >= edges.length) {
+            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * edges.length) >>> 16, index + 1), Integer.MAX_VALUE);
+            final EdgeModel t[] = new EdgeModel[newLength];
+            System.arraycopy(edges, 0, t, 0, edges.length);
+            edges = t;
+        }
     }
 }

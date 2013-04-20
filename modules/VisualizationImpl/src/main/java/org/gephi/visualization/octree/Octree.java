@@ -13,6 +13,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 
@@ -42,7 +43,9 @@ public class Octree {
     //Selected
     protected List<Octant> selectedLeaves;
     //Itr
-    protected OctantIterator nodeIterator;
+    protected final OctantIterator nodeIterator;
+    protected final SelectableIterator selectableIterator;
+    protected final EdgeIterator edgeIterator;
 
     public Octree(int maxDepth, int size) {
         this.length = 0;
@@ -52,6 +55,8 @@ public class Octree {
         this.size = size;
         this.selectedLeaves = new ArrayList<Octant>();
         this.nodeIterator = new OctantIterator();
+        this.edgeIterator = new EdgeIterator(null);
+        this.selectableIterator = new SelectableIterator();
 
         //Init root
         float dis = size / (float) Math.pow(2, this.maxDepth + 1);
@@ -89,12 +94,10 @@ public class Octree {
 
         octant.addNode(node);
         node.setOctant(octant);
-        System.out.println("Added node " + node.getNode().getLabel() + "  to octant " + octant.leafId + " at position " + node.getOctantId());
     }
 
     public void removeNode(NodeModel node) {
         Octant octant = node.getOctant();
-        System.out.println("Removed node " + node.getNode().getLabel() + " from octant " + octant.leafId + " at position " + node.getOctantId());
         octant.removeNode(node);
         if (octant.isEmpty()) {
             removeLeaf(octant);
@@ -107,7 +110,7 @@ public class Octree {
         for (int i = 0; i < length; i++) {
             Octant leaf = leaves[i];
             if (leaf != null) {
-                int l = leaf.length;
+                int l = leaf.nodesLength;
                 NodeModel[] nodes = leaf.nodes;
                 for (int j = 0; j < l; j++) {
                     NodeModel node = nodes[j];
@@ -132,6 +135,17 @@ public class Octree {
     public Iterator<NodeModel> getNodeIterator() {
         nodeIterator.reset();
         return nodeIterator;
+    }
+
+    public Iterator<NodeModel> getSelectableNodeIterator() {
+        selectableIterator.reset();
+        return selectableIterator;
+    }
+
+    public Iterator<EdgeModel> getEdgeIterator() {
+        nodeIterator.reset();
+        edgeIterator.reset(nodeIterator);
+        return edgeIterator;
     }
 
     protected int addLeaf(final Octant octant) {
@@ -454,7 +468,7 @@ public class Octree {
                     }
                     nodes = octant.nodes;
                     nodesId = 0;
-                    nodesLength = octant.length;
+                    nodesLength = octant.nodesLength;
                 }
             }
             return true;
@@ -472,6 +486,116 @@ public class Octree {
             nodes = null;
             nodesId = 0;
             nodesLength = 0;
+            pointer = null;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported.");
+        }
+    }
+
+    protected final class SelectableIterator implements Iterator<NodeModel> {
+
+        private int leavesLength;
+        private int leafId;
+        private Octant octant;
+        private NodeModel[] nodes;
+        private int nodesId;
+        private int nodesLength;
+        private NodeModel pointer;
+
+        public SelectableIterator() {
+            leavesLength = selectedLeaves.size();
+        }
+
+        @Override
+        public boolean hasNext() {
+            pointer = null;
+            while (pointer == null) {
+                while (nodesId < nodesLength && pointer == null) {
+                    pointer = nodes[nodesId++];
+                }
+                if (pointer == null) {
+                    octant = null;
+                    while (leafId < leavesLength && octant == null) {
+                        octant = selectedLeaves.get(leafId++);
+                    }
+                    if (octant == null) {
+                        return false;
+                    }
+                    nodes = octant.nodes;
+                    nodesId = 0;
+                    nodesLength = octant.nodesLength;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public NodeModel next() {
+            return pointer;
+        }
+
+        public void reset() {
+            leafId = 0;
+            octant = null;
+            leavesLength = selectedLeaves.size();
+            nodes = null;
+            nodesId = 0;
+            nodesLength = 0;
+            pointer = null;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported.");
+        }
+    }
+
+    protected final class EdgeIterator implements Iterator<EdgeModel> {
+
+        private Iterator<NodeModel> nodeItr;
+        private EdgeModel[] edges;
+        private int edgeId;
+        private int edgeLength;
+        private EdgeModel pointer;
+
+        public EdgeIterator(Iterator<NodeModel> nodeIterator) {
+            this.nodeItr = nodeIterator;
+        }
+
+        @Override
+        public boolean hasNext() {
+            pointer = null;
+            while (pointer == null) {
+                while (edgeId < edgeLength && pointer == null) {
+                    pointer = edges[edgeId++];
+                }
+                if (pointer == null) {
+                    if (nodeItr.hasNext()) {
+                        NodeModel node = nodeItr.next();
+                        edges = node.getEdges();
+                        edgeLength = edges.length;
+                        edgeId = 0;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public EdgeModel next() {
+            return pointer;
+        }
+
+        public void reset(Iterator<NodeModel> nodeIterator) {
+            nodeItr = nodeIterator;
+            edges = null;
+            edgeLength = 0;
+            edgeId = 0;
             pointer = null;
         }
 

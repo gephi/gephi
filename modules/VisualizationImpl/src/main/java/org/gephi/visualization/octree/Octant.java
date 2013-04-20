@@ -29,9 +29,9 @@ public class Octant {
     protected int nodeCount = 0;
     //Data
     protected NodeModel[] nodes;
-    protected int[] garbage;
-    protected int garbageLength;
-    protected int length;
+    protected int[] nodesGarbage;
+    protected int nodesGarbageLength;
+    protected int nodesLength;
     //Flags
     protected boolean visible;
 
@@ -45,10 +45,10 @@ public class Octant {
 
     protected void addNode(NodeModel nodeModel) {
         int id;
-        if (garbageLength > 0) {
+        if (nodesGarbageLength > 0) {
             id = removeGarbage();
         } else {
-            id = length++;
+            id = nodesLength++;
             growNodes(id);
         }
         nodes[id] = nodeModel;
@@ -67,10 +67,10 @@ public class Octant {
 
     protected void clear() {
         nodes = null;
-        garbage = null;
-        length = 0;
-        garbage = null;
-        garbageLength = 0;
+        nodesGarbage = null;
+        nodesLength = 0;
+        nodesGarbage = null;
+        nodesGarbageLength = 0;
         nodeCount = 0;
     }
 
@@ -145,19 +145,19 @@ public class Octant {
     }
 
     private void addGarbage(int index) {
-        if (garbage == null) {
-            garbage = new int[10];
-        } else if (garbageLength == garbage.length) {
-            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * garbage.length) >>> 16, garbageLength + 1), Integer.MAX_VALUE);
+        if (nodesGarbage == null) {
+            nodesGarbage = new int[10];
+        } else if (nodesGarbageLength == nodesGarbage.length) {
+            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * nodesGarbage.length) >>> 16, nodesGarbageLength + 1), Integer.MAX_VALUE);
             final int t[] = new int[newLength];
-            System.arraycopy(garbage, 0, t, 0, garbage.length);
-            garbage = t;
+            System.arraycopy(nodesGarbage, 0, t, 0, nodesGarbage.length);
+            nodesGarbage = t;
         }
-        garbage[garbageLength++] = index;
+        nodesGarbage[nodesGarbageLength++] = index;
     }
 
     private int removeGarbage() {
-        return garbage[--garbageLength];
+        return nodesGarbage[--nodesGarbageLength];
     }
 
     private void growNodes(final int index) {
@@ -172,7 +172,7 @@ public class Octant {
     }
 
     private void trimNodes() {
-        if (length >= TRIM_THRESHOLD && ((float) nodeCount) / length < TRIM_RATIO) {
+        if (nodesLength >= TRIM_THRESHOLD && ((float) nodeCount) / nodesLength < TRIM_RATIO) {
             NodeModel t[] = new NodeModel[nodeCount];
             if (nodeCount > 0) {
                 int c = 0;
@@ -184,10 +184,10 @@ public class Octant {
                     }
                 }
             }
-            length = t.length;
+            nodesLength = t.length;
             nodes = t;
-            garbage = null;
-            garbageLength = 0;
+            nodesGarbage = null;
+            nodesGarbageLength = 0;
         }
     }
 }
