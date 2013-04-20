@@ -74,7 +74,7 @@ public class NodeRectangleModeler extends NodeModeler {
             return;
         }
 
-        float distance = cameraDistance(obj) / (obj.getNode().size() / 2f);
+        float distance = cameraDistance(obj) / obj.getNode().size();
         if (distance > 600) {
             obj.border = false;
         } else {

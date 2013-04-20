@@ -81,6 +81,6 @@ public abstract class Modeler {
                 + Math.pow((double) object.getNode().z() - cameraLocation[2], 2d));
         object.setCameraDistance((float) distance);
 
-        return (float) distance - (object.getNode().size() / 2f);
+        return (float) distance - object.getNode().size();
     }
 }

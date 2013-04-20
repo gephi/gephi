@@ -155,6 +155,6 @@ public class NodeDiskModel extends NodeModel {
 
     @Override
     public float getCollisionDistance(double angle) {
-        return node.size() / 2f;
+        return node.size();
     }
 }

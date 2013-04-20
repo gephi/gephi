@@ -85,7 +85,7 @@ public class NodeDiskModeler extends NodeModeler {
             return;
         }
 
-        float distance = cameraDistance(obj) / (obj.getNode().size() / 2f);
+        float distance = cameraDistance(obj) / obj.getNode().size();
         if (distance > 600) {
             obj.modelType = SHAPE_DIAMOND;
             obj.modelBorderType = -1;

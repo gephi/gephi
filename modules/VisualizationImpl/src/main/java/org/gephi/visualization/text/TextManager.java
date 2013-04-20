@@ -300,7 +300,7 @@ public class TextManager implements VizArchitecture {
                 float height = sizeFactor * objectModel.getTextHeight();
                 float posX = node.x() + (float) width / -2 * sizeFactor;
                 float posY = node.y() + (float) height / -2 * sizeFactor;
-                float posZ = node.size() / 2f;
+                float posZ = node.size();
 
                 renderer.draw3D(txt, posX, posY, posZ, sizeFactor);
             }
