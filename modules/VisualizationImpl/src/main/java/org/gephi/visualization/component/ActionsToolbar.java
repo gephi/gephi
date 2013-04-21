@@ -121,10 +121,10 @@ public class ActionsToolbar extends JToolBar {
                     n.setAlpha(1f);
                 }
                 for (Edge e : graph.getEdges()) {
-                    e.setR(-1f);
+                    e.setR(color.getRed() / 255f);
                     e.setG(color.getGreen() / 255f);
                     e.setB(color.getBlue() / 255f);
-                    e.setAlpha(1f);
+                    e.setAlpha(0f);
                 }
             }
         });

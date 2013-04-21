@@ -143,9 +143,8 @@ public class Edge3dModel extends Edge2dModel {
             float r;
             float g;
             float b;
-            float a;
-            r = edge.r();
-            if (r == -1f) {
+            float a = edge.alpha();
+            if (a == 0f) {
                 if (vizModel.isEdgeHasUniColor()) {
                     float[] uni = vizModel.getEdgeUniColor();
                     r = uni[0];
@@ -157,12 +156,12 @@ public class Edge3dModel extends Edge2dModel {
                     r = 0.498f * source.r();
                     g = 0.498f * source.g();
                     b = 0.498f * source.b();
-                    a = edge.alpha();
+                    a = source.alpha();
                 }
             } else {
                 g = 0.498f * edge.g();
                 b = 0.498f * edge.b();
-                r *= 0.498f;
+                r = 0.498f * edge.r();
                 a = edge.alpha();
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
@@ -194,13 +193,13 @@ public class Edge3dModel extends Edge2dModel {
                     b = in[2];
                 }
             } else {
-                r = edge.r();
-                if (r == -1f) {
+                if (edge.alpha() == 0f) {
                     Node source = edge.getSource();
                     r = source.r();
                     g = source.g();
                     b = source.b();
                 } else {
+                    r = edge.r();
                     g = edge.g();
                     b = edge.b();
                 }
@@ -281,9 +280,8 @@ public class Edge3dModel extends Edge2dModel {
             float r;
             float g;
             float b;
-            float a;
-            r = edge.r();
-            if (r == -1f) {
+            float a = edge.alpha();
+            if (a == 0f) {
                 if (vizModel.isEdgeHasUniColor()) {
                     float[] uni = vizModel.getEdgeUniColor();
                     r = uni[0];
@@ -295,12 +293,12 @@ public class Edge3dModel extends Edge2dModel {
                     r = 0.498f * source.r();
                     g = 0.498f * source.g();
                     b = 0.498f * source.b();
-                    a = edge.alpha();
+                    a = source.alpha();
                 }
             } else {
                 g = 0.498f * edge.g();
                 b = 0.498f * edge.b();
-                r *= 0.498f;
+                r = 0.498f * edge.r();
                 a = edge.alpha();
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
@@ -332,13 +330,13 @@ public class Edge3dModel extends Edge2dModel {
                     b = in[2];
                 }
             } else {
-                r = edge.r();
-                if (r == -1f) {
+                if (edge.alpha() == 0f) {
                     Node source = edge.getSource();
                     r = source.r();
                     g = source.g();
                     b = source.b();
                 } else {
+                    r = edge.r();
                     g = edge.g();
                     b = edge.b();
                 }

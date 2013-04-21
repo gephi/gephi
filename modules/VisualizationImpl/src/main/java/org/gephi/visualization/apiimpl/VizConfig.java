@@ -211,7 +211,7 @@ public class VizConfig {
     protected int reduceFpsWhenMouseOutValue = NbPreferences.forModule(VizConfig.class).getInt(REDUCE_FPS_MOUSE_OUT_VALUE, DEFAULT_REDUCE_FPS_MOUSE_OUT_VALUE);
     protected boolean pauseLoopWhenMouseOut = NbPreferences.forModule(VizConfig.class).getBoolean(PAUSE_LOOP_MOUSE_OUT, DEFAULT_PAUSE_LOOP_MOUSE_OUT);
     protected boolean showArrows = true;        //Overriden in Engine
-    protected boolean lightenNonSelected = true;        //Overriden in Engine
+    protected boolean lightenNonSelected = false;        //Overriden in Engine
     protected float[] lightenNonSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(HIGHTLIGHT_COLOR, ColorUtils.encode(DEFAULT_HIGHTLIGHT_COLOR))).getRGBColorComponents(null);
     protected boolean lightenNonSelectedAnimation = NbPreferences.forModule(VizConfig.class).getBoolean(HIGHTLIGHT_ANIMATION, DEFAULT_HIGHTLIGHT_ANIMATION);
     protected float lightenNonSelectedFactor = 0.5f;        //Overriden in Engine

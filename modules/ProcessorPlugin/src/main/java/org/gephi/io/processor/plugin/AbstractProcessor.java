@@ -128,9 +128,10 @@ public abstract class AbstractProcessor {
         if (edgeDraft.getColor() != null) {
             edge.setColor(edgeDraft.getColor());
         } else {
-            edge.setR(-1f);
-            edge.setG(-1f);
-            edge.setB(-1f);
+            edge.setR(0f);
+            edge.setG(0f);
+            edge.setB(0f);
+            edge.setAlpha(0f);
         }
 
         if (edgeDraft.getLabel() != null) {

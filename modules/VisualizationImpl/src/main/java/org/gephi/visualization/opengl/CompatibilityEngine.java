@@ -434,8 +434,8 @@ public class CompatibilityEngine extends AbstractEngine {
                 if (!obj.isSelected()) {
                     //New selected
                     obj.setSelected(true);
-                    someSelection = true;
                 }
+                someSelection = true;
             } else if (obj.isSelected()) {
                 obj.setSelected(false);
             }
@@ -492,7 +492,7 @@ public class CompatibilityEngine extends AbstractEngine {
 //                vizConfig.setLightenNonSelected(someSelection);
 //            }
 //        }
-//        anySelected = someSelection;
+        anySelected = someSelection;
     }
 
     @Override

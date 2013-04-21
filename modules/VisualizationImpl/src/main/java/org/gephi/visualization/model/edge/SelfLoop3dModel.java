@@ -163,7 +163,7 @@ public class SelfLoop3dModel extends SelfLoop2dModel {
             float r;
             float g;
             float b;
-            float a;
+            float a = edge.alpha();
             if (vizModel.isEdgeHasUniColor()) {
                 float[] uni = vizModel.getEdgeUniColor();
                 r = uni[0];
@@ -171,17 +171,16 @@ public class SelfLoop3dModel extends SelfLoop2dModel {
                 b = uni[2];
                 a = uni[3];
             } else {
-                r = edge.r();
-                if (r == -1f) {
+                if (a == 0f) {
                     Node source = edge.getSource();
                     r = 0.498f * source.r();
                     g = 0.498f * source.g();
                     b = 0.498f * source.b();
-                    a = edge.alpha();
+                    a = source.alpha();
                 } else {
                     g = 0.498f * edge.g();
                     b = 0.498f * edge.b();
-                    r *= 0.498f;
+                    r = 0.498f * edge.r();
                     a = edge.alpha();
                 }
             }
@@ -204,13 +203,13 @@ public class SelfLoop3dModel extends SelfLoop2dModel {
                     b = both[2];
                 }
             } else {
-                r = edge.r();
-                if (r == -1f) {
+                if (edge.alpha() == 0f) {
                     Node source = edge.getSource();
                     r = source.r();
                     g = source.g();
                     b = source.b();
                 } else {
+                    r = edge.r();
                     g = edge.g();
                     b = edge.b();
                 }
