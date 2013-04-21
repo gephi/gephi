@@ -168,7 +168,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void display(GL2 gl, GLU glu) {
-        //Update viewpoer
+        //Update viewport
         NodeModeler nodeModeler = (NodeModeler) nodeClass.getCurrentModeler();
         for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {       //TODO Move this
             NodeModel obj = itr.next();
@@ -476,22 +476,22 @@ public class CompatibilityEngine extends AbstractEngine {
 //            }
 //        }
 //
-//        if (vizController.getVizModel().isLightenNonSelectedAuto()) {
-//
-//            if (vizConfig.isLightenNonSelectedAnimation()) {
-//                if (!anySelected && someSelection) {
-//                    //Start animation
-//                    lightenAnimationDelta = 0.07f;
-//                } else if (anySelected && !someSelection) {
-//                    //Stop animation
-//                    lightenAnimationDelta = -0.07f;
-//                }
-//
-//                vizConfig.setLightenNonSelected(someSelection || lightenAnimationDelta != 0);
-//            } else {
-//                vizConfig.setLightenNonSelected(someSelection);
-//            }
-//        }
+        if (vizController.getVizModel().isLightenNonSelectedAuto()) {
+
+            if (vizConfig.isLightenNonSelectedAnimation()) {
+                if (!anySelected && someSelection) {
+                    //Start animation
+                    lightenAnimationDelta = 0.07f;
+                } else if (anySelected && !someSelection) {
+                    //Stop animation
+                    lightenAnimationDelta = -0.07f;
+                }
+
+                vizConfig.setLightenNonSelected(someSelection || lightenAnimationDelta != 0);
+            } else {
+                vizConfig.setLightenNonSelected(someSelection);
+            }
+        }
         anySelected = someSelection;
     }
 

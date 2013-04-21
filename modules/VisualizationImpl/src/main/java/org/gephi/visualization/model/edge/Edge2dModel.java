@@ -73,10 +73,12 @@ public class Edge2dModel extends EdgeModel {
 
     @Override
     public void display(GL2 gl, GLU glu, VizModel vizModel) {
-        if (!selected && vizModel.isHideNonSelectedEdges()) {
+        boolean selec = selected || isAutoSelected();
+
+        if (!selec && vizModel.isHideNonSelectedEdges()) {
             return;
         }
-        if (selected && vizModel.isAutoSelectNeighbor()) {
+        if (selec && vizModel.isAutoSelectNeighbor()) {
             sourceModel.mark = true;
             targetModel.mark = true;
         }
@@ -114,7 +116,7 @@ public class Edge2dModel extends EdgeModel {
         float y1Thick = sideVectorY / 2f * t1;
         float y2Thick = sideVectorY / 2f * t2;
 
-        if (!selected) {
+        if (!selec) {
             float r;
             float g;
             float b;
@@ -136,7 +138,7 @@ public class Edge2dModel extends EdgeModel {
             } else {
                 g = 0.498f * edge.g();
                 b = 0.498f * edge.b();
-                r = 0.498f * edge.g();;
+                r = 0.498f * edge.r();
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
