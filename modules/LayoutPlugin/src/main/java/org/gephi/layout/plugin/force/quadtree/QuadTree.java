@@ -221,6 +221,11 @@ public class QuadTree implements Node {
     }
 
     @Override
+    public int getStoreId() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public void setX(float x) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
