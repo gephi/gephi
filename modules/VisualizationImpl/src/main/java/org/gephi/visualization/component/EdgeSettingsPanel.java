@@ -220,7 +220,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
 
         showEdgesCheckbox = new javax.swing.JCheckBox();
         labelEdgeColor = new javax.swing.JLabel();
-        edgeColorButton = new JColorButton(Color.BLACK);
+        edgeColorButton = new JColorButton(Color.BLACK, false, true);
         sourceNodeColorCheckbox = new javax.swing.JCheckBox();
         selectionColorPanel = new javax.swing.JPanel();
         selectionColorCheckbox = new javax.swing.JCheckBox();

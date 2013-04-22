@@ -47,6 +47,7 @@ import javax.media.opengl.glu.GLUquadric;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.model.Model;
 import org.gephi.visualization.opengl.CompatibilityEngine;
+import org.openide.util.NbBundle;
 
 /**
  * Default initializer for the nodes. The class draw sphere objects and manage a
@@ -141,5 +142,10 @@ public class NodeSphereModeler extends NodeModeler {
     @Override
     public boolean is3d() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return NbBundle.getMessage(NodeSphereModeler.class, "nodeModeler_sphere");
     }
 }

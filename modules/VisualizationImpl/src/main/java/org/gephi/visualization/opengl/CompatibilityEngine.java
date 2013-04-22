@@ -712,48 +712,11 @@ public class CompatibilityEngine extends AbstractEngine {
 
         nodeClass.setEnabled(true);
         edgeClass.setEnabled(vizController.getVizModel().isShowEdges());
-
-//        //LOD
-//        ArrayList<ModelClass> classList = new ArrayList<ModelClass>();
-//        for (ModelClass objClass : modelClasses) {
-//            if (objClass.isLod()) {
-//                classList.add(objClass);
-//            }
-//        }
-//        lodClasses = classList.toArray(lodClasses);
-//
-//        //Selectable
-//        classList.clear();
-//        for (ModelClass objClass : modelClasses) {
-//            if (objClass.isSelectable()) {
-//                classList.add(objClass);
-//            }
-//        }
-//        selectableClasses = classList.toArray(selectableClasses);
-//
-//        //Clickable
-//        classList.clear();
-//        for (ModelClass objClass : modelClasses) {
-//            if (objClass.isClickable()) {
-//                classList.add(objClass);
-//            }
-//        }
-//        clickableClasses = classList.toArray(clickableClasses);
-//
-//        //Init selection lists
-//        selectedObjects = new ConcurrentLinkedQueue[selectableClasses.length];
-//        int i = 0;
-//        for (ModelClass objClass : selectableClasses) {
-//            objClass.setSelectionId(i);
-//            selectedObjects[i] = new ConcurrentLinkedQueue<ModelImpl>();
-//            i++;
-//        }
     }
 
     @Override
     public void initSelection() {
         if (vizConfig.isCustomSelection()) {
-            //System.out.println("CustomSelection");
             rectangleSelection = false;
             currentSelectionArea = null;
         } else if (vizConfig.isRectangleSelection()) {
@@ -770,7 +733,6 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void startAnimating() {
         if (!scheduler.isAnimating()) {
-            //System.out.println("start animating");
             scheduler.start();
             graphIO.startMouseListening();
         }
@@ -779,7 +741,6 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void stopAnimating() {
         if (scheduler.isAnimating()) {
-            //System.out.println("stop animating");
             scheduler.stop();
             graphIO.stopMouseListening();
         }
