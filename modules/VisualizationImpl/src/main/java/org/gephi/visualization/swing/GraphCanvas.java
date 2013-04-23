@@ -43,7 +43,6 @@ package org.gephi.visualization.swing;
 
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.text.NumberFormat;
 import javax.media.opengl.GL2;
@@ -72,7 +71,7 @@ public class GraphCanvas extends GraphDrawableImpl {
 
         //Basic init
         graphComponent = (Component) glCanvas;
-        graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//        graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         //False lets the components appear on top of the canvas
         JPopupMenu.setDefaultLightWeightPopupEnabled(false);

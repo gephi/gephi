@@ -201,8 +201,8 @@ public class TextManager implements VizArchitecture {
         initRenderer();
     }
 
-    public void buildText(Element element, TextModel textModel, Column[] selectedColumns) {
-        if (selectedColumns != null) {
+    public String buildText(Element element, TextModel textModel, Column[] selectedColumns) {
+        if (selectedColumns != null && selectedColumns.length > 0) {
             String str = "";
             int i = 0;
             for (Column c : selectedColumns) {
@@ -213,7 +213,10 @@ public class TextManager implements VizArchitecture {
                 str += val != null ? val : "";
             }
             textModel.setText(str);
+            return str;
         }
+        textModel.setText(element.getLabel());
+        return element.getLabel();
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -287,14 +290,17 @@ public class TextManager implements VizArchitecture {
             Node node = objectModel.getNode();
             TextProperties textData = (TextProperties) node.getTextProperties();
             if (textData != null) {
-                model.colorMode.textNodeColor(this, objectModel);
-                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor3d(model.nodeSizeFactor, objectModel);
                 String txt = textData.getText();
                 if (nodeRefresh) {
-                    buildText(node, objectModel, model.getNodeTextColumns());
+                    txt = buildText(node, objectModel, model.getNodeTextColumns());
+                    if (txt == null || txt.isEmpty()) {
+                        return;
+                    }
                     Rectangle2D r = renderer.getBounds(txt);
                     objectModel.setTextBounds(r);
                 }
+                model.colorMode.textNodeColor(this, objectModel);
+                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor3d(model.nodeSizeFactor, objectModel);
 
                 float width = sizeFactor * objectModel.getTextWidth();
                 float height = sizeFactor * objectModel.getTextHeight();
@@ -311,15 +317,18 @@ public class TextManager implements VizArchitecture {
             Edge edge = objectModel.getEdge();
             TextProperties textData = (TextProperties) edge.getTextProperties();
             if (textData != null) {
-                model.colorMode.textEdgeColor(this, objectModel);
-//                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor3d(model.edgeSizeFactor, objectModel);
-                float sizeFactor = 1f;
                 String txt = textData.getText();
                 if (edgeRefresh) {
-                    buildText(edge, objectModel, model.getEdgeTextColumns());
+                    txt = buildText(edge, objectModel, model.getEdgeTextColumns());
+                    if (txt == null || txt.isEmpty()) {
+                        return;
+                    }
                     Rectangle2D r = renderer.getBounds(txt);
                     objectModel.setTextBounds(r);
                 }
+                model.colorMode.textEdgeColor(this, objectModel);
+//                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor3d(model.edgeSizeFactor, objectModel);
+                float sizeFactor = 1f;
                 float width = sizeFactor * objectModel.getTextWidth();
                 float height = sizeFactor * objectModel.getTextHeight();
                 float x = (objectModel.getSourceModel().getNode().x() + 2 * objectModel.getTargetModel().getNode().x()) / 3f;
@@ -391,14 +400,17 @@ public class TextManager implements VizArchitecture {
             Node node = objectModel.getNode();
             TextProperties textData = (TextProperties) node.getTextProperties();
             if (textData != null) {
-                model.colorMode.textNodeColor(this, objectModel);
-                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor2d(model.nodeSizeFactor, objectModel);
                 String txt = textData.getText();
                 if (nodeRefresh) {
-                    buildText(node, objectModel, model.getNodeTextColumns());
+                    txt = buildText(node, objectModel, model.getNodeTextColumns());
+                    if (txt == null || txt.isEmpty()) {
+                        return;
+                    }
                     Rectangle2D r = renderer.getBounds(txt);
                     objectModel.setTextBounds(r);
                 }
+                model.colorMode.textNodeColor(this, objectModel);
+                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor2d(model.nodeSizeFactor, objectModel);
                 if (sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
                     return;
                 }
@@ -417,15 +429,18 @@ public class TextManager implements VizArchitecture {
             Edge edge = objectModel.getEdge();
             TextProperties textData = (TextProperties) edge.getTextProperties();
             if (textData != null) {
-                model.colorMode.textEdgeColor(this, objectModel);
-//                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor2d(model.nodeSizeFactor, objectModel);
-                float sizeFactor = 1f;
                 String txt = textData.getText();
                 if (edgeRefresh) {
-                    buildText(edge, objectModel, model.getEdgeTextColumns());
+                    txt = buildText(edge, objectModel, model.getEdgeTextColumns());
+                    if (txt == null || txt.isEmpty()) {
+                        return;
+                    }
                     Rectangle2D r = renderer.getBounds(txt);
                     objectModel.setTextBounds(r);
                 }
+                model.colorMode.textEdgeColor(this, objectModel);
+//                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor2d(model.nodeSizeFactor, objectModel);
+                float sizeFactor = 1f;
                 if (sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
                     return;
                 }

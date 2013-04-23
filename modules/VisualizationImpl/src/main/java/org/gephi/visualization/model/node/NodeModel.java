@@ -165,6 +165,10 @@ public abstract class NodeModel implements Model, TextModel {
         return selected;
     }
 
+    public boolean isHighlight() {
+        return highlight;
+    }
+
     public Octant getOctant() {
         return octant;
     }

@@ -119,8 +119,12 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
         AttributesCheckBox[] target;
         if (elementButtonGroup.getSelection() == nodesToggleButton.getModel()) {
             for (Column c : graphController.getAttributeModel().getNodeTable()) {
-                if (showProperties || c.getOrigin().equals(Origin.DATA)) {
+                if (c.getOrigin().equals(Origin.DATA)) {
                     availableColumns.add(c);
+                } else if (showProperties) {
+                    if (c.getId().equalsIgnoreCase("label")) {
+                        availableColumns.add(c);
+                    }
                 }
             }
 
@@ -131,8 +135,12 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
             target = nodeCheckBoxs;
         } else {
             for (Column c : graphController.getAttributeModel().getEdgeTable()) {
-                if (showProperties || c.getOrigin().equals(Origin.DATA)) {
+                if (c.getOrigin().equals(Origin.DATA)) {
                     availableColumns.add(c);
+                } else if (showProperties) {
+                    if (c.getId().equalsIgnoreCase("label")) {
+                        availableColumns.add(c);
+                    }
                 }
             }
 
