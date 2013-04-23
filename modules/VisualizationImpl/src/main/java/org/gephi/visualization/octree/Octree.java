@@ -132,6 +132,25 @@ public class Octree {
         return false;
     }
 
+    public boolean isEmpty() {
+        return leavesCount == 0;
+    }
+
+    public void clear() {
+        for (int i = 0; i < length; i++) {
+            Octant leaf = leaves[i];
+            if (leaf != null) {
+                leaf.clear();
+            }
+        }
+        leaves = new Octant[0];
+        leavesCount = 0;
+        length = 0;
+        garbageQueue.clear();
+        selectedLeaves.clear();
+        visibleLeaves = 0;
+    }
+
     public Iterator<NodeModel> getNodeIterator() {
         nodeIterator.reset();
         return nodeIterator;
@@ -312,51 +331,53 @@ public class Octree {
     }
 
     public void updateVisibleOctant(GL2 gl) {
-        //Limits
-        refreshLimits();
+        if (leavesCount > 0) {
+            //Limits
+            refreshLimits();
 
-        //Switch to OpenGL2 select mode
-        int capacity = 1 * 4 * leavesCount;      //Each object take in maximium : 4 * name stack depth
-        IntBuffer hitsBuffer = Buffers.newDirectIntBuffer(capacity);
-        gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
-        gl.glRenderMode(GL2.GL_SELECT);
-        gl.glInitNames();
-        gl.glPushName(0);
-        gl.glDisable(GL2.GL_CULL_FACE);      //Disable flags
-        //Draw the nodes cube in the select buffer
-        for (Octant n : leaves) {
-            if (n != null) {
-                gl.glLoadName(n.leafId);
-                n.displayOctant(gl);
-                n.visible = false;
+            //Switch to OpenGL2 select mode
+            int capacity = 1 * 4 * leavesCount;      //Each object take in maximium : 4 * name stack depth
+            IntBuffer hitsBuffer = Buffers.newDirectIntBuffer(capacity);
+            gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
+            gl.glRenderMode(GL2.GL_SELECT);
+            gl.glInitNames();
+            gl.glPushName(0);
+            gl.glDisable(GL2.GL_CULL_FACE);      //Disable flags
+            //Draw the nodes cube in the select buffer
+            for (Octant n : leaves) {
+                if (n != null) {
+                    gl.glLoadName(n.leafId);
+                    n.displayOctant(gl);
+                    n.visible = false;
+                }
             }
-        }
-        visibleLeaves = 0;
-        int nbRecords = gl.glRenderMode(GL2.GL_RENDER);
-        if (vizController.getVizModel().isCulling()) {
-            gl.glEnable(GL2.GL_CULL_FACE);
-            gl.glCullFace(GL2.GL_BACK);
-        }
-
-        //Get the hits and add the nodes' objects to the array
-        int depth = Integer.MAX_VALUE;
-        int minDepth = -1;
-        for (int i = 0; i < nbRecords; i++) {
-            int hit = hitsBuffer.get(i * 4 + 3); 		//-1 Because of the glPushName(0)
-            int minZ = hitsBuffer.get(i * 4 + 1);
-            if (minZ < depth) {
-                depth = minZ;
-                minDepth = hit;
+            visibleLeaves = 0;
+            int nbRecords = gl.glRenderMode(GL2.GL_RENDER);
+            if (vizController.getVizModel().isCulling()) {
+                gl.glEnable(GL2.GL_CULL_FACE);
+                gl.glCullFace(GL2.GL_BACK);
             }
 
-            Octant nodeHit = leaves[hit];
-            nodeHit.visible = true;
-            visibleLeaves++;
-        }
-        if (minDepth != -1) {
-            Octant closestOctant = leaves[minDepth];
-            Vec3f pos = new Vec3f(closestOctant.getPosX(), closestOctant.getPosY(), closestOctant.getPosZ());
-            limits.setClosestPoint(pos);
+            //Get the hits and add the nodes' objects to the array
+            int depth = Integer.MAX_VALUE;
+            int minDepth = -1;
+            for (int i = 0; i < nbRecords; i++) {
+                int hit = hitsBuffer.get(i * 4 + 3); 		//-1 Because of the glPushName(0)
+                int minZ = hitsBuffer.get(i * 4 + 1);
+                if (minZ < depth) {
+                    depth = minZ;
+                    minDepth = hit;
+                }
+
+                Octant nodeHit = leaves[hit];
+                nodeHit.visible = true;
+                visibleLeaves++;
+            }
+            if (minDepth != -1) {
+                Octant closestOctant = leaves[minDepth];
+                Vec3f pos = new Vec3f(closestOctant.getPosX(), closestOctant.getPosY(), closestOctant.getPosZ());
+                limits.setClosestPoint(pos);
+            }
         }
     }
 

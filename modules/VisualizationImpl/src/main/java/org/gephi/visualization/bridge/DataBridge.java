@@ -156,12 +156,18 @@ public class DataBridge implements VizArchitecture {
             limits.setMaxWeight(maxWeight);
             limits.setMinWeight(minWeight);
 
-            System.out.println("Removed Edges: " + removedEdges);
-            System.out.println("Added Edges: " + addedEdges);
-            System.out.println("Removed Nodes: " + removedNodes);
-            System.out.println("Added Nodes: " + addedNodes);
+            System.out.println("DATABRIDGE:");
+            System.out.println(" Removed Edges: " + removedEdges);
+            System.out.println(" Added Edges: " + addedEdges);
+            System.out.println(" Removed Nodes: " + removedNodes);
+            System.out.println(" Added Nodes: " + addedNodes);
 
             return true;
+        } else if (observer == null) {
+            Octree octree = engine.getOctree();
+            if (!octree.isEmpty()) {
+                octree.clear();
+            }
         }
         return false;
     }
@@ -171,8 +177,9 @@ public class DataBridge implements VizArchitecture {
         if (graphModel != null) {
             graph = graphModel.getGraphVisible();
         }
-        if (observer != null && observer.getGraph() != graph) {
+        if (observer != null && (graphModel == null || observer.getGraph() != graph)) {
             observer.destroy();
+            observer = null;
         }
         nodes = new NodeModel[0];
         edges = new EdgeModel[0];
