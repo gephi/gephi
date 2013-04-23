@@ -224,33 +224,33 @@ public class CompatibilityEngine extends AbstractEngine {
 
         //Labels
         if (vizModel.getTextModel().isShowNodeLabels() || vizModel.getTextModel().isShowEdgeLabels()) {
-//            markTime++;
-//            if (nodeClass.isEnabled() && vizModel.getTextModel().isShowNodeLabels()) {
-//                textManager.getNodeRenderer().beginRendering();
-//                textManager.defaultNodeColor();
-//                if (textManager.isSelectedOnly()) {
-//                    for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
-//                        ModelImpl obj = itr.next();
-//                        if (obj.markTime != markTime) {
-//                            if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().getTextData().isVisible()) {
-//                                textManager.getNodeRenderer().drawTextNode(obj);
-//                            }
-//                            obj.markTime = markTime;
-//                        }
-//                    }
-//                } else {
-//                    for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
-//                        ModelImpl obj = itr.next();
-//                        if (obj.markTime != markTime) {
-//                            if (obj.getObj().getTextData().isVisible()) {
-//                                textManager.getNodeRenderer().drawTextNode(obj);
-//                            }
-//                            obj.markTime = markTime;
-//                        }
-//                    }
-//                }
-//                textManager.getNodeRenderer().endRendering();
-//            }
+            markTime++;
+            if (nodeClass.isEnabled() && vizModel.getTextModel().isShowNodeLabels()) {
+                textManager.getNodeRenderer().beginRendering();
+                textManager.defaultNodeColor();
+                if (textManager.isSelectedOnly()) {
+                    for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+                        NodeModel obj = itr.next();
+                        if (obj.markTime != markTime) {
+                            if (obj.isSelected() && obj.isTextVisible()) {
+                                textManager.getNodeRenderer().drawTextNode(obj);
+                            }
+                            obj.markTime = markTime;
+                        }
+                    }
+                } else {
+                    for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+                        NodeModel obj = itr.next();
+                        if (obj.markTime != markTime) {
+                            if (obj.isTextVisible()) {
+                                textManager.getNodeRenderer().drawTextNode(obj);
+                            }
+                            obj.markTime = markTime;
+                        }
+                    }
+                }
+                textManager.getNodeRenderer().endRendering();
+            }
 //            if (edgeClass.isEnabled() && vizModel.getTextModel().isShowEdgeLabels()) {
 //                textManager.getEdgeRenderer().beginRendering();
 //                textManager.defaultEdgeColor();
