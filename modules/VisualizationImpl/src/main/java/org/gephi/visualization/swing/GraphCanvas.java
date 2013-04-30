@@ -44,7 +44,6 @@ package org.gephi.visualization.swing;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.text.NumberFormat;
 import javax.media.opengl.GL2;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
@@ -57,14 +56,11 @@ import javax.swing.ToolTipManager;
  */
 public class GraphCanvas extends GraphDrawableImpl {
 
-    private GLCanvas glCanvas;
-    private GLUT glut = new GLUT();
-    private NumberFormat formatter;
+    private final GLCanvas glCanvas;
+    private final GLUT glut = new GLUT();
 
     public GraphCanvas() {
         super();
-        formatter = NumberFormat.getNumberInstance();
-        formatter.setMaximumFractionDigits(1);
         glCanvas = new GLCanvas(getCaps());
         super.initDrawable(glCanvas);
         glCanvas.setMinimumSize(new Dimension(0, 0));   //Fix Canvas resize Issue
@@ -92,7 +88,7 @@ public class GraphCanvas extends GraphDrawableImpl {
             gl.glDepthFunc(GL2.GL_ALWAYS);
             gl.glColor3i(192, 192, 192);
             gl.glRasterPos2f(10, 15);
-            String fpsRound = formatter.format(fps);
+            String fpsRound = String.valueOf((int) fps);
             glut.glutBitmapString(GLUT.BITMAP_HELVETICA_10, fpsRound);
 
             gl.glDepthFunc(GL2.GL_LESS);

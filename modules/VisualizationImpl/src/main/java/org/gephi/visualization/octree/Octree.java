@@ -267,7 +267,7 @@ public class Octree {
         int viewportMaxX = Integer.MIN_VALUE;
         int viewportMinY = Integer.MAX_VALUE;
         int viewportMaxY = Integer.MIN_VALUE;
-        double[] point;
+        float[] point;
 
         point = drawable.myGluProject(minX, minY, minZ);        //bottom far left
         viewportMinX = Math.min(viewportMinX, (int) point[0]);
@@ -399,7 +399,7 @@ public class Octree {
             gl.glLoadIdentity();
 
             glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], drawable.getViewport());
-            gl.glMultMatrixd(drawable.getProjectionMatrix());
+            gl.glMultMatrixf(drawable.getProjectionMatrix());
 
             gl.glMatrixMode(GL2.GL_MODELVIEW);
 

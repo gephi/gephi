@@ -43,7 +43,7 @@ package org.gephi.visualization.swing;
 
 import com.jogamp.common.nio.Buffers;
 import java.awt.Color;
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -76,8 +76,8 @@ public abstract class GLAbstractListener implements GLEventListener {
     public final float nearDistance = 1.0f;
     public final float farDistance = 100000f;
     private double aspectRatio = 0;
-    protected DoubleBuffer projMatrix = Buffers.newDirectDoubleBuffer(16);
-    protected DoubleBuffer modelMatrix = Buffers.newDirectDoubleBuffer(16);
+    protected FloatBuffer projMatrix = Buffers.newDirectFloatBuffer(16);
+    protected FloatBuffer modelMatrix = Buffers.newDirectFloatBuffer(16);
     protected IntBuffer viewport = Buffers.newDirectIntBuffer(4);
     protected GraphicalConfiguration graphicalConfiguration;
     protected Lighting lighting = new Lighting();
@@ -295,7 +295,7 @@ public abstract class GLAbstractListener implements GLEventListener {
             gl.glMatrixMode(GL2.GL_PROJECTION);
             gl.glLoadIdentity();
             glu.gluPerspective(viewField, aspectRatio, nearDistance, farDistance);
-            gl.glGetDoublev(GL2.GL_PROJECTION_MATRIX, projMatrix);//Update projection buffer
+            gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projMatrix);//Update projection buffer
 
 
             gl.glMatrixMode(GL2.GL_MODELVIEW);

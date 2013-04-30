@@ -41,7 +41,6 @@
  */
 package org.gephi.visualization.swing;
 
-import com.jogamp.common.nio.Buffers;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -160,11 +159,8 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
          draggingMarker[1] = dyy - objPos.get(1);
          System.out.print(draggingMarker[0]);*/
 
-        double[] v = {0, 0, 0, 1.0};
-        double[] v2 = {1.0, 1.0, 0, 1.0};
-
-        double[] d = myGluProject(v);
-        double[] d2 = myGluProject(v2);
+        float[] d = myGluProject(0, 0, 0);
+        float[] d2 = myGluProject(1, 1, 0);
 
         draggingMarker[0] = d[0] - d2[0];
         draggingMarker[1] = d[1] - d2[1];
@@ -177,7 +173,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
         //Refresh rotation angle
         gl.glLoadIdentity();
         glu.gluLookAt(cameraLocation[0], cameraLocation[1], cameraLocation[2], cameraTarget[0], cameraTarget[1], cameraTarget[2], 0, 1, 0);
-        gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, modelMatrix);
+        gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelMatrix);
         cameraVector.set(cameraTarget[0] - cameraLocation[0], cameraTarget[1] - cameraLocation[1], cameraTarget[2] - cameraLocation[2]);
         refreshDraggingMarker();
     }
@@ -258,23 +254,27 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
 
     //Utils
     public double[] myGluProject(float x, float y) {
-        return myGluProject(new double[]{x, y, 0, 1.0});
+        return myGluProject(x, y);
     }
 
-    public double[] myGluProject(float x, float y, float z) {
-        return myGluProject(new double[]{x, y, z, 1.0});
-    }
+    public float[] myGluProject(float x, float y, float z) {
+        float[] res = new float[2];
 
-    public double[] myGluProject(double[] in) {
-        double[] res = new double[2];
+        float o0 = modelMatrix.get(0) * x + modelMatrix.get(4) * y + modelMatrix.get(8) * z + modelMatrix.get(12) * 1f;
+        float o1 = modelMatrix.get(1) * x + modelMatrix.get(5) * y + modelMatrix.get(9) * z + modelMatrix.get(13) * 1f;
+        float o2 = modelMatrix.get(2) * x + modelMatrix.get(6) * y + modelMatrix.get(10) * z + modelMatrix.get(14) * 1f;
+        float o3 = modelMatrix.get(3) * x + modelMatrix.get(7) * y + modelMatrix.get(11) * z + modelMatrix.get(15) * 1f;
 
-        double[] out = transformVect(in, modelMatrix);
-        double[] out2 = transformVect(out, projMatrix);
-        out2[0] /= out2[3];
-        out2[1] /= out2[3];
-        out2[2] /= out2[3];
-        res[0] = viewport.get(0) + (out2[0] + 1) * viewport.get(2) / 2;
-        res[1] = viewport.get(1) + viewport.get(3) * (out2[1] + 1) / 2;
+        float p0 = projMatrix.get(0) * o0 + projMatrix.get(4) * o1 + projMatrix.get(8) * o2 + projMatrix.get(12) * o3;
+        float p1 = projMatrix.get(1) * o0 + projMatrix.get(5) * o1 + projMatrix.get(9) * o2 + projMatrix.get(13) * o3;
+        float p2 = projMatrix.get(2) * o0 + projMatrix.get(6) * o1 + projMatrix.get(10) * o2 + projMatrix.get(14) * o3;
+        float p3 = projMatrix.get(3) * o0 + projMatrix.get(7) * o1 + projMatrix.get(11) * o2 + projMatrix.get(15) * o3;
+        p0 /= p3;
+        p1 /= p3;
+        p2 /= p3;
+
+        res[0] = viewport.get(0) + (p0 + 1) * viewport.get(2) / 2;
+        res[1] = viewport.get(1) + viewport.get(3) * (p1 + 1) / 2;
 
         return res;
     }
@@ -288,31 +288,6 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
         out[3] = m.get(3) * in[0] + m.get(7) * in[1] + m.get(11) * in[2] + m.get(15) * in[3];
 
         return out;
-    }
-
-    private float[] toFloatArray(double[] arr) {
-        if (arr == null) {
-            return null;
-        }
-        int n = arr.length;
-        float[] ret = new float[n];
-        for (int i = 0; i < n; i++) {
-            ret[i] = (float) arr[i];
-        }
-        return ret;
-    }
-
-    public double[] gluUnProject(float x, float y, float z) {
-        FloatBuffer buffer = Buffers.newDirectFloatBuffer(3);
-
-        /* FIXME jbilcke: not sure about this whole double-to-float-to-double thing */
-        FloatBuffer modelMatrixBuffer = Buffers.newDirectFloatBuffer(modelMatrix.capacity());
-        modelMatrixBuffer.put(toFloatArray(modelMatrix.array()));
-        FloatBuffer projMatrixBuffer = Buffers.newDirectFloatBuffer(projMatrix.capacity());
-        projMatrixBuffer.put(toFloatArray(projMatrix.array()));
-        glu.gluProject(x, y, z, modelMatrixBuffer, projMatrixBuffer, viewport, buffer);
-
-        return new double[]{(double) buffer.get(0), (double) buffer.get(1), (double) buffer.get(2)};
     }
 
     @Override
@@ -366,11 +341,11 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
     }
 
     @Override
-    public DoubleBuffer getProjectionMatrix() {
+    public FloatBuffer getProjectionMatrix() {
         return projMatrix;
     }
 
-    public DoubleBuffer getModelMatrix() {
+    public FloatBuffer getModelMatrix() {
         return modelMatrix;
     }
 

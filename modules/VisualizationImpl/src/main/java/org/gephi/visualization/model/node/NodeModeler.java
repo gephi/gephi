@@ -23,9 +23,9 @@ public abstract class NodeModeler extends Modeler {
     public abstract boolean is3d();
 
     public void setViewportPosition(NodeModel object) {
-        double[] res = controller.getDrawable().myGluProject(object.getNode().x(), object.getNode().y(), object.getNode().z());
-        object.setViewportX((float) res[0]);
-        object.setViewportY((float) res[1]);
+        float[] res = controller.getDrawable().myGluProject(object.getNode().x(), object.getNode().y(), object.getNode().z());
+        object.setViewportX(res[0]);
+        object.setViewportY(res[1]);
 
         res = controller.getDrawable().myGluProject(object.getNode().x() + object.getNode().size(), object.getNode().y(), object.getNode().z());
         float rad = Math.abs((float) res[0] - object.getViewportX());
