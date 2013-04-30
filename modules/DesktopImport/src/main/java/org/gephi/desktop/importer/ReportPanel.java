@@ -106,6 +106,7 @@ public class ReportPanel extends javax.swing.JPanel {
                     initComponents();
                     initIcons();
                     initProcessors();
+                    initProcessorsUI();
                 }
             });
         } catch (InterruptedException ex) {
@@ -162,7 +163,6 @@ public class ReportPanel extends javax.swing.JPanel {
 
     public void setData(Report report, Container container) {
         this.container = container;
-        initProcessorsUI();
 
         report.pruneReport(ISSUES_LIMIT);
         fillIssues(report);
