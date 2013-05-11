@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Set;
 import org.gephi.attribute.api.Column;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeProperties;
 import org.gephi.graph.api.TextProperties;
@@ -383,6 +384,16 @@ public class QuadTree implements Node {
     @Override
     public Object getAttribute(Column column, double timestamp) {
         throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public Object getAttribute(String key, GraphView view) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object getAttribute(Column column, GraphView view) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     class FirstAdd implements AddBehaviour {
