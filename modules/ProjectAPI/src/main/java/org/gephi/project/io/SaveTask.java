@@ -42,9 +42,9 @@
 package org.gephi.project.io;
 
 import java.io.BufferedOutputStream;
-import java.io.IOException;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
@@ -56,7 +56,6 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
@@ -78,6 +77,7 @@ public class SaveTask implements LongTask, Runnable {
         this.file = file;
     }
 
+    @Override
     public void run() {
         //System.out.println("Save " + dataObject.getName());
         ZipOutputStream zipOut = null;
@@ -117,8 +117,6 @@ public class SaveTask implements LongTask, Runnable {
             zipOut.finish();
             bufferedOutputStream.close();
 
-
-
             //Clean and copy
             if (useTempFile && !cancel) {
                 String name = fileObject.getName();
@@ -139,14 +137,13 @@ public class SaveTask implements LongTask, Runnable {
             }
             Progress.finish(progressTicket);
         } catch (Exception ex) {
-            ex.printStackTrace();
             if (zipOut != null) {
                 try {
                     zipOut.close();
                 } catch (IOException ex1) {
                 }
             }
-            if(bufferedOutputStream!=null){
+            if (bufferedOutputStream != null) {
                 try {
                     bufferedOutputStream.close();
                 } catch (IOException ex1) {
@@ -159,6 +156,7 @@ public class SaveTask implements LongTask, Runnable {
         }
     }
 
+    @Override
     public boolean cancel() {
         if (gephiWriter != null) {
             gephiWriter.cancel();
@@ -166,6 +164,7 @@ public class SaveTask implements LongTask, Runnable {
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
     }
