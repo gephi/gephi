@@ -172,7 +172,7 @@ public class Degree implements Statistics, LongTask {
             Progress.progress(progress, i);
         }
 
-        avgDegree /= (isDirected) ? 2 * graph.getNodeCount() : graph.getNodeCount();
+        avgDegree /= graph.getNodeCount();
         graph.getAttributes().setValue(avgDegreeCol.getIndex(), avgDegree);
 
         graph.readUnlockAll();
