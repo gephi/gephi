@@ -41,11 +41,8 @@
  */
 package org.gephi.project.io;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
-import org.gephi.project.api.Project;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.project.impl.ProjectImpl;
@@ -63,7 +60,6 @@ import org.openide.util.Lookup;
  */
 public class GephiReader implements Cancellable {
 
-    private ProjectImpl project;
     private boolean cancel = false;
     private WorkspacePersistenceProvider currentProvider;
 
@@ -73,7 +69,8 @@ public class GephiReader implements Cancellable {
         return true;
     }
 
-    public Project readProject(XMLStreamReader reader, ProjectsImpl projects) throws Exception {
+    public ProjectImpl readProject(XMLStreamReader reader, ProjectsImpl projects) throws Exception {
+        ProjectImpl project = null;
         boolean end = false;
         while (reader.hasNext() && !end) {
             Integer eventType = reader.next();
@@ -87,7 +84,7 @@ public class GephiReader implements Cancellable {
                     }
                 } else if ("project".equalsIgnoreCase(name)) {
                     String projectName = reader.getAttributeValue(null, "name");
-                    this.project = new ProjectImpl(projectName);
+                    project = new ProjectImpl(projectName);
                     project.getLookup().lookup(WorkspaceProviderImpl.class);
 
                     if (reader.getAttributeValue(null, "ids") != null) {
@@ -105,7 +102,7 @@ public class GephiReader implements Cancellable {
         return project;
     }
 
-    public Workspace readWorkspace(XMLStreamReader reader) throws Exception {
+    public Workspace readWorkspace(XMLStreamReader reader, ProjectImpl project) throws Exception {
         WorkspaceImpl workspace = null;
         boolean end = false;
         while (reader.hasNext() && !end) {
@@ -177,7 +174,7 @@ public class GephiReader implements Cancellable {
             Integer eventType = reader.next();
             if (eventType.equals(XMLEvent.START_ELEMENT)) {
                 String name = reader.getLocalName();
-                WorkspacePersistenceProvider pp = getPersistenceProviders().get(name);
+                WorkspacePersistenceProvider pp = PersistenceProviderUtils.getXMLPersistenceProviders().get(name);
                 if (pp != null) {
                     currentProvider = pp;
                     try {
@@ -192,19 +189,5 @@ public class GephiReader implements Cancellable {
                 }
             }
         }
-    }
-
-    private Map<String, WorkspacePersistenceProvider> getPersistenceProviders() {
-        Map<String, WorkspacePersistenceProvider> providers = new LinkedHashMap<String, WorkspacePersistenceProvider>();
-        for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
-            try {
-                String id = w.getIdentifier();
-                if (id != null && !id.isEmpty()) {
-                    providers.put(w.getIdentifier(), w);
-                }
-            } catch (Exception e) {
-            }
-        }
-        return providers;
     }
 }

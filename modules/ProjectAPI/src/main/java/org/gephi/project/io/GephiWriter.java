@@ -44,7 +44,6 @@ package org.gephi.project.io;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TimeZone;
 import javax.xml.stream.XMLStreamWriter;
@@ -56,7 +55,6 @@ import org.gephi.project.api.WorkspaceInformation;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.Cancellable;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -120,6 +118,7 @@ public class GephiWriter implements Cancellable {
 
         writer.writeStartElement("workspace");
         writer.writeAttribute("name", info.getName());
+        writer.writeAttribute("id", String.valueOf(workspace.getId()));
         if (info.isOpen()) {
             writer.writeAttribute("status", "open");
         } else if (info.isClosed()) {
@@ -137,7 +136,7 @@ public class GephiWriter implements Cancellable {
     }
 
     public void writeWorkspaceChildren(XMLStreamWriter writer, Workspace workspace) throws Exception {
-        for (Map.Entry<String, WorkspacePersistenceProvider> entry : getPersistenceProviders().entrySet()) {
+        for (Map.Entry<String, WorkspacePersistenceProvider> entry : PersistenceProviderUtils.getXMLPersistenceProviders().entrySet()) {
             try {
                 String identifier = entry.getKey();
                 WorkspacePersistenceProvider pp = entry.getValue();
@@ -161,20 +160,6 @@ public class GephiWriter implements Cancellable {
         writer.writeEndElement();
 
         writer.writeComment("File saved with " + getVersion());
-    }
-
-    private Map<String, WorkspacePersistenceProvider> getPersistenceProviders() {
-        Map<String, WorkspacePersistenceProvider> providers = new LinkedHashMap<String, WorkspacePersistenceProvider>();
-        for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
-            try {
-                String id = w.getIdentifier();
-                if (id != null && !id.isEmpty()) {
-                    providers.put(w.getIdentifier(), w);
-                }
-            } catch (Exception e) {
-            }
-        }
-        return providers;
     }
 
     private String getVersion() {

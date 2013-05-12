@@ -41,11 +41,14 @@
  */
 package org.gephi.project.io;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.xml.stream.Location;
@@ -53,10 +56,13 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLReporter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.gephi.project.api.Project;
+import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectControllerImpl;
+import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.ProjectInformationImpl;
 import org.gephi.project.impl.ProjectsImpl;
+import org.gephi.project.impl.WorkspaceProviderImpl;
+import org.gephi.project.spi.WorkspaceBytesPersistenceProvider;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -84,7 +90,7 @@ public class LoadTask implements LongTask, Runnable {
         Progress.setDisplayName(progressTicket, NbBundle.getMessage(LoadTask.class, "LoadTask.name"));
 
         try {
-            Project project = null;
+            ProjectImpl project = null;
             ZipFile zip = null;
             try {
                 zip = new ZipFile(file, Charset.forName("UTF-8"));
@@ -92,26 +98,63 @@ public class LoadTask implements LongTask, Runnable {
                 //Reader
                 gephiReader = new GephiReader();
 
-                for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements();) {
-                    ZipEntry entry = e.nextElement();
+                //Project
+                ZipEntry entry = zip.getEntry("Project_xml");
+                if (entry != null) {
                     InputStream is = null;
-
                     try {
                         is = zip.getInputStream(entry);
-                        String name = entry.getName();
-                        if (name.equals("Project_xml")) {
-                            project = readProject(is);
-                        } else if (name.contains("Workspace") && name.contains("xml")) {
-                            readWorkspace(is);
-                        }
+                        project = readProject(is);
                     } finally {
                         if (is != null) {
                             is.close();
                         }
                     }
+                }
 
-                    if (cancel) {
-                        break;
+                //Workspace Xml
+                if (project != null) {
+                    for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements();) {
+                        entry = e.nextElement();
+                        InputStream is = null;
+                        String name = entry.getName();
+                        if (name.matches("Workspace_[0-9]*_xml")) {
+                            try {
+                                is = zip.getInputStream(entry);
+                                readWorkspace(is, project);
+                            } finally {
+                                if (is != null) {
+                                    is.close();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //Other Workspace data
+                if (project != null) {
+                    for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements();) {
+                        entry = e.nextElement();
+                        InputStream is = null;
+                        String name = entry.getName();
+                        if (name.matches("Workspace_[0-9]*_.*_bytes")) {
+                            try {
+                                is = zip.getInputStream(entry);
+                                Matcher matcher = Pattern.compile("Workspace_([0-9]*)_(.*)_bytes").matcher(name);
+                                matcher.find();
+                                String workspaceId = matcher.group(1);
+                                String providerId = matcher.group(2);
+                                WorkspaceProviderImpl workspaceProvider = project.getLookup().lookup(WorkspaceProviderImpl.class);
+                                Workspace workspace = workspaceProvider.getWorkspace(Integer.parseInt(workspaceId));
+                                if (workspace != null) {
+                                    readWorkspaceBytes(is, workspace, providerId);
+                                }
+                            } finally {
+                                if (is != null) {
+                                    is.close();
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -136,7 +179,7 @@ public class LoadTask implements LongTask, Runnable {
         Progress.finish(progressTicket);
     }
 
-    private Project readProject(InputStream inputStream) throws Exception {
+    private ProjectImpl readProject(InputStream inputStream) throws Exception {
         InputStreamReader isReader = null;
         Xml10FilterReader filterReader = null;
         XMLStreamReader reader = null;
@@ -157,7 +200,7 @@ public class LoadTask implements LongTask, Runnable {
 
             ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
             ProjectsImpl projects = projectController.getProjects();
-            Project project = gephiReader.readProject(reader, projects);
+            ProjectImpl project = gephiReader.readProject(reader, projects);
             project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
             return project;
         } finally {
@@ -170,7 +213,7 @@ public class LoadTask implements LongTask, Runnable {
         }
     }
 
-    private void readWorkspace(InputStream inputStream) throws Exception {
+    private void readWorkspace(InputStream inputStream, ProjectImpl project) throws Exception {
         InputStreamReader isReader = null;
         Xml10FilterReader filterReader = null;
         XMLStreamReader reader = null;
@@ -189,7 +232,7 @@ public class LoadTask implements LongTask, Runnable {
             filterReader = new Xml10FilterReader(isReader);
             reader = inputFactory.createXMLStreamReader(filterReader);
 
-            gephiReader.readWorkspace(reader);
+            gephiReader.readWorkspace(reader, project);
         } finally {
             if (reader != null) {
                 reader.close();
@@ -199,6 +242,22 @@ public class LoadTask implements LongTask, Runnable {
             }
             if (isReader != null) {
                 isReader.close();
+            }
+        }
+    }
+
+    private void readWorkspaceBytes(InputStream inputstream, Workspace workspace, String providerId) throws Exception {
+        WorkspaceBytesPersistenceProvider provider = PersistenceProviderUtils.getBytesPersistenceProviders().get(providerId);
+
+        if (provider != null) {
+            DataInputStream stream = null;
+            try {
+                stream = new DataInputStream(inputstream);
+                provider.readBytes(stream, workspace);
+            } finally {
+                if (stream != null) {
+                    stream.close();
+                }
             }
         }
     }

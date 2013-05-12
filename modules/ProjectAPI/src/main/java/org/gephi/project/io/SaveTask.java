@@ -42,10 +42,13 @@
 package org.gephi.project.io;
 
 import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
@@ -53,6 +56,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.WorkspaceProviderImpl;
+import org.gephi.project.spi.WorkspaceBytesPersistenceProvider;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -93,6 +97,7 @@ public class SaveTask implements LongTask, Runnable {
             FileOutputStream outputStream = null;
             ZipOutputStream zipOut = null;
             BufferedOutputStream bos = null;
+            DataOutputStream dos = null;
             try {
                 //Stream
                 int zipLevel = NbPreferences.forModule(SaveTask.class).getInt(ZIP_LEVEL_PREFERENCE, 9);
@@ -100,6 +105,7 @@ public class SaveTask implements LongTask, Runnable {
                 zipOut = new ZipOutputStream(outputStream, Charset.forName("UTF-8"));
                 zipOut.setLevel(zipLevel);
                 bos = new BufferedOutputStream(zipOut);
+                dos = new DataOutputStream(bos);
 
                 //Writer
                 gephiWriter = new GephiWriter();
@@ -109,7 +115,8 @@ public class SaveTask implements LongTask, Runnable {
 
                 //Write Workspace files
                 for (Workspace ws : project.getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces()) {
-                    writeWorkspace(ws, gephiWriter, bos, zipOut);
+                    writeWorkspace(ws, gephiWriter, dos, zipOut);
+                    writeWorkspaceBytes(ws, dos, zipOut);
                     if (cancel) {
                         break;
                     }
@@ -117,6 +124,12 @@ public class SaveTask implements LongTask, Runnable {
 
                 zipOut.finish();
             } finally {
+                if (dos != null) {
+                    try {
+                        dos.close();
+                    } catch (IOException ex1) {
+                    }
+                }
                 if (bos != null) {
                     try {
                         bos.close();
@@ -171,7 +184,7 @@ public class SaveTask implements LongTask, Runnable {
         Progress.finish(progressTicket);
     }
 
-    private void writeProject(GephiWriter gephiWriter, BufferedOutputStream bufferedOutputStream, ZipOutputStream zipOut) throws Exception {
+    private void writeProject(GephiWriter gephiWriter, OutputStream outputStream, ZipOutputStream zipOut) throws Exception {
         XMLStreamWriter writer = null;
         //Write Project file
         zipOut.putNextEntry(new ZipEntry("Project_xml"));
@@ -179,7 +192,7 @@ public class SaveTask implements LongTask, Runnable {
             //Create Writer and write project
             XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
             outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
-            writer = outputFactory.createXMLStreamWriter(bufferedOutputStream, "UTF-8");
+            writer = outputFactory.createXMLStreamWriter(outputStream, "UTF-8");
             gephiWriter.writeProject(writer, project);
         } finally {
             if (writer != null) {
@@ -191,16 +204,16 @@ public class SaveTask implements LongTask, Runnable {
         zipOut.closeEntry();
     }
 
-    private void writeWorkspace(Workspace workspace, GephiWriter gephiWriter, BufferedOutputStream bufferedOutputStream, ZipOutputStream zipOut) throws Exception {
+    private void writeWorkspace(Workspace workspace, GephiWriter gephiWriter, OutputStream outputStream, ZipOutputStream zipOut) throws Exception {
         //Write Project file
-        zipOut.putNextEntry(new ZipEntry("Workspace" + workspace.getId() + "_xml"));
+        zipOut.putNextEntry(new ZipEntry("Workspace_" + workspace.getId() + "_xml"));
 
         XMLStreamWriter writer = null;
         try {
             //Create Writer and write project
             XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
             outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
-            writer = outputFactory.createXMLStreamWriter(bufferedOutputStream, "UTF-8");
+            writer = outputFactory.createXMLStreamWriter(outputStream, "UTF-8");
             gephiWriter.writeWorkspace(writer, workspace);
 
         } finally {
@@ -211,6 +224,21 @@ public class SaveTask implements LongTask, Runnable {
 
         //Close Project file
         zipOut.closeEntry();
+    }
+
+    private void writeWorkspaceBytes(Workspace workspace, DataOutputStream outputStream, ZipOutputStream zipOut) throws Exception {
+        for (Map.Entry<String, WorkspaceBytesPersistenceProvider> entry : PersistenceProviderUtils.getBytesPersistenceProviders().entrySet()) {
+            String name = entry.getKey();
+            WorkspaceBytesPersistenceProvider provider = entry.getValue();
+
+            //Write Project file
+            zipOut.putNextEntry(new ZipEntry("Workspace_" + workspace.getId() + "_" + name + "_bytes"));
+
+            provider.writeBytes(outputStream, workspace);
+
+            //Close Project file
+            zipOut.closeEntry();
+        }
     }
 
     @Override
