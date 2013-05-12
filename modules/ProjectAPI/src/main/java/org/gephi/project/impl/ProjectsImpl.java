@@ -105,4 +105,8 @@ public class ProjectsImpl implements Projects, Serializable {
     public void setProjectIds(int id) {
         projectIds.set(id);
     }
+
+    public int getProjectIds() {
+        return projectIds.get();
+    }
 }

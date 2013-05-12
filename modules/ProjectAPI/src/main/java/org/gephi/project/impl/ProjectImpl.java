@@ -101,4 +101,8 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     public void setWorkspaceIds(int ids) {
         workspaceIds.set(ids);
     }
+
+    public int getWorkspaceIds() {
+        return workspaceIds.get();
+    }
 }

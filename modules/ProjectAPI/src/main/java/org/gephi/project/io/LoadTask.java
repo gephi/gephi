@@ -42,10 +42,12 @@
 package org.gephi.project.io;
 
 import java.io.File;
-import java.io.FilterReader;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
+import java.nio.charset.Charset;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLReporter;
@@ -58,8 +60,6 @@ import org.gephi.project.impl.ProjectsImpl;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -80,15 +80,67 @@ public class LoadTask implements LongTask, Runnable {
 
     @Override
     public void run() {
-        try {
-            Progress.start(progressTicket);
-            Progress.setDisplayName(progressTicket, NbBundle.getMessage(LoadTask.class, "LoadTask.name"));
-            FileObject fileObject = FileUtil.toFileObject(file);
-            if (FileUtil.isArchiveFile(fileObject)) {
-                //Unzip
-                fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
-            }
+        Progress.start(progressTicket);
+        Progress.setDisplayName(progressTicket, NbBundle.getMessage(LoadTask.class, "LoadTask.name"));
 
+        try {
+            Project project = null;
+            ZipFile zip = null;
+            try {
+                zip = new ZipFile(file, Charset.forName("UTF-8"));
+
+                //Reader
+                gephiReader = new GephiReader();
+
+                for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements();) {
+                    ZipEntry entry = e.nextElement();
+                    InputStream is = null;
+
+                    try {
+                        is = zip.getInputStream(entry);
+                        String name = entry.getName();
+                        if (name.equals("Project_xml")) {
+                            project = readProject(is);
+                        } else if (name.contains("Workspace") && name.contains("xml")) {
+                            readWorkspace(is);
+                        }
+                    } finally {
+                        if (is != null) {
+                            is.close();
+                        }
+                    }
+
+                    if (cancel) {
+                        break;
+                    }
+                }
+
+                //Add project
+                ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+                if (project != null) {
+                    if (!cancel) {
+                        projectController.openProject(project);
+                    }
+                }
+            } finally {
+                if (zip != null) {
+                    zip.close();
+                }
+            }
+        } catch (Exception ex) {
+            if (ex instanceof GephiFormatException) {
+                throw (GephiFormatException) ex;
+            }
+            throw new GephiFormatException(GephiReader.class, ex);
+        }
+        Progress.finish(progressTicket);
+    }
+
+    private Project readProject(InputStream inputStream) throws Exception {
+        InputStreamReader isReader = null;
+        Xml10FilterReader filterReader = null;
+        XMLStreamReader reader = null;
+        try {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
                 inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
@@ -99,30 +151,55 @@ public class LoadTask implements LongTask, Runnable {
                     System.out.println("Error:" + errorType + ", message : " + message);
                 }
             });
-            InputStreamReader isReader = new InputStreamReader(fileObject.getInputStream(), "UTF-8");
-            Xml10FilterReader filterReader = new Xml10FilterReader(isReader);
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(filterReader);
+            isReader = new InputStreamReader(inputStream, "UTF-8");
+            filterReader = new Xml10FilterReader(isReader);
+            reader = inputFactory.createXMLStreamReader(filterReader);
 
-            if (!cancel) {
-                ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-                ProjectsImpl projects = projectController.getProjects();
+            ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+            ProjectsImpl projects = projectController.getProjects();
+            Project project = gephiReader.readProject(reader, projects);
+            project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
+            return project;
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+            if (filterReader != null) {
+                filterReader.close();
+            }
+        }
+    }
 
-                //GephiReader
-                gephiReader = new GephiReader();
-                Project project = gephiReader.readAll(reader, projects);
-                project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
-
-                //Add project
-                if (!cancel) {
-                    projectController.openProject(project);
+    private void readWorkspace(InputStream inputStream) throws Exception {
+        InputStreamReader isReader = null;
+        Xml10FilterReader filterReader = null;
+        XMLStreamReader reader = null;
+        try {
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+                inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+            }
+            inputFactory.setXMLReporter(new XMLReporter() {
+                @Override
+                public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                    System.out.println("Error:" + errorType + ", message : " + message);
                 }
+            });
+            isReader = new InputStreamReader(inputStream, "UTF-8");
+            filterReader = new Xml10FilterReader(isReader);
+            reader = inputFactory.createXMLStreamReader(filterReader);
+
+            gephiReader.readWorkspace(reader);
+        } finally {
+            if (reader != null) {
+                reader.close();
             }
-            Progress.finish(progressTicket);
-        } catch (Exception ex) {
-            if (ex instanceof GephiFormatException) {
-                throw (GephiFormatException) ex;
+            if (filterReader != null) {
+                filterReader.close();
             }
-            throw new GephiFormatException(GephiReader.class, ex);
+            if (isReader != null) {
+                isReader.close();
+            }
         }
     }
 
@@ -138,72 +215,5 @@ public class LoadTask implements LongTask, Runnable {
     @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
-    }
-
-    /**
-     * {@link FilterReader} to skip invalid xml version 1.0 characters. Valid
-     * Unicode chars for xml version 1.0 according to http://www.w3.org/TR/xml
-     * are #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD], [#x10000-#x10FFFF]
-     * . In other words - any Unicode character, excluding the surrogate blocks,
-     * FFFE, and FFFF.
-     * <p>
-     * More details on the <a
-     * href="http://info.tsachev.org/2009/05/skipping-invalid-xml-character-with.html">blog</a>
-     */
-    public class Xml10FilterReader extends FilterReader {
-
-        /**
-         * Creates filter reader which skips invalid xml characters.
-         *
-         * @param in original reader
-         */
-        public Xml10FilterReader(Reader in) {
-            super(in);
-        }
-
-        /**
-         * Every overload of {@link Reader#read()} method delegates to this one
-         * so it is enough to override only this one. <br />
-         * To skip invalid characters this method shifts only valid chars to
-         * left and returns decreased value of the original read method. So
-         * after last valid character there will be some unused chars in the
-         * buffer.
-         *
-         * @return Number of read valid characters or <code>-1</code> if end of
-         * the underling reader was reached.
-         */
-        @Override
-        public int read(char[] cbuf, int off, int len) throws IOException {
-            int read = super.read(cbuf, off, len);
-            /*
-             * If read chars are -1 then we have reach the end of the reader.
-             */
-            if (read == -1) {
-                return -1;
-            }
-            /*
-             * pos will show the index where chars should be moved if there are gaps
-             * from invalid characters.
-             */
-            int pos = off - 1;
-
-            for (int readPos = off; readPos < off + read; readPos++) {
-                if (XMLChar.isValid(cbuf[readPos])) {
-                    pos++;
-                } else {
-                    continue;
-                }
-                /*
-                 * If there is gap(s) move current char to its position.
-                 */
-                if (pos < readPos) {
-                    cbuf[pos] = cbuf[readPos];
-                }
-            }
-            /*
-             * Number of read valid characters.
-             */
-            return pos - off + 1;
-        }
     }
 }

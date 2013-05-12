@@ -41,20 +41,23 @@
  */
 package org.gephi.project.io;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TimeZone;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.ProjectMetaData;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
-import org.gephi.project.impl.WorkspaceProviderImpl;
+import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.Cancellable;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -62,57 +65,21 @@ import org.openide.util.Lookup;
  */
 public class GephiWriter implements Cancellable {
 
-    private final Map<String, WorkspacePersistenceProvider> providers;
-
-    public GephiWriter() {
-        providers = new LinkedHashMap<String, WorkspacePersistenceProvider>();
-        for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
-            try {
-                String id = w.getIdentifier();
-                if (id != null && !id.isEmpty()) {
-                    providers.put(w.getIdentifier(), w);
-                }
-            } catch (Exception e) {
-            }
-        }
-    }
-
-    public void writeAll(Project project, XMLStreamWriter writer) throws Exception {
-        writer.writeStartDocument("UTF-8", "1.0");
-        writer.writeStartElement("gephiFile");
-        writer.writeAttribute("version", "0.9");
-        writer.writeComment("File saved from Gephi 0.9.0");
-
-        writeCore(writer);
-        writeProject(writer, project);
-
-        writer.writeEndElement();
-        writer.writeEndDocument();
-    }
-
-    public void writeCore(XMLStreamWriter writer) throws Exception {
-        //Core
-        writer.writeStartElement("core");
-        writer.writeStartElement("lastModifiedDate");
-
-        //LastModifiedDate
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        writer.writeCharacters(sdf.format(cal.getTime()));
-        writer.writeComment("yyyy-MM-dd HH:mm:ss");
-
-        //Append
-        writer.writeEndElement();
-        writer.writeEndElement();
-    }
+    private static final String VERSION = "0.9";
 
     public void writeProject(XMLStreamWriter writer, Project project) throws Exception {
+        writer.writeStartDocument("UTF-8", "1.0");
+        writer.writeStartElement("projectFile");
+
+        writeHeader(writer);
+
         ProjectInformation info = project.getLookup().lookup(ProjectInformation.class);
         ProjectMetaData metaData = project.getLookup().lookup(ProjectMetaData.class);
-        WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
 
+        //Start Project
         writer.writeStartElement("project");
         writer.writeAttribute("name", info.getName());
+        writer.writeAttribute("ids", String.valueOf(((ProjectImpl) project).getWorkspaceIds()));
 
         //MetaData
         writer.writeStartElement("metadata");
@@ -134,17 +101,21 @@ public class GephiWriter implements Cancellable {
         writer.writeEndElement();
 
         writer.writeEndElement();
+        //End Metadata
 
-        //Workspaces
-        writer.writeStartElement("workspaces");
-        for (Workspace ws : workspaces.getWorkspaces()) {
-            writeWorkspace(writer, ws);
-        }
         writer.writeEndElement();
+        //End Project
+
         writer.writeEndElement();
+        writer.writeEndDocument();
     }
 
     public void writeWorkspace(XMLStreamWriter writer, Workspace workspace) throws Exception {
+        writer.writeStartDocument("UTF-8", "1.0");
+        writer.writeStartElement("workspaceFile");
+
+        writeHeader(writer);
+
         WorkspaceInformation info = workspace.getLookup().lookup(WorkspaceInformation.class);
 
         writer.writeStartElement("workspace");
@@ -160,15 +131,60 @@ public class GephiWriter implements Cancellable {
         writeWorkspaceChildren(writer, workspace);
 
         writer.writeEndElement();
+
+        writer.writeEndElement();
+        writer.writeEndDocument();
     }
 
     public void writeWorkspaceChildren(XMLStreamWriter writer, Workspace workspace) throws Exception {
-        for (WorkspacePersistenceProvider pp : providers.values()) {
+        for (Map.Entry<String, WorkspacePersistenceProvider> entry : getPersistenceProviders().entrySet()) {
             try {
-                writer.writeComment("Persistence from " + pp.getClass().getName());
+                String identifier = entry.getKey();
+                WorkspacePersistenceProvider pp = entry.getValue();
+                writer.writeComment("Persistence from '" + identifier + "' (" + pp.getClass().getName() + ")");
                 pp.writeXML(writer, workspace);
             } catch (UnsupportedOperationException e) {
             }
+        }
+    }
+
+    private void writeHeader(XMLStreamWriter writer) throws Exception {
+        writer.writeAttribute("version", VERSION);
+
+        //LastModifiedDate
+        writer.writeStartElement("lastModifiedDate");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        writer.writeCharacters(sdf.format(cal.getTime()));
+        writer.writeComment("yyyy-MM-dd HH:mm:ss");
+        writer.writeEndElement();
+
+        writer.writeComment("File saved with " + getVersion());
+    }
+
+    private Map<String, WorkspacePersistenceProvider> getPersistenceProviders() {
+        Map<String, WorkspacePersistenceProvider> providers = new LinkedHashMap<String, WorkspacePersistenceProvider>();
+        for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
+            try {
+                String id = w.getIdentifier();
+                if (id != null && !id.isEmpty()) {
+                    providers.put(w.getIdentifier(), w);
+                }
+            } catch (Exception e) {
+            }
+        }
+        return providers;
+    }
+
+    private String getVersion() {
+        try {
+            return MessageFormat.format(
+                    NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion"), // NOI18N
+                    new Object[]{System.getProperty("netbeans.buildnumber")} // NOI18N
+                    );
+        } catch (Exception e) {
+            return "?";
         }
     }
 

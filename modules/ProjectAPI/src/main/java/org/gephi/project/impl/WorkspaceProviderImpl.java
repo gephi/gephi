@@ -110,6 +110,16 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
         return workspaces.toArray(new Workspace[0]);
     }
 
+    @Override
+    public synchronized Workspace getWorkspace(int id) {
+        for (Workspace w : workspaces) {
+            if (w.getId() == id) {
+                return w;
+            }
+        }
+        return null;
+    }
+
     public synchronized void setCurrentWorkspace(Workspace currentWorkspace) {
         this.currentWorkspace = (WorkspaceImpl) currentWorkspace;
     }

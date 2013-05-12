@@ -65,21 +65,7 @@ public class GephiReader implements Cancellable {
 
     private ProjectImpl project;
     private boolean cancel = false;
-    private final Map<String, WorkspacePersistenceProvider> providers;
     private WorkspacePersistenceProvider currentProvider;
-
-    public GephiReader() {
-        providers = new LinkedHashMap<String, WorkspacePersistenceProvider>();
-        for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
-            try {
-                String id = w.getIdentifier();
-                if (id != null && !id.isEmpty()) {
-                    providers.put(w.getIdentifier(), w);
-                }
-            } catch (Exception e) {
-            }
-        }
-    }
 
     @Override
     public boolean cancel() {
@@ -87,21 +73,18 @@ public class GephiReader implements Cancellable {
         return true;
     }
 
-    public Project readAll(XMLStreamReader reader, ProjectsImpl projects) throws Exception {
+    public Project readProject(XMLStreamReader reader, ProjectsImpl projects) throws Exception {
         boolean end = false;
         while (reader.hasNext() && !end) {
             Integer eventType = reader.next();
             if (eventType.equals(XMLEvent.START_ELEMENT)) {
                 String name = reader.getLocalName();
-                if ("gephiFile".equalsIgnoreCase(name)) {
+                if ("projectFile".equalsIgnoreCase(name)) {
                     //Version
                     String version = reader.getAttributeValue(null, "version");
                     if (version == null || version.isEmpty() || Double.parseDouble(version) < 0.7) {
                         throw new GephiFormatException("Gephi project file version must be at least 0.7");
                     }
-                } else if ("projects".equalsIgnoreCase(name)) {
-                    Integer ids = Integer.parseInt(reader.getAttributeValue(null, "ids"));
-                    projects.setProjectIds(ids);
                 } else if ("project".equalsIgnoreCase(name)) {
                     String projectName = reader.getAttributeValue(null, "name");
                     this.project = new ProjectImpl(projectName);
@@ -110,14 +93,6 @@ public class GephiReader implements Cancellable {
                     if (reader.getAttributeValue(null, "ids") != null) {
                         Integer workspaceIds = Integer.parseInt(reader.getAttributeValue(null, "ids"));
                         project.setWorkspaceIds(workspaceIds);
-                    }
-                } else if ("workspace".equalsIgnoreCase(name)) {
-                    Workspace workspace = readWorkspace(reader);
-
-                    //Current workspace
-                    if (workspace.getLookup().lookup(WorkspaceInformationImpl.class).isOpen()) {
-                        WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
-                        workspaces.setCurrentWorkspace(workspace);
                     }
                 }
             } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
@@ -131,40 +106,67 @@ public class GephiReader implements Cancellable {
     }
 
     public Workspace readWorkspace(XMLStreamReader reader) throws Exception {
-        Integer workspaceId;
-        if (reader.getAttributeValue(null, "id") == null) {
-            workspaceId = project.nextWorkspaceId();
-        } else {
-            workspaceId = Integer.parseInt(reader.getAttributeValue(null, "id"));
+        WorkspaceImpl workspace = null;
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            Integer eventType = reader.next();
+            if (eventType.equals(XMLEvent.START_ELEMENT)) {
+                String name = reader.getLocalName();
+                if ("workspaceFile".equalsIgnoreCase(name)) {
+                    //Version
+                    String version = reader.getAttributeValue(null, "version");
+                    if (version == null || version.isEmpty() || Double.parseDouble(version) < 0.7) {
+                        throw new GephiFormatException("Gephi project file version must be at least 0.7");
+                    }
+                } else if ("workspace".equalsIgnoreCase(name)) {
+                    //Id
+                    Integer workspaceId;
+                    if (reader.getAttributeValue(null, "id") == null) {
+                        workspaceId = project.nextWorkspaceId();
+                    } else {
+                        workspaceId = Integer.parseInt(reader.getAttributeValue(null, "id"));
+                    }
+
+                    workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace(workspaceId);
+                    WorkspaceInformationImpl info = workspace.getLookup().lookup(WorkspaceInformationImpl.class);
+
+                    //Name
+                    info.setName(reader.getAttributeValue(null, "name"));
+
+                    //Status
+                    String workspaceStatus = reader.getAttributeValue(null, "status");
+                    if (workspaceStatus.equals("open")) {
+                        info.open();
+                    } else if (workspaceStatus.equals("closed")) {
+                        info.close();
+                    } else {
+                        info.invalid();
+                    }
+
+                    //Hack to set this workspace active, when readers need to use attributes for instance
+                    ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+                    pc.setTemporaryOpeningWorkspace(workspace);
+
+                    //WorkspacePersistent
+                    readWorkspaceChildren(workspace, reader);
+                    if (currentProvider != null) {
+                        //One provider not correctly closed
+                        throw new GephiFormatException("The '" + currentProvider.getIdentifier() + "' persistence provider is not ending read.");
+                    }
+                    pc.setTemporaryOpeningWorkspace(null);
+
+                    //Current workspace
+                    if (info.isOpen()) {
+                        WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
+                        workspaces.setCurrentWorkspace(workspace);
+                    }
+                }
+            } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                if ("workspace".equalsIgnoreCase(reader.getLocalName())) {
+                    end = true;
+                }
+            }
         }
-
-        WorkspaceImpl workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace(workspaceId);
-        WorkspaceInformationImpl info = workspace.getLookup().lookup(WorkspaceInformationImpl.class);
-
-        //Name
-        info.setName(reader.getAttributeValue(null, "name"));
-
-        //Status
-        String workspaceStatus = reader.getAttributeValue(null, "status");
-        if (workspaceStatus.equals("open")) {
-            info.open();
-        } else if (workspaceStatus.equals("closed")) {
-            info.close();
-        } else {
-            info.invalid();
-        }
-
-        //Hack to set this workspace active, when readers need to use attributes for instance
-        ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-        pc.setTemporaryOpeningWorkspace(workspace);
-
-        //WorkspacePersistent
-        readWorkspaceChildren(workspace, reader);
-        if (currentProvider != null) {
-            //One provider not correctly closed
-            throw new GephiFormatException("The '" + currentProvider.getIdentifier() + "' persistence provider is not ending read.");
-        }
-        pc.setTemporaryOpeningWorkspace(null);
 
         return workspace;
     }
@@ -175,7 +177,7 @@ public class GephiReader implements Cancellable {
             Integer eventType = reader.next();
             if (eventType.equals(XMLEvent.START_ELEMENT)) {
                 String name = reader.getLocalName();
-                WorkspacePersistenceProvider pp = providers.get(name);
+                WorkspacePersistenceProvider pp = getPersistenceProviders().get(name);
                 if (pp != null) {
                     currentProvider = pp;
                     try {
@@ -190,5 +192,19 @@ public class GephiReader implements Cancellable {
                 }
             }
         }
+    }
+
+    private Map<String, WorkspacePersistenceProvider> getPersistenceProviders() {
+        Map<String, WorkspacePersistenceProvider> providers = new LinkedHashMap<String, WorkspacePersistenceProvider>();
+        for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
+            try {
+                String id = w.getIdentifier();
+                if (id != null && !id.isEmpty()) {
+                    providers.put(w.getIdentifier(), w);
+                }
+            } catch (Exception e) {
+            }
+        }
+        return providers;
     }
 }
