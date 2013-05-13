@@ -115,7 +115,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 //                }
 //                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(message, NotifyDescriptor.WARNING_MESSAGE);
 //                DialogDisplayer.getDefault().notify(msg);
-                Logger.getLogger("").log(Level.SEVERE, "", t.getCause());
+                Exceptions.printStackTrace(t);
+                t.printStackTrace();
             }
         };
         executor = new LongTaskExecutor(true, "Importer", 10);

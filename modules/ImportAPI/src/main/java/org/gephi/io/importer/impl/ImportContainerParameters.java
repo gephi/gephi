@@ -41,25 +41,21 @@
  */
 package org.gephi.io.importer.impl;
 
+import org.gephi.io.importer.api.EdgeWeightMergeStrategy;
+
 /**
  *
  * @author Mathieu Bastian
  */
 public class ImportContainerParameters {
 
-    public enum EdgeWeightMergeStrategy {
-
-        SUM, AVG, MAX, MIN
-    }
     protected boolean selfLoops = true;
     protected boolean parallelEdges = true;
     protected boolean autoNode = true;
     protected boolean autoScale = true;
     protected boolean sortNodesBySize = true;
     protected boolean fillLabelWithId = true;
-    protected EdgeWeightMergeStrategy parallelEdgesMergeStrategy = EdgeWeightMergeStrategy.SUM;
-    protected EdgeWeightMergeStrategy undirectedMergeStrategy = EdgeWeightMergeStrategy.SUM;
-    protected boolean mergeParallelEdgesWeight = true;
+    protected EdgeWeightMergeStrategy edgesMergeStrategy = EdgeWeightMergeStrategy.SUM;
     protected boolean mergeParallelEdgesAttributes = true;
     protected boolean duplicateWithLabels = false;
 
@@ -71,12 +67,8 @@ public class ImportContainerParameters {
         this.autoNode = autoNode;
     }
 
-    public EdgeWeightMergeStrategy getParallelEdgesMergeStrategy() {
-        return parallelEdgesMergeStrategy;
-    }
-
-    public EdgeWeightMergeStrategy getUndirectedMergeStrategy() {
-        return undirectedMergeStrategy;
+    public EdgeWeightMergeStrategy getEdgesMergeStrategy() {
+        return edgesMergeStrategy;
     }
 
     public boolean isParallelEdges() {
@@ -119,14 +111,6 @@ public class ImportContainerParameters {
         this.autoScale = autoScale;
     }
 
-    public boolean isMergeParallelEdgesWeight() {
-        return mergeParallelEdgesWeight;
-    }
-
-    public void setMergeParallelEdgesWeight(boolean mergeParallelEdgesWeight) {
-        this.mergeParallelEdgesWeight = mergeParallelEdgesWeight;
-    }
-
     public boolean isDuplicateWithLabels() {
         return duplicateWithLabels;
     }
@@ -141,5 +125,9 @@ public class ImportContainerParameters {
 
     public void setMergeParallelEdgesAttributes(boolean mergeParallelEdgesAttributes) {
         this.mergeParallelEdgesAttributes = mergeParallelEdgesAttributes;
+    }
+
+    public void setEdgesMergeStrategy(EdgeWeightMergeStrategy edgesMergeStrategy) {
+        this.edgesMergeStrategy = edgesMergeStrategy;
     }
 }

@@ -95,16 +95,6 @@ public interface Container {
      */
     public ContainerUnloader getUnloader();
 
-    public void setAutoScale(boolean autoscale);
-
-    public boolean isAutoScale();
-
-    public void setAllowSelfLoop(boolean value);
-
-    public void setAllowAutoNode(boolean value);
-
-    public void setAllowParallelEdge(boolean value);
-
     /**
      * Set a report this container can use to report issues detected when
      * loading the container. Report are used to log info and issues during
@@ -128,7 +118,7 @@ public interface Container {
      * This method must be called after the loading is complete and before
      * unloading. Its aim is to verify data consistency as a whole.
      *
-     * @return <code>true</code> if container data is *      * consistent, <code>false</code> otherwise
+     * @return <code>true</code> if container data is * *      * consistent, <code>false</code> otherwise
      */
     public boolean verify();
 

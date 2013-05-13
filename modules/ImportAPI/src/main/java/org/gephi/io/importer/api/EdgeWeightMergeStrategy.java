@@ -41,51 +41,7 @@
  */
 package org.gephi.io.importer.api;
 
-import org.gephi.io.processor.spi.Processor;
+public enum EdgeWeightMergeStrategy {
 
-/**
- * Interface for unloading a container. Gets graph draft elements and
- * attributes. Get also basic params and properties which defined the content.
- * Unloaders are used by
- * <code>Processor</code> to load data from the container to the main data
- * structure.
- *
- * @author Mathieu Bastian
- * @see Processor
- */
-public interface ContainerUnloader {
-
-    public Iterable<NodeDraft> getNodes();
-
-    public int getNodeCount();
-
-    public Iterable<EdgeDraft> getEdges();
-
-    public int getEdgeCount();
-
-    public boolean hasNodeColumn(String key);
-
-    public boolean hasEdgeColumn(String key);
-
-    public Iterable<ColumnDraft> getNodeColumns();
-
-    public Iterable<ColumnDraft> getEdgeColumns();
-
-//    public EdgeDraft getEdge(NodeDraft source, NodeDraft target);
-    public EdgeDirectionDefault getEdgeDefault();
-
-    public TimeFormat getTimeFormat();
-
-    public String getSource();
-
-    //PARAMETERS GETTERS
-    public boolean allowSelfLoop();
-
-    public boolean allowAutoNode();
-
-    public boolean allowParallelEdges();
-
-    public boolean isAutoScale();
-
-    public EdgeWeightMergeStrategy getEdgesMergeStrategy();
+    SUM, AVG, MAX, MIN
 }

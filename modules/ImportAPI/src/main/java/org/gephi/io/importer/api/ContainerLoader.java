@@ -133,7 +133,8 @@ public interface ContainerLoader {
      *
      * @param source the edge source node
      * @param target the edge target node
-     * @return the edge from <code>source</code> to <code>target</code> * * *      * or <code>null</code> if not found
+     * @return the edge from <code>source</code> to <code>target</code> * * * *
+     * or <code>null</code> if not found
      */
 //    public EdgeDraft getEdge(NodeDraft source, NodeDraft target);
     /**
@@ -163,7 +164,7 @@ public interface ContainerLoader {
      *
      * @param edgeDefault the edge default type value
      */
-    public void setEdgeDefault(EdgeDiretionDefault edgeDefault);
+    public void setEdgeDefault(EdgeDirectionDefault edgeDefault);
 
     public ColumnDraft getNodeColumn(String key);
 
@@ -188,4 +189,15 @@ public interface ContainerLoader {
      * @param timeFormat the current time format
      */
     public void setTimeFormat(TimeFormat timeFormat);
+
+    //PARAMETERS SETTERS
+    public void setAllowSelfLoop(boolean value);
+
+    public void setAllowAutoNode(boolean value);
+
+    public void setAllowParallelEdge(boolean value);
+
+    public void setAutoScale(boolean autoscale);
+
+    public void setEdgesMergeStrategy(EdgeWeightMergeStrategy edgesMergeStrategy);
 }
