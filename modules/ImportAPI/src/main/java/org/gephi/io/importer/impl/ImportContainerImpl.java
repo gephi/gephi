@@ -59,8 +59,9 @@ import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDirection;
-import org.gephi.io.importer.api.EdgeDiretionDefault;
+import org.gephi.io.importer.api.EdgeDirectionDefault;
 import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.EdgeWeightMergeStrategy;
 import org.gephi.io.importer.api.ElementDraft;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Issue.Level;
@@ -89,7 +90,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private final Object2IntMap<String> edgeMap;
     private final Object2IntMap edgeTypeMap;
     private Long2ObjectMap<int[]>[] edgeTypeSets;
-    private EdgeDiretionDefault edgeDefault = EdgeDiretionDefault.MIXED;
+    private EdgeDirectionDefault edgeDefault = EdgeDirectionDefault.MIXED;
     private final Object2ObjectMap<String, ColumnDraft> nodeColumns;
     private final Object2ObjectMap<String, ColumnDraft> edgeColumns;
     //Management
@@ -493,11 +494,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
         //Graph EdgeDefault
         if (directedEdgesCount > 0 && undirectedEdgesCount == 0) {
-            setEdgeDefault(EdgeDiretionDefault.DIRECTED);
+            setEdgeDefault(EdgeDirectionDefault.DIRECTED);
         } else if (directedEdgesCount == 0 && undirectedEdgesCount > 0) {
-            setEdgeDefault(EdgeDiretionDefault.UNDIRECTED);
+            setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
         } else if (directedEdgesCount > 0 && undirectedEdgesCount > 0) {
-            setEdgeDefault(EdgeDiretionDefault.MIXED);
+            setEdgeDefault(EdgeDirectionDefault.MIXED);
         }
 
         //Is dynamic graph
@@ -684,7 +685,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             }
         }
 
-        if (directedEdgesCount > 0 && edgeDefault.equals(EdgeDiretionDefault.UNDIRECTED)) {
+        if (directedEdgesCount > 0 && edgeDefault.equals(EdgeDirectionDefault.UNDIRECTED)) {
             //Force undirected
             for (EdgeDraftImpl edge : edgeList.toArray(new EdgeDraftImpl[0])) {
                 if (edge != null && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
@@ -767,10 +768,45 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
 
         //MANAGEMENT
+    }
 
+    protected void mergeParallelEdges(EdgeDraftImpl[] sources, EdgeDraftImpl dest) {
+        EdgeWeightMergeStrategy mergeStrategy = parameters.getEdgesMergeStrategy();
+        int count = 1 + sources.length;
+        double sum = dest.getWeight();
+        double min = dest.getWeight();
+        double max = dest.getWeight();
+        for (EdgeDraftImpl edge : sources) {
+            sum += edge.getWeight();
+            min = Math.min(min, edge.getWeight());
+            max = Math.max(max, edge.getWeight());
+        }
+        double result = dest.getWeight();
+        if (mergeStrategy.equals(EdgeWeightMergeStrategy.AVG)) {
+            result = sum / count;
+        } else if (mergeStrategy.equals(EdgeWeightMergeStrategy.MAX)) {
+            result = max;
+        } else if (mergeStrategy.equals(EdgeWeightMergeStrategy.MIN)) {
+            result = min;
+        } else if (mergeStrategy.equals(EdgeWeightMergeStrategy.SUM)) {
+            result = sum;
+        }
+        dest.setWeight(result);
+    }
 
-
-
+    protected void mergeDirectedEdges(EdgeDraftImpl source, EdgeDraftImpl dest) {
+        EdgeWeightMergeStrategy mergeStrategy = parameters.getEdgesMergeStrategy();
+        double result = dest.getWeight();
+        if (mergeStrategy.equals(EdgeWeightMergeStrategy.AVG)) {
+            result = (source.getWeight() + dest.getWeight()) / 2.0;
+        } else if (mergeStrategy.equals(EdgeWeightMergeStrategy.MAX)) {
+            result = Math.max(source.getWeight(), dest.getWeight());
+        } else if (mergeStrategy.equals(EdgeWeightMergeStrategy.MIN)) {
+            result = Math.min(source.getWeight(), dest.getWeight());;
+        } else if (mergeStrategy.equals(EdgeWeightMergeStrategy.SUM)) {
+            result = source.getWeight() + dest.getWeight();
+        }
+        dest.setWeight(result);
     }
 
     @Override
@@ -810,7 +846,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
-    public EdgeDiretionDefault getEdgeDefault() {
+    public EdgeWeightMergeStrategy getEdgesMergeStrategy() {
+        return parameters.getEdgesMergeStrategy();
+    }
+
+    @Override
+    public EdgeDirectionDefault getEdgeDefault() {
         return edgeDefault;
     }
 
@@ -841,7 +882,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
-    public void setEdgeDefault(EdgeDiretionDefault edgeDefault) {
+    public void setEdgeDefault(EdgeDirectionDefault edgeDefault) {
         this.edgeDefault = edgeDefault;
         report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Set_EdgeDefault", edgeDefault.toString()), Level.INFO));
     }
@@ -856,44 +897,9 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         parameters.setAutoScale(autoscale);
     }
 
-    //
-    protected void mergeParallelEdges(EdgeDraftImpl[] sources, EdgeDraftImpl dest) {
-        ImportContainerParameters.EdgeWeightMergeStrategy mergeStrategy = parameters.getParallelEdgesMergeStrategy();
-        int count = 1 + sources.length;
-        double sum = dest.getWeight();
-        double min = dest.getWeight();
-        double max = dest.getWeight();
-        for (EdgeDraftImpl edge : sources) {
-            sum += edge.getWeight();
-            min = Math.min(min, edge.getWeight());
-            max = Math.max(max, edge.getWeight());
-        }
-        double result = dest.getWeight();
-        if (mergeStrategy.equals(ImportContainerParameters.EdgeWeightMergeStrategy.AVG)) {
-            result = sum / count;
-        } else if (mergeStrategy.equals(ImportContainerParameters.EdgeWeightMergeStrategy.MAX)) {
-            result = max;
-        } else if (mergeStrategy.equals(ImportContainerParameters.EdgeWeightMergeStrategy.MIN)) {
-            result = min;
-        } else if (mergeStrategy.equals(ImportContainerParameters.EdgeWeightMergeStrategy.SUM)) {
-            result = sum;
-        }
-        dest.setWeight(result);
-    }
-
-    protected void mergeDirectedEdges(EdgeDraftImpl source, EdgeDraftImpl dest) {
-        ImportContainerParameters.EdgeWeightMergeStrategy mergeStrategy = parameters.getUndirectedMergeStrategy();
-        double result = dest.getWeight();
-        if (mergeStrategy.equals(ImportContainerParameters.EdgeWeightMergeStrategy.AVG)) {
-            result = (source.getWeight() + dest.getWeight()) / 2.0;
-        } else if (mergeStrategy.equals(ImportContainerParameters.EdgeWeightMergeStrategy.MAX)) {
-            result = Math.max(source.getWeight(), dest.getWeight());
-        } else if (mergeStrategy.equals(ImportContainerParameters.EdgeWeightMergeStrategy.MIN)) {
-            result = Math.min(source.getWeight(), dest.getWeight());;
-        } else if (mergeStrategy.equals(ImportContainerParameters.EdgeWeightMergeStrategy.SUM)) {
-            result = source.getWeight() + dest.getWeight();
-        }
-        dest.setWeight(result);
+    @Override
+    public void setEdgesMergeStrategy(EdgeWeightMergeStrategy edgesMergeStrategy) {
+        parameters.setEdgesMergeStrategy(edgesMergeStrategy);
     }
 
     //Utility
@@ -917,8 +923,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     private long getLongId(EdgeDraftImpl edge) {
         EdgeDirection direction = edge.getDirection();
-        boolean directed = edgeDefault.equals(EdgeDiretionDefault.DIRECTED)
-                || (!edgeDefault.equals(EdgeDiretionDefault.UNDIRECTED) && direction != null && direction == EdgeDirection.DIRECTED);
+        boolean directed = edgeDefault.equals(EdgeDirectionDefault.DIRECTED)
+                || (!edgeDefault.equals(EdgeDirectionDefault.UNDIRECTED) && direction != null && direction == EdgeDirection.DIRECTED);
         return getLongId(edge.getSource(), edge.getTarget(), directed);
     }
 

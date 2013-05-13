@@ -161,7 +161,7 @@ public class ImporterGML implements FileImporter, LongTask {
                 ret = parseEdge((ArrayList) value);
             } else if ("directed".equals(key)) {
                 if (value instanceof Double) {
-                    EdgeDiretionDefault edgeDefault = ((Double) value) == 1 ? EdgeDiretionDefault.DIRECTED : EdgeDiretionDefault.UNDIRECTED;
+                    EdgeDirectionDefault edgeDefault = ((Double) value) == 1 ? EdgeDirectionDefault.DIRECTED : EdgeDirectionDefault.UNDIRECTED;
                     container.setEdgeDefault(edgeDefault);
                 } else {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_directedgraphparse"), Issue.Level.WARNING));

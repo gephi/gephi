@@ -48,7 +48,7 @@ import java.io.StreamTokenizer;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.io.importer.api.ContainerLoader;
-import org.gephi.io.importer.api.EdgeDiretionDefault;
+import org.gephi.io.importer.api.EdgeDirectionDefault;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Issue;
@@ -129,7 +129,7 @@ public class ImporterDOT implements FileImporter, LongTask {
             if (streamTokenizer.ttype == StreamTokenizer.TT_WORD) {
                 if (streamTokenizer.sval.equalsIgnoreCase("digraph") || streamTokenizer.sval.equalsIgnoreCase("graph")) {
                     found = true;
-                    container.setEdgeDefault(streamTokenizer.sval.equalsIgnoreCase("digraph") ? EdgeDiretionDefault.DIRECTED : EdgeDiretionDefault.UNDIRECTED);
+                    container.setEdgeDefault(streamTokenizer.sval.equalsIgnoreCase("digraph") ? EdgeDirectionDefault.DIRECTED : EdgeDirectionDefault.UNDIRECTED);
                     streamTokenizer.nextToken();
                     if (streamTokenizer.ttype == StreamTokenizer.TT_WORD) {
                         graphName = streamTokenizer.sval;

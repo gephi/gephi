@@ -54,7 +54,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDirection;
-import org.gephi.io.importer.api.EdgeDiretionDefault;
+import org.gephi.io.importer.api.EdgeDirectionDefault;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
@@ -200,9 +200,9 @@ public class ImporterGraphML implements FileImporter, LongTask {
         //Edge Type
         if (!defaultEdgeType.isEmpty()) {
             if (defaultEdgeType.equalsIgnoreCase("undirected")) {
-                container.setEdgeDefault(EdgeDiretionDefault.UNDIRECTED);
+                container.setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
             } else if (defaultEdgeType.equalsIgnoreCase("directed")) {
-                container.setEdgeDefault(EdgeDiretionDefault.DIRECTED);
+                container.setEdgeDefault(EdgeDirectionDefault.DIRECTED);
             } else {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_defaultedgetype", defaultEdgeType), Issue.Level.SEVERE));
             }

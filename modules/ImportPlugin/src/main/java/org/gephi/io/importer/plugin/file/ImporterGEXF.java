@@ -214,9 +214,9 @@ public class ImporterGEXF implements FileImporter, LongTask {
         //Edge Type
         if (!defaultEdgeType.isEmpty()) {
             if (defaultEdgeType.equalsIgnoreCase("undirected")) {
-                container.setEdgeDefault(EdgeDiretionDefault.UNDIRECTED);
+                container.setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
             } else if (defaultEdgeType.equalsIgnoreCase("directed")) {
-                container.setEdgeDefault(EdgeDiretionDefault.DIRECTED);
+                container.setEdgeDefault(EdgeDirectionDefault.DIRECTED);
             } else if (defaultEdgeType.equalsIgnoreCase("mutual")) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgedouble"), Issue.Level.WARNING));
             } else {

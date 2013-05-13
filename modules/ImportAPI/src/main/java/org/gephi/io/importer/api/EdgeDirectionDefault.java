@@ -45,7 +45,7 @@ package org.gephi.io.importer.api;
  *
  * @author Mathieu Bastian
  */
-public enum EdgeDiretionDefault {
+public enum EdgeDirectionDefault {
 
     DIRECTED, UNDIRECTED, MIXED;
 }
