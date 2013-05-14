@@ -190,6 +190,15 @@ public class ReportPanel extends javax.swing.JPanel {
                 }
             }
         });
+
+        selfLoopCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (selfLoopCheckBox.isSelected() != container.getUnloader().allowSelfLoop()) {
+                    container.getLoader().setAllowSelfLoop(selfLoopCheckBox.isSelected());
+                }
+            }
+        });
     }
 
     public void initIcons() {
@@ -209,8 +218,6 @@ public class ReportPanel extends javax.swing.JPanel {
 
         fillStats(container);
         fillParameters(container);
-        autoscaleCheckbox.setSelected(container.getUnloader().isAutoScale());
-        createMissingNodesCheckbox.setSelected(container.getUnloader().allowAutoNode());
     }
 
     private void removeTabbedPane() {
@@ -377,7 +384,10 @@ public class ReportPanel extends javax.swing.JPanel {
                 edgeCountLabel.setText("" + edgeCount);
 
                 //Dynamic & Hierarchical graph
-                dynamicLabel.setText(container.isDynamicGraph() ? NbBundle.getMessage(getClass(), "ReportPanel.yes") : NbBundle.getMessage(getClass(), "ReportPanel.no"));
+                String yes = NbBundle.getMessage(getClass(), "ReportPanel.yes");
+                String no = NbBundle.getMessage(getClass(), "ReportPanel.no");
+                dynamicLabel.setText(container.isDynamicGraph() ? yes : no);
+                multigraphLabel.setText(container.isMultiGraph() ? yes : no);
             }
         });
     }
@@ -459,6 +469,8 @@ public class ReportPanel extends javax.swing.JPanel {
         dynamicLabel = new javax.swing.JLabel();
         labelDynamic = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        labelMultiGraph = new javax.swing.JLabel();
+        multigraphLabel = new javax.swing.JLabel();
         moreOptionsLink = new org.jdesktop.swingx.JXHyperlink();
         moreOptionsPanel = new javax.swing.JPanel();
         autoscaleCheckbox = new javax.swing.JCheckBox();
@@ -549,6 +561,23 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         statsPanel.add(jLabel1, gridBagConstraints);
 
+        labelMultiGraph.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelMultiGraph.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 6, 0);
+        statsPanel.add(labelMultiGraph, gridBagConstraints);
+
+        multigraphLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.multigraphLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 6, 0);
+        statsPanel.add(multigraphLabel, gridBagConstraints);
+
         moreOptionsLink.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.moreOptionsLink.text")); // NOI18N
 
         moreOptionsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -573,7 +602,7 @@ public class ReportPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(moreOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(moreOptionsPanelLayout.createSequentialGroup()
-                        .addComponent(selfLoopCheckBox)
+                        .addComponent(autoscaleCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(labelParallelEdgesMergeStrategy)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -581,7 +610,7 @@ public class ReportPanel extends javax.swing.JPanel {
                     .addGroup(moreOptionsPanelLayout.createSequentialGroup()
                         .addGroup(moreOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(createMissingNodesCheckbox)
-                            .addComponent(autoscaleCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(selfLoopCheckBox))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -590,14 +619,13 @@ public class ReportPanel extends javax.swing.JPanel {
             .addGroup(moreOptionsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(moreOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(selfLoopCheckBox)
-                    .addGroup(moreOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelParallelEdgesMergeStrategy)
-                        .addComponent(edgesMergeStrategyCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(autoscaleCheckbox)
+                    .addComponent(labelParallelEdgesMergeStrategy)
+                    .addComponent(edgesMergeStrategyCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(autoscaleCheckbox))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(createMissingNodesCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(selfLoopCheckBox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -608,7 +636,7 @@ public class ReportPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE)
+                    .addComponent(tabbedPane)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelSrc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -633,7 +661,7 @@ public class ReportPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelSrc)
                     .addComponent(sourceLabel))
@@ -647,10 +675,9 @@ public class ReportPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(moreOptionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -665,11 +692,13 @@ public class ReportPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelDynamic;
     private javax.swing.JLabel labelEdgeCount;
     private javax.swing.JLabel labelGraphType;
+    private javax.swing.JLabel labelMultiGraph;
     private javax.swing.JLabel labelNodeCount;
     private javax.swing.JLabel labelParallelEdgesMergeStrategy;
     private javax.swing.JLabel labelSrc;
     private org.jdesktop.swingx.JXHyperlink moreOptionsLink;
     private javax.swing.JPanel moreOptionsPanel;
+    private javax.swing.JLabel multigraphLabel;
     private javax.swing.JLabel nodeCountLabel;
     private javax.swing.JPanel processorPanel;
     private javax.swing.ButtonGroup processorStrategyRadio;
