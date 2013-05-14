@@ -49,11 +49,13 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerLoader;
@@ -659,6 +661,19 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     @Override
     public void closeLoader() {
+        //Remove self-loops
+        if (!parameters.isSelfLoops() && selfLoops > 0) {
+            List<EdgeDraftImpl> l = new ArrayList<EdgeDraftImpl>();
+            for (EdgeDraftImpl e : edgeList) {
+                if (e != null && e.isSelfLoop()) {
+                    l.add(e);
+                }
+            }
+            for (EdgeDraftImpl e : l) {
+                removeEdge(e);
+            }
+        }
+
         //Merge parallel edges
         if (parameters.isParallelEdges()) {
             for (Long2ObjectMap<int[]> edgesTypeMap : edgeTypeSets) {
