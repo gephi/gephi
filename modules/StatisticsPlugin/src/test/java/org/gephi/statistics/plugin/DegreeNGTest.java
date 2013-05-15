@@ -27,15 +27,10 @@ import org.testng.annotations.Test;
  * @author Anna
  */
 public class DegreeNGTest {
-    
-    @BeforeClass
-    private void setUp() {
-         MockServices.setServices(DhnsGraphController.class, AttributeControllerImpl.class);
-    }
 
     @Test
     public void testOneNodeAverageDegree() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.newProject();
         GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
         AttributeModel attributeModel=Lookup.getDefault().lookup(AttributeController.class).getModel();
