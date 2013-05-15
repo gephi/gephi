@@ -579,6 +579,7 @@ public class ReportPanel extends javax.swing.JPanel {
         statsPanel.add(multigraphLabel, gridBagConstraints);
 
         moreOptionsLink.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.moreOptionsLink.text")); // NOI18N
+        moreOptionsLink.setClickedColor(new java.awt.Color(0, 51, 255));
 
         moreOptionsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
