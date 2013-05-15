@@ -105,6 +105,6 @@ public class ColumnDraftImpl implements ColumnDraft {
 
     @Override
     public boolean isDynamic() {
-        return true;
+        return dynamic;
     }
 }

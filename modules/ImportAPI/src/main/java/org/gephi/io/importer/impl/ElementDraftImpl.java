@@ -43,6 +43,7 @@
 package org.gephi.io.importer.impl;
 
 import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
+import it.unimi.dsi.fastutil.doubles.Double2ObjectOpenHashMap;
 import java.awt.Color;
 import org.gephi.attribute.api.AttributeUtils;
 import org.gephi.io.importer.api.ColumnDraft;
@@ -240,6 +241,17 @@ public abstract class ElementDraftImpl implements ElementDraft {
     }
 
     protected void setAttributeValue(int index, Object value, double timestamp) {
+        if (index >= dynamicAttributes.length) {
+            Double2ObjectMap[] newArray = new Double2ObjectMap[index + 1];
+            System.arraycopy(dynamicAttributes, 0, newArray, 0, dynamicAttributes.length);
+            dynamicAttributes = newArray;
+        }
+        Double2ObjectMap m = dynamicAttributes[index];
+        if (m == null) {
+            m = new Double2ObjectOpenHashMap();
+            dynamicAttributes[index] = m;
+        }
+        m.put(timestamp, value);
     }
 
     protected Object getAttributeValue(int index) {
