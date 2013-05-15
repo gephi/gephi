@@ -28,9 +28,6 @@ import org.testng.annotations.Test;
  */
 public class DegreeNGTest {
     
-    public DegreeNGTest() {
-    }
-    
     @BeforeClass
     private void setUp() {
          MockServices.setServices(DhnsGraphController.class, AttributeControllerImpl.class);
