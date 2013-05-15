@@ -423,10 +423,15 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     @Override
     public ColumnDraft addNodeColumn(String key, Class typeClass) {
+        return addNodeColumn(key, typeClass, false);
+    }
+
+    @Override
+    public ColumnDraft addNodeColumn(String key, Class typeClass, boolean dynamic) {
         ColumnDraft column = nodeColumns.get(key);
         if (column == null) {
             int index = nodeColumns.size();
-            column = new ColumnDraftImpl(key, index, typeClass);
+            column = new ColumnDraftImpl(key, index, dynamic, typeClass);
             nodeColumns.put(key, column);
         } else {
             if (!column.getTypeClass().equals(typeClass)) {
@@ -438,10 +443,15 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     @Override
     public ColumnDraft addEdgeColumn(String key, Class typeClass) {
+        return addEdgeColumn(key, typeClass, false);
+    }
+
+    @Override
+    public ColumnDraft addEdgeColumn(String key, Class typeClass, boolean dynamic) {
         ColumnDraft column = edgeColumns.get(key);
         if (column == null) {
             int index = edgeColumns.size();
-            column = new ColumnDraftImpl(key, index, typeClass);
+            column = new ColumnDraftImpl(key, index, dynamic, typeClass);
             edgeColumns.put(key, column);
         } else {
             if (!column.getTypeClass().equals(typeClass)) {

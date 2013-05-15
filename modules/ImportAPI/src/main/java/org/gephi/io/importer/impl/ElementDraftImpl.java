@@ -42,7 +42,10 @@
  */
 package org.gephi.io.importer.impl;
 
+import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
 import java.awt.Color;
+import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ElementDraft;
 
 /**
@@ -63,12 +66,19 @@ public abstract class ElementDraftImpl implements ElementDraft {
     protected boolean labelVisible = true;
     //Attributes
     protected Object[] attributes;
+    //Timestamps
+    protected double[] timeStamps;
+    //Dynamic values
+    protected Double2ObjectMap[] dynamicAttributes;
 
     public ElementDraftImpl(ImportContainerImpl container, String id) {
         this.container = container;
         this.id = id;
         this.attributes = new Object[0];
+        this.timeStamps = new double[0];
     }
+
+    abstract ColumnDraft getColumn(String key, Class type);
 
     @Override
     public String getId() {
@@ -171,6 +181,54 @@ public abstract class ElementDraftImpl implements ElementDraft {
         setLabelColor(Color.getColor(color));
     }
 
+    @Override
+    public void setValue(String key, Object value) {
+        ColumnDraft column = getColumn(key, value.getClass());
+        setAttributeValue(((ColumnDraftImpl) column).getIndex(), value);
+    }
+
+    @Override
+    public void setValue(String key, Object value, String dateTime) {
+        setValue(key, value, AttributeUtils.parseDateTime(dateTime));
+    }
+
+    @Override
+    public void setValue(String key, Object value, double timestamp) {
+        ColumnDraft column = getColumn(key, value.getClass());
+        setAttributeValue(((ColumnDraftImpl) column).getIndex(), value, timestamp);
+    }
+
+    @Override
+    public void parseAndSetValue(String key, String value) {
+        ColumnDraft column = getColumn(key, value.getClass());
+        Object val = AttributeUtils.parse(value, column.getTypeClass());
+        setAttributeValue(((ColumnDraftImpl) column).getIndex(), val);
+    }
+
+    @Override
+    public void parseAndSetValue(String key, String value, String dateTime) {
+        parseAndSetValue(key, value, AttributeUtils.parseDateTime(dateTime));
+    }
+
+    @Override
+    public void parseAndSetValue(String key, String value, double timestamp) {
+        ColumnDraft column = getColumn(key, value.getClass());
+        Object val = AttributeUtils.parse(value, column.getTypeClass());
+        setAttributeValue(((ColumnDraftImpl) column).getIndex(), val, timestamp);
+    }
+
+    @Override
+    public void addTimestamp(String dateTime) {
+        addTimestamp(AttributeUtils.parseDateTime(dateTime));
+    }
+
+    @Override
+    public void addTimestamp(double timestamp) {
+        int index = timeStamps.length;
+        ensureTimestampArraySize(index);
+        timeStamps[index] = timestamp;
+    }
+
     //UTILITY
     protected void setAttributeValue(int index, Object value) {
         if (index >= attributes.length) {
@@ -181,10 +239,21 @@ public abstract class ElementDraftImpl implements ElementDraft {
         attributes[index] = value;
     }
 
+    protected void setAttributeValue(int index, Object value, double timestamp) {
+    }
+
     protected Object getAttributeValue(int index) {
         if (index < attributes.length) {
             return attributes[index];
         }
         return null;
+    }
+
+    protected void ensureTimestampArraySize(int index) {
+        if (index >= timeStamps.length) {
+            double[] newArray = new double[index + 1];
+            System.arraycopy(timeStamps, 0, newArray, 0, timeStamps.length);
+            timeStamps = newArray;
+        }
     }
 }

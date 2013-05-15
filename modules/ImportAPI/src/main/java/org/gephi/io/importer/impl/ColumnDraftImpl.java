@@ -53,13 +53,15 @@ public class ColumnDraftImpl implements ColumnDraft {
     protected final int index;
     protected final String id;
     protected final Class typeClass;
+    protected final boolean dynamic;
     protected String title;
     protected Object defaultValue;
 
-    public ColumnDraftImpl(String id, int index, Class typeClass) {
+    public ColumnDraftImpl(String id, int index, boolean dynamic, Class typeClass) {
         this.id = id;
         this.index = index;
         this.typeClass = typeClass;
+        this.dynamic = dynamic;
     }
 
     @Override
@@ -99,5 +101,10 @@ public class ColumnDraftImpl implements ColumnDraft {
     @Override
     public void setDefaultValueString(String value) {
         this.defaultValue = AttributeUtils.parse(value, typeClass);
+    }
+
+    @Override
+    public boolean isDynamic() {
+        return true;
     }
 }

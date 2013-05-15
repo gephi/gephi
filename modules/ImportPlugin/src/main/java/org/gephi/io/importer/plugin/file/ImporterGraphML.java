@@ -348,7 +348,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
             ColumnDraft column = container.getNodeColumn(fore);
             if (column != null) {
                 try {
-                    node.setValueString(column.getId(), value);
+                    node.parseAndSetValue(column.getId(), value);
                 } catch (Exception e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
                 }
@@ -500,7 +500,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
             ColumnDraft column = container.getEdgeColumn(fore);
             if (column != null) {
                 try {
-                    edge.setValueString(column.getId(), value);
+                    edge.parseAndSetValue(column.getId(), value);
                 } catch (Exception e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
                 }

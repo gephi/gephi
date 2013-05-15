@@ -174,6 +174,10 @@ public interface ContainerLoader {
 
     public ColumnDraft addEdgeColumn(String key, Class typeClass);
 
+    public ColumnDraft addNodeColumn(String key, Class typeClass, boolean dynamic);
+
+    public ColumnDraft addEdgeColumn(String key, Class typeClass, boolean dynamic);
+
     /**
      * Returns the <b>factory</b> for building nodes and edges instances.
      *

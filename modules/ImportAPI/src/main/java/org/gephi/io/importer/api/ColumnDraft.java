@@ -55,6 +55,8 @@ public interface ColumnDraft {
 
     public Object getDefaultValue();
 
+    public boolean isDynamic();
+
     public void setTitle(String title);
 
     public void setDefaultValue(Object value);

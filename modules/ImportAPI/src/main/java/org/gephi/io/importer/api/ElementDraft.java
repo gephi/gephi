@@ -65,7 +65,15 @@ public interface ElementDraft {
 
     public void setValue(String key, Object value);
 
-    public void setValueString(String key, String value);
+    public void setValue(String key, Object value, double timestamp);
+
+    public void setValue(String key, Object value, String dateTime);
+
+    public void parseAndSetValue(String key, String value);
+
+    public void parseAndSetValue(String key, String value, double timestamp);
+
+    public void parseAndSetValue(String key, String value, String dateTime);
 
     public void setLabel(String label);
 
@@ -92,4 +100,8 @@ public interface ElementDraft {
     public void setLabelColor(int r, int g, int b);
 
     public void setLabelColor(String color);
+
+    public void addTimestamp(double timestamp);
+
+    public void addTimestamp(String dateTime);
 }
