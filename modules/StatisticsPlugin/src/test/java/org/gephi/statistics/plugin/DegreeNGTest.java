@@ -4,7 +4,6 @@
  */
 package org.gephi.statistics.plugin;
 
-import org.gephi.data.attributes.AttributeControllerImpl;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.DirectedGraph;
@@ -13,14 +12,10 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectControllerImpl;
-import org.netbeans.junit.MockServices;
 import org.openide.util.Lookup;
 import static org.testng.Assert.*;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 /**
  *
