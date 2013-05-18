@@ -45,8 +45,6 @@ import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.ImportUtils;
@@ -69,7 +67,7 @@ public class ImporterTGF implements FileImporter, LongTask {
     private Report report;
     private ProgressTicket progressTicket;
     private boolean cancel = false;
-    
+
     public boolean execute(ContainerLoader container) {
         this.container = container;
         this.report = new Report();
@@ -81,7 +79,7 @@ public class ImporterTGF implements FileImporter, LongTask {
         }
         return !cancel;
     }
-    
+
     private void importData(LineNumberReader reader) throws Exception {
         Progress.start(progressTicket);        //Progress
 
@@ -102,9 +100,9 @@ public class ImporterTGF implements FileImporter, LongTask {
                 }
             }
         }
-        
+
         Progress.switchToDeterminate(progressTicket, nodes.size() + edges.size());
-        
+
         if (nodes.isEmpty()) {
             throw new Exception("Cannot import a graph without nodes!");
         }
@@ -114,7 +112,7 @@ public class ImporterTGF implements FileImporter, LongTask {
         Progress.progress(progressTicket);      //Progress
         for (String e : edges) {
             int firstSpace = e.indexOf(" ");
-            int secondSpace = e.indexOf(" ", firstSpace+1);
+            int secondSpace = e.indexOf(" ", firstSpace + 1);
             String[] tempFields = e.split(" ");
             String from = tempFields[0];
             String to = tempFields[1];
@@ -122,61 +120,62 @@ public class ImporterTGF implements FileImporter, LongTask {
         }
         Progress.progress(progressTicket);      //Progress
     }
-    
+
     private void addNode(String id, String label) {
         NodeDraft node;
         if (!container.nodeExists(id)) {
-            node = container.factory().newNodeDraft();
-            node.setId(id);
+            node = container.factory().newNodeDraft(id);
             node.setLabel(label);
             container.addNode(node);
         }
     }
-    
+
     private void addEdge(String source, String target, String label) {
         NodeDraft sourceNode;
         if (!container.nodeExists(source)) {
-            sourceNode = container.factory().newNodeDraft();
-            sourceNode.setId(source);
+            sourceNode = container.factory().newNodeDraft(source);
             container.addNode(sourceNode);
         } else {
             sourceNode = container.getNode(source);
         }
         NodeDraft targetNode;
         if (!container.nodeExists(target)) {
-            targetNode = container.factory().newNodeDraft();
-            targetNode.setId(target);
+            targetNode = container.factory().newNodeDraft(target);
             container.addNode(targetNode);
         } else {
             targetNode = container.getNode(target);
         }
-        EdgeDraft edge = container.getEdge(sourceNode, targetNode);
-        if (edge == null) {
-            edge = container.factory().newEdgeDraft();
+        if (!container.edgeExists(sourceNode.getId(), targetNode.getId())) {
+            EdgeDraft edge = container.factory().newEdgeDraft();
             edge.setSource(sourceNode);
             edge.setTarget(targetNode);
             edge.setLabel(label);
             container.addEdge(edge);
         }
     }
-    
+
+    @Override
     public void setReader(Reader reader) {
         this.reader = reader;
     }
-    
+
+    @Override
     public ContainerLoader getContainer() {
         return container;
     }
-    
+
+    @Override
     public Report getReport() {
         return report;
     }
-    
+
+    @Override
     public boolean cancel() {
         cancel = true;
         return true;
     }
-    
+
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
     }
