@@ -71,7 +71,7 @@ public class ActionsToolbar extends JToolBar {
 
     //Settings
     private Color color = new Color(0.6f, 0.6f, 0.6f);
-    private float size = 1f;
+    private float size = 10.0f;
 
     public ActionsToolbar() {
         initDesign();
