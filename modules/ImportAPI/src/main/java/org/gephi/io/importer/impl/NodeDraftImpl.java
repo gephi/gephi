@@ -92,130 +92,6 @@ public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
     public void setFixed(boolean fixed) {
         this.fixed = fixed;
     }
-//
-//    public void addAttributeValue(AttributeColumn column, Object value) {
-//        if (column.getType().isDynamicType() && !(value instanceof DynamicType)) {
-//            if (value instanceof String && !column.getType().equals(AttributeType.DYNAMIC_STRING)) {
-//                //Value needs to be parsed
-//                value = TypeConvertor.getStaticType(column.getType()).parse((String) value);
-//            }
-//            //Wrap value in a dynamic type
-//            value = DynamicUtilities.createDynamicObject(column.getType(), new Interval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, value));
-//        }
-//        attributeRow.setValue(column, value);
-//    }
-//
-//    public void addAttributeValue(AttributeColumn column, Object value, String dateFrom, String dateTo) throws IllegalArgumentException {
-//        addAttributeValue(column, value, dateFrom, dateTo, false, false);
-//    }
-//
-//    public void addAttributeValue(AttributeColumn column, Object value, String dateFrom, String dateTo, boolean startOpen, boolean endOpen) throws IllegalArgumentException {
-//        if (!column.getType().isDynamicType()) {
-//            throw new IllegalArgumentException("The column must be dynamic");
-//        }
-//        Double start = Double.NEGATIVE_INFINITY;
-//        Double end = Double.POSITIVE_INFINITY;
-//        if (dateFrom != null && !dateFrom.isEmpty()) {
-//            try {
-//                if (container.getTimeFormat().equals(TimeFormat.DATETIME)) {
-//                    start = DynamicUtilities.getDoubleFromXMLDateTimeString(dateFrom);
-//                } else if (container.getTimeFormat().equals(TimeFormat.DATE)) {
-//                    start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
-//                } else if (container.getTimeFormat().equals(TimeFormat.TIMESTAMP)) {
-//                    start = Double.parseDouble(dateFrom + "000");
-//                } else {
-//                    start = Double.parseDouble(dateFrom);
-//                }
-//            } catch (Exception ex) {
-//                throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
-//            }
-//        }
-//        if (dateTo != null && !dateTo.isEmpty()) {
-//            try {
-//                if (container.getTimeFormat().equals(TimeFormat.DATETIME)) {
-//                    end = DynamicUtilities.getDoubleFromXMLDateTimeString(dateTo);
-//                } else if (container.getTimeFormat().equals(TimeFormat.DATE)) {
-//                    end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
-//                } else if (container.getTimeFormat().equals(TimeFormat.TIMESTAMP)) {
-//                    end = Double.parseDouble(dateTo + "000");
-//                } else {
-//                    end = Double.parseDouble(dateTo);
-//                }
-//            } catch (Exception ex) {
-//                throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
-//            }
-//        }
-//        if ((start == null && end == null) || (start == Double.NEGATIVE_INFINITY && end == Double.POSITIVE_INFINITY)) {
-//            throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
-//        }
-//        if (value instanceof String && !column.getType().equals(AttributeType.DYNAMIC_STRING)) {
-//            //Value needs to be parsed
-//            AttributeType staticType = TypeConvertor.getStaticType(column.getType());
-//            value = staticType.parse((String) value);
-//        }
-//        Object sourceVal = attributeRow.getValue(column);
-//        if (sourceVal != null && sourceVal instanceof DynamicType) {
-//            value = DynamicUtilities.createDynamicObject(column.getType(), (DynamicType) sourceVal, new Interval(start, end, startOpen, endOpen, value));
-//        } else if (sourceVal != null && !(sourceVal instanceof DynamicType)) {
-//            List<Interval> intervals = new ArrayList<Interval>(2);
-//            intervals.add(new Interval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, sourceVal));
-//            intervals.add(new Interval(start, end, startOpen, endOpen, value));
-//            value = DynamicUtilities.createDynamicObject(column.getType(), intervals);
-//        } else {
-//            value = DynamicUtilities.createDynamicObject(column.getType(), new Interval(start, end, startOpen, endOpen, value));
-//        }
-//        attributeRow.setValue(column, value);
-//    }
-//
-//    public void addTimeInterval(String dateFrom, String dateTo) throws IllegalArgumentException {
-//        addTimeInterval(dateFrom, dateTo, false, false);
-//    }
-//
-//    public void addTimeInterval(String dateFrom, String dateTo, boolean startOpen, boolean endOpen) throws IllegalArgumentException {
-//        if (timeInterval == null) {
-//            timeInterval = new TimeInterval();
-//        }
-//        Double start = null;
-//        Double end = null;
-//        if (dateFrom != null && !dateFrom.isEmpty()) {
-//            try {
-//                if (container.getTimeFormat().equals(TimeFormat.DATETIME)) {
-//                    start = DynamicUtilities.getDoubleFromXMLDateTimeString(dateFrom);
-//                } else if (container.getTimeFormat().equals(TimeFormat.DATE)) {
-//                    start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
-//                } else if (container.getTimeFormat().equals(TimeFormat.TIMESTAMP)) {
-//                    start = Double.parseDouble(dateFrom + "000");
-//                } else {
-//                    start = Double.parseDouble(dateFrom);
-//                }
-//            } catch (Exception ex) {
-//                throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
-//            }
-//        }
-//        if (dateTo != null && !dateTo.isEmpty()) {
-//            try {
-//                if (container.getTimeFormat().equals(TimeFormat.DATETIME)) {
-//                    end = DynamicUtilities.getDoubleFromXMLDateTimeString(dateTo);
-//                } else if (container.getTimeFormat().equals(TimeFormat.DATE)) {
-//                    end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
-//                } else if (container.getTimeFormat().equals(TimeFormat.TIMESTAMP)) {
-//                    end = Double.parseDouble(dateTo + "000");
-//                } else {
-//                    end = Double.parseDouble(dateTo);
-//                }
-//            } catch (Exception ex) {
-//                throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
-//            }
-//        }
-//        if (start == null && end == null) {
-//            throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
-//        }
-//        timeInterval = new TimeInterval(timeInterval, start != null ? start : Double.NEGATIVE_INFINITY, end != null ? end : Double.POSITIVE_INFINITY, startOpen, endOpen);
-//    }
-//
-//    public void setTimeInterval(TimeInterval timeInterval) {
-//        this.timeInterval = timeInterval;
-//    }
 
     //GETTERS
     @Override
@@ -248,16 +124,12 @@ public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
     }
 
     @Override
-    public Object getValue(String key) {
-        ColumnDraft column = container.getNodeColumn(key);
-        if (column != null) {
-            return getAttributeValue(((ColumnDraftImpl) column).getIndex());
-        }
-        return null;
+    ColumnDraft getColumn(String key, Class type) {
+        return container.addNodeColumn(key, type);
     }
 
     @Override
-    ColumnDraft getColumn(String key, Class type) {
-        return container.addNodeColumn(key, type);
+    ColumnDraft getColumn(String key) {
+        return container.getNodeColumn(key);
     }
 }

@@ -53,6 +53,10 @@ public interface ElementDraft {
 
     public Object getValue(String key);
 
+    public Object getValue(String key, double timestamp);
+
+    public double[] getTimestamps(String key);
+
     public String getLabel();
 
     public Color getColor();
@@ -104,4 +108,6 @@ public interface ElementDraft {
     public void addTimestamp(double timestamp);
 
     public void addTimestamp(String dateTime);
+
+    public double[] getTimestamps();
 }

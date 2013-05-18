@@ -77,7 +77,10 @@ public abstract class ElementDraftImpl implements ElementDraft {
         this.id = id;
         this.attributes = new Object[0];
         this.timeStamps = new double[0];
+        this.dynamicAttributes = new Double2ObjectMap[0];
     }
+
+    abstract ColumnDraft getColumn(String key);
 
     abstract ColumnDraft getColumn(String key, Class type);
 
@@ -119,6 +122,15 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    @Override
+    public Object getValue(String key) {
+        ColumnDraft column = getColumn(key);
+        if (column != null) {
+            return getAttributeValue(((ColumnDraftImpl) column).getIndex());
+        }
+        return null;
     }
 
     @Override
@@ -230,6 +242,43 @@ public abstract class ElementDraftImpl implements ElementDraft {
         timeStamps[index] = timestamp;
     }
 
+    @Override
+    public double[] getTimestamps() {
+        return timeStamps;
+    }
+
+    @Override
+    public double[] getTimestamps(String key) {
+        ColumnDraft col = getColumn(key);
+        if (col != null) {
+            Double2ObjectMap m = getDynamicAttributeValue(((ColumnDraftImpl) col).getIndex());
+            if (m != null) {
+                return m.keySet().toDoubleArray();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Object getValue(String key, double timestamp) {
+        ColumnDraft col = getColumn(key);
+        if (col != null) {
+            Double2ObjectMap m = getDynamicAttributeValue(((ColumnDraftImpl) col).getIndex());
+            if (m != null) {
+                return m.get(timestamp);
+            }
+        }
+        return null;
+    }
+
+    public boolean isDynamic() {
+        return timeStamps.length > 0;
+    }
+
+    public boolean hasDynamicAttributes() {
+        return dynamicAttributes.length > 0;
+    }
+
     //UTILITY
     protected void setAttributeValue(int index, Object value) {
         if (index >= attributes.length) {
@@ -257,6 +306,13 @@ public abstract class ElementDraftImpl implements ElementDraft {
     protected Object getAttributeValue(int index) {
         if (index < attributes.length) {
             return attributes[index];
+        }
+        return null;
+    }
+
+    protected Double2ObjectMap getDynamicAttributeValue(int index) {
+        if (index < dynamicAttributes.length) {
+            return dynamicAttributes[index];
         }
         return null;
     }
