@@ -43,6 +43,7 @@ package org.gephi.io.processor.plugin;
 
 import java.awt.Color;
 import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.AttributeUtils;
 import org.gephi.attribute.api.Origin;
 import org.gephi.attribute.api.Table;
 import org.gephi.graph.api.Edge;
@@ -67,19 +68,26 @@ public abstract class AbstractProcessor {
         Table nodeTable = attributeModel.getNodeTable();
         for (ColumnDraft col : container.getNodeColumns()) {
             if (!nodeTable.hasColumn(col.getId())) {
-                nodeTable.addColumn(col.getId(), col.getTitle(), col.getTypeClass(), Origin.DATA, col.getDefaultValue(), true);
+                Class typeClass = col.getTypeClass();
+                if (col.isDynamic()) {
+                    typeClass = AttributeUtils.getDynamicType(typeClass);
+                }
+                nodeTable.addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, col.getDefaultValue(), true);
             }
         }
         Table edgeTable = attributeModel.getEdgeTable();
         for (ColumnDraft col : container.getEdgeColumns()) {
             if (!edgeTable.hasColumn(col.getId())) {
-                edgeTable.addColumn(col.getId(), col.getTitle(), col.getTypeClass(), Origin.DATA, col.getDefaultValue(), true);
+                Class typeClass = col.getTypeClass();
+                if (col.isDynamic()) {
+                    typeClass = AttributeUtils.getDynamicType(typeClass);
+                }
+                edgeTable.addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, col.getDefaultValue(), true);
             }
         }
     }
 
     protected void flushToNode(NodeDraft nodeDraft, Node node) {
-
         if (nodeDraft.getColor() != null) {
             node.setColor(nodeDraft.getColor());
         }
@@ -117,9 +125,21 @@ public abstract class AbstractProcessor {
 
     protected void flushToNodeAttributes(NodeDraft nodeDraft, Node node) {
         for (ColumnDraft col : container.getNodeColumns()) {
-            Object val = nodeDraft.getValue(col.getId());
-            if (val != null) {
-                node.setAttribute(col.getId(), val);
+            if (col.isDynamic()) {
+                double[] timestamps = nodeDraft.getTimestamps(col.getId());
+                if (timestamps != null) {
+                    for (double d : timestamps) {
+                        Object val = nodeDraft.getValue(col.getId(), d);
+                        if (val != null) {
+                            node.setAttribute(col.getId(), val, d);
+                        }
+                    }
+                }
+            } else {
+                Object val = nodeDraft.getValue(col.getId());
+                if (val != null) {
+                    node.setAttribute(col.getId(), val);
+                }
             }
         }
     }
@@ -157,9 +177,21 @@ public abstract class AbstractProcessor {
 
     protected void flushToEdgeAttributes(EdgeDraft edgeDraft, Edge edge) {
         for (ColumnDraft col : container.getEdgeColumns()) {
-            Object val = edgeDraft.getValue(col.getId());
-            if (val != null) {
-                edge.setAttribute(col.getId(), val);
+            if (col.isDynamic()) {
+                double[] timestamps = edgeDraft.getTimestamps(col.getId());
+                if (timestamps != null) {
+                    for (double d : timestamps) {
+                        Object val = edgeDraft.getValue(col.getId(), d);
+                        if (val != null) {
+                            edge.setAttribute(col.getId(), val, d);
+                        }
+                    }
+                }
+            } else {
+                Object val = edgeDraft.getValue(col.getId());
+                if (val != null) {
+                    edge.setAttribute(col.getId(), val);
+                }
             }
         }
     }
