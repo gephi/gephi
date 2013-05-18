@@ -157,7 +157,8 @@ public interface ContainerLoader {
      * @param target the edge target node
      * @return                  <code>true</code> if edges exists, <code>false</code> otherwise
      */
-//    public boolean edgeExists(NodeDraft source, NodeDraft target);
+    public boolean edgeExists(String source, String target);
+
     /**
      * Set edge default type: <b>DIRECTED</b>, <b>UNDIRECTED</b> or
      * <b>MIXED</b>. Default value is directed.

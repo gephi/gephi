@@ -97,6 +97,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private final Object2ObjectMap<String, ColumnDraft> edgeColumns;
     //Management
     private boolean dynamicGraph = false;
+    private boolean dynamicAttributes = false;
     private Report report;
     //Counting
     private int directedEdgesCount = 0;
@@ -104,8 +105,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private int selfLoops = 0;
     //Dynamic
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
-    private Double timeIntervalMin;
-    private Double timeIntervalMax;
+    private double timeIntervalMin;
+    private double timeIntervalMax;
 
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
@@ -190,6 +191,26 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public boolean nodeExists(String id) {
         checkId(id);
         return nodeMap.containsKey(id);
+    }
+
+    @Override
+    public boolean edgeExists(String source, String target) {
+        checkId(source);
+        checkId(target);
+        NodeDraftImpl sourceNode = getNode(source);
+        NodeDraftImpl targetNode = getNode(target);
+        if (sourceNode != null && targetNode != null) {
+            boolean undirected = edgeDefault.equals(EdgeDirectionDefault.UNDIRECTED) || (undirectedEdgesCount > 0 && directedEdgesCount == 0);
+            long edgeId = getLongId(sourceNode, targetNode, !undirected);
+            for (Long2ObjectMap l : edgeTypeSets) {
+                if (l != null) {
+                    if (l.containsKey(edgeId)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -385,37 +406,6 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return timeFormat;
     }
 
-//    public void setTimeIntervalMax(String timeIntervalMax) {
-//        try {
-//            if (timeFormat.equals(TimeFormat.DATE)) {
-//                this.timeIntervalMax = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMax);
-//            } else if (timeFormat.equals(TimeFormat.DATETIME)) {
-//                this.timeIntervalMax = DynamicUtilities.getDoubleFromXMLDateTimeString(timeIntervalMax);
-//            } else if (timeFormat.equals(TimeFormat.TIMESTAMP)) {
-//                this.timeIntervalMax = Double.parseDouble(timeIntervalMax + "000");
-//            } else {
-//                this.timeIntervalMax = Double.parseDouble(timeIntervalMax);
-//            }
-//        } catch (Exception ex) {
-//            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMax), Level.SEVERE));
-//        }
-//    }
-//
-//    public void setTimeIntervalMin(String timeIntervalMin) {
-//        try {
-//            if (timeFormat.equals(TimeFormat.DATE)) {
-//                this.timeIntervalMin = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMin);
-//            } else if (timeFormat.equals(TimeFormat.DATETIME)) {
-//                this.timeIntervalMin = DynamicUtilities.getDoubleFromXMLDateTimeString(timeIntervalMin);
-//            } else if (timeFormat.equals(TimeFormat.TIMESTAMP)) {
-//                this.timeIntervalMin = Double.parseDouble(timeIntervalMin + "000");
-//            } else {
-//                this.timeIntervalMin = Double.parseDouble(timeIntervalMin);
-//            }
-//        } catch (Exception ex) {
-//            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMin), Level.SEVERE));
-//        }
-//    }
     @Override
     public void setTimeFormat(TimeFormat timeFormat) {
         this.timeFormat = timeFormat;
@@ -433,6 +423,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             int index = nodeColumns.size();
             column = new ColumnDraftImpl(key, index, dynamic, typeClass);
             nodeColumns.put(key, column);
+            if (dynamic) {
+                report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.AddDynamicNodeColumn", key, typeClass.getSimpleName()));
+            } else {
+                report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.AddNodeColumn", key, typeClass.getSimpleName()));
+            }
         } else {
             if (!column.getTypeClass().equals(typeClass)) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Column_Type_Mismatch", key, column.getTypeClass()), Level.SEVERE));
@@ -453,6 +448,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             int index = edgeColumns.size();
             column = new ColumnDraftImpl(key, index, dynamic, typeClass);
             edgeColumns.put(key, column);
+            if (dynamic) {
+                report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.AddDynamicEdgeColumn", key, typeClass.getSimpleName()));
+            } else {
+                report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.AddEdgeColumn", key, typeClass.getSimpleName()));
+            }
         } else {
             if (!column.getTypeClass().equals(typeClass)) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Column_Type_Mismatch", key, column.getTypeClass()), Level.SEVERE));
@@ -514,34 +514,26 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
 
         //Is dynamic graph
-//        for (NodeDraftImpl node : nodeMap.values()) {
-//            dynamicGraph = node.getTimeInterval() != null;
-//            if (dynamicGraph) {
-//                break;
-//            }
-//        }
-//        if (!dynamicGraph) {
-//            for (EdgeDraftImpl edge : edgeMap.values()) {
-//                dynamicGraph = edge.getTimeInterval() != null;
-//                if (dynamicGraph) {
-//                    break;
-//                }
-//            }
-//        }
-//        if (!dynamicGraph) {
-//            for (AttributeColumn col : attributeModel.getNodeTable().getColumns()) {
-//                dynamicGraph = col.getType().isDynamicType();
-//                if (dynamicGraph) {
-//                    break;
-//                }
-//            }
-//            for (AttributeColumn col : attributeModel.getEdgeTable().getColumns()) {
-//                dynamicGraph = dynamicGraph || col.getType().isDynamicType();
-//                if (dynamicGraph) {
-//                    break;
-//                }
-//            }
-//        }
+        for (NodeDraftImpl node : nodeList) {
+            if (node != null) {
+                if (node.isDynamic()) {
+                    dynamicGraph = true;
+                }
+                if (node.hasDynamicAttributes()) {
+                    dynamicAttributes = true;
+                }
+            }
+        }
+        for (EdgeDraftImpl edge : edgeList) {
+            if (edge != null) {
+                if (edge.isDynamic()) {
+                    dynamicGraph = true;
+                }
+                if (edge.hasDynamicAttributes()) {
+                    dynamicAttributes = true;
+                }
+            }
+        }
 
         //Print time interval values to report
 //        if (timeIntervalMin != null || timeIntervalMax != null) {
@@ -559,112 +551,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 //            }
 //        }
 //
-//        //Print TimeFormat
-//        if (dynamicGraph) {
-//            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeFormat", timeFormat.toString()), Level.INFO));
-//        }
-
-        //Remove overlapping
-//        if (dynamicGraph && parameters.isRemoveIntervalsOverlapping()) {
-//            for (NodeDraftImpl node : nodeMap.values()) {
-//                AttributeValue[] values = node.getAttributeRow().getValues();
-//                for (int i = 0; i < values.length; i++) {
-//                    AttributeValue val = values[i];
-//                    if (val.getValue() != null && val.getValue() instanceof DynamicType) {   //is Dynamic type
-//                        DynamicType type = (DynamicType) val.getValue();
-//                        type = DynamicUtilities.removeOverlapping(type);
-//                        node.getAttributeRow().setValue(val.getColumn(), type);
-//                    }
-//                }
-//            }
-//            for (EdgeDraftImpl edge : edgeMap.values()) {
-//                AttributeValue[] values = edge.getAttributeRow().getValues();
-//                for (int i = 0; i < values.length; i++) {
-//                    AttributeValue val = values[i];
-//                    if (val.getValue() != null && val.getValue() instanceof DynamicType) {   //is Dynamic type
-//                        DynamicType type = (DynamicType) val.getValue();
-//                        type = DynamicUtilities.removeOverlapping(type);
-//                        edge.getAttributeRow().setValue(val.getColumn(), type);
-//                    }
-//                }
-//            }
-//        }
-
-        //Dynamic attributes bounds
-//        if (dynamicGraph && (timeIntervalMin != null || timeIntervalMax != null)) {
-//            for (NodeDraftImpl node : nodeMap.values()) {
-//                boolean issue = false;
-//                if (timeIntervalMin != null || timeIntervalMax != null) {
-//                    if (timeIntervalMin != null && node.getTimeInterval() != null && node.getTimeInterval().getLow() < timeIntervalMin) {
-//                        node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), timeIntervalMin, node.getTimeInterval().getHigh()));
-//                        issue = true;
-//                    }
-//                    if (timeIntervalMax != null && node.getTimeInterval() != null && node.getTimeInterval().getHigh() > timeIntervalMax) {
-//                        node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), node.getTimeInterval().getLow(), timeIntervalMax));
-//                        issue = true;
-//                    }
-//                    if (node.getTimeInterval() == null) {
-//                        node.setTimeInterval(new TimeInterval(timeIntervalMin, timeIntervalMax));
-//                    }
-//                }
-//
-//                AttributeValue[] values = node.getAttributeRow().getValues();
-//                for (int i = 0; i < values.length; i++) {
-//                    AttributeValue val = values[i];
-//                    if (val.getValue() != null && val.getValue() instanceof DynamicType) {   //is Dynamic type
-//                        DynamicType type = (DynamicType) val.getValue();
-//                        if (timeIntervalMin != null && type.getLow() < timeIntervalMin) {
-//                            if (!Double.isInfinite(type.getLow())) {
-//                                issue = true;
-//                            }
-//                            node.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, timeIntervalMin, type.getHigh()));
-//                        }
-//                        if (timeIntervalMax != null && type.getHigh() > timeIntervalMax) {
-//                            if (!Double.isInfinite(type.getHigh())) {
-//                                issue = true;
-//                            }
-//                            node.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, type.getLow(), timeIntervalMax));
-//                        }
-//                    }
-//                }
-//            }
-//            for (EdgeDraftImpl edge : edgeMap.values()) {
-//                boolean issue = false;
-//                if (timeIntervalMin != null || timeIntervalMax != null) {
-//                    if (timeIntervalMin != null && edge.getTimeInterval() != null && edge.getTimeInterval().getLow() < timeIntervalMin) {
-//                        edge.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(edge.getTimeInterval(), timeIntervalMin, edge.getTimeInterval().getHigh()));
-//                        issue = true;
-//                    }
-//                    if (timeIntervalMax != null && edge.getTimeInterval() != null && edge.getTimeInterval().getHigh() > timeIntervalMax) {
-//                        edge.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(edge.getTimeInterval(), edge.getTimeInterval().getLow(), timeIntervalMax));
-//                        issue = true;
-//                    }
-//                    if (edge.getTimeInterval() == null) {
-//                        edge.setTimeInterval(new TimeInterval(timeIntervalMin, timeIntervalMax));
-//                    }
-//                }
-//
-//                AttributeValue[] values = edge.getAttributeRow().getValues();
-//                for (int i = 0; i < values.length; i++) {
-//                    AttributeValue val = values[i];
-//                    if (val.getValue() != null && val.getValue() instanceof DynamicType) {   //is Dynamic type
-//                        DynamicType type = (DynamicType) val.getValue();
-//                        if (timeIntervalMin != null && type.getLow() < timeIntervalMin) {
-//                            if (!Double.isInfinite(type.getLow())) {
-//                                issue = true;
-//                            }
-//                            edge.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, timeIntervalMin, type.getHigh()));
-//                        }
-//                        if (timeIntervalMax != null && type.getHigh() > timeIntervalMax) {
-//                            if (!Double.isInfinite(type.getHigh())) {
-//                                issue = true;
-//                            }
-//                            edge.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, type.getLow(), timeIntervalMax));
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        //Print TimeFormat
+        if (dynamicGraph) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeFormat", timeFormat.toString()), Level.INFO));
+        }
 
         return true;
     }
@@ -839,8 +729,9 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return dynamicGraph;
     }
 
-    public void setDynamicGraph(boolean dynamicGraph) {
-        this.dynamicGraph = dynamicGraph;
+    @Override
+    public boolean hasDynamicAttributes() {
+        return dynamicAttributes;
     }
 
     //REPORT

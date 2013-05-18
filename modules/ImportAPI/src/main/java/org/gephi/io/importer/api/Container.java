@@ -118,7 +118,8 @@ public interface Container {
      * This method must be called after the loading is complete and before
      * unloading. Its aim is to verify data consistency as a whole.
      *
-     * @return <code>true</code> if container data is * *      * consistent, <code>false</code> otherwise
+     * @return <code>true</code> if container data is * * *
+     * consistent, <code>false</code> otherwise
      */
     public boolean verify();
 
@@ -128,6 +129,8 @@ public interface Container {
     public void closeLoader();
 
     public boolean isDynamicGraph();
+
+    public boolean hasDynamicAttributes();
 
     public boolean hasSelfLoops();
 
