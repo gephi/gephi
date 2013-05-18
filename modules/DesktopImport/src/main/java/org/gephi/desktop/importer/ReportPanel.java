@@ -387,6 +387,7 @@ public class ReportPanel extends javax.swing.JPanel {
                 String yes = NbBundle.getMessage(getClass(), "ReportPanel.yes");
                 String no = NbBundle.getMessage(getClass(), "ReportPanel.no");
                 dynamicLabel.setText(container.isDynamicGraph() ? yes : no);
+                dynamicAttsLabel.setText(container.hasDynamicAttributes() ? yes : no);
                 multigraphLabel.setText(container.isMultiGraph() ? yes : no);
             }
         });
@@ -471,6 +472,8 @@ public class ReportPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         labelMultiGraph = new javax.swing.JLabel();
         multigraphLabel = new javax.swing.JLabel();
+        labelDynamicAtts = new javax.swing.JLabel();
+        dynamicAttsLabel = new javax.swing.JLabel();
         moreOptionsLink = new org.jdesktop.swingx.JXHyperlink();
         moreOptionsPanel = new javax.swing.JPanel();
         autoscaleCheckbox = new javax.swing.JCheckBox();
@@ -483,6 +486,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
         sourceLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.sourceLabel.text")); // NOI18N
 
+        issuesOutline.setPreferredSize(new java.awt.Dimension(650, 0));
         tab1ScrollPane.setViewportView(issuesOutline);
 
         tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.tab1ScrollPane.TabConstraints.tabTitle"), tab1ScrollPane); // NOI18N
@@ -555,7 +559,7 @@ public class ReportPanel extends javax.swing.JPanel {
         jLabel1.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.jLabel1.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weighty = 1.0;
@@ -564,7 +568,7 @@ public class ReportPanel extends javax.swing.JPanel {
         labelMultiGraph.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelMultiGraph.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 6, 0);
         statsPanel.add(labelMultiGraph, gridBagConstraints);
@@ -572,11 +576,28 @@ public class ReportPanel extends javax.swing.JPanel {
         multigraphLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.multigraphLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 6, 0);
         statsPanel.add(multigraphLabel, gridBagConstraints);
+
+        labelDynamicAtts.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelDynamicAtts.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 6, 0);
+        statsPanel.add(labelDynamicAtts, gridBagConstraints);
+
+        dynamicAttsLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.dynamicAttsLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 6, 0);
+        statsPanel.add(dynamicAttsLabel, gridBagConstraints);
 
         moreOptionsLink.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.moreOptionsLink.text")); // NOI18N
         moreOptionsLink.setClickedColor(new java.awt.Color(0, 51, 255));
@@ -637,7 +658,7 @@ public class ReportPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabbedPane)
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelSrc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -677,13 +698,15 @@ public class ReportPanel extends javax.swing.JPanel {
                 .addComponent(moreOptionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(processorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox autoscaleCheckbox;
     private javax.swing.JCheckBox createMissingNodesCheckbox;
+    private javax.swing.JLabel dynamicAttsLabel;
     private javax.swing.JLabel dynamicLabel;
     private javax.swing.JLabel edgeCountLabel;
     private javax.swing.JComboBox edgesMergeStrategyCombo;
@@ -691,6 +714,7 @@ public class ReportPanel extends javax.swing.JPanel {
     private org.netbeans.swing.outline.Outline issuesOutline;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel labelDynamic;
+    private javax.swing.JLabel labelDynamicAtts;
     private javax.swing.JLabel labelEdgeCount;
     private javax.swing.JLabel labelGraphType;
     private javax.swing.JLabel labelMultiGraph;
