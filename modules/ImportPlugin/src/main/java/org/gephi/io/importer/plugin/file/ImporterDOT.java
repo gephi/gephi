@@ -173,6 +173,9 @@ public class ImporterDOT implements FileImporter, LongTask {
             } else if (streamTokenizer.ttype == '[') {
                 NodeDraft nodeDraft = getOrCreateNode(nodeId);
                 nodeAttributes(streamTokenizer, nodeDraft);
+            } else {
+                getOrCreateNode(nodeId);
+                streamTokenizer.pushBack();
             }
         }
     }
