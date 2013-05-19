@@ -44,6 +44,7 @@ package org.gephi.io.exporter.preview;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import org.gephi.io.exporter.spi.ByteExporter;
 import org.gephi.io.exporter.spi.VectorExporter;
@@ -80,9 +81,9 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
         Progress.start(progress);
         
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        controller.getModel(workspace).getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, 1.0);
         
         PreviewProperties props = controller.getModel(workspace).getProperties();
+        props.putValue(PreviewProperty.VISIBILITY_RATIO, 1.0);
         props.putValue("width", width);
         props.putValue("height", height);
         Color oldColor = props.getColorValue(PreviewProperty.BACKGROUND_COLOR);
@@ -107,6 +108,76 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
             Progress.switchToIndeterminate(progress);
             
             PGraphicsJava2D pg2 = (PGraphicsJava2D) target.getGraphics();
+            int filler = pg2.pixels[0];
+            Boolean allWhites = false;
+            while (!allWhites)  {
+                Boolean[] edgePixels = new Boolean[2*width + 2*height - 4];
+                int cur = 0;
+                
+                for (int i = 0; i <= width - 1; i++)    {
+                    if (pg2.pixels[i] != filler)    {
+                        edgePixels[cur] = false;
+                    }
+                    else    {
+                        edgePixels[cur] = true;
+                    }
+                    cur += 1;
+                }
+                
+                for (int i = width - 1; i >=0; i--) {
+                    if (pg2.pixels[width*height-1 - i] != filler)
+                    {
+                        edgePixels[cur] = false;
+                    }
+                    else    {
+                        edgePixels[cur] = true;
+                    }
+                    cur += 1;
+                }
+                
+                for (int i = 2; i <= height - 1; i++)   {
+                    if (pg2.pixels[width*i - 1] != filler)  {
+                        edgePixels[cur] = false;
+                    }
+                    else    {
+                        edgePixels[cur] = true;
+                    }
+                    cur += 1;
+                }
+                
+                for (int i = 1; i <= height - 2; i++)   {
+                    if (pg2.pixels[width*i] != filler)  {
+                        edgePixels[cur] = false;
+                    }
+                    else    {
+                        edgePixels[cur] = true;
+                    }
+                    cur += 1;
+                }
+                
+                Boolean tempFlag = true;
+                for(int i = 0; i < edgePixels.length; i++)  {
+                    tempFlag = tempFlag && edgePixels[i];
+                }
+                
+                if (tempFlag)   {
+                    allWhites = true;
+                }
+                else    {
+                    props.putValue(PreviewProperty.MARGIN, new Float((float) margin + 2));
+                    margin += 2;
+                    
+                    controller.refreshPreview(workspace);                    
+                    target.refresh();
+                    
+                    pg2 = (PGraphicsJava2D) target.getGraphics();
+                    if (margin > 100)   {
+                        allWhites = true;
+                    }
+                }
+            }
+            
+            pg2 = (PGraphicsJava2D) target.getGraphics();            
             BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             img.setRGB(0, 0, width, height, pg2.pixels, 0, width);
             ImageIO.write(img, "png", stream);
