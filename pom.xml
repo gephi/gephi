@@ -1186,6 +1186,7 @@
         <module>modules/DesktopPerspective</module>
         <module>modules/DesktopProgress</module>
         <module>modules/DesktopProject</module>
+        <module>modules/DesktopRanking</module>
         <module>modules/DesktopRecentFiles</module>
         <module>modules/DirectoryChooser</module>
         <module>modules/DynamicAPI</module>
@@ -1205,7 +1206,11 @@
         <module>modules/ProcessorPluginUI</module>
         <module>modules/ProjectAPI</module>
         <module>modules/ProjectUI</module>
+        <module>modules/RankingAPI</module>
+        <module>modules/RankingPlugin</module>
+        <module>modules/RankingPluginUI</module>
         <module>modules/SettingsUpgrader</module>
+        <module>modules/SplineEditor</module>
         <module>modules/ToolsAPI</module>
         <module>modules/UIComponents</module>
         <module>modules/UIUtils</module>

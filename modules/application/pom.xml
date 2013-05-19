@@ -103,14 +103,14 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>project-ui</artifactId>
         </dependency>
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ranking-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ranking-plugin</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-utils</artifactId>
@@ -119,10 +119,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-components</artifactId>
         </dependency>
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ranking-plugin-ui</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>settings-upgrader</artifactId>
@@ -135,10 +135,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>spigot-plugin-ui</artifactId>
         </dependency>-->
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>spline-editor</artifactId>
-        </dependency>-->
+        </dependency>
         <!--        <dependency>
                     <groupId>${project.groupId}</groupId>
                     <artifactId>statistics-api</artifactId>
@@ -224,10 +224,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>io-exporter-plugin</artifactId>
         </dependency>-->
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-ranking</artifactId>
-        </dependency>
+        </dependency><!--
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-statistics</artifactId>

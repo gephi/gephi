@@ -42,9 +42,9 @@
 package org.gephi.ranking;
 
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -66,20 +66,21 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = RankingController.class)
 public class RankingControllerImpl implements RankingController {
-    
+
     private final GraphController graphController;
     private RankingModelImpl model;
-    
+
     public RankingControllerImpl() {
         graphController = Lookup.getDefault().lookup(GraphController.class);
 
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
-            
+            @Override
             public void initialize(Workspace workspace) {
             }
-            
+
+            @Override
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(RankingModelImpl.class);
                 if (model == null) {
@@ -88,20 +89,23 @@ public class RankingControllerImpl implements RankingController {
                 }
                 model.select();
             }
-            
+
+            @Override
             public void unselect(Workspace workspace) {
                 model.unselect();
                 model = null;
             }
-            
+
+            @Override
             public void close(Workspace workspace) {
             }
-            
+
+            @Override
             public void disable() {
                 model = null;
             }
         });
-        
+
         if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(RankingModelImpl.class);
             if (model == null) {
@@ -110,11 +114,13 @@ public class RankingControllerImpl implements RankingController {
             }
         }
     }
-    
+
+    @Override
     public RankingModel getModel() {
         return model;
     }
-    
+
+    @Override
     public RankingModel getModel(Workspace workspace) {
         RankingModel m = workspace.getLookup().lookup(RankingModelImpl.class);
         if (m == null) {
@@ -123,47 +129,50 @@ public class RankingControllerImpl implements RankingController {
         }
         return m;
     }
-    
+
+    @Override
     public void setInterpolator(Interpolator interpolator) {
         if (model != null) {
             model.setInterpolator(interpolator);
         }
     }
-    
+
+    @Override
     public void setUseLocalScale(boolean useLocalScale) {
         if (model != null) {
             model.setLocalScale(useLocalScale);
         }
     }
-    
+
+    @Override
     public void transform(Ranking ranking, Transformer transformer) {
         //Refresh ranking
         ranking = model.getRanking(ranking.getElementType(), ranking.getName());
-        
+
         Workspace workspace = model.getWorkspace();
-        GraphModel graphModel = graphController.getModel(workspace);
-        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+        GraphModel graphModel = graphController.getGraphModel(workspace);
+        Graph graph = graphModel.getGraphVisible();
         Interpolator interpolator = model.getInterpolator();
-        
+
         if (ranking.getElementType().equals(Ranking.NODE_ELEMENT)) {
-            for (Node node : graph.getNodes().toArray()) {
+            for (Node node : graph.getNodes()) {
                 Number value = ranking.getValue(node);
                 if (value != null) {
                     float normalizedValue = ranking.normalize(value);
                     if (transformer.isInBounds(normalizedValue)) {
                         normalizedValue = interpolator.interpolate(normalizedValue);
-                        transformer.transform(node.getNodeData(), normalizedValue);
+                        transformer.transform(node, normalizedValue);
                     }
                 }
             }
         } else if (ranking.getElementType().equals(Ranking.EDGE_ELEMENT)) {
-            for (Edge edge : graph.getEdgesAndMetaEdges().toArray()) {
+            for (Edge edge : graph.getEdges()) {
                 Number value = ranking.getValue(edge);
                 if (value != null) {
                     float normalizedValue = ranking.normalize(value);
                     if (transformer.isInBounds(normalizedValue)) {
                         normalizedValue = interpolator.interpolate(normalizedValue);
-                        transformer.transform(edge.getEdgeData(), normalizedValue);
+                        transformer.transform(edge, normalizedValue);
                     }
                 }
             }
@@ -172,14 +181,16 @@ public class RankingControllerImpl implements RankingController {
         //Send Event
         model.fireRankingListener(new RankingEventImpl(RankingEvent.EventType.APPLY_TRANSFORMER, model, ranking, transformer));
     }
-    
+
+    @Override
     public void startAutoTransform(Ranking ranking, Transformer transformer) {
         model.addAutoRanking(ranking, transformer);
 
         //Send Event
         model.fireRankingListener(new RankingEventImpl(RankingEvent.EventType.START_AUTO_TRANSFORM, model, ranking, transformer));
     }
-    
+
+    @Override
     public void stopAutoTransform(Transformer transformer) {
         Ranking ranking = model.getAutoTransformerRanking(transformer);
         model.removeAutoRanking(transformer);

@@ -66,6 +66,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = WorkspacePersistenceProvider.class)
 public class RankingPersistenceProvider implements WorkspacePersistenceProvider {
 
+    @Override
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {
         RankingUIModel rankingUIModel = workspace.getLookup().lookup(RankingUIModel.class);
         if (rankingUIModel != null) {
@@ -77,6 +78,7 @@ public class RankingPersistenceProvider implements WorkspacePersistenceProvider 
         }
     }
 
+    @Override
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         RankingUIController ruic = Lookup.getDefault().lookup(RankingUIController.class);
         RankingUIModel ruiModel = ruic.getModel(workspace);
@@ -87,6 +89,7 @@ public class RankingPersistenceProvider implements WorkspacePersistenceProvider 
         }
     }
 
+    @Override
     public String getIdentifier() {
         return "rankinguimodel";
     }

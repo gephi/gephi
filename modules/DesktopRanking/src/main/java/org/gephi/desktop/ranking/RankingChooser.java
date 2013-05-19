@@ -91,6 +91,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
 
         rankingItemListener = new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 if (model != null) {
                     if (!rankingComboBox.getSelectedItem().equals(NO_SELECTION)) {
@@ -140,6 +141,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         repaint();
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName().equals(RankingUIModel.CURRENT_ELEMENT_TYPE)) {
             refreshModel();
@@ -208,6 +210,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         Ranking[] rankings = model.getRankings();
         Arrays.sort(rankings, new Comparator() {
 
+            @Override
             public int compare(Object o1, Object o2) {
                 return ((Ranking) o1).getDisplayName().compareTo(((Ranking) o2).getDisplayName());
             }
@@ -222,6 +225,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         rankingComboBox.addItemListener(rankingItemListener);
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 rankingComboBox.setModel(comboBoxModel);
             }
@@ -232,6 +236,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
     private void initControls() {
         applyButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 Transformer transformer = model.getCurrentTransformer();
                 if (transformer != null) {
@@ -239,6 +244,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
                     if (interpolator != null) {
                         rankingController.setInterpolator(new org.gephi.ranking.api.Interpolator() {
 
+                            @Override
                             public float interpolate(float x) {
                                 return interpolator.interpolate(x);
                             }
@@ -251,6 +257,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
 
         splineButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (splineEditor == null) {
                     splineEditor = new SplineEditor(NbBundle.getMessage(RankingChooser.class, "RankingChooser.splineEditor.title"));
@@ -260,6 +267,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
                 RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
                 rankingController.setInterpolator(new org.gephi.ranking.api.Interpolator() {
 
+                    @Override
                     public float interpolate(float x) {
                         return interpolator.interpolate(x);
                     }
@@ -269,6 +277,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         autoApplyButton.setVisible(false);
         enableAutoButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent ae) {
                 if (enableAutoButton.isSelected()) {
                     autoApplyButton.setVisible(true);
@@ -285,11 +294,13 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         });
         autoApplyButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent ae) {
                 if (interpolator != null) {
                     RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
                     rankingController.setInterpolator(new org.gephi.ranking.api.Interpolator() {
 
+                        @Override
                         public float interpolate(float x) {
                             return interpolator.interpolate(x);
                         }

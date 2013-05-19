@@ -43,7 +43,6 @@ package org.gephi.desktop.ranking;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.graph.api.GraphController;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -61,20 +60,20 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = RankingUIController.class)
 public class RankingUIController {
-    
+
     private final String[] elementTypes = new String[]{Ranking.NODE_ELEMENT, Ranking.EDGE_ELEMENT};
     private RankingUIModel model;
     private ChangeListener modelChangeListener;
-    
+
     public RankingUIController() {
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         final RankingController rc = Lookup.getDefault().lookup(RankingController.class);
-        final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
-            
+            @Override
             public void initialize(Workspace workspace) {
             }
-            
+
+            @Override
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(RankingUIModel.class);
                 if (model == null) {
@@ -85,18 +84,19 @@ public class RankingUIController {
                 if (modelChangeListener != null) {
                     modelChangeListener.stateChanged(new ChangeEvent(model));
                 }
-                gc.getModel(workspace).addGraphListener(model);
             }
-            
+
+            @Override
             public void unselect(Workspace workspace) {
                 if (model != null) {
-                    gc.getModel(workspace).removeGraphListener(model);
                 }
             }
-            
+
+            @Override
             public void close(Workspace workspace) {
             }
-            
+
+            @Override
             public void disable() {
                 model = null;
                 if (modelChangeListener != null) {
@@ -104,7 +104,7 @@ public class RankingUIController {
                 }
             }
         });
-        
+
         if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(RankingUIModel.class);
             if (model == null) {
@@ -114,15 +114,15 @@ public class RankingUIController {
             }
         }
     }
-    
+
     public void setModelChangeListener(ChangeListener modelChangeListener) {
         this.modelChangeListener = modelChangeListener;
     }
-    
+
     public RankingUIModel getModel() {
         return model;
     }
-    
+
     public RankingUIModel getModel(Workspace workspace) {
         final RankingController rc = Lookup.getDefault().lookup(RankingController.class);
         RankingUIModel m = workspace.getLookup().lookup(RankingUIModel.class);
@@ -133,7 +133,7 @@ public class RankingUIController {
         }
         return m;
     }
-    
+
     public TransformerUI getUI(Transformer transformer) {
         for (TransformerUI ui : Lookup.getDefault().lookupAll(TransformerUI.class)) {
             if (ui.isUIForTransformer(transformer)) {
@@ -142,7 +142,7 @@ public class RankingUIController {
         }
         return null;
     }
-    
+
     public String[] getElementTypes() {
         return elementTypes;
     }

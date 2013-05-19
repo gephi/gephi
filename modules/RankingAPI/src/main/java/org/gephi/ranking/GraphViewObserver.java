@@ -39,46 +39,53 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.ranking.plugin.transformer;
+package org.gephi.ranking;
 
-import org.gephi.graph.api.Element;
-import org.gephi.ranking.api.Ranking;
-import org.gephi.ranking.api.Transformer;
-import org.gephi.ranking.spi.TransformerBuilder;
-import org.openide.util.lookup.ServiceProvider;
+import java.util.Timer;
+import java.util.TimerTask;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.ranking.api.RankingEvent;
+import org.openide.util.Lookup;
 
 /**
- * Label size transformer builder. Builds
- * <code>LabelSizeTransformer</code> instances, that receives {@link Renderable}
- * targets.
  *
- * @author Mathieu Bastian
+ * @author mbastian
  */
-@ServiceProvider(service = TransformerBuilder.class, position = 400)
-public class LabelSizeTransformerBuilder implements TransformerBuilder {
+public class GraphViewObserver extends TimerTask {
 
-    @Override
-    public Transformer buildTransformer() {
-        return new LabelSizeTransformer();
+    private static final int INTERVAL = 1000;
+    private final Timer timer;
+    private final RankingModelImpl model;
+    private final GraphModel graphModel;
+    //Hashcodes
+    private int viewHash;
+
+    public GraphViewObserver(RankingModelImpl rankingModel) {
+        timer = new Timer("RankingGraphViewObserver", true);
+        model = rankingModel;
+
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+
+        graphModel = graphController.getGraphModel(rankingModel.getWorkspace());
+        viewHash = graphModel.getVisibleView().hashCode();
     }
 
     @Override
-    public boolean isTransformerForElement(String elementType) {
-        return elementType.equals(Ranking.NODE_ELEMENT) || elementType.equals(Ranking.EDGE_ELEMENT);
-    }
-
-    @Override
-    public String getName() {
-        return Transformer.LABEL_SIZE;
-    }
-
-    public static class LabelSizeTransformer extends AbstractSizeTransformer<Element> {
-
-        @Override
-        public Object transform(Element target, float normalizedValue) {
-            float size = getSize(normalizedValue);
-            target.getTextProperties().setSize(size);
-            return Float.valueOf(size);
+    public void run() {
+        int hash = graphModel.getVisibleView().hashCode();
+        if (hash != viewHash) {
+            RankingEvent rankingEvent = new RankingEventImpl(RankingEvent.EventType.REFRESH_VIEW, model);
+            model.fireRankingListener(rankingEvent);
+            viewHash = hash;
         }
+    }
+
+    public void start() {
+        timer.schedule(this, INTERVAL, INTERVAL);
+    }
+
+    public void stop() {
+        timer.cancel();
     }
 }

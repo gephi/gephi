@@ -45,7 +45,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gephi.ranking.api.Ranking;
-import org.gephi.ranking.plugin.transformer.RenderableColorTransformerBuilder.RenderableColorTransformer;
+import org.gephi.ranking.plugin.transformer.ElementColorTransformerBuilder.RenderableColorTransformer;
 import org.gephi.ranking.api.Transformer;
 import org.gephi.ranking.spi.TransformerUI;
 import org.openide.util.NbBundle;

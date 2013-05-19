@@ -82,6 +82,7 @@ public class RankingTopComponent extends TopComponent implements Lookup.Provider
         
         modelChangeListener = new ChangeListener() {
             
+            @Override
             public void stateChanged(ChangeEvent ce) {
                 refreshModel(ce == null ? null : (RankingUIModel) ce.getSource());
             }
@@ -141,6 +142,7 @@ public class RankingTopComponent extends TopComponent implements Lookup.Provider
         ((RankingToolbar) rankingToolbar).refreshModel(model);
     }
     
+    @Override
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
             listButton.setSelected((Boolean) pce.getNewValue());
@@ -189,6 +191,7 @@ public class RankingTopComponent extends TopComponent implements Lookup.Provider
         
         listButton.addActionListener(new ActionListener() {
             
+            @Override
             public void actionPerformed(ActionEvent e) {
                 model.setListVisible(listButton.isSelected());
             }
@@ -196,6 +199,7 @@ public class RankingTopComponent extends TopComponent implements Lookup.Provider
         
         localScaleButton.addActionListener(new ActionListener() {
             
+            @Override
             public void actionPerformed(ActionEvent e) {
                 model.setLocalScale(localScaleButton.isSelected());
             }

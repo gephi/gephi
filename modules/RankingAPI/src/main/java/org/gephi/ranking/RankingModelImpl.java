@@ -1,56 +1,50 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.ranking;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.Timer;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeEvent;
-import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.ranking.api.*;
 import org.gephi.ranking.spi.RankingBuilder;
@@ -58,16 +52,19 @@ import org.gephi.ranking.spi.TransformerBuilder;
 import org.openide.util.Lookup;
 
 /**
- * Implementation of the <code>RankingModel</code> interface.
- * 
+ * Implementation of the
+ * <code>RankingModel</code> interface.
+ *
  * @author Mathieu Bastian
  */
-public class RankingModelImpl implements RankingModel, AttributeListener {
+public class RankingModelImpl implements RankingModel {
 
     private final Workspace workspace;
     private final List<RankingListener> listeners;
     private final List<AutoRanking> autoRankings;
     private final RankingAutoTransformer autoTransformer;
+    private ColumnObserver columnObserver;
+    private GraphViewObserver graphViewObserver;
     private Interpolator interpolator;
     private boolean localScale = false;
 
@@ -80,52 +77,44 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
     }
 
     public void select() {
-        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
-        attributeController.getModel(workspace).addAttributeListener(this);
         if (!autoRankings.isEmpty()) {
             autoTransformer.start();
         }
+        columnObserver = new ColumnObserver(this);
+        graphViewObserver = new GraphViewObserver(this);
+
+        columnObserver.start();
+        graphViewObserver.start();
     }
 
     public void unselect() {
-        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
-        attributeController.getModel(workspace).removeAttributeListener(this);
         autoTransformer.stop();
-    }
-    private Timer refreshTimer; //hack
-
-    @Override
-    public void attributesChanged(AttributeEvent event) {
-        if (event.getEventType().equals(AttributeEvent.EventType.ADD_COLUMN) || event.getEventType().equals(AttributeEvent.EventType.REMOVE_COLUMN)) {
-            if (refreshTimer != null) {
-                refreshTimer.restart();
-            } else {
-                refreshTimer = new Timer(500, new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        RankingEvent rankingEvent = new RankingEventImpl(RankingEvent.EventType.REFRESH_RANKING, RankingModelImpl.this);
-                        fireRankingListener(rankingEvent);
-                    }
-                });
-                refreshTimer.setRepeats(false);
-                refreshTimer.start();
-            }
+        if (columnObserver != null) {
+            columnObserver.stop();
+            columnObserver = null;
+        }
+        if (graphViewObserver != null) {
+            graphViewObserver.stop();
+            graphViewObserver = null;
         }
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }
 
+    @Override
     public Ranking[] getNodeRankings() {
         return getRankings(Ranking.NODE_ELEMENT);
     }
 
+    @Override
     public Ranking[] getEdgeRankings() {
         return getRankings(Ranking.EDGE_ELEMENT);
     }
 
+    @Override
     public Ranking[] getRankings(String elementType) {
         List<Ranking> rankings = new ArrayList<Ranking>();
         Collection<? extends RankingBuilder> builders = Lookup.getDefault().lookupAll(RankingBuilder.class);
@@ -142,6 +131,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         return rankings.toArray(new Ranking[0]);
     }
 
+    @Override
     public Ranking getRanking(String elementType, String name) {
         Ranking[] rankings = getRankings(elementType);
         for (Ranking r : rankings) {
@@ -152,6 +142,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         return null;
     }
 
+    @Override
     public Transformer getTransformer(String elementType, String name) {
         for (TransformerBuilder builder : Lookup.getDefault().lookupAll(TransformerBuilder.class)) {
             if (builder.isTransformerForElement(elementType) && builder.getName().equals(name)) {
@@ -161,6 +152,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         return null;
     }
 
+    @Override
     public Transformer[] getTransformers(String elementType) {
         List<Transformer> transformers = new ArrayList<Transformer>();
         for (TransformerBuilder builder : Lookup.getDefault().lookupAll(TransformerBuilder.class)) {
@@ -171,6 +163,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         return transformers.toArray(new Transformer[0]);
     }
 
+    @Override
     public Interpolator getInterpolator() {
         return interpolator;
     }
@@ -200,6 +193,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         }
     }
 
+    @Override
     public Ranking getAutoTransformerRanking(Transformer transformer) {
         for (AutoRanking autoRanking : autoRankings) {
             if (autoRanking.getTransformer().equals(transformer)) {
@@ -222,12 +216,14 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         this.localScale = localScale;
     }
 
+    @Override
     public void addRankingListener(RankingListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
 
+    @Override
     public void removeRankingListener(RankingListener listener) {
         listeners.remove(listener);
     }

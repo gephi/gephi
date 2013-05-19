@@ -49,8 +49,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphEvent;
-import org.gephi.graph.api.GraphListener;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.RankingController;
@@ -58,7 +57,6 @@ import org.gephi.ranking.api.RankingEvent;
 import org.gephi.ranking.api.RankingListener;
 import org.gephi.ranking.api.RankingModel;
 import org.gephi.ranking.api.Transformer;
-import org.gephi.ranking.plugin.AttributeRankingBuilder;
 import org.gephi.ranking.spi.TransformerBuilder;
 import org.openide.util.Lookup;
 
@@ -66,7 +64,7 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class RankingUIModel implements RankingListener, GraphListener {
+public class RankingUIModel implements RankingListener {
     //Const
 
     public static final String CURRENT_TRANSFORMER = "currentTransformer";
@@ -102,7 +100,7 @@ public class RankingUIModel implements RankingListener, GraphListener {
         controller = rankingUIController;
         currentElementType = Ranking.NODE_ELEMENT;
         listVisible = false;
-        localScaleEnabled = !Lookup.getDefault().lookup(GraphController.class).getModel(rankingModel.getWorkspace()).getVisibleView().isMainView();
+        localScaleEnabled = !Lookup.getDefault().lookup(GraphController.class).getGraphModel(rankingModel.getWorkspace()).getVisibleView().isMainView();
 
         initTransformers();
 
@@ -114,30 +112,22 @@ public class RankingUIModel implements RankingListener, GraphListener {
         model.addRankingListener(this);
     }
 
+    @Override
     public void rankingChanged(RankingEvent event) {
         if (event.is(RankingEvent.EventType.REFRESH_RANKING)) {
             firePropertyChangeEvent(RANKINGS, null, null);
         } else if (event.is(RankingEvent.EventType.APPLY_TRANSFORMER)) {
             firePropertyChangeEvent(APPLY_TRANSFORMER, null, null);
-        }
-    }
-
-    public void graphChanged(GraphEvent event) {
-        if (event.getEventType().equals(GraphEvent.EventType.VISIBLE_VIEW)) {
-            boolean localScale = shouldLocalScaleEnabled(event.getSource());
+        } else if (event.is(RankingEvent.EventType.REFRESH_VIEW)) {
+            RankingModel rankingModel = event.getSource();
+            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(rankingModel.getWorkspace());
+            boolean localScale = shouldLocalScaleEnabled(graphModel.getVisibleView());
             setLocalScaleEnabled(localScale);
         }
     }
 
     private boolean shouldLocalScaleEnabled(GraphView view) {
         boolean filteredView = view != null && !view.isMainView();
-        if (!filteredView) {
-            //Try to see if dynamic ranking
-            Ranking r = currentRanking.get(currentElementType);
-            if (r != null && r instanceof AttributeRankingBuilder.DynamicAttributeRanking) {
-                filteredView = true;
-            }
-        }
         return filteredView;
     }
 
