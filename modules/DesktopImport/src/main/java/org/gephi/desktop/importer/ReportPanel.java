@@ -125,24 +125,6 @@ public class ReportPanel extends javax.swing.JPanel {
 
         fillingThreads = new ThreadGroup("Report Panel Issues");
 
-        graphTypeCombo.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                int g = graphTypeCombo.getSelectedIndex();
-                switch (g) {
-                    case 0:
-                        container.getLoader().setEdgeDefault(EdgeDirectionDefault.DIRECTED);
-                        break;
-                    case 1:
-                        container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
-                        break;
-                    case 2:
-                        container.getLoader().setEdgeDefault(EdgeDirectionDefault.MIXED);
-                        break;
-                }
-            }
-        });
-
         autoscaleCheckbox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -266,6 +248,36 @@ public class ReportPanel extends javax.swing.JPanel {
                 }
 
                 graphTypeCombo.setModel(comboModel);
+            }
+        });
+        graphTypeCombo.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                int g = graphTypeCombo.getSelectedIndex();
+                EdgeDirectionDefault dir = container.getUnloader().getEdgeDefault();
+                if (dir.equals(EdgeDirectionDefault.UNDIRECTED)) {
+                    switch (g) {
+                        case 0:
+                            container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
+                            break;
+                        case 1:
+                            container.getLoader().setEdgeDefault(EdgeDirectionDefault.MIXED);
+                            break;
+                    }
+                } else {
+                    switch (g) {
+                        case 0:
+                            container.getLoader().setEdgeDefault(EdgeDirectionDefault.DIRECTED);
+                            break;
+                        case 1:
+                            container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
+                            break;
+                        case 2:
+                            container.getLoader().setEdgeDefault(EdgeDirectionDefault.MIXED);
+                            break;
+                    }
+                }
+
             }
         });
     }
