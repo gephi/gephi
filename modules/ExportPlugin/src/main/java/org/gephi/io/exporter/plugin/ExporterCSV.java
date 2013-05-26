@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.exporter.plugin;
 
@@ -45,19 +45,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalDirectedGraph;
-import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.graph.api.HierarchicalMixedGraph;
-import org.gephi.graph.api.HierarchicalUndirectedGraph;
-import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.io.exporter.spi.CharacterExporter;
+import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -83,6 +76,7 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
     private boolean cancel = false;
     private ProgressTicket progressTicket;
 
+    @Override
     public boolean execute() {
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
         Graph graph = null;
@@ -128,7 +122,7 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
                     }
                 }
 
-                for (Edge e : ((HierarchicalGraph) graph).getMetaEdges(n)) {
+                for (Edge e : graph.getEdges(n)) {
                     if (!e.isDirected() || (e.isDirected() && n == e.getSource())) {
                         Node m = graph.getOpposite(n, e);
                         neighbours.add(m);
@@ -143,57 +137,19 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
                 writer.append(EOL);
             }
         } else {
-            if (graph instanceof DirectedGraph) {
-                DirectedGraph directedGraph = (DirectedGraph) graph;
-                Node[] nodes = graph.getNodes().toArray();
-                for (Node n : nodes) {
-                    if (cancel) {
-                        break;
-                    }
-                    writeMatrixNode(n, true);
-                    for (int j = 0; j < nodes.length; j++) {
-                        Node m = nodes[j];
-                        Edge e = directedGraph.getEdge(n, m);
-                        e = e == null ? ((HierarchicalDirectedGraph) directedGraph).getMetaEdge(n, m) : e;
-                        writeEdge(e, j < nodes.length - 1);
-                    }
-                    Progress.progress(progressTicket);
-                    writer.append(EOL);
+            Node[] nodes = graph.getNodes().toArray();
+            for (Node n : nodes) {
+                if (cancel) {
+                    break;
                 }
-            } else if (graph instanceof UndirectedGraph) {
-                UndirectedGraph undirectedGraph = (UndirectedGraph) graph;
-                Node[] nodes = graph.getNodes().toArray();
-                for (Node n : nodes) {
-                    if (cancel) {
-                        break;
-                    }
-                    writeMatrixNode(n, true);
-                    for (int j = 0; j < nodes.length; j++) {
-                        Node m = nodes[j];
-                        Edge e = undirectedGraph.getEdge(n, m);
-                        e = e == null ? ((HierarchicalUndirectedGraph) undirectedGraph).getMetaEdge(n, m) : e;
-                        writeEdge(e, j < nodes.length - 1);
-                    }
-                    Progress.progress(progressTicket);
-                    writer.append(EOL);
+                writeMatrixNode(n, true);
+                for (int j = 0; j < nodes.length; j++) {
+                    Node m = nodes[j];
+                    Edge e = graph.getEdge(n, m);
+                    writeEdge(e, j < nodes.length - 1);
                 }
-            } else {
-                MixedGraph mixedGraph = (MixedGraph) graph;
-                Node[] nodes = graph.getNodes().toArray();
-                for (Node n : graph.getNodes()) {
-                    if (cancel) {
-                        break;
-                    }
-                    writeMatrixNode(n, true);
-                    for (int j = 0; j < nodes.length; j++) {
-                        Node m = nodes[j];
-                        Edge e = mixedGraph.getEdge(n, m);
-                        e = e == null ? ((HierarchicalMixedGraph) mixedGraph).getMetaEdge(n, m) : e;
-                        writeEdge(e, j < nodes.length - 1);
-                    }
-                    Progress.progress(progressTicket);
-                    writer.append(EOL);
-                }
+                Progress.progress(progressTicket);
+                writer.append(EOL);
             }
         }
 
@@ -205,9 +161,9 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
     private void writeEdge(Edge edge, boolean writeSeparator) throws IOException {
         if (edge != null) {
             if (edgeWeight) {
-                writer.append(Float.toString(edge.getWeight()));
+                writer.append(Double.toString(edge.getWeight()));
             } else {
-                writer.append(Float.toString(1f));
+                writer.append(Double.toString(1.0));
             }
             if (writeSeparator) {
                 writer.append(SEPARATOR);
@@ -225,11 +181,8 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
 
     private void writeMatrixNode(Node node, boolean writeSeparator) throws IOException {
         if (header) {
-            String label = node.getNodeData().getLabel();
-            if (label == null) {
-                label = node.getNodeData().getId();
-            }
-            writer.append(label);
+            Object label = node.getId();
+            writer.append(label.toString());
             if (writeSeparator) {
                 writer.append(SEPARATOR);
             }
@@ -237,21 +190,20 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
     }
 
     private void writeListNode(Node node, boolean writeSeparator) throws IOException {
-        String label = node.getNodeData().getLabel();
-        if (label == null) {
-            label = node.getNodeData().getId();
-        }
-        writer.append(label);
+        Object label = node.getId();
+        writer.append(label.toString());
         if (writeSeparator) {
             writer.append(SEPARATOR);
         }
     }
 
+    @Override
     public boolean cancel() {
         cancel = true;
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
     }
@@ -288,22 +240,27 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
         this.list = list;
     }
 
+    @Override
     public boolean isExportVisible() {
         return exportVisible;
     }
 
+    @Override
     public void setExportVisible(boolean exportVisible) {
         this.exportVisible = exportVisible;
     }
 
+    @Override
     public void setWriter(Writer writer) {
         this.writer = writer;
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }
 
+    @Override
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }

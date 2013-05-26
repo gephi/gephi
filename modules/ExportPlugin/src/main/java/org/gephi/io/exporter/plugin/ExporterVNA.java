@@ -43,11 +43,8 @@ package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.dynamic.DynamicUtilities;
-import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
@@ -68,15 +65,14 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     private Workspace workspace;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
-    private TimeInterval visibleInterval;
     private AttributeModel attributeModel;
-    private DynamicModel dynamicModel;
     //settings
     private boolean exportEdgeWeight = true;
     private boolean exportCoords = true;
     private boolean exportSize = true;
     private boolean exportShortLabel = true;
     private boolean exportColor = true;
+    private boolean exportDynamicWeight = true;
     private boolean exportAttributes = true;
     private boolean normalize = false;
     private Writer writer;
@@ -91,14 +87,17 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     private double getLow;//borders for dynamic edge weight
     private double getHigh;
 
+    @Override
     public void setExportVisible(boolean exportVisible) {
         this.exportVisible = exportVisible;
     }
 
+    @Override
     public boolean isExportVisible() {
         return exportVisible;
     }
 
+    @Override
     public boolean execute() {
         attributeModel = workspace.getLookup().lookup(AttributeModel.class);
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
@@ -107,15 +106,6 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             graph = graphModel.getGraphVisible();
         } else {
             graph = graphModel.getGraph();
-        }
-        dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
-        visibleInterval = dynamicModel != null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
-
-        getLow = Double.NEGATIVE_INFINITY;//whole interval, if graph is not dynamic
-        getHigh = Double.POSITIVE_INFINITY;
-        if (visibleInterval != null) {
-            getLow = visibleInterval.getLow();
-            getHigh = visibleInterval.getHigh();
         }
 
         graph.readLock();
@@ -152,8 +142,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     /*
      * For non-standart and string attributes
      */
-    private String printParameter(Object s) {
-        Object val = DynamicUtilities.getDynamicValue(s, visibleInterval.getLow(), visibleInterval.getHigh());
+    private String printParameter(Object val) {
         if (val == null) {
             return valueForEmptyAttributes;
         }
@@ -164,13 +153,10 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             return res;
         }
     }
-    //sorted arrays
-    static final private String[] standartNodeAttributes = {"Id", "Label", "Time Interval"};
-    static final private String[] standartEdgeAttributes = {"Id", "Label", "Time Interval", "Weight"};
 
     private boolean atLeastOneNonStandartAttribute() {
-        for (int i = 0; i < attributeModel.getNodeTable().getColumns().length; i++) {
-            if (Arrays.binarySearch(standartNodeAttributes, attributeModel.getNodeTable().getColumn(i).getTitle()) < 0) {
+        for (Column col : attributeModel.getNodeTable()) {
+            if (!col.isProperty()) {
                 return true;
             }
         }
@@ -184,10 +170,9 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         //header
         stringBuilder.append("*Node data\n");
         stringBuilder.append("ID");
-        for (int i = 0; i < attributeModel.getNodeTable().getColumns().length; i++) {
-            if (Arrays.binarySearch(standartNodeAttributes, attributeModel.getNodeTable().getColumn(i).getTitle()) < 0) //ignore standart
-            {
-                stringBuilder.append(" ").append(attributeModel.getNodeTable().getColumn(i).getTitle().replace(' ', '_').toString());
+        for (Column column : attributeModel.getNodeTable()) {
+            if (!column.isProperty()) {
+                stringBuilder.append(" ").append(column.getTitle().replace(' ', '_').toString());
                 //replace spaces because importer can't read attributes titles in quotes
             }
         }
@@ -199,13 +184,12 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             if (cancel) {
                 break;
             }
-            stringBuilder.append(printParameter(node.getNodeData().getId()));
-
-            for (int i = 0; i < attributeModel.getNodeTable().getColumns().length; i++) {
-                if (Arrays.binarySearch(standartNodeAttributes, attributeModel.getNodeTable().getColumn(i).getTitle()) < 0) //ignore standart
-                {
-                    if (node.getNodeData().getAttributes().getValue(i) != null) {
-                        stringBuilder.append(" ").append(printParameter(node.getNodeData().getAttributes().getValue(i)));
+            stringBuilder.append(printParameter(node.getId()));
+            for (Column column : attributeModel.getNodeTable()) {
+                if (!column.isProperty()) {
+                    Object value = node.getAttribute(column, graph.getView());
+                    if (value != null) {
+                        stringBuilder.append(" ").append(printParameter(value));
                     } else {
                         stringBuilder.append(" ").append(valueForEmptyAttributes);
                     }
@@ -230,14 +214,14 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             if (cancel) {
                 break;
             }
-            minX = Math.min(minX, node.getNodeData().x());
-            maxX = Math.max(maxX, node.getNodeData().x());
+            minX = Math.min(minX, node.x());
+            maxX = Math.max(maxX, node.x());
 
-            minY = Math.min(minY, node.getNodeData().y());
-            maxY = Math.max(maxY, node.getNodeData().y());
+            minY = Math.min(minY, node.y());
+            maxY = Math.max(maxY, node.y());
 
-            minSize = Math.min(minSize, node.getNodeData().r());
-            maxSize = Math.max(maxSize, node.getNodeData().r());
+            minSize = Math.min(minSize, node.r());
+            maxSize = Math.max(maxSize, node.r());
         }
     }
 
@@ -268,48 +252,54 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             if (cancel) {
                 break;
             }
-            stringBuilder.append(node.getNodeData().getId());
+            stringBuilder.append(node.getId());
             if (exportCoords) {
                 if (!normalize) {
-                    stringBuilder.append(" ").append(node.getNodeData().x()).append(" ").append(node.getNodeData().y());
+                    stringBuilder.append(" ").append(node.x()).append(" ").append(node.y());
                 } else {
-                    stringBuilder.append(" ").append((node.getNodeData().x() - minX) / (maxX - minX)).append(" ").append((node.getNodeData().y() - minY) / (maxY - minY));
+                    stringBuilder.append(" ").append((node.x() - minX) / (maxX - minX)).append(" ").append((node.y() - minY) / (maxY - minY));
                 }
             }
             if (exportSize) {
                 if (!normalize) {
-                    stringBuilder.append(" ").append(node.getNodeData().getRadius());
+                    stringBuilder.append(" ").append(node.size());
                 } else {
-                    stringBuilder.append(" ").append((node.getNodeData().getRadius() - minSize) / (maxSize - minSize));
+                    stringBuilder.append(" ").append((node.size() - minSize) / (maxSize - minSize));
                 }
             }
             if (exportColor) {
-                stringBuilder.append(" ").append((int) (node.getNodeData().r() * 255f));//[0..1] to [0..255]
+                stringBuilder.append(" ").append((int) (node.r() * 255f));//[0..1] to [0..255]
             }
             if (exportShortLabel) {
-                if (node.getNodeData().getLabel() != null) {
-                    stringBuilder.append(" ").append(printParameter(node.getNodeData().getLabel()));
+                if (node.getLabel() != null) {
+                    stringBuilder.append(" ").append(printParameter(node.getLabel()));
                 } else {
-                    stringBuilder.append(" ").append(printParameter(node.getNodeData().getId()));
+                    stringBuilder.append(" ").append(printParameter(node.getId()));
                 }
             }
             stringBuilder.append("\n");
         }
     }
 
-    void printEdgeData(Edge edge, Node source, Node target) {
-        stringBuilder.append(printParameter(source.getNodeData().getId()));//from
-        stringBuilder.append(" ").append(printParameter(target.getNodeData().getId()));//to
+    void printEdgeData(Edge edge, Node source, Node target, Graph graph) {
+        stringBuilder.append(printParameter(source.getId()));//from
+        stringBuilder.append(" ").append(printParameter(target.getId()));//to
         if (exportEdgeWeight) {
-            stringBuilder.append(" ").append(edge.getWeight(getLow, getHigh));//strength
+            Double weight;
+            if (exportDynamicWeight) {
+                weight = edge.getWeight(graph.getView());
+            } else {
+                weight = edge.getWeight();
+            }
+            stringBuilder.append(" ").append(weight.toString());
         }
 
         if (exportAttributes) {
-            for (int i = 0; i < attributeModel.getEdgeTable().getColumns().length; i++) {
-                if (Arrays.binarySearch(standartEdgeAttributes, attributeModel.getEdgeTable().getColumn(i).getTitle()) < 0) //ignore standart
-                {
-                    if (edge.getEdgeData().getAttributes().getValue(i) != null) {
-                        stringBuilder.append(" ").append(printParameter(edge.getEdgeData().getAttributes().getValue(i)));
+            for (Column column : attributeModel.getEdgeTable()) {
+                if (!column.isProperty()) {
+                    Object value = edge.getAttribute(column, graph.getView());
+                    if (value != null) {
+                        stringBuilder.append(" ").append(printParameter(value));
                     } else {
                         stringBuilder.append(" " + valueForEmptyAttributes);
                     }
@@ -329,10 +319,9 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             stringBuilder.append(" strength");
         }
         if (exportAttributes) {
-            for (int i = 0; i < attributeModel.getEdgeTable().getColumns().length; i++) {
-                if (Arrays.binarySearch(standartEdgeAttributes, attributeModel.getEdgeTable().getColumn(i).getTitle()) < 0) //ignore standart
-                {
-                    stringBuilder.append(" ").append(printParameter(attributeModel.getEdgeTable().getColumn(i).getTitle()).replace(' ', '_'));
+            for (Column col : attributeModel.getEdgeTable()) {
+                if (!col.isProperty()) {
+                    stringBuilder.append(" ").append(printParameter(col.getTitle()).replace(' ', '_'));
                     //replace spaces because importer can't read attributes titles in quotes
                 }
             }
@@ -344,30 +333,35 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
                 break;
             }
             progressTicket.progress();
-            printEdgeData(edge, edge.getSource(), edge.getTarget());//all edges in vna are directed, so make clone
+            printEdgeData(edge, edge.getSource(), edge.getTarget(), graph);//all edges in vna are directed, so make clone
             if (!edge.isDirected() && !edge.isSelfLoop()) {
-                printEdgeData(edge, edge.getTarget(), edge.getSource());
+                printEdgeData(edge, edge.getTarget(), edge.getSource(), graph);
             }
         }
     }
 
+    @Override
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }
 
+    @Override
     public boolean cancel() {
         cancel = true;
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
     }
 
+    @Override
     public void setWriter(Writer writer) {
         this.writer = writer;
     }

@@ -53,14 +53,17 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = GraphFileExporterBuilder.class)
 public class ExporterBuilderGML implements GraphFileExporterBuilder {
 
+    @Override
     public GraphExporter buildExporter() {
         return new ExporterGML();
     }
 
+    @Override
     public FileType[] getFileTypes() {
         return new FileType[]{new FileType(".gml", "GML files")};
     }
 
+    @Override
     public String getName() {
         return "GML exporter";
     }

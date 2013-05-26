@@ -1,51 +1,51 @@
 /*
-Copyright 2008-2011 Gephi
-Authors : Daniel Bernardes <daniel.bernardes@polytechnique.edu>
-Website : http://www.gephi.org
+ Copyright 2008-2011 Gephi
+ Authors : Daniel Bernardes <daniel.bernardes@polytechnique.edu>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
 import java.util.HashMap;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.io.exporter.api.FileType;
@@ -72,11 +72,11 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
     private boolean exportVisible;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
-    
+
     public void setExportEdgeWeight(boolean exportEdgeWeight) {
         this.exportEdgeWeight = exportEdgeWeight;
     }
-    
+
     public boolean isExportEdgeWeight() {
         return exportEdgeWeight;
     }
@@ -84,40 +84,47 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
     public void setExportPosition(boolean exportPosition) {
         this.exportPosition = exportPosition;
     }
-    
+
     public boolean isExportPosition() {
         return exportPosition;
     }
-    
+
+    @Override
     public boolean cancel() {
         cancel = true;
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
     }
 
+    @Override
     public boolean isExportVisible() {
         return exportVisible;
     }
 
+    @Override
     public void setExportVisible(boolean exportVisible) {
         this.exportVisible = exportVisible;
     }
 
+    @Override
     public void setWriter(Writer writer) {
         this.writer = writer;
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }
 
+    @Override
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
-    
+
     public String getName() {
         return NbBundle.getMessage(getClass(), "ExporterPajek_name");
     }
@@ -127,13 +134,14 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
         return new FileType[]{ft};
     }
 
+    @Override
     public boolean execute() {
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
-        HierarchicalGraph graph = null;
+        Graph graph = null;
         if (exportVisible) {
-            graph = graphModel.getHierarchicalGraphVisible();
+            graph = graphModel.getGraphVisible();
         } else {
-            graph = graphModel.getHierarchicalGraph();
+            graph = graphModel.getGraph();
         }
         try {
             exportData(graph);
@@ -144,9 +152,9 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
         return !cancel;
     }
 
-    private void exportData(HierarchicalGraph graph) throws Exception {
-        int max = graph.getNodeCount(), i=1;
-        HashMap<String, Integer> idx = new HashMap<String, Integer>(3*max/2+1);
+    private void exportData(Graph graph) throws Exception {
+        int max = graph.getNodeCount(), i = 1;
+        HashMap<String, Integer> idx = new HashMap<String, Integer>(3 * max / 2 + 1);
 
         Progress.start(progressTicket, max);
         graph.readLock();
@@ -155,12 +163,12 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
 
         for (Node node : graph.getNodes()) {
             writer.append(Integer.toString(i));
-            writer.append(" \"" + node.getNodeData().getLabel() + "\"");
-            if(exportPosition) {
-                writer.append(" "+node.getNodeData().x()+" "+node.getNodeData().y()+" "+node.getNodeData().z());
+            writer.append(" \"" + node.getLabel() + "\"");
+            if (exportPosition) {
+                writer.append(" " + node.x() + " " + node.y() + " " + node.z());
             }
             writer.append("\n");
-            idx.put(node.getNodeData().getId(), i++); // assigns Ids from the interval [1..max]
+            idx.put(node.getId().toString(), i++); // assigns Ids from the interval [1..max]
         }
 
         if (graph instanceof UndirectedGraph) {
@@ -169,13 +177,13 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
             writer.append("*Arcs\n");
         }
 
-        for (Edge edge : graph.getEdgesAndMetaEdges()) {
+        for (Edge edge : graph.getEdges()) {
             if (cancel) {
                 break;
             }
             if (edge != null) {
-                writer.append(Integer.toString(idx.get(edge.getSource().getNodeData().getId())) + " ");
-                writer.append(Integer.toString(idx.get(edge.getTarget().getNodeData().getId())));
+                writer.append(Integer.toString(idx.get(edge.getSource().getId().toString())) + " ");
+                writer.append(Integer.toString(idx.get(edge.getTarget().getId().toString())));
                 if (exportEdgeWeight) {
                     writer.append(" " + edge.getWeight());
                 }
@@ -189,5 +197,4 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
 
         Progress.finish(progressTicket);
     }
-
 }
