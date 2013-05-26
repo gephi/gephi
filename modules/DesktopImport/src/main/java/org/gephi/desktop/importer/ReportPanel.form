@@ -23,7 +23,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="tabbedPane" alignment="0" pref="0" max="32767" attributes="0"/>
+                  <Component id="tabbedPane" alignment="0" pref="600" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="labelSrc" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -39,12 +39,15 @@
                           </Group>
                           <Component id="statsPanel" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="processorPanel" alignment="1" min="-2" pref="175" max="-2" attributes="0"/>
-                          <Group type="102" alignment="1" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="32767" attributes="0"/>
                               <Component id="moreOptionsLink" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="processorPanel" min="-2" pref="173" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -74,10 +77,9 @@
               <Component id="moreOptionsPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="statsPanel" min="-2" pref="116" max="-2" attributes="0"/>
-                  <Component id="processorPanel" min="-2" pref="116" max="-2" attributes="1"/>
+                  <Component id="statsPanel" pref="122" max="32767" attributes="0"/>
+                  <Component id="processorPanel" max="32767" attributes="1"/>
               </Group>
-              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -118,11 +120,6 @@
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
             <Component class="org.netbeans.swing.outline.Outline" name="issuesOutline">
-              <Properties>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[650, 0]"/>
-                </Property>
-              </Properties>
             </Component>
           </SubComponents>
         </Container>
