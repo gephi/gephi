@@ -61,18 +61,21 @@ public class UIExporterGML implements ExporterUI {
     ExporterGML exporter;
     ExporterGMLSettings settings = new ExporterGMLSettings();
 
+    @Override
     public JPanel getPanel() {
         panel = new UIExporterGMLPanel();
         validationPanel = UIExporterGMLPanel.createValidationPanel(panel);
         return validationPanel;
     }
 
+    @Override
     public void setup(Exporter exporter) {
         this.exporter = (ExporterGML) exporter;
         settings.load(this.exporter);
         panel.setup(this.exporter);
     }
 
+    @Override
     public void unsetup(boolean update) {
         if (update) {
             panel.unsetup(exporter);
@@ -82,10 +85,12 @@ public class UIExporterGML implements ExporterUI {
         exporter = null;
     }
 
+    @Override
     public boolean isUIForExporter(Exporter exporter) {
         return exporter instanceof ExporterGML;
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(UIExporterGEXF.class, "UIExporterGML.name");
     }

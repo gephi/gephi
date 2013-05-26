@@ -59,12 +59,14 @@ public class UIExporterGEXF implements ExporterUI {
     private ExporterGEXF exporterGEXF;
     private ExporterGEXFSettings settings = new ExporterGEXFSettings();
 
+    @Override
     public void setup(Exporter exporter) {
         exporterGEXF = (ExporterGEXF) exporter;
         settings.load(exporterGEXF);
         panel.setup(exporterGEXF);
     }
 
+    @Override
     public void unsetup(boolean update) {
         if (update) {
             panel.unsetup(exporterGEXF);
@@ -74,15 +76,18 @@ public class UIExporterGEXF implements ExporterUI {
         exporterGEXF = null;
     }
 
+    @Override
     public JPanel getPanel() {
         panel = new UIExporterGEXFPanel();
         return panel;
     }
 
+    @Override
     public boolean isUIForExporter(Exporter exporter) {
         return exporter instanceof ExporterGEXF;
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(UIExporterGEXF.class, "UIExporterGEXF.name");
     }

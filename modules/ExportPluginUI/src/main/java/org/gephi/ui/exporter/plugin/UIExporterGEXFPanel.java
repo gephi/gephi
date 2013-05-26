@@ -1,50 +1,47 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.ui.exporter.plugin;
 
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.io.exporter.plugin.ExporterGEXF;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -52,7 +49,9 @@ import org.openide.util.Lookup;
  */
 public class UIExporterGEXFPanel extends javax.swing.JPanel {
 
-    /** Creates new form UIExporterGEXFPanel */
+    /**
+     * Creates new form UIExporterGEXFPanel
+     */
     public UIExporterGEXFPanel() {
         initComponents();
     }
@@ -64,10 +63,6 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
         attributesExportCheckbox.setSelected(exporterGEXF.isExportAttributes());
         normalizeCheckbox.setSelected(exporterGEXF.isNormalize());
         dynamicExportCheckbox.setSelected(exporterGEXF.isExportDynamic());
-        hierarchyCheckbox.setSelected(exporterGEXF.isExportHierarchy());
-
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-        hierarchyCheckbox.setEnabled(graphModel.isHierarchical());
     }
 
     public void unsetup(ExporterGEXF exporterGEXF) {
@@ -77,13 +72,12 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
         exporterGEXF.setExportPosition(positionExportCheckbox.isSelected());
         exporterGEXF.setNormalize(normalizeCheckbox.isSelected());
         exporterGEXF.setExportDynamic(dynamicExportCheckbox.isSelected());
-        exporterGEXF.setExportHierarchy(hierarchyCheckbox.isSelected());
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -97,8 +91,6 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
         labelNormalize = new javax.swing.JLabel();
         normalizeCheckbox = new javax.swing.JCheckBox();
         dynamicExportCheckbox = new javax.swing.JCheckBox();
-        hierarchyCheckbox = new javax.swing.JCheckBox();
-        labelNormalize1 = new javax.swing.JLabel();
 
         labelExport.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.labelExport.text")); // NOI18N
 
@@ -110,19 +102,13 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
 
         sizeExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.sizeExportCheckbox.text")); // NOI18N
 
-        labelNormalize.setFont(new java.awt.Font("Tahoma", 0, 10));
+        labelNormalize.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         labelNormalize.setForeground(new java.awt.Color(102, 102, 102));
         labelNormalize.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.labelNormalize.text")); // NOI18N
 
         normalizeCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.normalizeCheckbox.text")); // NOI18N
 
         dynamicExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.dynamicExportCheckbox.text")); // NOI18N
-
-        hierarchyCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.hierarchyCheckbox.text")); // NOI18N
-
-        labelNormalize1.setFont(new java.awt.Font("Tahoma", 0, 10));
-        labelNormalize1.setForeground(new java.awt.Color(102, 102, 102));
-        labelNormalize1.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.labelNormalize1.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -131,10 +117,6 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(hierarchyCheckbox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(labelNormalize1, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelExport)
                         .addGap(18, 18, 18)
@@ -147,7 +129,7 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(normalizeCheckbox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(labelNormalize, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)))
+                        .addComponent(labelNormalize, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -169,21 +151,15 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(normalizeCheckbox)
                     .addComponent(labelNormalize))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(hierarchyCheckbox)
-                    .addComponent(labelNormalize1))
-                .addContainerGap(43, Short.MAX_VALUE))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox attributesExportCheckbox;
     private javax.swing.JCheckBox colorsExportCheckbox;
     private javax.swing.JCheckBox dynamicExportCheckbox;
-    private javax.swing.JCheckBox hierarchyCheckbox;
     private javax.swing.JLabel labelExport;
     private javax.swing.JLabel labelNormalize;
-    private javax.swing.JLabel labelNormalize1;
     private javax.swing.JCheckBox normalizeCheckbox;
     private javax.swing.JCheckBox positionExportCheckbox;
     private javax.swing.JCheckBox sizeExportCheckbox;

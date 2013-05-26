@@ -59,12 +59,14 @@ public class UIExporterGDF implements ExporterUI {
     private ExporterGDF exporterGDF;
     private ExporterGDFSettings settings = new ExporterGDFSettings();
 
+    @Override
     public void setup(Exporter exporter) {
         exporterGDF = (ExporterGDF) exporter;
         settings.load(exporterGDF);
         panel.setup(exporterGDF);
     }
 
+    @Override
     public void unsetup(boolean update) {
         if (update) {
             panel.unsetup(exporterGDF);
@@ -74,15 +76,18 @@ public class UIExporterGDF implements ExporterUI {
         exporterGDF = null;
     }
 
+    @Override
     public JPanel getPanel() {
         panel = new UIExporterGDFPanel();
         return panel;
     }
 
+    @Override
     public boolean isUIForExporter(Exporter exporter) {
         return exporter instanceof ExporterGDF;
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(UIExporterGDF.class, "UIExporterGDF.name");
     }

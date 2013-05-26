@@ -59,12 +59,14 @@ public class UIExporterPajek implements ExporterUI {
     private ExporterPajek exporterPajek;
     private ExporterPajekSettings settings =  new ExporterPajekSettings();
 
+    @Override
     public void setup(Exporter exporter) {
         exporterPajek = (ExporterPajek) exporter;
         settings.load(exporterPajek);
         panel.setup(exporterPajek);
     }
 
+    @Override
     public void unsetup(boolean update) {
         if (update) {
             panel.unsetup(exporterPajek);
@@ -74,15 +76,18 @@ public class UIExporterPajek implements ExporterUI {
         exporterPajek = null;
     }
 
+    @Override
     public JPanel getPanel() {
         panel = new UIExporterPajekPanel();
         return panel;
     }
 
+    @Override
     public boolean isUIForExporter(Exporter exporter) {
         return exporter instanceof ExporterPajek;
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(UIExporterPajek.class, "UIExporterPajek.name");
     }
