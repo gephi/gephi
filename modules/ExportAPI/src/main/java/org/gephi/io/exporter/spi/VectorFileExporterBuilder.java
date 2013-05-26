@@ -52,5 +52,6 @@ public interface VectorFileExporterBuilder extends FileExporterBuilder {
      * Builds a new vector exporter instance, ready to be used.
      * @return  a new vector exporter
      */
+    @Override
     public VectorExporter buildExporter();
 }
