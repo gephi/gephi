@@ -41,6 +41,7 @@
  */
 package org.gephi.visualization;
 
+import org.gephi.attribute.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
@@ -231,6 +232,16 @@ public class VizController implements VisualizationController {
         if (selectionManager != null) {
             selectionManager.selectEdges(edges);
         }
+    }
+
+    @Override
+    public Column[] getEdgeTextColumns() {
+        return new Column[0];
+    }
+
+    @Override
+    public Column[] getNodeTextColumns() {
+        return new Column[0];
     }
 
     public VizModel getVizModel() {
