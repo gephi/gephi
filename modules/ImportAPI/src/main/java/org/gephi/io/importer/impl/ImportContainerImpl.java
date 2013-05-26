@@ -168,7 +168,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public NodeDraftImpl getNode(String id) {
         checkId(id);
 
-        int index = nodeMap.get(id);
+        int index = nodeMap.getInt(id);
         NodeDraftImpl node = null;
         if (index == NULL_INDEX) {
             if (parameters.isAutoNode()) {
@@ -374,7 +374,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public EdgeDraft getEdge(String id) {
         checkId(id);
 
-        int index = edgeMap.get(id);
+        int index = edgeMap.getInt(id);
         if (index == NULL_INDEX) {
             return null;
         }
@@ -622,7 +622,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             for (Iterator<NodeDraftImpl> itr = nodeList.iterator(); itr.hasNext();) {
                 NodeDraftImpl node = itr.next();
                 if (node != null && node.isCreatedAuto()) {
-                    int index = nodeMap.remove(node.getId());
+                    int index = nodeMap.removeInt(node.getId());
                     nodeList.set(index, null);
                 }
             }
