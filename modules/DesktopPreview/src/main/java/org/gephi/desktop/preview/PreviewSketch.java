@@ -1,6 +1,6 @@
 /*
- Copyright 2008-2011 Gephi
- Authors : Mathieu Bastian
+ Copyright 2008-2010 Gephi
+ Authors : Jérémy Subtil <jeremy.subtil@gephi.org>, Mathieu Bastian
  Website : http://www.gephi.org
 
  This file is part of Gephi.
@@ -39,43 +39,31 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.preview.plugin.builders;
+package org.gephi.desktop.preview;
 
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.graph.api.*;
-import org.gephi.preview.api.Item;
-import org.gephi.preview.plugin.items.EdgeItem;
-import org.gephi.preview.spi.ItemBuilder;
-import org.openide.util.lookup.ServiceProvider;
+import java.awt.Graphics;
+import javax.swing.JPanel;
+import org.gephi.preview.api.ProcessingTarget;
 
 /**
  *
- * @author Mathieu Bastian
+ * @author mbastian
  */
-@ServiceProvider(service = ItemBuilder.class, position = 300)
-public class EdgeBuilder implements ItemBuilder {
+public class PreviewSketch extends JPanel {
 
-    @Override
-    public Item[] getItems(Graph graph, AttributeModel attributeModel) {
+    private ProcessingTarget target;
 
-        EdgeItem[] items = new EdgeItem[graph.getEdgeCount()];
-        int i = 0;
-        for (Edge e : graph.getEdges()) {
-            EdgeItem item = new EdgeItem(e);
-            item.setData(EdgeItem.WEIGHT, e.getWeight(graph.getView()));
-            item.setData(EdgeItem.DIRECTED, e.isDirected());
-            if (graph.isDirected(e)) {
-                item.setData(EdgeItem.MUTUAL, ((DirectedGraph) graph).getMutualEdge(e) != null);
-            }
-            item.setData(EdgeItem.SELF_LOOP, e.isSelfLoop());
-            item.setData(EdgeItem.COLOR, e.alpha() == 0 ? null : e.getColor());
-            items[i++] = item;
-        }
-        return items;
+    public PreviewSketch(ProcessingTarget target) {
+        this.target = target;
     }
 
     @Override
-    public String getType() {
-        return ItemBuilder.EDGE_BUILDER;
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        if (target.getWidth() != getWidth() || target.getHeight() != getHeight()) {
+        }
+
+        g.drawImage(target.getImage(), 0, 0, this);
     }
 }

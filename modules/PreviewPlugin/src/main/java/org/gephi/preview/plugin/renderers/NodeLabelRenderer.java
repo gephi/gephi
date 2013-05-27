@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2011 Gephi
-Authors : Yudi Xue <yudi.xue@usask.ca>, Mathieu Bastian
-Website : http://www.gephi.org
+ Copyright 2008-2011 Gephi
+ Authors : Yudi Xue <yudi.xue@usask.ca>, Mathieu Bastian
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.preview.plugin.renderers;
 
@@ -47,6 +47,7 @@ import com.itextpdf.text.pdf.PdfGState;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Node;
@@ -65,8 +66,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.w3c.dom.svg.SVGLocatable;
 import org.w3c.dom.svg.SVGRect;
-import processing.core.PGraphics;
-import processing.core.PGraphicsJava2D;
 
 /**
  *
@@ -97,6 +96,7 @@ public class NodeLabelRenderer implements Renderer {
     //Font cache
     protected Map<Integer, Font> fontCache;
 
+    @Override
     public void preProcess(PreviewModel previewModel) {
         PreviewProperties properties = previewModel.getProperties();
         if (properties.getBooleanValue(PreviewProperty.NODE_LABEL_SHORTEN)) {
@@ -142,6 +142,7 @@ public class NodeLabelRenderer implements Renderer {
         }
     }
 
+    @Override
     public void render(Item item, RenderTarget target, PreviewProperties properties) {
         Node node = (Node) item.getSource();
         //Label
@@ -185,37 +186,38 @@ public class NodeLabelRenderer implements Renderer {
     }
 
     public void renderProcessing(ProcessingTarget target, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {
-        PGraphics graphics = target.getGraphics();
-        Graphics2D g2 = ((PGraphicsJava2D) graphics).g2;
-        graphics.textAlign(PGraphics.CENTER, PGraphics.CENTER);
+        Graphics2D graphics = target.getGraphics();
 
         Font font = fontCache.get(fontSize);
-        g2.setFont(font);
+        graphics.setFont(font);
 
-        FontMetrics fm = g2.getFontMetrics();
+        FontMetrics fm = graphics.getFontMetrics();
         float posX = x - fm.stringWidth(label) / 2f;
         float posY = y + fm.getDescent();
 
         //Box
         if (showBox) {
-            graphics.noStroke();
-            graphics.fill(boxColor.getRed(), boxColor.getGreen(), boxColor.getBlue(), boxColor.getAlpha());
-            graphics.rectMode(PGraphics.CORNER);
-            graphics.rect(posX - outlineSize / 2f, y - (fm.getAscent() + fm.getDescent()) / 2f - outlineSize / 2f, fm.stringWidth(label) + outlineSize, fm.getAscent() + fm.getDescent() + outlineSize);
+            graphics.setColor(boxColor);
+            Rectangle2D.Float rect = new Rectangle2D.Float();
+            rect.setFrame(posX - outlineSize / 2f,
+                    y - (fm.getAscent() + fm.getDescent()) / 2f - outlineSize / 2f,
+                    fm.stringWidth(label) + outlineSize,
+                    fm.getAscent() + fm.getDescent() + outlineSize);
+            graphics.draw(rect);
         }
 
         //Outline
         if (outlineSize > 0) {
-            FontRenderContext frc = g2.getFontRenderContext();
+            FontRenderContext frc = graphics.getFontRenderContext();
             GlyphVector gv = font.createGlyphVector(frc, label);
             Shape glyph = gv.getOutline(posX, posY);
-            g2.setColor(outlineColor);
-            g2.setStroke(new BasicStroke(outlineSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-            g2.draw(glyph);
+            graphics.setColor(outlineColor);
+            graphics.setStroke(new BasicStroke(outlineSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            graphics.draw(glyph);
         }
 
-        g2.setColor(color);
-        g2.drawString(label, posX, posY);
+        graphics.setColor(color);
+        graphics.drawString(label, posX, posY);
     }
 
     public void renderSVG(SVGTarget target, Node node, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {
@@ -225,7 +227,7 @@ public class NodeLabelRenderer implements Renderer {
         if (outlineSize > 0) {
             Text labelTextOutline = target.createTextNode(label);
             Element outlineElem = target.createElement("text");
-            outlineElem.setAttribute("class", node.getNodeData().getId());
+            outlineElem.setAttribute("class", node.getId().toString());
             outlineElem.setAttribute("x", String.valueOf(x));
             outlineElem.setAttribute("y", String.valueOf(y));
             outlineElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
@@ -246,7 +248,7 @@ public class NodeLabelRenderer implements Renderer {
         }
 
         Element labelElem = target.createElement("text");
-        labelElem.setAttribute("class", node.getNodeData().getId());
+        labelElem.setAttribute("class", node.getId().toString());
         labelElem.setAttribute("x", String.valueOf(x));
         labelElem.setAttribute("y", String.valueOf(y));
         labelElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
@@ -342,71 +344,75 @@ public class NodeLabelRenderer implements Renderer {
         return baseFont.getWidthPoint(text, fontSize);
     }
 
+    @Override
     public PreviewProperty[] getProperties() {
         return new PreviewProperty[]{
-                    PreviewProperty.createProperty(this, PreviewProperty.SHOW_NODE_LABELS, Boolean.class,
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.display.displayName"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.display.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS).setValue(defaultShowLabels),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_FONT, Font.class,
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.font.displayName"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.font.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultFont),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_PROPORTIONAL_SIZE, Boolean.class,
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.proportionalSize.displayName"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.proportionalSize.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultProportinalSize),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_COLOR, DependantOriginalColor.class,
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.color.displayName"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.color.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultColor),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_SHORTEN, Boolean.class,
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.shorten.displayName"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.shorten.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultShorten),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_MAX_CHAR, Integer.class,
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.maxchar.displayName"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.maxchar.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultMaxChar),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_OUTLINE_SIZE, Float.class,
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineSize.displayName"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineSize.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultOutlineSize),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_OUTLINE_COLOR, DependantColor.class,
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineColor.displayName"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineColor.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultOutlineColor),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_OUTLINE_OPACITY, Float.class,
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineOpacity.displayName"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineOpacity.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultOutlineOpacity),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_SHOW_BOX, Boolean.class,
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.displayName"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultShowBox),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_BOX_COLOR, DependantColor.class,
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.color.displayName"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.color.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.NODE_LABEL_SHOW_BOX, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultBoxColor),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_BOX_OPACITY, Float.class,
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.opacity.displayName"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.opacity.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.NODE_LABEL_SHOW_BOX, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultBoxOpacity),};
+            PreviewProperty.createProperty(this, PreviewProperty.SHOW_NODE_LABELS, Boolean.class,
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.display.displayName"),
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.display.description"),
+            PreviewProperty.CATEGORY_NODE_LABELS).setValue(defaultShowLabels),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_FONT, Font.class,
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.font.displayName"),
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.font.description"),
+            PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultFont),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_PROPORTIONAL_SIZE, Boolean.class,
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.proportionalSize.displayName"),
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.proportionalSize.description"),
+            PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultProportinalSize),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_COLOR, DependantOriginalColor.class,
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.color.displayName"),
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.color.description"),
+            PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultColor),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_SHORTEN, Boolean.class,
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.shorten.displayName"),
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.shorten.description"),
+            PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultShorten),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_MAX_CHAR, Integer.class,
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.maxchar.displayName"),
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.maxchar.description"),
+            PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultMaxChar),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_OUTLINE_SIZE, Float.class,
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineSize.displayName"),
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineSize.description"),
+            PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultOutlineSize),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_OUTLINE_COLOR, DependantColor.class,
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineColor.displayName"),
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineColor.description"),
+            PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultOutlineColor),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_OUTLINE_OPACITY, Float.class,
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineOpacity.displayName"),
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineOpacity.description"),
+            PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultOutlineOpacity),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_SHOW_BOX, Boolean.class,
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.displayName"),
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.description"),
+            PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultShowBox),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_BOX_COLOR, DependantColor.class,
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.color.displayName"),
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.color.description"),
+            PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.NODE_LABEL_SHOW_BOX, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultBoxColor),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_BOX_OPACITY, Float.class,
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.opacity.displayName"),
+            NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.opacity.description"),
+            PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.NODE_LABEL_SHOW_BOX, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultBoxOpacity),};
     }
-    
-    private boolean showNodeLabels(PreviewProperties properties){
+
+    private boolean showNodeLabels(PreviewProperties properties) {
         return properties.getBooleanValue(PreviewProperty.SHOW_NODE_LABELS)
                 && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 
+    @Override
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
         return item instanceof NodeLabelItem && showNodeLabels(properties);
     }
-    
+
+    @Override
     public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
         return (itemBuilder instanceof NodeLabelBuilder || itemBuilder instanceof NodeBuilder) && showNodeLabels(properties);//Needs some properties of nodes
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.name");
     }

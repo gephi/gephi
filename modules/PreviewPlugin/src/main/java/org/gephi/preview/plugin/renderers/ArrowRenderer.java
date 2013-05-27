@@ -44,6 +44,8 @@ package org.gephi.preview.plugin.renderers;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfGState;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.GeneralPath;
 import java.util.Locale;
 import org.gephi.graph.api.Edge;
 import org.gephi.preview.api.*;
@@ -57,8 +59,6 @@ import org.gephi.preview.types.EdgeColor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
-import processing.core.PGraphics;
-import processing.core.PVector;
 
 /**
  *
@@ -72,9 +72,11 @@ public class ArrowRenderer implements Renderer {
     //Default values
     protected float defaultArrowSize = 3f;
 
+    @Override
     public void preProcess(PreviewModel previewModel) {
     }
 
+    @Override
     public void render(Item item, RenderTarget target, PreviewProperties properties) {
         float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE);
         if (size > 0) {
@@ -117,37 +119,41 @@ public class ArrowRenderer implements Renderer {
 
     public void renderStraight(RenderTarget target, Item item, float x1, float y1, float x2, float y2, float radius, float size, Color color) {
         Edge edge = (Edge) item.getSource();
-        PVector direction = new PVector(x2, y2);
-        direction.sub(new PVector(x1, y1));
+        Vector direction = new Vector(x2, y2);
+        direction.sub(new Vector(x1, y1));
         direction.normalize();
 
-        PVector p1 = new PVector(direction.x, direction.y);
+        Vector p1 = new Vector(direction.x, direction.y);
         p1.mult(radius);
-        p1.add(new PVector(x2, y2));
+        p1.add(new Vector(x2, y2));
 
-        PVector p1r = new PVector(direction.x, direction.y);
+        Vector p1r = new Vector(direction.x, direction.y);
         p1r.mult(radius - size);
-        p1r.add(new PVector(x2, y2));
+        p1r.add(new Vector(x2, y2));
 
-        PVector p2 = new PVector(-direction.y, direction.x);
+        Vector p2 = new Vector(-direction.y, direction.x);
         p2.mult(size * BASE_RATIO);
         p2.add(p1r);
 
-        PVector p3 = new PVector(direction.y, -direction.x);
+        Vector p3 = new Vector(direction.y, -direction.x);
         p3.mult(size * BASE_RATIO);
         p3.add(p1r);
 
         if (target instanceof ProcessingTarget) {
-            PGraphics graphics = ((ProcessingTarget) target).getGraphics();
-            graphics.noStroke();
-            graphics.fill(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-            graphics.triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+            Graphics2D graphics = ((ProcessingTarget) target).getGraphics();
+            graphics.setColor(color);
+            GeneralPath gpath = new GeneralPath();
+            gpath.moveTo(p1.x, p1.y);
+            gpath.lineTo(p2.x, p2.y);
+            gpath.lineTo(p3.x, p3.y);
+            gpath.closePath();
+            graphics.fill(gpath);
         } else if (target instanceof SVGTarget) {
             SVGTarget svgTarget = (SVGTarget) target;
             Element arrowElem = svgTarget.createElement("polyline");
             arrowElem.setAttribute("points", String.format(Locale.ENGLISH, "%f,%f %f,%f %f,%f",
                     p1.x, p1.y, p2.x, p2.y, p3.x, p3.y));
-            arrowElem.setAttribute("class", edge.getSource().getNodeData().getId() + " " + edge.getTarget().getNodeData().getId());
+            arrowElem.setAttribute("class", edge.getSource().getId() + " " + edge.getTarget().getId());
             arrowElem.setAttribute("fill", svgTarget.toHexString(color));
             arrowElem.setAttribute("fill-opacity", (color.getAlpha() / 255f) + "");
             arrowElem.setAttribute("stroke", "none");
@@ -174,26 +180,30 @@ public class ArrowRenderer implements Renderer {
         }
     }
 
+    @Override
     public PreviewProperty[] getProperties() {
         return new PreviewProperty[]{
-                    PreviewProperty.createProperty(this, PreviewProperty.ARROW_SIZE, Float.class,
-                    NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.size.displayName"),
-                    NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.size.description"),
-                    PreviewProperty.CATEGORY_EDGE_ARROWS, PreviewProperty.SHOW_EDGES).setValue(defaultArrowSize)};
+            PreviewProperty.createProperty(this, PreviewProperty.ARROW_SIZE, Float.class,
+            NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.size.displayName"),
+            NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.size.description"),
+            PreviewProperty.CATEGORY_EDGE_ARROWS, PreviewProperty.SHOW_EDGES).setValue(defaultArrowSize)};
     }
 
     private boolean showArrows(PreviewProperties properties) {
         return properties.getBooleanValue(PreviewProperty.SHOW_EDGES) && properties.getBooleanValue(PreviewProperty.DIRECTED) && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 
+    @Override
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
         return item instanceof EdgeItem && showArrows(properties) && (Boolean) item.getData(EdgeItem.DIRECTED) && !(Boolean) item.getData(EdgeItem.SELF_LOOP);
     }
 
+    @Override
     public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
         return (itemBuilder instanceof EdgeBuilder || itemBuilder instanceof NodeBuilder) && showArrows(properties);//Needs some properties of nodes
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(ArrowRenderer.class, "ArrowRenderer.name");
     }

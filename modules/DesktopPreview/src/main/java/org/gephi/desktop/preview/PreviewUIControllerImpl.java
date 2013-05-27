@@ -51,15 +51,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.swing.SwingUtilities;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.desktop.preview.propertyeditors.DependantColorPropertyEditor;
 import org.gephi.desktop.preview.propertyeditors.DependantOriginalColorPropertyEditor;
 import org.gephi.desktop.preview.propertyeditors.EdgeColorPropertyEditor;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphEvent;
-import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
@@ -88,7 +85,7 @@ import org.openide.windows.WindowManager;
  * @author Jérémy Subtil, Mathieu Bastian
  */
 @ServiceProvider(service = PreviewUIController.class)
-public class PreviewUIControllerImpl implements PreviewUIController, GraphListener {
+public class PreviewUIControllerImpl implements PreviewUIController {
 
     private final List<PropertyChangeListener> listeners;
     private final PreviewController previewController;
@@ -103,18 +100,13 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         graphController = Lookup.getDefault().lookup(GraphController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
-
             public void initialize(Workspace workspace) {
                 workspace.add(new PreviewUIModelImpl());
                 enableRefresh();
             }
 
             public void select(Workspace workspace) {
-                //Make sure AttributeModel is created before graph model:
-                Lookup.getDefault().lookup(AttributeController.class).getModel();
-
-                graphModel = graphController.getModel();
-                graphModel.addGraphListener(PreviewUIControllerImpl.this);
+                graphModel = graphController.getGraphModel(workspace);
 
                 model = workspace.getLookup().lookup(PreviewUIModelImpl.class);
                 if (model == null) {
@@ -130,7 +122,6 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
 
             public void unselect(Workspace workspace) {
                 if (graphModel != null) {
-                    graphModel.removeGraphListener(PreviewUIControllerImpl.this);
                     graphModel = null;
                 }
                 fireEvent(UNSELECT, model);
@@ -141,7 +132,6 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
 
             public void disable() {
                 if (graphModel != null) {
-                    graphModel.removeGraphListener(PreviewUIControllerImpl.this);
                     graphModel = null;
                 }
                 fireEvent(SELECT, null);
@@ -158,8 +148,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
             if (visibilityRatio != null) {
                 ((PreviewUIModelImpl) model).setVisibilityRatio(visibilityRatio);
             }
-            graphModel = graphController.getModel();
-            graphModel.addGraphListener(this);
+            graphModel = graphController.getGraphModel(pc.getCurrentWorkspace());
         }
 
         //Register editors
@@ -170,26 +159,25 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
     }
 
     /**
-     * Shows the refresh notification when the structure of the workspace graph has changed.
+     * Shows the refresh notification when the structure of the workspace graph
+     * has changed.
      *
      * @param event
      * @see GraphListener#graphChanged(org.gephi.graph.api.GraphEvent)
      */
-    public void graphChanged(GraphEvent event) {
-        boolean previous = model.isWorkspaceBarVisible();
-        model.setWorkspaceBarVisible(true);
-        if (!previous) {
-            fireEvent(GRAPH_CHANGED, true);
-        }
-    }
-
+//    public void graphChanged(GraphEvent event) {
+//        boolean previous = model.isWorkspaceBarVisible();
+//        model.setWorkspaceBarVisible(true);
+//        if (!previous) {
+//            fireEvent(GRAPH_CHANGED, true);
+//        }
+//    }
     /**
      * Refreshes the preview applet.
      */
     public void refreshPreview() {
         if (model != null) {
             Thread refreshThread = new Thread(new Runnable() {
-
                 public void run() {
                     model.setRefreshing(true);
                     fireEvent(REFRESHING, true);
@@ -213,7 +201,6 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
      */
     private void enableRefresh() {
         SwingUtilities.invokeLater(new Runnable() {
-
             public void run() {
                 PreviewSettingsTopComponent pstc = (PreviewSettingsTopComponent) WindowManager.getDefault().findTopComponent("PreviewSettingsTopComponent");
                 pstc.enableRefreshButton();
