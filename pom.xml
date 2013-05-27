@@ -1181,15 +1181,20 @@
         <module>modules/DesktopBranding</module>
         <module>modules/DesktopContext</module>
         <module>modules/DesktopGenerate</module>
+        <module>modules/DesktopExport</module>
         <module>modules/DesktopImport</module>
         <module>modules/DesktopLayout</module>
         <module>modules/DesktopPerspective</module>
+        <module>modules/DesktopPreview</module>
         <module>modules/DesktopProgress</module>
         <module>modules/DesktopProject</module>
         <module>modules/DesktopRanking</module>
         <module>modules/DesktopRecentFiles</module>
         <module>modules/DirectoryChooser</module>
         <module>modules/DynamicAPI</module>
+        <module>modules/ExportAPI</module>
+        <module>modules/ExportPlugin</module>
+        <module>modules/ExportPluginUI</module>
         <module>modules/GeneratorAPI</module>
         <module>modules/GeneratorPlugin</module>
         <module>modules/GeneratorPluginUI</module>
@@ -1202,6 +1207,8 @@
         <module>modules/LayoutPlugin</module>
         <module>modules/MostRecentFilesAPI</module>
         <module>modules/PerspectiveAPI</module>
+        <module>modules/PreviewAPI</module>
+        <module>modules/PreviewPlugin</module>
         <module>modules/ProcessorPlugin</module>
         <module>modules/ProcessorPluginUI</module>
         <module>modules/ProjectAPI</module>

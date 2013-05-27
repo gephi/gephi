@@ -43,15 +43,15 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>graph-api</artifactId>
         </dependency>
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-exporter-api</artifactId>
-        </dependency>-->
-        <!--        <dependency>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>preview-api</artifactId>
-        </dependency>-->
-        <!--        <dependency>
+        </dependency>
+<!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-exporter-preview</artifactId>
         </dependency>-->
@@ -79,10 +79,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization-api</artifactId>
         </dependency>
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>preview-plugin</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>db-drivers</artifactId>
@@ -328,10 +328,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-import</artifactId>
         </dependency>
-        <!--        <dependency>
+                <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-preview</artifactId>
-        </dependency>
+        </dependency><!--
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>partition-plugin</artifactId>
