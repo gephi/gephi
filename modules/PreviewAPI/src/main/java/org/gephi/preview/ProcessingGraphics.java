@@ -67,18 +67,18 @@ public class ProcessingGraphics {
     private final PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
     private PreviewModel model;
     private RenderTarget target;
+    private boolean inited;
     //Drawing
     private final Image image;
     private final int width;
     private final int height;
     private final Graphics2D g2;
-    private final Vector ref = new Vector();
     private final Vector trans = new Vector();
-    private final Vector lastMove = new Vector();
     private float scaling;
     private Color background = Color.WHITE;
 
     public ProcessingGraphics(int width, int height) {
+        System.out.println("Creating  new graphcis " + width + "  " + height);
         this.width = width;
         this.height = height;
         GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
@@ -98,10 +98,8 @@ public class ProcessingGraphics {
             background = model.getProperties().getColorValue(PreviewProperty.BACKGROUND_COLOR);
             initAppletLayout();
 
-
             g2.clearRect(0, 0, width, height);
             g2.setTransform(new AffineTransform());
-
 
             if (background != null) {
                 g2.setColor(background);
@@ -121,6 +119,18 @@ public class ProcessingGraphics {
             //Draw target
             previewController.render(target);
         }
+    }
+
+    public Vector getTranslate() {
+        return trans;
+    }
+
+    public float getScaling() {
+        return scaling;
+    }
+
+    public void setScaling(float scaling) {
+        this.scaling = scaling;
     }
 
     public Graphics2D getGraphics() {
@@ -144,7 +154,7 @@ public class ProcessingGraphics {
      */
     private void initAppletLayout() {
 //            graphSheet.setMargin(MARGIN);
-        if (model != null && model.getDimensions() != null && model.getTopLeftPosition() != null) {
+        if (!inited && model != null && model.getDimensions() != null && model.getTopLeftPosition() != null) {
 
             // initializes zoom
             Dimension dimensions = model.getDimensions();
@@ -161,7 +171,9 @@ public class ProcessingGraphics {
             Vector scaledCenter = Vector.add(topLeftVector, semiBox);
             trans.set(center);
             trans.sub(scaledCenter);
-            lastMove.set(trans);
+//            lastMove.set(trans);
+
+            inited = true;
         }
     }
 }

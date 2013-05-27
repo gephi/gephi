@@ -178,6 +178,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     }
 
     public void initTarget(PreviewUIModel previewUIModel) {
+        System.out.println("INIT T");
         // inits the preview applet
         if (previewUIModel != null && target == null) {
             PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);

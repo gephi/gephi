@@ -45,8 +45,10 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.ProcessingTarget;
 import org.gephi.preview.api.RenderTarget;
+import org.gephi.preview.api.Vector;
 import org.gephi.preview.spi.RenderTargetBuilder;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -65,9 +67,9 @@ public class ProcessingRenderTargetBuilder implements RenderTargetBuilder {
         if (width != null && height != null) {
             width = Math.max(1, width);
             height = Math.max(1, height);
-            return new ProcessingTargetImpl(width, height);
+            return new ProcessingTargetImpl(previewModel, width, height);
         } else {
-            return new ProcessingTargetImpl(1, 1);
+            return new ProcessingTargetImpl(previewModel, 1, 1);
         }
     }
 
@@ -79,11 +81,13 @@ public class ProcessingRenderTargetBuilder implements RenderTargetBuilder {
     public static class ProcessingTargetImpl extends AbstractRenderTarget implements ProcessingTarget {
 
         private final PreviewController previewController;
+        private final PreviewModel previewModel;
         private ProcessingGraphics graphics;
 
-        public ProcessingTargetImpl(int width, int height) {
+        public ProcessingTargetImpl(PreviewModel model, int width, int height) {
             graphics = new ProcessingGraphics(width, height);
             previewController = Lookup.getDefault().lookup(PreviewController.class);
+            previewModel = model;
         }
 
         @Override
@@ -112,6 +116,26 @@ public class ProcessingRenderTargetBuilder implements RenderTargetBuilder {
         @Override
         public int getHeight() {
             return graphics.getHeight();
+        }
+
+        @Override
+        public Vector getTranslate() {
+            return graphics.getTranslate();
+        }
+
+        @Override
+        public float getScaling() {
+            return graphics.getScaling();
+        }
+
+        @Override
+        public void setScaling(float scaling) {
+            graphics.setScaling(scaling);
+        }
+
+        @Override
+        public void setMoving(boolean moving) {
+            previewModel.getProperties().putValue(PreviewProperty.MOVING, moving);
         }
 
         @Override

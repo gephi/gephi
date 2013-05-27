@@ -95,6 +95,14 @@ public interface ProcessingTarget extends RenderTarget {
 
     public void resize(int width, int height);
 
+    public void setMoving(boolean moving);
+
+    public Vector getTranslate();
+
+    public float getScaling();
+
+    public void setScaling(float scaling);
+
     /**
      * Redraw the Processing canvas
      */
