@@ -240,6 +240,7 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
         firePropertyChange(pce.getPropertyName(), pce.getOldValue(), pce.getNewValue());
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 propertySheet.updateUI();
             }

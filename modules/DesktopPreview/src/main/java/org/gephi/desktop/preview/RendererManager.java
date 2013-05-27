@@ -117,6 +117,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         });
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(PreviewUIController.SELECT) || evt.getPropertyName().equals(PreviewUIController.UNSELECT)) {
             setup();
@@ -228,6 +229,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             return renderer;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             updateModelManagedRenderers();
         }
@@ -252,6 +254,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             addActionListener(this);
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             int newIndex = up ? index + 1 : index - 1;
             RendererCheckBox oldItem = renderersList.get(newIndex);

@@ -105,6 +105,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
         //background color
         ((JColorButton) backgroundButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
                 previewController.getModel().getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, (Color) evt.getNewValue());
@@ -114,16 +115,19 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         });
         southBusyLabel.setVisible(false);
         resetZoomButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
 //                target.resetZoom();
             }
         });
         plusButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
 //                target.zoomPlus();
             }
         });
         minusButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
 //                target.zoomMinus();
             }
@@ -139,12 +143,14 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         }
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(PreviewUIController.SELECT)) {
             this.model = (PreviewUIModel) evt.getNewValue();
             initTarget(model);
         } else if (evt.getPropertyName().equals(PreviewUIController.REFRESHED)) {
             SwingUtilities.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     target.refresh();
                 }
@@ -162,6 +168,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
     public void setRefresh(final boolean refresh) {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 CardLayout cl = (CardLayout) previewPanel.getLayout();
                 cl.show(previewPanel, refresh ? "refreshCard" : "previewCard");
@@ -224,6 +231,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
      */
     public void showBannerPanel() {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 bannerPanel.setVisible(true);
             }
@@ -241,6 +249,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
      */
     public void hideBannerPanel() {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 bannerPanel.setVisible(false);
             }

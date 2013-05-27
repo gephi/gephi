@@ -61,6 +61,7 @@ public class EdgeColorPanel extends javax.swing.JPanel implements ItemListener {
 
         colorButton.addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 Color newColor = (Color) evt.getNewValue();
                 propertyEditor.setValue(new EdgeColor(newColor));
@@ -74,6 +75,7 @@ public class EdgeColorPanel extends javax.swing.JPanel implements ItemListener {
         customRadio.addItemListener(this);
     }
 
+    @Override
     public void itemStateChanged(ItemEvent e) {
         if (customRadio.isSelected()) {
             colorButton.setEnabled(true);

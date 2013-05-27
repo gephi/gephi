@@ -100,11 +100,13 @@ public class PreviewUIControllerImpl implements PreviewUIController {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         graphController = Lookup.getDefault().lookup(GraphController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
+            @Override
             public void initialize(Workspace workspace) {
                 workspace.add(new PreviewUIModelImpl());
                 enableRefresh();
             }
 
+            @Override
             public void select(Workspace workspace) {
                 graphModel = graphController.getGraphModel(workspace);
 
@@ -120,6 +122,7 @@ public class PreviewUIControllerImpl implements PreviewUIController {
                 fireEvent(SELECT, model);
             }
 
+            @Override
             public void unselect(Workspace workspace) {
                 if (graphModel != null) {
                     graphModel = null;
@@ -127,9 +130,11 @@ public class PreviewUIControllerImpl implements PreviewUIController {
                 fireEvent(UNSELECT, model);
             }
 
+            @Override
             public void close(Workspace workspace) {
             }
 
+            @Override
             public void disable() {
                 if (graphModel != null) {
                     graphModel = null;
@@ -175,9 +180,11 @@ public class PreviewUIControllerImpl implements PreviewUIController {
     /**
      * Refreshes the preview applet.
      */
+    @Override
     public void refreshPreview() {
         if (model != null) {
             Thread refreshThread = new Thread(new Runnable() {
+                @Override
                 public void run() {
                     model.setRefreshing(true);
                     fireEvent(REFRESHING, true);
@@ -201,6 +208,7 @@ public class PreviewUIControllerImpl implements PreviewUIController {
      */
     private void enableRefresh() {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 PreviewSettingsTopComponent pstc = (PreviewSettingsTopComponent) WindowManager.getDefault().findTopComponent("PreviewSettingsTopComponent");
                 pstc.enableRefreshButton();
@@ -208,26 +216,31 @@ public class PreviewUIControllerImpl implements PreviewUIController {
         });
     }
 
+    @Override
     public void setVisibilityRatio(float visibilityRatio) {
         if (model != null) {
             model.setVisibilityRatio(visibilityRatio);
         }
     }
 
+    @Override
     public PreviewUIModel getModel() {
         return model;
     }
 
+    @Override
     public PreviewPreset[] getDefaultPresets() {
         return new PreviewPreset[]{new DefaultPreset(), new DefaultCurved(), new DefaultStraight(), new TextOutline(), new BlackBackground(), new EdgesCustomColor(), new TagCloud()};
     }
 
+    @Override
     public PreviewPreset[] getUserPresets() {
         PreviewPreset[] presetsArray = presetUtils.getPresets();
         Arrays.sort(presetsArray);
         return presetsArray;
     }
 
+    @Override
     public void setCurrentPreset(PreviewPreset preset) {
         if (model != null) {
             model.setCurrentPreset(preset);
@@ -236,10 +249,12 @@ public class PreviewUIControllerImpl implements PreviewUIController {
         }
     }
 
+    @Override
     public void addPreset(PreviewPreset preset) {
         presetUtils.savePreset(preset);
     }
 
+    @Override
     public void savePreset(String name) {
         if (model != null) {
             PreviewModel previewModel = previewController.getModel();
@@ -256,12 +271,14 @@ public class PreviewUIControllerImpl implements PreviewUIController {
         }
     }
 
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
 
+    @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         listeners.remove(listener);
     }

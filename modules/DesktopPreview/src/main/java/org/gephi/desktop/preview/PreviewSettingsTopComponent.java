@@ -130,6 +130,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
 
             tabbedPane.addChangeListener(new ChangeListener() {
 
+                @Override
                 public void stateChanged(ChangeEvent e) {
                     if (tabbedPane.getSelectedComponent() == propertySheet) {
                         propertySheet.setNodes(new Node[]{new PreviewNode(propertySheet)});
@@ -145,6 +146,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
 
             NumberFormat formatter = NumberFormat.getPercentInstance();
 
+            @Override
             public void stateChanged(ChangeEvent e) {
                 float val = ratioSlider.getValue() / 100f;
                 if (val == 0f) {
@@ -160,6 +162,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         //Presets
         presetComboBox.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 PreviewUIController pc = Lookup.getDefault().lookup(PreviewUIController.class);
                 PreviewUIModel previewModel = pc.getModel();
@@ -175,6 +178,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         //Export
         svgExportButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 VectorialFileExporterUI ui = Lookup.getDefault().lookup(VectorialFileExporterUI.class);
                 ui.action();
@@ -192,6 +196,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         }
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(PreviewUIController.SELECT)) {
             PreviewUIModel model = (PreviewUIModel) evt.getNewValue();
