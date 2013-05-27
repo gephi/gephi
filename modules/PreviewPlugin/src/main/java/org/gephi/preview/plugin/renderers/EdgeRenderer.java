@@ -106,12 +106,12 @@ public class EdgeRenderer implements Renderer {
         }
 
         //Calculate max and min weight
-        float minWeight = Float.POSITIVE_INFINITY;
-        float maxWeight = Float.NEGATIVE_INFINITY;
+        double minWeight = Double.POSITIVE_INFINITY;
+        double maxWeight = Double.NEGATIVE_INFINITY;
 
         for (Item edge : edgeItems) {
-            minWeight = Math.min(minWeight, (Float) edge.getData(EdgeItem.WEIGHT));
-            maxWeight = Math.max(maxWeight, (Float) edge.getData(EdgeItem.WEIGHT));
+            minWeight = Math.min(minWeight, (Double) edge.getData(EdgeItem.WEIGHT));
+            maxWeight = Math.max(maxWeight, (Double) edge.getData(EdgeItem.WEIGHT));
         }
         properties.putValue(EDGE_MIN_WEIGHT, minWeight);
         properties.putValue(EDGE_MAX_WEIGHT, maxWeight);
@@ -124,12 +124,12 @@ public class EdgeRenderer implements Renderer {
         //Rescale weight if necessary - and avoid negative weights
         boolean rescaleWeight = properties.getBooleanValue(PreviewProperty.EDGE_RESCALE_WEIGHT);
         for (Item item : edgeItems) {
-            float weight = (Float) item.getData(EdgeItem.WEIGHT);
+            double weight = (Double) item.getData(EdgeItem.WEIGHT);
 
             //Rescale weight
             if (rescaleWeight) {
                 if (!Double.isInfinite(minWeight) && !Double.isInfinite(maxWeight) && maxWeight != minWeight) {
-                    float ratio = 1f / (maxWeight - minWeight);
+                    double ratio = 1.0 / (maxWeight - minWeight);
                     weight = (weight - minWeight) * ratio;
                 }
             } else if (minWeight <= 0) {
@@ -176,7 +176,7 @@ public class EdgeRenderer implements Renderer {
         Item targetItem = item.getData(TARGET);
 
         //Weight and color
-        Float weight = item.getData(EdgeItem.WEIGHT);
+        Double weight = item.getData(EdgeItem.WEIGHT);
         EdgeColor edgeColor = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
         Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
                 (Color) sourceItem.getData(NodeItem.COLOR),
@@ -185,11 +185,11 @@ public class EdgeRenderer implements Renderer {
         color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 
         if (sourceItem == targetItem) {
-            renderSelfLoop(sourceItem, weight, color, properties, target);
+            renderSelfLoop(sourceItem, weight.floatValue(), color, properties, target);
         } else if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
-            renderCurvedEdge(item, sourceItem, targetItem, weight, color, properties, target);
+            renderCurvedEdge(item, sourceItem, targetItem, weight.floatValue(), color, properties, target);
         } else {
-            renderStraightEdge(item, sourceItem, targetItem, weight, color, properties, target);
+            renderStraightEdge(item, sourceItem, targetItem, weight.floatValue(), color, properties, target);
         }
     }
 

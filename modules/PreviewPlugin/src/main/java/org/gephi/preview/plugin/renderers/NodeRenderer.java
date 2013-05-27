@@ -101,8 +101,8 @@ public class NodeRenderer implements Renderer {
         //Graphics
         Graphics2D graphics = target.getGraphics();
 
-//        x = x - size;
-//        y = y - size;
+        x = x - (size / 2f);
+        y = y - (size / 2f);
         Ellipse2D.Float ellipse = new Ellipse2D.Float(x, y, size, size);
         if (borderSize > 0) {
             graphics.setColor(new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha));

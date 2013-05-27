@@ -50,6 +50,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
+import java.awt.geom.AffineTransform;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperty;
@@ -97,6 +98,9 @@ public class ProcessingGraphics {
             background = model.getProperties().getColorValue(PreviewProperty.BACKGROUND_COLOR);
             initAppletLayout();
 
+
+            g2.clearRect(0, 0, width, height);
+            g2.setTransform(new AffineTransform());
 
 
             if (background != null) {

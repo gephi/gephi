@@ -43,7 +43,9 @@ package org.gephi.desktop.preview;
 
 import java.awt.Graphics;
 import javax.swing.JPanel;
+import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.ProcessingTarget;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -51,10 +53,12 @@ import org.gephi.preview.api.ProcessingTarget;
  */
 public class PreviewSketch extends JPanel {
 
-    private ProcessingTarget target;
+    private final PreviewController previewController;
+    private final ProcessingTarget target;
 
     public PreviewSketch(ProcessingTarget target) {
         this.target = target;
+        previewController = Lookup.getDefault().lookup(PreviewController.class);
     }
 
     @Override
@@ -62,6 +66,8 @@ public class PreviewSketch extends JPanel {
         super.paintComponent(g);
 
         if (target.getWidth() != getWidth() || target.getHeight() != getHeight()) {
+            System.out.println("Resizing to " + getWidth() + "  " + getHeight());
+            target.resize(getWidth(), getHeight());
         }
 
         g.drawImage(target.getImage(), 0, 0, this);

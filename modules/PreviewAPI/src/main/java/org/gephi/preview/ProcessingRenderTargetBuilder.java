@@ -79,11 +79,19 @@ public class ProcessingRenderTargetBuilder implements RenderTargetBuilder {
     public static class ProcessingTargetImpl extends AbstractRenderTarget implements ProcessingTarget {
 
         private final PreviewController previewController;
-        private final ProcessingGraphics graphics;
+        private ProcessingGraphics graphics;
 
         public ProcessingTargetImpl(int width, int height) {
             graphics = new ProcessingGraphics(width, height);
             previewController = Lookup.getDefault().lookup(PreviewController.class);
+        }
+
+        @Override
+        public void resize(int width, int height) {
+            width = Math.max(1, width);
+            height = Math.max(1, height);
+            graphics.getGraphics().dispose();
+            graphics = new ProcessingGraphics(width, height);
         }
 
         @Override

@@ -93,6 +93,8 @@ public interface ProcessingTarget extends RenderTarget {
 
     public int getHeight();
 
+    public void resize(int width, int height);
+
     /**
      * Redraw the Processing canvas
      */
