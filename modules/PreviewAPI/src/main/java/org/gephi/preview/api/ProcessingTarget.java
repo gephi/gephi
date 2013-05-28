@@ -103,6 +103,8 @@ public interface ProcessingTarget extends RenderTarget {
 
     public void setScaling(float scaling);
 
+    public void reset();
+
     /**
      * Redraw the Processing canvas
      */

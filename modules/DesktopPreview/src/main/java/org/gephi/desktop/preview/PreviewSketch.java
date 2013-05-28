@@ -179,6 +179,21 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
     public void mouseMoved(MouseEvent e) {
     }
 
+    public void zoomPlus() {
+        target.setScaling(target.getScaling() * 2f);
+        refreshLoop.refreshSketch();
+    }
+
+    public void zoomMinus() {
+        target.setScaling(target.getScaling() / 2f);
+        refreshLoop.refreshSketch();
+    }
+
+    public void resetZoom() {
+        target.reset();
+        refreshLoop.refreshSketch();
+    }
+
     private Vector screenPositionToModelPosition(Vector screenPos) {
         Vector center = new Vector(getWidth() / 2f, getHeight() / 2f);
         Vector scaledCenter = Vector.mult(center, target.getScaling());

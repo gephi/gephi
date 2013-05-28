@@ -149,6 +149,10 @@ public class ProcessingGraphics {
         return height;
     }
 
+    public void reset() {
+        inited = false;
+    }
+
     /**
      * Initializes the preview applet layout according to the graph's dimension.
      */

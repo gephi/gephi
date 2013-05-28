@@ -139,6 +139,11 @@ public class ProcessingRenderTargetBuilder implements RenderTargetBuilder {
         }
 
         @Override
+        public void reset() {
+            graphics.reset();
+        }
+
+        @Override
         public void refresh() {
             if (graphics != null) {
                 graphics.refresh(previewController.getModel(), this);

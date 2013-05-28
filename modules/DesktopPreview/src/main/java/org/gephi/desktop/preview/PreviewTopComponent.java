@@ -117,19 +117,19 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         resetZoomButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                target.resetZoom();
+                sketch.resetZoom();
             }
         });
         plusButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                target.zoomPlus();
+                sketch.zoomPlus();
             }
         });
         minusButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                target.zoomMinus();
+                sketch.zoomMinus();
             }
         });
 
@@ -189,11 +189,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
             target = (ProcessingTarget) previewController.getRenderTarget(RenderTarget.PROCESSING_TARGET);
             if (target != null) {
-//                sketch = target.getApplet();
                 sketch = new PreviewSketch(target);
-//                sketch.init();
-//                sketch.registerPost(processingListener);
-//                sketch.registerPre(processingListener);
                 sketchPanel.add(sketch, BorderLayout.CENTER);
             }
         } else if (previewUIModel == null) {
