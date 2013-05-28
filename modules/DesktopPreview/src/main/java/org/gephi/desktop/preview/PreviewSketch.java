@@ -54,7 +54,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewMouseEvent;
-import org.gephi.preview.api.ProcessingTarget;
+import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.Vector;
 import org.openide.util.Lookup;
 
@@ -67,7 +67,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
     private static final int WHEEL_TIMER = 500;
     //Data
     private final PreviewController previewController;
-    private final ProcessingTarget target;
+    private final G2DTarget target;
     //Geometry
     private final Vector ref = new Vector();
     private final Vector lastMove = new Vector();
@@ -76,7 +76,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
     private Timer wheelTimer;
     private boolean inited;
 
-    public PreviewSketch(ProcessingTarget target) {
+    public PreviewSketch(G2DTarget target) {
         this.target = target;
         previewController = Lookup.getDefault().lookup(PreviewController.class);
     }

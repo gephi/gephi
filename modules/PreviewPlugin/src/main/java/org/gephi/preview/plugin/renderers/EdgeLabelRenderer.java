@@ -202,8 +202,8 @@ public class EdgeLabelRenderer implements Renderer {
         Color outlineColor = outlineDependantColor.getColor(edgeColor);
         outlineColor = new Color(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue(), outlineAlpha);
 
-        if (target instanceof ProcessingTarget) {
-            renderProcessing((ProcessingTarget) target, label, x, y, color, outlineSize, outlineColor);
+        if (target instanceof G2DTarget) {
+            renderG2D((G2DTarget) target, label, x, y, color, outlineSize, outlineColor);
         } else if (target instanceof SVGTarget) {
             renderSVG((SVGTarget) target, edge, label, x, y, color, outlineSize, outlineColor);
         } else if (target instanceof PDFTarget) {
@@ -211,7 +211,7 @@ public class EdgeLabelRenderer implements Renderer {
         }
     }
 
-    public void renderProcessing(ProcessingTarget target, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
+    public void renderG2D(G2DTarget target, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
         Graphics2D graphics = target.getGraphics();
 
         graphics.setFont(font);

@@ -139,8 +139,8 @@ public class ArrowRenderer implements Renderer {
         p3.mult(size * BASE_RATIO);
         p3.add(p1r);
 
-        if (target instanceof ProcessingTarget) {
-            Graphics2D graphics = ((ProcessingTarget) target).getGraphics();
+        if (target instanceof G2DTarget) {
+            Graphics2D graphics = ((G2DTarget) target).getGraphics();
             graphics.setColor(color);
             GeneralPath gpath = new GeneralPath();
             gpath.moveTo(p1.x, p1.y);

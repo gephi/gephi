@@ -76,8 +76,8 @@ public class NodeRenderer implements Renderer {
 
     @Override
     public void render(Item item, RenderTarget target, PreviewProperties properties) {
-        if (target instanceof ProcessingTarget) {
-            renderProcessing(item, (ProcessingTarget) target, properties);
+        if (target instanceof G2DTarget) {
+            renderG2D(item, (G2DTarget) target, properties);
         } else if (target instanceof SVGTarget) {
             renderSVG(item, (SVGTarget) target, properties);
         } else if (target instanceof PDFTarget) {
@@ -85,7 +85,7 @@ public class NodeRenderer implements Renderer {
         }
     }
 
-    public void renderProcessing(Item item, ProcessingTarget target, PreviewProperties properties) {
+    public void renderG2D(Item item, G2DTarget target, PreviewProperties properties) {
         //Params
         Float x = item.getData(NodeItem.X);
         Float y = item.getData(NodeItem.Y);

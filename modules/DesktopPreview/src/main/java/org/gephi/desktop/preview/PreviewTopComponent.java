@@ -56,7 +56,7 @@ import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewProperty;
-import org.gephi.preview.api.ProcessingTarget;
+import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.UIUtils;
@@ -87,7 +87,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     private final transient ProcessingListener processingListener = new ProcessingListener();
     //Data
     private transient PreviewUIModel model;
-    private transient ProcessingTarget target;
+    private transient G2DTarget target;
     private transient PreviewSketch sketch;
 
     public PreviewTopComponent() {
@@ -187,7 +187,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
                 setBackgroundColor(background);
             }
 
-            target = (ProcessingTarget) previewController.getRenderTarget(RenderTarget.PROCESSING_TARGET);
+            target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
             if (target != null) {
                 sketch = new PreviewSketch(target);
                 sketchPanel.add(sketch, BorderLayout.CENTER);

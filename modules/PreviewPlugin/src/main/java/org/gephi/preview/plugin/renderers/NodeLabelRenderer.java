@@ -176,8 +176,8 @@ public class NodeLabelRenderer implements Renderer {
         }
         boxColor = new Color(boxColor.getRed(), boxColor.getGreen(), boxColor.getBlue(), boxAlpha);
 
-        if (target instanceof ProcessingTarget) {
-            renderProcessing((ProcessingTarget) target, label, x, y, fontSize, color, outlineSize, outlineColor, showBox, boxColor);
+        if (target instanceof G2DTarget) {
+            renderG2D((G2DTarget) target, label, x, y, fontSize, color, outlineSize, outlineColor, showBox, boxColor);
         } else if (target instanceof SVGTarget) {
             renderSVG((SVGTarget) target, node, label, x, y, fontSize, color, outlineSize, outlineColor, showBox, boxColor);
         } else if (target instanceof PDFTarget) {
@@ -185,7 +185,7 @@ public class NodeLabelRenderer implements Renderer {
         }
     }
 
-    public void renderProcessing(ProcessingTarget target, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {
+    public void renderG2D(G2DTarget target, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {
         Graphics2D graphics = target.getGraphics();
 
         Font font = fontCache.get(fontSize);

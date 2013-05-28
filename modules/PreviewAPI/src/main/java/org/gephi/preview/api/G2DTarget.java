@@ -45,43 +45,17 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 
 /**
- * Rendering target to the <a href="http://processing.org">Processing</a>
- * library.
+ * Rendering target to Java2d.
  * <p>
- * Processing is using a <b>Java2D</b> mode so the underlying Processing object
- * used is a <a
- * href="http://processing.googlecode.com/svn/trunk/processing/build/javadoc/core/index.html?processing/core/PGraphicsJava2D.html">PGraphicsJava2D</a>
- * object.
- * <p>
- * This render target supports two modes: <b>applet</b> or <b>headless</b>. The
- * applet mode is what is used in Gephi GUI and is backed by a
- * <code>PApplet</code> with zoom and pan control. The headless mode is tuned to
- * work without GUI and is typically used in exports. Either way users should
- * use
- * <code>getGraphics()</code> method for drawing.
- * <h4>How to create a headless Processing canvas?</h4>
- * Before creating a processing target with the
- * {@link PreviewController#getRenderTarget(java.lang.String)} method users
- * should define a <b>width</b> and <b>height</b> property in the
- * {@link PreviewProperties}:
- * <pre>
- * PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
- * PreviewModel model = previewController.getModel();
- * PreviewProperties props = model.getProperties();
- * props.putValue("width", 800);
- * props.putValue("height", 600);
- * ProcessingTarget target = (ProcessingTarget)previewController.getRenderTarget(RenderTarget.PROCESSING_TARGET);
- * </pre>
+ * Users should use<code>getGraphics()</code> method for drawing.
  *
  * @author Mathieu Bastian
  */
-public interface ProcessingTarget extends RenderTarget {
+public interface G2DTarget extends RenderTarget {
 
     /**
-     * Returns the current graphics object. Use this method to draw to
-     * Processing. The
-     * <code>PGRraphics</code> object can be cast to
-     * <code>PGraphicsJava2D</code>.
+     * Returns the current graphics object. Use this method to draw to the
+     * canvas.
      *
      * @return the current graphics to draw to
      */

@@ -205,8 +205,8 @@ public class EdgeRenderer implements Renderer {
         Vector v2 = new Vector(x, y);
         v2.add(size, size);
 
-        if (renderTarget instanceof ProcessingTarget) {
-            Graphics2D graphics = ((ProcessingTarget) renderTarget).getGraphics();
+        if (renderTarget instanceof G2DTarget) {
+            Graphics2D graphics = ((G2DTarget) renderTarget).getGraphics();
 
             graphics.setStroke(new BasicStroke(thickness));
             graphics.setColor(color);
@@ -279,8 +279,8 @@ public class EdgeRenderer implements Renderer {
         v2.add(new Vector(x2, y2));
         v2.add(n);
 
-        if (renderTarget instanceof ProcessingTarget) {
-            Graphics2D graphics = ((ProcessingTarget) renderTarget).getGraphics();
+        if (renderTarget instanceof G2DTarget) {
+            Graphics2D graphics = ((G2DTarget) renderTarget).getGraphics();
 
             graphics.setStroke(new BasicStroke(thickness));
             graphics.setColor(color);
@@ -355,8 +355,8 @@ public class EdgeRenderer implements Renderer {
             y1 = direction.y;
         }
 
-        if (renderTarget instanceof ProcessingTarget) {
-            Graphics2D graphics = ((ProcessingTarget) renderTarget).getGraphics();
+        if (renderTarget instanceof G2DTarget) {
+            Graphics2D graphics = ((G2DTarget) renderTarget).getGraphics();
             graphics.setStroke(new BasicStroke(thickness, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER));
             graphics.setColor(color);
             Line2D.Float line = new Line2D.Float(x1, y1, x2, y2);
