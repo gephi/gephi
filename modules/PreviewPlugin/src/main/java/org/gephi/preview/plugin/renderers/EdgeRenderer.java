@@ -149,13 +149,13 @@ public class EdgeRenderer implements Renderer {
                 if ((Boolean) item.getData(EdgeItem.DIRECTED) || edgeRadius > 0f) {
                     //Target
                     Item targetItem = (Item) item.getData(TARGET);
-                    Float weight = item.getData(EdgeItem.WEIGHT);
+                    Double weight = item.getData(EdgeItem.WEIGHT);
                     //Avoid negative arrow size:
                     float arrowSize = properties.getFloatValue(PreviewProperty.ARROW_SIZE);
                     if (arrowSize < 0) {
                         arrowSize = 0;
                     }
-                    float size = arrowSize * weight;
+                    float size = arrowSize * weight.floatValue();
                     targetRadius = -(edgeRadius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
                     item.setData(TARGET_RADIUS, targetRadius - size);
                 }

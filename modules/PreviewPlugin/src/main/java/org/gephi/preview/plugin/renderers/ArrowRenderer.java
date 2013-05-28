@@ -85,7 +85,7 @@ public class ArrowRenderer implements Renderer {
             Item targetItem = item.getData(EdgeRenderer.TARGET);
 
             //Weight and color
-            Float weight = item.getData(EdgeItem.WEIGHT);
+            Double weight = item.getData(EdgeItem.WEIGHT);
             EdgeColor edgeColor = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
             Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
                     (Color) sourceItem.getData(NodeItem.COLOR),

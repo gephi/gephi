@@ -54,9 +54,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
+import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewProperty;
-import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.UIUtils;
@@ -178,7 +178,6 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     }
 
     public void initTarget(PreviewUIModel previewUIModel) {
-        System.out.println("INIT T");
         // inits the preview applet
         if (previewUIModel != null && target == null) {
             PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
