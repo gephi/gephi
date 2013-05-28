@@ -34,7 +34,7 @@
                     <artifactId>org-netbeans-api-visual</artifactId>
                     <groupId>org.netbeans.api</groupId>
                 </exclusion>
-                 <exclusion>
+                <exclusion>
                     <artifactId>org-netbeans-core-execution</artifactId>
                     <groupId>org.netbeans.modules</groupId>
                 </exclusion>
@@ -145,18 +145,18 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>preview-api</artifactId>
         </dependency>
-<!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-exporter-preview</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>lib.validation</artifactId>
         </dependency>
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>preview-export-ui</artifactId>
-        </dependency>-->
+        </dependency>
         <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dynamic-api</artifactId>
@@ -422,7 +422,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-import</artifactId>
         </dependency>
-                <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-preview</artifactId>
         </dependency><!--
