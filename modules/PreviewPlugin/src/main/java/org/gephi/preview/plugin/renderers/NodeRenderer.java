@@ -107,6 +107,7 @@ public class NodeRenderer implements Renderer {
         if (borderSize > 0) {
             graphics.setColor(new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha));
             graphics.setStroke(new BasicStroke(borderSize));
+            graphics.draw(ellipse);
         }
 
         graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha));
