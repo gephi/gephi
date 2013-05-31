@@ -15,6 +15,15 @@
 
     <name>GraphAPI</name>
 
+    <!-- Additional repository for picking up graph-store (built separately) -->
+    <repositories>
+        <repository>
+            <id>gephi-snapshots</id>
+            <name>Gephi 3rd Party</name>
+            <url>http://nexus.gephi.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
