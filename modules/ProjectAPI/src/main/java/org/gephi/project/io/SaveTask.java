@@ -47,7 +47,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -102,7 +101,7 @@ public class SaveTask implements LongTask, Runnable {
                 //Stream
                 int zipLevel = NbPreferences.forModule(SaveTask.class).getInt(ZIP_LEVEL_PREFERENCE, 9);
                 outputStream = new FileOutputStream(writeFile);
-                zipOut = new ZipOutputStream(outputStream, Charset.forName("UTF-8"));
+                zipOut = new ZipOutputStream(outputStream);
                 zipOut.setLevel(zipLevel);
                 bos = new BufferedOutputStream(zipOut);
                 dos = new DataOutputStream(bos);

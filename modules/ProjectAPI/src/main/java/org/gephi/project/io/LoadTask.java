@@ -45,7 +45,6 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -93,7 +92,7 @@ public class LoadTask implements LongTask, Runnable {
             ProjectImpl project = null;
             ZipFile zip = null;
             try {
-                zip = new ZipFile(file, Charset.forName("UTF-8"));
+                zip = new ZipFile(file);
 
                 //Reader
                 gephiReader = new GephiReader();
