@@ -44,6 +44,7 @@ package org.gephi.perspective;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
+import javax.swing.SwingUtilities;
 import org.gephi.perspective.api.PerspectiveController;
 import org.gephi.perspective.spi.Perspective;
 import org.openide.util.Lookup;
@@ -92,7 +93,6 @@ public class PerspectiveControllerImpl implements PerspectiveController {
         openAndCloseMembers(selectedPerspectiveInstance);
 
         WindowManager.getDefault().addWindowSystemListener(new WindowSystemListener() {
-
             private Dimension lastDimension = null;
             private Integer lastState = null;
             private Point lastLocation = null;
@@ -108,7 +108,7 @@ public class PerspectiveControllerImpl implements PerspectiveController {
                     if (lastDimension != null) {
                         mainWindow.setSize(lastDimension);
                     }
-                    if(lastLocation!=null){
+                    if (lastLocation != null) {
                         mainWindow.setLocation(lastLocation);
                     }
                     if (lastState != null) {
@@ -160,45 +160,12 @@ public class PerspectiveControllerImpl implements PerspectiveController {
         NbPreferences.root().put(SELECTED_PERSPECTIVE_PREFERENCE, selectedPerspective);
     }
 
-    private void openAndCloseMembers(Perspective perspective) {
-        WindowManager.getDefault().setRole(perspective.getName());
-//        //Close other perspective based on group name
-//        for (Perspective g : perspectives) {
-//            if (g != perspective) {
-//                TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(g.getName());
-//                if (tpg != null) {
-//                    tpg.close();
-//                }
-//            }
-//        }
-//
-//        //Open perspective
-//        TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(perspective.getName());
-//        if (tpg != null) {
-//            tpg.open();
-//        }
-//
-//
-//        //Close members
-//        for (TopComponent c : WindowManager.getDefault().getRegistry().getOpened()) {
-//            String pId = WindowManager.getDefault().findTopComponentID((TopComponent) c);
-//            for (PerspectiveMember perspectiveMember : members) {
-//                if (pId.equals(perspectiveMember.getTopComponentId()) && !perspectiveMember.isMemberOf(perspective)) {
-//                    boolean closed = c.close();
-//                }
-//            }
-//        }
-//
-//
-//        //Open members
-//        for (PerspectiveMember perspectiveMember : members) {
-//            if (perspectiveMember.isMemberOf(perspective)) {
-//                String pId = perspectiveMember.getTopComponentId();
-//                TopComponent c = WindowManager.getDefault().findTopComponent(pId);
-//                if (c != null && !c.isOpened()) {
-//                    c.open();
-//                }
-//            }
-//        }
+    private void openAndCloseMembers(final Perspective perspective) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                WindowManager.getDefault().setRole(perspective.getName());
+            }
+        });
     }
 }
