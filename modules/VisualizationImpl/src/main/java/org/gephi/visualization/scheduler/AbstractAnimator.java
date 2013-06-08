@@ -6,7 +6,7 @@ import java.util.concurrent.Semaphore;
  *
  * @author mbastian
  */
-public class Animator extends Thread {
+public abstract class AbstractAnimator extends Thread {
 
     //Runnable
     protected final Runnable runnable;
@@ -15,7 +15,7 @@ public class Animator extends Thread {
     //Lock
     protected final Semaphore semaphore;
 
-    public Animator(Runnable runnable, Semaphore semaphore, String name) {
+    public AbstractAnimator(Runnable runnable, Semaphore semaphore, String name) {
         super(name);
         this.semaphore = semaphore;
         this.runnable = runnable;

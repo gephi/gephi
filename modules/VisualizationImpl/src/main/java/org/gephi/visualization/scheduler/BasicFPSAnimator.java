@@ -4,7 +4,7 @@ package org.gephi.visualization.scheduler;
  *
  * @author mbastian
  */
-public class FPSAnimator extends Thread {
+public class BasicFPSAnimator extends Thread {
 
     //Runnable
     protected final Runnable runnable;
@@ -17,7 +17,7 @@ public class FPSAnimator extends Thread {
     protected final Object worldLock;
     protected final Object lock = new Object();
 
-    public FPSAnimator(Runnable runnable, Object worldLock, String name, float fps) {
+    public BasicFPSAnimator(Runnable runnable, Object worldLock, String name, float fps) {
         super(name);
         this.worldLock = worldLock;
         this.runnable = runnable;
