@@ -314,10 +314,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>generator-plugin-ui</artifactId>
         </dependency>
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-exporter-plugin</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-ranking</artifactId>
@@ -358,11 +358,11 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-partition</artifactId>
         </dependency>-->
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-importer-plugin</artifactId>
         </dependency>
-        <dependency>
+        <!--  <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-datalab</artifactId>
         </dependency>
@@ -373,19 +373,19 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-impl</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>export-plugin-ui</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-recent-files</artifactId>
         </dependency>
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-io-export</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>perspective-api</artifactId>

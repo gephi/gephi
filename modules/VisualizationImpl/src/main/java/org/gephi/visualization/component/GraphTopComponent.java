@@ -47,7 +47,6 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -63,7 +62,6 @@ import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 @ConvertAsProperties(dtd = "-//org.gephi.visualization.component//Graph//EN",
         autostore = false)
@@ -79,6 +77,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     private AbstractEngine engine;
     private VizBarController vizBarController;
 //    private Map<Integer, ContextMenuItemManipulator> keyActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();
+    private final transient GraphDrawableImpl drawable;
 
     public GraphTopComponent() {
         initComponents();
@@ -91,26 +90,27 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         //Init
         initCollapsePanel();
         initToolPanels();
-        final GraphDrawableImpl drawable = VizController.getInstance().getDrawable();
+        drawable = VizController.getInstance().getDrawable();
 
         //Request component activation and therefore initialize JOGL2 component
-        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
-            @Override
-            public void run() {
-                open();
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        requestActive();
-                        add(drawable.getGraphComponent(), BorderLayout.CENTER);
-                        remove(waitingLabel);
-                    }
-                });
-            }
-        });
+//        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+//            @Override
+//            public void run() {
+//                open();
+//                SwingUtilities.invokeLater(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        requestActive();
+//                        add(drawable.getGraphComponent(), BorderLayout.CENTER);
+//                        remove(waitingLabel);
+//                    }
+//                });
+//            }
+//        });
         initKeyEventContextMenuActionMappings();
-        //remove(waitingLabel);
-        //add(drawable.getGraphComponent(), BorderLayout.CENTER);
+
+        add(drawable.getGraphComponent(), BorderLayout.CENTER);
+        remove(waitingLabel);
     }
 
     private void initCollapsePanel() {
@@ -290,6 +290,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     protected void componentShowing() {
         super.componentShowing();
         engine.startDisplay();
+
     }
 
     @Override
@@ -314,7 +315,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
     @Override
     public void componentClosed() {
-        engine.stopDisplay();
     }
 
     void writeProperties(java.util.Properties p) {
