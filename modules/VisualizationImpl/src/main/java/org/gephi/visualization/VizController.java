@@ -122,7 +122,8 @@ public class VizController implements VisualizationController {
         if (vizConfig.isUseGLJPanel()) {
             drawable = commander.createPanel();
         } else {
-            drawable = commander.createCanvas();
+//            drawable = commander.createCanvas();
+            drawable = commander.createNewtCanvas();
         }
         drawable.initArchitecture();
         engine.initArchitecture();

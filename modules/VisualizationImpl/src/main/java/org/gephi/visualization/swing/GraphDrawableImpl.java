@@ -181,7 +181,6 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
     @Override
     protected void reshape3DScene(GL2 gl) {
         setCameraPosition(gl, glu);
-        graphComponent.invalidate();    //Force canvas to be laid out with the proper size
     }
 
     @Override

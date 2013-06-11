@@ -41,7 +41,6 @@
  */
 package org.gephi.visualization.scheduler;
 
-import com.jogamp.opengl.util.FPSAnimator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
@@ -71,7 +70,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     private CompatibilityEngine engine;
     private VizConfig vizConfig;
     //Animators
-    private FPSAnimator displayAnimator;
+    private BasicFPSAnimator displayAnimator;
     private BasicFPSAnimator updateAnimator;
     private float displayFpsLimit = 30f;
     private float updateFpsLimit = 5f;
@@ -86,24 +85,19 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
     @Override
     public synchronized void start() {
-//        if (displayAnimator != null) {
-//            displayAnimator.shutdown();
-//        }
+        if (displayAnimator != null) {
+            displayAnimator.shutdown();
+        }
         if (updateAnimator != null) {
             updateAnimator.shutdown();
         }
-        if (displayAnimator == null) {
-            displayAnimator = new FPSAnimator(graphDrawable.getGLAutoDrawable(), (int) displayFpsLimit);
-        }
+        displayAnimator = new BasicFPSAnimator(new Runnable() {
+            @Override
+            public void run() {
+                graphDrawable.display();
+            }
+        }, worldLock, "DisplayAnimator", displayFpsLimit);
         displayAnimator.start();
-
-//        displayAnimator = new FPSAnimator(new Runnable() {
-//            @Override
-//            public void run() {
-//                graphDrawable.display();
-//            }
-//        }, worldLock, "DisplayAnimator", displayFpsLimit);
-//        displayAnimator.start();
 
 
         updateAnimator = new BasicFPSAnimator(new Runnable() {
@@ -118,7 +112,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     @Override
     public synchronized void stop() {
         updateAnimator.shutdown();
-        displayAnimator.stop();
+        displayAnimator.shutdown();
 
         cameraMoved.set(false);
         mouseMoved.set(false);
@@ -234,7 +228,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     public void setFps(float maxFps) {
         this.displayFpsLimit = maxFps;
         if (displayAnimator != null) {
-//            displayAnimator.setUpdateFPSFrames((int) displayFpsLimit, null);
+            displayAnimator.setFps(maxFps);
         }
     }
 

@@ -63,6 +63,8 @@ public class NewtGraphCanvas extends GraphDrawableImpl {
         super();
         GLWindow glWindow1 = GLWindow.create(getCaps());
         glCanvas = new NewtCanvasAWT(glWindow1);
+        glCanvas.setFocusable(true);
+        glCanvas.setIgnoreRepaint(true);
 
         super.initDrawable(glWindow1);
 //        glCanvas.setMinimumSize(new Dimension(0, 0));   //Fix Canvas resize Issue

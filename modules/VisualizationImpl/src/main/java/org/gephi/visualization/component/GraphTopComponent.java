@@ -315,6 +315,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
     @Override
     public void componentClosed() {
+        engine.stopDisplay();
     }
 
     void writeProperties(java.util.Properties p) {
