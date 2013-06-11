@@ -181,8 +181,8 @@ public class DataBridge implements VizArchitecture {
             observer.destroy();
             observer = null;
         }
-        nodes = new NodeModel[0];
-        edges = new EdgeModel[0];
+        nodes = new NodeModel[10];
+        edges = new EdgeModel[10];
         if (graphModel != null) {
             observer = graphModel.getGraphObserver(graph, false);
         }
@@ -207,7 +207,7 @@ public class DataBridge implements VizArchitecture {
         if (edges == null) {
             edges = new EdgeModel[10];
         } else if (index >= edges.length) {
-            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * nodes.length) >>> 16, index + 1), Integer.MAX_VALUE);
+            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * edges.length) >>> 16, index + 1), Integer.MAX_VALUE);
             final EdgeModel t[] = new EdgeModel[newLength];
             System.arraycopy(edges, 0, t, 0, edges.length);
             edges = t;
