@@ -75,12 +75,12 @@
         <dependency>
             <groupId>org.jogamp.gluegen</groupId>
             <artifactId>gluegen-rt-main</artifactId>
-            <version>2.0-rc11</version>
+            <version>2.0.2-rc-20130425</version>
         </dependency>
         <dependency>
             <groupId>org.jogamp.jogl</groupId>
             <artifactId>jogl-all-main</artifactId>
-            <version>2.0-rc11</version>
+            <version>2.0.2-rc-20130425</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -107,6 +107,18 @@
             <artifactId>org-openide-modules</artifactId>
         </dependency>
     </dependencies>
+    
+    <repositories>
+        <repository>
+            <id>jogamp-remote</id>
+            <name>jogamp test mirror</name>
+            <url>http://www.jogamp.org/deployment/maven/</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
