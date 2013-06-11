@@ -197,7 +197,7 @@ public class CompatibilityEngine extends AbstractEngine {
         markTime++;
 
         //Arrows
-        if (vizConfig.isShowArrows() && dataBridge.isDirected()) {
+        if (edgeClass.isEnabled() && vizConfig.isShowArrows() && dataBridge.isDirected()) {
             gl.glBegin(GL2.GL_TRIANGLES);
             for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
                 EdgeModel obj = itr.next();
