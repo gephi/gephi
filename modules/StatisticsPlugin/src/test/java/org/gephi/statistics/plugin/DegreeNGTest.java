@@ -54,4 +54,117 @@ public class DegreeNGTest {
         double avDegree=d.getAverageDegree();
         assertEquals(avDegree, 0.0);        
     }
+    
+    @Test
+    public void testCompleteGraphAverageDegree() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+        pc.newProject();
+        GraphGenerator generator=Lookup.getDefault().lookup(GraphGenerator.class);      
+        GraphModel graphModel=generator.generateCompleteUndirectedGraph(4);
+        AttributeModel attributeModel=Lookup.getDefault().lookup(AttributeController.class).getModel();
+        Degree d=new Degree();
+        d.execute(graphModel, attributeModel);
+        
+        double avDegree=d.getAverageDegree();
+        assertEquals(avDegree, 3.0);        
+    }
+    
+     @Test
+    public void testPathGraphAverageDegree() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+        pc.newProject();
+        GraphGenerator generator=Lookup.getDefault().lookup(GraphGenerator.class);      
+        GraphModel graphModel=generator.generatePathUndirectedGraph(5);
+        AttributeModel attributeModel=Lookup.getDefault().lookup(AttributeController.class).getModel();
+        Degree d=new Degree();
+        d.execute(graphModel, attributeModel);
+        
+        double avDegree=d.getAverageDegree();
+        assertEquals(avDegree, 1.6);        
+    }
+     
+      @Test
+    public void testCyclicGraphAverageDegree() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+        pc.newProject();
+        GraphGenerator generator=Lookup.getDefault().lookup(GraphGenerator.class);      
+        GraphModel graphModel=generator.generateCyclicUndirectedGraph(6);
+        AttributeModel attributeModel=Lookup.getDefault().lookup(AttributeController.class).getModel();
+        Degree d=new Degree();
+        d.execute(graphModel, attributeModel);
+        
+        double avDegree=d.getAverageDegree();
+        assertEquals(avDegree, 2.0);        
+    }
+      
+      @Test
+    public void testStarGraphAverageDegree() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+        pc.newProject();
+        GraphGenerator generator=Lookup.getDefault().lookup(GraphGenerator.class);      
+        GraphModel graphModel=generator.generateStarUndirectedGraph(5);
+        AttributeModel attributeModel=Lookup.getDefault().lookup(AttributeController.class).getModel();
+        Degree d=new Degree();
+        d.execute(graphModel, attributeModel);
+        
+        double avDegree=d.getAverageDegree();
+        double answer=(double)5/3;
+        assertEquals(avDegree, answer);        
+    }
+      
+      @Test
+    public void testFourNodesDirectedAverageDegree() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+        pc.newProject();
+        GraphGenerator generator=Lookup.getDefault().lookup(GraphGenerator.class);      
+        GraphModel graphModel=generator.generateNullDirectedGraph(4);
+        AttributeModel attributeModel=Lookup.getDefault().lookup(AttributeController.class).getModel();
+        Degree d=new Degree();
+        d.execute(graphModel, attributeModel);
+        
+        double avDegree=d.getAverageDegree();
+        assertEquals(avDegree, 0.0);        
+    }
+    
+    @Test
+    public void testCompleteDirectedGraphAverageDegree() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+        pc.newProject();
+        GraphGenerator generator=Lookup.getDefault().lookup(GraphGenerator.class);      
+        GraphModel graphModel=generator.generateCompleteDirectedGraph(12);
+        AttributeModel attributeModel=Lookup.getDefault().lookup(AttributeController.class).getModel();
+        Degree d=new Degree();
+        d.execute(graphModel, attributeModel);
+        
+        double avDegree=d.getAverageDegree();
+        assertEquals(avDegree, 22.0);        
+    }
+    
+    @Test
+    public void testPathDirectedGraphAverageDegree() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+        pc.newProject();
+        GraphGenerator generator=Lookup.getDefault().lookup(GraphGenerator.class);      
+        GraphModel graphModel=generator.generatePathDirectedGraph(5);
+        AttributeModel attributeModel=Lookup.getDefault().lookup(AttributeController.class).getModel();
+        Degree d=new Degree();
+        d.execute(graphModel, attributeModel);
+        
+        double avDegree=d.getAverageDegree();
+        assertEquals(avDegree, 1.6);        
+    }
+    
+     @Test
+    public void testCyclicDirectedGraphAverageDegree() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+        pc.newProject();
+        GraphGenerator generator=Lookup.getDefault().lookup(GraphGenerator.class);      
+        GraphModel graphModel=generator.generateCyclicDirectedGraph(6);
+        AttributeModel attributeModel=Lookup.getDefault().lookup(AttributeController.class).getModel();
+        Degree d=new Degree();
+        d.execute(graphModel, attributeModel);
+        
+        double avDegree=d.getAverageDegree();
+        assertEquals(avDegree, 2.0);        
+    }
 }
