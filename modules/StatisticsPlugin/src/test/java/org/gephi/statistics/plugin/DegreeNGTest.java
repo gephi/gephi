@@ -42,23 +42,16 @@ public class DegreeNGTest {
     }
     
     @Test
-    public void testTwoNodesAverageDegree() {
+    public void testFourNodesAverageDegree() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
         pc.newProject();
-        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        GraphGenerator generator=Lookup.getDefault().lookup(GraphGenerator.class);      
+        GraphModel graphModel=generator.generateNullUndirectedGraph(4);
         AttributeModel attributeModel=Lookup.getDefault().lookup(AttributeController.class).getModel();
-        Node n0=graphModel.factory().newNode("n0");
-        Node n1=graphModel.factory().newNode("n1");
-        Edge e1=graphModel.factory().newEdge(n1, n0);
-        UndirectedGraph undirectedGraph=graphModel.getUndirectedGraph();
-        undirectedGraph.addNode(n0);
-        undirectedGraph.addNode(n1);
-        undirectedGraph.addEdge(e1);
-        
         Degree d=new Degree();
         d.execute(graphModel, attributeModel);
         
         double avDegree=d.getAverageDegree();
-        assertEquals(avDegree, 1.0);        
+        assertEquals(avDegree, 0.0);        
     }
 }
