@@ -104,11 +104,82 @@ public class Degree implements Statistics, LongTask {
     public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
         isDirected = graph instanceof DirectedGraph;
         isCanceled = false;
-        inDegreeDist = new HashMap<Integer, Integer>();
-        outDegreeDist = new HashMap<Integer, Integer>();
-        degreeDist = new HashMap<Integer, Integer>();
+        
+        initializeDegreeDists();
+        Map<String, AttributeColumn> attributeColumns = initializeAttributeColunms(attributeModel);  
+        
+        graph.readLock();
+        
+        avgDegree = calculateAverageDegree(graph, isDirected, attributeColumns);
+        AttributeColumn avgDegreeColumn=attributeColumns.get(AVERAGE_DEGREE);
+        graph.getAttributes().setValue(avgDegreeColumn.getIndex(), avgDegree);
 
-        //Attributes cols
+        graph.readUnlockAll();
+    }
+    
+    public int calculateInDegree(HierarchicalDirectedGraph directedGraph, Node n) {
+        return directedGraph.getTotalInDegree(n);
+    }
+    
+    public int calculateOutDegree(HierarchicalDirectedGraph directedGraph, Node n) {
+        return directedGraph.getTotalOutDegree(n);
+    }
+    
+    public int calculateDegree(HierarchicalGraph graph, Node n) {
+        return graph.getTotalDegree(n);
+    }
+    
+    public double calculateAverageDegree(HierarchicalGraph graph, boolean isDirected, Map<String, AttributeColumn> attributeColumns) {
+        
+        double averageDegree=0;
+        int i=0;
+        
+        HierarchicalDirectedGraph directedGraph = null;
+         
+        if(isDirected) {
+            directedGraph = graph.getGraphModel().getHierarchicalDirectedGraphVisible();
+        }
+        
+        Progress.start(progress, graph.getNodeCount());
+        
+         for (Node n : graph.getNodes()) {
+            AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
+            int inDegree=0;
+            int outDegree=0;
+            int degree=0;
+            if (isDirected) {
+                inDegree = calculateInDegree(directedGraph, n);
+                outDegree = calculateOutDegree(directedGraph, n);
+            }
+            degree = calculateDegree(graph, n);
+            
+            if (attributeColumns!=null) {
+                if (isDirected) {
+                    setAttributeRowValues(attributeColumns, row, inDegree, outDegree, degree);
+                    updateDegreeDists(inDegree, outDegree, degree);
+                } else {
+                    setAttributeRowValues(attributeColumns, row, degree);
+                    updateDegreeDists(degree);
+                };
+            }
+            
+            averageDegree += degree;
+            
+            if (isCanceled) {
+                break;
+            }
+            i++;
+            Progress.progress(progress, i);
+         }
+         
+         averageDegree /= graph.getNodeCount();
+         
+         return averageDegree;
+    }
+    
+    private Map<String, AttributeColumn> initializeAttributeColunms(AttributeModel attributeModel) {
+        Map<String, AttributeColumn> attributeColumns = new HashMap<String, AttributeColumn>();
+        
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeTable graphTable = attributeModel.getGraphTable();
         AttributeColumn inCol = nodeTable.getColumn(INDEGREE);
@@ -129,53 +200,56 @@ public class Degree implements Statistics, LongTask {
         if(avgDegreeCol == null) {
             avgDegreeCol = graphTable.addColumn(AVERAGE_DEGREE, NbBundle.getMessage(Degree.class, "Degree.graphcolumn.AverageDegree"), AttributeType.DOUBLE, AttributeOrigin.COMPUTED, 0.0);
         }
-
-        int i = 0;
-
-        graph.readLock();
-
-        Progress.start(progress, graph.getNodeCount());
         
-        HierarchicalDirectedGraph directedGraph = null;
-        if(isDirected) {
-            directedGraph = graph.getGraphModel().getHierarchicalDirectedGraphVisible();
-        }
-
-        for (Node n : graph.getNodes()) {
-            AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
-            if (isDirected) {
-                int inDegree = directedGraph.getTotalInDegree(n);
-                int outDegree = directedGraph.getTotalOutDegree(n);
-                row.setValue(inCol, inDegree);
-                row.setValue(outCol, outDegree);
-                if (!inDegreeDist.containsKey(inDegree)) {
+        attributeColumns.put(INDEGREE, inCol);
+        attributeColumns.put(OUTDEGREE, outCol);
+        attributeColumns.put(DEGREE, degCol);
+        attributeColumns.put(AVERAGE_DEGREE, avgDegreeCol);
+        
+        return attributeColumns;
+    }
+    
+    private void setAttributeRowValues(Map<String, AttributeColumn> attributeColumns, AttributeRow row, int inDegree, int outDegree, int degree) {
+        AttributeColumn inDegreeColumn=attributeColumns.get(INDEGREE);
+        AttributeColumn outDegreeColumn=attributeColumns.get(OUTDEGREE);
+        AttributeColumn degreeColumn=attributeColumns.get(DEGREE);
+        row.setValue(inDegreeColumn, inDegree);
+        row.setValue(outDegreeColumn, outDegree);
+        row.setValue(degreeColumn, degree);
+        
+    }
+    
+    private void setAttributeRowValues(Map<String, AttributeColumn> attributeColumns, AttributeRow row, int degree) {
+        AttributeColumn degreeColumn=attributeColumns.get(DEGREE);
+        row.setValue(degreeColumn, degree);
+    }
+    
+    private void initializeDegreeDists() {
+        inDegreeDist = new HashMap<Integer, Integer>();
+        outDegreeDist = new HashMap<Integer, Integer>();
+        degreeDist = new HashMap<Integer, Integer>();
+    }
+    
+    private void updateDegreeDists(int inDegree, int outDegree, int degree) {
+        if (!inDegreeDist.containsKey(inDegree)) {
                     inDegreeDist.put(inDegree, 0);
                 }
-                inDegreeDist.put(inDegree, inDegreeDist.get(inDegree) + 1);
-                if (!outDegreeDist.containsKey(outDegree)) {
+       inDegreeDist.put(inDegree, inDegreeDist.get(inDegree) + 1);
+       if (!outDegreeDist.containsKey(outDegree)) {
                     outDegreeDist.put(outDegree, 0);
                 }
-                outDegreeDist.put(outDegree, outDegreeDist.get(outDegree) + 1);
-            }
-            int degree = graph.getTotalDegree(n);
-            row.setValue(degCol, degree);
-            avgDegree += degree;
-            if (!degreeDist.containsKey(degree)) {
+       outDegreeDist.put(outDegree, outDegreeDist.get(outDegree) + 1);
+       if (!degreeDist.containsKey(degree)) {
                 degreeDist.put(degree, 0);
             }
-            degreeDist.put(degree, degreeDist.get(degree) + 1);
-
-            if (isCanceled) {
-                break;
+       degreeDist.put(degree, degreeDist.get(degree) + 1);
+    }
+    
+    private void updateDegreeDists(int degree) {
+       if (!degreeDist.containsKey(degree)) {
+                degreeDist.put(degree, 0);
             }
-            i++;
-            Progress.progress(progress, i);
-        }
-
-        avgDegree /= graph.getNodeCount();
-        graph.getAttributes().setValue(avgDegreeCol.getIndex(), avgDegree);
-
-        graph.readUnlockAll();
+       degreeDist.put(degree, degreeDist.get(degree) + 1);
     }
 
     /**
