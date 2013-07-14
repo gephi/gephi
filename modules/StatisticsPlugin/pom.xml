@@ -83,6 +83,13 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>io-generator-plugin</artifactId>
+            <version>0.9-SNAPSHOT</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
