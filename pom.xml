@@ -595,12 +595,12 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>partition-api</artifactId>
+                <artifactId>appearance-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-partition</artifactId>
+                <artifactId>desktop-appearance</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -705,12 +705,12 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>partition-plugin</artifactId>
+                <artifactId>appearance-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>partition-plugin-ui</artifactId>
+                <artifactId>appearance-plugin-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1182,6 +1182,9 @@
         <module>modules/branding</module>
         <module>modules/application</module>
         <module>modules/AlgorithmsPlugin</module>
+        <module>modules/AppearanceAPI</module>
+        <module>modules/AppearancePlugin</module>
+        <module>modules/AppearancePluginUI</module>
         <module>modules/LongTaskAPI</module>
         <module>modules/DBDrivers</module>
         <module>modules/DesktopBranding</module>
@@ -1190,6 +1193,7 @@
         <module>modules/DesktopExport</module>
         <module>modules/DesktopImport</module>
         <module>modules/DesktopLayout</module>
+        <module>modules/DesktopAppearance</module>
         <module>modules/DesktopPerspective</module>
         <module>modules/DesktopPreview</module>
         <module>modules/DesktopProgress</module>

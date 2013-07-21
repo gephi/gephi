@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+AutoUpdate-Essential-Module: true
+OpenIDE-Module-Localizing-Bundle: org/gephi/ui/appearance/plugin/Bundl
+ e.properties
+OpenIDE-Module-Specification-Version: 0.8.2
+OpenIDE-Module-Implementation-Version: 0.9-20130721
+OpenIDE-Module-Build-Version: 201307212127
+OpenIDE-Module: org.gephi.appearance.plugin.ui
+OpenIDE-Module-Public-Packages: -
+OpenIDE-Module-Requires: org.openide.modules.ModuleFormat1
+OpenIDE-Module-Display-Category: org.gephi
+OpenIDE-Module-Name: AppearancePluginUI
+OpenIDE-Module-Short-Description: Gephi - The Open Graph Viz Platform
+OpenIDE-Module-Long-Description: Gephi - The Open Graph Viz Platform
+OpenIDE-Module-Module-Dependencies: org.openide.util.lookup > 8.19.1, 
+ org.openide.util > 8.29.1, org.gephi.appearance.api > 0.8.2, org.geph
+ i.appearance.plugin > 0.8.2, org.gephi.utils > 0.8.2, org.gephi.ui.co
+ mponents > 0.8.2, org.gephi.ui.library.wrapper > 0.8.2
+

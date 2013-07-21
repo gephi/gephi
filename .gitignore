@@ -95,3 +95,6 @@ keystore.ks
 /modules/CommonsWrapper/target/
 /modules/CoreLibraryWrapper/target/
 /modules/UILibraryWrapper/target/
+/modules/AppearanceAPI/target/
+/modules/AppearancePlugin/target/
+/modules/DesktopAppearance/target/

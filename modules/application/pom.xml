@@ -350,14 +350,14 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-generate</artifactId>
         </dependency>
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>partition-api</artifactId>
+            <artifactId>appearance-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-partition</artifactId>
-        </dependency>-->
+            <artifactId>desktop-appearance</artifactId>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-importer-plugin</artifactId>
@@ -425,15 +425,15 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-preview</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>appearance-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>appearance-plugin-ui</artifactId>
         </dependency><!--
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>partition-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>partition-plugin-ui</artifactId>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-tools</artifactId>
