@@ -283,6 +283,8 @@ public class TextManager implements VizArchitecture {
         @Override
         public void endRendering() {
             renderer.end3DRendering();
+            nodeRefresh = false;
+            edgeRefresh = false;
         }
 
         @Override
@@ -393,6 +395,8 @@ public class TextManager implements VizArchitecture {
         @Override
         public void endRendering() {
             renderer.endRendering();
+            nodeRefresh = false;
+            edgeRefresh = false;
         }
 
         @Override
