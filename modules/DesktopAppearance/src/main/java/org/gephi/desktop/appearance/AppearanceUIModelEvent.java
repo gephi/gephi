@@ -14,9 +14,11 @@ public class AppearanceUIModelEvent extends PropertyChangeEvent {
 
     public static String MODEL = "model";
     public static String SELECTED_ELEMENT_CLASS = "selectedElementClass";
+    public static String SELECTED_CATEGORY = "selectedCategory";
+    public static String SELECTED_TRANSFORMER_UI = "selectedTransformerUI";
 
     public AppearanceUIModelEvent(Object source, String propertyName,
             Object oldValue, Object newValue) {
-        super(source, propertyName, newValue, oldValue);
+        super(source, propertyName, oldValue, newValue);
     }
 }

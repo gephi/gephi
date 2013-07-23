@@ -10,6 +10,8 @@ import org.gephi.appearance.plugin.UniqueNodeSizeTransformer;
 import org.gephi.appearance.spi.Category;
 import org.gephi.appearance.spi.SimpleTransformer;
 import org.gephi.appearance.spi.SimpleTransformerUI;
+import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.ui.appearance.plugin.category.DefaultCategory;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -17,17 +19,22 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author mbastian
  */
-@ServiceProvider(service = SimpleTransformerUI.class, position = 200)
+@ServiceProvider(service = TransformerUI.class, position = 100)
 public class UniqueNodeSizeTransformerUI implements SimpleTransformerUI {
 
     @Override
     public Category[] getCategories() {
-        return new Category[]{Category.NODE_SIZE};
+        return new Category[]{DefaultCategory.NODE_SIZE};
     }
 
     @Override
     public String getDisplayName() {
         return NbBundle.getMessage(UniqueElementColorTransformerUI.class, "Unique.name");
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
     }
 
     @Override

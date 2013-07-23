@@ -43,8 +43,6 @@ package org.gephi.ui.appearance.plugin;
 
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -53,7 +51,6 @@ import java.text.NumberFormat;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Icon;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -65,8 +62,6 @@ import org.gephi.appearance.api.Part;
 import org.gephi.appearance.api.Partition;
 import org.gephi.appearance.plugin.PartitionElementColorTransformer;
 import org.gephi.appearance.spi.PartitionTransformer;
-import org.openide.util.ImageUtilities;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -157,30 +152,30 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
     }
 
     private void createPopup() {
-        popupMenu = new JPopupMenu();
-        JMenuItem randomizeItem = new JMenuItem(NbBundle.getMessage(PartitionColorTransformerPanel.class, "NodeColorTransformerPanel.action.randomize"));
-        randomizeItem.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/partition/plugin/resources/randomize.png", false));
-        randomizeItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-//                nodeColorTransformer.getMap().clear();
-//                setup(partition, nodeColorTransformer, true);
-                revalidate();
-                repaint();
-            }
-        });
-        popupMenu.add(randomizeItem);
-        JMenuItem allBlackItem = new JMenuItem(NbBundle.getMessage(PartitionColorTransformerPanel.class, "NodeColorTransformerPanel.action.allBlacks"));
-        allBlackItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-//                for (Entry<Object, Color> entry : nodeColorTransformer.getMap().entrySet()) {
-//                    entry.setValue(Color.BLACK);
-//                }
-//                setup(partition, nodeColorTransformer, false);
-                revalidate();
-                repaint();
-            }
-        });
-        popupMenu.add(allBlackItem);
+//        popupMenu = new JPopupMenu();
+//        JMenuItem randomizeItem = new JMenuItem(NbBundle.getMessage(PartitionColorTransformerPanel.class, "NodeColorTransformerPanel.action.randomize"));
+//        randomizeItem.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/partition/plugin/resources/randomize.png", false));
+//        randomizeItem.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+////                nodeColorTransformer.getMap().clear();
+////                setup(partition, nodeColorTransformer, true);
+//                revalidate();
+//                repaint();
+//            }
+//        });
+//        popupMenu.add(randomizeItem);
+//        JMenuItem allBlackItem = new JMenuItem(NbBundle.getMessage(PartitionColorTransformerPanel.class, "NodeColorTransformerPanel.action.allBlacks"));
+//        allBlackItem.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+////                for (Entry<Object, Color> entry : nodeColorTransformer.getMap().entrySet()) {
+////                    entry.setValue(Color.BLACK);
+////                }
+////                setup(partition, nodeColorTransformer, false);
+//                revalidate();
+//                repaint();
+//            }
+//        });
+//        popupMenu.add(allBlackItem);
     }
 
     class ColorChooserRenderer extends JLabel implements TableCellRenderer {

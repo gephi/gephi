@@ -5,6 +5,7 @@
 package org.gephi.desktop.appearance;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -50,17 +51,21 @@ public class AppearanceUIController {
 
             @Override
             public void select(Workspace workspace) {
+                AppearanceUIModel oldModel = model;
                 model = workspace.getLookup().lookup(AppearanceUIModel.class);
                 if (model == null) {
                     AppearanceModel appearanceModel = ac.getModel(workspace);
                     model = new AppearanceUIModel(AppearanceUIController.this, appearanceModel);
                     workspace.add(model);
                 }
+                model.select();
+                firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, model);
             }
 
             @Override
             public void unselect(Workspace workspace) {
                 if (model != null) {
+                    model.unselect();
                 }
             }
 
@@ -83,7 +88,7 @@ public class AppearanceUIController {
             }
         }
 
-        listeners = new HashSet<AppearanceUIModelListener>();
+        listeners = Collections.synchronizedSet(new HashSet<AppearanceUIModelListener>());
 
         transformers = new HashMap<String, Map<Category, Set<TransformerUI>>>();
         for (String ec : ELEMENT_CLASSES) {
@@ -121,8 +126,8 @@ public class AppearanceUIController {
         return transformers.get(elementClass).keySet();
     }
 
-    public Transformer getTransformer(TransformerUI ui) {
-        return null;
+    public Collection<TransformerUI> getTransformerUIs(String elementClass, Category category) {
+        return transformers.get(elementClass).get(category);
     }
 
     public AppearanceUIModel getModel() {
@@ -130,9 +135,9 @@ public class AppearanceUIController {
     }
 
     public AppearanceUIModel getModel(Workspace workspace) {
-        final AppearanceController ac = Lookup.getDefault().lookup(AppearanceController.class);
         AppearanceUIModel m = workspace.getLookup().lookup(AppearanceUIModel.class);
         if (m == null) {
+            AppearanceController ac = Lookup.getDefault().lookup(AppearanceController.class);
             AppearanceModel appearanceModel = ac.getModel(workspace);
             m = new AppearanceUIModel(this, appearanceModel);
             workspace.add(m);
@@ -144,7 +149,42 @@ public class AppearanceUIController {
         if (!elementClass.equals(NODE_ELEMENT) && !elementClass.equals(EDGE_ELEMENT)) {
             throw new RuntimeException("Element class has to be " + NODE_ELEMENT + " or " + EDGE_ELEMENT);
         }
-        model.setSelectedElementClass(elementClass);
+        if (model != null) {
+            String oldValue = model.getSelectedElementClass();
+            if (!oldValue.equals(elementClass)) {
+                model.setSelectedElementClass(elementClass);
+                firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_ELEMENT_CLASS, oldValue, elementClass);
+            }
+        }
+    }
+
+    public void setSelectedCategory(Category category) {
+        if (model != null) {
+            Category oldValue = model.getSelectedCategory();
+            if (!oldValue.equals(category)) {
+                model.setSelectedCategory(category);
+                firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_CATEGORY, oldValue, category);
+            }
+        }
+    }
+
+    public void setSelectedTransformerUI(TransformerUI ui) {
+        if (model != null) {
+            TransformerUI oldValue = model.getSelectedTransformerUI();
+            if (!oldValue.equals(ui)) {
+                model.setSelectedTransformerUI(ui);
+                firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_TRANSFORMER_UI, oldValue, ui);
+            }
+        }
+    }
+
+    protected Category getFirstCategory(String elementClass) {
+        return transformers.get(elementClass).keySet().toArray(new Category[0])[0];
+    }
+
+    protected TransformerUI getFirstTransformerUI(String elementClass, Category category) {
+        Map<Category, Set<TransformerUI>> e = transformers.get(elementClass);
+        return e.get(category).toArray(new TransformerUI[0])[0];
     }
 
     public void addPropertyChangeListener(AppearanceUIModelListener listener) {
@@ -157,8 +197,8 @@ public class AppearanceUIController {
         listeners.remove(listener);
     }
 
-    private void firePropertyChangeEvent(String propertyName, Object beforeValue, Object afterValue) {
-        AppearanceUIModelEvent event = new AppearanceUIModelEvent(this, propertyName, beforeValue, afterValue);
+    protected void firePropertyChangeEvent(String propertyName, Object oldValue, Object newValue) {
+        AppearanceUIModelEvent event = new AppearanceUIModelEvent(model, propertyName, oldValue, newValue);
         for (AppearanceUIModelListener listener : listeners) {
             listener.propertyChange(event);
         }

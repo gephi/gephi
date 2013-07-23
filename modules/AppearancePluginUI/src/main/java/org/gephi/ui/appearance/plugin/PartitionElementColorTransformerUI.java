@@ -11,12 +11,16 @@ import org.gephi.appearance.plugin.PartitionElementColorTransformer;
 import org.gephi.appearance.spi.Category;
 import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.PartitionTransformerUI;
+import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.ui.appearance.plugin.category.DefaultCategory;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author mbastian
  */
+@ServiceProvider(service = TransformerUI.class, position = 200)
 public class PartitionElementColorTransformerUI implements PartitionTransformerUI {
 
     private final PartitionColorTransformerPanel panel;
@@ -27,7 +31,7 @@ public class PartitionElementColorTransformerUI implements PartitionTransformerU
 
     @Override
     public Category[] getCategories() {
-        return new Category[]{Category.NODE_COLOR, Category.EDGE_COLOR};
+        return new Category[]{DefaultCategory.NODE_COLOR, DefaultCategory.EDGE_COLOR};
     }
 
     @Override
@@ -37,6 +41,11 @@ public class PartitionElementColorTransformerUI implements PartitionTransformerU
 
     @Override
     public Icon getIcon() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
         return null;
     }
 

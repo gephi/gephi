@@ -16,6 +16,8 @@ public interface TransformerUI<T extends Transformer> {
 
     public String getDisplayName();
 
+    public String getDescription();
+
     public Icon getIcon();
 
     public Class<? extends T> getTransformerClass();

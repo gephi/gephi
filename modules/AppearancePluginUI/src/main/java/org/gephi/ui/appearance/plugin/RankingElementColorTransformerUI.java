@@ -10,6 +10,8 @@ import org.gephi.appearance.plugin.RankingElementColorTransformer;
 import org.gephi.appearance.spi.Category;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.RankingTransformerUI;
+import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.ui.appearance.plugin.category.DefaultCategory;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -17,7 +19,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author mbastian
  */
-@ServiceProvider(service = RankingTransformerUI.class)
+@ServiceProvider(service = TransformerUI.class, position = 200)
 public class RankingElementColorTransformerUI implements RankingTransformerUI {
 
     private final RankingColorTransformerPanel panel;
@@ -28,7 +30,7 @@ public class RankingElementColorTransformerUI implements RankingTransformerUI {
 
     @Override
     public Category[] getCategories() {
-        return new Category[]{Category.NODE_COLOR, Category.EDGE_COLOR};
+        return new Category[]{DefaultCategory.NODE_COLOR, DefaultCategory.EDGE_COLOR};
     }
 
     @Override
@@ -39,6 +41,11 @@ public class RankingElementColorTransformerUI implements RankingTransformerUI {
     @Override
     public String getDisplayName() {
         return NbBundle.getMessage(UniqueElementColorTransformerUI.class, "Attribute.name");
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
     }
 
     @Override

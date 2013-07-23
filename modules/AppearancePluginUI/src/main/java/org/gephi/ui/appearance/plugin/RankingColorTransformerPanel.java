@@ -311,7 +311,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
         colorSwatchToolbar.setRollover(true);
         colorSwatchToolbar.setOpaque(false);
 
-        colorSwatchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/plugin/resources/color-swatch.png"))); // NOI18N
+        colorSwatchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/appearance/plugin/resources/color-swatch.png"))); // NOI18N
         colorSwatchButton.setFocusable(false);
         colorSwatchButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         colorSwatchButton.setIconTextGap(0);
@@ -340,7 +340,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addComponent(upperBoundLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(rangeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(colorSwatchToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
@@ -361,7 +361,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lowerBoundLabel)
                             .addComponent(upperBoundLabel))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

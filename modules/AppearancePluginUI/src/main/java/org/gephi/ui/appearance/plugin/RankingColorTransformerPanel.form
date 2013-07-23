@@ -148,7 +148,7 @@
         <Component class="javax.swing.JButton" name="colorSwatchButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/org/gephi/ui/ranking/plugin/resources/color-swatch.png"/>
+              <Image iconType="3" name="/org/gephi/ui/appearance/plugin/resources/color-swatch.png"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>

@@ -10,7 +10,9 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.MissingResourceException;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -45,18 +47,6 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         controller.addPropertyChangeListener(this);
     }
 
-    public void setup(AppearanceUIModel model) {
-        this.model = model;
-
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                categoryToolbar.setup();
-                categoryToolbar.refreshTransformers();
-            }
-        });
-    }
-
     public JToolBar getCategoryToolbar() {
         return categoryToolbar;
     }
@@ -67,6 +57,15 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent pce) {
+        if (pce.getPropertyName().equals(AppearanceUIModelEvent.MODEL)) {
+            setup((AppearanceUIModel) pce.getNewValue());
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_ELEMENT_CLASS)) {
+            refreshSelectedElementClass((String) pce.getNewValue());
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_CATEGORY)) {
+            refreshSelectedCategory((Category) pce.getNewValue());
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_TRANSFORMER_UI)) {
+            refreshSelectedTransformerUI((TransformerUI) pce.getNewValue());
+        }
 //        if (pce.getPropertyName().equals(AppearanceUIModelEvent.CURRENT_ELEMENT_TYPE)) {
 //            refreshSelectedElmntGroup((String) pce.getNewValue());
 //        }
@@ -78,6 +77,57 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
 //                || pce.getPropertyName().equalsIgnoreCase(RankingUIModel.STOP_AUTO_TRANSFORMER)) {
 //            refreshDecoratedIcons();
 //        }
+    }
+
+    private void setup(final AppearanceUIModel model) {
+        this.model = model;
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                categoryToolbar.setEnabled(model != null);
+                categoryToolbar.setup();
+                categoryToolbar.refreshSelectedElmntGroup();
+                categoryToolbar.refreshTransformers();
+
+                transformerToolbar.setEnabled(model != null);
+                transformerToolbar.setup();
+                transformerToolbar.refreshTransformers();
+            }
+        });
+    }
+
+    private void refreshSelectedElementClass(final String elementClass) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                categoryToolbar.refreshSelectedElmntGroup();
+                categoryToolbar.refreshTransformers();
+
+                transformerToolbar.refreshTransformers();
+            }
+        });
+    }
+
+    private void refreshSelectedCategory(final Category category) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                categoryToolbar.refreshTransformers();
+
+                transformerToolbar.refreshTransformers();
+            }
+        });
+    }
+
+    private void refreshSelectedTransformerUI(final TransformerUI ui) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+
+                transformerToolbar.refreshTransformers();
+            }
+        });
     }
 
     private class AbstractToolbar extends JToolBar {
@@ -123,7 +173,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                 btn.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        model.setSelectedElementClass(elmtType);
+                        controller.setSelectedElementClass(elmtType);
                     }
                 });
                 elementGroup.add(btn);
@@ -160,11 +210,12 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
 //                        DecoratedIcon decoratedIcon = getDecoratedIcon(icon, t);
 //                        JToggleButton btn = new JToggleButton(decoratedIcon);
                         JToggleButton btn = new JToggleButton(icon);
+
                         btn.setToolTipText(c.getName());
                         btn.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-//                                model.setCurrentTransformer(t);
+                                controller.setSelectedCategory(c);
                             }
                         });
                         btn.setName(c.getName());
@@ -181,22 +232,24 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         }
 
         protected void refreshTransformers() {
-            //Select the right transformer
-            int index = 0;
-            for (String elmtType : AppearanceUIController.ELEMENT_CLASSES) {
-                ButtonGroup g = buttonGroups.get(index);
-                boolean active = model == null ? false : model.getSelectedElementClass().equals(elmtType);
-                g.clearSelection();
-                TransformerUI t = model.getCurrentTransformerUI(elmtType);
-                String selected = model == null ? "" : t.getDisplayName();
-                for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
-                    AbstractButton btn = btns.nextElement();
-                    btn.setVisible(active);
-                    if (btn.getName().equals(selected)) {
-                        g.setSelected(btn.getModel(), true);
+            if (model != null) {
+                //Select the right transformer
+                int index = 0;
+                for (String elmtType : AppearanceUIController.ELEMENT_CLASSES) {
+                    ButtonGroup g = buttonGroups.get(index);
+                    boolean active = model.getSelectedElementClass().equals(elmtType);
+                    g.clearSelection();
+                    Category c = model.getSelectedCategory();
+                    String selected = c.getName();
+                    for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
+                        AbstractButton btn = btns.nextElement();
+                        btn.setVisible(active);
+                        if (btn.getName().equals(selected)) {
+                            g.setSelected(btn.getModel(), true);
+                        }
                     }
+                    index++;
                 }
-                index++;
             }
         }
 
@@ -218,7 +271,89 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
     }
 
     private class TransformerToolbar extends AbstractToolbar {
+
+        private final List<ButtonGroup> buttonGroups = new ArrayList<ButtonGroup>();
+
+        public TransformerToolbar() {
+        }
+
+        private void clear() {
+            //Clear precent buttons
+            for (ButtonGroup bg : buttonGroups) {
+                for (Enumeration<AbstractButton> btns = bg.getElements(); btns.hasMoreElements();) {
+                    AbstractButton btn = btns.nextElement();
+                    remove(btn);
+                }
+            }
+            buttonGroups.clear();
+        }
+
+        protected void setup() {
+            clear();
+            if (model != null) {
+
+                for (String elmtType : AppearanceUIController.ELEMENT_CLASSES) {
+                    for (Category c : controller.getCategories(elmtType)) {
+
+                        ButtonGroup buttonGroup = new ButtonGroup();
+                        Map<String, TransformerUI> titles = new LinkedHashMap<String, TransformerUI>();
+                        for (TransformerUI t : controller.getTransformerUIs(elmtType, c)) {
+                            titles.put(t.getDisplayName(), t);
+                        }
+
+                        for (Map.Entry<String, TransformerUI> entry : titles.entrySet()) {
+                            //Build button
+                            final TransformerUI value = entry.getValue();
+                            Icon icon = entry.getValue().getIcon();
+//                        DecoratedIcon decoratedIcon = getDecoratedIcon(icon, t);
+//                        JToggleButton btn = new JToggleButton(decoratedIcon);
+                            JToggleButton btn = new JToggleButton(icon);
+                            btn.setToolTipText(entry.getValue().getDescription());
+                            btn.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    controller.setSelectedTransformerUI(value);
+                                }
+                            });
+                            btn.setName(entry.getKey());
+                            btn.setText(entry.getKey());
+                            btn.setFocusPainted(false);
+                            buttonGroup.add(btn);
+                            add(btn);
+                        }
+
+                        buttonGroups.add(buttonGroup);
+                    }
+                }
+            }
+        }
+
+        protected void refreshTransformers() {
+            if (model != null) {
+                //Select the right transformer
+                int index = 0;
+                for (String elmtType : AppearanceUIController.ELEMENT_CLASSES) {
+                    for (Category c : controller.getCategories(elmtType)) {
+                        ButtonGroup g = buttonGroups.get(index);
+
+                        boolean active = model.getSelectedElementClass().equals(elmtType) && model.getSelectedCategory().equals(c);
+                        g.clearSelection();
+                        TransformerUI t = model.getSelectedTransformerUI();
+
+                        for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
+                            AbstractButton btn = btns.nextElement();
+                            btn.setVisible(active);
+                            if (t != null && btn.getName().equals(t.getDisplayName())) {
+                                g.setSelected(btn.getModel(), true);
+                            }
+                        }
+                        index++;
+                    }
+                }
+            }
+        }
     }
+}
 //    private void refreshDecoratedIcons() {
 //        SwingUtilities.invokeLater(new Runnable() {
 //            @Override
@@ -245,4 +380,4 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
 //            }
 //        });
 //    }
-}
+

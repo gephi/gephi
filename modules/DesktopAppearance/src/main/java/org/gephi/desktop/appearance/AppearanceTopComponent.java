@@ -227,7 +227,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
         mainPanel = new javax.swing.JPanel();
         categoryToolbar = toolbar.getCategoryToolbar();
-        tranformerToolbar = new javax.swing.JToolBar();
+        tranformerToolbar = toolbar.getTransformerToolbar();
         centerPanel = new javax.swing.JPanel();
         southToolbar = new javax.swing.JToolBar();
         controlPanel = new javax.swing.JPanel();
@@ -285,6 +285,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         controlPanel.setOpaque(false);
         controlPanel.setLayout(new java.awt.GridBagLayout());
 
+        applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/appearance/resources/apply.gif"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(applyButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.applyButton.text")); // NOI18N
         applyButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.applyButton.toolTipText")); // NOI18N
         applyButton.setMargin(new java.awt.Insets(0, 14, 0, 14));
@@ -295,9 +296,9 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.insets = new java.awt.Insets(0, 18, 3, 5);
         controlPanel.add(applyButton, gridBagConstraints);
 
-        splineButton.setClickedColor(new java.awt.Color(0, 51, 255));
         org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.text")); // NOI18N
         splineButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.toolTipText")); // NOI18N
+        splineButton.setClickedColor(new java.awt.Color(0, 51, 255));
         splineButton.setFocusPainted(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -305,6 +306,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
         controlPanel.add(splineButton, gridBagConstraints);
 
+        autoApplyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/appearance/resources/apply.gif"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(autoApplyButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.autoApplyButton.text")); // NOI18N
         autoApplyButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.autoApplyButton.toolTipText")); // NOI18N
         autoApplyButton.setFocusable(false);
@@ -322,6 +324,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         autoApplyToolbar.setRollover(true);
         autoApplyToolbar.setOpaque(false);
 
+        enableAutoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/appearance/resources/chain.png"))); // NOI18N
         enableAutoButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.enableAutoButton.toolTipText")); // NOI18N
         enableAutoButton.setFocusable(false);
         enableAutoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
