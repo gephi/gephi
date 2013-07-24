@@ -317,7 +317,7 @@ public class GraphDistanceNGTest {
      
      
      @Test
-    public void testSpecial4DirectedGraphConnectedComponents() {
+    public void testSpecial1UndirectedGraphDiameter() {
         pc.newProject();
         GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
         UndirectedGraph undirectedGraph=graphModel.getUndirectedGraph();
@@ -368,6 +368,348 @@ public class GraphDistanceNGTest {
         assertEquals(diameter, 5.0);
     }
      
+     @Test
+    public void testSpecial2UndirectedGraphDiameter() {
+        pc.newProject();
+        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        UndirectedGraph undirectedGraph=graphModel.getUndirectedGraph();
+        Node node1=graphModel.factory().newNode("0");
+        Node node2=graphModel.factory().newNode("1");
+        Node node3=graphModel.factory().newNode("2");
+        Node node4=graphModel.factory().newNode("3");
+        Node node5=graphModel.factory().newNode("4");
+        Node node6=graphModel.factory().newNode("5");
+        Node node7=graphModel.factory().newNode("6");
+        Node node8=graphModel.factory().newNode("7");
+        undirectedGraph.addNode(node1);
+        undirectedGraph.addNode(node2);
+        undirectedGraph.addNode(node3);
+        undirectedGraph.addNode(node4);
+        undirectedGraph.addNode(node5);
+        undirectedGraph.addNode(node6);
+        undirectedGraph.addNode(node7);
+        undirectedGraph.addNode(node8);
+        Edge edge12=graphModel.factory().newEdge(node1, node2);
+        Edge edge23=graphModel.factory().newEdge(node2, node3);
+        Edge edge34=graphModel.factory().newEdge(node3, node4);
+        Edge edge45=graphModel.factory().newEdge(node4, node5);
+        Edge edge56=graphModel.factory().newEdge(node5, node6);
+        Edge edge67=graphModel.factory().newEdge(node6, node7);
+        Edge edge78=graphModel.factory().newEdge(node7, node8);
+        Edge edge81=graphModel.factory().newEdge(node8, node1);
+        Edge edge14=graphModel.factory().newEdge(node1, node4);
+        Edge edge85=graphModel.factory().newEdge(node8, node5);
+        undirectedGraph.addEdge(edge12);
+        undirectedGraph.addEdge(edge23);
+        undirectedGraph.addEdge(edge34);
+        undirectedGraph.addEdge(edge45);
+        undirectedGraph.addEdge(edge56);
+        undirectedGraph.addEdge(edge67);
+        undirectedGraph.addEdge(edge78);
+        undirectedGraph.addEdge(edge81);
+        undirectedGraph.addEdge(edge14);
+         undirectedGraph.addEdge(edge85);
+        
+
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph hierarchicalUndirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
+
+        double diameter = d.getDiameter();
+        assertEquals(diameter, 4.0);
+    }
+     
+    @Test
+    public void testDirectedPathGraphDiameter() {
+        pc.newProject();
+        GraphModel graphModel=generator.generatePathDirectedGraph(4);
+
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, true, false);
+
+        double diameter = d.getDiameter();
+        assertEquals(diameter, 3.0);
+    }
+     
+      @Test
+    public void testDirectedCyclicDiameter() {
+        pc.newProject();
+        GraphModel graphModel=generator.generateCyclicDirectedGraph(5);
+
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, true, false);
+
+        double diameter = d.getDiameter();
+        assertEquals(diameter, 4.0);
+    } 
+      
+      @Test
+    public void testSpecial1DirectedGraphDiameter() {
+        pc.newProject();
+        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        DirectedGraph directedGraph=graphModel.getDirectedGraph();
+        Node node1=graphModel.factory().newNode("0");
+        Node node2=graphModel.factory().newNode("1");
+        Node node3=graphModel.factory().newNode("2");
+        Node node4=graphModel.factory().newNode("3");
+        Node node5=graphModel.factory().newNode("4");
+        Node node6=graphModel.factory().newNode("5");
+        Node node7=graphModel.factory().newNode("6");
+        Node node8=graphModel.factory().newNode("7");
+        directedGraph.addNode(node1);
+        directedGraph.addNode(node2);
+        directedGraph.addNode(node3);
+        directedGraph.addNode(node4);
+        directedGraph.addNode(node5);
+        directedGraph.addNode(node6);
+        directedGraph.addNode(node7);
+        directedGraph.addNode(node8);
+        Edge edge12=graphModel.factory().newEdge(node1, node2);
+        Edge edge23=graphModel.factory().newEdge(node2, node3);
+        Edge edge34=graphModel.factory().newEdge(node3, node4);
+        Edge edge41=graphModel.factory().newEdge(node4, node1);
+        Edge edge56=graphModel.factory().newEdge(node5, node6);
+        Edge edge67=graphModel.factory().newEdge(node6, node7);
+        Edge edge78=graphModel.factory().newEdge(node7, node8);
+        Edge edge85=graphModel.factory().newEdge(node8, node5);
+        Edge edge45=graphModel.factory().newEdge(node4, node5);
+        directedGraph.addEdge(edge12);
+        directedGraph.addEdge(edge23);
+        directedGraph.addEdge(edge34);
+        directedGraph.addEdge(edge41);
+        directedGraph.addEdge(edge56);
+        directedGraph.addEdge(edge67);
+        directedGraph.addEdge(edge78);
+        directedGraph.addEdge(edge85);
+        directedGraph.addEdge(edge45);
+        
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, true, false);
+
+        double diameter = d.getDiameter();
+        assertEquals(diameter, 7.0);
+    }
+     
+    @Test
+    public void testSpecial2DirectedGraphDiameter() {
+        pc.newProject();
+        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        DirectedGraph directedGraph=graphModel.getDirectedGraph();
+        Node node1=graphModel.factory().newNode("0");
+        Node node2=graphModel.factory().newNode("1");
+        Node node3=graphModel.factory().newNode("2");
+        Node node4=graphModel.factory().newNode("3");
+        Node node5=graphModel.factory().newNode("4");
+        directedGraph.addNode(node1);
+        directedGraph.addNode(node2);
+        directedGraph.addNode(node3);
+        directedGraph.addNode(node4);
+        directedGraph.addNode(node5);
+        Edge edge12=graphModel.factory().newEdge(node1, node2);
+        Edge edge14=graphModel.factory().newEdge(node1, node4);
+        Edge edge23=graphModel.factory().newEdge(node2, node3);
+        Edge edge25=graphModel.factory().newEdge(node2, node5);
+        Edge edge35=graphModel.factory().newEdge(node3, node5);
+        Edge edge43=graphModel.factory().newEdge(node4, node3);
+        Edge edge51=graphModel.factory().newEdge(node5, node1);
+        Edge edge54=graphModel.factory().newEdge(node5, node4);
+        directedGraph.addEdge(edge12);
+        directedGraph.addEdge(edge14);
+        directedGraph.addEdge(edge23);
+        directedGraph.addEdge(edge25);
+        directedGraph.addEdge(edge35);
+        directedGraph.addEdge(edge43);
+        directedGraph.addEdge(edge51);
+        directedGraph.addEdge(edge54);
+        
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, true, false);
+
+        double diameter = d.getDiameter();
+        assertEquals(diameter, 4.0);
+    }
     
+    @Test
+    public void testOneNodeRadius() {
+        pc.newProject();
+        GraphModel graphModel=generator.generateNullUndirectedGraph(1);
+
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
+
+        double radius = d.getRadius();
+        assertEquals(radius, 0.0);
+    }
+      
+       @Test
+    public void testTwoConnectrdNodesRadius() {
+        pc.newProject();
+        GraphModel graphModel=generator.generatePathUndirectedGraph(2);
+
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
+
+        double radius = d.getRadius();
+        assertEquals(radius, 1.0);
+    }
+    
+     @Test
+    public void testNullGraphRadius() {
+        pc.newProject();
+        GraphModel graphModel=generator.generateNullUndirectedGraph(5);
+
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
+
+        double radius = d.getRadius();
+        assertEquals(radius, 0.0);
+    }
+     
+     @Test
+    public void testCompleteGraphRadius() {
+        pc.newProject();
+        GraphModel graphModel=generator.generateCompleteUndirectedGraph(5);
+
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
+
+        double radius = d.getRadius();
+        assertEquals(radius, 1.0);
+    }
+     
+     @Test
+    public void testStarGraphRadius() {
+        pc.newProject();
+        GraphModel graphModel=generator.generateStarUndirectedGraph(5);
+
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
+
+        double radius = d.getRadius();
+        assertEquals(radius, 1.0);
+    }
+     
+     @Test
+    public void testCyclicGraphRadius() {
+        pc.newProject();
+        GraphModel graphModel=generator.generateCyclicUndirectedGraph(5);
+
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
+
+        double radius = d.getRadius();
+        assertEquals(radius, 2.0);
+    }
+     
+     @Test
+    public void testPathGraphRadius() {
+        pc.newProject();
+        GraphModel graphModel=generator.generatePathUndirectedGraph(6);
+
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
+
+        double radius = d.getRadius();
+        assertEquals(radius, 3.0);
+    }
+     
+     @Test
+    public void testSpecial1UndirectedGraphRadius() {
+        pc.newProject();
+        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        UndirectedGraph undirectedGraph=graphModel.getUndirectedGraph();
+        Node node1=graphModel.factory().newNode("0");
+        Node node2=graphModel.factory().newNode("1");
+        Node node3=graphModel.factory().newNode("2");
+        Node node4=graphModel.factory().newNode("3");
+        Node node5=graphModel.factory().newNode("4");
+        Node node6=graphModel.factory().newNode("5");
+        Node node7=graphModel.factory().newNode("6");
+        Node node8=graphModel.factory().newNode("7");
+        undirectedGraph.addNode(node1);
+        undirectedGraph.addNode(node2);
+        undirectedGraph.addNode(node3);
+        undirectedGraph.addNode(node4);
+        undirectedGraph.addNode(node5);
+        undirectedGraph.addNode(node6);
+        undirectedGraph.addNode(node7);
+        undirectedGraph.addNode(node8);
+        Edge edge12=graphModel.factory().newEdge(node1, node2);
+        Edge edge23=graphModel.factory().newEdge(node2, node3);
+        Edge edge34=graphModel.factory().newEdge(node3, node4);
+        Edge edge41=graphModel.factory().newEdge(node4, node1);
+        Edge edge56=graphModel.factory().newEdge(node5, node6);
+        Edge edge67=graphModel.factory().newEdge(node6, node7);
+        Edge edge78=graphModel.factory().newEdge(node7, node8);
+        Edge edge85=graphModel.factory().newEdge(node8, node5);
+        Edge edge45=graphModel.factory().newEdge(node4, node5);
+        undirectedGraph.addEdge(edge12);
+        undirectedGraph.addEdge(edge23);
+        undirectedGraph.addEdge(edge34);
+        undirectedGraph.addEdge(edge41);
+        undirectedGraph.addEdge(edge56);
+        undirectedGraph.addEdge(edge67);
+        undirectedGraph.addEdge(edge78);
+        undirectedGraph.addEdge(edge85);
+        undirectedGraph.addEdge(edge45);
+        
+
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph hierarchicalUndirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
+        
+        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
+
+       double radius = d.getRadius();
+        assertEquals(radius, 3.0);
+     }
     
 }

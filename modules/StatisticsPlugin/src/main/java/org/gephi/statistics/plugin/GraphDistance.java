@@ -120,6 +120,10 @@ public class GraphDistance implements Statistics, LongTask {
     public double getDiameter() {
         return diameter;
     }
+    
+    public double getRadius() {
+        return radius;
+    }
 
     /**
      *
