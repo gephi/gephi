@@ -213,7 +213,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void parseAndSetValue(String key, String value) {
-        ColumnDraft column = getColumn(key, value.getClass());
+        ColumnDraft column = getColumn(key);
         Object val = AttributeUtils.parse(value, column.getTypeClass());
         setAttributeValue(((ColumnDraftImpl) column).getIndex(), val);
     }
@@ -225,7 +225,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void parseAndSetValue(String key, String value, double timestamp) {
-        ColumnDraft column = getColumn(key, value.getClass());
+        ColumnDraft column = getColumn(key);
         Object val = AttributeUtils.parse(value, column.getTypeClass());
         setAttributeValue(((ColumnDraftImpl) column).getIndex(), val, timestamp);
     }

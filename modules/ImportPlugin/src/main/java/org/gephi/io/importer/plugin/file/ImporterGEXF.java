@@ -386,6 +386,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
             //Data attribute value
             ColumnDraft column = container.getNodeColumn(fore);
             if (column != null) {
+                node.parseAndSetValue(column.getId(), value);
 //                if (!startDate.isEmpty() || !endDate.isEmpty()) {
 //                    //Dynamic
 //                    try {
@@ -698,6 +699,10 @@ public class ImporterGEXF implements FileImporter, LongTask {
         }
 
         if (!value.isEmpty()) {
+            ColumnDraft column = container.getEdgeColumn(fore);
+            if (column != null) {
+                edge.parseAndSetValue(column.getId(), value);
+            }
 //            //Data attribute value
 //            AttributeColumn column = container.getAttributeModel().getEdgeTable().getColumn(fore);
 //            if (column != null) {
@@ -845,7 +850,6 @@ public class ImporterGEXF implements FileImporter, LongTask {
         if (title.isEmpty()) {
             title = id;
         }
-
 
         if (!id.isEmpty() && !type.isEmpty()) {
             //Class type
