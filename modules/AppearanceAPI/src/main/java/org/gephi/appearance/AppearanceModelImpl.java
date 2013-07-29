@@ -149,7 +149,7 @@ public class AppearanceModelImpl implements AppearanceModel {
             if (edgeFunctions != null) {
                 for (Function f : edgeFunctions) {
                     if (f.isAttribute()) {
-                        attributeEdgeFunctions.add(((AttributeFunction) f).getColumn());;
+                        attributeEdgeFunctions.add(((AttributeFunction) f).getColumn());
                     }
                 }
             }
@@ -187,7 +187,7 @@ public class AppearanceModelImpl implements AppearanceModel {
                         }
                     }
                     if (transformer.isEdge()) {
-                        for (Column col : attributeModel.getNodeTable()) {
+                        for (Column col : attributeModel.getEdgeTable()) {
                             if (!col.isProperty() && col.isNumber()) {
                                 Index index = localScale ? graphModel.getEdgeIndex(graphModel.getVisibleView()) : graphModel.getEdgeIndex();
                                 if (transformer instanceof RankingTransformer && isRanking(col) && !attributeEdgeFunctions.contains(col)) {
