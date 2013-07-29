@@ -101,6 +101,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         initSouth();
         if (UIUtils.isAquaLookAndFeel()) {
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+            centerPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
 
         refreshModel(model);
@@ -201,6 +202,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                         }
 
                         if (transformerPanel != null) {
+                            transformerPanel.setOpaque(false);
                             centerPanel.add(transformerPanel, BorderLayout.CENTER);
                         }
 

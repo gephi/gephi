@@ -42,7 +42,6 @@
 package org.gephi.ui.appearance.plugin;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.SimpleFunction;
@@ -80,7 +79,7 @@ public class UniqueElementColorTransformerUI implements TransformerUI {
 
     @Override
     public Icon getIcon() {
-        return new ImageIcon("resources/color.png");
+        return null;
     }
 
     @Override

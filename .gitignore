@@ -97,4 +97,5 @@ keystore.ks
 /modules/UILibraryWrapper/target/
 /modules/AppearanceAPI/target/
 /modules/AppearancePlugin/target/
+/modules/AppearancePluginUI/target/
 /modules/DesktopAppearance/target/

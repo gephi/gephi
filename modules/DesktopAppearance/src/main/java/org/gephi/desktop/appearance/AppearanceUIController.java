@@ -222,7 +222,7 @@ public class AppearanceUIController {
     public void setSelectedFunction(Function function) {
         if (model != null) {
             Function oldValue = model.getSelectedFunction();
-            if ((oldValue == null && function != null) || (oldValue != null && function == null) || !oldValue.equals(function)) {
+            if ((oldValue == null && function != null) || (oldValue != null && function == null) || (function != null && oldValue != null && !oldValue.equals(function))) {
                 model.setSelectedFunction(function);
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_FUNCTION, oldValue, function);
             }

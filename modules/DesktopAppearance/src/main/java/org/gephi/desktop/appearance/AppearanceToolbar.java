@@ -359,7 +359,6 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                             buttonGroup.add(btn);
                             add(btn);
                         }
-
                         buttonGroups.add(buttonGroup);
                     }
                 }

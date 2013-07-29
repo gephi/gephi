@@ -58,6 +58,7 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -65,6 +66,7 @@ import javax.swing.table.TableColumn;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.appearance.api.PartitionFunction;
 import org.gephi.appearance.plugin.PartitionElementColorTransformer;
+import org.gephi.ui.utils.UIUtils;
 
 /**
  *
@@ -78,6 +80,9 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
     public PartitionColorTransformerPanel() {
         initComponents();
+        if (UIUtils.isAquaLookAndFeel()) {
+            backPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
         createPopup();
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -98,9 +103,6 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
                 }
             }
         });
-
-        table.setRowMargin(4);
-        table.setRowHeight(18);
     }
 
     public void setup(PartitionFunction function) {
@@ -125,7 +127,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
             public int compare(Object o1, Object o2) {
                 float p1 = PartitionColorTransformerPanel.this.function.getPartition().percentage(o1);
                 float p2 = PartitionColorTransformerPanel.this.function.getPartition().percentage(o2);
-                return p1 > p2 ? 1 : p1 < p2 ? -1 : 0;
+                return p1 > p2 ? -1 : p1 < p2 ? 1 : 0;
             }
         });
 
@@ -284,19 +286,30 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        centerScrollPane = new javax.swing.JScrollPane();
+        backPanel = new javax.swing.JPanel();
         table = new javax.swing.JTable();
 
+        setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
+
+        centerScrollPane.setBorder(null);
+        centerScrollPane.setOpaque(false);
+        centerScrollPane.setViewportView(null);
+
+        backPanel.setLayout(new java.awt.GridBagLayout());
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3"
+
             }
         ));
         table.setOpaque(false);
+        table.setRowHeight(18);
+        table.setRowMargin(4);
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         table.setShowHorizontalLines(false);
         table.setShowVerticalLines(false);
@@ -307,10 +320,22 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
+        backPanel.add(table, gridBagConstraints);
+
+        centerScrollPane.setViewportView(backPanel);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(4, 10, 0, 0);
-        add(table, gridBagConstraints);
+        add(centerScrollPane, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel backPanel;
+    private javax.swing.JScrollPane centerScrollPane;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }
