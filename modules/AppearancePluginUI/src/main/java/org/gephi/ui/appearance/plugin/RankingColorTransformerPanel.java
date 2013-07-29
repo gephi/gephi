@@ -57,9 +57,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.plugin.RankingElementColorTransformer;
-import org.gephi.appearance.spi.RankingTransformer;
-import org.gephi.ui.components.JRangeSlider;
 import org.gephi.ui.components.PaletteIcon;
 import org.gephi.ui.components.gradientslider.GradientSlider;
 import org.gephi.utils.PaletteUtils;
@@ -72,7 +71,6 @@ import org.openide.util.NbPreferences;
  */
 public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
-    private static final int SLIDER_MAXIMUM = 100;
     private RankingElementColorTransformer colorTransformer;
     private GradientSlider gradientSlider;
     private final RecentPalettes recentPalettes;
@@ -82,12 +80,11 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
         this.recentPalettes = new RecentPalettes();
     }
 
-    public void setup(RankingTransformer transformer) {
+    public void setup(RankingFunction function) {
+        colorTransformer = (RankingElementColorTransformer) function.getTransformer();
 
-        final String POSITIONS = "ColorTransformerPanel_" + transformer.getClass().getSimpleName() + "_positions";
-        final String COLORS = "ColorTransformerPanel_" + transformer.getClass().getSimpleName() + "_colors";
-
-        colorTransformer = (RankingElementColorTransformer) transformer;
+        final String POSITIONS = "RankingColorTransformerPanel_" + colorTransformer.getClass().getSimpleName() + "_positions";
+        final String COLORS = "RankingColorTransformerPanel_" + colorTransformer.getClass().getSimpleName() + "_colors";
 
         float[] positionsStart = colorTransformer.getColorPositions();
         Color[] colorsStart = colorTransformer.getColors();
@@ -104,6 +101,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
         gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL, positionsStart, colorsStart);
         gradientSlider.putClientProperty("GradientSlider.includeOpacity", "false");
         gradientSlider.addChangeListener(new ChangeListener() {
+            @Override
             public void stateChanged(ChangeEvent e) {
                 Color[] colors = gradientSlider.getColors();
                 float[] positions = gradientSlider.getThumbPositions();
@@ -125,6 +123,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
         //Context
 //        setComponentPopupMenu(getPalettePopupMenu());
         addMouseListener(new MouseAdapter() {
+            @Override
             public void mousePressed(MouseEvent evt) {
                 if (evt.isPopupTrigger()) {
                     JPopupMenu popupMenu = getPalettePopupMenu();
@@ -132,6 +131,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
                 }
             }
 
+            @Override
             public void mouseReleased(MouseEvent evt) {
                 if (evt.isPopupTrigger()) {
                     JPopupMenu popupMenu = getPalettePopupMenu();
@@ -142,6 +142,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
         //Color Swatch
         colorSwatchButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent ae) {
                 JPopupMenu popupMenu = getPalettePopupMenu();
                 popupMenu.show(colorSwatchToolbar, -popupMenu.getPreferredSize().width, 0);
@@ -169,6 +170,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
             final Palette p3 = PaletteUtils.get3ClassPalette(p);
             JMenuItem item = new JMenuItem(new PaletteIcon(p3.getColors()));
             item.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     gradientSlider.setValues(p3.getPositions(), p3.getColors());
                 }
@@ -179,6 +181,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
             final Palette p3 = PaletteUtils.get3ClassPalette(p);
             JMenuItem item = new JMenuItem(new PaletteIcon(p3.getColors()));
             item.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     gradientSlider.setValues(p3.getPositions(), p3.getColors());
                 }
@@ -190,6 +193,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
         //Invert
         JMenuItem invertItem = new JMenuItem(NbBundle.getMessage(RankingColorTransformerPanel.class, "PalettePopup.invert"));
         invertItem.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 gradientSlider.setValues(invert(gradientSlider.getThumbPositions()), invert(gradientSlider.getColors()));
             }
@@ -201,6 +205,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
         for (final RankingElementColorTransformer.LinearGradient gradient : recentPalettes.getPalettes()) {
             JMenuItem item = new JMenuItem(new PaletteIcon(gradient.getColors()));
             item.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     gradientSlider.setValues(gradient.getPositions(), gradient.getColors());
                 }
@@ -279,10 +284,6 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
         labelColor = new javax.swing.JLabel();
         gradientPanel = new javax.swing.JPanel();
-        rangeSlider = new JRangeSlider();
-        labelRange = new javax.swing.JLabel();
-        upperBoundLabel = new javax.swing.JLabel();
-        lowerBoundLabel = new javax.swing.JLabel();
         colorSwatchToolbar = new javax.swing.JToolBar();
         colorSwatchButton = new javax.swing.JButton();
 
@@ -292,20 +293,6 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
         gradientPanel.setOpaque(false);
         gradientPanel.setLayout(new java.awt.BorderLayout());
-
-        rangeSlider.setFocusable(false);
-        rangeSlider.setOpaque(false);
-
-        labelRange.setText(org.openide.util.NbBundle.getMessage(RankingColorTransformerPanel.class, "RankingColorTransformerPanel.labelRange.text")); // NOI18N
-
-        upperBoundLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        upperBoundLabel.setForeground(new java.awt.Color(102, 102, 102));
-        upperBoundLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        upperBoundLabel.setText(org.openide.util.NbBundle.getMessage(RankingColorTransformerPanel.class, "RankingColorTransformerPanel.upperBoundLabel.text")); // NOI18N
-
-        lowerBoundLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        lowerBoundLabel.setForeground(new java.awt.Color(102, 102, 102));
-        lowerBoundLabel.setText(org.openide.util.NbBundle.getMessage(RankingColorTransformerPanel.class, "RankingColorTransformerPanel.lowerBoundLabel.text")); // NOI18N
 
         colorSwatchToolbar.setFloatable(false);
         colorSwatchToolbar.setRollover(true);
@@ -325,21 +312,9 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelColor)
-                        .addGap(18, 18, 18)
-                        .addComponent(gradientPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelRange)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(lowerBoundLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(upperBoundLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(rangeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addComponent(labelColor)
+                .addGap(18, 18, 18)
+                .addComponent(gradientPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(colorSwatchToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -352,16 +327,8 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(labelColor, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(gradientPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rangeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(labelRange, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lowerBoundLabel)
-                            .addComponent(upperBoundLabel))))
-                .addContainerGap(22, Short.MAX_VALUE))
+                            .addComponent(gradientPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -369,9 +336,5 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
     private javax.swing.JToolBar colorSwatchToolbar;
     private javax.swing.JPanel gradientPanel;
     private javax.swing.JLabel labelColor;
-    private javax.swing.JLabel labelRange;
-    private javax.swing.JLabel lowerBoundLabel;
-    private javax.swing.JSlider rangeSlider;
-    private javax.swing.JLabel upperBoundLabel;
     // End of variables declaration//GEN-END:variables
 }

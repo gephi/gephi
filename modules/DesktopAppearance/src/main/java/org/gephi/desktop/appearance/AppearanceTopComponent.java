@@ -41,10 +41,22 @@
  */
 package org.gephi.desktop.appearance;
 
+import java.awt.BorderLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import org.gephi.appearance.api.Function;
+import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -65,10 +77,14 @@ import org.openide.windows.TopComponent;
         preferredID = "AppearanceTopComponent")
 public class AppearanceTopComponent extends TopComponent implements Lookup.Provider, AppearanceUIModelListener {
 
+    //Const
+    private final String NO_SELECTION = NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.choose.text");
     //UI
+    private transient JPanel transformerPanel;
     private transient final AppearanceToolbar toolbar;
     private transient JToggleButton listButton;
     private transient JToggleButton localScaleButton;
+    private transient ItemListener attributeListener;
     //Model
     private transient final AppearanceUIController controller;
     private transient AppearanceUIModel model;
@@ -79,7 +95,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         controller = Lookup.getDefault().lookup(AppearanceUIController.class);
         model = controller.getModel();
         controller.addPropertyChangeListener(this);
-
         toolbar = new AppearanceToolbar(controller);
 
         initComponents();
@@ -91,9 +106,41 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         refreshModel(model);
     }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent pce) {
+        AppearanceUIModel source = (AppearanceUIModel) pce.getSource();
+        if (pce.getPropertyName().equals(AppearanceUIModelEvent.MODEL)) {
+            refreshModel(source);
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_CATEGORY)
+                || pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_ELEMENT_CLASS)
+                || pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_TRANSFORMER_UI)) {
+            refreshCenterPanel();
+            refreshCombo();
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_FUNCTION)) {
+            refreshCenterPanel();
+            refreshCombo();
+        }
+        //        if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
+        //            listButton.setSelected((Boolean) pce.getNewValue());
+        //            if (listResultPanel.isVisible() != model.isListVisible()) {
+        //                listResultPanel.setVisible(model.isListVisible());
+        //                revalidate();
+        //                repaint();
+        //            }
+        //        } else if (pce.getPropertyName().equals(RankingUIModel.BARCHART_VISIBLE)) {
+        //            //barChartButton.setSelected((Boolean)pce.getNewValue());
+        //        } else if (pce.getPropertyName().equals(RankingUIModel.LOCAL_SCALE)) {
+        //            localScaleButton.setSelected((Boolean) pce.getNewValue());
+        //        } else if (pce.getPropertyName().equals(RankingUIModel.LOCAL_SCALE_ENABLED)) {
+        //            localScaleButton.setEnabled((Boolean) pce.getNewValue());
+        //        }
+    }
+
     public void refreshModel(AppearanceUIModel model) {
         this.model = model;
         refreshEnable();
+        refreshCenterPanel();
+        refreshCombo();
 
         //South visible
         /*
@@ -127,28 +174,98 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 //        ((RankingToolbar) categoryToolbar).refreshModel(model);
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent pce) {
-        AppearanceUIModel source = (AppearanceUIModel) pce.getSource();
-        if (pce.getPropertyName().equals(AppearanceUIModelEvent.MODEL)) {
-            refreshModel(source);
-        }
-        //        if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
-        //            listButton.setSelected((Boolean) pce.getNewValue());
-        //            if (listResultPanel.isVisible() != model.isListVisible()) {
-        //                listResultPanel.setVisible(model.isListVisible());
-        //                revalidate();
-        //                repaint();
-        //            }
-        //        } else if (pce.getPropertyName().equals(RankingUIModel.BARCHART_VISIBLE)) {
-        //            //barChartButton.setSelected((Boolean)pce.getNewValue());
-        //        } else if (pce.getPropertyName().equals(RankingUIModel.LOCAL_SCALE)) {
-        //            localScaleButton.setSelected((Boolean) pce.getNewValue());
-        //        } else if (pce.getPropertyName().equals(RankingUIModel.LOCAL_SCALE_ENABLED)) {
-        //            localScaleButton.setEnabled((Boolean) pce.getNewValue());
-        //        }
-        {
-        }
+    private void refreshCenterPanel() {
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (transformerPanel != null) {
+                    centerPanel.remove(transformerPanel);
+                    transformerPanel = null;
+                }
+                if (model != null) {
+                    TransformerUI ui = model.getSelectedTransformerUI();
+                    if (ui != null) {
+                        boolean attribute = model.isAttributeTransformerUI(ui);
+
+                        attributePanel.setVisible(attribute);
+                        if (attribute) {
+                            Function function = model.getSelectedFunction();
+                            if (function != null) {
+                                ui = function.getUI();
+                                transformerPanel = ui.getPanel(function);
+                            }
+                        } else {
+                            Function function = model.getSelectedFunction();
+                            transformerPanel = ui.getPanel(function);
+                        }
+
+                        if (transformerPanel != null) {
+                            centerPanel.add(transformerPanel, BorderLayout.CENTER);
+                        }
+
+                        centerPanel.repaint();
+
+                        //setCenterPanel
+
+                        return;
+                    }
+                }
+                attributePanel.setVisible(false);
+            }
+        });
+    }
+
+    private void refreshCombo() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                final DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
+                if (model != null) {
+                    TransformerUI ui = model.getSelectedTransformerUI();
+                    if (ui != null && model.isAttributeTransformerUI(ui)) {
+
+                        //Ranking
+                        Function selectedColumn = model.getSelectedFunction();
+                        attibuteBox.removeItemListener(attributeListener);
+
+                        comboBoxModel.addElement(NO_SELECTION);
+                        comboBoxModel.setSelectedItem(NO_SELECTION);
+
+                        List<Function> rows = new ArrayList<Function>();
+                        rows.addAll(model.getFunctions());
+
+                        Collections.sort(rows, new Comparator<Function>() {
+                            @Override
+                            public int compare(Function o1, Function o2) {
+                                return o1.getUI().getDisplayName().compareTo(o2.getUI().getDisplayName());
+                            }
+                        });
+                        for (Function r : rows) {
+                            comboBoxModel.addElement(r);
+                            if (selectedColumn != null && selectedColumn.equals(r)) {
+                                comboBoxModel.setSelectedItem(r);
+                            }
+                        }
+                        attributeListener = new ItemListener() {
+                            @Override
+                            public void itemStateChanged(ItemEvent e) {
+                                if (model != null) {
+                                    if (!attibuteBox.getSelectedItem().equals(NO_SELECTION)) {
+                                        Function selectedItem = (Function) attibuteBox.getSelectedItem();
+                                        controller.setSelectedFunction(selectedItem);
+                                    } else {
+                                        controller.setSelectedFunction(null);
+                                    }
+                                }
+                            }
+                        };
+                        attibuteBox.addItemListener(attributeListener);
+                    }
+                }
+                attibuteBox.setModel(comboBoxModel);
+            }
+        });
     }
 
     private void initSouth() {
@@ -228,6 +345,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         mainPanel = new javax.swing.JPanel();
         categoryToolbar = toolbar.getCategoryToolbar();
         tranformerToolbar = toolbar.getTransformerToolbar();
+        attributePanel = new javax.swing.JPanel();
+        attibuteBox = new javax.swing.JComboBox();
         centerPanel = new javax.swing.JPanel();
         southToolbar = new javax.swing.JToolBar();
         controlPanel = new javax.swing.JPanel();
@@ -263,9 +382,31 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
         mainPanel.add(tranformerToolbar, gridBagConstraints);
+
+        attributePanel.setOpaque(false);
+        attributePanel.setLayout(new java.awt.GridBagLayout());
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+        attributePanel.add(attibuteBox, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 1.0;
+        mainPanel.add(attributePanel, gridBagConstraints);
+
+        centerPanel.setOpaque(false);
+        centerPanel.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -276,7 +417,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         southToolbar.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LAST_LINE_END;
         gridBagConstraints.weightx = 1.0;
@@ -341,7 +482,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         mainPanel.add(controlPanel, gridBagConstraints);
@@ -350,6 +491,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
+    private javax.swing.JComboBox attibuteBox;
+    private javax.swing.JPanel attributePanel;
     private javax.swing.JToggleButton autoApplyButton;
     private javax.swing.JToolBar autoApplyToolbar;
     private javax.swing.JToolBar categoryToolbar;

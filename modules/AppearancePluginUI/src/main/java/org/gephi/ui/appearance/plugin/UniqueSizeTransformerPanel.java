@@ -1,8 +1,50 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ Copyright 2008-2013 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
+
+ This file is part of Gephi.
+
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+ Copyright 2013 Gephi Consortium. All rights reserved.
+
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
+
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
+
+ Contributor(s):
+
+ Portions Copyrighted 2013 Gephi Consortium.
  */
 package org.gephi.ui.appearance.plugin;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.gephi.appearance.api.SimpleFunction;
+import org.gephi.appearance.plugin.UniqueNodeSizeTransformer;
 
 /**
  *
@@ -10,11 +52,22 @@ package org.gephi.ui.appearance.plugin;
  */
 public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
 
-    /**
-     * Creates new form UniqueSizeTransformerPanel
-     */
+    private UniqueNodeSizeTransformer transformer;
+
     public UniqueSizeTransformerPanel() {
         initComponents();
+
+        sizeSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                transformer.setSize((Float) sizeSpinner.getValue());
+            }
+        });
+    }
+
+    public void setup(SimpleFunction function) {
+        transformer = (UniqueNodeSizeTransformer) function.getTransformer();
+        sizeSpinner.setValue(transformer.getSize());
     }
 
     /**
@@ -26,9 +79,12 @@ public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        sizeButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        sizeSpinner = new javax.swing.JSpinner();
 
-        sizeButton.setText(org.openide.util.NbBundle.getMessage(UniqueSizeTransformerPanel.class, "UniqueSizeTransformerPanel.sizeButton.text")); // NOI18N
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(UniqueSizeTransformerPanel.class, "UniqueSizeTransformerPanel.jLabel1.text")); // NOI18N
+
+        sizeSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(0.1f), null, Float.valueOf(0.5f)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -36,18 +92,23 @@ public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(sizeButton)
-                .addContainerGap(319, Short.MAX_VALUE))
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(294, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(sizeButton)
-                .addContainerGap(265, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(sizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(266, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton sizeButton;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JSpinner sizeSpinner;
     // End of variables declaration//GEN-END:variables
 }

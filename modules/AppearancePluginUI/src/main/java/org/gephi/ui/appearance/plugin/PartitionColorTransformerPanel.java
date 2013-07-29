@@ -41,6 +41,7 @@
  */
 package org.gephi.ui.appearance.plugin;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -48,6 +49,10 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -58,10 +63,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import net.java.dev.colorchooser.ColorChooser;
-import org.gephi.appearance.api.Part;
-import org.gephi.appearance.api.Partition;
+import org.gephi.appearance.api.PartitionFunction;
 import org.gephi.appearance.plugin.PartitionElementColorTransformer;
-import org.gephi.appearance.spi.PartitionTransformer;
 
 /**
  *
@@ -70,7 +73,7 @@ import org.gephi.appearance.spi.PartitionTransformer;
 public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
     private PartitionElementColorTransformer nodeColorTransformer;
-    private Partition partition;
+    private PartitionFunction function;
     private JPopupMenu popupMenu;
 
     public PartitionColorTransformerPanel() {
@@ -100,8 +103,8 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         table.setRowHeight(18);
     }
 
-    public void setup(PartitionTransformer transformer, Partition partition) {
-        nodeColorTransformer = (PartitionElementColorTransformer) transformer;
+    public void setup(PartitionFunction function) {
+        this.function = function;
 //        if (color) {
 //            List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
 //            int i = 0;
@@ -112,15 +115,23 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 //        }
         NumberFormat formatter = NumberFormat.getPercentInstance();
         formatter.setMaximumFractionDigits(2);
-        this.partition = partition;
 
-//        Part[] partsArray = partition.getParts();
-        Part[] partsArray = null;
-//        Arrays.sort(partsArray);
+        List values = new ArrayList();
+        for (Object value : function.getPartition().getValues()) {
+            values.add(value);
+        }
+        Collections.sort(values, new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                float p1 = PartitionColorTransformerPanel.this.function.getPartition().percentage(o1);
+                float p2 = PartitionColorTransformerPanel.this.function.getPartition().percentage(o2);
+                return p1 > p2 ? 1 : p1 < p2 ? -1 : 0;
+            }
+        });
 
         //Model
         String[] columnNames = new String[]{"Color", "Partition", "Percentage"};
-        DefaultTableModel model = new DefaultTableModel(columnNames, partsArray.length) {
+        DefaultTableModel model = new DefaultTableModel(columnNames, values.size()) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 0;
@@ -142,13 +153,15 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         colorCol.setPreferredWidth(16);
         colorCol.setMaxWidth(16);
 
-//        for (int j = 0; j < partsArray.length; j++) {
-//            final Part p = partsArray[partsArray.length - 1 - j];
-//            model.setValueAt(p.getValue(), j, 0);
-//            model.setValueAt(p.getDisplayName(), j, 1);
-//            String perc = "(" + formatter.format(p.getPercentage()) + ")";
-//            model.setValueAt(perc, j, 2);
-//        }
+        for (int j = 0; j < values.size(); j++) {
+            Object value = values.get(j);
+            String displayName = value == null ? "null" : value.toString();
+            float percentage = function.getPartition().percentage(value);
+            model.setValueAt(value, j, 0);
+            model.setValueAt(displayName, j, 1);
+            String perc = "(" + formatter.format(percentage) + ")";
+            model.setValueAt(perc, j, 2);
+        }
     }
 
     private void createPopup() {
@@ -184,9 +197,11 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
             setOpaque(true);
         }
 
+        @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 //            Color c = nodeColorTransformer.getMap().get(value);
-//            setBackground(c);
+            Color c = function.getPartition().getColor(value);
+            setBackground(c);
             return this;
         }
     }
@@ -200,6 +215,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
             emptyIcon = new EmptyIcon();
         }
 
+        @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             setText((String) value);
             if (column == 1) {
@@ -213,13 +229,16 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
     class EmptyIcon implements Icon {
 
+        @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
         }
 
+        @Override
         public int getIconWidth() {
             return 6;
         }
 
+        @Override
         public int getIconHeight() {
             return 6;
         }
@@ -236,16 +255,18 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
-//                        nodeColorTransformer.getMap().put(currentValue, (Color) evt.getNewValue());
+                        function.getPartition().setColor(currentValue, (Color) evt.getNewValue());
                     }
                 }
             });
         }
 
+        @Override
         public Object getCellEditorValue() {
             return currentValue;
         }
 
+        @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
                 int row, int column) {
             currentValue = value;

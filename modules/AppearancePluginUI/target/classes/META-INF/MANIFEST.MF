@@ -3,10 +3,11 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module-Localizing-Bundle: org/gephi/ui/appearance/plugin/Bundl
  e.properties
 OpenIDE-Module-Specification-Version: 0.8.2
-OpenIDE-Module-Implementation-Version: 0.9-20130721
-OpenIDE-Module-Build-Version: 201307212127
+OpenIDE-Module-Implementation-Version: 0.9-20130728
+OpenIDE-Module-Build-Version: 201307282250
 OpenIDE-Module: org.gephi.appearance.plugin.ui
-OpenIDE-Module-Public-Packages: -
+OpenIDE-Module-Public-Packages: org.gephi.ui.appearance.plugin.categor
+ y.*
 OpenIDE-Module-Requires: org.openide.modules.ModuleFormat1
 OpenIDE-Module-Display-Category: org.gephi
 OpenIDE-Module-Name: AppearancePluginUI

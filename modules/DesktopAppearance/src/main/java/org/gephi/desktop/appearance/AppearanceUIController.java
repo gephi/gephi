@@ -1,6 +1,43 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ Copyright 2008-2013 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
+
+ This file is part of Gephi.
+
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+ Copyright 2013 Gephi Consortium. All rights reserved.
+
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
+
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
+
+ Contributor(s):
+
+ Portions Copyrighted 2013 Gephi Consortium.
  */
 package org.gephi.desktop.appearance;
 
@@ -14,8 +51,9 @@ import java.util.Map;
 import java.util.Set;
 import org.gephi.appearance.api.AppearanceController;
 import org.gephi.appearance.api.AppearanceModel;
-import org.gephi.appearance.spi.Category;
+import org.gephi.appearance.api.Function;
 import org.gephi.appearance.spi.Transformer;
+import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -35,15 +73,16 @@ public class AppearanceUIController {
     protected static final String EDGE_ELEMENT = "edges";
     protected static final String[] ELEMENT_CLASSES = {NODE_ELEMENT, EDGE_ELEMENT};
     //Transformers
-    protected final Map<String, Map<Category, Set<TransformerUI>>> transformers;
+    protected final Map<String, Map<TransformerCategory, Set<TransformerUI>>> transformers;
     //Architecture
+    protected final AppearanceController appearanceController;
     private final Set<AppearanceUIModelListener> listeners;
     //Model
     private AppearanceUIModel model;
 
     public AppearanceUIController() {
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        final AppearanceController ac = Lookup.getDefault().lookup(AppearanceController.class);
+        appearanceController = Lookup.getDefault().lookup(AppearanceController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
@@ -54,7 +93,7 @@ public class AppearanceUIController {
                 AppearanceUIModel oldModel = model;
                 model = workspace.getLookup().lookup(AppearanceUIModel.class);
                 if (model == null) {
-                    AppearanceModel appearanceModel = ac.getModel(workspace);
+                    AppearanceModel appearanceModel = appearanceController.getModel(workspace);
                     model = new AppearanceUIModel(AppearanceUIController.this, appearanceModel);
                     workspace.add(model);
                 }
@@ -82,7 +121,7 @@ public class AppearanceUIController {
         if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(AppearanceUIModel.class);
             if (model == null) {
-                AppearanceModel appearanceModel = ac.getModel(pc.getCurrentWorkspace());
+                AppearanceModel appearanceModel = appearanceController.getModel(pc.getCurrentWorkspace());
                 model = new AppearanceUIModel(this, appearanceModel);
                 pc.getCurrentWorkspace().add(model);
             }
@@ -90,43 +129,45 @@ public class AppearanceUIController {
 
         listeners = Collections.synchronizedSet(new HashSet<AppearanceUIModelListener>());
 
-        transformers = new HashMap<String, Map<Category, Set<TransformerUI>>>();
+        transformers = new HashMap<String, Map<TransformerCategory, Set<TransformerUI>>>();
         for (String ec : ELEMENT_CLASSES) {
-            transformers.put(ec, new LinkedHashMap<Category, Set<TransformerUI>>());
+            transformers.put(ec, new LinkedHashMap<TransformerCategory, Set<TransformerUI>>());
         }
 
         //Register transformers
-        Collection<? extends TransformerUI> trs = Lookup.getDefault().lookupAll(TransformerUI.class);
-        for (TransformerUI t : trs) {
-            for (Category c : t.getCategories()) {
-                Transformer transformer = ac.getTransformer(t);
-                if (transformer != null) {
-                    if (c.isNode()) {
-                        Set<TransformerUI> uis = transformers.get(NODE_ELEMENT).get(c);
-                        if (uis == null) {
-                            uis = new LinkedHashSet<TransformerUI>();
-                            transformers.get(NODE_ELEMENT).put(c, uis);
-                        }
-                        uis.add(t);
+        Map<Class, Transformer> tMap = new HashMap<Class, Transformer>();
+        for (Transformer t : Lookup.getDefault().lookupAll(Transformer.class)) {
+            tMap.put(t.getClass(), t);
+        }
+        for (TransformerUI ui : Lookup.getDefault().lookupAll(TransformerUI.class)) {
+            Transformer t = tMap.get(ui.getTransformerClass());
+            if (t != null) {
+                TransformerCategory c = ui.getCategory();
+                if (t.isNode()) {
+                    Set<TransformerUI> uis = transformers.get(NODE_ELEMENT).get(c);
+                    if (uis == null) {
+                        uis = new LinkedHashSet<TransformerUI>();
+                        transformers.get(NODE_ELEMENT).put(c, uis);
                     }
-                    if (c.isEdge()) {
-                        Set<TransformerUI> uis = transformers.get(EDGE_ELEMENT).get(c);
-                        if (uis == null) {
-                            uis = new LinkedHashSet<TransformerUI>();
-                            transformers.get(EDGE_ELEMENT).put(c, uis);
-                        }
-                        uis.add(t);
+                    uis.add(ui);
+                }
+                if (t.isEdge()) {
+                    Set<TransformerUI> uis = transformers.get(EDGE_ELEMENT).get(c);
+                    if (uis == null) {
+                        uis = new LinkedHashSet<TransformerUI>();
+                        transformers.get(EDGE_ELEMENT).put(c, uis);
                     }
+                    uis.add(ui);
                 }
             }
         }
     }
 
-    public Collection<Category> getCategories(String elementClass) {
+    public Collection<TransformerCategory> getCategories(String elementClass) {
         return transformers.get(elementClass).keySet();
     }
 
-    public Collection<TransformerUI> getTransformerUIs(String elementClass, Category category) {
+    public Collection<TransformerUI> getTransformerUIs(String elementClass, TransformerCategory category) {
         return transformers.get(elementClass).get(category);
     }
 
@@ -158,9 +199,9 @@ public class AppearanceUIController {
         }
     }
 
-    public void setSelectedCategory(Category category) {
+    public void setSelectedCategory(TransformerCategory category) {
         if (model != null) {
-            Category oldValue = model.getSelectedCategory();
+            TransformerCategory oldValue = model.getSelectedCategory();
             if (!oldValue.equals(category)) {
                 model.setSelectedCategory(category);
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_CATEGORY, oldValue, category);
@@ -178,12 +219,22 @@ public class AppearanceUIController {
         }
     }
 
-    protected Category getFirstCategory(String elementClass) {
-        return transformers.get(elementClass).keySet().toArray(new Category[0])[0];
+    public void setSelectedFunction(Function function) {
+        if (model != null) {
+            Function oldValue = model.getSelectedFunction();
+            if ((oldValue == null && function != null) || (oldValue != null && function == null) || !oldValue.equals(function)) {
+                model.setSelectedFunction(function);
+                firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_FUNCTION, oldValue, function);
+            }
+        }
     }
 
-    protected TransformerUI getFirstTransformerUI(String elementClass, Category category) {
-        Map<Category, Set<TransformerUI>> e = transformers.get(elementClass);
+    protected TransformerCategory getFirstCategory(String elementClass) {
+        return transformers.get(elementClass).keySet().toArray(new TransformerCategory[0])[0];
+    }
+
+    protected TransformerUI getFirstTransformerUI(String elementClass, TransformerCategory category) {
+        Map<TransformerCategory, Set<TransformerUI>> e = transformers.get(elementClass);
         return e.get(category).toArray(new TransformerUI[0])[0];
     }
 
