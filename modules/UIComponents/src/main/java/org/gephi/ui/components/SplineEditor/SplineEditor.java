@@ -99,6 +99,16 @@ public class SplineEditor extends JDialog {
         SplineDisplay display = splineControlPanel.getDisplay();
         return display.getControl2();
     }
+
+    public void setControl1(Point2D control1) {
+        SplineDisplay display = splineControlPanel.getDisplay();
+        display.setControl1(control1);
+    }
+
+    public void setControl2(Point2D control2) {
+        SplineDisplay display = splineControlPanel.getDisplay();
+        display.setControl2(control2);
+    }
 //    public Interpolator getCurrentInterpolator() {
 //        SplineDisplay display = splineControlPanel.getDisplay();
 //        Point2D control1 = display.getControl1();
