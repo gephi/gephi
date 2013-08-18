@@ -278,6 +278,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             } else {
                 int[] edges = edgeTypeSet.get(sourceTargetLong);
                 int[] newEdges = new int[edges.length + 1];
+                newEdges[edges.length] = index;
                 System.arraycopy(edges, 0, newEdges, 0, edges.length);
                 edgeTypeSet.put(sourceTargetLong, newEdges);
 
@@ -820,6 +821,23 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     //Utility
     private int getEdgeType(Object type) {
+        //Verify
+        if (type != null) {
+            Class cl = type.getClass();
+            if (!(cl.equals(Integer.class)
+                    || cl.equals(String.class)
+                    || cl.equals(Float.class)
+                    || cl.equals(Double.class)
+                    || cl.equals(Short.class)
+                    || cl.equals(Byte.class)
+                    || cl.equals(Long.class)
+                    || cl.equals(Character.class)
+                    || cl.equals(Boolean.class))) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Unsupported_Edge_type", edgeDefault.toString()), Level.SEVERE));
+                type = null;
+            }
+        }
+
         if (edgeTypeMap.containsKey(type)) {
             return edgeTypeMap.getInt(type);
         }
@@ -901,6 +919,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     private static class NullFilterIterator<T extends ElementDraft> implements Iterator<T> {
 
+        private T pointer;
         private final Iterator<T> itr;
 
         public NullFilterIterator(Collection<T> elementCollection) {
@@ -909,12 +928,18 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
         @Override
         public boolean hasNext() {
-            return itr.hasNext();
+            while (itr.hasNext()) {
+                pointer = itr.next();
+                if (pointer != null) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         @Override
         public T next() {
-            return itr.next();
+            return pointer;
         }
 
         @Override

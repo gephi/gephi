@@ -470,7 +470,7 @@ public class ImporterGDF implements FileImporter, LongTask {
             }
         } else if (column.getAttributeColumn() != null) {
             try {
-                node.setValue(column.getAttributeColumn().getId(), data);
+                node.parseAndSetValue(column.getAttributeColumn().getId(), data);
             } catch (Exception e) {
                 String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getTypeClass().getSimpleName(), column.getAttributeColumn().getTitle(), node);
                 report.logIssue(new Issue(message, Issue.Level.WARNING, e));
@@ -493,9 +493,9 @@ public class ImporterGDF implements FileImporter, LongTask {
                         break;
                     case DIRECTED:
                         if (Boolean.parseBoolean(data)) {
-                            edge.setType(EdgeDirection.DIRECTED);
+                            edge.setDirection(EdgeDirection.DIRECTED);
                         } else {
-                            edge.setType(EdgeDirection.UNDIRECTED);
+                            edge.setDirection(EdgeDirection.UNDIRECTED);
                         }
                         break;
                     case LABEL:
@@ -511,7 +511,7 @@ public class ImporterGDF implements FileImporter, LongTask {
             }
         } else if (column.getAttributeColumn() != null) {
             try {
-                edge.setValue(column.getAttributeColumn().getId(), data);
+                edge.parseAndSetValue(column.getAttributeColumn().getId(), data);
             } catch (Exception e) {
                 String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getTypeClass().getSimpleName(), column.getAttributeColumn().getTitle(), edge);
                 report.logIssue(new Issue(message, Issue.Level.WARNING, e));

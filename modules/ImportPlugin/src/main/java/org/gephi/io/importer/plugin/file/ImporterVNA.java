@@ -268,7 +268,7 @@ public class ImporterVNA implements FileImporter, LongTask {
             node = container.getNode(id);
         }
         for (int i = 1; i < nodeDataColumns.length; i++) {
-            node.setValue(nodeDataColumns[i].getId(), nodeData[i]);
+            node.parseAndSetValue(nodeDataColumns[i].getId(), nodeData[i]);
         }
     }
 
@@ -340,7 +340,7 @@ public class ImporterVNA implements FileImporter, LongTask {
                         edge.setWeight(weight);
                         break;
                     case OTHER:
-                        edge.setValue(tieDataColumns[i].getId(), edgeData[i]);
+                        edge.parseAndSetValue(tieDataColumns[i].getId(), edgeData[i]);
                         break;
                 }
             }

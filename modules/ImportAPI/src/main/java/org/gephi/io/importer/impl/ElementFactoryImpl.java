@@ -66,6 +66,9 @@ public class ElementFactoryImpl implements ElementDraftFactory {
 
     @Override
     public NodeDraftImpl newNodeDraft(String id) {
+        if (id == null) {
+            throw new NullPointerException("Node id can't be null");
+        }
         NodeDraftImpl node = new NodeDraftImpl(container, id);
         return node;
     }
@@ -78,6 +81,9 @@ public class ElementFactoryImpl implements ElementDraftFactory {
 
     @Override
     public EdgeDraftImpl newEdgeDraft(String id) {
+        if (id == null) {
+            throw new NullPointerException("Node id can't be null");
+        }
         EdgeDraftImpl edge = new EdgeDraftImpl(container, id);
         return edge;
     }
