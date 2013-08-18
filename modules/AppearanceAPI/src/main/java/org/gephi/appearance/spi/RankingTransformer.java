@@ -41,6 +41,7 @@
  */
 package org.gephi.appearance.spi;
 
+import org.gephi.appearance.api.Ranking;
 import org.gephi.graph.api.Element;
 
 /**
@@ -49,5 +50,5 @@ import org.gephi.graph.api.Element;
  */
 public interface RankingTransformer<E extends Element> extends Transformer {
 
-    public void transform(E element, float rankingValue);
+    public void transform(E element, Ranking ranking, Number value);
 }

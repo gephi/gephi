@@ -43,8 +43,11 @@ package org.gephi.appearance;
 
 import org.gephi.appearance.api.Partition;
 import org.gephi.appearance.api.PartitionFunction;
+import org.gephi.appearance.api.Ranking;
 import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.api.SimpleFunction;
+import org.gephi.appearance.spi.PartitionTransformer;
+import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.SimpleTransformer;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerUI;
@@ -62,12 +65,21 @@ public class FunctionImpl implements RankingFunction, PartitionFunction, SimpleF
     protected final Transformer transformer;
     protected final TransformerUI transformerUI;
     protected final PartitionImpl partition;
+    protected final RankingImpl ranking;
 
     public FunctionImpl(AppearanceModelImpl model, Column column, Transformer transformer, TransformerUI transformerUI) {
-        this(model, column, transformer, transformerUI, null);
+        this(model, column, transformer, transformerUI, null, null);
+    }
+
+    public FunctionImpl(AppearanceModelImpl model, Column column, Transformer transformer, TransformerUI transformerUI, RankingImpl ranking) {
+        this(model, column, transformer, transformerUI, null, ranking);
     }
 
     public FunctionImpl(AppearanceModelImpl model, Column column, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition) {
+        this(model, column, transformer, transformerUI, partition, null);
+    }
+
+    public FunctionImpl(AppearanceModelImpl model, Column column, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition, RankingImpl ranking) {
         this.model = model;
         this.column = column;
         try {
@@ -77,11 +89,20 @@ public class FunctionImpl implements RankingFunction, PartitionFunction, SimpleF
         }
         this.transformerUI = transformerUI;
         this.partition = partition;
+        this.ranking = ranking;
     }
 
     @Override
     public void transform(Element element) {
-        ((SimpleTransformer) transformer).transform(element);
+        if (isSimple()) {
+            ((SimpleTransformer) transformer).transform(element);
+        } else if (isRanking()) {
+            Number val = (Number) element.getAttribute(column);
+            ((RankingTransformer) transformer).transform(element, ranking, val);
+        } else if (isPartition()) {
+            Object val = element.getAttribute(column);
+            ((PartitionTransformer) transformer).transform(element, partition, val);
+        }
     }
 
     @Override
@@ -120,12 +141,17 @@ public class FunctionImpl implements RankingFunction, PartitionFunction, SimpleF
 
     @Override
     public boolean isRanking() {
-        return false;
+        return ranking != null;
     }
 
     @Override
     public Partition getPartition() {
         return partition;
+    }
+
+    @Override
+    public Ranking getRanking() {
+        return ranking;
     }
 
     @Override

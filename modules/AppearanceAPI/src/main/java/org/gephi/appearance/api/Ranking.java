@@ -39,34 +39,21 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
-package org.gephi.appearance.plugin;
-
-import java.awt.Color;
-import org.gephi.appearance.api.Ranking;
-import org.gephi.appearance.spi.Transformer;
-import org.gephi.graph.api.Element;
-import org.openide.util.lookup.ServiceProvider;
+package org.gephi.appearance.api;
 
 /**
  *
  * @author mbastian
  */
-@ServiceProvider(service = Transformer.class)
-public class RankingLabelColorTransformer extends RankingElementColorTransformer {
+public interface Ranking {
 
-    @Override
-    public void transform(Element element, Ranking ranking, Number value) {
-        Color color = linearGradient.getValue(ranking.normalize(value));
-        element.getTextProperties().setColor(color);
-    }
+    public Number getMinValue();
 
-    @Override
-    public boolean isNode() {
-        return true;
-    }
+    public Number getMaxValue();
 
-    @Override
-    public boolean isEdge() {
-        return true;
-    }
+    public Interpolator getInterpolator();
+
+    public void setInterpolator(Interpolator interpolator);
+
+    public float normalize(Number value);
 }

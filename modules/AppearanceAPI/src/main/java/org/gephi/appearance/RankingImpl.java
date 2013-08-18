@@ -39,34 +39,52 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
-package org.gephi.appearance.plugin;
+package org.gephi.appearance;
 
-import java.awt.Color;
+import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
-import org.gephi.appearance.spi.Transformer;
-import org.gephi.graph.api.Element;
-import org.openide.util.lookup.ServiceProvider;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Index;
 
 /**
  *
  * @author mbastian
  */
-@ServiceProvider(service = Transformer.class)
-public class RankingLabelColorTransformer extends RankingElementColorTransformer {
+public class RankingImpl implements Ranking {
 
-    @Override
-    public void transform(Element element, Ranking ranking, Number value) {
-        Color color = linearGradient.getValue(ranking.normalize(value));
-        element.getTextProperties().setColor(color);
+    private final Index index;
+    private final Column column;
+    private Interpolator interpolator;
+
+    public RankingImpl(Column column, Index index, Interpolator interpolator) {
+        this.column = column;
+        this.index = index;
+        this.interpolator = interpolator;
     }
 
     @Override
-    public boolean isNode() {
-        return true;
+    public Number getMinValue() {
+        return index.getMinValue(column);
     }
 
     @Override
-    public boolean isEdge() {
-        return true;
+    public Number getMaxValue() {
+        return index.getMinValue(column);
+    }
+
+    @Override
+    public Interpolator getInterpolator() {
+        return interpolator;
+    }
+
+    @Override
+    public void setInterpolator(Interpolator interpolator) {
+        this.interpolator = interpolator;
+    }
+
+    @Override
+    public float normalize(Number value) {
+        float normalizedValue = (float) (value.doubleValue() - getMinValue().doubleValue()) / (float) (getMaxValue().doubleValue() - getMinValue().doubleValue());
+        return interpolator.interpolate(normalizedValue);
     }
 }

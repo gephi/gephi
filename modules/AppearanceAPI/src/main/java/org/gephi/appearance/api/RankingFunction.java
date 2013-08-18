@@ -46,4 +46,6 @@ package org.gephi.appearance.api;
  * @author mbastian
  */
 public interface RankingFunction extends AttributeFunction {
+
+    public Ranking getRanking();
 }
