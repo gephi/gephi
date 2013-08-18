@@ -38,24 +38,24 @@ public class GraphDistanceNGTest {
       generator=Lookup.getDefault().lookup(GraphGenerator.class);
     }
     
-    @Test
-    public void testOneNodeAvPathLength() {
-        pc.newProject();
-        GraphModel graphModel=generator.generateNullUndirectedGraph(1);
-
-        GraphDistance d = new GraphDistance();
-        d.initializeStartValues();
-        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
-        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
-        
-        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
-
-        double averageDegree = d.getPathLength();
-        assertEquals(averageDegree, 0.0);
-    }
+//    @Test
+//    public void testOneNodeAvPathLength() {
+//        pc.newProject();
+//        GraphModel graphModel=generator.generateNullUndirectedGraph(1);
+//
+//        GraphDistance d = new GraphDistance();
+//        d.initializeStartValues();
+//        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+//        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+//        
+//        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
+//
+//        double averageDegree = d.getPathLength();
+//        assertEquals(averageDegree, 0.0);
+//    }
     
     @Test
-    public void testTwoConnectrdNodesAvPathLength() {
+    public void testTwoConnectedNodesAvPathLength() {
         pc.newProject();
         GraphModel graphModel=generator.generatePathUndirectedGraph(2);
 
@@ -70,21 +70,21 @@ public class GraphDistanceNGTest {
         assertEquals(averageDegree, 1.0);
     }
     
-     @Test
-    public void testNullGraphAvPathLength() {
-        pc.newProject();
-        GraphModel graphModel=generator.generateNullUndirectedGraph(5);
-
-        GraphDistance d = new GraphDistance();
-        d.initializeStartValues();
-        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
-        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
-        
-        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
-
-        double averageDegree = d.getPathLength();
-        assertEquals(averageDegree, 0.0);
-    }
+//     @Test
+//    public void testNullGraphAvPathLength() {
+//        pc.newProject();
+//        GraphModel graphModel=generator.generateNullUndirectedGraph(5);
+//
+//        GraphDistance d = new GraphDistance();
+//        d.initializeStartValues();
+//        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+//        HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
+//        
+//        d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
+//
+//        double averageDegree = d.getPathLength();
+//        assertEquals(averageDegree, 0.0);
+//    }
      
      @Test
     public void testCompleteGraphAvPathLength() {
