@@ -47,10 +47,12 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Set;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
@@ -76,11 +78,13 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
     //Toolbars
     private final CategoryToolbar categoryToolbar;
     private final TransformerToolbar transformerToolbar;
+    private final ControlToolbar controlToolbar;
 
     public AppearanceToolbar(AppearanceUIController controller) {
         this.controller = controller;
         categoryToolbar = new CategoryToolbar();
         transformerToolbar = new TransformerToolbar();
+        controlToolbar = new ControlToolbar();
 
         controller.addPropertyChangeListener(this);
     }
@@ -91,6 +95,18 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
 
     public JToolBar getTransformerToolbar() {
         return transformerToolbar;
+    }
+
+    public JToolBar getControlToolbar() {
+        return controlToolbar;
+    }
+
+    public void addRankingControl(AbstractButton btn) {
+        controlToolbar.addRankingButton(btn);
+    }
+
+    public void addPartitionControl(AbstractButton btn) {
+        controlToolbar.addPartitionButton(btn);
     }
 
     @Override
@@ -131,6 +147,10 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                 transformerToolbar.setEnabled(model != null);
                 transformerToolbar.setup();
                 transformerToolbar.refreshTransformers();
+
+                controlToolbar.setEnabled(model != null);
+                controlToolbar.setup();
+                controlToolbar.refreshControls();
             }
         });
     }
@@ -143,6 +163,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                 categoryToolbar.refreshTransformers();
 
                 transformerToolbar.refreshTransformers();
+                controlToolbar.refreshControls();
             }
         });
     }
@@ -154,6 +175,8 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                 categoryToolbar.refreshTransformers();
 
                 transformerToolbar.refreshTransformers();
+
+                controlToolbar.refreshControls();
             }
         });
     }
@@ -164,6 +187,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
             public void run() {
 
                 transformerToolbar.refreshTransformers();
+                controlToolbar.refreshControls();
             }
         });
     }
@@ -292,11 +316,11 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         }
 
         protected void refreshSelectedElmntGroup() {
-            String selected = model.getSelectedElementClass();
+            String selected = model == null ? null : model.getSelectedElementClass();
             ButtonModel buttonModel = null;
             Enumeration<AbstractButton> en = elementGroup.getElements();
             for (String elmtType : AppearanceUIController.ELEMENT_CLASSES) {
-                if (elmtType.equals(selected)) {
+                if (selected == null || elmtType.equals(selected)) {
                     buttonModel = en.nextElement().getModel();
                     break;
                 }
@@ -390,7 +414,74 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
             }
         }
     }
-}
+
+    private class ControlToolbar extends AbstractToolbar {
+
+        private transient final Set<AbstractButton> rankingSouthControls;
+        private transient final Set<AbstractButton> partitionSouthControls;
+        private final ButtonGroup buttonGroups = new ButtonGroup();
+
+        public ControlToolbar() {
+            rankingSouthControls = new HashSet<AbstractButton>();
+            partitionSouthControls = new HashSet<AbstractButton>();
+        }
+
+        public void addRankingButton(AbstractButton btn) {
+            removeAll();
+            rankingSouthControls.add(btn);
+            if (!partitionSouthControls.contains(btn)) {
+                buttonGroups.add(btn);
+            }
+        }
+
+        public void addPartitionButton(AbstractButton btn) {
+            removeAll();
+            partitionSouthControls.add(btn);
+            if (!rankingSouthControls.contains(btn)) {
+                buttonGroups.add(btn);
+            }
+        }
+
+        private void clear() {
+            //Clear precent buttons
+            for (Enumeration<AbstractButton> btns = buttonGroups.getElements(); btns.hasMoreElements();) {
+                AbstractButton btn = btns.nextElement();
+                remove(btn);
+            }
+        }
+
+        protected void setup() {
+            clear();
+            if (model != null) {
+                for (Enumeration<AbstractButton> btns = buttonGroups.getElements(); btns.hasMoreElements();) {
+                    AbstractButton btn = btns.nextElement();
+                    add(btn);
+                }
+            }
+        }
+
+        protected void refreshControls() {
+            if (model != null) {
+                for (Enumeration<AbstractButton> btns = buttonGroups.getElements(); btns.hasMoreElements();) {
+                    AbstractButton btn = btns.nextElement();
+                    btn.setVisible(false);
+                }
+                TransformerUI u = model.getSelectedTransformerUI();
+                if (u != null && model.isAttributeTransformerUI(u)) {
+                    //Ranking
+                    Function selectedColumn = model.getSelectedFunction();
+                    if (selectedColumn.isRanking()) {
+                        for (AbstractButton btn : rankingSouthControls) {
+                            btn.setVisible(true);
+                        }
+                    } else if (selectedColumn.isPartition()) {
+                        for (AbstractButton btn : partitionSouthControls) {
+                            btn.setVisible(true);
+                        }
+                    }
+                }
+            }
+        }
 //    private void refreshDecoratedIcons() {
 //        SwingUtilities.invokeLater(new Runnable() {
 //            @Override
@@ -417,4 +508,5 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
 //            }
 //        });
 //    }
-
+    }
+}
