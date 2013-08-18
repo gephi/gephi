@@ -42,9 +42,12 @@
 package org.gephi.appearance;
 
 import org.gephi.appearance.api.AppearanceController;
-import org.gephi.appearance.api.Interpolator;
+import org.gephi.appearance.api.Function;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.graph.api.Element;
+import org.gephi.graph.api.ElementIterable;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -104,6 +107,22 @@ public class AppearanceControllerImpl implements AppearanceController {
     }
 
     @Override
+    public void transform(Function function) {
+        if (model != null) {
+            GraphModel graphModel = model.getGraphModel();
+            ElementIterable<? extends Element> iterable;
+            if (function.getTransformer().isNode()) {
+                iterable = graphModel.getGraphVisible().getNodes();
+            } else {
+                iterable = graphModel.getGraphVisible().getEdges();
+            }
+            for (Element element : iterable) {
+                function.transform(element);
+            }
+        }
+    }
+
+    @Override
     public AppearanceModelImpl getModel() {
         return model;
     }
@@ -126,13 +145,6 @@ public class AppearanceControllerImpl implements AppearanceController {
             return transformer;
         }
         return null;
-    }
-
-    @Override
-    public void setInterpolator(Interpolator interpolator) {
-        if (model != null) {
-            model.setInterpolator(interpolator);
-        }
     }
 
     @Override

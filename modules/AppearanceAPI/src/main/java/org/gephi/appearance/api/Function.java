@@ -43,12 +43,15 @@ package org.gephi.appearance.api;
 
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.graph.api.Element;
 
 /**
  *
  * @author mbastian
  */
 public interface Function {
+
+    public void transform(Element element);
 
     public Transformer getTransformer();
 

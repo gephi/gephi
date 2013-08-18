@@ -41,13 +41,9 @@
  */
 package org.gephi.appearance.api;
 
-import org.gephi.graph.api.Element;
-
 /**
  *
  * @author mbastian
  */
 public interface SimpleFunction extends Function {
-
-    public void transform(Element element);
 }

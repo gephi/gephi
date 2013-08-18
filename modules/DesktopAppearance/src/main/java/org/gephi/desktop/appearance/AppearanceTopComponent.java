@@ -122,9 +122,11 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                 || pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_TRANSFORMER_UI)) {
             refreshCenterPanel();
             refreshCombo();
+            refreshControls();
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_FUNCTION)) {
             refreshCenterPanel();
             refreshCombo();
+            refreshControls();
         }
         //        if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
         //            listButton.setSelected((Boolean) pce.getNewValue());
@@ -147,6 +149,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         refreshEnable();
         refreshCenterPanel();
         refreshCombo();
+        refreshControls();
 
         //South visible
         /*
@@ -275,6 +278,21 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         });
     }
 
+    private void refreshControls() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (model != null) {
+                    if (model.getSelectedFunction() != null) {
+                        applyButton.setEnabled(true);
+                    }
+                    return;
+                }
+                applyButton.setEnabled(false);
+            }
+        });
+    }
+
     private void initControls() {
         //Add ranking controls
         toolbar.addRankingControl(localScaleButton);
@@ -316,6 +334,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         applyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                controller.appearanceController.transform(model.getSelectedFunction());
             }
         });
 

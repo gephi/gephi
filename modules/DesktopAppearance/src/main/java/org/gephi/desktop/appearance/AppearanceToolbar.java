@@ -470,13 +470,15 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                 if (u != null && model.isAttributeTransformerUI(u)) {
                     //Ranking
                     Function selectedColumn = model.getSelectedFunction();
-                    if (selectedColumn.isRanking()) {
-                        for (AbstractButton btn : rankingSouthControls) {
-                            btn.setVisible(true);
-                        }
-                    } else if (selectedColumn.isPartition()) {
-                        for (AbstractButton btn : partitionSouthControls) {
-                            btn.setVisible(true);
+                    if (selectedColumn != null) {
+                        if (selectedColumn.isRanking()) {
+                            for (AbstractButton btn : rankingSouthControls) {
+                                btn.setVisible(true);
+                            }
+                        } else if (selectedColumn.isPartition()) {
+                            for (AbstractButton btn : partitionSouthControls) {
+                                btn.setVisible(true);
+                            }
                         }
                     }
                 }
