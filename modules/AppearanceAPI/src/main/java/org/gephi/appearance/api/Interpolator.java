@@ -41,6 +41,8 @@
  */
 package org.gephi.appearance.api;
 
+import java.awt.geom.Point2D;
+
 /**
  * Abstract clas that defines the single {@link #interpolate(float)} method.
  * This abstract class is implemented by built-in interpolators.
@@ -168,6 +170,14 @@ public abstract class Interpolator {
                     xSamples[i] = eval(i * SAMPLE_INCREMENT, x1, x2);
                 }
             }
+        }
+
+        public Point2D getControl1() {
+            return new Point2D.Float(x1, y1);
+        }
+
+        public Point2D getControl2() {
+            return new Point2D.Float(x2, y2);
         }
 
         /**

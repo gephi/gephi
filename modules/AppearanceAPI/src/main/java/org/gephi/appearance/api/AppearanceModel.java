@@ -50,14 +50,6 @@ import org.gephi.project.api.Workspace;
 public interface AppearanceModel {
 
     /**
-     * Returns the current interpolator. The default interpolator is a simple
-     * linear interpolation.
-     *
-     * @return the current interpolator
-     */
-    public Interpolator getInterpolator();
-
-    /**
      * Return the workspace this model is associated with
      *
      * @return the workspace of this model

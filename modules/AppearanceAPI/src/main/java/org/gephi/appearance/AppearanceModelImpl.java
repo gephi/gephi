@@ -75,7 +75,7 @@ public class AppearanceModelImpl implements AppearanceModel {
     private final Workspace workspace;
     private final AttributeModel attributeModel;
     private final GraphModel graphModel;
-    private Interpolator interpolator;
+    private final Interpolator defaultInterpolator;
     private boolean localScale = false;
     //Functions
     private final Object functionLock;
@@ -86,16 +86,11 @@ public class AppearanceModelImpl implements AppearanceModel {
         this.workspace = workspace;
         this.graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         this.attributeModel = Lookup.getDefault().lookup(GraphController.class).getAttributeModel(workspace);
-        this.interpolator = Interpolator.LINEAR;
+        this.defaultInterpolator = Interpolator.LINEAR;
         this.functionLock = new Object();
 
         //Functions
         refreshFunctions();
-    }
-
-    @Override
-    public Interpolator getInterpolator() {
-        return interpolator;
     }
 
     @Override
@@ -171,18 +166,20 @@ public class AppearanceModelImpl implements AppearanceModel {
                 }
             }
             //Atts
+            Set<Column> foundNodeColumns = new HashSet<Column>();
+            Set<Column> foundEdgeColumns = new HashSet<Column>();
             for (Transformer transformer : Lookup.getDefault().lookupAll(Transformer.class)) {
                 if (transformer instanceof RankingTransformer || transformer instanceof PartitionTransformer) {
                     if (transformer.isNode()) {
                         for (Column col : attributeModel.getNodeTable()) {
-                            if (!col.isProperty() && col.isNumber()) {
+                            if (!col.isProperty()) {
                                 Index index = localScale ? graphModel.getNodeIndex(graphModel.getVisibleView()) : graphModel.getNodeIndex();
                                 if (transformer instanceof RankingTransformer && isRanking(col) && !attributeNodeFunctions.contains(col)) {
-                                    nodeFunctions.add(new FunctionImpl(this, col, transformer, uis.get(transformer.getClass())));
+                                    nodeFunctions.add(new FunctionImpl(this, col, transformer, uis.get(transformer.getClass()), new RankingImpl(col, index, defaultInterpolator)));
                                 } else if (transformer instanceof PartitionTransformer && isPartition(col) && !attributeNodeFunctions.contains(col)) {
                                     nodeFunctions.add(new FunctionImpl(this, col, transformer, uis.get(transformer.getClass()), new PartitionImpl(col, index)));
                                 }
-                                attributeNodeFunctions.remove(col);
+                                foundNodeColumns.add(col);
                             }
                         }
                     }
@@ -191,16 +188,18 @@ public class AppearanceModelImpl implements AppearanceModel {
                             if (!col.isProperty() && col.isNumber()) {
                                 Index index = localScale ? graphModel.getEdgeIndex(graphModel.getVisibleView()) : graphModel.getEdgeIndex();
                                 if (transformer instanceof RankingTransformer && isRanking(col) && !attributeEdgeFunctions.contains(col)) {
-                                    edgeFunctions.add(new FunctionImpl(this, col, transformer, uis.get(transformer.getClass())));
+                                    edgeFunctions.add(new FunctionImpl(this, col, transformer, uis.get(transformer.getClass()), new RankingImpl(col, index, defaultInterpolator)));
                                 } else if (transformer instanceof PartitionTransformer && isPartition(col) && !attributeEdgeFunctions.contains(col)) {
                                     edgeFunctions.add(new FunctionImpl(this, col, transformer, uis.get(transformer.getClass()), new PartitionImpl(col, index)));
                                 }
-                                attributeEdgeFunctions.remove(col);
+                                foundEdgeColumns.add(col);
                             }
                         }
                     }
                 }
             }
+            attributeNodeFunctions.removeAll(foundNodeColumns);
+            attributeEdgeFunctions.removeAll(foundEdgeColumns);
 
             //Remove
             for (Iterator<Function> nodeItr = nodeFunctions.iterator(); nodeItr.hasNext();) {
@@ -228,30 +227,38 @@ public class AppearanceModelImpl implements AppearanceModel {
         int valueCount = index.countValues(column);
         int elementCount = index.countElements(column);
         double ratio = valueCount / (double) elementCount;
-        if (ratio < 0.9) {
-            return true;
+        if (column.isNumber()) {
+            Class columnTypeClass = column.getTypeClass();
+            if (columnTypeClass.equals(Integer.class)) {
+                if (ratio < 0.6) {
+                    return true;
+                }
+            } else {
+                if (ratio < 0.1) {
+                    return true;
+                }
+            }
+        } else {
+            if (ratio < 0.8) {
+                return true;
+            }
         }
         return false;
     }
 
     public boolean isRanking(Column column) {
-        Index index;
-        if (AttributeUtils.isNodeColumn(column)) {
-            index = localScale ? graphModel.getNodeIndex(graphModel.getVisibleView()) : graphModel.getNodeIndex();
-        } else {
-            index = localScale ? graphModel.getEdgeIndex(graphModel.getVisibleView()) : graphModel.getEdgeIndex();
-        }
-        if (index.countValues(column) > 0 && !isPartition(column)) {
-            return true;
+        if (column.isNumber()) {
+            Index index;
+            if (AttributeUtils.isNodeColumn(column)) {
+                index = localScale ? graphModel.getNodeIndex(graphModel.getVisibleView()) : graphModel.getNodeIndex();
+            } else {
+                index = localScale ? graphModel.getEdgeIndex(graphModel.getVisibleView()) : graphModel.getEdgeIndex();
+            }
+            if (index.countValues(column) > 0 && !isPartition(column)) {
+                return true;
+            }
         }
         return false;
-    }
-
-    public void setInterpolator(Interpolator interpolator) {
-        if (interpolator == null) {
-            throw new NullPointerException();
-        }
-        this.interpolator = interpolator;
     }
 
     public void setLocalScale(boolean localScale) {

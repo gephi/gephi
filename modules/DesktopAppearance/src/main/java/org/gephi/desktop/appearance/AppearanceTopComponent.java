@@ -42,8 +42,11 @@
 package org.gephi.desktop.appearance;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,7 +59,10 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.appearance.api.Function;
+import org.gephi.appearance.api.Interpolator;
+import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.ui.components.splineeditor.SplineEditor;
 import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -83,8 +89,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private transient JPanel transformerPanel;
     private transient final AppearanceToolbar toolbar;
     private transient JToggleButton listButton;
-    private transient JToggleButton localScaleButton;
     private transient ItemListener attributeListener;
+    private transient SplineEditor splineEditor;
     //Model
     private transient final AppearanceUIController controller;
     private transient AppearanceUIModel model;
@@ -98,7 +104,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         toolbar = new AppearanceToolbar(controller);
 
         initComponents();
-        initSouth();
+        initControls();
         if (UIUtils.isAquaLookAndFeel()) {
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
             centerPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
@@ -109,9 +115,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
     @Override
     public void propertyChange(PropertyChangeEvent pce) {
-        AppearanceUIModel source = (AppearanceUIModel) pce.getSource();
         if (pce.getPropertyName().equals(AppearanceUIModelEvent.MODEL)) {
-            refreshModel(source);
+            refreshModel((AppearanceUIModel) pce.getNewValue());
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_CATEGORY)
                 || pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_ELEMENT_CLASS)
                 || pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_TRANSFORMER_UI)) {
@@ -270,7 +275,50 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         });
     }
 
-    private void initSouth() {
+    private void initControls() {
+        //Add ranking controls
+        toolbar.addRankingControl(localScaleButton);
+        toolbar.addRankingControl(splineButton);
+
+        //Add partition controls
+        toolbar.addPartitionControl(localScaleButton);
+
+        //Actions
+        localScaleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.getAppearanceController().setUseLocalScale(localScaleButton.isSelected());
+            }
+        });
+        splineButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                RankingFunction function = (RankingFunction) model.getSelectedFunction();
+                if (splineEditor == null) {
+                    splineEditor = new SplineEditor(NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineEditor.title"));
+                }
+                Interpolator interpolator = function.getRanking().getInterpolator();
+                if (interpolator instanceof Interpolator.BezierInterpolator) {
+                    Interpolator.BezierInterpolator bezierInterpolator = (Interpolator.BezierInterpolator) interpolator;
+                    splineEditor.setControl1(bezierInterpolator.getControl1());
+                    splineEditor.setControl2(bezierInterpolator.getControl2());
+                } else {
+                    splineEditor.setControl1(new Point2D.Float(0, 0));
+                    splineEditor.setControl2(new Point2D.Float(1, 1));
+                }
+                splineEditor.setVisible(true);
+                function.getRanking().setInterpolator(
+                        new Interpolator.BezierInterpolator(
+                        (float) splineEditor.getControl1().getX(), (float) splineEditor.getControl1().getY(),
+                        (float) splineEditor.getControl2().getX(), (float) splineEditor.getControl2().getY()));
+            }
+        });
+        applyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+
 //        listButton = new JToggleButton();
 //        listButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/ranking/resources/list.png"))); // NOI18N
 //        listButton.setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.listButton.text"));
@@ -350,10 +398,11 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         attributePanel = new javax.swing.JPanel();
         attibuteBox = new javax.swing.JComboBox();
         centerPanel = new javax.swing.JPanel();
-        southToolbar = new javax.swing.JToolBar();
+        controlToolbar = toolbar.getControlToolbar();
+        localScaleButton = new javax.swing.JToggleButton();
+        splineButton = new org.jdesktop.swingx.JXHyperlink();
         controlPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
-        splineButton = new org.jdesktop.swingx.JXHyperlink();
         autoApplyButton = new javax.swing.JToggleButton();
         autoApplyToolbar = new javax.swing.JToolBar();
         enableAutoButton = new javax.swing.JToggleButton();
@@ -414,16 +463,31 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.weighty = 1.0;
         mainPanel.add(centerPanel, gridBagConstraints);
 
-        southToolbar.setFloatable(false);
-        southToolbar.setRollover(true);
-        southToolbar.setOpaque(false);
+        controlToolbar.setFloatable(false);
+        controlToolbar.setRollover(true);
+        controlToolbar.setOpaque(false);
+
+        localScaleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png"))); // NOI18N
+        localScaleButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.localScaleButton.toolTipText")); // NOI18N
+        localScaleButton.setFocusable(false);
+        controlToolbar.add(localScaleButton);
+
+        org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.text")); // NOI18N
+        splineButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.toolTipText")); // NOI18N
+        splineButton.setClickedColor(new java.awt.Color(0, 51, 255));
+        splineButton.setFocusPainted(false);
+        splineButton.setFocusable(false);
+        splineButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        splineButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        controlToolbar.add(splineButton);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LAST_LINE_END;
         gridBagConstraints.weightx = 1.0;
-        mainPanel.add(southToolbar, gridBagConstraints);
+        mainPanel.add(controlToolbar, gridBagConstraints);
 
         controlPanel.setOpaque(false);
         controlPanel.setLayout(new java.awt.GridBagLayout());
@@ -438,16 +502,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 18, 3, 5);
         controlPanel.add(applyButton, gridBagConstraints);
-
-        org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.text")); // NOI18N
-        splineButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.toolTipText")); // NOI18N
-        splineButton.setClickedColor(new java.awt.Color(0, 51, 255));
-        splineButton.setFocusPainted(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
-        controlPanel.add(splineButton, gridBagConstraints);
 
         autoApplyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/appearance/resources/apply.gif"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(autoApplyButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.autoApplyButton.text")); // NOI18N
@@ -500,9 +554,10 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private javax.swing.JToolBar categoryToolbar;
     private javax.swing.JPanel centerPanel;
     private javax.swing.JPanel controlPanel;
+    private javax.swing.JToolBar controlToolbar;
     private javax.swing.JToggleButton enableAutoButton;
+    private javax.swing.JToggleButton localScaleButton;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JToolBar southToolbar;
     private org.jdesktop.swingx.JXHyperlink splineButton;
     private javax.swing.JToolBar tranformerToolbar;
     // End of variables declaration//GEN-END:variables
