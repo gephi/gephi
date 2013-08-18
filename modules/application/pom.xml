@@ -199,23 +199,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ranking-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ranking-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>ui-utils</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-components</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ranking-plugin-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -229,10 +217,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>spigot-plugin-ui</artifactId>
         </dependency>-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>spline-editor</artifactId>
-        </dependency>
         <!--        <dependency>
                     <groupId>${project.groupId}</groupId>
                     <artifactId>statistics-api</artifactId>
@@ -318,10 +302,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>io-exporter-plugin</artifactId>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-ranking</artifactId>
-        </dependency><!--
+        <!--
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-statistics</artifactId>
