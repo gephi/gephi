@@ -114,7 +114,9 @@ public class AppearanceUIController {
 
             @Override
             public void disable() {
+                AppearanceUIModel oldModel = model;
                 model = null;
+                firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, model);
             }
         });
 
@@ -229,6 +231,10 @@ public class AppearanceUIController {
         }
     }
 
+    public AppearanceController getAppearanceController() {
+        return appearanceController;
+    }
+
     protected TransformerCategory getFirstCategory(String elementClass) {
         return transformers.get(elementClass).keySet().toArray(new TransformerCategory[0])[0];
     }
@@ -249,7 +255,7 @@ public class AppearanceUIController {
     }
 
     protected void firePropertyChangeEvent(String propertyName, Object oldValue, Object newValue) {
-        AppearanceUIModelEvent event = new AppearanceUIModelEvent(model, propertyName, oldValue, newValue);
+        AppearanceUIModelEvent event = new AppearanceUIModelEvent(this, propertyName, oldValue, newValue);
         for (AppearanceUIModelListener listener : listeners) {
             listener.propertyChange(event);
         }
