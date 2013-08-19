@@ -735,6 +735,15 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
                     <version>${gephi.nbm-maven-plugin.version}</version>
+                    <!-- Remove when nbm-maven-plugin 3.11 is released (MNBMODULE-215) -->
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.shared</groupId>
+                            <artifactId>maven-dependency-tree</artifactId>
+                            <version>2.1</version>
+                        </dependency>
+                    </dependencies>
+                    <!-- END -->
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
