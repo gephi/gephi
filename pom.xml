@@ -130,7 +130,7 @@
 
         <gephi.maven-deploy-plugin.version>2.7</gephi.maven-deploy-plugin.version>
 
-        <gephi.maven-enforcer-plugin.version>1.0.1</gephi.maven-enforcer-plugin.version>
+        <gephi.maven-enforcer-plugin.version>1.3.1</gephi.maven-enforcer-plugin.version>
 
         <gephi.maven-gpg-plugin.version>1.4</gephi.maven-gpg-plugin.version>
 
@@ -148,7 +148,7 @@
 
         <gephi.maven-resources-plugin.version>2.6</gephi.maven-resources-plugin.version>
 
-        <gephi.maven-site-plugin.version>3.2</gephi.maven-site-plugin.version>
+        <gephi.maven-site-plugin.version>3.3</gephi.maven-site-plugin.version>
 
         <gephi.maven-source-plugin.version>2.2.1</gephi.maven-source-plugin.version>
 
