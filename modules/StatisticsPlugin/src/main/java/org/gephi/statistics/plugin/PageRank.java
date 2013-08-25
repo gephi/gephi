@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2011 Gephi
-Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2011 Gephi
+ Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.statistics.plugin;
 
@@ -69,26 +69,33 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 
 /**
- * Ref: Sergey Brin, Lawrence Page, The Anatomy of a Large-Scale Hypertextual Web Search Engine, 
- * in Proceedings of the seventh International Conference on the World Wide Web (WWW1998):107-117
+ * Ref: Sergey Brin, Lawrence Page, The Anatomy of a Large-Scale Hypertextual
+ * Web Search Engine, in Proceedings of the seventh International Conference on
+ * the World Wide Web (WWW1998):107-117
  *
  * @author pjmcswee
  */
 public class PageRank implements Statistics, LongTask {
 
     public static final String PAGERANK = "pageranks";
-    /** */
+    /**
+     *      */
     private ProgressTicket progress;
-    /** */
+    /**
+     *      */
     private boolean isCanceled;
-    /** */
+    /**
+     *      */
     private double epsilon = 0.001;
-    /** */
+    /**
+     *      */
     private double probability = 0.85;
     private boolean useEdgeWeight = false;
-    /** */
+    /**
+     *      */
     private double[] pageranks;
-    /** */
+    /**
+     *      */
     private boolean isDirected;
 
     public PageRank() {
@@ -120,30 +127,62 @@ public class PageRank implements Statistics, LongTask {
         execute(graph, attributeModel);
     }
 
+   
+
     public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+        
+        Map<String, AttributeColumn> attributeColumns = initializeAttributeColunms(attributeModel); 
+        
         isCanceled = false;
 
         hgraph.readLock();
+        
+        HashMap<Node, Integer> indicies = createIndiciesMap(hgraph);
 
-        int N = hgraph.getNodeCount();
-        pageranks = new double[N];
-        double[] temp = new double[N];
-        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
-        int index = 0;
+        pageranks = calculatePagerank(hgraph, indicies, isDirected, useEdgeWeight, epsilon, probability);
 
-        Progress.start(progress);
-        double[] weights = null;
-        if (useEdgeWeight) {
-            weights = new double[N];
+
+        saveCalculatedValues(hgraph, attributeColumns, indicies, pageranks);
+
+        hgraph.readUnlockAll();
+    }
+    
+    private Map<String, AttributeColumn> initializeAttributeColunms(AttributeModel attributeModel) {
+         Map<String, AttributeColumn> attributeColumns = new HashMap<String, AttributeColumn>();
+        
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn pagerankCol = nodeTable.getColumn(PAGERANK);
+        
+        if (pagerankCol == null) {
+           pagerankCol = nodeTable.addColumn(PAGERANK, "PageRank", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
-
+        
+        attributeColumns.put(PAGERANK, pagerankCol);
+        
+        return attributeColumns;
+    }
+    
+    private void saveCalculatedValues(HierarchicalGraph hgraph, Map<String, AttributeColumn> attributeColumns, HashMap<Node, Integer> indicies,
+            double[] nodePagrank) {       
+         for (Node s : hgraph.getNodes()) {           
+            int s_index = indicies.get(s);
+            AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
+            
+            AttributeColumn pagerankCol=attributeColumns.get(PAGERANK);
+            
+            row.setValue(pagerankCol, nodePagrank[s_index]);
+        }      
+    }
+    
+     private void setInitialValues(HierarchicalGraph hgraph, double[] pagerankValues, double[] weights, boolean directed, boolean useWeights) {
+        int N = hgraph.getNodeCount();
+        int index = 0;
         for (Node s : hgraph.getNodes()) {
-            indicies.put(s, index);
-            pageranks[index] = 1.0f / N;
-            if (useEdgeWeight) {
+            pagerankValues[index] = 1.0f / N;
+            if (useWeights) {
                 double sum = 0;
                 EdgeIterable eIter;
-                if (isDirected) {
+                if (directed) {
                     eIter = ((HierarchicalDirectedGraph) hgraph).getOutEdgesAndMetaOutEdges(s);
                 } else {
                     eIter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(s);
@@ -155,90 +194,109 @@ public class PageRank implements Statistics, LongTask {
             }
             index++;
         }
+    }
+
+    private double calculateR(HierarchicalGraph hgraph, double[] pagerankValues, HashMap<Node, Integer> indicies, boolean directed, double prob) {
+        int N = hgraph.getNodeCount();
+        double r = 0;
+        for (Node s : hgraph.getNodes()) {
+            int s_index = indicies.get(s);
+            boolean out;
+            if (directed) {
+                out = ((HierarchicalDirectedGraph) hgraph).getTotalOutDegree(s) > 0;
+            } else {
+                out = hgraph.getTotalDegree(s) > 0;
+            }
+
+            if (out) {
+                r += (1.0 - prob) * (pagerankValues[s_index] / N);
+            } else {
+                r += (pagerankValues[s_index] / N);
+            }
+            if (isCanceled) {
+                hgraph.readUnlockAll();
+                return r;
+            }
+        }
+        return r;
+    }
+
+    private double updateValueForNode(HierarchicalGraph hgraph, Node s, double[] pagerankValues, double[] weights, 
+            HashMap<Node, Integer> indicies, boolean directed, boolean useWeights, double r, double prob) {
+        double res = r;
+        EdgeIterable eIter;
+        if (directed) {
+            eIter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(s);
+        } else {
+            eIter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(s);
+        }
+
+        for (Edge edge : eIter) {
+            Node neighbor = hgraph.getOpposite(s, edge);
+            int neigh_index = indicies.get(neighbor);
+            int normalize;
+            if (directed) {
+                normalize = ((HierarchicalDirectedGraph) hgraph).getTotalOutDegree(neighbor);
+            } else {
+                normalize = ((HierarchicalUndirectedGraph) hgraph).getTotalDegree(neighbor);
+            }
+            if (useWeights) {
+                double weight = edge.getWeight() / weights[neigh_index];
+                res += prob * pagerankValues[neigh_index] * weight;
+            } else {
+                res += prob * (pagerankValues[neigh_index] / normalize);
+            }
+        }
+        return res;
+    }
+
+    double[] calculatePagerank(HierarchicalGraph hgraph, HashMap<Node, Integer> indicies, 
+            boolean directed, boolean useWeights, double eps, double prob) {
+        int N = hgraph.getNodeCount();
+        double[] pagerankValues = new double[N];
+        double[] temp = new double[N];
+
+        Progress.start(progress);
+        double[] weights = new double[N];
+
+        setInitialValues(hgraph, pagerankValues, weights, directed, useWeights);
 
         while (true) {
-            double r = 0;
-            for (Node s : hgraph.getNodes()) {
-                int s_index = indicies.get(s);
-                boolean out;
-                if (isDirected) {
-                    out = ((HierarchicalDirectedGraph) hgraph).getTotalOutDegree(s) > 0;
-                } else {
-                    out = hgraph.getTotalDegree(s) > 0;
-                }
-
-                if (out) {
-                    r += (1.0 - probability) * (pageranks[s_index] / N);
-                } else {
-                    r += (pageranks[s_index] / N);
-                }
-                if (isCanceled) {
-                    hgraph.readUnlockAll();
-                    return;
-                }
-            }
+            double r = calculateR(hgraph, pagerankValues, indicies, directed, prob);
 
             boolean done = true;
             for (Node s : hgraph.getNodes()) {
                 int s_index = indicies.get(s);
-                temp[s_index] = r;
+                temp[s_index] = updateValueForNode(hgraph, s, pagerankValues, weights, indicies, directed, useWeights, r, prob);
 
-                EdgeIterable eIter;
-                if (isDirected) {
-                    eIter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(s);
-                } else {
-                    eIter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(s);
-                }
-
-                for (Edge edge : eIter) {
-                    Node neighbor = hgraph.getOpposite(s, edge);
-                    int neigh_index = indicies.get(neighbor);
-                    int normalize;
-                    if (isDirected) {
-                        normalize = ((HierarchicalDirectedGraph) hgraph).getTotalOutDegree(neighbor);
-                    } else {
-                        normalize = ((HierarchicalUndirectedGraph) hgraph).getTotalDegree(neighbor);
-                    }
-                    if (useEdgeWeight) {
-                        double weight = edge.getWeight() / weights[neigh_index];
-                        temp[s_index] += probability * pageranks[neigh_index] * weight;
-                    } else {
-                        temp[s_index] += probability * (pageranks[neigh_index] / normalize);
-                    }
-
-                }
-
-                if ((temp[s_index] - pageranks[s_index]) / pageranks[s_index] >= epsilon) {
+                if ((temp[s_index] - pagerankValues[s_index]) / pagerankValues[s_index] >= eps) {
                     done = false;
                 }
 
                 if (isCanceled) {
                     hgraph.readUnlockAll();
-                    return;
+                    return pagerankValues;
                 }
 
             }
-            pageranks = temp;
+            pagerankValues = temp;
             temp = new double[N];
             if ((done) || (isCanceled)) {
                 break;
             }
 
         }
+        return pagerankValues;
+    }
 
-        AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn pangeRanksCol = nodeTable.getColumn(PAGERANK);
-        if (pangeRanksCol == null) {
-            pangeRanksCol = nodeTable.addColumn(PAGERANK, "PageRank", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        }
-
+    public HashMap<Node, Integer> createIndiciesMap(HierarchicalGraph hgraph) {
+        HashMap<Node, Integer> newIndicies = new HashMap<Node, Integer>();
+        int index = 0;
         for (Node s : hgraph.getNodes()) {
-            int s_index = indicies.get(s);
-            AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
-            row.setValue(pangeRanksCol, pageranks[s_index]);
+            newIndicies.put(s, index);
+            index++;
         }
-
-        hgraph.readUnlockAll();
+        return newIndicies;
     }
 
     /**
@@ -277,7 +335,7 @@ public class PageRank implements Statistics, LongTask {
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dSeries, true);
         String imageFile = ChartUtils.renderChart(chart, "pageranks.png");
-        
+
         String report = "<HTML> <BODY> <h1>PageRank Report </h1> "
                 + "<hr> <br />"
                 + "<h2> Parameters: </h2>"
