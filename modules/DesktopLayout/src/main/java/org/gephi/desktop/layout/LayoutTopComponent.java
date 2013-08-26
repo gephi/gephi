@@ -83,23 +83,28 @@ public final class LayoutTopComponent extends TopComponent {
         add(layoutPanel, BorderLayout.CENTER);
 
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
+            @Override
             public void initialize(Workspace workspace) {
             }
 
+            @Override
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(LayoutModel.class);
                 refreshModel();
             }
 
+            @Override
             public void unselect(Workspace workspace) {
                 if (model != null) {
                     model.removePropertyChangeListener(layoutPanel);
                 }
             }
 
+            @Override
             public void close(Workspace workspace) {
             }
 
+            @Override
             public void disable() {
                 model = null;
                 refreshModel();

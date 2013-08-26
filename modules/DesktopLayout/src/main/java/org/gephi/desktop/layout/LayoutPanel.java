@@ -1,48 +1,47 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.layout;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -63,12 +62,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
+import org.gephi.desktop.layout.LayoutPresetPersistence.Preset;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutUI;
 import org.gephi.ui.components.richtooltip.RichTooltip;
-import org.gephi.desktop.layout.LayoutPresetPersistence.Preset;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
@@ -96,7 +95,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
     private void initEvents() {
         layoutCombobox.addItemListener(new ItemListener() {
-
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 if (layoutCombobox.getSelectedItem().equals(NO_SELECTION) && model.getSelectedLayout() != null) {
                     setSelectedLayout(null);
@@ -110,14 +109,13 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         });
 
         infoLabel.addMouseListener(new MouseAdapter() {
-
             RichTooltip richTooltip;
 
             @Override
             public void mouseEntered(MouseEvent e) {
                 if (infoLabel.isEnabled() && model != null && model.getSelectedLayout() != null) {
                     richTooltip = buildTooltip(model.getSelectedBuilder());
-                    richTooltip.showTooltip(infoLabel,e.getLocationOnScreen());
+                    richTooltip.showTooltip(infoLabel, e.getLocationOnScreen());
                 }
 
             }
@@ -134,7 +132,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
 
         presetsButton.addActionListener(new ActionListener() {
-
+            @Override
             public void actionPerformed(ActionEvent e) {
                 JPopupMenu menu = new JPopupMenu();
                 List<Preset> presets = layoutPresetPersistence.getPresets(model.getSelectedLayout());
@@ -142,7 +140,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                     for (final Preset p : presets) {
                         JMenuItem item = new JMenuItem(p.toString());
                         item.addActionListener(new ActionListener() {
-
+                            @Override
                             public void actionPerformed(ActionEvent e) {
                                 layoutPresetPersistence.loadPreset(p, model.getSelectedLayout());
                                 refreshProperties();
@@ -157,7 +155,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
                 JMenuItem saveItem = new JMenuItem(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePreset"));
                 saveItem.addActionListener(new ActionListener() {
-
+                    @Override
                     public void actionPerformed(ActionEvent e) {
                         String lastPresetName = NbPreferences.forModule(LayoutPanel.class).get("LayoutPanel.lastPresetName", "");
                         NotifyDescriptor.InputLine question = new NotifyDescriptor.InputLine(
@@ -191,6 +189,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         refreshModel();
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(LayoutModel.SELECTED_LAYOUT)) {
             refreshModel();
@@ -228,8 +227,9 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         if (model != null) {
             List<LayoutBuilder> builders = new ArrayList<LayoutBuilder>(Lookup.getDefault().lookupAll(LayoutBuilder.class));
             Collections.sort(builders, new Comparator() {
+                @Override
                 public int compare(Object o1, Object o2) {
-                    return ((LayoutBuilder)o1).getName().compareTo(((LayoutBuilder)o2).getName());
+                    return ((LayoutBuilder) o1).getName().compareTo(((LayoutBuilder) o2).getName());
                 }
             });
             for (LayoutBuilder builder : builders) {
@@ -255,15 +255,15 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
             layoutProvidedPanel.removeAll();
         } else {
             LayoutNode layoutNode = new LayoutNode(model.getSelectedLayout());
-            
+
             JPanel simplePanel = null;
             try {
                 simplePanel = layoutNode.getLayout().getBuilder().getUI().getSimplePanel(layoutNode.getLayout());
             } catch (Exception ex) {
                 // Tried and failed to getSimplePanel
             }
-            
-            if(null != simplePanel) {
+
+            if (null != simplePanel) {
                 propertySheet.setVisible(false);
                 layoutProvidedPanel.setVisible(true);
                 layoutProvidedPanel.removeAll();
@@ -273,7 +273,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                 propertySheet.setVisible(true);
                 layoutProvidedPanel.removeAll();
             }
-            
+
             ((PropertySheet) propertySheet).setNodes(new Node[]{layoutNode});
         }
     }
@@ -306,10 +306,10 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         controller.stopLayout();
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
