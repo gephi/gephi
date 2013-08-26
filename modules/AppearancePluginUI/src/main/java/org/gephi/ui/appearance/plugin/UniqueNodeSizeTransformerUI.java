@@ -41,6 +41,7 @@
  */
 package org.gephi.ui.appearance.plugin;
 
+import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.Function;
@@ -89,6 +90,11 @@ public class UniqueNodeSizeTransformerUI implements TransformerUI {
         }
         panel.setup((SimpleFunction) function);
         return panel;
+    }
+
+    @Override
+    public synchronized AbstractButton[] getControlButton() {
+        return null;
     }
 
     @Override

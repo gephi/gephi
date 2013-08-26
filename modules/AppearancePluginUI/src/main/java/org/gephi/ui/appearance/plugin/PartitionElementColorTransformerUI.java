@@ -41,6 +41,7 @@
  */
 package org.gephi.ui.appearance.plugin;
 
+import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.Function;
@@ -89,6 +90,14 @@ public class PartitionElementColorTransformerUI implements TransformerUI {
         }
         panel.setup((PartitionFunction) function);
         return panel;
+    }
+
+    @Override
+    public synchronized AbstractButton[] getControlButton() {
+        if (panel == null) {
+            panel = new PartitionColorTransformerPanel();
+        }
+        return new AbstractButton[]{panel.getPaletteButton()};
     }
 
     @Override

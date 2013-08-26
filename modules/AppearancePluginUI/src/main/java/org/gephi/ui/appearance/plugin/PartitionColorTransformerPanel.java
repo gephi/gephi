@@ -44,18 +44,22 @@ package org.gephi.ui.appearance.plugin;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -65,8 +69,16 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.appearance.api.PartitionFunction;
-import org.gephi.appearance.plugin.PartitionElementColorTransformer;
+import org.gephi.appearance.plugin.palette.Palette;
+import org.gephi.appearance.plugin.palette.PaletteManager;
+import org.gephi.ui.appearance.plugin.palette.PaletteGeneratorPanel;
+import org.gephi.ui.components.PaletteIcon;
 import org.gephi.ui.utils.UIUtils;
+import org.jdesktop.swingx.JXHyperlink;
+import org.jdesktop.swingx.JXTitledSeparator;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -74,51 +86,28 @@ import org.gephi.ui.utils.UIUtils;
  */
 public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
-    private PartitionElementColorTransformer nodeColorTransformer;
+    private PalettePopupButton palettePopupButton;
     private PartitionFunction function;
-    private JPopupMenu popupMenu;
+    private List<Object> values;
 
     public PartitionColorTransformerPanel() {
         initComponents();
+        palettePopupButton = new PalettePopupButton();
         if (UIUtils.isAquaLookAndFeel()) {
             backPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
-        createPopup();
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (nodeColorTransformer != null) {
-                    showPopup(e);
-                }
-            }
+    }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                showPopup(e);
-            }
-
-            private void showPopup(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-        });
+    public JButton getPaletteButton() {
+        return palettePopupButton;
     }
 
     public void setup(PartitionFunction function) {
         this.function = function;
-//        if (color) {
-//            List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
-//            int i = 0;
-//            for (Part p : partition.getParts()) {
-//                nodeColorTransformer.getMap().put(p.getValue(), colors.get(i));
-//                i++;
-//            }
-//        }
         NumberFormat formatter = NumberFormat.getPercentInstance();
         formatter.setMaximumFractionDigits(2);
 
-        List values = new ArrayList();
+        values = new ArrayList();
         for (Object value : function.getPartition().getValues()) {
             values.add(value);
         }
@@ -166,31 +155,25 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         }
     }
 
-    private void createPopup() {
-//        popupMenu = new JPopupMenu();
-//        JMenuItem randomizeItem = new JMenuItem(NbBundle.getMessage(PartitionColorTransformerPanel.class, "NodeColorTransformerPanel.action.randomize"));
-//        randomizeItem.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/partition/plugin/resources/randomize.png", false));
-//        randomizeItem.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-////                nodeColorTransformer.getMap().clear();
-////                setup(partition, nodeColorTransformer, true);
-//                revalidate();
-//                repaint();
-//            }
-//        });
-//        popupMenu.add(randomizeItem);
-//        JMenuItem allBlackItem = new JMenuItem(NbBundle.getMessage(PartitionColorTransformerPanel.class, "NodeColorTransformerPanel.action.allBlacks"));
-//        allBlackItem.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-////                for (Entry<Object, Color> entry : nodeColorTransformer.getMap().entrySet()) {
-////                    entry.setValue(Color.BLACK);
-////                }
-////                setup(partition, nodeColorTransformer, false);
-//                revalidate();
-//                repaint();
-//            }
-//        });
-//        popupMenu.add(allBlackItem);
+    private void applyPalette(Palette palette) {
+        PaletteManager.getInstance().addRecentPalette(palette);
+        Color[] colors = palette.getColors();
+        for (int i = 0; i < values.size(); i++) {
+            Object val = values.get(i);
+            Color col = colors[i];
+            function.getPartition().setColor(val, col);
+        }
+        table.revalidate();
+        table.repaint();
+    }
+
+    private void applyColor(Color col) {
+        for (int i = 0; i < values.size(); i++) {
+            Object val = values.get(i);
+            function.getPartition().setColor(val, col);
+        }
+        table.revalidate();
+        table.repaint();
     }
 
     class ColorChooserRenderer extends JLabel implements TableCellRenderer {
@@ -201,7 +184,6 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-//            Color c = nodeColorTransformer.getMap().get(value);
             Color c = function.getPartition().getColor(value);
             setBackground(c);
             return this;
@@ -273,6 +255,111 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
                 int row, int column) {
             currentValue = value;
             return delegate;
+        }
+    }
+
+    class PalettePopupButton extends JXHyperlink {
+
+        private final PaletteManager paletteManager;
+
+        public PalettePopupButton() {
+            setText(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PartitionColorTransformerPanel.paletteButton"));
+            setClickedColor(new Color(0, 51, 255));
+            setFocusPainted(false);
+            setFocusable(false);
+            paletteManager = PaletteManager.getInstance();
+
+            addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int size = function.getPartition().size();
+                    JPopupMenu menu = createPopup(size);
+                    menu.show(PalettePopupButton.this, 0, getHeight());
+                }
+            });
+        }
+
+        private JPopupMenu createPopup(final int colorsCount) {
+            JPopupMenu menu = new JPopupMenu();
+            menu.add(new JXTitledSeparator(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.recent")));
+            Collection<Palette> recentPalettes = paletteManager.getRecentPalettes();
+            if (recentPalettes.isEmpty()) {
+                menu.add("<html><i>" + NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.norecent") + "</i></html>");
+            } else {
+                for (Palette pl : recentPalettes) {
+                    menu.add(new PaletteMenuItem(pl, colorsCount));
+                }
+            }
+
+            menu.add(new JXTitledSeparator(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.standard")));
+            JMenu lightPalette = new JMenu(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.light"));
+            for (Palette pl : paletteManager.getWhiteBackgroudPalette(colorsCount)) {
+                lightPalette.add(new PaletteMenuItem(pl, colorsCount));
+            }
+            menu.add(lightPalette);
+
+            JMenu darkPalette = new JMenu(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.dark"));
+            for (Palette pl : paletteManager.getBlackBackgroudPalette(colorsCount)) {
+                darkPalette.add(new PaletteMenuItem(pl, colorsCount));
+            }
+            menu.add(darkPalette);
+
+            JMenuItem allBlack = new JMenuItem(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.allblack"));
+            allBlack.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    applyColor(Color.BLACK);
+                }
+            });
+            menu.add(allBlack);
+
+            JMenuItem allWhite = new JMenuItem(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.allwhite"));
+            allWhite.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    applyColor(Color.WHITE);
+                }
+            });
+            menu.add(allWhite);
+
+            JMenuItem generate = new JMenuItem(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.generate"));
+            generate.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    PaletteGeneratorPanel pgn = new PaletteGeneratorPanel();
+                    pgn.setup(colorsCount);
+                    NotifyDescriptor nd = new NotifyDescriptor(pgn,
+                            NbBundle.getMessage(PartitionColorTransformerPanel.class, "PartitionColorTransformerPanel.generatePalettePanel.title"),
+                            NotifyDescriptor.OK_CANCEL_OPTION,
+                            NotifyDescriptor.DEFAULT_OPTION, null, null);
+
+                    if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.OK_OPTION) {
+                        Palette pl = pgn.getSelectedPalette();
+                        if (pl != null) {
+                            applyPalette(pl);
+                        }
+                    }
+                }
+            });
+            menu.add(generate);
+
+            return menu;
+        }
+    }
+
+    class PaletteMenuItem extends JMenuItem implements ActionListener {
+
+        private final Palette palette;
+
+        public PaletteMenuItem(Palette palette, int max) {
+            super(new PaletteIcon(palette.getColors(), max));
+            this.palette = palette;
+            addActionListener(this);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            applyPalette(palette);
         }
     }
 

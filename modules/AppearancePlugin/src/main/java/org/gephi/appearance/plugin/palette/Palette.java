@@ -39,43 +39,37 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
-package org.gephi.appearance.plugin;
+package org.gephi.appearance.plugin.palette;
 
 import java.awt.Color;
-import org.gephi.appearance.api.Partition;
-import org.gephi.appearance.plugin.palette.PaletteManager;
-import org.gephi.appearance.spi.PartitionTransformer;
-import org.gephi.appearance.spi.Transformer;
-import org.gephi.graph.api.Element;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author mbastian
  */
-@ServiceProvider(service = Transformer.class)
-public class PartitionElementColorTransformer implements PartitionTransformer<Element> {
+public class Palette {
 
-    @Override
-    public void transform(Element element, Partition partition, Object value) {
-        Color color = partition.getColor(value);
-        if (color == null) {
-            color = Color.BLACK;
-        }
-        element.setColor(color);
+    private final String name;
+    private final Color[] colors;
+
+    public Palette(Color[] colors) {
+        this(null, colors);
     }
 
-    @Override
-    public boolean isNode() {
-        return true;
+    public Palette(String name, Color[] colors) {
+        this.colors = colors;
+        this.name = name;
     }
 
-    @Override
-    public boolean isEdge() {
-        return true;
+    public Color[] getColors() {
+        return colors;
     }
 
-    public PaletteManager getPaletteManager() {
-        return PaletteManager.getInstance();
+    public String getName() {
+        return name;
+    }
+
+    public int size() {
+        return colors.length;
     }
 }

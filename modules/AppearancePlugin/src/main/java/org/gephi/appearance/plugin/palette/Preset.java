@@ -39,43 +39,72 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
-package org.gephi.appearance.plugin;
-
-import java.awt.Color;
-import org.gephi.appearance.api.Partition;
-import org.gephi.appearance.plugin.palette.PaletteManager;
-import org.gephi.appearance.spi.PartitionTransformer;
-import org.gephi.appearance.spi.Transformer;
-import org.gephi.graph.api.Element;
-import org.openide.util.lookup.ServiceProvider;
+package org.gephi.appearance.plugin.palette;
 
 /**
  *
  * @author mbastian
  */
-@ServiceProvider(service = Transformer.class)
-public class PartitionElementColorTransformer implements PartitionTransformer<Element> {
+public class Preset {
 
-    @Override
-    public void transform(Element element, Partition partition, Object value) {
-        Color color = partition.getColor(value);
-        if (color == null) {
-            color = Color.BLACK;
-        }
-        element.setColor(color);
+    private final String name;
+    private final boolean dark;
+    private final int hMin;
+    private final int hMax;
+    private final float cMin;
+    private final float cMax;
+    private final float lMin;
+    private final float lMax;
+
+    public Preset(String name, boolean dark, int hMin, int hMax, float cMin, float cMax, float lMin, float lMax) {
+        this.name = name;
+        this.dark = dark;
+        this.hMin = hMin;
+        this.hMax = hMax;
+        this.cMin = cMin;
+        this.cMax = cMax;
+        this.lMin = lMin;
+        this.lMax = lMax;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isDark() {
+        return dark;
+    }
+
+    public int gethMin() {
+        return hMin;
+    }
+
+    public int gethMax() {
+        return hMax;
+    }
+
+    public float getcMin() {
+        return cMin;
+    }
+
+    public float getcMax() {
+        return cMax;
+    }
+
+    public float getlMin() {
+        return lMin;
+    }
+
+    public float getlMax() {
+        return lMax;
+    }
+
+    public float[] toArray() {
+        return new float[]{hMin, hMax, cMin, cMax, lMin, lMax};
     }
 
     @Override
-    public boolean isNode() {
-        return true;
-    }
-
-    @Override
-    public boolean isEdge() {
-        return true;
-    }
-
-    public PaletteManager getPaletteManager() {
-        return PaletteManager.getInstance();
+    public String toString() {
+        return name;
     }
 }

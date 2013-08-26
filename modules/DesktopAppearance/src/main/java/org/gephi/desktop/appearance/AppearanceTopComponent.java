@@ -506,6 +506,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LAST_LINE_END;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 3);
         mainPanel.add(controlToolbar, gridBagConstraints);
 
         controlPanel.setOpaque(false);

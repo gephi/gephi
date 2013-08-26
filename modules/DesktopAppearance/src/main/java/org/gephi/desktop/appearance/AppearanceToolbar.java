@@ -57,6 +57,7 @@ import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
+import javax.swing.JLabel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
@@ -419,11 +420,13 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
 
         private transient final Set<AbstractButton> rankingSouthControls;
         private transient final Set<AbstractButton> partitionSouthControls;
+        private transient final Set<AbstractButton> controlButtons;
         private final ButtonGroup buttonGroups = new ButtonGroup();
 
         public ControlToolbar() {
             rankingSouthControls = new HashSet<AbstractButton>();
             partitionSouthControls = new HashSet<AbstractButton>();
+            controlButtons = new HashSet<AbstractButton>();
         }
 
         public void addRankingButton(AbstractButton btn) {
@@ -450,6 +453,13 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
             }
         }
 
+        private void clearControlButtons() {
+            for (AbstractButton btn : controlButtons) {
+                remove(btn);
+            }
+            controlButtons.clear();
+        }
+
         protected void setup() {
             clear();
             if (model != null) {
@@ -457,6 +467,10 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                     AbstractButton btn = btns.nextElement();
                     add(btn);
                 }
+                JLabel box = new javax.swing.JLabel();
+                box.setMaximumSize(new java.awt.Dimension(32767, 32767));
+                addSeparator();
+                add(box);
             }
         }
 
@@ -478,6 +492,19 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                         } else if (selectedColumn.isPartition()) {
                             for (AbstractButton btn : partitionSouthControls) {
                                 btn.setVisible(true);
+                            }
+                        }
+                    }
+                }
+                clearControlButtons();
+                if (u != null) {
+                    Function selectedColumn = model.getSelectedFunction();
+                    if (selectedColumn != null) {
+                        AbstractButton[] bb = selectedColumn.getUI().getControlButton();
+                        if (bb != null) {
+                            for (AbstractButton b : bb) {
+                                add(b);
+                                controlButtons.add(b);
                             }
                         }
                     }

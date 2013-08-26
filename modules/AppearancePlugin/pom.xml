@@ -46,6 +46,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.gephi.appearance.plugin</publicPackage>
+                        <publicPackage>org.gephi.appearance.plugin.palette</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

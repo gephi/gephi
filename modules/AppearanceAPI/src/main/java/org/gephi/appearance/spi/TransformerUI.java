@@ -41,6 +41,7 @@
  */
 package org.gephi.appearance.spi;
 
+import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.Function;
@@ -60,6 +61,8 @@ public interface TransformerUI<T extends Transformer> {
     public String getDescription();
 
     public Icon getIcon();
+
+    public AbstractButton[] getControlButton();
 
     public Class<? extends T> getTransformerClass();
 }

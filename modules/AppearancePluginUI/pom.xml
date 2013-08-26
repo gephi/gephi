@@ -25,6 +25,10 @@
             <artifactId>org-openide-util</artifactId>
         </dependency>
         <dependency>
+            <artifactId>org-openide-dialogs</artifactId>
+            <groupId>org.netbeans.api</groupId>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>appearance-api</artifactId>
         </dependency>
