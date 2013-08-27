@@ -10,6 +10,7 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.Node;
@@ -239,6 +240,125 @@ public class HitsNGTest {
 //        assertTrue(b1);
 // 
 //    }
+    
+    @Test 
+    public void testDirectedSpecial1GraphHits() {
+        pc.newProject();
+        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        
+        DirectedGraph directedGraph=graphModel.getDirectedGraph();
+        Node node1=graphModel.factory().newNode("0");
+        Node node2=graphModel.factory().newNode("1");
+        Node node3=graphModel.factory().newNode("2");
+        Node node4=graphModel.factory().newNode("3");
+        Node node5=graphModel.factory().newNode("4");
+        
+        directedGraph.addNode(node1);
+        directedGraph.addNode(node2);
+        directedGraph.addNode(node3);
+        directedGraph.addNode(node4);
+        directedGraph.addNode(node5);
+        
+        Edge edge14=graphModel.factory().newEdge(node1, node4);
+        Edge edge15=graphModel.factory().newEdge(node1, node5);
+        Edge edge24=graphModel.factory().newEdge(node2, node4);
+        Edge edge25=graphModel.factory().newEdge(node2, node5);
+        Edge edge34=graphModel.factory().newEdge(node3, node4);
+        Edge edge35=graphModel.factory().newEdge(node3, node5);
+        
+        
+        directedGraph.addEdge(edge14);
+        directedGraph.addEdge(edge15);
+        directedGraph.addEdge(edge24);
+        directedGraph.addEdge(edge25);
+        directedGraph.addEdge(edge34);
+        directedGraph.addEdge(edge35);;
+        
+        HierarchicalDirectedGraph hgraph = graphModel.getHierarchicalDirectedGraphVisible();
+        Hits hit = new Hits();
+        
+        double[] authority = new double[6];
+        double[] hubs = new double[6];
+        
+        HashMap<Node, Integer> indicies = hit.createIndiciesMap(hgraph);
+        
+        LinkedList<Node> hub_list = new LinkedList<Node>();
+        LinkedList<Node> auth_list = new LinkedList<Node>();
+        
+        hit.calculateHits(hgraph, hubs, authority, hub_list, auth_list, indicies, true, 0.01);
+        
+        Node n1 = hgraph.getNode("0");
+        Node n2 = hgraph.getNode("1");
+        Node n4 = hgraph.getNode("3");
+        Node n5 = hgraph.getNode("4");
+        
+        int index1 = indicies.get(n1);
+        int index2 = indicies.get(n2);
+        int index4 = indicies.get(n4);
+        int index5 = indicies.get(n5);
+        
+        double hub1 = hubs[index1];
+        double hub4 = hubs[index4];
+        double auth2 = authority[index2];
+        double auth5 = authority[index5];
+        
+        double res=0.333;
+        double diff = 0.01;
+        
+        assertTrue(Math.abs(hub1-res)<diff);
+        assertEquals(hub4, 0.);
+        assertEquals(auth2, 0.);
+        assertEquals(auth5, 0.5);
+    }
+    
+    @Test 
+    public void testDirectedStarOutGraphHits() {
+        pc.newProject();
+        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        
+        DirectedGraph directedGraph=graphModel.getDirectedGraph();
+        Node firstNode=graphModel.factory().newNode("0");
+        directedGraph.addNode(firstNode);
+        for (int i=1; i<=5; i++) {
+             Node currentNode=graphModel.factory().newNode(((Integer)i).toString());
+             directedGraph.addNode(currentNode);
+             Edge currentEdge=graphModel.factory().newEdge(firstNode, currentNode);
+             directedGraph.addEdge(currentEdge);
+        }
+        
+        HierarchicalDirectedGraph hgraph = graphModel.getHierarchicalDirectedGraphVisible();
+        
+        Hits hit = new Hits();
+        
+        double[] authority = new double[6];
+        double[] hubs = new double[6];
+        
+        HashMap<Node, Integer> indicies = hit.createIndiciesMap(hgraph);
+        
+        LinkedList<Node> hub_list = new LinkedList<Node>();
+        LinkedList<Node> auth_list = new LinkedList<Node>();
+        
+        hit.calculateHits(hgraph, hubs, authority, hub_list, auth_list, indicies, true, 0.01);
+        
+        Node n1 = hgraph.getNode("0");
+        Node n3 = hgraph.getNode("2");
+        
+        int index1 = indicies.get(n1);
+        int index3 = indicies.get(n3);
+        
+        double hub1 = hubs[index1];
+        double hub3 = hubs[index3];
+        double auth1 = authority[index1];
+        double auth3 = authority[index3];
+        
+        double res=0.146;
+        double diff = 0.01;
+        
+        assertEquals(hub1, 1.);
+        assertEquals(auth1, 0.);
+        assertEquals(hub3, 0.);
+        assertEquals(auth3, 0.2);
+    }
     
     
 }

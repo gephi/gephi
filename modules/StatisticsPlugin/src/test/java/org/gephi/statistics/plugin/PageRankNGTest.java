@@ -6,7 +6,11 @@ package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.io.generator.plugin.GraphGenerator;
@@ -41,7 +45,7 @@ public class PageRankNGTest {
 
         PageRank pr = new PageRank();
         
-        double[] pageRank = new double[1];
+        double[] pageRank;
         
         HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
         
@@ -62,7 +66,7 @@ public class PageRankNGTest {
 
         PageRank pr = new PageRank();
         
-        double[] pageRank = new double[2];
+        double[] pageRank;
         
         HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
         
@@ -83,7 +87,7 @@ public class PageRankNGTest {
 
         PageRank pr = new PageRank();
         
-        double[] pageRank = new double[5];
+        double[] pageRank;
         
         HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
         
@@ -112,7 +116,7 @@ public class PageRankNGTest {
 
         PageRank pr = new PageRank();
         
-        double[] pageRank = new double[5];
+        double[] pageRank;
         
         HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
         
@@ -126,8 +130,8 @@ public class PageRankNGTest {
         double diff2 = Math.abs(pr2 - res);
         assertTrue(diff2<0.01);
     }
-      
-       @Test
+   
+    @Test
     public void testCyclicGraphPageRank() {
         pc.newProject();
         GraphModel graphModel=generator.generateCyclicUndirectedGraph(6);
@@ -135,7 +139,7 @@ public class PageRankNGTest {
 
         PageRank pr = new PageRank();
         
-        double[] pageRank = new double[6];
+        double[] pageRank;
         
         HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
         
@@ -158,7 +162,7 @@ public class PageRankNGTest {
 
         PageRank pr = new PageRank();
         
-        double[] pageRank = new double[6];
+        double[] pageRank;
         
         HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
         
@@ -204,7 +208,7 @@ public class PageRankNGTest {
 
         PageRank pr = new PageRank();
         
-        double[] pageRank = new double[4];
+        double[] pageRank;
         
         HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
         
@@ -234,5 +238,124 @@ public class PageRankNGTest {
         assertTrue(Math.abs(sum-res)<diff);
     }
    
+   @Test 
+    public void testDirectedSpecial1GraphPageRank() {
+        pc.newProject();
+        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        
+        DirectedGraph directedGraph=graphModel.getDirectedGraph();
+        Node node1=graphModel.factory().newNode("0");
+        Node node2=graphModel.factory().newNode("1");
+        Node node3=graphModel.factory().newNode("2");
+        Node node4=graphModel.factory().newNode("3");
+        Node node5=graphModel.factory().newNode("4");
+        Node node6=graphModel.factory().newNode("5");
+        Node node7=graphModel.factory().newNode("6");
+        Node node8=graphModel.factory().newNode("7");
+        Node node9=graphModel.factory().newNode("8");
+        
+        directedGraph.addNode(node1);
+        directedGraph.addNode(node2);
+        directedGraph.addNode(node3);
+        directedGraph.addNode(node4);
+        directedGraph.addNode(node5);
+        directedGraph.addNode(node6);
+        directedGraph.addNode(node7);
+        directedGraph.addNode(node8);
+        directedGraph.addNode(node9);
+        
+        Edge edge12=graphModel.factory().newEdge(node1, node2);
+        Edge edge23=graphModel.factory().newEdge(node2, node3);
+        Edge edge31=graphModel.factory().newEdge(node3, node1);
+        Edge edge14=graphModel.factory().newEdge(node1, node4);
+        Edge edge45=graphModel.factory().newEdge(node4, node5);
+        Edge edge51=graphModel.factory().newEdge(node5, node1);
+        Edge edge16=graphModel.factory().newEdge(node1, node6);
+        Edge edge67=graphModel.factory().newEdge(node6, node7);
+        Edge edge71=graphModel.factory().newEdge(node7, node1);
+        Edge edge18=graphModel.factory().newEdge(node1, node8);
+        Edge edge89=graphModel.factory().newEdge(node8, node9);
+        Edge edge91=graphModel.factory().newEdge(node9, node1);
+        
+        
+        directedGraph.addEdge(edge12);
+        directedGraph.addEdge(edge23);
+        directedGraph.addEdge(edge31);
+        directedGraph.addEdge(edge14);
+        directedGraph.addEdge(edge45);
+        directedGraph.addEdge(edge51);
+        directedGraph.addEdge(edge16);
+        directedGraph.addEdge(edge67);
+        directedGraph.addEdge(edge71);
+        directedGraph.addEdge(edge18);
+        directedGraph.addEdge(edge89);
+        directedGraph.addEdge(edge91);
+        
+        HierarchicalDirectedGraph hgraph = graphModel.getHierarchicalDirectedGraphVisible();
+        PageRank pr = new PageRank();
+        
+        double[] pageRank;
+        
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        
+        pageRank = pr.calculatePagerank(hgraph, indicies, true, false, 0.001, 0.85);
+        
+        int index1 = indicies.get(node1);
+        int index2 = indicies.get(node2);
+        int index3 = indicies.get(node3);
+        
+        double pr1 = pageRank[index1];
+        double pr2 = pageRank[index2];
+        double pr3 = pageRank[index3];
+
+        assertTrue(pr1>pr2);
+        assertTrue(pr2<pr3);
+    }
    
+    @Test 
+    public void testDirectedStarOutGraphPageRank() {
+        pc.newProject();
+        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        
+        DirectedGraph directedGraph=graphModel.getDirectedGraph();
+        Node firstNode=graphModel.factory().newNode("0");
+        directedGraph.addNode(firstNode);
+        for (int i=1; i<=5; i++) {
+             Node currentNode=graphModel.factory().newNode(((Integer)i).toString());
+             directedGraph.addNode(currentNode);
+             Edge currentEdge=graphModel.factory().newEdge(firstNode, currentNode);
+             directedGraph.addEdge(currentEdge);
+        }
+        
+        HierarchicalDirectedGraph hgraph = graphModel.getHierarchicalDirectedGraphVisible();
+       PageRank pr = new PageRank();
+        
+        double[] pageRank;
+        
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        
+        pageRank = pr.calculatePagerank(hgraph, indicies, true, false, 0.001, 0.85);
+        
+        Node n1 = hgraph.getNode("0");
+        Node n2 = hgraph.getNode("1");
+        Node n3 = hgraph.getNode("2");
+        Node n5 = hgraph.getNode("4");
+        
+        int index1 = indicies.get(n1);
+        int index2 = indicies.get(n2);
+        int index3 = indicies.get(n3);
+        int index5 = indicies.get(n5);
+        
+        double pr1 = pageRank[index1];
+        double pr2 = pageRank[index2];
+        double pr3 = pageRank[index3];
+        double pr5 = pageRank[index5];
+        
+        double res=0.146;
+        double diff = 0.01;
+        
+        assertTrue(pr1<pr3);
+        assertEquals(pr2, pr5);
+        assertTrue(Math.abs(pr1-res)<diff);
+    }
 }
