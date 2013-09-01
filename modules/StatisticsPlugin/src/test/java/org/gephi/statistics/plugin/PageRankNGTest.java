@@ -201,7 +201,7 @@ public class PageRankNGTest {
     }
    
    @Test
-    public void testPathUndirectedGraphPageRank() {
+    public void testPathDirectedGraphPageRank() {
         pc.newProject();
         GraphModel graphModel=generator.generatePathDirectedGraph(4);
         HierarchicalGraph hgraph = graphModel.getHierarchicalDirectedGraph();
@@ -236,6 +236,31 @@ public class PageRankNGTest {
         assertTrue(pr1<pr2);
         assertTrue(pr2<pr4);
         assertTrue(Math.abs(sum-res)<diff);
+    }
+   
+   @Test
+    public void testCyclicDirectedGraphPageRank() {
+        pc.newProject();
+        GraphModel graphModel=generator.generateCyclicDirectedGraph(5);
+        HierarchicalGraph hgraph = graphModel.getHierarchicalDirectedGraph();
+
+        PageRank pr = new PageRank();
+        
+        double[] pageRank;
+        
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        
+        pageRank = pr.calculatePagerank(hgraph, indicies, true, false, 0.001, 0.85);
+        
+        Node n3 = hgraph.getNode("2");
+        
+        int index3 = indicies.get(n3);
+        
+        double pr3 = pageRank[index3];
+        double res=0.2d;
+        
+        double diff3 = Math.abs(pr3 - res);
+        assertTrue(diff3<0.01);
     }
    
    @Test 
