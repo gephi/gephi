@@ -55,6 +55,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.spi.MouseClickEventListener;
+import org.gephi.tools.spi.MouseDragEventListener;
 import org.gephi.tools.spi.NodeClickEventListener;
 import org.gephi.tools.spi.NodePressingEventListener;
 import org.gephi.tools.spi.Tool;
@@ -75,6 +76,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Mathieu Bastian
+ * @author Will McElderry
  */
 @ServiceProvider(service = ToolController.class)
 public class DesktopToolController implements ToolController {
@@ -116,7 +118,10 @@ public class DesktopToolController implements ToolController {
                 NodePressAndDraggingEventHandler h = new NodePressAndDraggingEventHandler(toolListener);
                 h.select();
                 handlers.add(h);
-
+            } else if (toolListener instanceof MouseDragEventListener) {
+                MouseDragEventHandler h = new MouseDragEventHandler(toolListener);
+                h.select();
+                handlers.add(h);
             } else {
                 throw new RuntimeException("The ToolEventListener " + toolListener.getClass().getSimpleName() + " cannot be recognized");
             }
@@ -400,6 +405,62 @@ public class DesktopToolController implements ToolController {
             VizController.getInstance().getVizEventManager().removeListener(currentListener);
             toolEventListener = null;
             currentListener = null;
+        }
+    }
+
+    private static class MouseDragEventHandler implements ToolEventHandler {
+
+        private MouseDragEventListener toolEventListener;
+        private VizEventListener[] currentListeners;
+
+        public MouseDragEventHandler(ToolEventListener toolListener) {
+            this.toolEventListener = (MouseDragEventListener) toolListener;
+        }
+
+        public void select() {
+            currentListeners = new VizEventListener[3];
+            currentListeners[0] = new VizEventListener() {
+
+                public void handleEvent(VizEvent event) {
+                    float[] data = (float[]) event.getData();
+                    int[] viewport = new int[]{(int) data[0], (int) data[1]};
+                    float[] threed = new float[]{data[2], data[3]};
+
+                    toolEventListener.drag(viewport,threed);
+                }
+
+                public Type getType() {
+                    return VizEvent.Type.DRAG;
+                }
+            };
+            currentListeners[1] = new VizEventListener() {
+
+                public void handleEvent(VizEvent event) {
+                    toolEventListener.dragStart();
+                }
+
+                public Type getType() {
+                    return VizEvent.Type.START_DRAG;
+                }
+            };
+            currentListeners[2] = new VizEventListener() {
+
+                public void handleEvent(VizEvent event) {
+                    toolEventListener.dragStop();
+                }
+
+                public Type getType() {
+                    return VizEvent.Type.STOP_DRAG;
+                }
+            };
+
+            VizController.getInstance().getVizEventManager().addListener(currentListeners);
+        }
+
+        public void unselect() {
+            VizController.getInstance().getVizEventManager().removeListener(currentListeners);
+            toolEventListener = null;
+            currentListeners = null;
         }
     }
 }
