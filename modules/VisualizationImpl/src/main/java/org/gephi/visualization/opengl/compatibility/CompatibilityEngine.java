@@ -48,6 +48,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -67,9 +68,13 @@ import org.gephi.visualization.api.objects.CompatibilityModelClass;
 import org.gephi.visualization.selection.Cylinder;
 import org.gephi.visualization.selection.Rectangle;
 
+import org.gephi.visualization.spi.EmbeddedGraphic;
+
+import org.openide.util.Lookup;
 /**
  *
  * @author Mathieu Bastian
+ * @author Will McElderry
  */
 public class CompatibilityEngine extends AbstractEngine {
 
@@ -85,6 +90,8 @@ public class CompatibilityEngine extends AbstractEngine {
     private ConcurrentLinkedQueue<ModelImpl>[] selectedObjects;
     private boolean anySelected = false;
 
+    Collection<? extends EmbeddedGraphic> egs;
+
     public CompatibilityEngine() {
         super();
     }
@@ -95,6 +102,7 @@ public class CompatibilityEngine extends AbstractEngine {
         scheduler = (CompatibilityScheduler) VizController.getInstance().getScheduler();
         vizEventManager = VizController.getInstance().getVizEventManager();
 
+        egs = Lookup.getDefault().lookupAll(EmbeddedGraphic.class);
         //Init
         octree = new Octree(vizConfig.getOctreeDepth(), vizConfig.getOctreeWidth(), modelClasses.length);
         octree.initArchitecture();
@@ -224,6 +232,9 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void beforeDisplay(GL gl, GLU glu) {
+        for(EmbeddedGraphic eg : egs)
+            eg.beforeDisplay(gl,glu);
+
         //Lighten delta
         if (lightenAnimationDelta != 0) {
             float factor = vizConfig.getLightenNonSelectedFactor();
@@ -256,6 +267,8 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void display(GL gl, GLU glu) {
+        for(EmbeddedGraphic eg : egs)
+            eg.display(gl,glu);
         for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {       //TODO Move this
             ModelImpl obj = itr.next();
             modelClasses[AbstractEngine.CLASS_NODE].getCurrentModeler().chooseModel(obj);
