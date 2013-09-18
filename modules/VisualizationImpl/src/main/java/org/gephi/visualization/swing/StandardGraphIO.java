@@ -264,24 +264,26 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             mouseDrag3d[0] = (float) ((graphDrawable.viewport.get(2) / 2 - x) / graphDrawable.draggingMarker[0] + graphDrawable.cameraTarget[0]);
             mouseDrag3d[1] = (float) ((y - graphDrawable.viewport.get(3) / 2) / graphDrawable.draggingMarker[1] + graphDrawable.cameraTarget[1]);
 
-            if (vizController.getVizConfig().isSelectionEnable() && engine.isRectangleSelection()) {
-                if (!dragging) {
-                    //Start drag
-                    dragging = true;
-                    Rectangle rectangle = (Rectangle) engine.getCurrentSelectionArea();
-                    rectangle.start(mousePosition);
+            if (vizController.getVizConfig().isSelectionEnable())
+            {
+               if( engine.isRectangleSelection()) {
+                    if (!dragging) {
+                        //Start drag
+                        dragging = true;
+                        Rectangle rectangle = (Rectangle) engine.getCurrentSelectionArea();
+                        rectangle.start(mousePosition);
+                    }
+                    engine.getScheduler().requireUpdateSelection();
+                } else if (vizController.getVizConfig().isDraggingEnable()) {   //assume that dragging nodes is not possible when there's no selection.
+                    if (!dragging) {
+                        //Start drag
+                        dragging = true;
+                        engine.getScheduler().requireStartDrag();
+                    }
+                    engine.getScheduler().requireDrag();
+                } else if (vizController.getVizConfig().isMouseSelectionUpdateWhileDragging()) {
+                    engine.getScheduler().requireDrag();
                 }
-                engine.getScheduler().requireUpdateSelection();
-            } else if (vizController.getVizConfig().isDraggingEnable()) {
-
-                if (!dragging) {
-                    //Start drag
-                    dragging = true;
-                    engine.getScheduler().requireStartDrag();
-                }
-                engine.getScheduler().requireDrag();
-            } else if (vizController.getVizConfig().isMouseSelectionUpdateWhileDragging()) {
-                engine.getScheduler().requireDrag();
             } else {
                 if (!dragging) {
                     //Start drag
