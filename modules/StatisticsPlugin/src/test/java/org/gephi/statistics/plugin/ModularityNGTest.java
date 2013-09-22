@@ -59,6 +59,25 @@ public class ModularityNGTest {
     }
     
      @Test
+    public void testGraphWithouLinksModularity() {
+        pc.newProject();
+        GraphModel graphModel=generator.generateNullUndirectedGraph(5);
+        HierarchicalUndirectedGraph hgraph = graphModel.getHierarchicalUndirectedGraph();
+
+        Modularity mod = new Modularity();
+        
+        Modularity.CommunityStructure theStructure  = mod.new CommunityStructure(hgraph);
+        int[] comStructure = new int[hgraph.getNodeCount()];
+        
+        HashMap<String, Double> modularityValues = mod.computeModularity(hgraph, theStructure, comStructure, 
+            1., true, false);
+        
+        double modValue = modularityValues.get("modularity");     
+        
+        assertEquals(modValue, Double.NaN);
+    }
+    
+     @Test
     public void testComputeBarbellGraphModularityNormalResolution() {
         pc.newProject();
         GraphModel graphModel=generator.generateCompleteUndirectedGraph(4);

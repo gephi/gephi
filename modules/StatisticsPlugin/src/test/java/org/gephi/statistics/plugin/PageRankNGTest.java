@@ -7,10 +7,12 @@ package org.gephi.statistics.plugin;
 import java.util.HashMap;
 import java.util.LinkedList;
 import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.io.generator.plugin.GraphGenerator;
@@ -382,5 +384,66 @@ public class PageRankNGTest {
         assertTrue(pr1<pr3);
         assertEquals(pr2, pr5);
         assertTrue(Math.abs(pr1-res)<diff);
+    }
+    
+     @Test 
+    public void testUndirectedWeightedGraphPageRank() {
+        pc.newProject();
+        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        
+        UndirectedGraph undirectedGraph=graphModel.getUndirectedGraph();
+        Node node1=graphModel.factory().newNode("0");
+        Node node2=graphModel.factory().newNode("1");
+        Node node3=graphModel.factory().newNode("2");
+        Node node4=graphModel.factory().newNode("3");
+        Node node5=graphModel.factory().newNode("4");
+        Node node6=graphModel.factory().newNode("5");
+        
+        undirectedGraph.addNode(node1);
+        undirectedGraph.addNode(node2);
+        undirectedGraph.addNode(node3);
+        undirectedGraph.addNode(node4);
+        undirectedGraph.addNode(node5);
+        undirectedGraph.addNode(node6);
+        
+        Edge edge12=graphModel.factory().newEdge(node1, node2);
+        Edge edge23=graphModel.factory().newEdge(node2, node3, 10, false);
+        Edge edge34=graphModel.factory().newEdge(node3, node1);
+        Edge edge45=graphModel.factory().newEdge(node1, node4);
+        Edge edge56=graphModel.factory().newEdge(node4, node5);
+        Edge edge61=graphModel.factory().newEdge(node5, node1);
+        
+        
+        undirectedGraph.addEdge(edge12);
+        undirectedGraph.addEdge(edge23);
+        undirectedGraph.addEdge(edge34);
+        undirectedGraph.addEdge(edge45);
+        undirectedGraph.addEdge(edge56);
+        undirectedGraph.addEdge(edge61);
+        
+        HierarchicalUndirectedGraph hgraph = graphModel.getHierarchicalUndirectedGraphVisible();
+        PageRank pr = new PageRank();
+        
+        double[] pageRank;
+        
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        
+        pageRank = pr.calculatePagerank(hgraph, indicies, false, true, 0.001, 0.85);
+        
+        int index1 = indicies.get(node1);
+        int index2 = indicies.get(node2);
+        int index3 = indicies.get(node3);
+        int index6 = indicies.get(node6);
+        
+        double diff = 0.01;
+        
+        double pr1 = pageRank[index1];
+        double pr2 = pageRank[index2];
+        double pr3 = pageRank[index3];
+        double pr6 = pageRank[index6];
+
+        assertTrue(Math.abs(pr2-pr3)<diff);
+        assertTrue(pr1<pr2);
+        assertTrue(pr1<pr6);
     }
 }

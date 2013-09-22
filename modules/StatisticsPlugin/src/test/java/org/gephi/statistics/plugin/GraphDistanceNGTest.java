@@ -1639,4 +1639,43 @@ public class GraphDistanceNGTest {
         assertEquals(closeness[index2], 2.5);
         assertEquals(closeness[index3], 1.5);
     }
+       
+        @Test
+    public void testConnectedComponentsUndirectedGraphCloseness() {
+        //expected that values are computed separatly for every connected component
+        pc.newProject();
+        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        UndirectedGraph undirectedGraph=graphModel.getUndirectedGraph();
+        Node node1=graphModel.factory().newNode("0");
+        Node node2=graphModel.factory().newNode("1");
+        Node node3=graphModel.factory().newNode("2");
+        Node node4=graphModel.factory().newNode("3");
+        Node node5=graphModel.factory().newNode("4");
+        undirectedGraph.addNode(node1);
+        undirectedGraph.addNode(node2);
+        undirectedGraph.addNode(node3);
+        undirectedGraph.addNode(node4);
+        undirectedGraph.addNode(node5);;
+        Edge edge12=graphModel.factory().newEdge(node1, node2);
+        Edge edge23=graphModel.factory().newEdge(node2, node3);
+        Edge edge45=graphModel.factory().newEdge(node4, node5);
+        undirectedGraph.addEdge(edge12);
+        undirectedGraph.addEdge(edge23);
+        undirectedGraph.addEdge(edge45);
+        
+
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        HierarchicalUndirectedGraph hierarchicalUndirectedGraph = graphModel.getHierarchicalUndirectedGraph();
+        HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
+        
+        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
+        double[] closeness = metricsMap.get(d.CLOSENESS);
+          
+        int index1 = indicies.get(node1);
+        int index4 = indicies.get(node4);
+        
+        assertEquals(closeness[index1], 1.5);
+        assertEquals(closeness[index4], 1.);
+    }
 }

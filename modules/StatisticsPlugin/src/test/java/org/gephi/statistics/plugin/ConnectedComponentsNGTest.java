@@ -406,7 +406,53 @@ public class ConnectedComponentsNGTest {
         assertNotEquals(componentNumber1, componentNumber5);
     }
     
-
      
-     //test for giant component
+    @Test
+    public void testSpecial2UndirectedGraphGiantComponent() {
+        pc.newProject();
+        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        UndirectedGraph undirectedGraph=graphModel.getUndirectedGraph();
+        Node node1=graphModel.factory().newNode("0");
+        Node node2=graphModel.factory().newNode("1");
+        Node node3=graphModel.factory().newNode("2");
+        Node node4=graphModel.factory().newNode("3");
+        Node node5=graphModel.factory().newNode("4");
+        Node node6=graphModel.factory().newNode("5");
+        Node node7=graphModel.factory().newNode("6");
+        Node node8=graphModel.factory().newNode("7");
+        Node node9=graphModel.factory().newNode("8");
+        undirectedGraph.addNode(node1);
+        undirectedGraph.addNode(node2);
+        undirectedGraph.addNode(node3);
+        undirectedGraph.addNode(node4);
+        undirectedGraph.addNode(node5);
+        undirectedGraph.addNode(node6);
+        undirectedGraph.addNode(node7);
+        undirectedGraph.addNode(node8);
+        undirectedGraph.addNode(node9);
+        Edge edge12=graphModel.factory().newEdge(node1, node2);
+        Edge edge23=graphModel.factory().newEdge(node2, node3);
+        Edge edge45=graphModel.factory().newEdge(node4, node5);
+        Edge edge56=graphModel.factory().newEdge(node5, node6);
+        Edge edge64=graphModel.factory().newEdge(node6, node4);
+        Edge edge75=graphModel.factory().newEdge(node7, node5);
+        undirectedGraph.addEdge(edge12);
+        undirectedGraph.addEdge(edge23);
+        undirectedGraph.addEdge(edge45);
+        undirectedGraph.addEdge(edge56);
+        undirectedGraph.addEdge(edge64);
+        undirectedGraph.addEdge(edge75);
+        
+        HierarchicalUndirectedGraph graph=graphModel.getHierarchicalUndirectedGraph();
+
+        ConnectedComponents c=new ConnectedComponents();
+        HashMap<Node, Integer> indicies = c.createIndiciesMap(graphModel.getHierarchicalUndirectedGraph());
+        LinkedList<LinkedList<Node>> components = c.computeWeeklyConnectedComponents(graph, indicies);
+        c.fillComponentSizeList(components);
+        
+        int giantComponent = c.getGiantComponent();
+        int componentNumber5=c.getComponentNumber(components, node5);
+        
+        assertEquals(giantComponent, componentNumber5);
+    }
 }

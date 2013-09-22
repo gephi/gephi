@@ -221,7 +221,7 @@ public class ConnectedComponents implements Statistics, LongTask {
         }
     }
     
-    private void fillComponentSizeList(LinkedList<LinkedList<Node>> components) {
+    void fillComponentSizeList(LinkedList<LinkedList<Node>> components) {
         componentsSize = new int[components.size()];
         for (int i = 0; i < components.size(); i++) {
             componentsSize[i] = components.get(i).size();
