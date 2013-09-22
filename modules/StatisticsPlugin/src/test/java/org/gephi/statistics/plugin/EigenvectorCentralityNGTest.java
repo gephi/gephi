@@ -178,12 +178,9 @@ public class EigenvectorCentralityNGTest {
         
         ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, false, 100);
         
-        Node n1 = hgraph.getNode("0");
-        Node n2 = hgraph.getNode("1");
-        Node n3 = hgraph.getNode("2");
-        int index1 = invIndicies.get(n1);
-        int index2 = invIndicies.get(n2);
-        int index3 = invIndicies.get(n3);
+        int index1 = invIndicies.get(node1);
+        int index2 = invIndicies.get(node2);
+        int index3 = invIndicies.get(node3);
         double ec1 = centralities[index1];
         double ec2 = centralities[index2];
         double ec3 = centralities[index3];
@@ -233,12 +230,9 @@ public class EigenvectorCentralityNGTest {
         
         ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, false, 100);
                
-        Node n2 = hgraph.getNode("1");
-        Node n3 = hgraph.getNode("2");
-        Node n4 = hgraph.getNode("3");
-        int index2 = invIndicies.get(n2);
-        int index3 = invIndicies.get(n3);
-        int index4 = invIndicies.get(n4);
+        int index2 = invIndicies.get(node2);
+        int index3 = invIndicies.get(node3);
+        int index4 = invIndicies.get(node4);
         double ec2 = centralities[index2];
         double ec3 = centralities[index3];
         double ec4 = centralities[index4];
@@ -286,10 +280,8 @@ public class EigenvectorCentralityNGTest {
         
         ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, false, 100);
                
-        Node n1 = hgraph.getNode("0");
-        Node n2 = hgraph.getNode("1");
-        int index1 = invIndicies.get(n1);
-        int index2 = invIndicies.get(n2);
+        int index1 = invIndicies.get(node1);
+        int index2 = invIndicies.get(node2);
         double ec1 = centralities[index1];
         double ec2 = centralities[index2];
         
@@ -364,15 +356,10 @@ public class EigenvectorCentralityNGTest {
         
         ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, true, 1000);
         
-        Node n1 = hgraph.getNode("0");
-        Node n2 = hgraph.getNode("1");
-        Node n4 = hgraph.getNode("3");
-        Node n5 = hgraph.getNode("4");
-        
-        int index1 = invIndicies.get(n1);
-        int index2 = invIndicies.get(n2);
-        int index4 = invIndicies.get(n4);
-        int index5 = invIndicies.get(n5);
+        int index1 = invIndicies.get(node1);
+        int index2 = invIndicies.get(node2);
+        int index4 = invIndicies.get(node4);
+        int index5 = invIndicies.get(node5);
         
         double ec1 = centralities[index1];
         double ec2 = centralities[index2];

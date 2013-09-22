@@ -51,7 +51,7 @@ public class GraphDistanceNGTest {
         d.calculateDistanceMetrics(graphModel.getHierarchicalGraph(), indicies, false, false);
 
         double averageDegree = d.getPathLength();
-        assertEquals(averageDegree, 0.0);
+        assertEquals(averageDegree, Double.NaN);
     }
     
     @Test
@@ -752,7 +752,7 @@ public class GraphDistanceNGTest {
         undirectedGraph.addEdge(edge78);
         undirectedGraph.addEdge(edge81);
         undirectedGraph.addEdge(edge14);
-         undirectedGraph.addEdge(edge85);
+        undirectedGraph.addEdge(edge85);
         
 
         GraphDistance d = new GraphDistance();

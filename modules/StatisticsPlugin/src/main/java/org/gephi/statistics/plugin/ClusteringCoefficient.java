@@ -238,14 +238,24 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         execute(hgraph, attributeModel);
     }
-
+    
     public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
+        
+        HashMap<String, Double> resultValues = new HashMap<String, Double>();
 
-        if(isDirected)
-            bruteForce(hgraph, attributeModel);
-        else
-            triangles(hgraph);
+        if(isDirected) {
+            avgClusteringCoeff = bruteForce(hgraph, attributeModel);
+        }
+           
+        else {
+            initStartValues(hgraph);
+            resultValues = computeTriangles(hgraph, network, triangles, nodeClustering, isDirected);
+            totalTriangles = resultValues.get("triangles").intValue();
+            avgClusteringCoeff = resultValues.get("clusteringCoefficient");
+            
+        }
+        
         
 
         //Set results in columns
@@ -272,30 +282,77 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             }
         }
     }
+    
+    public void triangles(HierarchicalGraph hgraph) {
+        initStartValues(hgraph);
+        HashMap<String, Double> resultValues = computeTriangles(hgraph, network, triangles,
+                nodeClustering, isDirected);
+        totalTriangles = resultValues.get("triangles").intValue();
+        avgClusteringCoeff = resultValues.get("clusteringCoefficient");
+    }
+    
+    public HashMap<String, Double> computeClusteringCoefficient(HierarchicalGraph hgraph, ArrayWrapper[] currentNetwork, 
+            int[] currentTriangles, double[] currentNodeClustering, boolean directed) {
+        HashMap<String, Double> resultValues = new HashMap<String, Double>();
 
-    private int closest_in_array(int v) {
-        int right = network[v].length() - 1;
+        if(isDirected) {
+            double avClusteringCoefficient = bruteForce(hgraph, null);
+            resultValues.put("clusteringCoefficient", avClusteringCoefficient);
+            return resultValues;
+        }
+           
+        else {
+            initStartValues(hgraph);
+            resultValues = computeTriangles(hgraph, currentNetwork, currentTriangles, currentNodeClustering, directed);
+            return resultValues;
+            
+        }
+    }
+    
+    public void initStartValues(HierarchicalGraph hgraph) {
+        N = hgraph.getNodeCount();
+        K = (int) Math.sqrt(N);
+        nodeClustering = new double[N];
+        network = new ArrayWrapper[N];
+        triangles = new int[N];
+    }
+    
+     public int createIndiciesMapAndInitNetwork(HierarchicalGraph hgraph, HashMap<Node, Integer> indicies, ArrayWrapper[] networks, int currentProgress) {
+        int index = 0;
+        for (Node s : hgraph.getNodes()) {
+            indicies.put(s, index);
+            networks[index] = new ArrayWrapper();
+            index++;
+            Progress.progress(progress, ++currentProgress);
+        }
+        return currentProgress;
+    } 
+
+
+
+    private int closest_in_array(ArrayWrapper[] currentNetwork, int v) {
+        int right = currentNetwork[v].length() - 1;
 
         /* optimization for extreme cases */
         if (right < 0) {
             return (-1);
         }
-        if (network[v].get(0) >= v) {
+        if (currentNetwork[v].get(0) >= v) {
             return (-1);
         }
-        if (network[v].get(right) < v) {
+        if (currentNetwork[v].get(right) < v) {
             return (right);
         }
-        if (network[v].get(right) == v) {
+        if (currentNetwork[v].get(right) == v) {
             return (right - 1);
         }
 
         int left = 0, mid;
         while (right > left) {
             mid = (left + right) / 2;
-            if (v < network[v].get(mid)) {
+            if (v < currentNetwork[v].get(mid)) {
                 right = mid - 1;
-            } else if (v > network[v].get(mid)) {
+            } else if (v > currentNetwork[v].get(mid)) {
                 left = mid + 1;
             } else {
                 return (mid - 1);
@@ -303,7 +360,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
 
 
-        if (v > network[v].get(right)) {
+        if (v > currentNetwork[v].get(right)) {
             return (right);
         } else {
 
@@ -315,80 +372,59 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      *
      * @param v - The specific node to count the triangles on.
      */
-    private void newVertex(int v) {
-        int[] A = new int[N];
+    private void newVertex(ArrayWrapper[] currentNetwork, int[] currentTrianlgles, int v, int n) {
+        int[] A = new int[n];
 
-        for (int i = network[v].length() - 1; (i >= 0) && (network[v].get(i) > v); i--) {
-            int neighbor = network[v].get(i);
-            A[neighbor] = network[v].getCount(i);
+        for (int i = currentNetwork[v].length() - 1; (i >= 0) && (currentNetwork[v].get(i) > v); i--) {
+            int neighbor = currentNetwork[v].get(i);
+            A[neighbor] = currentNetwork[v].getCount(i);
         }
-        for (int i = network[v].length() - 1; i >= 0; i--) {
-            int neighbor = network[v].get(i);
-            for (int j = closest_in_array(neighbor); j >= 0; j--) {
-                int next = network[neighbor].get(j);
+        for (int i = currentNetwork[v].length() - 1; i >= 0; i--) {
+            int neighbor = currentNetwork[v].get(i);
+            for (int j = closest_in_array(currentNetwork, neighbor); j >= 0; j--) {
+                int next = currentNetwork[neighbor].get(j);
                 if (A[next] > 0) {
-                    triangles[next] += network[v].getCount(i);
-                    triangles[v] += network[v].getCount(i);
-                    triangles[neighbor] += A[next];
+                    currentTrianlgles[next] += currentNetwork[v].getCount(i);
+                    currentTrianlgles[v] += currentNetwork[v].getCount(i);
+                    currentTrianlgles[neighbor] += A[next];
                 }
             }
         }
     }
 
-    private void tr_link_nohigh(int u, int v, int count) {
+    private void tr_link_nohigh(ArrayWrapper[] currentNetwork, int[] currentTriangles, int u, int v, int count, int k) {
         int iu = 0, iv = 0, w;
-        while ((iu < network[u].length()) && (iv < network[v].length())) {
-            if (network[u].get(iu) < network[v].get(iv)) {
+        while ((iu < currentNetwork[u].length()) && (iv < currentNetwork[v].length())) {
+            if (currentNetwork[u].get(iu) < currentNetwork[v].get(iv)) {
                 iu++;
-            } else if (network[u].get(iu) > network[v].get(iv)) {
+            } else if (currentNetwork[u].get(iu) > currentNetwork[v].get(iv)) {
                 iv++;
             } else { /* neighbor in common */
-                w = network[u].get(iu);
-                if (w >= K) {
-                    triangles[w] += count;
+                w = currentNetwork[u].get(iu);
+                if (w >= k) {
+                    currentTriangles[w] += count;
                 }
                 iu++;
                 iv++;
             }
         }
-    }
-
-    public void triangles(HierarchicalGraph hgraph) {
-
-        int ProgressCount = 0;
-        Progress.start(progress, 7 * hgraph.getNodeCount());
-
-        hgraph.readLock();
-
-        N = hgraph.getNodeCount();
-        nodeClustering = new double[N];
-
-        /** Create network for processing */
-        network = new ArrayWrapper[N];
-
-        /**  */
-        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
-        int index = 0;
-        for (Node s : hgraph.getNodes()) {
-            indicies.put(s, index);
-            network[index] = new ArrayWrapper();
-            index++;
-            Progress.progress(progress, ++ProgressCount);
-        }
-
-        index = 0;
-        for (Node node : hgraph.getNodes()) {
-            HashMap<Node, EdgeWrapper> neighborTable = new HashMap<Node, EdgeWrapper>();
-
-            if (!isDirected) {
+    }   
+   
+    
+    private HashMap<Node, EdgeWrapper> createNeighbourTable(HierarchicalGraph hgraph, Node node, HashMap<Node, Integer> indicies, 
+            ArrayWrapper[] networks,boolean directed) {
+        
+        HashMap<Node, EdgeWrapper> neighborTable = new HashMap<Node, EdgeWrapper>();
+        
+        if (!directed) {
                 for (Edge edge : hgraph.getEdgesAndMetaEdges(node)) {
                     Node neighbor = hgraph.getOpposite(node, edge);
-                    neighborTable.put(neighbor, new EdgeWrapper(1, network[indicies.get(neighbor)]));
+                    neighborTable.put(neighbor, new EdgeWrapper(1, networks[indicies.get(neighbor)]));
                 }
             } else {
                 for (Edge in : ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node)) {
                     Node neighbor = in.getSource().getNodeData().getNode(hgraph.getView().getViewId());
-                    neighborTable.put(neighbor, new EdgeWrapper(1, network[indicies.get(neighbor)]));
+                    neighborTable.put(neighbor, new EdgeWrapper(1, networks[indicies.get(neighbor)]));
                 }
 
                 for (Edge out : ((HierarchicalDirectedGraph) hgraph).getOutEdgesAndMetaOutEdges(node)) {
@@ -401,155 +437,251 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                     }
                 }
             }
+        return neighborTable;
+    }
+    
+    private EdgeWrapper[] getEdges(HashMap<Node, EdgeWrapper> neighborTable) {
+        
+        int i = 0;
+        EdgeWrapper[] edges = new EdgeWrapper[neighborTable.size()];
+        for (EdgeWrapper e : neighborTable.values()) {
+            edges[i] = e;
+            i++;
+        }
+        return edges;
+    }
+    
+    private int processNetwork(ArrayWrapper[] currentNetwork, int currentProgress) {
+        Arrays.sort(currentNetwork);
+        for (int j = 0; j < N; j++) {
+            currentNetwork[j].setID(j);
+            Progress.progress(progress, ++currentProgress);
+        }
 
-            EdgeWrapper[] edges = new EdgeWrapper[neighborTable.size()];
-            int i = 0;
-            for (EdgeWrapper e : neighborTable.values()) {
-                edges[i] = e;
-                i++;
+        for (int j = 0; j < N; j++) {
+            Arrays.sort(currentNetwork[j].getArray(), new Renumbering());
+            Progress.progress(progress, ++currentProgress);
+        } 
+        return currentProgress;
+    }
+    
+    private int computeRemainingTrianles(HierarchicalGraph hgraph, ArrayWrapper[] currentNetwork, int[] currentTriangles, int currentProgress) {
+        int n=hgraph.getNodeCount();
+        int k = (int) Math.sqrt(n);
+        for (int v = n - 1; (v >= 0) && (v >= k); v--) {
+            for (int i = closest_in_array(currentNetwork, v); i >= 0; i--) {
+                int u = currentNetwork[v].get(i);
+                if (u >= k) {
+                    tr_link_nohigh(currentNetwork, currentTriangles, u, v, currentNetwork[v].getCount(i), k);
+                }
             }
-            network[index].node = node;
-            network[index].setArray(edges);
+            Progress.progress(progress, ++currentProgress);
+
+            if (isCanceled) {
+                hgraph.readUnlockAll();
+                return currentProgress;
+            }
+        }
+        return currentProgress;
+    }
+    
+    private HashMap<String, Double> computeResultValues(HierarchicalGraph hgraph, ArrayWrapper[] currentNetwork, 
+            int[] currentTriangles, double[] currentNodeClusterig, boolean directed, int currentProgress) {
+        int n = hgraph.getNodeCount();
+        HashMap<String, Double> totalValues = new HashMap<String, Double>();
+        int numNodesDegreeGreaterThanOne = 0;
+        int trianglesNumber = 0;
+        double currentClusteringCoefficient = 0;
+        for (int v = 0; v < n; v++) {
+            if (currentNetwork[v].length() > 1) {
+                numNodesDegreeGreaterThanOne++;
+                double cc = currentTriangles[v];
+                trianglesNumber += currentTriangles[v];
+                cc /= (currentNetwork[v].length() * (currentNetwork[v].length() - 1));
+                if (!directed) {
+                    cc *= 2.0f;
+                }
+                currentNodeClusterig[v] = cc;
+                currentClusteringCoefficient += cc;
+            }
+            Progress.progress(progress, ++currentProgress);
+
+            if (isCanceled) {
+                hgraph.readUnlockAll();
+                return totalValues;
+            }
+        }
+        trianglesNumber /= 3;
+        currentClusteringCoefficient /= numNodesDegreeGreaterThanOne;
+        
+        totalValues.put("triangles", (double) trianglesNumber);
+        totalValues.put("clusteringCoefficient", currentClusteringCoefficient);
+        return totalValues;
+    }
+    
+    
+
+    private HashMap<String, Double> computeTriangles(HierarchicalGraph hgraph, ArrayWrapper[] currentNetwork, int[] currentTriangles, 
+            double[] nodeClustering, boolean directed) {
+
+        HashMap<String, Double> resultValues = new HashMap<String, Double>();
+        int ProgressCount = 0;
+        Progress.start(progress, 7 * hgraph.getNodeCount());
+
+        hgraph.readLock();
+
+        int n = hgraph.getNodeCount();
+
+        /** Create network for processing */
+
+        /**  */
+        
+        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
+        
+        
+        ProgressCount = createIndiciesMapAndInitNetwork(hgraph, indicies, currentNetwork, ProgressCount);
+
+        int index = 0;
+        for (Node node : hgraph.getNodes()) {
+            HashMap<Node, EdgeWrapper> neighborTable = createNeighbourTable(hgraph, node, indicies, currentNetwork, directed);
+
+            EdgeWrapper[] edges = getEdges(neighborTable);
+            currentNetwork[index].node = node;
+            currentNetwork[index].setArray(edges);
             index++;
             Progress.progress(progress, ++ProgressCount);
 
             if (isCanceled) {
                 hgraph.readUnlockAll();
-                return;
+                return resultValues;
             }
         }
 
-        Arrays.sort(network);
-        for (int j = 0; j < N; j++) {
-            network[j].setID(j);
-            Progress.progress(progress, ++ProgressCount);
-        }
+        ProgressCount = processNetwork(currentNetwork, ProgressCount);
 
-        for (int j = 0; j < N; j++) {
-            Arrays.sort(network[j].getArray(), new Renumbering());
-            Progress.progress(progress, ++ProgressCount);
-        }
-
-        triangles = new int[N];
-        K = (int) Math.sqrt(N);
+        int k = (int) Math.sqrt(n);
 
 
-        for (int v = 0; v < K && v < N; v++) {
-            newVertex(v);
+        for (int v = 0; v < k && v < n; v++) {
+            newVertex(currentNetwork, currentTriangles, v, n);
             Progress.progress(progress, ++ProgressCount);
         }
 
         /* remaining links */
-        for (int v = N - 1; (v >= 0) && (v >= K); v--) {
-            for (int i = closest_in_array(v); i >= 0; i--) {
-                int u = network[v].get(i);
-                if (u >= K) {
-                    tr_link_nohigh(u, v, network[v].getCount(i));
-                }
-            }
-            Progress.progress(progress, ++ProgressCount);
+        
+        ProgressCount = computeRemainingTrianles(hgraph, currentNetwork, currentTriangles, ProgressCount);
+        
+        resultValues = computeResultValues(hgraph, currentNetwork, currentTriangles, nodeClustering, directed, ProgressCount);
 
-            if (isCanceled) {
-                hgraph.readUnlockAll();
-                return;
-            }
-        }
-
-        //Results and average
-        avgClusteringCoeff = 0;
-        totalTriangles = 0;
-        int numNodesDegreeGreaterThanOne = 0;
-        for (int v = 0; v < N; v++) {
-            if (network[v].length() > 1) {
-                numNodesDegreeGreaterThanOne++;
-                double cc = triangles[v];
-                totalTriangles += triangles[v];
-                cc /= (network[v].length() * (network[v].length() - 1));
-                if (!isDirected) {
-                    cc *= 2.0f;
-                }
-                nodeClustering[v] = cc;
-                avgClusteringCoeff += cc;
-            }
-            Progress.progress(progress, ++ProgressCount);
-
-            if (isCanceled) {
-                hgraph.readUnlockAll();
-                return;
-            }
-        }
-        totalTriangles /= 3;
-        avgClusteringCoeff /= numNodesDegreeGreaterThanOne;
+        
 
         hgraph.readUnlock();
+        return resultValues;
+    }
+    
+     private double bruteForce(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+        //The atrributes computed by the statistics
+        AttributeColumn clusteringColumn = initializeAttributeColunms(attributeModel);
+
+        float totalCC = 0;
+
+        hgraph.readLock();
+
+        Progress.start(progress, hgraph.getNodeCount());
+        int node_count = 0;
+        for (Node node : hgraph.getNodes()) {
+            float nodeClusteringCoefficient = computeNodeClusteringCoefficient(hgraph, node, isDirected);
+            
+            if (nodeClusteringCoefficient>-1) {
+
+                saveCalculatedValue(node, clusteringColumn, nodeClusteringCoefficient);
+
+                totalCC += nodeClusteringCoefficient;
+            }
+
+            if (isCanceled) {
+                break;
+            }
+
+            node_count++;
+            Progress.progress(progress, node_count);
+
+        }
+        double clusteringCoeff = totalCC / hgraph.getNodeCount();
+
+        hgraph.readUnlockAll();
+        
+        return clusteringCoeff;
+    }
+    
+    private float increaseCCifNesessary(HierarchicalGraph hgraph, Node neighbor1, Node neighbor2, boolean directed, float nodeCC) {
+        if (neighbor1 == neighbor2) {
+            return nodeCC;
+        }
+        if (directed) {
+            if (((HierarchicalDirectedGraph) hgraph).getEdge(neighbor1, neighbor2) != null) {
+                nodeCC++;
+            }
+            if (((HierarchicalDirectedGraph) hgraph).getEdge(neighbor2, neighbor1) != null) {
+                nodeCC++;
+            }
+        } else {
+            if (hgraph.isAdjacent(neighbor1, neighbor2)) {
+                nodeCC++;
+            }
+        }
+        return nodeCC;
+    }
+    
+    private float computeNodeClusteringCoefficient(HierarchicalGraph hgraph, Node node, boolean directed) {
+        float nodeCC = 0;
+        int neighborhood = 0;
+        NodeIterable neighbors1 = hgraph.getNeighbors(node);
+        for (Node neighbor1 : neighbors1) {
+            neighborhood++;
+            NodeIterable neighbors2 = hgraph.getNeighbors(node);
+            
+            for (Node neighbor2 : neighbors2) {
+              nodeCC=increaseCCifNesessary(hgraph, neighbor1, neighbor2, directed, nodeCC);
+            }
+        }
+        nodeCC /= 2.0;
+
+        if (neighborhood > 1) {
+            float cc = nodeCC / (.5f * neighborhood * (neighborhood - 1));
+            if (directed) {
+                cc = nodeCC / (neighborhood * (neighborhood - 1));
+            }
+
+            return cc;
+        } else 
+            return -1.f;
+    }
+    
+    private AttributeColumn initializeAttributeColunms(AttributeModel attributeModel) {
+        
+        if (attributeModel==null) return null;
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn clusteringCol = nodeTable.getColumn("clustering");
+        
+        if (clusteringCol == null) {
+            clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        }
+        
+        return clusteringCol;
+    }
+    
+    private void saveCalculatedValue(Node node, AttributeColumn clusteringColumn, 
+            float nodeClusteringCoefficient) {  
+
+        if (clusteringColumn==null) return;
+        AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
+        row.setValue(clusteringColumn, nodeClusteringCoefficient);
     }
 
-    private void bruteForce(HierarchicalGraph hgraph, AttributeModel attributeModel) {
-    //The atrributes computed by the statistics
-    AttributeTable nodeTable = attributeModel.getNodeTable();
-    AttributeColumn clusteringCol = nodeTable.getColumn("clustering");
-    if (clusteringCol == null) {
-    clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-    }
+   
     
-    float totalCC = 0;
     
-    hgraph.readLock();
-    
-    Progress.start(progress, hgraph.getNodeCount());
-    int node_count = 0;
-    for (Node node : hgraph.getNodes()) {
-    float nodeCC = 0;
-    int neighborhood = 0;
-    NodeIterable neighbors1 = hgraph.getNeighbors(node);
-    for (Node neighbor1 : neighbors1) {
-    neighborhood++;
-    NodeIterable neighbors2 = hgraph.getNeighbors(node);
-    for (Node neighbor2 : neighbors2) {
-    
-    if (neighbor1 == neighbor2) {
-    continue;
-    }
-    if (isDirected) {
-    if (((HierarchicalDirectedGraph) hgraph).getEdge(neighbor1, neighbor2) != null) {
-    nodeCC++;
-    }
-    if (((HierarchicalDirectedGraph) hgraph).getEdge(neighbor2, neighbor1) != null) {
-    nodeCC++;
-    }
-    } else {
-    if (hgraph.isAdjacent(neighbor1, neighbor2)) {
-    nodeCC++;
-    }
-    }
-    }
-    }
-    nodeCC /= 2.0;
-    
-    if (neighborhood > 1) {
-    float cc = nodeCC / (.5f * neighborhood * (neighborhood - 1));
-    if (isDirected) {
-    cc = nodeCC / (neighborhood * (neighborhood - 1));
-    }
-    
-    AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
-    row.setValue(clusteringCol, cc);
-    
-    totalCC += cc;
-    }
-    
-    if (isCanceled) {
-    break;
-    }
-    
-    node_count++;
-    Progress.progress(progress, node_count);
-    
-    }
-    avgClusteringCoeff = totalCC / hgraph.getNodeCount();
-    
-    hgraph.readUnlockAll();
-    }
     public String getReport() {
         //distribution of values
         Map<Double, Integer> dist = new HashMap<Double, Integer>();

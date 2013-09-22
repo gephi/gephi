@@ -4,7 +4,6 @@
  */
 package org.gephi.statistics.plugin;
 
-//import org.gephi.io.generator.plugin.GraphGenerator;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;

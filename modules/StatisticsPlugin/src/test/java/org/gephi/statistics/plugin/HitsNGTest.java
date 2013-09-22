@@ -410,17 +410,11 @@ public class HitsNGTest {
         
         hit.calculateHits(hgraph, hubs, authority, hub_list, auth_list, indicies, true, 0.01);
         
-        Node n1 = hgraph.getNode("0");
-        Node n2 = hgraph.getNode("1");
-        Node n3 = hgraph.getNode("2");
-        Node n5 = hgraph.getNode("4");
-        Node n6 = hgraph.getNode("5");
-        
-        int index1 = indicies.get(n1);
-        int index2 = indicies.get(n2);
-        int index3 = indicies.get(n3);
-        int index5 = indicies.get(n5);
-        int index6 = indicies.get(n6);
+        int index1 = indicies.get(node1);
+        int index2 = indicies.get(node2);
+        int index3 = indicies.get(node3);
+        int index5 = indicies.get(node5);
+        int index6 = indicies.get(node6);
         
         double hub2 = hubs[index2];
         double hub3 = hubs[index3];

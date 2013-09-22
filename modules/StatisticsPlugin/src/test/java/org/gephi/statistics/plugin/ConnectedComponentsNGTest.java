@@ -95,7 +95,6 @@ public class ConnectedComponentsNGTest {
         HierarchicalUndirectedGraph graph = graphModel.getHierarchicalUndirectedGraph();
 
         ConnectedComponents c=new ConnectedComponents();
-        //create generator for indicies map
         HashMap<Node, Integer> indicies = c.createIndiciesMap(graph);
         LinkedList<LinkedList<Node>> components = c.computeWeeklyConnectedComponents(graph, indicies);
         assertEquals(components.size(), 1);
@@ -407,11 +406,7 @@ public class ConnectedComponentsNGTest {
         assertNotEquals(componentNumber1, componentNumber5);
     }
     
-     
-//     @Test
-//     public void testSavingWeeklyConnectedComponents {
-//    
-//    }
+
      
      //test for giant component
 }

@@ -35,15 +35,15 @@ public class GraphDensityNGTest {
     }
 
     
-//    @Test
-//    public void testOneNodeDensity() {
-//        pc.newProject();
-//        GraphModel graphModel=generator.generateNullUndirectedGraph(1);
-//        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
-//        GraphDensity d=new GraphDensity();
-//        double density=d.calculateDensity(graph, false);
-//        assertEquals(density, 0.0);
-//    }
+    @Test
+    public void testOneNodeDensity() {
+        pc.newProject();
+        GraphModel graphModel=generator.generateNullUndirectedGraph(1);
+        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+        GraphDensity d=new GraphDensity();
+        double density=d.calculateDensity(graph, false);
+        assertEquals(density, Double.NaN);
+    }
     
     @Test
     public void testTwoConnectedNodesDensity() {
@@ -85,20 +85,20 @@ public class GraphDensityNGTest {
         assertEquals(density, 0.4);
     }
     
-//    @Test
-//    public void testSelfLoopNodeDensity() {
-//        pc.newProject();
-//        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
-//        UndirectedGraph undirectedGraph=graphModel.getUndirectedGraph();
-//        Node currentNode=graphModel.factory().newNode("0");
-//        undirectedGraph.addNode(currentNode);
-//        Edge currentEdge=graphModel.factory().newEdge(currentNode, currentNode);
-//        undirectedGraph.addEdge(currentEdge);
-//        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
-//        GraphDensity d=new GraphDensity();
-//        double density=d.calculateDensity(graph, false);
-//        assertEquals(density, 0.0);
-//    }
+    @Test
+    public void testSelfLoopNodeDensity() {
+        pc.newProject();
+        GraphModel graphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        UndirectedGraph undirectedGraph=graphModel.getUndirectedGraph();
+        Node currentNode=graphModel.factory().newNode("0");
+        undirectedGraph.addNode(currentNode);
+        Edge currentEdge=graphModel.factory().newEdge(currentNode, currentNode);
+        undirectedGraph.addEdge(currentEdge);
+        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+        GraphDensity d=new GraphDensity();
+        double density=d.calculateDensity(graph, false);
+        assertEquals(density, Double.POSITIVE_INFINITY);
+    }
     
     @Test
     public void testCompleteGraphWithSelfLoopsDensity() {
