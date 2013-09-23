@@ -408,10 +408,10 @@ public class PageRankNGTest {
         
         Edge edge12=graphModel.factory().newEdge(node1, node2);
         Edge edge23=graphModel.factory().newEdge(node2, node3, 10, false);
-        Edge edge34=graphModel.factory().newEdge(node3, node1);
-        Edge edge45=graphModel.factory().newEdge(node1, node4);
-        Edge edge56=graphModel.factory().newEdge(node4, node5);
-        Edge edge61=graphModel.factory().newEdge(node5, node1);
+        Edge edge34=graphModel.factory().newEdge(node3, node4);
+        Edge edge45=graphModel.factory().newEdge(node4, node5);
+        Edge edge56=graphModel.factory().newEdge(node5, node6);
+        Edge edge61=graphModel.factory().newEdge(node6, node1);
         
         
         undirectedGraph.addEdge(edge12);
