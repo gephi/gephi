@@ -98,7 +98,7 @@ public class GraphicalConfiguration {
 
             //Pbuffer
 
-            pBufferSupport = GLDrawableFactory.getDesktopFactory().canCreateGLPbuffer(device);
+            pBufferSupport = GLDrawableFactory.getDesktopFactory().canCreateGLPbuffer(device, profile);
 
         } catch (final GraphicalConfigurationException exc) {
             messageDelivered = true;

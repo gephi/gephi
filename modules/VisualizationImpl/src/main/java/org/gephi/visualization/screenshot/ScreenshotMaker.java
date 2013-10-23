@@ -42,12 +42,12 @@
 package org.gephi.visualization.screenshot;
 
 import com.jogamp.opengl.util.awt.ImageUtil;
-import com.jogamp.opengl.util.gl2.TileRenderer;
 import java.awt.Cursor;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -305,22 +305,29 @@ public class ScreenshotMaker implements VizArchitecture {
         }
     }
 
-    private void beforeTaking() {
-        WindowManager.getDefault().getMainWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    private void beforeTaking() throws InterruptedException, InvocationTargetException {
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				WindowManager.getDefault().getMainWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			}
+		});
     }
 
-    private void afterTaking() {
-        WindowManager.getDefault().getMainWindow().setCursor(Cursor.getDefaultCursor());
-        if (finishedMessage && file != null) {
-            final String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getName());
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"), JOptionPane.INFORMATION_MESSAGE);
-                }
-            });
-        }
-    }
+	private void afterTaking() {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				WindowManager.getDefault().getMainWindow().setCursor(Cursor.getDefaultCursor());
+				if (finishedMessage && file != null) {
+					final String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getName());
+					JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"), JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+	}
+	
     private static final String DATE_FORMAT_NOW = "HHmmss";
 
     private String getDefaultFileName() {
