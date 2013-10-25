@@ -151,7 +151,9 @@
             </file>
             <file name="Separator5.instance_hidden"/>
             <file name="SwitchToRecentDocumentAction.shadow_hidden"/>
+            <file name="Tools_hidden"/>
             <file name="ViewFavoritesTabAction.shadow_hidden"/>
+            <file name="Web_hidden"/>
             <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
             <file name="org-netbeans-core-windows-actions-GlobalPropertiesAction.shadow_hidden"/>
             <file name="org-netbeans-core-windows-actions-ResetWindowsAction.shadow_hidden"/>
