@@ -43,12 +43,11 @@ package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import java.math.BigDecimal;
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
-import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.Element;
 import org.gephi.utils.StatisticsUtils;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -60,11 +59,11 @@ import org.openide.util.NbBundle;
  */
 public class FirstQuartileNumber implements AttributeRowsMergeStrategy {
 
-    private Attributes[] rows;
-    private AttributeColumn column;
+    private Element[] rows;
+    private Column column;
     private BigDecimal result;
 
-    public void setup(Attributes[] rows, Attributes selectedRow, AttributeColumn column) {
+    public void setup(Element[] rows, Element selectedRow, Column column) {
         this.rows = rows;
         this.column = column;
     }
@@ -86,7 +85,7 @@ public class FirstQuartileNumber implements AttributeRowsMergeStrategy {
     }
 
     public boolean canExecute() {
-        return AttributeUtils.getDefault().isNumberOrNumberListColumn(column);
+        return org.gephi.attribute.api.AttributeUtils.isNumberType(column.getTypeClass());
     }
 
     public ManipulatorUI getUI() {

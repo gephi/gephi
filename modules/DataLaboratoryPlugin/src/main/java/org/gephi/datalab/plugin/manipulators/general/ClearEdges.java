@@ -41,13 +41,16 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.plugin.manipulators.general;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Icon;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.plugin.manipulators.general.ui.ClearEdgesUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.PluginGeneralActionsManipulator;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.MixedGraph;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -72,13 +75,20 @@ public class ClearEdges implements PluginGeneralActionsManipulator {
 
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        MixedGraph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getMixedGraph();
-        if (deleteDirected) {
-            gec.deleteEdges(graph.getDirectedEdges().toArray());
+        Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
+        
+        List<Edge> edges = new ArrayList<Edge>();
+        for (Edge edge : graph.getEdges().toArray()) {
+            if (edge.isDirected()) {
+                if(deleteDirected){
+                    edges.add(edge);
+                }
+            }else if (deleteUndirected) {
+                edges.add(edge);
+            }
         }
-        if (deleteUndirected) {
-            gec.deleteEdges(graph.getUndirectedEdges().toArray());
-        }
+        
+        gec.deleteEdges(edges.toArray(new Edge[0]));
     }
 
     public String getName() {

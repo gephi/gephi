@@ -47,13 +47,12 @@ import java.util.regex.PatternSyntaxException;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalab.api.datatables.DataTablesController;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.SearchReplaceController;
 import org.gephi.datalab.api.SearchReplaceController.SearchOptions;
 import org.gephi.datalab.api.SearchReplaceController.SearchResult;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
@@ -135,32 +134,32 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         boolean onlyVisibleElements = Lookup.getDefault().lookup(DataTablesController.class).isShowOnlyVisible();
         searchResult = null;
         columnsToSearchComboBox.removeAllItems();
-        AttributeTable table;
+        Table table;
         if (mode == Mode.NODES_TABLE) {
             Node[] nodes;
             if (onlyVisibleElements) {
                 //Search on visible nodes:
-                nodes = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraphVisible().getNodesTree().toArray();
+                nodes = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraphVisible().getNodes().toArray();
             } else {
                 nodes = new Node[0];//Search on all nodes
             }
             searchOptions = new SearchOptions(nodes, null);
-            table = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
+            table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
         } else {
             Edge[] edges;
             if (onlyVisibleElements) {
                 //Search on visible edges:
-                edges = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraphVisible().getEdges().toArray();
+                edges = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraphVisible().getEdges().toArray();
             } else {
                 edges = new Edge[0];//Search on all edges
             }
             searchOptions = new SearchOptions(edges, null);
-            table = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
+            table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
         }
 
         //Fill possible columns to search (first value is all columns):
         columnsToSearchComboBox.addItem(NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.allColumns"));
-        for (AttributeColumn c : table.getColumns()) {
+        for (Column c : table) {
             columnsToSearchComboBox.addItem(new ColumnWrapper(c));
         }
     }
@@ -217,21 +216,24 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
                 if (!dataTablesController.isNodeTableMode()) {
                     dataTablesController.selectNodesTable();
                 }
-                value = node.getNodeData().getAttributes().getValue(searchResult.getFoundColumnIndex());
+                
+                Table table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+                value = node.getAttribute(table.getColumn(searchResult.getFoundColumnIndex()));
             } else {
                 Edge edge = searchResult.getFoundEdge();
                 dataTablesController.setEdgeTableSelection(new Edge[]{edge});
                 if (!dataTablesController.isEdgeTableMode()) {
                     dataTablesController.selectEdgesTable();
                 }
-                value = edge.getEdgeData().getAttributes().getValue(searchResult.getFoundColumnIndex());
+                Table table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
+                value = edge.getAttribute(table.getColumn(searchResult.getFoundColumnIndex()));
             }
 
             String columnName;
             if (mode == Mode.NODES_TABLE) {
-                columnName = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumn(searchResult.getFoundColumnIndex()).getTitle();
+                columnName = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable().getColumn(searchResult.getFoundColumnIndex()).getTitle();
             } else {
-                columnName = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable().getColumn(searchResult.getFoundColumnIndex()).getTitle();
+                columnName = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable().getColumn(searchResult.getFoundColumnIndex()).getTitle();
             }
 
             StringBuilder sb = new StringBuilder();
@@ -270,9 +272,9 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
 
     class ColumnWrapper {
 
-        AttributeColumn column;
+        Column column;
 
-        public ColumnWrapper(AttributeColumn column) {
+        public ColumnWrapper(Column column) {
             this.column = column;
         }
 

@@ -43,8 +43,8 @@ package org.gephi.datalab.plugin.manipulators.general;
 
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
-import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.api.GraphElementsController;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.GeneralActionsManipulator;
 import org.gephi.graph.api.Node;

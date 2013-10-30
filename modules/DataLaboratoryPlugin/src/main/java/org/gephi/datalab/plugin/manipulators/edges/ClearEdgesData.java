@@ -43,14 +43,14 @@ package org.gephi.datalab.plugin.manipulators.edges;
 
 import java.util.ArrayList;
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsChooser;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralChooseColumnsUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -62,18 +62,18 @@ import org.openide.util.NbBundle;
 public class ClearEdgesData extends BasicEdgesManipulator implements GeneralColumnsChooser {
 
     private Edge[] edges;
-    private AttributeColumn[] columnsToClearData;
+    private Column[] columnsToClearData;
 
     public void setup(Edge[] edges, Edge clickedEdge) {
         this.edges = edges;
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        ArrayList<AttributeColumn> columnsToClearDataList = new ArrayList<AttributeColumn>();
-        for (AttributeColumn column : Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable().getColumns()) {
+        ArrayList<Column> columnsToClearDataList = new ArrayList<Column>();
+        for (Column column : Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable()) {
             if (ac.canClearColumnData(column)) {
                 columnsToClearDataList.add(column);
             }
         }
-        columnsToClearData = columnsToClearDataList.toArray(new AttributeColumn[0]);
+        columnsToClearData = columnsToClearDataList.toArray(new Column[0]);
     }
 
     public void execute() {
@@ -116,11 +116,11 @@ public class ClearEdgesData extends BasicEdgesManipulator implements GeneralColu
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/clear-data.png", true);
     }
 
-    public AttributeColumn[] getColumns() {
+    public Column[] getColumns() {
         return columnsToClearData;
     }
 
-    public void setColumns(AttributeColumn[] columnsToClearData) {
+    public void setColumns(Column[] columnsToClearData) {
         this.columnsToClearData = columnsToClearData;
     }
 }

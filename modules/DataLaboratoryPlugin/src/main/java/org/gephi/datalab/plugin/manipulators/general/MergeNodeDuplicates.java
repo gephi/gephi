@@ -43,13 +43,14 @@ package org.gephi.datalab.plugin.manipulators.general;
 
 import java.util.List;
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.plugin.manipulators.general.ui.MergeNodeDuplicatesUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.PluginGeneralActionsManipulator;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -72,7 +73,7 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
     private List<List<Node>> duplicateGroups;
     private boolean deleteMergedNodes;
     private boolean caseSensitive;
-    private AttributeColumn[] columns;
+    private Column[] columns;
     private AttributeRowsMergeStrategy[] mergeStrategies;
 
     public void execute() {
@@ -97,7 +98,13 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
     }
 
     public ManipulatorUI getUI() {
-        columns = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumns();
+        Table nodeTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+        int cols = nodeTable.countColumns();
+        
+        columns = new Column[cols];
+        for (int i = 0; i < cols; i++) {
+            columns[i] = nodeTable.getColumn(i);
+        }
         mergeStrategies = new AttributeRowsMergeStrategy[columns.length];
         deleteMergedNodes = NbPreferences.forModule(MergeNodeDuplicates.class).getBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, true);
         caseSensitive = NbPreferences.forModule(MergeNodeDuplicates.class).getBoolean(CASE_SENSITIVE_SAVED_PREFERENCES, true);
@@ -116,11 +123,11 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/merge.png", true);
     }
 
-    public AttributeColumn[] getColumns() {
+    public Column[] getColumns() {
         return columns;
     }
 
-    public void setColumns(AttributeColumn[] columns) {
+    public void setColumns(Column[] columns) {
         this.columns = columns;
     }
 

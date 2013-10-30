@@ -45,9 +45,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.desktop.datalab.AvailableColumnsModel;
 import org.gephi.desktop.datalab.DataTablesModel;
 import org.gephi.project.api.Workspace;
@@ -92,13 +92,13 @@ public class DataLaboratoryPersistenceProvider implements WorkspacePersistencePr
     private void writeDataTablesModel(XMLStreamWriter writer, DataTablesModel dataTablesModel) throws XMLStreamException {
         writer.writeStartElement(AVAILABLE_COLUMNS);
 
-        for (AttributeColumn column : dataTablesModel.getNodeAvailableColumnsModel().getAvailableColumns()) {
+        for (Column column : dataTablesModel.getNodeAvailableColumnsModel().getAvailableColumns()) {
             writer.writeStartElement(NODE_COLUMN);
             writer.writeAttribute("id", String.valueOf(column.getIndex()));
             writer.writeEndElement();
         }
 
-        for (AttributeColumn column : dataTablesModel.getEdgeAvailableColumnsModel().getAvailableColumns()) {
+        for (Column column : dataTablesModel.getEdgeAvailableColumnsModel().getAvailableColumns()) {
             writer.writeStartElement(EDGE_COLUMN);
             writer.writeAttribute("id", String.valueOf(column.getIndex()));
             writer.writeEndElement();
@@ -109,8 +109,8 @@ public class DataLaboratoryPersistenceProvider implements WorkspacePersistencePr
 
     private void readDataTablesModel(XMLStreamReader reader, Workspace workspace) throws XMLStreamException {
         AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-        AttributeTable nodesTable = attributeModel.getNodeTable();
-        AttributeTable edgesTable = attributeModel.getEdgeTable();
+        Table nodesTable = attributeModel.getNodeTable();
+        Table edgesTable = attributeModel.getEdgeTable();
         DataTablesModel dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
         if (dataTablesModel == null) {
             workspace.add(dataTablesModel = new DataTablesModel(workspace));
@@ -127,13 +127,13 @@ public class DataLaboratoryPersistenceProvider implements WorkspacePersistencePr
                 String name = reader.getLocalName();
                 if (NODE_COLUMN.equalsIgnoreCase(name)) {
                     Integer id = Integer.parseInt(reader.getAttributeValue(null, "id"));
-                    AttributeColumn column = nodesTable.getColumn(id);
+                    Column column = nodesTable.getColumn(id);
                     if (column != null) {
                         nodeColumns.addAvailableColumn(column);
                     }
                 } else if (EDGE_COLUMN.equalsIgnoreCase(name)) {
                     Integer id = Integer.parseInt(reader.getAttributeValue(null, "id"));
-                    AttributeColumn column = edgesTable.getColumn(id);
+                    Column column = edgesTable.getColumn(id);
                     if (column != null) {
                         edgeColumns.addAvailableColumn(column);
                     }

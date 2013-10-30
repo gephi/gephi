@@ -1,53 +1,54 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Eduardo Ramos <eduramiba@gmail.com>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Eduardo Ramos <eduramiba@gmail.com>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.datalab.general.actions;
 
 import javax.swing.JButton;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.graph.api.GraphController;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
@@ -62,7 +63,7 @@ import org.openide.util.NbPreferences;
 public class AddColumnUI extends javax.swing.JPanel {
 
     private static final String COLUMN_TYPE_SAVED_PREFERENCES = "AddColumnUI_type";
-    private AttributeTable table;
+    private Table table;
     private JButton okButton;
 
     public enum Mode {
@@ -70,11 +71,12 @@ public class AddColumnUI extends javax.swing.JPanel {
         NODES_TABLE, EDGES_TABLE;
     }
 
-    /** Creates new form AddColumnUI */
+    /**
+     * Creates new form AddColumnUI
+     */
     public AddColumnUI() {
         initComponents();
         titleTextField.getDocument().addDocumentListener(new DocumentListener() {
-
             public void insertUpdate(DocumentEvent e) {
                 refreshOkButton();
             }
@@ -89,7 +91,7 @@ public class AddColumnUI extends javax.swing.JPanel {
         });
     }
 
-    public void unSetup(){
+    public void unSetup() {
         NbPreferences.forModule(AddColumnUI.class).putInt(COLUMN_TYPE_SAVED_PREFERENCES, typeComboBox.getSelectedIndex());
     }
 
@@ -99,32 +101,34 @@ public class AddColumnUI extends javax.swing.JPanel {
 
     /**
      * Setup the mode of column creation: nodes table or edges table.
+     *
      * @param mode Mode
      */
     public void setup(Mode mode) {
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
+        AttributeModel am = Lookup.getDefault().lookup(GraphController.class).getAttributeModel();
         //Set description text for the mode of column creation:
         switch (mode) {
             case NODES_TABLE:
                 descriptionLabel.setText(NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.descriptionLabel.text.nodes"));
-                table = ac.getModel().getNodeTable();
+                table = am.getNodeTable();
                 break;
             case EDGES_TABLE:
                 descriptionLabel.setText(NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.descriptionLabel.text.edges"));
-                table = ac.getModel().getEdgeTable();
+                table = am.getEdgeTable();
                 break;
         }
 
-        for (AttributeType type : AttributeType.values()) {
+        for (Class type : AttributeUtils.getSupportedTypes()) {
+            //TODO: Show types with friendly text
             typeComboBox.addItem(type);
         }
 
-        int savedType=NbPreferences.forModule(AddColumnUI.class).getInt(COLUMN_TYPE_SAVED_PREFERENCES, -1);
+        int savedType = NbPreferences.forModule(AddColumnUI.class).getInt(COLUMN_TYPE_SAVED_PREFERENCES, -1);
         //Set last saved type or String by default:
         if (savedType != -1) {
             typeComboBox.setSelectedIndex(savedType);
         } else {
-            typeComboBox.setSelectedItem(AttributeType.STRING);
+            typeComboBox.setSelectedItem(String.class);
         }
     }
 
@@ -132,7 +136,7 @@ public class AddColumnUI extends javax.swing.JPanel {
      * Execute the creation of the column, with the given parameters in setup and with the interface itself.
      */
     public void execute() {
-        Lookup.getDefault().lookup(AttributeColumnsController.class).addAttributeColumn(table, titleTextField.getText(), (AttributeType) typeComboBox.getSelectedItem());
+        Lookup.getDefault().lookup(AttributeColumnsController.class).addAttributeColumn(table, titleTextField.getText(), (Class) typeComboBox.getSelectedItem());
     }
 
     public void setOkButton(JButton okButton) {
@@ -161,10 +165,8 @@ public class AddColumnUI extends javax.swing.JPanel {
         return validationPanel;
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

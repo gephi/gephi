@@ -42,8 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.columns.ui.GeneralCreateColumnFromRegexUI;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
@@ -62,7 +62,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeColumnsManipulator.class)
 public class CreateFoundGroupsListColumn extends GeneralCreateColumnFromRegex {
 
-    public void execute(AttributeTable table, AttributeColumn column) {
+    public void execute(Table table, Column column) {
         if (pattern != null) {
             Lookup.getDefault().lookup(AttributeColumnsController.class).createFoundGroupsListColumn(table, column, title, pattern);
         }
@@ -76,12 +76,12 @@ public class CreateFoundGroupsListColumn extends GeneralCreateColumnFromRegex {
         return NbBundle.getMessage(CreateFoundGroupsListColumn.class, "CreateFoundGroupsListColumn.description");
     }
 
-    public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
+    public boolean canManipulateColumn(Table table, Column column) {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         return ac.getTableRowsCount(table)>0;//Make sure that there is at least 1 row
     }
 
-    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
+    public AttributeColumnsManipulatorUI getUI(Table table,Column column) {
         GeneralCreateColumnFromRegexUI ui = new GeneralCreateColumnFromRegexUI();
         ui.setMode(GeneralCreateColumnFromRegexUI.Mode.MATCHING_GROUPS);
         return ui;

@@ -50,11 +50,12 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.columns.merge.AttributeColumnsMergeStrategy;
+import org.gephi.graph.api.GraphController;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
@@ -78,7 +79,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         EDGES_TABLE
     }
     private Mode mode = Mode.NODES_TABLE;
-    private AttributeTable table;
+    private Table table;
     private DefaultListModel availableColumnsModel;
     private DefaultListModel columnsToMergeModel;
     private AttributeColumnsMergeStrategy[] availableMergeStrategies;
@@ -145,13 +146,13 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         availableColumnsModel.clear();
         columnsToMergeModel.clear();
 
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeColumn[] columns;
+        AttributeModel am = Lookup.getDefault().lookup(GraphController.class).getAttributeModel();
+        Column[] columns;
         if (mode == Mode.NODES_TABLE) {
-            table = ac.getModel().getNodeTable();
+            table = am.getNodeTable();
             columns = table.getColumns();
         } else {
-            table = ac.getModel().getEdgeTable();
+            table = am.getEdgeTable();
             columns = table.getColumns();
         }
 
@@ -169,7 +170,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
 
         availableStrategiesComboBox.removeAllItems();
 
-        AttributeColumn[] columnsToMerge = getColumnsToMerge();
+        Column[] columnsToMerge = getColumnsToMerge();
 
         if (columnsToMerge.length < 1) {
             return;
@@ -208,10 +209,10 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         return result;
     }
 
-    private AttributeColumn[] getColumnsToMerge() {
+    private Column[] getColumnsToMerge() {
         Object[] elements = columnsToMergeModel.toArray();
 
-        AttributeColumn[] columns = new AttributeColumn[elements.length];
+        Column[] columns = new Column[elements.length];
         for (int i = 0; i < elements.length; i++) {
             columns[i] = ((ColumnWrapper) elements[i]).getColumn();
         }
@@ -244,23 +245,23 @@ public class MergeColumnsUI extends javax.swing.JPanel {
      */
     class ColumnWrapper {
 
-        private AttributeColumn column;
+        private Column column;
 
-        public ColumnWrapper(AttributeColumn column) {
+        public ColumnWrapper(Column column) {
             this.column = column;
         }
 
-        public AttributeColumn getColumn() {
+        public Column getColumn() {
             return column;
         }
 
-        public void setColumn(AttributeColumn column) {
+        public void setColumn(Column column) {
             this.column = column;
         }
 
         @Override
         public String toString() {
-            return column.getTitle() + " -- " + column.getType().getTypeString();
+            return column.getTitle() + " -- " + column.getTypeClass().getSimpleName();
         }
     }
 

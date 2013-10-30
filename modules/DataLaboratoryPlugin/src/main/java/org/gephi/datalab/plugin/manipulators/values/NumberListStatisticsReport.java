@@ -42,13 +42,13 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.values;
 
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralNumberListStatisticsReportUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.values.AttributeValueManipulator;
+import org.gephi.graph.api.Element;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -60,13 +60,12 @@ import org.openide.util.NbBundle;
 public class NumberListStatisticsReport implements AttributeValueManipulator {
 
     private Number[] numbers;
-    private AttributeColumn column;
+    private Column column;
 
-    public void setup(AttributeRow row, AttributeColumn column) {
+    public void setup(Element row, Column column) {
         this.column = column;
-        AttributeUtils attributeUtils = AttributeUtils.getDefault();
-        if (attributeUtils.isNumberListColumn(column) || attributeUtils.isDynamicNumberColumn(column)) {
-            numbers = Lookup.getDefault().lookup(AttributeColumnsController.class).getRowNumbers(row, new AttributeColumn[]{column});
+        if (AttributeUtils.isNumberType(column.getTypeClass())) {
+            numbers = Lookup.getDefault().lookup(AttributeColumnsController.class).getRowNumbers(row, new Column[]{column});
         }
     }
 

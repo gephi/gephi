@@ -45,10 +45,10 @@ import org.gephi.datalab.api.datatables.DataTablesController;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.attribute.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 
@@ -133,13 +133,13 @@ public interface SearchReplaceController {
          */
         private void checkNodesToSearch() {
             if (nodesToSearch == null || nodesToSearch.length == 0) {
-                HierarchicalGraph hg;
+                Graph graph;
                 if (Lookup.getDefault().lookup(DataTablesController.class).isShowOnlyVisible()) {
-                    hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraphVisible();
+                    graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraphVisible();
                 } else {
-                    hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
+                    graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
                 }
-                nodesToSearch = hg.getNodesTree().toArray();
+                nodesToSearch = graph.getNodes().toArray();
             }
         }
 
@@ -149,11 +149,11 @@ public interface SearchReplaceController {
          */
         private void checkEdgesToSearch() {
             if (edgesToSearch == null || edgesToSearch.length == 0) {
-                HierarchicalGraph hg;
+                Graph hg;
                 if (Lookup.getDefault().lookup(DataTablesController.class).isShowOnlyVisible()) {
-                    hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraphVisible();
+                    hg = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraphVisible();
                 } else {
-                    hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
+                    hg = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
                 }
                 edgesToSearch = hg.getEdges().toArray();
             }
@@ -273,10 +273,10 @@ public interface SearchReplaceController {
          * If columnsToSearch is empty, all columns will be used to search.
          * @param columnsToSearch It is safe to specify invalid columns, they will be ignored
          */
-        public void setColumnsToSearch(AttributeColumn[] columnsToSearch) {
+        public void setColumnsToSearch(Column[] columnsToSearch) {
             this.columnsToSearch.clear();
             if (columnsToSearch != null) {
-                for (AttributeColumn c : columnsToSearch) {
+                for (Column c : columnsToSearch) {
                     this.columnsToSearch.add(c.getIndex());
                 }
             }

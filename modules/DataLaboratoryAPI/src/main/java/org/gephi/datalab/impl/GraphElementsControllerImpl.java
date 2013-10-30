@@ -41,30 +41,23 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.impl;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
-import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.UndirectedGraph;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -77,6 +70,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class GraphElementsControllerImpl implements GraphElementsController {
 
     private static final float DEFAULT_NODE_SIZE = 10f;
+    private static final int DEFAULT_EDGE_TYPE = 1;
     private static final float DEFAULT_EDGE_WEIGHT = 1f;
 
     public Node createNode(String label) {
@@ -97,9 +91,9 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     public Node duplicateNode(Node node) {
-        HierarchicalGraph hg = getHierarchicalGraph();
+        Graph g = getGraph();
 
-        Node copy = copyNodeRecursively(node, hg.getParent(node), hg);//Add copy to the same level as the original node
+        Node copy = copyNode(node, g);
         return copy;
     }
 
@@ -197,101 +191,9 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         }
     }
 
-    public boolean groupNodes(Node[] nodes) {
-        if (canGroupNodes(nodes)) {
-            HierarchicalGraph graph = getHierarchicalGraph();
-            try {
-                float centroidX = 0;
-                float centroidY = 0;
-                int len = 0;
-                float sizes = 0;
-                float r = 0;
-                float g = 0;
-                float b = 0;
-                Node group = graph.groupNodes(nodes);
-                group.getNodeData().setLabel(NbBundle.getMessage(GraphElementsControllerImpl.class, "Group.nodeCount.label", nodes.length));
-                group.getNodeData().setSize(10f);
-                for (Node child : nodes) {
-                    centroidX += child.getNodeData().x();
-                    centroidY += child.getNodeData().y();
-                    len++;
-                    sizes += child.getNodeData().getSize() / 10f;
-                    r += child.getNodeData().r();
-                    g += child.getNodeData().g();
-                    b += child.getNodeData().b();
-                }
-                centroidX /= len;
-                centroidY /= len;
-                group.getNodeData().setSize(sizes);
-                group.getNodeData().setColor(r / len, g / len, b / len);
-                group.getNodeData().setX(centroidX);
-                group.getNodeData().setY(centroidY);
-            } catch (Exception e) {
-                graph.readUnlockAll();
-                NotifyDescriptor.Message nd = new NotifyDescriptor.Message(e.getMessage());
-                DialogDisplayer.getDefault().notifyLater(nd);
-                return false;
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean canGroupNodes(Node[] nodes) {
-        HierarchicalGraph hg = getHierarchicalGraph();
-        Node parent = hg.getParent(nodes[0]);
-        for (Node n : nodes) {
-            if (hg.getParent(n) != parent) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean ungroupNode(Node node) {
-        if (canUngroupNode(node)) {
-            HierarchicalGraph hg = getHierarchicalGraph();
-            hg.ungroupNodes(node);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void ungroupNodes(Node[] nodes) {
-        for (Node n : nodes) {
-            ungroupNode(n);
-        }
-    }
-
-    public boolean ungroupNodeRecursively(Node node) {
-        if (canUngroupNode(node)) {
-            HierarchicalGraph hg = getHierarchicalGraph();
-            //We can get directly all descendant nodes withoud using recursion and break the groups:
-            ungroupNodes(hg.getDescendant(node).toArray());
-            ungroupNode(node);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void ungroupNodesRecursively(Node[] nodes) {
-        for (Node n : nodes) {
-            ungroupNodeRecursively(n);
-        }
-    }
-
-    public boolean canUngroupNode(Node node) {
-        boolean canUngroup;
-        HierarchicalGraph hg = getHierarchicalGraph();
-        canUngroup = getNodeChildrenCount(hg, node) > 0;//The node has children
-        return canUngroup;
-    }
-
     public Node mergeNodes(Node[] nodes, Node selectedNode, AttributeRowsMergeStrategy[] mergeStrategies, boolean deleteMergedNodes) {
-        AttributeTable nodesTable = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
+        Table nodesTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+        Table edgesTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
         if (selectedNode == null) {
             selectedNode = nodes[0];//Use first node as selected node if null
         }
@@ -300,24 +202,20 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         Node newNode = createNode("");
 
         //Set properties (position, size and color) using the selected node properties:
-        NodeData newNodeData = newNode.getNodeData();
-        NodeData selectedNodeData = selectedNode.getNodeData();
-        newNodeData.setX(selectedNodeData.x());
-        newNodeData.setY(selectedNodeData.y());
-        newNodeData.setZ(selectedNodeData.z());
-        newNodeData.setSize(selectedNodeData.getSize());
-        newNodeData.setColor(selectedNodeData.r(), selectedNodeData.g(), selectedNodeData.b());
-        newNodeData.setAlpha(selectedNodeData.alpha());
-
-        //Prepare node rows:
-        Attributes[] rows = new Attributes[nodes.length];
-        for (int i = 0; i < nodes.length; i++) {
-            rows[i] = nodes[i].getAttributes();
-        }
+        newNode.setX(selectedNode.x());
+        newNode.setY(selectedNode.y());
+        newNode.setZ(selectedNode.z());
+        
+        newNode.setSize(selectedNode.size());
+        
+        newNode.setR(selectedNode.r());
+        newNode.setG(selectedNode.g());
+        newNode.setB(selectedNode.b());
+        newNode.setAlpha(selectedNode.alpha());
 
         //Merge attributes:        
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        ac.mergeRowsValues(nodesTable, mergeStrategies, rows, selectedNode.getAttributes(), newNode.getAttributes());
+        ac.mergeRowsValues(nodesTable, mergeStrategies, nodes, selectedNode, newNode);
 
         Set<Node> nodesSet=new HashSet<Node>();
         nodesSet.addAll(Arrays.asList(nodes));
@@ -342,11 +240,8 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
                 if (newEdge != null) {//Edge may not be created if repeated
                     //Copy edge attributes:
-                    AttributeRow row = (AttributeRow) edge.getAttributes();
-                    for (int i = 0; i < row.countValues(); i++) {
-                        if (row.getAttributeValueAt(i).getColumn().getIndex() != PropertiesColumn.EDGE_ID.getIndex()) {
-                            newEdge.getAttributes().setValue(i, row.getValue(i));
-                        }
+                    for (Column column : edgesTable) {
+                        newEdge.setAttribute(column, edge.getAttribute(column));
                     }
                 }
             }
@@ -360,86 +255,8 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         return newNode;
     }
 
-    public boolean moveNodeToGroup(Node node, Node group) {
-        if (canMoveNodeToGroup(node, group)) {
-            getHierarchicalGraph().moveToGroup(node, group);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void moveNodesToGroup(Node[] nodes, Node group) {
-        for (Node n : nodes) {
-            moveNodeToGroup(n, group);
-        }
-    }
-
-    public Node[] getAvailableGroupsToMoveNodes(Node[] nodes) {
-        if (canGroupNodes(nodes)) {
-            HierarchicalGraph hg = getHierarchicalGraph();
-            Set<Node> nodesSet = new HashSet<Node>();
-            nodesSet.addAll(Arrays.asList(nodes));
-
-            //All have the same parent, get children and check what of them are groups and are not in the nodes array:
-            Node parent = hg.getParent(nodes[0]);
-            Node[] possibleGroups;
-            //If no parent, get nodes at level 0:
-            if (parent != null) {
-                possibleGroups = hg.getChildren(parent).toArray();
-            } else {
-                possibleGroups = hg.getNodes(0).toArray();
-            }
-            ArrayList<Node> availableGroups = new ArrayList<Node>();
-
-            for (Node n : possibleGroups) {
-                if (!nodesSet.contains(n) && getNodeChildrenCount(hg, n) > 0) {
-                    availableGroups.add(n);
-                }
-            }
-
-            return availableGroups.toArray(new Node[0]);
-        } else {
-            return null;
-        }
-    }
-
-    public boolean canMoveNodeToGroup(Node node, Node group) {
-        HierarchicalGraph hg = getHierarchicalGraph();
-        return node != group && hg.getParent(node) == hg.getParent(group) && canUngroupNode(group);
-    }
-
-    public boolean removeNodeFromGroup(Node node) {
-        if (isNodeInGroup(node)) {
-            HierarchicalGraph hg = getHierarchicalGraph();
-            Node parent = hg.getParent(node);
-            hg.readLock();
-            int childrenCount = hg.getChildrenCount(parent);
-            hg.readUnlock();
-            if (childrenCount == 1) {
-                hg.ungroupNodes(parent);//Break group when the last child is removed.
-            } else {
-                hg.removeFromGroup(node);
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void removeNodesFromGroup(Node[] nodes) {
-        for (Node n : nodes) {
-            removeNodeFromGroup(n);
-        }
-    }
-
-    public boolean isNodeInGroup(Node node) {
-        HierarchicalGraph hg = getHierarchicalGraph();
-        return hg.getParent(node) != null;
-    }
-
     public void setNodeFixed(Node node, boolean fixed) {
-        node.getNodeData().setFixed(fixed);
+        node.setFixed(fixed);
     }
 
     public void setNodesFixed(Node[] nodes, boolean fixed) {
@@ -449,7 +266,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     public boolean isNodeFixed(Node node) {
-        return node.getNodeData().isFixed();
+        return node.isFixed();
     }
 
     public Node[] getNodeNeighbours(Node node) {
@@ -506,79 +323,62 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     /************Private methods : ************/
     private Graph getGraph() {
-        return Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+        return Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
     }
 
     private DirectedGraph getDirectedGraph() {
-        return Lookup.getDefault().lookup(GraphController.class).getModel().getDirectedGraph();
+        return Lookup.getDefault().lookup(GraphController.class).getGraphModel().getDirectedGraph();
     }
 
     private UndirectedGraph getUndirectedGraph() {
-        return Lookup.getDefault().lookup(GraphController.class).getModel().getUndirectedGraph();
-    }
-
-    private HierarchicalGraph getHierarchicalGraph() {
-        return Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
+        return Lookup.getDefault().lookup(GraphController.class).getGraphModel().getUndirectedGraph();
     }
 
     private Node buildNode(String label) {
-        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode();
-        newNode.getNodeData().setSize(DEFAULT_NODE_SIZE);
-        newNode.getNodeData().setLabel(label);
+        Node newNode = Lookup.getDefault().lookup(GraphController.class).getGraphModel().factory().newNode();
+        newNode.setSize(DEFAULT_NODE_SIZE);
+        newNode.setLabel(label);
         return newNode;
     }
 
     private Node buildNode(String label, String id) {
-        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode(id);
-        newNode.getNodeData().setSize(DEFAULT_NODE_SIZE);
-        newNode.getNodeData().setLabel(label);
+        Node newNode = Lookup.getDefault().lookup(GraphController.class).getGraphModel().factory().newNode(id);
+        newNode.setSize(DEFAULT_NODE_SIZE);
+        newNode.setLabel(label);
         return newNode;
     }
 
     private Edge buildEdge(Node source, Node target, boolean directed) {
-        Edge newEdge = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newEdge(source, target, DEFAULT_EDGE_WEIGHT, directed);
+        Edge newEdge = Lookup.getDefault().lookup(GraphController.class).getGraphModel().factory().newEdge(source, target, DEFAULT_EDGE_TYPE, DEFAULT_EDGE_WEIGHT, directed);
         return newEdge;
     }
 
     private Edge buildEdge(String id, Node source, Node target, boolean directed) {
-        Edge newEdge = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newEdge(id, source, target, DEFAULT_EDGE_WEIGHT, directed);
+        Edge newEdge = Lookup.getDefault().lookup(GraphController.class).getGraphModel().factory().newEdge(id, source, target, DEFAULT_EDGE_TYPE, DEFAULT_EDGE_WEIGHT, directed);
         return newEdge;
     }
 
-    private Node copyNodeRecursively(Node node, Node parent, HierarchicalGraph hg) {
-        NodeData nodeData = node.getNodeData();
-        Node copy = buildNode(nodeData.getLabel());
-        NodeData copyData = copy.getNodeData();
+    private Node copyNode(Node node, Graph g) {
+        Node copy = buildNode(node.getLabel());
 
         //Copy properties (position, size and color):
-        copyData.setX(nodeData.x());
-        copyData.setY(nodeData.y());
-        copyData.setZ(nodeData.z());
-        copyData.setSize(nodeData.getSize());
-        copyData.setColor(nodeData.r(), nodeData.g(), nodeData.b());
-        copyData.setAlpha(nodeData.alpha());
+        copy.setX(node.x());
+        copy.setY(node.y());
+        copy.setZ(node.z());
+        copy.setSize(node.size());
+        copy.setR(node.r());
+        copy.setG(node.g());
+        copy.setB(node.b());
+        copy.setAlpha(node.alpha());
 
+        Table nodeTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+        
         //Copy attributes:
-        AttributeRow row = (AttributeRow) nodeData.getAttributes();
-        for (int i = 0; i < row.countValues(); i++) {
-            if (row.getAttributeValueAt(i).getColumn().getIndex() != PropertiesColumn.NODE_ID.getIndex()) {
-                copyData.getAttributes().setValue(i, row.getValue(i));
-            }
+        for (Column column : nodeTable) {
+            copy.setAttribute(column, node.getAttribute(column));
         }
 
-        if (parent != null) {
-            hg.addNode(copy, parent);
-        } else {
-            hg.addNode(copy);
-        }
-
-        //Copy the children of the original node if any:
-        Node[] children = hg.getChildren(node).toArray();
-        if (children != null) {
-            for (Node child : children) {
-                copyNodeRecursively(child, copy, hg);
-            }
-        }
+        g.addNode(copy);
 
         return copy;
     }
@@ -589,12 +389,5 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     private void removeEdge(Edge edge, Graph graph) {
         graph.removeEdge(edge);
-    }
-
-    private int getNodeChildrenCount(HierarchicalGraph hg, Node n) {
-        hg.readLock();
-        int childrenCount = hg.getChildrenCount(n);
-        hg.readUnlock();
-        return childrenCount;
     }
 }

@@ -30,50 +30,48 @@ or only the GPL Version 3, indicate your decision by adding
 under the [CDDL or GPL Version 3] license." If you do not indicate a
 single choice of license, a recipient has the option to distribute
 your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
-
-Contributor(s):
-
-Portions Copyrighted 2011 Gephi Consortium.
- */
-package org.gephi.desktop.datalab.utils;
-
-import java.awt.Component;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
-
-/**
- * This custom cell editor for <code>TimeInterval</code> is necessary to properly display a <code>TimeInterval</code>
- * with the current <code>TimeFormat</code> representation (as date or double) while it is being edited in table.
- * @author Eduardo Ramos <eduramiba@gmail.com>
- */
-public class TimeIntervalCellEditor extends DefaultCellEditor {
-
-    private TimeFormat timeFormat = TimeFormat.DOUBLE;
-
-    public TimeIntervalCellEditor(JTextField textField) {
-        super(textField);
-    }
-
-    @Override
-    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        if (value != null) {
-            value=((TimeInterval) value).toString(timeFormat == TimeFormat.DOUBLE);
-        }
-        return super.getTableCellEditorComponent(table, value, isSelected, row, column);
-    }
-
-    public TimeFormat getTimeFormat() {
-        return timeFormat;
-    }
-
-    public void setTimeFormat(TimeFormat timeFormat) {
-        this.timeFormat = timeFormat;
-    }
-}
+//to extend the choice of license to its licensees as provided above.
+//However, if you add GPL Version 3 code and therefore, elected the GPL
+//Version 3 license, then the option applies only if the new code is
+//made subject to such option by the copyright holder.
+//
+//Contributor(s):
+//
+//Portions Copyrighted 2011 Gephi Consortium.
+// */
+//package org.gephi.desktop.datalab.utils;
+//
+//import java.awt.Component;
+//import javax.swing.DefaultCellEditor;
+//import javax.swing.JTable;
+//import javax.swing.JTextField;
+//
+///**
+// * This custom cell editor for <code>TimeInterval</code> is necessary to properly display a <code>TimeInterval</code>
+// * with the current <code>TimeFormat</code> representation (as date or double) while it is being edited in table.
+// * @author Eduardo Ramos <eduramiba@gmail.com>
+// */
+//public class TimeIntervalCellEditor extends DefaultCellEditor {
+//
+//    private TimeFormat timeFormat = TimeFormat.DOUBLE;
+//
+//    public TimeIntervalCellEditor(JTextField textField) {
+//        super(textField);
+//    }
+//
+//    @Override
+//    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+//        if (value != null) {
+//            value=((TimeInterval) value).toString(timeFormat == TimeFormat.DOUBLE);
+//        }
+//        return super.getTableCellEditorComponent(table, value, isSelected, row, column);
+//    }
+//
+//    public TimeFormat getTimeFormat() {
+//        return timeFormat;
+//    }
+//
+//    public void setTimeFormat(TimeFormat timeFormat) {
+//        this.timeFormat = timeFormat;
+//    }
+//}

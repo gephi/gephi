@@ -46,10 +46,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.graph.api.Attributable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Element;
 
 public class AttributeTableCSVExporter {
 
@@ -68,18 +68,17 @@ public class AttributeTableCSVExporter {
      * @param columnsToExport Indicates the indexes of the columns to export. All columns will be exported if null
      * @throws IOException When an error happens while writing the file
      */
-    public static void writeCSVFile(AttributeTable table, File file, Character separator, Charset charset, Integer[] columnsToExport, Attributable[] rows) throws IOException {
+    public static void writeCSVFile(Table table, File file, Character separator, Charset charset, Integer[] columnsToExport, Element[] rows) throws IOException {
         FileOutputStream out = new FileOutputStream(file);
         if (separator == null) {
             separator = DEFAULT_SEPARATOR;
         }
 
-        AttributeColumn columns[] = table.getColumns();
 
         if (columnsToExport == null) {
-            columnsToExport = new Integer[columns.length];
+            columnsToExport = new Integer[table.countColumns()];
             for (int i = 0; i < columnsToExport.length; i++) {
-                columnsToExport[i] = columns[i].getIndex();
+                columnsToExport[i] = table.getColumn(i).getIndex();
             }
         }
 
@@ -112,13 +111,13 @@ public class AttributeTableCSVExporter {
                 int columnIndex = columnsToExport[column];
                 
                 if (columnIndex == FAKE_COLUMN_EDGE_SOURCE) {
-                    value = ((Edge)rows[row]).getSource().getNodeData().getId();
+                    value = ((Edge)rows[row]).getSource().getId();
                 } else if (columnIndex == FAKE_COLUMN_EDGE_TARGET) {
-                    value = ((Edge)rows[row]).getTarget().getNodeData().getId();
+                    value = ((Edge)rows[row]).getTarget().getId();
                 } else if (columnIndex == FAKE_COLUMN_EDGE_TYPE) {
                     value = ((Edge)rows[row]).isDirected() ? "Directed" : "Undirected";
                 } else {
-                    value = rows[row].getAttributes().getValue(columnIndex);
+                    value = rows[row].getAttribute(table.getColumn(columnIndex));
                 }
 
                 if (value != null) {

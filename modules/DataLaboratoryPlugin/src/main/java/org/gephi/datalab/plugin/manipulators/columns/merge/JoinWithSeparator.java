@@ -42,8 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.datalab.plugin.manipulators.columns.merge.ui.JoinWithSeparatorUI;
 import org.gephi.datalab.spi.ManipulatorUI;
@@ -62,11 +62,11 @@ public class JoinWithSeparator implements AttributeColumnsMergeStrategy {
 
     public static final String SEPARATOR_SAVED_PREFERENCES = "JoinWithSeparator_Separator";
     private static final String DEFAULT_SEPARATOR = ",";
-    private AttributeTable table;
-    private AttributeColumn[] columns;
+    private Table table;
+    private Column[] columns;
     private String newColumnTitle, separator;
 
-    public void setup(AttributeTable table, AttributeColumn[] columns) {
+    public void setup(Table table, Column[] columns) {
         this.table = table;
         this.columns = columns;
         separator=NbPreferences.forModule(JoinWithSeparator.class).get(SEPARATOR_SAVED_PREFERENCES, DEFAULT_SEPARATOR);
@@ -121,7 +121,7 @@ public class JoinWithSeparator implements AttributeColumnsMergeStrategy {
         this.separator = separator;
     }
 
-    public AttributeTable getTable() {
+    public Table getTable() {
         return table;
     }
 }

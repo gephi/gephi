@@ -48,7 +48,7 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.plugin.manipulators.columns.merge.CreateTimeInterval;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
@@ -97,7 +97,7 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         dateFormatComboBox.setSelectedIndex(0);
     }
 
-    private AttributeColumn getComboBoxColumn(JComboBox comboBox) {
+    private Column getComboBoxColumn(JComboBox comboBox) {
         return ((ColumnWrapper) comboBox.getSelectedItem()).column;
     }
 
@@ -140,7 +140,7 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
     public void setup(Manipulator m, DialogControls dialogControls) {
         this.manipulator = (CreateTimeInterval) m;
         this.dialogControls = dialogControls;
-        AttributeColumn[] columns = manipulator.getColumns();
+        Column[] columns = manipulator.getColumns();
         column1 = new ColumnWrapper(columns[0]);
         if (columns.length == 2) {//2 columns were chosen to merge
             column2 = new ColumnWrapper(columns[1]);
@@ -288,9 +288,9 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
 
     private class ColumnWrapper {
 
-        private AttributeColumn column;
+        private Column column;
 
-        public ColumnWrapper(AttributeColumn column) {
+        public ColumnWrapper(Column column) {
             this.column = column;
         }
 

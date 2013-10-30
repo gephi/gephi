@@ -44,7 +44,7 @@ package org.gephi.datalab.plugin.manipulators.columns.merge.ui;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.plugin.manipulators.columns.merge.GeneralColumnTitleChooser;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
@@ -62,7 +62,7 @@ public class GeneralColumnTitleChooserUI extends javax.swing.JPanel implements M
 
     private GeneralColumnTitleChooser manipulator;
     private DialogControls dialogControls;
-    private AttributeTable table;
+    private Table table;
     private String displayName;
 
     /** Creates new form GeneralColumnTitleChooserUI */

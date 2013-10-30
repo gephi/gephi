@@ -42,13 +42,13 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.general;
 
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.general.ui.SearchReplaceUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.GeneralActionsManipulator;
+import org.gephi.graph.api.GraphController;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.ImageUtilities;
@@ -90,7 +90,7 @@ public class SearchReplace implements GeneralActionsManipulator {
     }
 
     public boolean canExecute() {
-        AttributeTable currentTable = getCurrentTable();
+        Table currentTable = getCurrentTable();
         return currentTable != null && Lookup.getDefault().lookup(AttributeColumnsController.class).getTableRowsCount(currentTable) > 0;//Make sure that there is at least 1 row
     }
 
@@ -110,15 +110,15 @@ public class SearchReplace implements GeneralActionsManipulator {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/binocular--pencil.png", true);
     }
 
-    private AttributeTable getCurrentTable() {
+    private Table getCurrentTable() {
         DataTablesController dtc = Lookup.getDefault().lookup(DataTablesController.class);
         if (dtc.getDataTablesEventListener() == null) {
             return null;
         }
         if (dtc.isNodeTableMode()) {
-            return Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
+            return Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
         } else {
-            return Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
+            return Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
         }
     }
 }

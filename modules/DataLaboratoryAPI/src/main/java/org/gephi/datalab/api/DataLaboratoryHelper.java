@@ -53,8 +53,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
@@ -319,7 +319,7 @@ public class DataLaboratoryHelper {
      * @param table Table of the column
      * @param column Column to manipulate
      */
-    public void executeAttributeColumnsManipulator(final AttributeColumnsManipulator m, final AttributeTable table, final AttributeColumn column) {
+    public void executeAttributeColumnsManipulator(final AttributeColumnsManipulator m, final Table table, final Column column) {
         if (m.canManipulateColumn(table, column)) {
             SwingUtilities.invokeLater(new Runnable() {
 
@@ -361,7 +361,7 @@ public class DataLaboratoryHelper {
         }
     }
 
-    private void executeAttributeColumnsManipulatorInOtherThread(final AttributeColumnsManipulator m, final AttributeTable table, final AttributeColumn column) {
+    private void executeAttributeColumnsManipulatorInOtherThread(final AttributeColumnsManipulator m, final Table table, final Column column) {
         new Thread() {
 
             @Override

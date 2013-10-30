@@ -44,9 +44,9 @@ package org.gephi.datalab.plugin.manipulators.columns.ui;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.plugin.manipulators.columns.DuplicateColumn;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
@@ -63,7 +63,7 @@ import org.openide.util.NbBundle;
 public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
 
     private DuplicateColumn manipulator;
-    private AttributeTable table;
+    private Table table;
     private DialogControls dialogControls;
 
     /** Creates new form DuplicateColumnUI */
@@ -90,7 +90,7 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
         });
     }
 
-    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls) {
+    public void setup(AttributeColumnsManipulator m, Table table, Column column, DialogControls dialogControls) {
         this.table=table;
         this.dialogControls=dialogControls;
         this.manipulator = (DuplicateColumn) m;
@@ -98,14 +98,16 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
         descriptionLabel.setText(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.descriptionLabel.text", column.getTitle()));
         titleTextField.setText(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.new.title", column.getTitle()));
 
-        for (AttributeType type : AttributeType.values()) {
+        for (Class type : AttributeUtils.getSupportedTypes()) {
+            //TODO: Show types with friendly text
             typeComboBox.addItem(type);
         }
-        typeComboBox.setSelectedItem(column.getType());
+        
+        typeComboBox.setSelectedItem(column.getTypeClass());
     }
 
     public void unSetup() {
-        manipulator.setColumnType((AttributeType) typeComboBox.getSelectedItem());
+        manipulator.setColumnType((Class) typeComboBox.getSelectedItem());
         manipulator.setTitle(titleTextField.getText());
     }
 

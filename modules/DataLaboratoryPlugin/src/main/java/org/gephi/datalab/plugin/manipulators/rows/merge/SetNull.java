@@ -42,10 +42,10 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
-import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.Element;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
@@ -55,7 +55,7 @@ import org.openide.util.NbBundle;
  */
 public class SetNull implements AttributeRowsMergeStrategy {
 
-    public void setup(Attributes[] rows, Attributes selectedRow, AttributeColumn column) {
+    public void setup(Element[] rows, Element selectedRow, Column column) {
     }
 
     public Object getReducedValue() {

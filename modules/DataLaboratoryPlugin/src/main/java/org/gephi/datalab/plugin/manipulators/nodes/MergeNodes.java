@@ -42,13 +42,13 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.nodes.ui.MergeNodesUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -73,14 +73,16 @@ public class MergeNodes extends BasicNodesManipulator {
     public static final String DELETE_MERGED_NODES_SAVED_PREFERENCES = "MergeNodes_DeleteMergedNodes";
     private Node[] nodes;
     private Node selectedNode;
-    private AttributeColumn[] columns;
+    private Column[] columns;
     private AttributeRowsMergeStrategy[] mergeStrategies;
     private boolean deleteMergedNodes;
 
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes = nodes;
         selectedNode = clickedNode != null ? clickedNode : nodes[0];
-        columns = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumns();
+        
+        
+        columns = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable().getColumns();
         mergeStrategies = new AttributeRowsMergeStrategy[columns.length];
         deleteMergedNodes = NbPreferences.forModule(MergeNodes.class).getBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, true);
     }
@@ -140,7 +142,7 @@ public class MergeNodes extends BasicNodesManipulator {
         this.selectedNode = selectedNode;
     }
 
-    public AttributeColumn[] getColumns() {
+    public Column[] getColumns() {
         return columns;
     }
 

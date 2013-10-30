@@ -43,8 +43,8 @@ package org.gephi.datalab.plugin.manipulators.ui;
 
 import java.math.BigDecimal;
 import javax.swing.JPanel;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
@@ -92,7 +92,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel impl
         setChartControlsEnabled(statistics != null);//Disable chart controls if no numbers available
     }
 
-    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls) {
+    public void setup(AttributeColumnsManipulator m, Table table, Column column, DialogControls dialogControls) {
     }
 
     public void setup(Manipulator m, DialogControls dialogControls) {

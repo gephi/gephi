@@ -41,7 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.plugin.manipulators;
 
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.plugin.manipulators.nodes.ClearNodesData;
 
 /**
@@ -57,13 +57,13 @@ public interface GeneralColumnsChooser{
      * Normally provide all table columns that can be manipulated.
      * @return Columns to show in the GeneralChooseColumnsUI
      */
-    AttributeColumn[] getColumns();
+    Column[] getColumns();
 
     /**
      * The GeneralChooseColumnsUI will use this method to set the columns to finally manipulate, after the GeneralChooseColumnsUI is closed.
      * @param columnsToClearData Columns to manipulate
      */
-    void setColumns(AttributeColumn[] columnsToClearData);
+    void setColumns(Column[] columnsToClearData);
 
     /**
      * Provide title for the GeneralChooseColumnsUI.

@@ -45,8 +45,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.datatables.AttributeTableCSVExporter;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -60,14 +60,14 @@ public class CSVExportUI extends javax.swing.JPanel {
 
     private static final String CHARSET_SAVED_PREFERENCES = "CSVExportUI_Charset";
     private static final String SEPARATOR_SAVED_PREFERENCES = "CSVExportUI_Separator";
-    private final AttributeColumn[] columns;
+    private final Column[] columns;
     private ColumnCheckboxWrapper[] columnsCheckBoxes;
     private final boolean edgesTable;
 
     /**
      * Creates new form CSVExportUI
      */
-    public CSVExportUI(AttributeTable table, boolean edgesTable) {
+    public CSVExportUI(Table table, boolean edgesTable) {
         initComponents();
         this.columns = table.getColumns();
         this.edgesTable = edgesTable;
@@ -109,7 +109,7 @@ public class CSVExportUI extends javax.swing.JPanel {
         }
         
         //Show rest of columns:
-        for (AttributeColumn column : columns) {
+        for (Column column : columns) {
             columnCheckboxesList.add(new ColumnCheckboxWrapper(column.getIndex(), column.getTitle(), true));
         }
 

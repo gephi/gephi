@@ -41,7 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Table;
 
 /**
  * Interface that general merge strategies that only need to choose a title for the column to create
@@ -66,5 +66,5 @@ public interface GeneralColumnTitleChooser {
      * Manipulators must provide the table to use in the UI to validate the column title with this method.
      * @return Table for the new column
      */
-    AttributeTable getTable();
+    Table getTable();
 }

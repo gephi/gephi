@@ -47,8 +47,8 @@ import java.util.regex.PatternSyntaxException;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.plugin.manipulators.columns.GeneralCreateColumnFromRegex;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
@@ -65,7 +65,7 @@ import org.openide.util.NbBundle;
 public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
 
     private DialogControls dialogControls;
-    private AttributeTable table;
+    private Table table;
 
     public enum Mode {
 
@@ -110,7 +110,7 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
         });
     }
 
-    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls) {
+    public void setup(AttributeColumnsManipulator m, Table table, Column column, DialogControls dialogControls) {
         this.manipulator = (GeneralCreateColumnFromRegex) m;
         this.table = table;
         this.dialogControls = dialogControls;

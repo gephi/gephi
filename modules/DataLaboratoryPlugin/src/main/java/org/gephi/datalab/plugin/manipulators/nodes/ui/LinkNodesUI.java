@@ -74,7 +74,7 @@ public class LinkNodesUI extends javax.swing.JPanel implements ManipulatorUI {
         Node sourceNode = manipulator.getSourceNode();
         //Prepare combo box with nodes data:
         for (int i = 0; i < nodes.length; i++) {
-            sourceNodeComboBox.addItem(nodes[i].getId() + " - " + nodes[i].getNodeData().getLabel());
+            sourceNodeComboBox.addItem(nodes[i].getId() + " - " + nodes[i].getLabel());
             if (nodes[i] == sourceNode) {
                 sourceNodeComboBox.setSelectedIndex(i);
             }

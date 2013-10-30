@@ -43,8 +43,8 @@ package org.gephi.datalab.plugin.manipulators.columns.ui;
 
 import java.util.Map;
 import javax.swing.JPanel;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.plugin.manipulators.columns.ColumnValuesFrequency;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
@@ -61,8 +61,8 @@ import org.openide.windows.WindowManager;
 public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
 
     private ColumnValuesFrequency manipulator;
-    private AttributeTable table;
-    private AttributeColumn column;
+    private Table table;
+    private Column column;
     private Map<Object, Integer> valuesFrequencies;
     private JFreeChart pieChart;
     private JFreeChartDialog pieChartDialog;
@@ -73,7 +73,7 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
         initComponents();
     }
 
-    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls) {
+    public void setup(AttributeColumnsManipulator m, Table table, Column column, DialogControls dialogControls) {
         this.table = table;
         this.column = column;
         this.manipulator = (ColumnValuesFrequency) m;

@@ -55,30 +55,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.attributes.api.AttributeUtils;
-import org.gephi.data.attributes.api.AttributeValue;
-import org.gephi.data.attributes.type.BooleanList;
-import org.gephi.data.attributes.type.DynamicType;
-import org.gephi.data.attributes.type.Interval;
-import org.gephi.data.attributes.type.NumberList;
-import org.gephi.data.attributes.type.StringList;
-import org.gephi.data.attributes.type.TypeConvertor;
-import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Origin;
+import org.gephi.attribute.api.Table;
+import org.gephi.attribute.time.TimestampValueSet;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
-import org.gephi.dynamic.api.DynamicModel;
-import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.store.GraphStoreConfiguration;
 import org.gephi.utils.StatisticsUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -93,11 +83,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeColumnsController.class)
 public class AttributeColumnsControllerImpl implements AttributeColumnsController {
 
-    public boolean setAttributeValue(Object value, Attributes row, AttributeColumn column) {
-        AttributeType targetType = column.getType();
-        if (value != null && !value.getClass().equals(targetType.getType())) {
+    public boolean setAttributeValue(Object value, Element row, Column column) {
+        Class targetType = column.getTypeClass();
+        if (value != null && !value.getClass().equals(targetType)) {
             try {
-                value = targetType.parse(value.toString());//Try to convert to target type
+                value = AttributeUtils.parse(value.toString(), targetType);//Try to convert to target type
             } catch (Exception ex) {
                 value = null;//Could not parse
             }
@@ -106,43 +96,38 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         if (value == null && !canClearColumnData(column)) {
             return false;//Do not set a null value when the column can't have a null value.
         } else {
-            row.setValue(column.getIndex(), value);
+            row.setAttribute(column, value);
             return true;
         }
     }
 
-    public AttributeColumn addAttributeColumn(AttributeTable table, String title, AttributeType type) {
+    public Column addAttributeColumn(Table table, String title, Class type) {
         if (title == null || title.isEmpty()) {
             return null;
         }
         if (table.hasColumn(title)) {
             return null;
         }
-        if (type == AttributeType.TIME_INTERVAL && table.getColumn(DynamicModel.TIMEINTERVAL_COLUMN) == null) {
-            return table.addColumn(DynamicModel.TIMEINTERVAL_COLUMN, title, type, AttributeOrigin.PROPERTY, null);
-        }
-        return table.addColumn(title, title, type, AttributeOrigin.DATA, null);
+        return table.addColumn(title, type, Origin.DATA);
     }
 
-    public void deleteAttributeColumn(AttributeTable table, AttributeColumn column) {
+    public void deleteAttributeColumn(Table table, Column column) {
         if (canDeleteColumn(column)) {
             table.removeColumn(column);
         }
     }
-
-    @Override
-    public AttributeColumn convertAttributeColumnToDynamic(AttributeTable table, AttributeColumn column, double low, double high, boolean lopen, boolean ropen) {
-        return convertColumnToDynamic(table, column, low, high, lopen, ropen, null);
+    
+    public Column convertAttributeColumnToDynamic(Table table, Column column, double low, double high) {
+        return convertColumnToDynamic(table, column, low, high, null);
     }
 
-    @Override
-    public AttributeColumn convertAttributeColumnToNewDynamicColumn(AttributeTable table, AttributeColumn column, double low, double high, boolean lopen, boolean ropen, String newColumnTitle) {
-        return convertColumnToDynamic(table, column, low, high, lopen, ropen, newColumnTitle);
+    public Column convertAttributeColumnToNewDynamicColumn(Table table, Column column, double low, double high, String newColumnTitle) {
+        return convertColumnToDynamic(table, column, low, high, newColumnTitle);
     }
 
-    private AttributeColumn convertColumnToDynamic(AttributeTable table, AttributeColumn column, double low, double high, boolean lopen, boolean ropen, String newColumnTitle) {
-        AttributeType oldType = column.getType();
-        AttributeType newType = TypeConvertor.getDynamicType(oldType);
+    private Column convertColumnToDynamic(Table table, Column column, double low, double high, String newColumnTitle) {
+        Class oldType = column.getTypeClass();
+        Class<? extends TimestampValueSet> newType = AttributeUtils.getDynamicType(oldType);
 
         if (newColumnTitle != null) {
             if (newColumnTitle.equals(column.getTitle())) {
@@ -150,40 +135,43 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             }
         }
 
-        int oldColumnIndex = column.getIndex();
-
-        Attributes rows[] = getTableAttributeRows(table);
+        Element rows[] = getTableAttributeRows(table);
 
         Object[] oldValues = new Object[rows.length];
         for (int i = 0; i < rows.length; i++) {
-            oldValues[i] = rows[i].getValue(oldColumnIndex);
+            oldValues[i] = rows[i].getAttribute(column);
         }
 
-        AttributeColumn newColumn;
+        Column newColumn;
         if (newColumnTitle == null) {
-            newColumn = table.replaceColumn(column, column.getId(), column.getTitle(), newType, column.getOrigin(), null);
+            table.removeColumn(column);
+            newColumn = table.addColumn(column.getTitle(), newType, column.getOrigin());
         } else {
-            newColumn = table.addColumn(newColumnTitle, newColumnTitle, newType, column.getOrigin(), null);
+            newColumn = table.addColumn(newColumnTitle, newType, column.getOrigin());
         }
-        int newColumnIndex = newColumn.getIndex();
         
-        Object value;
+        TimestampValueSet value;
         for (int i = 0; i < rows.length; i++) {
             if (oldValues[i] != null) {
-                Interval interval = new Interval(low, high, lopen, ropen, oldValues[i]);
-                value = newType.createDynamicObject(Arrays.asList(new Interval[]{interval}));
+                try {
+                    value = newType.newInstance();
+                    rows[i].setAttribute(newColumn, oldValues[i], low);
+                    rows[i].setAttribute(newColumn, oldValues[i], high);
+                } catch (Exception ex) {
+                    value = null;
+                }
             } else {
                 value = null;
             }
             
-            rows[i].setValue(newColumnIndex, value);
+            rows[i].setAttribute(newColumn, value);
         }
 
         return newColumn;
     }
 
-    public AttributeColumn duplicateColumn(AttributeTable table, AttributeColumn column, String title, AttributeType type) {
-        AttributeColumn newColumn = addAttributeColumn(table, title, type);
+    public Column duplicateColumn(Table table, Column column, String title, Class type) {
+        Column newColumn = addAttributeColumn(table, title, type);
         if (newColumn == null) {
             return null;
         }
@@ -191,65 +179,62 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         return newColumn;
     }
 
-    public void copyColumnDataToOtherColumn(AttributeTable table, AttributeColumn sourceColumn, AttributeColumn targetColumn) {
+    public void copyColumnDataToOtherColumn(Table table, Column sourceColumn, Column targetColumn) {
         if (sourceColumn == targetColumn) {
             throw new IllegalArgumentException("Source and target columns can't be equal");
         }
 
-        final int sourceColumnIndex = sourceColumn.getIndex();
-        final int targetColumnIndex = targetColumn.getIndex();
-        AttributeType targetType = targetColumn.getType();
-        if (targetType != sourceColumn.getType()) {
+        Class targetType = targetColumn.getTypeClass();
+        if (!targetType.equals(sourceColumn.getTypeClass())) {
             Object value;
-            for (Attributes row : getTableAttributeRows(table)) {
-                value = row.getValue(sourceColumnIndex);
+            for (Element row : getTableAttributeRows(table)) {
+                value = row.getAttribute(sourceColumn);
                 setAttributeValue(value, row, targetColumn);
             }
         } else {
-            for (Attributes row : getTableAttributeRows(table)) {
-                row.setValue(targetColumnIndex, row.getValue(sourceColumnIndex));
+            for (Element row : getTableAttributeRows(table)) {
+                row.setAttribute(targetColumn, row.getAttribute(sourceColumn));
             }
         }
     }
 
-    public void fillColumnWithValue(AttributeTable table, AttributeColumn column, String value) {
+    public void fillColumnWithValue(Table table, Column column, String value) {
         if (canChangeColumnData(column)) {
-            for (Attributes row : getTableAttributeRows(table)) {
+            for (Element row : getTableAttributeRows(table)) {
                 setAttributeValue(value, row, column);
             }
         }
     }
 
-    public void fillNodesColumnWithValue(Node[] nodes, AttributeColumn column, String value) {
+    public void fillNodesColumnWithValue(Node[] nodes, Column column, String value) {
         if (canChangeColumnData(column)) {
             for (Node node : nodes) {
-                setAttributeValue(value, node.getNodeData().getAttributes(), column);
+                setAttributeValue(value, node, column);
             }
         }
     }
 
-    public void fillEdgesColumnWithValue(Edge[] edges, AttributeColumn column, String value) {
+    public void fillEdgesColumnWithValue(Edge[] edges, Column column, String value) {
         if (canChangeColumnData(column)) {
             for (Edge edge : edges) {
-                setAttributeValue(value, edge.getEdgeData().getAttributes(), column);
+                setAttributeValue(value, edge, column);
             }
         }
     }
 
-    public void clearColumnData(AttributeTable table, AttributeColumn column) {
+    public void clearColumnData(Table table, Column column) {
         if (canClearColumnData(column)) {
-            final int columnIndex = column.getIndex();
-            for (Attributes attributes : getTableAttributeRows(table)) {
-                attributes.setValue(columnIndex, null);
+            for (Element row : getTableAttributeRows(table)) {
+                row.setAttribute(column, null);
             }
         }
     }
 
-    public Map<Object, Integer> calculateColumnValuesFrequencies(AttributeTable table, AttributeColumn column) {
+    public Map<Object, Integer> calculateColumnValuesFrequencies(Table table, Column column) {
         Map<Object, Integer> valuesFrequencies = new HashMap<Object, Integer>();
         Object value;
-        for (Attributes row : getTableAttributeRows(table)) {
-            value = row.getValue(column.getIndex());
+        for (Element row : getTableAttributeRows(table)) {
+            value = row.getAttribute(column);
             if (valuesFrequencies.containsKey(value)) {
                 valuesFrequencies.put(value, new Integer(valuesFrequencies.get(value) + 1));
             } else {
@@ -260,22 +245,22 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         return valuesFrequencies;
     }
 
-    public AttributeColumn createBooleanMatchesColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern) {
+    public Column createBooleanMatchesColumn(Table table, Column column, String newColumnTitle, Pattern pattern) {
         if (pattern != null) {
-            AttributeColumn newColumn = addAttributeColumn(table, newColumnTitle, AttributeType.BOOLEAN);
+            Column newColumn = addAttributeColumn(table, newColumnTitle, Boolean.class);
             if (newColumn == null) {
                 return null;
             }
             Matcher matcher;
             Object value;
-            for (Attributes row : getTableAttributeRows(table)) {
-                value = row.getValue(column.getIndex());
+            for (Element row : getTableAttributeRows(table)) {
+                value = row.getAttribute(column);
                 if (value != null) {
                     matcher = pattern.matcher(value.toString());
                 } else {
                     matcher = pattern.matcher("");
                 }
-                row.setValue(newColumn.getIndex(), matcher.matches());
+                row.setAttribute(newColumn, matcher.matches());
             }
             return newColumn;
         } else {
@@ -283,28 +268,27 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
-    public void negateBooleanColumn(AttributeTable table, AttributeColumn column) {
-        AttributeUtils attributeUtils = AttributeUtils.getDefault();
-        if (attributeUtils.isColumnOfType(column, AttributeType.BOOLEAN)) {
+    public void negateBooleanColumn(Table table, Column column) {
+        if (column.getTypeClass().equals(Boolean.class)) {
             negateColumnBooleanType(table, column);
-        } else if (attributeUtils.isColumnOfType(column, AttributeType.LIST_BOOLEAN)) {
+        } else if (column.getTypeClass().equals(Boolean[].class)) {
             negateColumnListBooleanType(table, column);
         } else {
             throw new IllegalArgumentException();
         }
     }
 
-    public AttributeColumn createFoundGroupsListColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern) {
+    public Column createFoundGroupsListColumn(Table table, Column column, String newColumnTitle, Pattern pattern) {
         if (pattern != null) {
-            AttributeColumn newColumn = addAttributeColumn(table, newColumnTitle, AttributeType.LIST_STRING);
+            Column newColumn = addAttributeColumn(table, newColumnTitle, String[].class);
             if (newColumn == null) {
                 return null;
             }
             Matcher matcher;
             Object value;
             ArrayList<String> foundGroups = new ArrayList<String>();
-            for (Attributes attributes : getTableAttributeRows(table)) {
-                value = attributes.getValue(column.getIndex());
+            for (Element row : getTableAttributeRows(table)) {
+                value = row.getAttribute(column);
                 if (value != null) {
                     matcher = pattern.matcher(value.toString());
                 } else {
@@ -314,10 +298,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     foundGroups.add(matcher.group());
                 }
                 if (foundGroups.size() > 0) {
-                    attributes.setValue(newColumn.getIndex(), new StringList(foundGroups.toArray(new String[0])));
+                    row.setAttribute(newColumn, foundGroups.toArray(new String[0]));
                     foundGroups.clear();
                 } else {
-                    attributes.setValue(newColumn.getIndex(), null);
+                    row.setAttribute(newColumn, null);
                 }
             }
             return newColumn;
@@ -326,111 +310,95 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
-    public void clearNodeData(Node node, AttributeColumn[] columnsToClear) {
-        clearRowData((AttributeRow) node.getNodeData().getAttributes(), columnsToClear);
+    public void clearNodeData(Node node, Column[] columnsToClear) {
+        clearRowData(node, columnsToClear);
     }
 
-    public void clearNodesData(Node[] nodes, AttributeColumn[] columnsToClear) {
+    public void clearNodesData(Node[] nodes, Column[] columnsToClear) {
         for (Node n : nodes) {
             clearNodeData(n, columnsToClear);
         }
     }
 
-    public void clearEdgeData(Edge edge, AttributeColumn[] columnsToClear) {
-        clearRowData((AttributeRow) edge.getEdgeData().getAttributes(), columnsToClear);
+    public void clearEdgeData(Edge edge, Column[] columnsToClear) {
+        clearRowData(edge, columnsToClear);
     }
 
-    public void clearEdgesData(Edge[] edges, AttributeColumn[] columnsToClear) {
+    public void clearEdgesData(Edge[] edges, Column[] columnsToClear) {
         for (Edge e : edges) {
             clearEdgeData(e, columnsToClear);
         }
     }
 
-    public void clearRowData(Attributes row, AttributeColumn[] columnsToClear) {
-        AttributeRow attributeRow = (AttributeRow) row;
+    public void clearRowData(Element row, Column[] columnsToClear) {
         if (columnsToClear != null) {
-            for (AttributeColumn column : columnsToClear) {
+            for (Column column : columnsToClear) {
                 //Clear all except id and computed attributes:
                 if (canClearColumnData(column)) {
-                    row.setValue(column.getIndex(), null);
+                    row.setAttribute(column, null);
                 }
             }
         } else {
-            AttributeValue[] values = attributeRow.getValues();
-            for (int i = 0; i < values.length; i++) {
-                //Clear all except id and computed attributes:
-                if (canClearColumnData(values[i].getColumn())) {
-                    row.setValue(i, null);
+            Table table;
+            if(row instanceof Node){
+                table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+            }else{
+                table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+            }
+            
+            for (Column column : table) {
+                if(canClearColumnData(column)){
+                    row.setAttribute(column, null);
                 }
             }
         }
     }
 
-    public void copyNodeDataToOtherNodes(Node node, Node[] otherNodes, AttributeColumn[] columnsToCopy) {
-        Attributes row = node.getNodeData().getAttributes();
-        Attributes[] otherRows = new Attributes[otherNodes.length];
-        for (int i = 0; i < otherNodes.length; i++) {
-            otherRows[i] = otherNodes[i].getNodeData().getAttributes();
-        }
-
-        copyRowDataToOtherRows(row, otherRows, columnsToCopy);
+    public void copyNodeDataToOtherNodes(Node node, Node[] otherNodes, Column[] columnsToCopy) {
+        copyRowDataToOtherRows(node, otherNodes, columnsToCopy);
     }
 
-    public void copyEdgeDataToOtherEdges(Edge edge, Edge[] otherEdges, AttributeColumn[] columnsToCopy) {
-        Attributes row = edge.getEdgeData().getAttributes();
-        Attributes[] otherRows = new Attributes[otherEdges.length];
-        for (int i = 0; i < otherEdges.length; i++) {
-            otherRows[i] = otherEdges[i].getEdgeData().getAttributes();
-        }
-
-        copyRowDataToOtherRows(row, otherRows, columnsToCopy);
+    public void copyEdgeDataToOtherEdges(Edge edge, Edge[] otherEdges, Column[] columnsToCopy) {
+        copyRowDataToOtherRows(edge, otherEdges, columnsToCopy);
     }
 
-    public void copyRowDataToOtherRows(Attributes row, Attributes[] otherRows, AttributeColumn[] columnsToCopy) {
-        AttributeRow attributeRow = (AttributeRow) row;
+    public void copyRowDataToOtherRows(Element row, Element[] otherRows, Column[] columnsToCopy) {
         if (columnsToCopy != null) {
-            for (AttributeColumn column : columnsToCopy) {
+            for (Column column : columnsToCopy) {
                 //Copy all except id and computed attributes:
                 if (canChangeColumnData(column)) {
-                    for (Attributes otherRow : otherRows) {
-                        otherRow.setValue(column.getIndex(), row.getValue(column.getIndex()));
+                    for (Element otherRow : otherRows) {
+                        otherRow.setAttribute(column, row.getAttribute(column));
                     }
                 }
             }
         } else {
-            AttributeColumn column;
-            AttributeValue[] values = attributeRow.getValues();
-            for (int i = 0; i < values.length; i++) {
-                column = values[i].getColumn();
-                //Copy all except id and computed attributes:
-                if (canChangeColumnData(column)) {
-                    for (Attributes otherRow : otherRows) {
-                        otherRow.setValue(column.getIndex(), row.getValue(column.getIndex()));
+            Table table;
+            if(row instanceof Node){
+                table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+            }else{
+                table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+            }
+            
+            for (Column column : table) {
+                if(canChangeColumnData(column)){
+                    for (Element otherRow : otherRows) {
+                        otherRow.setAttribute(column, null);
                     }
                 }
             }
         }
     }
 
-    public Attributes[] getTableAttributeRows(AttributeTable table) {
-        Attributes[] attributes;
+    public Element[] getTableAttributeRows(Table table) {
         if (isNodeTable(table)) {
-            Node[] nodes = getNodesArray();
-            attributes = new Attributes[nodes.length];
-            for (int i = 0; i < nodes.length; i++) {
-                attributes[i] = nodes[i].getNodeData().getAttributes();
-            }
+            return getNodesArray();
         } else {
-            Edge[] edges = getEdgesArray();
-            attributes = new Attributes[edges.length];
-            for (int i = 0; i < edges.length; i++) {
-                attributes[i] = edges[i].getEdgeData().getAttributes();
-            }
+            return getEdgesArray();
         }
-        return attributes;
     }
 
-    public int getTableRowsCount(AttributeTable table) {
+    public int getTableRowsCount(Table table) {
         if (isNodeTable(table)) {
             return Lookup.getDefault().lookup(GraphElementsController.class).getNodesCount();
         } else {
@@ -438,105 +406,86 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
-    public boolean isNodeTable(AttributeTable table) {
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        return table == ac.getModel().getNodeTable();
+    public boolean isNodeTable(Table table) {
+        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+        return table == gc.getAttributeModel().getNodeTable();
     }
 
-    public boolean isEdgeTable(AttributeTable table) {
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        return table == ac.getModel().getEdgeTable();
+    public boolean isEdgeTable(Table table) {
+        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+        return table == gc.getAttributeModel().getEdgeTable();
     }
 
-    public boolean canDeleteColumn(AttributeColumn column) {
-        return column.getOrigin() != AttributeOrigin.PROPERTY;
+    public boolean canDeleteColumn(Column column) {
+        return column.getOrigin() != Origin.PROPERTY;
     }
-
-    public boolean canChangeColumnData(AttributeColumn column) {
-        AttributeUtils au = Lookup.getDefault().lookup(AttributeUtils.class);
-        if (au.isNodeColumn(column)) {
-            return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.NODE_ID.getIndex();
-        } else if (au.isEdgeColumn(column)) {
-            return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.EDGE_ID.getIndex();
-        } else {
-            return canChangeGenericColumnData(column);
+    
+    public boolean isTableColumn(Table table, Column column){
+        for (Column c : table) {
+            if(c == column){
+                return true;
+            }
         }
+        
+        return false;
+    }
+    
+    public boolean isNodeColumn(Column column){
+        return isTableColumn(Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable(), column);
+    }
+    
+    public boolean isEdgeColumn(Column column){
+        return isTableColumn(Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable(), column);
     }
 
-    public boolean canClearColumnData(AttributeColumn column) {
-        AttributeUtils au = Lookup.getDefault().lookup(AttributeUtils.class);
-        if (au.isNodeColumn(column)) {
-            return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.NODE_ID.getIndex();
-        } else if (au.isEdgeColumn(column)) {
-            return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.EDGE_ID.getIndex() && column.getIndex() != PropertiesColumn.EDGE_WEIGHT.getIndex();
-        } else {
-            return canChangeGenericColumnData(column);
-        }
+    public boolean canChangeColumnData(Column column) {
+        return true;
     }
 
-    public boolean canConvertColumnToDynamic(AttributeColumn column) {
-        if(column.getType().isDynamicType()){
+    public boolean canClearColumnData(Column column) {
+        return true;
+    }
+
+    public boolean canConvertColumnToDynamic(Column column) {
+        if(AttributeUtils.isDynamicType(column.getTypeClass())){
             return false;
         }
         
-        AttributeUtils au = Lookup.getDefault().lookup(AttributeUtils.class);
-        if (au.isNodeColumn(column)) {
-            return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.NODE_ID.getIndex() && column.getIndex() != PropertiesColumn.NODE_LABEL.getIndex();
-        } else if (au.isEdgeColumn(column)) {
-            return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.EDGE_ID.getIndex() && column.getIndex() != PropertiesColumn.EDGE_LABEL.getIndex();
+        if (isNodeColumn(column) || isEdgeColumn(column)) {
+            return !GraphStoreConfiguration.ENABLE_ELEMENT_LABEL || column.getIndex() != GraphStoreConfiguration.ELEMENT_LABEL_INDEX;
         } else {
             return true;
         }
     }
 
-    public BigDecimal[] getNumberOrNumberListColumnStatistics(AttributeTable table, AttributeColumn column) {
+    public BigDecimal[] getNumberOrNumberListColumnStatistics(Table table, Column column) {
         return StatisticsUtils.getAllStatistics(getColumnNumbers(table, column));
     }
 
-    public Number[] getColumnNumbers(AttributeTable table, AttributeColumn column) {
+    public Number[] getColumnNumbers(Table table, Column column) {
         return getRowsColumnNumbers(getTableAttributeRows(table), column);
     }
 
-    public Number[] getRowsColumnNumbers(Attributes[] rows, AttributeColumn column) {
-        AttributeUtils attributeUtils = AttributeUtils.getDefault();
-        if (!attributeUtils.isNumberOrNumberListColumn(column)) {
-            throw new IllegalArgumentException("The column has to be a number or number list column");
+    public Number[] getRowsColumnNumbers(Element[] rows, Column column) {
+        Class type = column.getTypeClass();
+        if(!AttributeUtils.isNumberType(type)){
+            throw new IllegalArgumentException("The column has to be a number column");
         }
 
         ArrayList<Number> numbers = new ArrayList<Number>();
-        final int columnIndex = column.getIndex();
         Number number;
-        if (attributeUtils.isNumberColumn(column)) {//Number column
-            for (Attributes row : rows) {
-                number = (Number) row.getValue(columnIndex);
-                if (number != null) {
-                    numbers.add(number);
+        for (Element row : rows) {
+            if (!AttributeUtils.isDynamicType(type)) {
+                if(Number[].class.isAssignableFrom(type)){
+                    numbers.addAll(Arrays.asList((Number[]) row.getAttribute(column)));
+                }else{
+                    //Single number column:
+                    number = (Number) row.getAttribute(column);
+                    if (number != null) {
+                        numbers.add(number);
+                    }
                 }
-            }
-        } else {//Number list column
-            for (Attributes row : rows) {
-                numbers.addAll(getNumberListColumnNumbers(row, column));
-            }
-        }
-
-        return numbers.toArray(new Number[0]);
-    }
-
-    public Number[] getRowNumbers(Attributes row, AttributeColumn[] columns) {
-        AttributeUtils attributeUtils = AttributeUtils.getDefault();
-        checkColumnsAreNumberOrNumberList(columns);
-
-        ArrayList<Number> numbers = new ArrayList<Number>();
-        Number number;
-        for (AttributeColumn column : columns) {
-            if (attributeUtils.isNumberColumn(column)) {//Single number column:
-                number = (Number) row.getValue(column.getIndex());
-                if (number != null) {
-                    numbers.add(number);
-                }
-            } else if (attributeUtils.isNumberListColumn(column)) {//Number list column:
-                numbers.addAll(getNumberListColumnNumbers(row, column));
-            } else if (attributeUtils.isDynamicNumberColumn(column)) {//Dynamic number column
+            } else {
                 numbers.addAll(getDynamicNumberColumnNumbers(row, column));
             }
         }
@@ -544,7 +493,34 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         return numbers.toArray(new Number[0]);
     }
 
-    public void importCSVToNodesTable(File file, Character separator, Charset charset, String[] columnNames, AttributeType[] columnTypes, boolean assignNewNodeIds) {
+    public Number[] getRowNumbers(Element row, Column[] columns) {
+        ArrayList<Number> numbers = new ArrayList<Number>();
+        Number number;
+        for (Column column : columns) {
+            Class type = column.getTypeClass();
+            if(!AttributeUtils.isNumberType(type)){
+                throw new IllegalArgumentException("The column has to be a number column");
+            }
+            
+            if (!AttributeUtils.isDynamicType(type)) {
+                if(Number[].class.isAssignableFrom(type)){
+                    numbers.addAll(Arrays.asList((Number[]) row.getAttribute(column)));
+                }else{
+                    //Single number column:
+                    number = (Number) row.getAttribute(column);
+                    if (number != null) {
+                        numbers.add(number);
+                    }
+                }
+            } else {
+                numbers.addAll(getDynamicNumberColumnNumbers(row, column));
+            }
+        }
+
+        return numbers.toArray(new Number[0]);
+    }
+
+    public void importCSVToNodesTable(File file, Character separator, Charset charset, String[] columnNames, Class[] columnTypes, boolean assignNewNodeIds) {
         if (columnNames == null || columnNames.length == 0) {
             return;
         }
@@ -556,10 +532,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         CsvReader reader = null;
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
-            AttributeTable nodesTable = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
+            Table nodesTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
             String idColumn = null;
-            ArrayList<AttributeColumn> columnsList = new ArrayList<AttributeColumn>();
-            HashMap<AttributeColumn, String> columnHeaders = new HashMap<AttributeColumn, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
+            ArrayList<Column> columnsList = new ArrayList<Column>();
+            HashMap<Column, String> columnHeaders = new HashMap<Column, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
             for (int i = 0; i < columnNames.length; i++) {
                 //Separate first id column found from the list to use as id. If more are found later, the will not be in the list and be ignored.
                 if (columnNames[i].equalsIgnoreCase("id")) {
@@ -567,11 +543,11 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                         idColumn = columnNames[i];
                     }
                 } else if (nodesTable.hasColumn(columnNames[i])) {
-                    AttributeColumn column = nodesTable.getColumn(columnNames[i]);
+                    Column column = nodesTable.getColumn(columnNames[i]);
                     columnsList.add(column);
                     columnHeaders.put(column, columnNames[i]);
                 } else {
-                    AttributeColumn column = addAttributeColumn(nodesTable, columnNames[i], columnTypes[i]);
+                    Column column = addAttributeColumn(nodesTable, columnNames[i], columnTypes[i]);
                     if (column != null) {
                         columnsList.add(column);
                         columnHeaders.put(column, columnNames[i]);
@@ -581,10 +557,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
             //Create nodes:
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-            Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+            Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
             String id = null;
             Node node;
-            Attributes nodeAttributes;
             reader = new CsvReader(new FileInputStream(file), separator, charset);
             reader.setTrimWhitespace(false);
             reader.readHeaders();
@@ -610,9 +585,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     node = gec.createNode(null);
                 }
                 //Assign attributes to the current node:
-                nodeAttributes = node.getNodeData().getAttributes();
-                for (AttributeColumn column : columnsList) {
-                    setAttributeValue(reader.get(columnHeaders.get(column)), nodeAttributes, column);
+                for (Column column : columnsList) {
+                    setAttributeValue(reader.get(columnHeaders.get(column)), node, column);
                 }
             }
         } catch (FileNotFoundException ex) {
@@ -620,11 +594,13 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
-            reader.close();
+            if(reader != null){
+                reader.close();
+            }
         }
     }
 
-    public void importCSVToEdgesTable(File file, Character separator, Charset charset, String[] columnNames, AttributeType[] columnTypes, boolean createNewNodes) {
+    public void importCSVToEdgesTable(File file, Character separator, Charset charset, String[] columnNames, Class[] columnTypes, boolean createNewNodes) {
         if (columnNames == null || columnNames.length == 0) {
             return;
         }
@@ -636,13 +612,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         CsvReader reader = null;
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
-            AttributeTable edgesTable = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
+            Table edgesTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
             String idColumn = null;
             String sourceColumn = null;
             String targetColumn = null;
             String typeColumn = null;
-            ArrayList<AttributeColumn> columnsList = new ArrayList<AttributeColumn>();
-            HashMap<AttributeColumn, String> columnHeaders = new HashMap<AttributeColumn, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
+            String weightColumn = null;
+            ArrayList<Column> columnsList = new ArrayList<Column>();
+            HashMap<Column, String> columnHeaders = new HashMap<Column, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
             for (int i = 0; i < columnNames.length; i++) {
                 //Separate first id column found from the list to use as id. If more are found later, the will not be in the list and be ignored.
                 if (columnNames[i].equalsIgnoreCase("id")) {
@@ -655,12 +632,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     targetColumn = columnNames[i];
                 } else if (columnNames[i].equalsIgnoreCase("type") && typeColumn == null) {//Separate first type column found from the list to use as edge type (directed/undirected)
                     typeColumn = columnNames[i];
+                } else if (columnNames[i].equalsIgnoreCase("weight") && weightColumn == null) {//Separate first weight column found from the list to use as edge weight
+                    weightColumn = columnNames[i];
                 } else if (edgesTable.hasColumn(columnNames[i])) {
-                    AttributeColumn column = edgesTable.getColumn(columnNames[i]);
+                    Column column = edgesTable.getColumn(columnNames[i]);
                     columnsList.add(column);
                     columnHeaders.put(column, columnNames[i]);
                 } else {
-                    AttributeColumn column = addAttributeColumn(edgesTable, columnNames[i], columnTypes[i]);
+                    Column column = addAttributeColumn(edgesTable, columnNames[i], columnTypes[i]);
                     if (column != null) {
                         columnsList.add(column);
                         columnHeaders.put(column, columnNames[i]);
@@ -670,14 +649,13 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
             //Create edges:
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-            Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+            Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
             String id = null;
             Edge edge;
             String sourceId, targetId;
             Node source, target;
             String type;
             boolean directed;
-            Attributes edgeAttributes;
             reader = new CsvReader(new FileInputStream(file), separator, charset);
             reader.setTrimWhitespace(false);
             reader.readHeaders();
@@ -746,9 +724,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
                 if (edge != null) {//Edge could be created because it does not already exist:
                     //Assign attributes to the current edge:
-                    edgeAttributes = edge.getEdgeData().getAttributes();
-                    for (AttributeColumn column : columnsList) {
-                        setAttributeValue(reader.get(columnHeaders.get(column)), edgeAttributes, column);
+                    for (Column column : columnsList) {
+                        setAttributeValue(reader.get(columnHeaders.get(column)), edge, column);
                     }
                 } else {
                     //Do not ignore repeated edge, instead increase edge weight
@@ -762,18 +739,18 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     }
                     if (edge != null) {
                         //Increase edge weight with specified weight (if specified), else increase by 1:
-                        String weight = reader.get(columnHeaders.get(edgesTable.getColumn(PropertiesColumn.EDGE_WEIGHT.getIndex())));
+                        String weight = reader.get(weightColumn);
                         if (weight != null) {
                             try {
                                 Float weightFloat = Float.parseFloat(weight);
-                                edge.getEdgeData().getAttributes().setValue(PropertiesColumn.EDGE_WEIGHT.getIndex(), edge.getWeight() + weightFloat);
+                                edge.setWeight(weightFloat);
                             } catch (NumberFormatException numberFormatException) {
                                 //Not valid weight, add 1
-                                edge.getEdgeData().getAttributes().setValue(PropertiesColumn.EDGE_WEIGHT.getIndex(), edge.getWeight() + 1);
+                                edge.setWeight(edge.getWeight() + 1);
                             }
                         } else {
                             //Add 1 (weight not specified)
-                            edge.getEdgeData().getAttributes().setValue(PropertiesColumn.EDGE_WEIGHT.getIndex(), edge.getWeight() + 1);
+                            edge.setWeight(edge.getWeight() + 1);
                         }
                     }
                 }
@@ -783,13 +760,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
-            reader.close();
+            if(reader != null){
+                reader.close();
+            }
         }
     }
 
-    public void mergeRowsValues(AttributeTable table, AttributeRowsMergeStrategy[] mergeStrategies, Attributes[] rows, Attributes selectedRow, Attributes resultRow) {
-        AttributeColumn[] columns = table.getColumns();
-        if (columns.length != mergeStrategies.length) {
+    public void mergeRowsValues(Table table, AttributeRowsMergeStrategy[] mergeStrategies, Element[] rows, Element selectedRow, Element resultRow) {
+        if (table.countColumns() != mergeStrategies.length) {
             throw new IllegalArgumentException("The number of columns must be equal to the number of merge strategies provided");
         }
         if (selectedRow == null) {
@@ -798,32 +776,35 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
         AttributeRowsMergeStrategy mergeStrategy;
         Object value;
-        for (int i = 0; i < columns.length; i++) {
+        
+        int i = 0;
+        for (Column column : table) {
             mergeStrategy = mergeStrategies[i];
             if (mergeStrategy != null) {
-                mergeStrategy.setup(rows, selectedRow, columns[i]);
+                mergeStrategy.setup(rows, selectedRow, column);
                 if (mergeStrategy.canExecute()) {
                     mergeStrategy.execute();
                     value = mergeStrategy.getReducedValue();
                 } else {
-                    value = selectedRow.getValue(columns[i].getIndex());
+                    value = selectedRow.getAttribute(column);
                 }
             } else {
-                value = selectedRow.getValue(columns[i].getIndex());
+                value = selectedRow.getAttribute(column);
             }
-            setAttributeValue(value, resultRow, columns[i]);
+            setAttributeValue(value, resultRow, column);
+            
+            i++;
         }
     }
 
-    public List<List<Node>> detectNodeDuplicatesByColumn(AttributeColumn column, boolean caseSensitive) {
+    public List<List<Node>> detectNodeDuplicatesByColumn(Column column, boolean caseSensitive) {
         final HashMap<String, List<Node>> valuesMap = new HashMap<String, List<Node>>();
-        final int columnIndex = column.getIndex();
 
-        Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+        Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
         Object value;
         String strValue;
         for (Node node : graph.getNodes().toArray()) {
-            value = node.getNodeData().getAttributes().getValue(columnIndex);
+            value = node.getAttribute(column);
             if (value != null) {
                 strValue = value.toString();
                 if (!caseSensitive) {
@@ -857,7 +838,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
      * @return Array with all graph nodes
      */
     private Node[] getNodesArray() {
-        return Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph().getNodesTree().toArray();
+        return Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph().getNodes().toArray();
     }
 
     /**
@@ -866,30 +847,31 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
      * @return Array with all graph edges
      */
     private Edge[] getEdgesArray() {
-        return Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph().getEdges().toArray();
+        return Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph().getEdges().toArray();
     }
 
     /**
      * Only checks that a column is not
      * <code>COMPUTED</code> or
      * <code>DELEGATE</code>
+     * @deprecated COMPUTED and DELEGATE no longer exist
      */
-    private boolean canChangeGenericColumnData(AttributeColumn column) {
-        return column.getOrigin() != AttributeOrigin.COMPUTED && column.getOrigin() != AttributeOrigin.DELEGATE;
+    private boolean canChangeGenericColumnData(Column column) {
+        return true;
     }
 
     /**
      * Used to negate the values of a single boolean column.
      */
-    private void negateColumnBooleanType(AttributeTable table, AttributeColumn column) {
+    private void negateColumnBooleanType(Table table, Column column) {
         final int columnIndex = column.getIndex();
         Object value;
         Boolean newValue;
-        for (Attributes row : getTableAttributeRows(table)) {
-            value = row.getValue(columnIndex);
+        for (Element row : getTableAttributeRows(table)) {
+            value = row.getAttribute(column);
             if (value != null) {
                 newValue = !((Boolean) value);
-                row.setValue(columnIndex, newValue);
+                row.setAttribute(column, newValue);
             }
         }
     }
@@ -897,74 +879,38 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     /**
      * Used to negate all values of a list of boolean values column.
      */
-    private void negateColumnListBooleanType(AttributeTable table, AttributeColumn column) {
-        final int columnIndex = column.getIndex();
+    private void negateColumnListBooleanType(Table table, Column column) {
         Object value;
-        BooleanList list;
         Boolean[] newValues;
-        for (Attributes row : getTableAttributeRows(table)) {
-            value = row.getValue(columnIndex);
+        for (Element row : getTableAttributeRows(table)) {
+            value = row.getAttribute(column);
             if (value != null) {
-                list = (BooleanList) value;
-                newValues = new Boolean[list.size()];
-                for (int i = 0; i < list.size(); i++) {
-                    newValues[i] = !list.getItem(i);
+                Boolean[] list = (Boolean[]) value;
+                newValues = new Boolean[list.length];
+                for (int i = 0; i < list.length; i++) {
+                    newValues[i] = !list[i];
                 }
-                row.setValue(columnIndex, new BooleanList(newValues));
+                row.setAttribute(column, newValues);
             }
         }
-    }
-
-    /**
-     * Used for obtaining a list of the numbers of row of a number list column.
-     */
-    private ArrayList<Number> getNumberListColumnNumbers(Attributes row, AttributeColumn column) {
-        if (!AttributeUtils.getDefault().isNumberListColumn(column)) {
-            throw new IllegalArgumentException("Column must be a number list column");
-        }
-
-        ArrayList<Number> numbers = new ArrayList<Number>();
-        NumberList list = (NumberList) row.getValue(column.getIndex());
-        if (list == null) {
-            return numbers;
-        }
-        Number n;
-        for (int i = 0; i < list.size(); i++) {
-            n = (Number) list.getItem(i);
-            if (n != null) {
-                numbers.add((Number) n);
-            }
-        }
-        return numbers;
     }
 
     /**
      * Used for obtaining a list of the numbers of row of a dynamic number column.
      */
-    private ArrayList<Number> getDynamicNumberColumnNumbers(Attributes row, AttributeColumn column) {
-        if (!AttributeUtils.getDefault().isDynamicNumberColumn(column)) {
+    private List<Number> getDynamicNumberColumnNumbers(Element row, Column column) {
+        Class type = column.getTypeClass();
+        if (!(AttributeUtils.isNumberType(type) && AttributeUtils.isDynamicType(type))) {
             throw new IllegalArgumentException("Column must be a dynamic number column");
         }
         ArrayList<Number> numbers = new ArrayList<Number>();
-        DynamicType dynamicList = (DynamicType) row.getValue(column.getIndex());
+        TimestampValueSet dynamicList = (TimestampValueSet) row.getAttribute(column);
         if (dynamicList == null) {
             return numbers;
         }
         Number[] dynamicNumbers;
-        dynamicNumbers = (Number[]) dynamicList.getValues().toArray(new Number[0]);
+        dynamicNumbers = (Number[]) dynamicList.toArray();
         Number n;
-        for (int i = 0; i < dynamicNumbers.length; i++) {
-            n = (Number) dynamicNumbers[i];
-            if (n != null) {
-                numbers.add((Number) n);
-            }
-        }
-        return numbers;
-    }
-
-    private void checkColumnsAreNumberOrNumberList(AttributeColumn[] columns) {
-        if (columns == null || (!AttributeUtils.getDefault().areAllNumberOrNumberListColumns(columns) && !AttributeUtils.getDefault().areAllDynamicNumberColumns(columns))) {
-            throw new IllegalArgumentException("All columns have to be number or number list columns and can't be null");
-        }
+        return Arrays.asList(dynamicNumbers);
     }
 }

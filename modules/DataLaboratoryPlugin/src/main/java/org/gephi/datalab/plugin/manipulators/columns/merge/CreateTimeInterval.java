@@ -43,8 +43,8 @@ package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 import java.text.SimpleDateFormat;
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.datalab.plugin.manipulators.columns.merge.ui.CreateTimeIntervalUI;
 import org.gephi.datalab.spi.ManipulatorUI;
@@ -60,9 +60,9 @@ import org.openide.util.NbBundle;
  */
 public class CreateTimeInterval implements AttributeColumnsMergeStrategy {
 
-    private AttributeTable table;
-    private AttributeColumn[] columns;
-    private AttributeColumn startColumn, endColumn;
+    private Table table;
+    private Column[] columns;
+    private Column startColumn, endColumn;
     private boolean parseNumbers=true;
     //Number mode:
     private double startNumber, endNumber;
@@ -70,7 +70,7 @@ public class CreateTimeInterval implements AttributeColumnsMergeStrategy {
     private SimpleDateFormat dateFormat;
     private String startDate, endDate;
 
-    public void setup(AttributeTable table, AttributeColumn[] columns) {
+    public void setup(Table table, Column[] columns) {
         this.table = table;
         this.columns = columns;
     }
@@ -112,7 +112,7 @@ public class CreateTimeInterval implements AttributeColumnsMergeStrategy {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/clock-select.png", true);
     }
 
-    public AttributeColumn[] getColumns() {
+    public Column[] getColumns() {
         return columns;
     }
 
@@ -124,11 +124,11 @@ public class CreateTimeInterval implements AttributeColumnsMergeStrategy {
         this.dateFormat = dateFormat;
     }
 
-    public AttributeColumn getEndColumn() {
+    public Column getEndColumn() {
         return endColumn;
     }
 
-    public void setEndColumn(AttributeColumn endColumn) {
+    public void setEndColumn(Column endColumn) {
         this.endColumn = endColumn;
     }
 
@@ -156,11 +156,11 @@ public class CreateTimeInterval implements AttributeColumnsMergeStrategy {
         this.parseNumbers = parseNumbers;
     }
 
-    public AttributeColumn getStartColumn() {
+    public Column getStartColumn() {
         return startColumn;
     }
 
-    public void setStartColumn(AttributeColumn startColumn) {
+    public void setStartColumn(Column startColumn) {
         this.startColumn = startColumn;
     }
 

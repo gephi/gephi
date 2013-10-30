@@ -42,9 +42,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.datalab.plugin.manipulators.columns.merge.ui.GeneralColumnTitleChooserUI;
 import org.gephi.datalab.spi.ManipulatorUI;
@@ -60,11 +60,11 @@ import org.openide.util.NbBundle;
  */
 public class MaximumNumber implements AttributeColumnsMergeStrategy, GeneralColumnTitleChooser {
 
-    private AttributeTable table;
-    private AttributeColumn[] columns;
+    private Table table;
+    private Column[] columns;
     private String columnTitle;
 
-    public void setup(AttributeTable table, AttributeColumn[] columns) {
+    public void setup(Table table, Column[] columns) {
         this.table = table;
         this.columns = columns;
     }
@@ -82,7 +82,12 @@ public class MaximumNumber implements AttributeColumnsMergeStrategy, GeneralColu
     }
 
     public boolean canExecute() {
-        return AttributeUtils.getDefault().areAllNumberOrNumberListColumns(columns);
+        for (Column column : columns) {
+            if(!AttributeUtils.isNumberType(column.getTypeClass())){
+                return false;
+            }
+        }
+        return true;
     }
 
     public ManipulatorUI getUI() {
@@ -101,7 +106,7 @@ public class MaximumNumber implements AttributeColumnsMergeStrategy, GeneralColu
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/plus-white.png", true);
     }
 
-    public AttributeTable getTable() {
+    public Table getTable() {
         return table;
     }
 

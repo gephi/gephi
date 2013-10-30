@@ -44,7 +44,7 @@ package org.gephi.desktop.datalab;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.attribute.api.Column;
 
 /**
  * Class to keep available state (in data laboratory) of the columns of a table of a workspace.
@@ -54,9 +54,9 @@ import org.gephi.data.attributes.api.AttributeColumn;
 public class AvailableColumnsModel {
 
     private static final int MAX_AVAILABLE_COLUMNS = 20;
-    private ArrayList<AttributeColumn> availableColumns = new ArrayList<AttributeColumn>();
+    private ArrayList<Column> availableColumns = new ArrayList<Column>();
 
-    public boolean isColumnAvailable(AttributeColumn column) {
+    public boolean isColumnAvailable(Column column) {
         return availableColumns.contains(column);
     }
 
@@ -65,7 +65,7 @@ public class AvailableColumnsModel {
      * @param column Column to add
      * @return True if the column was successfully added, false otherwise (no more columns can be available)
      */
-    public boolean addAvailableColumn(AttributeColumn column) {
+    public boolean addAvailableColumn(Column column) {
         if (canAddAvailableColumn()) {
             if (!availableColumns.contains(column)) {
                 availableColumns.add(column);
@@ -81,7 +81,7 @@ public class AvailableColumnsModel {
      * @param column Column to make not available
      * @return True if the column could be removed
      */
-    public boolean removeAvailableColumn(AttributeColumn column) {
+    public boolean removeAvailableColumn(Column column) {
         return availableColumns.remove(column);
     }
 
@@ -104,14 +104,14 @@ public class AvailableColumnsModel {
      * Return available columns, sorted by index
      * @return 
      */
-    public AttributeColumn[] getAvailableColumns() {
-        Collections.sort(availableColumns, new Comparator<AttributeColumn>() {
+    public Column[] getAvailableColumns() {
+        Collections.sort(availableColumns, new Comparator<Column>() {
 
-            public int compare(AttributeColumn o1, AttributeColumn o2) {
+            public int compare(Column o1, Column o2) {
                 return o1.getIndex() - o2.getIndex();
             }
         });
-        return availableColumns.toArray(new AttributeColumn[0]);
+        return availableColumns.toArray(new Column[0]);
     }
 
     public int getAvailableColumnsCount() {

@@ -42,9 +42,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralNumberListStatisticsReportUI;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
@@ -60,7 +60,7 @@ import org.openide.util.NbBundle;
 //@ServiceProvider(service = AttributeColumnsManipulator.class)
 public class NumberColumnStatisticsReport implements AttributeColumnsManipulator {
 
-    public void execute(AttributeTable table, AttributeColumn column) {
+    public void execute(Table table, Column column) {
     }
 
     public String getName() {
@@ -71,12 +71,12 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         return getMessage("NumberColumnStatisticsReport.description");
     }
 
-    public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
+    public boolean canManipulateColumn(Table table, Column column) {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        return AttributeUtils.getDefault().isNumberOrNumberListColumn(column) && ac.getTableRowsCount(table) > 0;//Make sure it is a number/number list column and there is at least 1 row
+        return AttributeUtils.isNumberType(column.getTypeClass()) && ac.getTableRowsCount(table) > 0;//Make sure it is a number/number list column and there is at least 1 row
     }
 
-    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
+    public AttributeColumnsManipulatorUI getUI(Table table,Column column) {
         return new GeneralNumberListStatisticsReportUI(getColumnNumbers(table, column), column.getTitle(), getName());
     }
 
@@ -92,7 +92,7 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/statistics.png");
     }
 
-    public Number[] getColumnNumbers(final AttributeTable table, final AttributeColumn column) {
+    public Number[] getColumnNumbers(final Table table, final Column column) {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Number[] columnNumbers = ac.getColumnNumbers(table, column);
         return columnNumbers;

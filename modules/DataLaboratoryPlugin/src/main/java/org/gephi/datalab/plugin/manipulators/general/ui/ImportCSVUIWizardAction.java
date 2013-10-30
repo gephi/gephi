@@ -47,7 +47,6 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import javax.swing.JComponent;
-import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.openide.DialogDisplayer;
@@ -90,7 +89,7 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
             Character separator = (Character) wizardDescriptor.getProperty("separator");
             Charset charset = (Charset) wizardDescriptor.getProperty("charset");
             String[] columnNames = (String[]) wizardDescriptor.getProperty("columns-names");
-            AttributeType[] columnTypes = (AttributeType[]) wizardDescriptor.getProperty("columns-types");
+            Class[] columnTypes = (Class[]) wizardDescriptor.getProperty("columns-types");
 
             //Nodes import parameters:
             Boolean assignNewNodeIds = (Boolean) wizardDescriptor.getProperty("assign-new-node-ids");

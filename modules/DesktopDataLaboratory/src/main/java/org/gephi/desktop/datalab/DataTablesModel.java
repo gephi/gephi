@@ -41,13 +41,11 @@
  */
 package org.gephi.desktop.datalab;
 
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeEvent;
-import org.gephi.data.attributes.api.AttributeListener;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.datatables.DataTablesController;
+import org.gephi.graph.api.GraphController;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
@@ -55,7 +53,7 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class DataTablesModel implements AttributeListener {
+public class DataTablesModel /*implements AttributeListener*/ {
 
     private AvailableColumnsModel nodeAvailableColumnsModel;
     private AvailableColumnsModel edgeAvailableColumnsModel;
@@ -65,19 +63,19 @@ public class DataTablesModel implements AttributeListener {
         nodeAvailableColumnsModel = new AvailableColumnsModel();
         edgeAvailableColumnsModel = new AvailableColumnsModel();
 
-        attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel(workspace);
+        attributeModel = Lookup.getDefault().lookup(GraphController.class).getAttributeModel(workspace);
 
         //Try to make available all columns at start by default:
-        for (AttributeColumn column : attributeModel.getNodeTable().getColumns()) {
+        for (Column column : attributeModel.getNodeTable().getColumns()) {
             System.out.println("");
             nodeAvailableColumnsModel.addAvailableColumn(column);
         }
 
-        for (AttributeColumn column : attributeModel.getEdgeTable().getColumns()) {
+        for (Column column : attributeModel.getEdgeTable().getColumns()) {
             edgeAvailableColumnsModel.addAvailableColumn(column);
         }
 
-        attributeModel.addAttributeListener(this);
+//        attributeModel.addAttributeListener(this);
     }
 
     public AvailableColumnsModel getEdgeAvailableColumnsModel() {
@@ -88,7 +86,7 @@ public class DataTablesModel implements AttributeListener {
         return nodeAvailableColumnsModel;
     }
     
-    private AvailableColumnsModel getTableAvailableColumnsModel(AttributeTable table) {
+    private AvailableColumnsModel getTableAvailableColumnsModel(Table table) {
         if (attributeModel.getNodeTable() == table) {
             return nodeAvailableColumnsModel;
         } else if (attributeModel.getEdgeTable() == table) {
@@ -98,31 +96,31 @@ public class DataTablesModel implements AttributeListener {
         }
     }
 
-    public void attributesChanged(AttributeEvent event) {
-        AttributeTable table = event.getSource();
-        AvailableColumnsModel tableAvailableColumnsModel = getTableAvailableColumnsModel(table);
-        if (tableAvailableColumnsModel != null) {
-            switch (event.getEventType()) {
-                case ADD_COLUMN:
-                    for (AttributeColumn c : event.getData().getAddedColumns()) {
-                        if (!tableAvailableColumnsModel.addAvailableColumn(c)) {//Add as available by default. Will only be added if the max number of available columns is not surpassed
-                            break;
-                        }
-                    }
-                    break;
-                case REMOVE_COLUMN:
-                    for (AttributeColumn c : event.getData().getRemovedColumns()) {
-                        tableAvailableColumnsModel.removeAvailableColumn(c);
-                    }
-                    break;
-                case REPLACE_COLUMN:
-                    for (AttributeColumn c : event.getData().getRemovedColumns()) {
-                        tableAvailableColumnsModel.removeAvailableColumn(c);
-                        tableAvailableColumnsModel.addAvailableColumn(table.getColumn(c.getId()));
-                    }
-                    break;
-            }
-        }
-        Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
-    }
+//    public void attributesChanged(AttributeEvent event) {
+//        Table table = event.getSource();
+//        AvailableColumnsModel tableAvailableColumnsModel = getTableAvailableColumnsModel(table);
+//        if (tableAvailableColumnsModel != null) {
+//            switch (event.getEventType()) {
+//                case ADD_COLUMN:
+//                    for (Column c : event.getData().getAddedColumns()) {
+//                        if (!tableAvailableColumnsModel.addAvailableColumn(c)) {//Add as available by default. Will only be added if the max number of available columns is not surpassed
+//                            break;
+//                        }
+//                    }
+//                    break;
+//                case REMOVE_COLUMN:
+//                    for (Column c : event.getData().getRemovedColumns()) {
+//                        tableAvailableColumnsModel.removeAvailableColumn(c);
+//                    }
+//                    break;
+//                case REPLACE_COLUMN:
+//                    for (Column c : event.getData().getRemovedColumns()) {
+//                        tableAvailableColumnsModel.removeAvailableColumn(c);
+//                        tableAvailableColumnsModel.addAvailableColumn(table.getColumn(c.getId()));
+//                    }
+//                    break;
+//            }
+//        }
+//        Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
+//    }
 }

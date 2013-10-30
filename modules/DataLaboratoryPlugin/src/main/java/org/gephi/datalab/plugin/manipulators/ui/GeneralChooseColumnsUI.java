@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsChooser;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
@@ -87,18 +87,18 @@ public class GeneralChooseColumnsUI extends javax.swing.JPanel implements Manipu
         return true;
     }
 
-    public AttributeColumn[] getChosenColumns(){
-        ArrayList<AttributeColumn> columnsToClearDataList=new ArrayList<AttributeColumn>();
+    public Column[] getChosenColumns(){
+        ArrayList<Column> columnsToClearDataList=new ArrayList<Column>();
         for(ColumnCheckBox c:columnsCheckBoxes){
             if(c.isSelected()){
                 columnsToClearDataList.add(c.getColumn());
             }
         }
-        return columnsToClearDataList.toArray(new AttributeColumn[0]);
+        return columnsToClearDataList.toArray(new Column[0]);
     }
 
     private void refreshColumns() {
-        AttributeColumn[] columns=columnsChooser.getColumns();
+        Column[] columns=columnsChooser.getColumns();
         columnsCheckBoxes=new ColumnCheckBox[columns.length];
         contentPanel.removeAll();
         contentPanel.setLayout(new MigLayout("", "[pref!]"));
@@ -113,9 +113,9 @@ public class GeneralChooseColumnsUI extends javax.swing.JPanel implements Manipu
     private static class ColumnCheckBox {
 
         private JCheckBox checkBox;
-        private AttributeColumn column;
+        private Column column;
 
-        public ColumnCheckBox(AttributeColumn column, boolean selected) {
+        public ColumnCheckBox(Column column, boolean selected) {
             checkBox = new JCheckBox(column.getTitle(), selected);
             this.column = column;
         }
@@ -132,7 +132,7 @@ public class GeneralChooseColumnsUI extends javax.swing.JPanel implements Manipu
             return checkBox;
         }
 
-        public AttributeColumn getColumn() {
+        public Column getColumn() {
             return column;
         }
     }

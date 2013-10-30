@@ -41,8 +41,8 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.impl;
 
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Table;
+import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.api.datatables.DataTablesEventListener;
 import org.gephi.datalab.api.datatables.DataTablesEventListenerBuilder;
@@ -86,13 +86,12 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
     }
 
-    public void selectTable(AttributeTable table) {
+    public void selectTable(Table table) {
         if (listener != null) {
-            AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-            if (ac.getModel().getNodeTable() == table) {
-                selectNodesTable();
-            } else {
+            if (Lookup.getDefault().lookup(AttributeColumnsController.class).isEdgeTable(table)) {
                 selectEdgesTable();
+            } else {
+                selectNodesTable();
             }
         }
     }

@@ -41,7 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.api.datatables;
 
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Table;
 
 /**
  * <p>This interface defines part of the Data Laboratory API.</p>
@@ -56,7 +56,7 @@ public interface DataTablesController extends DataTablesCommonInterface {
      * Request the tables implementation to show the given table (nodes or edges table)
      * @param table Table to show
      */
-    void selectTable(AttributeTable table);
+    void selectTable(Table table);
 
     /**
      * Register a listener for these requests.

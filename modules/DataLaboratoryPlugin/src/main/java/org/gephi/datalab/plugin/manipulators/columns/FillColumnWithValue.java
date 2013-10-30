@@ -43,8 +43,8 @@ package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
 import javax.swing.JOptionPane;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
@@ -55,13 +55,13 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * AttributeColumnsManipulator that fills an AttributeColumn with the value that the user provides in the UI.
+ * AttributeColumnsManipulator that fills an Column with the value that the user provides in the UI.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
 public class FillColumnWithValue implements AttributeColumnsManipulator {
 
-    public void execute(AttributeTable table, AttributeColumn column) {
+    public void execute(Table table, Column column) {
         String value = JOptionPane.showInputDialog(null,NbBundle.getMessage(FillColumnWithValue.class, "FillColumnWithValue.inputDialog.text"),getName(),JOptionPane.QUESTION_MESSAGE);
         if (value != null) {
             Lookup.getDefault().lookup(AttributeColumnsController.class).fillColumnWithValue(table, column, value);
@@ -77,11 +77,11 @@ public class FillColumnWithValue implements AttributeColumnsManipulator {
         return "";
     }
 
-    public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
+    public boolean canManipulateColumn(Table table, Column column) {
         return Lookup.getDefault().lookup(AttributeColumnsController.class).canChangeColumnData(column);
     }
 
-    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
+    public AttributeColumnsManipulatorUI getUI(Table table,Column column) {
         return null;
     }
 

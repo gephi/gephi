@@ -71,7 +71,7 @@ public class LinkNodes extends BasicNodesManipulator {
         this.nodes = nodes;
         this.sourceNode = clickedNode;//Choose clicked node as source by default (but the user can select it or other one in the UI)
 
-        GraphModel currentGraphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        GraphModel currentGraphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         if (graphModel != currentGraphModel) {//If graph model has changed since last execution, change default mode for edges to create in UI, else keep this parameter across calls
             directed = currentGraphModel.isDirected() || currentGraphModel.isMixed();//Get graph directed state. Set to true if graph is directed or mixed
             graphModel = currentGraphModel;

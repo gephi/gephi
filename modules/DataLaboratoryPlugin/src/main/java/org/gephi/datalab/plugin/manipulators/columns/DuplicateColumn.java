@@ -42,9 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.columns.ui.DuplicateColumnUI;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
@@ -55,16 +54,16 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * AttributeColumnsManipulator that duplicate a AttributeColumn of a AttributeTable setting the same values for the rows.
+ * AttributeColumnsManipulator that duplicate a Column of a Table setting the same values for the rows.
  * Allows the user to select the title and AttributeType of the new column in the UI
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
 public class DuplicateColumn implements AttributeColumnsManipulator {
     private String title;
-    private AttributeType columnType;
+    private Class columnType;
 
-    public void execute(AttributeTable table, AttributeColumn column) {
+    public void execute(Table table, Column column) {
         Lookup.getDefault().lookup(AttributeColumnsController.class).duplicateColumn(table, column, title, columnType);
     }
 
@@ -76,11 +75,11 @@ public class DuplicateColumn implements AttributeColumnsManipulator {
         return "";
     }
 
-    public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
+    public boolean canManipulateColumn(Table table, Column column) {
         return true;
     }
 
-    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
+    public AttributeColumnsManipulatorUI getUI(Table table,Column column) {
         return new DuplicateColumnUI();
     }
 
@@ -104,11 +103,11 @@ public class DuplicateColumn implements AttributeColumnsManipulator {
         this.title = title;
     }
 
-    public AttributeType getColumnType() {
+    public Class getColumnType() {
         return columnType;
     }
 
-    public void setColumnType(AttributeType columnType) {
+    public void setColumnType(Class columnType) {
         this.columnType = columnType;
     }
 }

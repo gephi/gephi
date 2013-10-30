@@ -156,53 +156,6 @@ public interface GraphElementsController {
     void deleteEdgesWithNodes(Edge[] edges, boolean deleteSource, boolean deleteTarget);
 
     /**
-     * Groups an array of nodes if it is possible.
-     * @param nodes Array of nodes to group
-     * @return True if the nodes were succesfully grouped, false otherwise
-     */
-    boolean groupNodes(Node[] nodes);
-
-    /**
-     * Checks if an array of nodes can form a group.
-     * @param nodes Array of nodes to check
-     * @return True if the nodes can form a group, false otherwise
-     */
-    boolean canGroupNodes(Node[] nodes);
-
-    /**
-     * Ungroups a node if it forms a group.
-     * @param node Node to ungroup
-     * @return True if the node was succesfully ungrouped, false otherwise
-     */
-    boolean ungroupNode(Node node);
-
-    /**
-     * Tries to ungroup every node un the array of nodes checking first they form a group.
-     * @param nodes Array of nodes to ungroup
-     */
-    void ungroupNodes(Node[] nodes);
-
-    /**
-     * Ungroups a node if it forms a group and also ungroups all its descendant.
-     * @param node Node to ungroup recursively
-     * @return True if the node was succesfully ungrouped, false otherwise
-     */
-    boolean ungroupNodeRecursively(Node node);
-
-    /**
-     * Tries to ungroup every node un the array of nodes checking first they form a group.
-     * @param nodes Array of nodes to ungroup
-     */
-    void ungroupNodesRecursively(Node[] nodes);
-
-    /**
-     * Checks if the node can be ungrouped (it forms a group of nodes).
-     * @param node Node to check
-     * @return True if the node can be ungrouped, false otherwise
-     */
-    boolean canUngroupNode(Node node);
-
-    /**
      * Merges 2 or more nodes into a new one node that has all the edges of the merged nodes.
      * An AttributeRowsMergeStrategy must be provided for each column of the nodes.
      * @param nodes Nodes to merge (at least 1)
@@ -212,60 +165,6 @@ public interface GraphElementsController {
      * @return New resulting node
      */
     Node mergeNodes(Node[] nodes, Node selectedNode, AttributeRowsMergeStrategy[] mergeStrategies, boolean deleteMergedNodes);
-
-    /**
-     * Moves a node to a group of nodes if it is possible.
-     * To move a node to a group node, they must be different, have the same parent and the node to be the group has to be a group of nodes.
-     * @param node Node to move to group
-     * @param group Group of nodes to move the node
-     * @return True if the node was moved, false otherwise
-     */
-    boolean moveNodeToGroup(Node node, Node group);
-
-    /**
-     * Tries to move each node of the nodes array to the group node.
-     * @param nodes Array of nodes to move
-     * @param group Group node
-     */
-    void moveNodesToGroup(Node[] nodes, Node group);
-
-    /**
-     * <p>Prepares and returns an array with the groups that the given nodes can be moved to.</p>
-     * <p>These groups are the nodes that have the same parent as the given nodes and are not in the given nodes array.</p>
-     * @param nodes Nodes to get available groups to be moved
-     * @return Available groups array of null if the nodes don't all have the same parent
-     */
-    Node[] getAvailableGroupsToMoveNodes(Node[] nodes);
-
-    /**
-     * Indicates if a given node can be moved to a group node.
-     * To move a node to a group, they must have the same parent and the group node has to be a group of nodes.
-     * @param node Node to check if can be moved
-     * @param group Group node
-     * @return True if it can be moved, false otherwise
-     */
-    boolean canMoveNodeToGroup(Node node, Node group);
-
-    /**
-     * Removes a node from its group if the node is in a group (has a parent).
-     * Also breaks the group if the last node is removed.
-     * @param node Node to remove from its group
-     * @return True if the node was removed from a group, false otherwise
-     */
-    boolean removeNodeFromGroup(Node node);
-
-    /**
-     * Tries to remove every node in the array from its group checking first they are in a group.
-     * Also breaks groups when the last node is removed.
-     * @param nodes Arrays of nodes to remove from its group
-     */
-    void removeNodesFromGroup(Node[] nodes);
-
-    /**
-     * Checks if the node is in a group (has a parent).
-     * @return True if the node is in a group, false otherwise
-     */
-    boolean isNodeInGroup(Node node);
 
     /**
      * Sets the fixed state of a node to the indicated.

@@ -81,11 +81,11 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
             undirectedRadioButton.setSelected(true);
         }
         
-        graph = Lookup.getDefault().lookup(GraphController.class).getModel().getMixedGraph();
+        graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
         nodes = graph.getNodes().toArray();
         
         for (Node n : nodes) {
-            sourceNodesComboBox.addItem(n.getId() + " - " + n.getNodeData().getLabel());
+            sourceNodesComboBox.addItem(n.getId() + " - " + n.getLabel());
         }
         
         Node selectedSource = manipulator.getSource();
@@ -149,7 +149,7 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
             dialogControls.setOkButtonEnabled(!availableTargetNodes.isEmpty());
             targetNodesComboBox.removeAllItems();
             for (Node n : targetNodes) {
-                targetNodesComboBox.addItem(n.getId() + " - " + n.getNodeData().getLabel());
+                targetNodesComboBox.addItem(n.getId() + " - " + n.getLabel());
             }
         }
     }

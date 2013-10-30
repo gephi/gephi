@@ -43,8 +43,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.spi.columns;
 
 import javax.swing.JPanel;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.spi.DialogControls;
 
 /**
@@ -63,7 +63,7 @@ public interface AttributeColumnsManipulatorUI {
      * @param column Column to manipulate
      * @param dialogControls Used to enable/disable the dialog controls
      */
-    void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls);
+    void setup(AttributeColumnsManipulator m, Table table, Column column, DialogControls dialogControls);
 
     /**
      * Called when the window is closed or accepted.
