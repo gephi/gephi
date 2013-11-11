@@ -796,6 +796,9 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     private void initDisplayLists(GL gl, GLU glu) {
+        for(EmbeddedGraphic eg : egs)
+            eg.reinit();
+
         //Constants
         float blancCasse[] = {(float) 213 / 255, (float) 208 / 255, (float) 188 / 255, 1.0f};
         float noirCasse[] = {(float) 39 / 255, (float) 25 / 255, (float) 99 / 255, 1.0f};
