@@ -229,17 +229,29 @@ public class ForceAtlas2 implements Layout {
         }
         // We want that swingingMovement < tolerance * convergenceMovement
         // Optimize jitter tolerance
-        double estimatedOptimalJitterTolerance = 0.02 * Math.sqrt(nodes.length); // The 'right' jitter tolerance for this network. Bigger networks need more tolerance.
+        // The 'right' jitter tolerance for this network. Bigger networks need more tolerance. Denser networks need less tolerance. Totally empiric.
+        double estimatedOptimalJitterTolerance = 0.05 * Math.sqrt(nodes.length);
         double minJT = Math.sqrt(estimatedOptimalJitterTolerance);
         double maxJT = 10;
         double jt = jitterTolerance * Math.max(minJT, Math.min(maxJT, estimatedOptimalJitterTolerance * totalEffectiveTraction / Math.pow(nodes.length, 2)));
         
+        double minSpeedEfficiency = 0.05;
+        
+        // Protection against erratic behavior
+        if(totalSwinging / totalEffectiveTraction > 2.0){
+            System.out.println("protec");
+            if(speedEfficiency > minSpeedEfficiency)
+                speedEfficiency *= 0.5;
+            jt = Math.max(jt, jitterTolerance);
+        }
+        
+
         double targetSpeed = jt * speedEfficiency * totalEffectiveTraction / totalSwinging;
         
         // Speed efficiency is how the speed really corresponds to the swinging vs. convergence tradeoff
         // We adjust it slowly and carefully
         if(totalSwinging > jt * totalEffectiveTraction){
-          if(speedEfficiency > 0.01)
+          if(speedEfficiency > minSpeedEfficiency)
             speedEfficiency *= 0.7;
         } else {
           if(speed < 1000)
@@ -249,7 +261,9 @@ public class ForceAtlas2 implements Layout {
         // But the speed shoudn't rise too much too quickly, since it would make the convergence drop dramatically.
         double maxRise = 0.5;   // Max rise: 50%
         speed = speed + Math.min(targetSpeed - speed, maxRise * speed);
-
+        
+        System.out.println("speed " + ((Double)(Math.floor(1000*speed)/1000)).toString() + " sEff " + ((Double)(Math.floor(1000*speedEfficiency)/1000)).toString() + " jitter " + ((Double)(Math.floor(1000*jt)/1000)).toString() + " swing " + ((Double)(Math.floor(totalSwinging/nodes.length))).toString() + " conv " + ((Double)(Math.floor(totalEffectiveTraction/nodes.length))).toString() );
+        
         // Apply forces
         if (isAdjustSizes()) {
             // If nodes overlap prevention is active, it's not possible to trust the swinging mesure.
