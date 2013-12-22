@@ -82,21 +82,27 @@ public class GraphDensity implements Statistics {
 
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         HierarchicalGraph hgraph;
-
         if (isDirected) {
             hgraph = graphModel.getHierarchicalDirectedGraphVisible();
         } else {
             hgraph = graphModel.getHierarchicalUndirectedGraphVisible();
         }
+        
+        density = calculateDensity(hgraph, isDirected);
+    }
+    
+    public double calculateDensity(HierarchicalGraph hgraph, boolean isGraphDirected) {
+        double result;
 
         double edgesCount = hgraph.getTotalEdgeCount();
         double nodesCount = hgraph.getNodeCount();
         double multiplier = 1;
 
-        if (!isDirected) {
+        if (!isGraphDirected) {
             multiplier = 2;
         }
-        density = (multiplier * edgesCount) / (nodesCount * nodesCount - nodesCount);
+        result = (multiplier * edgesCount) / (nodesCount * nodesCount - nodesCount);
+        return result;
     }
 
     /**

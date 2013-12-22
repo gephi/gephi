@@ -117,119 +117,53 @@ public class Hits implements Statistics, LongTask {
         }
         execute(graph, attributeModel);
     }
+    
+   
 
     public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
-        hgraph.readLock();
+        
+        Map<String, AttributeColumn> attributeColumns = initializeAttributeColunms(attributeModel); 
+        
+        hgraph.readLock();       
+        
+        initializeStartValues(hgraph);
+        
+        calculateHits(hgraph, hubs, authority, hub_list, auth_list, indicies, !useUndirected, epsilon);
+        
+        saveCalculatedValues(hgraph, attributeColumns, indicies, authority, hubs);
 
+        hgraph.readUnlockAll();
+    }
+    
+    public void calculateHits(HierarchicalGraph hgraph, double[] hubValues, double[] authorityValues, 
+            LinkedList<Node> hubList, LinkedList<Node> authList, HashMap<Node, Integer> indicies, 
+            boolean isDirected, double eps) {
+        
         int N = hgraph.getNodeCount();
-        authority = new double[N];
-        hubs = new double[N];
+
         double[] temp_authority = new double[N];
         double[] temp_hubs = new double[N];
 
-        hub_list = new LinkedList<Node>();
-        auth_list = new LinkedList<Node>();
-
         Progress.start(progress);
-
-        indicies = new HashMap<Node, Integer>();
-        int index = 0;
-        for (Node node : hgraph.getNodes()) {
-            indicies.put(node, new Integer(index));
-            index++;
-
-            if (!useUndirected) {
-                if (((HierarchicalDirectedGraph) hgraph).getTotalOutDegree(node) > 0) {
-                    hub_list.add(node);
-                }
-                if (((HierarchicalDirectedGraph) hgraph).getTotalInDegree(node) > 0) {
-                    auth_list.add(node);
-                }
-            } else {
-                if (((HierarchicalUndirectedGraph) hgraph).getTotalDegree(node) > 0) {
-                    hub_list.add(node);
-                    auth_list.add(node);
-                }
-            }
-        }
-
-
-        for (Node node : hub_list) {
-            int n_index = indicies.get(node);
-            hubs[n_index] = 1.0f;
-        }
-        for (Node node : auth_list) {
-            int n_index = indicies.get(node);
-            authority[n_index] = 1.0f;
-        }
+       
+        formHubsAndAuthoritiesLists(hgraph, hubList, authList, indicies, isDirected); 
+        setInitialHubsAndAuthoritiesValues(hubList, authList, hubValues, authorityValues, indicies);
 
         while (true) {
 
             boolean done = true;
-            double auth_sum = 0;
-            for (Node node : auth_list) {
-
-                int n_index = indicies.get(node);
-                temp_authority[n_index] = authority[n_index];
-                EdgeIterable edge_iter;
-                if (!useUndirected) {
-                    edge_iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node);
-                } else {
-                    edge_iter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(node);
-                }
-                for (Edge edge : edge_iter) {
-                    Node target = hgraph.getOpposite(node, edge);
-                    int target_index = indicies.get(target);
-                    temp_authority[n_index] += hubs[target_index];
-                }
-
-                auth_sum += temp_authority[n_index];
-                if (isCanceled) {
-                    break;
-                }
-
-            }
-
-            double hub_sum = 0;
-            for (Node node : hub_list) {
-
-                int n_index = indicies.get(node);
-                temp_hubs[n_index] = hubs[n_index];
-                EdgeIterable edge_iter;
-                if (!useUndirected) {
-                    edge_iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node);
-                } else {
-                    edge_iter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(node);
-                }
-                for (Edge edge : edge_iter) {
-                    Node target = hgraph.getOpposite(node, edge);
-                    int target_index = indicies.get(target);
-                    temp_hubs[n_index] += authority[target_index];
-                }
-                hub_sum += temp_hubs[n_index];
-                if (isCanceled) {
-                    break;
-                }
-            }
-
-            for (Node node : auth_list) {
-                int n_index = indicies.get(node);
-                temp_authority[n_index] /= auth_sum;
-                if (((temp_authority[n_index] - authority[n_index]) / authority[n_index]) >= epsilon) {
-                    done = false;
-                }
-            }
-            for (Node node : hub_list) {
-                int n_index = indicies.get(node);
-                temp_hubs[n_index] /= hub_sum;
-                if (((temp_hubs[n_index] - hubs[n_index]) / hubs[n_index]) >= epsilon) {
-                    done = false;
-                }
-            }
-
-
-            authority = temp_authority;
-            hubs = temp_hubs;
+            
+            double auth_sum = updateValues(hgraph, authList, authorityValues, temp_authority, hubValues, indicies, isDirected);            
+            double hub_sum = updateValues(hgraph, hubList, hubValues, temp_hubs, authorityValues, indicies, isDirected);           
+            
+            normalizeValues(temp_authority, auth_sum);
+            normalizeValues(temp_hubs, hub_sum);
+            
+            done = checkDiff(authorityValues, temp_authority, eps) && checkDiff(hubValues, temp_hubs, eps);
+            
+            System.arraycopy(temp_authority, 0, authorityValues, 0, N);
+            System.arraycopy(temp_hubs, 0, hubValues, 0, N);
+            
             temp_authority = new double[N];
             temp_hubs = new double[N];
 
@@ -237,25 +171,146 @@ public class Hits implements Statistics, LongTask {
                 break;
             }
         }
-
+    }
+    
+    private Map<String, AttributeColumn> initializeAttributeColunms(AttributeModel attributeModel) {
+         Map<String, AttributeColumn> attributeColumns = new HashMap<String, AttributeColumn>();
+        
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn authorityCol = nodeTable.getColumn(AUTHORITY);
         AttributeColumn hubsCol = nodeTable.getColumn(HUB);
+        
         if (authorityCol == null) {
             authorityCol = nodeTable.addColumn(AUTHORITY, "Authority", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
         }
         if (hubsCol == null) {
             hubsCol = nodeTable.addColumn(HUB, "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
         }
+        
+        attributeColumns.put(AUTHORITY, authorityCol);
+        attributeColumns.put(HUB, hubsCol);
+        
+        return attributeColumns;
+    }
+    
+     private void initializeStartValues(HierarchicalGraph hgraph) {
+        int N = hgraph.getNodeCount();
+        authority = new double[N];
+        hubs = new double[N];
+        
+        indicies = createIndiciesMap(hgraph);
+        
+        hub_list = new LinkedList<Node>();
+        auth_list = new LinkedList<Node>();
+    }
+    
+    private void formHubsAndAuthoritiesLists(HierarchicalGraph hgraph, LinkedList<Node> hubsList, LinkedList<Node> authoritiesList, 
+            HashMap<Node, Integer> indicies, boolean isDirected) {
+        
+        for (Node node : hgraph.getNodes()) {
 
+            if (isDirected) {
+                if (((HierarchicalDirectedGraph) hgraph).getTotalOutDegree(node) > 0) {
+                    hubsList.add(node);
+                }
+                if (((HierarchicalDirectedGraph) hgraph).getTotalInDegree(node) > 0) {
+                    authoritiesList.add(node);
+                }
+            } else {
+                if (((HierarchicalUndirectedGraph) hgraph).getTotalDegree(node) > 0) {
+                    hubsList.add(node);
+                    authoritiesList.add(node);
+                }
+            }
+        }
+    }
+    
+    private void setInitialHubsAndAuthoritiesValues(LinkedList<Node> hubsList, LinkedList<Node> authoritiesList, 
+            double[] hubValues, double[] authValues,
+            HashMap<Node, Integer> indicies) {
+         for (Node node : hubsList) {
+            int n_index = indicies.get(node);
+            hubValues[n_index] = 1.0f;
+         }
+         for (Node node : authoritiesList) {
+            int n_index = indicies.get(node);
+            authValues[n_index] = 1.0f;
+        }
+        
+    }
+    
+    double updateValues(HierarchicalGraph hgraph, LinkedList<Node> list, double[] oldValues, double[] newValues, 
+            double[] otherValues, HashMap<Node, Integer> indicies, boolean isDirected) {
+        
+         double sum = 0;
+         for (Node node : list) {
+
+                int n_index = indicies.get(node);
+                newValues[n_index] = oldValues[n_index];
+                EdgeIterable edge_iter;
+                if (isDirected) {
+                    edge_iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node);
+                } else {
+                    edge_iter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(node);
+                }
+                for (Edge edge : edge_iter) {
+                    Node target = hgraph.getOpposite(node, edge);
+                    int target_index = indicies.get(target);
+                    newValues[n_index] += otherValues[target_index];
+                }
+
+                sum += newValues[n_index];
+                if (isCanceled) {
+                    break;
+                }
+            }
+         
+         return sum;
+    }
+    
+    private void normalizeValues(double[] newValues, double sum) {
+        if (sum == 0) return;
+        
+        for (int i=0; i<newValues.length; i++) {
+            newValues[i] /= sum;
+        }
+       
+    }
+    
+    private boolean checkDiff(double[] oldValues, double[] newValues, double epsilon) {
+        
+        for (int i=0; i<oldValues.length; i++) {
+            if (oldValues[i]>0 && ((newValues[i] - oldValues[i]) / oldValues[i]) >= epsilon) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public  HashMap<Node, Integer> createIndiciesMap(HierarchicalGraph hgraph) {
+       HashMap<Node, Integer> newIndicies = new HashMap<Node, Integer>();
+        int index = 0;
+        for (Node s : hgraph.getNodes()) {
+            newIndicies.put(s, index);
+            index++;
+        } 
+        return newIndicies;
+    }
+    
+    private void saveCalculatedValues(HierarchicalGraph hgraph, Map<String, AttributeColumn> attributeColumns, HashMap<Node, Integer> indicies,
+            double[] nodeAuthority, double[] nodeHubs) {
+        
         for (Node s : hgraph.getNodes()) {
             int s_index = indicies.get(s);
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
-            row.setValue(authorityCol, (float) authority[s_index]);
-            row.setValue(hubsCol, (float) hubs[s_index]);
+            
+            AttributeColumn authorityCol=attributeColumns.get(AUTHORITY);
+            AttributeColumn hubsCol=attributeColumns.get(HUB);
+            
+            row.setValue(authorityCol, (float) nodeAuthority[s_index]);
+            row.setValue(hubsCol, (float) nodeHubs[s_index]);
         }
-
-        hgraph.readUnlockAll();
+        
     }
 
     /**
