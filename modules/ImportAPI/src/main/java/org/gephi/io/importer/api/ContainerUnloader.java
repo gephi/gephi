@@ -41,6 +41,7 @@
  */
 package org.gephi.io.importer.api;
 
+import org.gephi.attribute.api.TimeFormat;
 import org.gephi.io.processor.spi.Processor;
 
 /**
