@@ -1,62 +1,58 @@
 /*
-Copyright 2008-2011 Gephi
-Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2011 Gephi
+ Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalDirectedGraph;
-import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -70,8 +66,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 
 /**
- * Ref: Jon M. Kleinberg, Authoritative Sources in a Hyperlinked Environment,
- * in Journal of the ACM 46 (5): 604–632 (1999)
+ * Ref: Jon M. Kleinberg, Authoritative Sources in a Hyperlinked Environment, in
+ * Journal of the ACM 46 (5): 604–632 (1999)
  *
  * @author pjmcswee
  */
@@ -91,8 +87,8 @@ public class Hits implements Statistics, LongTask {
 
     public Hits() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (graphController != null && graphController.getModel() != null) {
-            useUndirected = graphController.getModel().isUndirected();
+        if (graphController != null && graphController.getGraphModel() != null) {
+            useUndirected = graphController.getGraphModel().isUndirected();
         }
     }
 
@@ -101,24 +97,25 @@ public class Hits implements Statistics, LongTask {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean getUndirected() {
         return useUndirected;
     }
 
+    @Override
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        HierarchicalGraph graph = null;
+        Graph graph = null;
         if (useUndirected) {
-            graph = graphModel.getHierarchicalUndirectedGraphVisible();
+            graph = graphModel.getUndirectedGraphVisible();
         } else {
-            graph = graphModel.getHierarchicalDirectedGraphVisible();
+            graph = graphModel.getDirectedGraphVisible();
         }
         execute(graph, attributeModel);
     }
 
-    public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+    public void execute(Graph hgraph, AttributeModel attributeModel) {
         hgraph.readLock();
 
         int N = hgraph.getNodeCount();
@@ -139,20 +136,19 @@ public class Hits implements Statistics, LongTask {
             index++;
 
             if (!useUndirected) {
-                if (((HierarchicalDirectedGraph) hgraph).getTotalOutDegree(node) > 0) {
+                if (((DirectedGraph) hgraph).getOutDegree(node) > 0) {
                     hub_list.add(node);
                 }
-                if (((HierarchicalDirectedGraph) hgraph).getTotalInDegree(node) > 0) {
+                if (((DirectedGraph) hgraph).getInDegree(node) > 0) {
                     auth_list.add(node);
                 }
             } else {
-                if (((HierarchicalUndirectedGraph) hgraph).getTotalDegree(node) > 0) {
+                if (hgraph.getDegree(node) > 0) {
                     hub_list.add(node);
                     auth_list.add(node);
                 }
             }
         }
-
 
         for (Node node : hub_list) {
             int n_index = indicies.get(node);
@@ -173,9 +169,9 @@ public class Hits implements Statistics, LongTask {
                 temp_authority[n_index] = authority[n_index];
                 EdgeIterable edge_iter;
                 if (!useUndirected) {
-                    edge_iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node);
+                    edge_iter = ((DirectedGraph) hgraph).getInEdges(node);
                 } else {
-                    edge_iter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(node);
+                    edge_iter = hgraph.getEdges(node);
                 }
                 for (Edge edge : edge_iter) {
                     Node target = hgraph.getOpposite(node, edge);
@@ -197,9 +193,9 @@ public class Hits implements Statistics, LongTask {
                 temp_hubs[n_index] = hubs[n_index];
                 EdgeIterable edge_iter;
                 if (!useUndirected) {
-                    edge_iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node);
+                    edge_iter = ((DirectedGraph) hgraph).getInEdges(node);
                 } else {
-                    edge_iter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(node);
+                    edge_iter = hgraph.getEdges(node);
                 }
                 for (Edge edge : edge_iter) {
                     Node target = hgraph.getOpposite(node, edge);
@@ -227,7 +223,6 @@ public class Hits implements Statistics, LongTask {
                 }
             }
 
-
             authority = temp_authority;
             hubs = temp_hubs;
             temp_authority = new double[N];
@@ -238,21 +233,20 @@ public class Hits implements Statistics, LongTask {
             }
         }
 
-        AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn authorityCol = nodeTable.getColumn(AUTHORITY);
-        AttributeColumn hubsCol = nodeTable.getColumn(HUB);
+        Table nodeTable = attributeModel.getNodeTable();
+        Column authorityCol = nodeTable.getColumn(AUTHORITY);
+        Column hubsCol = nodeTable.getColumn(HUB);
         if (authorityCol == null) {
-            authorityCol = nodeTable.addColumn(AUTHORITY, "Authority", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
+            authorityCol = nodeTable.addColumn(AUTHORITY, "Authority", Float.class, new Float(0));
         }
         if (hubsCol == null) {
-            hubsCol = nodeTable.addColumn(HUB, "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
+            hubsCol = nodeTable.addColumn(HUB, "Hub", Float.class, new Float(0));
         }
 
         for (Node s : hgraph.getNodes()) {
             int s_index = indicies.get(s);
-            AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
-            row.setValue(authorityCol, (float) authority[s_index]);
-            row.setValue(hubsCol, (float) hubs[s_index]);
+            s.setAttribute(authorityCol, (float) authority[s_index]);
+            s.setAttribute(hubsCol, (float) hubs[s_index]);
         }
 
         hgraph.readUnlockAll();
@@ -262,6 +256,7 @@ public class Hits implements Statistics, LongTask {
      *
      * @return
      */
+    @Override
     public String getReport() {
         //distribution of hub values
         Map<Double, Integer> distHubs = new HashMap<Double, Integer>();
@@ -329,7 +324,6 @@ public class Hits implements Statistics, LongTask {
         ChartUtils.scaleChart(chart2, dAuthsSeries, true);
         String imageFile2 = ChartUtils.renderChart(chart2, "authorities.png");
 
-
         String report = "<HTML> <BODY> <h1> HITS Metric Report </h1>"
                 + "<hr>"
                 + "<br />"
@@ -347,6 +341,7 @@ public class Hits implements Statistics, LongTask {
      *
      * @return
      */
+    @Override
     public boolean cancel() {
         isCanceled = true;
         return true;
@@ -356,6 +351,7 @@ public class Hits implements Statistics, LongTask {
      *
      * @param progressTicket
      */
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         progress = progressTicket;
     }

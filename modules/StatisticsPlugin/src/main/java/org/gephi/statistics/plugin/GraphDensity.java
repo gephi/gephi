@@ -43,12 +43,10 @@ package org.gephi.statistics.plugin;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.graph.api.GraphController;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.statistics.spi.Statistics;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -60,13 +58,6 @@ public class GraphDensity implements Statistics {
     private double density;
     /** */
     private boolean isDirected;
-
-    public GraphDensity() {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (graphController != null && graphController.getModel() != null) {
-            isDirected = graphController.getModel().isDirected();
-        }
-    }
 
     public void setDirected(boolean isDirected) {
         this.isDirected = isDirected;
@@ -80,17 +71,19 @@ public class GraphDensity implements Statistics {
         return density;
     }
 
+    @Override
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        HierarchicalGraph hgraph;
+        isDirected = graphModel.isDirected();
 
+        Graph graph;
         if (isDirected) {
-            hgraph = graphModel.getHierarchicalDirectedGraphVisible();
+            graph = graphModel.getDirectedGraphVisible();
         } else {
-            hgraph = graphModel.getHierarchicalUndirectedGraphVisible();
+            graph = graphModel.getUndirectedGraphVisible();
         }
 
-        double edgesCount = hgraph.getTotalEdgeCount();
-        double nodesCount = hgraph.getNodeCount();
+        double edgesCount = graph.getEdgeCount();
+        double nodesCount = graph.getNodeCount();
         double multiplier = 1;
 
         if (!isDirected) {
@@ -103,6 +96,7 @@ public class GraphDensity implements Statistics {
      *
      * @return
      */
+    @Override
     public String getReport() {
         NumberFormat f = new DecimalFormat("#0.000");
 

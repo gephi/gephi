@@ -55,7 +55,7 @@ public class PageRankPanel extends javax.swing.JPanel {
         
         //Disable directed if the graph is undirecteds
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if(graphController.getModel().isUndirected()){
+        if(graphController.getGraphModel().isUndirected()){
             directedRadioButton.setEnabled(false);
         }
     }

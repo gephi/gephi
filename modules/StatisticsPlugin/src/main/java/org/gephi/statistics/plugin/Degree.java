@@ -45,16 +45,13 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Origin;
+import org.gephi.attribute.api.Table;
 import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalDirectedGraph;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -96,58 +93,47 @@ public class Degree implements Statistics, LongTask {
      *
      * @param graphModel
      */
+    @Override
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+        Graph graph = graphModel.getGraphVisible();
         execute(graph, attributeModel);
     }
 
-    public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
-        isDirected = graph instanceof DirectedGraph;
+    public void execute(Graph graph, AttributeModel attributeModel) {
+        isDirected = graph.isDirected();
         isCanceled = false;
         inDegreeDist = new HashMap<Integer, Integer>();
         outDegreeDist = new HashMap<Integer, Integer>();
         degreeDist = new HashMap<Integer, Integer>();
 
         //Attributes cols
-        AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeTable graphTable = attributeModel.getGraphTable();
-        AttributeColumn inCol = nodeTable.getColumn(INDEGREE);
-        AttributeColumn outCol = nodeTable.getColumn(OUTDEGREE);
-        AttributeColumn degCol = nodeTable.getColumn(DEGREE);
-        AttributeColumn avgDegreeCol = graphTable.getColumn(AVERAGE_DEGREE);
+        Table nodeTable = attributeModel.getNodeTable();
+        Column inCol = nodeTable.getColumn(INDEGREE);
+        Column outCol = nodeTable.getColumn(OUTDEGREE);
+        Column degCol = nodeTable.getColumn(DEGREE);
+
         if (isDirected) {
             if (inCol == null) {
-                inCol = nodeTable.addColumn(INDEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.InDegree"), AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+                inCol = nodeTable.addColumn(INDEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.InDegree"), Integer.class, 0);
             }
             if (outCol == null) {
-                outCol = nodeTable.addColumn(OUTDEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.OutDegree"), AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+                outCol = nodeTable.addColumn(OUTDEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.OutDegree"), Integer.class, 0);
             }
         }
         if (degCol == null) {
-            degCol = nodeTable.addColumn(DEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.Degree"), AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+            degCol = nodeTable.addColumn(DEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.Degree"), Integer.class, 0);
         }
-        if(avgDegreeCol == null) {
-            avgDegreeCol = graphTable.addColumn(AVERAGE_DEGREE, NbBundle.getMessage(Degree.class, "Degree.graphcolumn.AverageDegree"), AttributeType.DOUBLE, AttributeOrigin.COMPUTED, 0.0);
-        }
-
-        int i = 0;
 
         graph.readLock();
-
-        Progress.start(progress, graph.getNodeCount());
         
-        HierarchicalDirectedGraph directedGraph = null;
-        if(isDirected) {
-            directedGraph = graph.getGraphModel().getHierarchicalDirectedGraphVisible();
-        }
+        Progress.start(progress, graph.getNodeCount());
 
         for (Node n : graph.getNodes()) {
-            AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
             if (isDirected) {
-                int inDegree = directedGraph.getTotalInDegree(n);
-                int outDegree = directedGraph.getTotalOutDegree(n);
-                row.setValue(inCol, inDegree);
-                row.setValue(outCol, outDegree);
+                int inDegree = ((DirectedGraph)graph).getInDegree(n);
+                int outDegree = ((DirectedGraph)graph).getOutDegree(n);
+                n.setAttribute(inCol, inDegree);
+                n.setAttribute(outCol, outDegree);
                 if (!inDegreeDist.containsKey(inDegree)) {
                     inDegreeDist.put(inDegree, 0);
                 }
@@ -157,8 +143,8 @@ public class Degree implements Statistics, LongTask {
                 }
                 outDegreeDist.put(outDegree, outDegreeDist.get(outDegree) + 1);
             }
-            int degree = graph.getTotalDegree(n);
-            row.setValue(degCol, degree);
+            int degree = graph.getDegree(n);
+            n.setAttribute(degCol, degree);
             avgDegree += degree;
             if (!degreeDist.containsKey(degree)) {
                 degreeDist.put(degree, 0);
@@ -168,20 +154,22 @@ public class Degree implements Statistics, LongTask {
             if (isCanceled) {
                 break;
             }
-            i++;
-            Progress.progress(progress, i);
+            Progress.progress(progress);
         }
 
         avgDegree /= graph.getNodeCount();
-        graph.getAttributes().setValue(avgDegreeCol.getIndex(), avgDegree);
+        graph.setAttribute(AVERAGE_DEGREE, avgDegree);
 
         graph.readUnlockAll();
+        
+        Progress.finish(progress);
     }
 
     /**
      *
      * @return
      */
+    @Override
     public String getReport() {
         String report = "";
         if (isDirected) {
@@ -294,6 +282,7 @@ public class Degree implements Statistics, LongTask {
      *
      * @return
      */
+    @Override
     public boolean cancel() {
         this.isCanceled = true;
         return true;
@@ -303,6 +292,7 @@ public class Degree implements Statistics, LongTask {
      *
      * @param progressTicket
      */
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progress = progressTicket;
     }

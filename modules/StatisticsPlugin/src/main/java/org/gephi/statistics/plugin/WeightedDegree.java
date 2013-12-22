@@ -46,17 +46,12 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.graph.api.DirectedGraph;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalDirectedGraph;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -89,31 +84,32 @@ public class WeightedDegree implements Statistics, LongTask {
         return avgWDegree;
     }
 
+    @Override
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+        Graph graph = graphModel.getGraphVisible();
         execute(graph, attributeModel);
     }
 
-    public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
-        isDirected = graph instanceof DirectedGraph;
+    public void execute(Graph graph, AttributeModel attributeModel) {
+        isDirected = graph.isDirected();
         isCanceled = false;
         degreeDist = new HashMap<Double, Integer>();
         inDegreeDist = new HashMap<Double, Integer>();
         outDegreeDist = new HashMap<Double, Integer>();
 
-        AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn degCol = nodeTable.getColumn(WDEGREE);
-        AttributeColumn inCol = nodeTable.getColumn(WINDEGREE);
-        AttributeColumn outCol = nodeTable.getColumn(WOUTDEGREE);
+        Table nodeTable = attributeModel.getNodeTable();
+        Column degCol = nodeTable.getColumn(WDEGREE);
+        Column inCol = nodeTable.getColumn(WINDEGREE);
+        Column outCol = nodeTable.getColumn(WOUTDEGREE);
         if (degCol == null) {
-            degCol = nodeTable.addColumn(WDEGREE, "Weighted Degree", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, 0.0);
+            degCol = nodeTable.addColumn(WDEGREE, "Weighted Degree", Double.class, 0.0);
         }
         if (isDirected) {
             if (inCol == null) {
-                inCol = nodeTable.addColumn(WINDEGREE, "Weighted In-Degree", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, 0.0);
+                inCol = nodeTable.addColumn(WINDEGREE, "Weighted In-Degree", Double.class, 0.0);
             }
             if (outCol == null) {
-                outCol = nodeTable.addColumn(WOUTDEGREE, "Weighted Out-Degree", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, 0.0);
+                outCol = nodeTable.addColumn(WOUTDEGREE, "Weighted Out-Degree", Double.class, 0.0);
             }
         }
 
@@ -123,24 +119,22 @@ public class WeightedDegree implements Statistics, LongTask {
         int i = 0;
 
         for (Node n : graph.getNodes()) {
-            AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
             double totalWeight = 0;
             if (isDirected) {
-                HierarchicalDirectedGraph hdg = graph.getGraphModel().getHierarchicalDirectedGraph();
                 double totalInWeight = 0;
                 double totalOutWeight = 0;
-                for (Iterator it = graph.getEdgesAndMetaEdges(n).iterator(); it.hasNext();) {
+                for (Iterator it = graph.getEdges(n).iterator(); it.hasNext();) {
                     Edge e = (Edge) it.next();
-                    if (e.getSource().getNodeData().equals(n.getNodeData())) {
+                    if (e.getSource().equals(n)) {
                         totalOutWeight += e.getWeight();
                     }
-                    if (e.getTarget().getNodeData().equals(n.getNodeData())) {
+                    if (e.getTarget().equals(n)) {
                         totalInWeight += e.getWeight();
                     }
                 }
                 totalWeight = totalInWeight + totalOutWeight;
-                row.setValue(inCol, totalInWeight);
-                row.setValue(outCol, totalOutWeight);
+                n.setAttribute(inCol, totalInWeight);
+                n.setAttribute(outCol, totalOutWeight);
                 if (!inDegreeDist.containsKey(totalInWeight)) {
                     inDegreeDist.put(totalInWeight, 0);
                 }
@@ -150,13 +144,13 @@ public class WeightedDegree implements Statistics, LongTask {
                 }
                 outDegreeDist.put(totalOutWeight, outDegreeDist.get(totalOutWeight) + 1);
             } else {
-                for (Iterator it = graph.getEdgesAndMetaEdges(n).iterator(); it.hasNext();) {
+                for (Iterator it = graph.getEdges(n).iterator(); it.hasNext();) {
                     Edge e = (Edge) it.next();
                     totalWeight += e.getWeight();
                 }
             }
 
-            row.setValue(degCol, totalWeight);
+            n.setAttribute(degCol, totalWeight);
             avgWDegree += totalWeight;
 
             if (!degreeDist.containsKey(totalWeight)) {
@@ -176,6 +170,7 @@ public class WeightedDegree implements Statistics, LongTask {
         graph.readUnlockAll();
     }
 
+    @Override
     public String getReport() {
         String report = "";
 
@@ -282,11 +277,13 @@ public class WeightedDegree implements Statistics, LongTask {
         return report;
     }
 
+    @Override
     public boolean cancel() {
         this.isCanceled = true;
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progress = progressTicket;
     }

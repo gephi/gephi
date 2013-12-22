@@ -54,14 +54,17 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsBuilder.class)
 public class PageRankBuilder implements StatisticsBuilder {
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(PageRankBuilder.class, "PageRank.name");
     }
 
+    @Override
     public Statistics getStatistics() {
         return new PageRank();
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return PageRank.class;
     }

@@ -1174,6 +1174,7 @@
         <module>modules/DesktopProgress</module>
         <module>modules/DesktopProject</module>
         <module>modules/DesktopRecentFiles</module>
+        <module>modules/DesktopStatistics</module>
         <module>modules/DirectoryChooser</module>
         <module>modules/DynamicAPI</module>
         <module>modules/ExportAPI</module>
@@ -1200,6 +1201,9 @@
         <module>modules/ProjectAPI</module>
         <module>modules/ProjectUI</module>
         <module>modules/SettingsUpgrader</module>
+        <module>modules/StatisticsAPI</module>
+        <module>modules/StatisticsPlugin</module>
+        <module>modules/StatisticsPluginUI</module>
         <module>modules/ToolsAPI</module>
         <module>modules/UIComponents</module>
         <module>modules/UIUtils</module>

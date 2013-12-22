@@ -45,16 +45,11 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.attributes.type.DynamicInteger;
-import org.gephi.data.attributes.type.Interval;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.time.Interval;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.jfree.chart.ChartFactory;
@@ -62,7 +57,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -77,29 +71,18 @@ public class DynamicNbEdges implements DynamicStatistics {
     private double tick;
     private Interval bounds;
     //Average
-    private AttributeColumn nbEdgesCol;
-    private DynamicInteger counts;
+    private Map<Double, Integer> counts;
 
+    @Override
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         this.graphModel = graphModel;
-
-        //Column
-        AttributeTable graphTable = attributeModel.getGraphTable();
-        nbEdgesCol = graphTable.getColumn(NB_EDGES);
-        if (nbEdgesCol == null) {
-            nbEdgesCol = graphTable.addColumn(NB_EDGES, NbBundle.getMessage(DynamicNbEdges.class, "DynamicNbNodes.graphcolumn.NbEdges"), AttributeType.DYNAMIC_INT, AttributeOrigin.COMPUTED, new DynamicInteger());
-        }
+        this.counts = new HashMap<Double, Integer>();
     }
 
+    @Override
     public String getReport() {
-        //Transform to Map
-        Map<Double, Integer> map = new HashMap<Double, Integer>();
-        for(Interval<Integer> interval : counts.getIntervals()) {
-            map.put(interval.getLow(), interval.getValue());
-        }
-        
         //Time series
-        XYSeries dSeries = ChartUtils.createXYSeries(map, "Nb Edges Time Series");
+        XYSeries dSeries = ChartUtils.createXYSeries(counts, "Nb Edges Time Series");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(dSeries);
@@ -136,38 +119,48 @@ public class DynamicNbEdges implements DynamicStatistics {
         return report;
     }
 
+    @Override
     public void loop(GraphView window, Interval interval) {
-        HierarchicalGraph graph = graphModel.getHierarchicalGraph(window);
+        Graph graph = graphModel.getGraph(window);
 
         int count = graph.getEdgeCount();
+        
+        graph.setAttribute(NB_EDGES, count, interval.getLow());
+        graph.setAttribute(NB_EDGES, count, interval.getHigh());
 
-        counts = new DynamicInteger(counts, new Interval<Integer>(interval.getLow(), interval.getHigh(), false, true, count));
+        counts.put(interval.getLow(), count);
+        counts.put(interval.getHigh(), count);
     }
 
+    @Override
     public void end() {
-        graphModel.getGraphVisible().getAttributes().setValue(nbEdgesCol.getIndex(), counts);
     }
 
     public void setBounds(Interval bounds) {
         this.bounds = bounds;
     }
 
+    @Override
     public void setWindow(double window) {
         this.window = window;
     }
 
+    @Override
     public void setTick(double tick) {
         this.tick = tick;
     }
 
+    @Override
     public double getWindow() {
         return window;
     }
 
+    @Override
     public double getTick() {
         return tick;
     }
 
+    @Override
     public Interval getBounds() {
         return bounds;
     }

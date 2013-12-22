@@ -54,14 +54,17 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsBuilder.class)
 public class DynamicNbEdgesBuilder implements StatisticsBuilder {
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(DynamicNbNodesBuilder.class, "DynamicNbEdges.name");
     }
 
+    @Override
     public Statistics getStatistics() {
         return new DynamicNbEdges();
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return DynamicNbEdges.class;
     }
