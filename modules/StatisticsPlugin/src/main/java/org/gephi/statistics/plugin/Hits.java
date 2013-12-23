@@ -54,6 +54,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -81,9 +82,6 @@ public class Hits implements Statistics, LongTask {
     private double[] hubs;
     private boolean useUndirected;
     private double epsilon = 0.0001;
-    private LinkedList<Node> hub_list;
-    private LinkedList<Node> auth_list;
-    private HashMap<Node, Integer> indicies;
 
     public Hits() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
@@ -116,140 +114,163 @@ public class Hits implements Statistics, LongTask {
     }
 
     public void execute(Graph hgraph, AttributeModel attributeModel) {
+
+        initializeAttributeColunms(attributeModel);
+
         hgraph.readLock();
 
         int N = hgraph.getNodeCount();
         authority = new double[N];
         hubs = new double[N];
+
+        Map<Node, Integer> indicies = createIndiciesMap(hgraph);
+
+        calculateHits(hgraph, hubs, authority, indicies, !useUndirected, epsilon);
+
+        saveCalculatedValues(hgraph, authority, hubs);
+
+        hgraph.readUnlockAll();
+    }
+
+    public void calculateHits(Graph hgraph, double[] hubValues, double[] authorityValues, Map<Node, Integer> indicies, boolean isDirected, double eps) {
+
+        int N = hgraph.getNodeCount();
+
         double[] temp_authority = new double[N];
         double[] temp_hubs = new double[N];
 
-        hub_list = new LinkedList<Node>();
-        auth_list = new LinkedList<Node>();
-
+        initializeStartValues(hubValues, authorityValues);
+        
         Progress.start(progress);
-
-        indicies = new HashMap<Node, Integer>();
-        int index = 0;
-        for (Node node : hgraph.getNodes()) {
-            indicies.put(node, new Integer(index));
-            index++;
-
-            if (!useUndirected) {
-                if (((DirectedGraph) hgraph).getOutDegree(node) > 0) {
-                    hub_list.add(node);
-                }
-                if (((DirectedGraph) hgraph).getInDegree(node) > 0) {
-                    auth_list.add(node);
-                }
-            } else {
-                if (hgraph.getDegree(node) > 0) {
-                    hub_list.add(node);
-                    auth_list.add(node);
-                }
-            }
-        }
-
-        for (Node node : hub_list) {
-            int n_index = indicies.get(node);
-            hubs[n_index] = 1.0f;
-        }
-        for (Node node : auth_list) {
-            int n_index = indicies.get(node);
-            authority[n_index] = 1.0f;
-        }
 
         while (true) {
 
             boolean done = true;
-            double auth_sum = 0;
-            for (Node node : auth_list) {
 
-                int n_index = indicies.get(node);
-                temp_authority[n_index] = authority[n_index];
-                EdgeIterable edge_iter;
-                if (!useUndirected) {
-                    edge_iter = ((DirectedGraph) hgraph).getInEdges(node);
-                } else {
-                    edge_iter = hgraph.getEdges(node);
-                }
-                for (Edge edge : edge_iter) {
-                    Node target = hgraph.getOpposite(node, edge);
-                    int target_index = indicies.get(target);
-                    temp_authority[n_index] += hubs[target_index];
-                }
+            updateAutorithy(hgraph, temp_authority, hubValues, isDirected, indicies);
+            updateHub(hgraph, temp_hubs, temp_authority, isDirected, indicies);
 
-                auth_sum += temp_authority[n_index];
-                if (isCanceled) {
-                    break;
-                }
+            done = checkDiff(authorityValues, temp_authority, eps) && checkDiff(hubValues, temp_hubs, eps);
 
-            }
+            System.arraycopy(temp_authority, 0, authorityValues, 0, N);
+            System.arraycopy(temp_hubs, 0, hubValues, 0, N);
 
-            double hub_sum = 0;
-            for (Node node : hub_list) {
-
-                int n_index = indicies.get(node);
-                temp_hubs[n_index] = hubs[n_index];
-                EdgeIterable edge_iter;
-                if (!useUndirected) {
-                    edge_iter = ((DirectedGraph) hgraph).getInEdges(node);
-                } else {
-                    edge_iter = hgraph.getEdges(node);
-                }
-                for (Edge edge : edge_iter) {
-                    Node target = hgraph.getOpposite(node, edge);
-                    int target_index = indicies.get(target);
-                    temp_hubs[n_index] += authority[target_index];
-                }
-                hub_sum += temp_hubs[n_index];
-                if (isCanceled) {
-                    break;
-                }
-            }
-
-            for (Node node : auth_list) {
-                int n_index = indicies.get(node);
-                temp_authority[n_index] /= auth_sum;
-                if (((temp_authority[n_index] - authority[n_index]) / authority[n_index]) >= epsilon) {
-                    done = false;
-                }
-            }
-            for (Node node : hub_list) {
-                int n_index = indicies.get(node);
-                temp_hubs[n_index] /= hub_sum;
-                if (((temp_hubs[n_index] - hubs[n_index]) / hubs[n_index]) >= epsilon) {
-                    done = false;
-                }
-            }
-
-            authority = temp_authority;
-            hubs = temp_hubs;
-            temp_authority = new double[N];
-            temp_hubs = new double[N];
+//            temp_authority = new double[N];
+//            temp_hubs = new double[N]
 
             if ((done) || (isCanceled)) {
                 break;
             }
         }
+    }
 
+    private void initializeAttributeColunms(AttributeModel attributeModel) {
         Table nodeTable = attributeModel.getNodeTable();
-        Column authorityCol = nodeTable.getColumn(AUTHORITY);
-        Column hubsCol = nodeTable.getColumn(HUB);
-        if (authorityCol == null) {
-            authorityCol = nodeTable.addColumn(AUTHORITY, "Authority", Float.class, new Float(0));
-        }
-        if (hubsCol == null) {
-            hubsCol = nodeTable.addColumn(HUB, "Hub", Float.class, new Float(0));
-        }
 
+        if (!nodeTable.hasColumn(AUTHORITY)) {
+            nodeTable.addColumn(AUTHORITY, "Authority", Float.class, new Float(0));
+        }
+        if (!nodeTable.hasColumn(HUB)) {
+            nodeTable.addColumn(HUB, "Hub", Float.class, new Float(0));
+        }
+    }
+
+    private void initializeStartValues(double[] hubValues, double[] authorityValues) {
+        for (int i = 0; i < authorityValues.length; i++) {
+            authorityValues[i] = 1.0;
+            hubValues[i] = 1.0;
+        }
+    }
+
+    void updateAutorithy(Graph hgraph, double[] newValues, double[] hubValues, boolean isDirected, Map<Node, Integer> indicies) {
+        double norm = 0;
+        int j = 0;
+        for (Node node : hgraph.getNodes()) {
+            double auth = 0;
+            EdgeIterable edge_iter;
+            if (isDirected) {
+                edge_iter = ((DirectedGraph) hgraph).getInEdges(node);
+            } else {
+                edge_iter = hgraph.getEdges(node);
+            }
+            for (Edge edge : edge_iter) {
+                Node target = hgraph.getOpposite(node, edge);
+                auth += hubValues[indicies.get(target)];
+            }
+            if (auth > 0) {
+                newValues[j] = auth;
+            }
+            norm += newValues[j++];
+            if (isCanceled) {
+                return;
+            }
+        }
+//        norm = Math.sqrt(norm);
+        if (norm > 0) {
+            for (int i = 0; i < newValues.length; i++) {
+                newValues[i] = newValues[i] / norm;
+            }
+        }
+    }
+
+    void updateHub(Graph hgraph, double[] newValues, double[] authValues, boolean isDirected, Map<Node, Integer> indicies) {
+        double norm = 0;
+        int j = 0;
+        for (Node node : hgraph.getNodes()) {
+            double hub = 0;
+            EdgeIterable edge_iter;
+            if (isDirected) {
+                edge_iter = ((DirectedGraph) hgraph).getOutEdges(node);
+            } else {
+                edge_iter = hgraph.getEdges(node);
+            }
+            for (Edge edge : edge_iter) {
+                Node target = hgraph.getOpposite(node, edge);
+                hub += authValues[indicies.get(target)];
+            }
+            if(hub > 0) {
+                newValues[j] = hub;
+            }
+            norm += newValues[j++];
+            if (isCanceled) {
+                return;
+            }
+        }
+        if (norm > 0) {
+            for (int i = 0; i < newValues.length; i++) {
+                newValues[i] = newValues[i] / norm;
+            }
+        }
+    }
+
+    private boolean checkDiff(double[] oldValues, double[] newValues, double epsilon) {
+
+        for (int i = 0; i < oldValues.length; i++) {
+            if (oldValues[i] > 0 && ((newValues[i] - oldValues[i]) / oldValues[i]) >= epsilon) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void saveCalculatedValues(Graph hgraph, double[] nodeAuthority, double[] nodeHubs) {
+        int i = 0;
         for (Node s : hgraph.getNodes()) {
-            int s_index = indicies.get(s);
-            s.setAttribute(authorityCol, (float) authority[s_index]);
-            s.setAttribute(hubsCol, (float) hubs[s_index]);
-        }
+            int s_index = i++;
 
-        hgraph.readUnlockAll();
+            s.setAttribute(AUTHORITY, (float) nodeAuthority[s_index]);
+            s.setAttribute(HUB, (float) nodeHubs[s_index]);
+        }
+    }
+
+    public HashMap<Node, Integer> createIndiciesMap(Graph hgraph) {
+        HashMap<Node, Integer> newIndicies = new HashMap<Node, Integer>();
+        int index = 0;
+        for (Node s : hgraph.getNodes()) {
+            newIndicies.put(s, index);
+            index++;
+        }
+        return newIndicies;
     }
 
     /**
@@ -260,9 +281,8 @@ public class Hits implements Statistics, LongTask {
     public String getReport() {
         //distribution of hub values
         Map<Double, Integer> distHubs = new HashMap<Double, Integer>();
-        for (Node node : hub_list) {
-            int n_index = indicies.get(node);
-            Double d = hubs[n_index];
+        for (int i = 0; i < hubs.length; i++) {
+            Double d = hubs[i];
             if (distHubs.containsKey(d)) {
                 Integer v = distHubs.get(d);
                 distHubs.put(d, v + 1);
@@ -273,9 +293,8 @@ public class Hits implements Statistics, LongTask {
 
         //distribution of authority values
         Map<Double, Integer> distAuthorities = new HashMap<Double, Integer>();
-        for (Node node : auth_list) {
-            int n_index = indicies.get(node);
-            Double d = authority[n_index];
+        for (int i = 0; i < authority.length; i++) {
+            Double d = authority[i];
             if (distAuthorities.containsKey(d)) {
                 Integer v = distAuthorities.get(d);
                 distAuthorities.put(d, v + 1);

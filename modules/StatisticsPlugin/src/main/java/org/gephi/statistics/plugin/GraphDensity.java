@@ -45,8 +45,10 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import org.gephi.attribute.api.AttributeModel;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.statistics.spi.Statistics;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -58,6 +60,13 @@ public class GraphDensity implements Statistics {
     private double density;
     /** */
     private boolean isDirected;
+
+    public GraphDensity() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getGraphModel()!= null) {
+            isDirected = graphController.getGraphModel().isDirected();
+        }
+    }
 
     public void setDirected(boolean isDirected) {
         this.isDirected = isDirected;
@@ -73,23 +82,28 @@ public class GraphDensity implements Statistics {
 
     @Override
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        isDirected = graphModel.isDirected();
-
         Graph graph;
         if (isDirected) {
             graph = graphModel.getDirectedGraphVisible();
         } else {
             graph = graphModel.getUndirectedGraphVisible();
         }
+        
+        density = calculateDensity(graph, isDirected);
+    }
+    
+    public double calculateDensity(Graph graph, boolean isGraphDirected) {
+        double result;
 
         double edgesCount = graph.getEdgeCount();
         double nodesCount = graph.getNodeCount();
         double multiplier = 1;
 
-        if (!isDirected) {
+        if (!isGraphDirected) {
             multiplier = 2;
         }
-        density = (multiplier * edgesCount) / (nodesCount * nodesCount - nodesCount);
+        result = (multiplier * edgesCount) / (nodesCount * nodesCount - nodesCount);
+        return result;
     }
 
     /**

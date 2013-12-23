@@ -64,6 +64,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  * Ref: Ulrik Brandes, A Faster Algorithm for Betweenness Centrality, in Journal
@@ -118,6 +119,10 @@ public class GraphDistance implements Statistics, LongTask {
     public double getDiameter() {
         return diameter;
     }
+    
+    public double getRadius() {
+        return radius;
+    }
 
     public GraphDistance() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
@@ -146,56 +151,55 @@ public class GraphDistance implements Statistics, LongTask {
 
     public void execute(Graph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
-        Table nodeTable = attributeModel.getNodeTable();
-        Column eccentricityCol = nodeTable.getColumn(ECCENTRICITY);
-        Column closenessCol = nodeTable.getColumn(CLOSENESS);
-        Column betweenessCol = nodeTable.getColumn(BETWEENNESS);
-        if (eccentricityCol == null) {
-            eccentricityCol = nodeTable.addColumn(ECCENTRICITY, "Eccentricity", Double.class, new Double(0));
-        }
-        if (closenessCol == null) {
-            closenessCol = nodeTable.addColumn(CLOSENESS, "Closeness Centrality", Double.class, new Double(0));
-        }
-        if (betweenessCol == null) {
-            betweenessCol = nodeTable.addColumn(BETWEENNESS, "Betweenness Centrality", Double.class, new Double(0));
-        }
+        
+        initializeAttributeColunms(attributeModel); 
 
         hgraph.readLock();
 
         N = hgraph.getNodeCount();
+        
+        initializeStartValues();
+        
+        HashMap<Node, Integer> indicies = createIndiciesMap(hgraph);
 
-        betweenness = new double[N];
-        eccentricity = new double[N];
-        closeness = new double[N];
-        diameter = 0;
-        avgDist = 0;
-        shortestPaths = 0;
-        radius = Integer.MAX_VALUE;
-        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
-        int index = 0;
-        for (Node s : hgraph.getNodes()) {
-            indicies.put(s, index);
-            index++;
-        }
-
+        Map<String, double[]> metrics = calculateDistanceMetrics(hgraph, indicies, isDirected, isNormalized);
+        
+        eccentricity = metrics.get(ECCENTRICITY);
+        closeness = metrics.get(CLOSENESS);
+        betweenness = metrics.get(BETWEENNESS);
+        
+        saveCalculatedValues(hgraph, indicies, eccentricity, betweenness, closeness);
+                
+        hgraph.readUnlock();
+    }
+    
+    public Map<String, double[]> calculateDistanceMetrics(Graph hgraph, HashMap<Node, Integer> indicies, boolean directed, boolean normalized) {
+        int n = hgraph.getNodeCount();
+        
+        HashMap<String, double[]> metrics = new HashMap<String, double[]>();
+        
+        double[] nodeEccentricity = new double[n];
+        double[] nodeBetweenness = new double[n];
+        double[] nodeCloseness = new double[n];
+        
+        metrics.put(ECCENTRICITY, nodeEccentricity);
+        metrics.put(CLOSENESS, nodeCloseness);
+        metrics.put(BETWEENNESS, nodeBetweenness);
+        
         Progress.start(progress, hgraph.getNodeCount());
         int count = 0;
+        
+        
         for (Node s : hgraph.getNodes()) {
             Stack<Node> S = new Stack<Node>();
 
-            LinkedList<Node>[] P = new LinkedList[N];
-            double[] theta = new double[N];
-            int[] d = new int[N];
-            for (int j = 0; j < N; j++) {
-                P[j] = new LinkedList<Node>();
-                theta[j] = 0;
-                d[j] = -1;
-            }
-
+            LinkedList<Node>[] P = new LinkedList[n];
+            double[] theta = new double[n];
+            int[] d = new int[n];
+            
             int s_index = indicies.get(s);
-
-            theta[s_index] = 1;
-            d[s_index] = 0;
+            
+            setInitParametetrsForNode(s, P, theta, d, s_index, n);
 
             LinkedList<Node> Q = new LinkedList<Node>();
             Q.addLast(s);
@@ -204,12 +208,7 @@ public class GraphDistance implements Statistics, LongTask {
                 S.push(v);
                 int v_index = indicies.get(v);
 
-                EdgeIterable edgeIter = null;
-                if (isDirected) {
-                    edgeIter = ((DirectedGraph) hgraph).getOutEdges(v);
-                } else {
-                    edgeIter = hgraph.getEdges(v);
-                }
+                EdgeIterable edgeIter = getEdgeIter(hgraph, v, directed);
 
                 for (Edge edge : edgeIter) {
                     Node reachable = hgraph.getOpposite(v, edge);
@@ -226,25 +225,25 @@ public class GraphDistance implements Statistics, LongTask {
                 }
             }
             double reachable = 0;
-            for (int i = 0; i < N; i++) {
+            for (int i = 0; i < n; i++) {
                 if (d[i] > 0) {
                     avgDist += d[i];
-                    eccentricity[s_index] = (int) Math.max(eccentricity[s_index], d[i]);
-                    closeness[s_index] += d[i];
+                    nodeEccentricity[s_index] = (int) Math.max(nodeEccentricity[s_index], d[i]);
+                    nodeCloseness[s_index] += d[i];
                     diameter = Math.max(diameter, d[i]);
                     reachable++;
                 }
             }
 
-            radius = (int) Math.min(eccentricity[s_index], radius);
+            radius = (int) Math.min(nodeEccentricity[s_index], radius);
 
             if (reachable != 0) {
-                closeness[s_index] /= reachable;
+                nodeCloseness[s_index] /= reachable;
             }
 
             shortestPaths += reachable;
 
-            double[] delta = new double[N];
+            double[] delta = new double[n];
             while (!S.empty()) {
                 Node w = S.pop();
                 int w_index = indicies.get(w);
@@ -255,34 +254,105 @@ public class GraphDistance implements Statistics, LongTask {
                     delta[u_index] += (theta[u_index] / theta[w_index]) * (1 + delta[w_index]);
                 }
                 if (w != s) {
-                    betweenness[w_index] += delta[w_index];
+                    nodeBetweenness[w_index] += delta[w_index];
                 }
             }
             count++;
             if (isCanceled) {
                 hgraph.readUnlockAll();
-                return;
+                return metrics;
             }
             Progress.progress(progress, count);
         }
 
         avgDist /= shortestPaths;//mN * (mN - 1.0f);
 
+        calculateCorrection(hgraph, indicies, nodeBetweenness, nodeCloseness, directed, normalized);
+        
+        return metrics;
+    }
+    
+    private void setInitParametetrsForNode(Node s, LinkedList<Node>[] P, double[] theta, int[] d, int index, int n) {           
+            for (int j = 0; j < n; j++) {
+                P[j] = new LinkedList<Node>();
+                theta[j] = 0;
+                d[j] = -1;
+            }
+            theta[index] = 1;
+            d[index] = 0;
+    }
+    
+    private EdgeIterable getEdgeIter(Graph hgraph, Node v, boolean directed) {
+            EdgeIterable edgeIter = null;
+            if (directed) {
+                edgeIter = ((DirectedGraph) hgraph).getOutEdges(v);
+            } else {
+                edgeIter = hgraph.getEdges(v);
+             }
+            return edgeIter;
+    }
+    
+    private void initializeAttributeColunms(AttributeModel attributeModel) {
+        Table nodeTable = attributeModel.getNodeTable();
+        if (!nodeTable.hasColumn(ECCENTRICITY)) {
+            nodeTable.addColumn(ECCENTRICITY, "Eccentricity", Double.class, new Double(0));
+        }
+        if (!nodeTable.hasColumn(CLOSENESS)) {
+            nodeTable.addColumn(CLOSENESS, "Closeness Centrality", Double.class, new Double(0));
+        }
+        if (!nodeTable.hasColumn(BETWEENNESS)) {
+            nodeTable.addColumn(BETWEENNESS, "Betweenness Centrality", Double.class, new Double(0));
+        }
+    }
+    
+     public  HashMap<Node, Integer> createIndiciesMap(Graph hgraph) {
+       HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
+        int index = 0;
+        for (Node s : hgraph.getNodes()) {
+            indicies.put(s, index);
+            index++;
+        } 
+        return indicies;
+    }
+     
+     public void initializeStartValues() {
+        betweenness = new double[N];
+        eccentricity = new double[N];
+        closeness = new double[N];
+        diameter = 0;
+        avgDist = 0;
+        shortestPaths = 0;
+        radius = Integer.MAX_VALUE;
+     }
+     
+     private void calculateCorrection(Graph hgraph, HashMap<Node, Integer> indicies,
+             double[] nodeBetweenness, double[] nodeCloseness, boolean directed, boolean normalized) {
+         
+         int n = hgraph.getNodeCount();
+         
+         for (Node s : hgraph.getNodes()) {
+            
+             int s_index = indicies.get(s);
+
+            if (!directed) {
+                nodeBetweenness[s_index] /= 2;
+            }
+            if (normalized) {
+                nodeCloseness[s_index] = (nodeCloseness[s_index] == 0) ? 0 : 1.0 / nodeCloseness[s_index];
+                nodeBetweenness[s_index] /= directed ? (n - 1) * (n - 2) : (n - 1) * (n - 2) / 2;
+            }     
+         }
+     }
+     
+     private void saveCalculatedValues(Graph hgraph, HashMap<Node, Integer> indicies,
+            double[] nodeEccentricity, double[] nodeBetweenness, double[] nodeCloseness) {
         for (Node s : hgraph.getNodes()) {
             int s_index = indicies.get(s);
 
-            if (!isDirected) {
-                betweenness[s_index] /= 2;
-            }
-            if (isNormalized) {
-                closeness[s_index] = (closeness[s_index] == 0) ? 0 : 1.0 / closeness[s_index];
-                betweenness[s_index] /= isDirected ? (N - 1) * (N - 2) : (N - 1) * (N - 2) / 2;
-            }
-            s.setAttribute(eccentricityCol, eccentricity[s_index]);
-            s.setAttribute(closenessCol, closeness[s_index]);
-            s.setAttribute(betweenessCol, betweenness[s_index]);
+            s.setAttribute(ECCENTRICITY, nodeEccentricity[s_index]);
+            s.setAttribute(CLOSENESS, nodeCloseness[s_index]);
+            s.setAttribute(BETWEENNESS, nodeBetweenness[s_index]);
         }
-        hgraph.readUnlock();
     }
 
     public void setNormalized(boolean isNormalized) {

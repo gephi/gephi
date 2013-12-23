@@ -76,7 +76,8 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     private double sumChange;
     private ProgressTicket progress;
     /**
-     *      */
+     *
+     */
     private boolean isCanceled;
     private boolean isDirected;
 
@@ -86,7 +87,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
             isDirected = graphController.getGraphModel().isDirected();
         }
     }
-    
+
     public void setNumRuns(int numRuns) {
         this.numRuns = numRuns;
     }
@@ -136,78 +137,128 @@ public class EigenvectorCentrality implements Statistics, LongTask {
 
     public void execute(Graph hgraph, AttributeModel attributeModel) {
 
-        Table nodeTable = attributeModel.getNodeTable();
-        Column eigenCol = nodeTable.getColumn(EIGENVECTOR);
-        if (eigenCol == null) {
-            eigenCol = nodeTable.addColumn(EIGENVECTOR, "Eigenvector Centrality", Double.class, new Double(0));
-        }
+        Column column = initializeAttributeColunms(attributeModel);
 
         int N = hgraph.getNodeCount();
         hgraph.readLock();
 
-        double[] tmp = new double[N];
         centralities = new double[N];
 
         Progress.start(progress, numRuns);
 
         HashMap<Integer, Node> indicies = new HashMap<Integer, Node>();
         HashMap<Node, Integer> invIndicies = new HashMap<Node, Integer>();
+        fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
+
+        sumChange = calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, isDirected, numRuns);
+
+        saveCalculatedValues(hgraph, column, indicies, centralities);
+
+        hgraph.readUnlock();
+
+        Progress.finish(progress);
+    }
+
+    private Column initializeAttributeColunms(AttributeModel attributeModel) {
+        Table nodeTable = attributeModel.getNodeTable();
+        Column eigenCol = nodeTable.getColumn(EIGENVECTOR);
+        if (eigenCol == null) {
+            eigenCol = nodeTable.addColumn(EIGENVECTOR, "Eigenvector Centrality", Double.class, new Double(0));
+        }
+        return eigenCol;
+    }
+
+    private void saveCalculatedValues(Graph hgraph, Column attributeColumn, HashMap<Integer, Node> indicies,
+            double[] eigCenrtalities) {
+
+        int N = hgraph.getNodeCount();
+
+        for (int i = 0; i < N; i++) {
+            Node s = indicies.get(i);
+
+            s.setAttribute(attributeColumn, eigCenrtalities[i]);
+        }
+    }
+
+    public void fillIndiciesMaps(Graph hgraph, double[] eigCentralities, HashMap<Integer, Node> indicies, HashMap<Node, Integer> invIndicies) {
+        if (indicies == null || invIndicies == null) {
+            return;
+        }
+
         int count = 0;
         for (Node u : hgraph.getNodes()) {
             indicies.put(count, u);
             invIndicies.put(u, count);
-            centralities[count] = 1;
+            eigCentralities[count] = 1;
             count++;
         }
-        for (int s = 0; s < numRuns; s++) {
-            double max = 0;
-            for (int i = 0; i < N; i++) {
-                Node u = indicies.get(i);
-                EdgeIterable iter = null;
-                if (isDirected) {
-                    iter = ((DirectedGraph) hgraph).getInEdges(u);
-                } else {
-                    iter = hgraph.getEdges(u);
-                }
+    }
 
-                for (Edge e : iter) {
-                    Node v = hgraph.getOpposite(u, e);
-                    Integer id = invIndicies.get(v);
-                    tmp[i] += centralities[id];
-                }
-                max = Math.max(max, tmp[i]);
-                if (isCanceled) {
-                    return;
-                }
+    private double computeMaxValueAndTempValues(Graph hgraph, HashMap<Integer, Node> indicies, HashMap<Node, Integer> invIndicies,
+            double[] tempValues, double[] centralityValues, boolean directed) {
+
+        double max = 0.;
+        int N = hgraph.getNodeCount();
+
+        for (int i = 0; i < N; i++) {
+            Node u = indicies.get(i);
+            EdgeIterable iter = null;
+            if (directed) {
+                iter = ((DirectedGraph) hgraph).getInEdges(u);
+            } else {
+                iter = hgraph.getEdges(u);
             }
-            sumChange = 0;
-            for (int k = 0; k < N; k++) {
-                if (max != 0) {
-                    sumChange += Math.abs(centralities[k] - (tmp[k] / max));
-                    centralities[k] = tmp[k] / max;
-                    //tmp[k] = 0;
-                }
-                if (isCanceled) {
-                    return;
-                }
+
+            for (Edge e : iter) {
+                Node v = hgraph.getOpposite(u, e);
+                Integer id = invIndicies.get(v);
+                tempValues[i] += centralityValues[id];
+            }
+            max = Math.max(max, tempValues[i]);
+            if (isCanceled) {
+                return max;
+            }
+        }
+
+        return max;
+    }
+
+    private double updateValues(Graph hgraph, double[] tempValues, double[] centralityValues, double max) {
+        double sumChanged = 0.;
+        int N = hgraph.getNodeCount();
+
+        for (int k = 0; k < N; k++) {
+            if (max != 0) {
+                sumChanged += Math.abs(centralityValues[k] - (tempValues[k] / max));
+                centralityValues[k] = tempValues[k] / max;
             }
             if (isCanceled) {
-                return;
+                return sumChanged;
+            }
+        }
+
+        return sumChanged;
+    }
+
+    public double calculateEigenvectorCentrality(Graph hgraph, double[] eigCentralities,
+            HashMap<Integer, Node> indicies, HashMap<Node, Integer> invIndicies,
+            boolean directed, int numIterations) {
+
+        int N = hgraph.getNodeCount();
+        double sumChanged = 0.;
+        double[] tmp = new double[N];
+
+        for (int s = 0; s < numIterations; s++) {
+            double max = computeMaxValueAndTempValues(hgraph, indicies, invIndicies, tmp, eigCentralities, directed);
+            sumChanged = updateValues(hgraph, tmp, eigCentralities, max);
+            if (isCanceled) {
+                return sumChanged;
             }
 
             Progress.progress(progress);
         }
 
-        for (int i = 0; i < N; i++) {
-            Node s = indicies.get(i);
-            s.setAttribute(eigenCol, centralities[i]);
-            if (isCanceled) {
-                return;
-            }
-        }
-        hgraph.readUnlock();
-
-        Progress.finish(progress);
+        return sumChanged;
     }
 
     /**

@@ -456,15 +456,36 @@ public class Modularity implements Statistics, LongTask {
 
     public void execute(Graph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
+
+        hgraph.readLock();
+
+        structure = new Modularity.CommunityStructure(hgraph);
+        int[] comStructure = new int[hgraph.getNodeCount()];
+
+        HashMap<String, Double> computedModularityMetrics = computeModularity(hgraph, structure, comStructure, resolution, isRandomized, useWeight);
+
+        modularity = computedModularityMetrics.get("modularity");
+        modularityResolution = computedModularityMetrics.get("modularityResolution");
+
+        saveValues(comStructure, hgraph, attributeModel, structure);
+
+        hgraph.readUnlock();
+    }
+
+    protected HashMap<String, Double> computeModularity(Graph hgraph, CommunityStructure theStructure, int[] comStructure,
+            double currentResolution, boolean randomized, boolean weighted) {
+        isCanceled = false;
         Progress.start(progress);
         Random rand = new Random();
-        hgraph.readLock();
-        structure = new Modularity.CommunityStructure(hgraph);
-        double totalWeight = structure.graphWeightSum;
-        double[] nodeDegrees = structure.weights.clone();
+
+        double totalWeight = theStructure.graphWeightSum;
+        double[] nodeDegrees = theStructure.weights.clone();
+
+        HashMap<String, Double> results = new HashMap<String, Double>();
+
         if (isCanceled) {
             hgraph.readUnlockAll();
-            return;
+            return results;
         }
         boolean someChange = true;
         while (someChange) {
@@ -473,91 +494,105 @@ public class Modularity implements Statistics, LongTask {
             while (localChange) {
                 localChange = false;
                 int start = 0;
-                if (isRandomized) {
-                    start = Math.abs(rand.nextInt()) % structure.N;
+                if (randomized) {
+                    start = Math.abs(rand.nextInt()) % theStructure.N;
                 }
                 int step = 0;
-                for (int i = start; step < structure.N; i = (i + 1) % structure.N) {
+                for (int i = start; step < theStructure.N; i = (i + 1) % theStructure.N) {
                     step++;
-                    double best = 0.;
-                    Community bestCommunity = null;
-                    Community nodecom = structure.nodeCommunities[i];
-                    Set<Community> iter = structure.nodeConnectionsWeight[i].keySet();
-                    for (Community com : iter) {
-                        double qValue = q(i, com);
-                        if (qValue > best) {
-                            best = qValue;
-                            bestCommunity = com;
-                        }
-                    }
-                    if ((structure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
-                        structure.moveNodeTo(i, bestCommunity);
+                    Community bestCommunity = updateBestCommunity(theStructure, i, currentResolution);
+                    if ((theStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
+                        theStructure.moveNodeTo(i, bestCommunity);
                         localChange = true;
                     }
                     if (isCanceled) {
                         hgraph.readUnlockAll();
-                        return;
+                        return results;
                     }
                 }
                 someChange = localChange || someChange;
                 if (isCanceled) {
                     hgraph.readUnlockAll();
-                    return;
+                    return results;
                 }
             }
 
             if (someChange) {
-                structure.zoomOut();
+                theStructure.zoomOut();
             }
         }
 
-        int[] comStructure = new int[hgraph.getNodeCount()];
+        fillComStructure(hgraph, theStructure, comStructure);
+        double[] degreeCount = fillDegreeCount(hgraph, theStructure, comStructure, nodeDegrees, weighted);
+
+        double computedModularity = finalQ(comStructure, degreeCount, hgraph, theStructure, totalWeight, 1., weighted);
+        double computedModularityResolution = finalQ(comStructure, degreeCount, hgraph, theStructure, totalWeight, currentResolution, weighted);
+
+        results.put("modularity", computedModularity);
+        results.put("modularityResolution", computedModularityResolution);
+
+        return results;
+    }
+
+    Community updateBestCommunity(CommunityStructure theStructure, int i, double currentResolution) {
+        double best = 0.;
+        Community bestCommunity = null;
+        Set<Community> iter = theStructure.nodeConnectionsWeight[i].keySet();
+        for (Community com : iter) {
+            double qValue = q(i, com, theStructure, currentResolution);
+            if (qValue > best) {
+                best = qValue;
+                bestCommunity = com;
+            }
+        }
+        return bestCommunity;
+    }
+
+    int[] fillComStructure(Graph hgraph, CommunityStructure theStructure, int[] comStructure) {
+//        int[] comStructure = new int[hgraph.getNodeCount()];
         int count = 0;
-        double[] degreeCount = new double[structure.communities.size()];
-        for (Community com : structure.communities) {
+
+        for (Community com : theStructure.communities) {
             for (Integer node : com.nodes) {
-                Community hidden = structure.invMap.get(node);
+                Community hidden = theStructure.invMap.get(node);
                 for (Integer nodeInt : hidden.nodes) {
                     comStructure[nodeInt] = count;
                 }
             }
             count++;
         }
+        return comStructure;
+    }
+
+    double[] fillDegreeCount(Graph hgraph, CommunityStructure theStructure, int[] comStructure, double[] nodeDegrees, boolean weighted) {
+        double[] degreeCount = new double[theStructure.communities.size()];
+
         for (Node node : hgraph.getNodes()) {
-            int index = structure.map.get(node);
-            if (useWeight) {
+            int index = theStructure.map.get(node);
+            if (weighted) {
                 degreeCount[comStructure[index]] += nodeDegrees[index];
             } else {
                 degreeCount[comStructure[index]] += hgraph.getDegree(node);
             }
 
         }
-
-        modularity = finalQ(comStructure, degreeCount, hgraph, attributeModel, totalWeight, 1.);
-        modularityResolution = finalQ(comStructure, degreeCount, hgraph, attributeModel, totalWeight, resolution);
-
-        hgraph.readUnlock();
+        return degreeCount;
     }
 
-    private double finalQ(int[] struct, double[] degrees, Graph hgraph, AttributeModel attributeModel, double totalWeight, double usedResolution) {
-        Table nodeTable = attributeModel.getNodeTable();
-        Column modCol = nodeTable.getColumn(MODULARITY_CLASS);
-        if (modCol == null) {
-            modCol = nodeTable.addColumn(MODULARITY_CLASS, "Modularity Class", Integer.class, new Integer(0));
-        }
+    private double finalQ(int[] struct, double[] degrees, Graph hgraph,
+            CommunityStructure theStructure, double totalWeight, double usedResolution, boolean weighted) {
 
         double res = 0;
         double[] internal = new double[degrees.length];
         for (Node n : hgraph.getNodes()) {
-            int n_index = structure.map.get(n);
-            n.setAttribute(modCol, struct[n_index]);
+            int n_index = theStructure.map.get(n);
             for (Node neighbor : hgraph.getNeighbors(n)) {
                 if (n == neighbor) {
                     continue;
                 }
-                int neigh_index = structure.map.get(neighbor);
+                int neigh_index = theStructure.map.get(neighbor);
                 if (struct[neigh_index] == struct[n_index]) {
-                    if (useWeight) {
+                    if (weighted) {
                         internal[struct[neigh_index]] += hgraph.getEdge(n, neighbor).getWeight();
                     } else {
                         internal[struct[neigh_index]]++;
@@ -570,6 +605,18 @@ public class Modularity implements Statistics, LongTask {
             res += usedResolution * (internal[i] / totalWeight) - Math.pow(degrees[i] / (2 * totalWeight), 2);//HERE
         }
         return res;
+    }
+
+    private void saveValues(int[] struct, Graph hgraph, AttributeModel attributeModel, CommunityStructure theStructure) {
+        Table nodeTable = attributeModel.getNodeTable();
+        Column modCol = nodeTable.getColumn(MODULARITY_CLASS);
+        if (modCol == null) {
+            modCol = nodeTable.addColumn(MODULARITY_CLASS, "Modularity Class", Integer.class, new Integer(0));
+        }
+        for (Node n : hgraph.getNodes()) {
+            int n_index = theStructure.map.get(n);;
+            n.setAttribute(modCol, struct[n_index]);
+        }
     }
 
     public double getModularity() {
@@ -629,19 +676,19 @@ public class Modularity implements Statistics, LongTask {
         return report;
     }
 
-    private double q(int node, Community community) {
-        Float edgesToFloat = structure.nodeConnectionsWeight[node].get(community);
+    private double q(int node, Community community, CommunityStructure theStructure, double currentResolution) {
+        Float edgesToFloat = theStructure.nodeConnectionsWeight[node].get(community);
         double edgesTo = 0;
         if (edgesToFloat != null) {
             edgesTo = edgesToFloat.doubleValue();
         }
         double weightSum = community.weightSum;
-        double nodeWeight = structure.weights[node];
-        double qValue = resolution * edgesTo - (nodeWeight * weightSum) / (2.0 * structure.graphWeightSum);
-        if ((structure.nodeCommunities[node] == community) && (structure.nodeCommunities[node].size() > 1)) {
-            qValue = resolution * edgesTo - (nodeWeight * (weightSum - nodeWeight)) / (2.0 * structure.graphWeightSum);
+        double nodeWeight = theStructure.weights[node];
+        double qValue = currentResolution * edgesTo - (nodeWeight * weightSum) / (2.0 * theStructure.graphWeightSum);
+        if ((theStructure.nodeCommunities[node] == community) && (theStructure.nodeCommunities[node].size() > 1)) {
+            qValue = currentResolution * edgesTo - (nodeWeight * (weightSum - nodeWeight)) / (2.0 * theStructure.graphWeightSum);
         }
-        if ((structure.nodeCommunities[node] == community) && (structure.nodeCommunities[node].size() == 1)) {
+        if ((theStructure.nodeCommunities[node] == community) && (theStructure.nodeCommunities[node].size() == 1)) {
             qValue = 0.;
         }
         return qValue;
