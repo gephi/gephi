@@ -79,11 +79,10 @@ public class NodeDataTable {
     private boolean useSparklines = false;
     private boolean timeIntervalGraphics = false;
     private boolean showEdgesNodesLabels = false;
-    private JXTable table;
-    private PropertyNodeDataColumn[] propertiesColumns;
+    private final JXTable table;
     private RowFilter rowFilter;
     private Node[] selectedNodes;
-    private AttributeColumnsController attributeColumnsController;
+    private final AttributeColumnsController attributeColumnsController;
     private boolean refreshingTable = false;
     private Column[] showingColumns = null;
     private static final int FAKE_COLUMNS_COUNT = 1;
@@ -102,21 +101,6 @@ public class NodeDataTable {
         table.setColumnControlVisible(false);
         table.setSortable(true);
         table.setRowFilter(rowFilter);
-
-        propertiesColumns = new PropertyNodeDataColumn[FAKE_COLUMNS_COUNT];
-
-        propertiesColumns[0] = new PropertyNodeDataColumn("Id") {
-
-            @Override
-            public Class getColumnClass() {
-                return Number.class;
-            }
-
-            @Override
-            public Object getValueFor(Node node) {
-                return node.getId();
-            }
-        };
 
         //Add listener of table selection to refresh edit window when the selection changes (and if the table is not being refreshed):
         //Temporaly disabled because the call to findInstance in EditWindowController seems to randomly and rarely create exceptions
@@ -217,7 +201,6 @@ public class NodeDataTable {
             selectedNodes = getNodesFromSelectedRows();
         }
         ArrayList<NodeDataColumn> columns = new ArrayList<NodeDataColumn>();
-        columns.addAll(Arrays.asList(propertiesColumns));
 
         for (Column c : cols) {
             columns.add(new AttributeNodeDataColumn(c));
@@ -391,7 +374,7 @@ public class NodeDataTable {
 
     private class AttributeNodeDataColumn implements NodeDataTable.NodeDataColumn {
 
-        private Column column;
+        private final Column column;
 
         public AttributeNodeDataColumn(Column column) {
             this.column = column;
@@ -446,7 +429,7 @@ public class NodeDataTable {
 
     private abstract class PropertyNodeDataColumn implements NodeDataTable.NodeDataColumn {
 
-        private String name;
+        private final String name;
 
         public PropertyNodeDataColumn(String name) {
             this.name = name;

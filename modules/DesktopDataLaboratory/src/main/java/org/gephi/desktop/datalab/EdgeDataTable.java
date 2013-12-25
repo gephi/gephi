@@ -87,7 +87,7 @@ public class EdgeDataTable {
     private AttributeColumnsController attributeColumnsController;
     private boolean refreshingTable = false;
     private Column[] showingColumns = null;
-    private static final int FAKE_COLUMNS_COUNT = 4;
+    private static final int FAKE_COLUMNS_COUNT = 3;
     private EdgeDataTableModel model;
 //    private TimeIntervalsRenderer timeIntervalsRenderer;
 //    private TimeIntervalCellEditor timeIntervalCellEditor;
@@ -106,20 +106,7 @@ public class EdgeDataTable {
 
         propertiesColumns = new PropertyEdgeDataColumn[FAKE_COLUMNS_COUNT];
 
-        propertiesColumns[0] = new PropertyEdgeDataColumn("Id") {
-
-            @Override
-            public Class getColumnClass() {
-                return Number.class;
-            }
-
-            @Override
-            public Object getValueFor(Edge edge) {
-                return edge.getId();
-            }
-        };
-        
-        propertiesColumns[1] = new PropertyEdgeDataColumn(NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.source.column.text")) {
+        propertiesColumns[0] = new PropertyEdgeDataColumn(NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.source.column.text")) {
 
             @Override
             public Class getColumnClass() {
@@ -136,7 +123,7 @@ public class EdgeDataTable {
             }
         };
 
-        propertiesColumns[2] = new PropertyEdgeDataColumn(NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.target.column.text")) {
+        propertiesColumns[1] = new PropertyEdgeDataColumn(NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.target.column.text")) {
 
             @Override
             public Class getColumnClass() {
@@ -152,7 +139,7 @@ public class EdgeDataTable {
                 }
             }
         };
-        propertiesColumns[3] = new PropertyEdgeDataColumn(NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.type.column.text")) {
+        propertiesColumns[2] = new PropertyEdgeDataColumn(NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.type.column.text")) {
 
             @Override
             public Class getColumnClass() {

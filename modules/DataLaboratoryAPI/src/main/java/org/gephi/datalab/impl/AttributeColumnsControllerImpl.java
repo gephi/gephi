@@ -417,7 +417,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public boolean canDeleteColumn(Column column) {
-        return column.getOrigin() != Origin.PROPERTY;
+        return !column.isReadOnly() && column.getOrigin() != Origin.PROPERTY;
     }
     
     public boolean isTableColumn(Table table, Column column){
@@ -439,15 +439,15 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public boolean canChangeColumnData(Column column) {
-        return true;
+        return !column.isReadOnly();
     }
 
     public boolean canClearColumnData(Column column) {
-        return true;
+        return !column.isReadOnly();
     }
 
     public boolean canConvertColumnToDynamic(Column column) {
-        if(AttributeUtils.isDynamicType(column.getTypeClass())){
+        if(column.isReadOnly() || AttributeUtils.isDynamicType(column.getTypeClass())){
             return false;
         }
         
