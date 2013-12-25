@@ -50,11 +50,14 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
-import org.gephi.data.attributes.type.Interval;
-import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.TimeFormat;
+import org.gephi.attribute.time.Interval;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.lib.validation.PositiveNumberValidator;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.gephi.ui.components.richtooltip.RichTooltip;
@@ -76,6 +79,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
     private TimeUnit windowTimeUnit = TimeUnit.DAYS;
     private TimeUnit tickTimeUnit = TimeUnit.DAYS;
+    private Interval bounds = null;
 
     public DynamicSettingsPanel() {
         initComponents();
@@ -107,42 +111,29 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
             }
         });
     }
-    Interval bounds = null;
-
+    
     public void setup(DynamicStatistics dynamicStatistics) {
-        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-        DynamicModel model = dynamicController.getModel();
-        TimeInterval visibleInterval = model.getVisibleInterval();
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        GraphModel graphModel = graphController.getGraphModel();
+        AttributeModel attributeModel = graphController.getAttributeModel();
+        TimeFormat timeFormat = attributeModel.getTimeFormat();
 
         //Bounds
         bounds = dynamicStatistics.getBounds();
         if (bounds == null) {
-            double low = visibleInterval.getLow();
-            if (Double.isInfinite(low)) {
-                low = model.getMin();
-            }
-            double high = visibleInterval.getHigh();
-            if (Double.isInfinite(high)) {
-                high = model.getMax();
-            }
-            bounds = new Interval(low, high);
+            bounds = graphModel.getTimeBoundsVisible();
         }
-        String boundsStr = "";
-        if (model.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) {
-            boundsStr = bounds.getLow() + " - " + bounds.getHigh();
-        } else {
-            boundsStr = DynamicUtilities.getXMLDateStringFromDouble(bounds.getLow()) + " - " + DynamicUtilities.getXMLDateStringFromDouble(bounds.getHigh());
-        }
+        String boundsStr = timeFormat.print(bounds.getLow())+" - "+timeFormat.print(bounds.getHigh());
         currentIntervalLabel.setText(boundsStr);
 
         //TimeUnit
-        if (model.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) {
+        if (timeFormat.equals(TimeFormat.DOUBLE)) {
             windowTimeUnitCombo.setVisible(false);
             tickTimeUnitCombo.setVisible(false);
         }
 
         //Set latest selected item
-        if (!model.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) {
+        if (!timeFormat.equals(TimeFormat.DOUBLE)) {
             loadDefaultTimeUnits();
         }
 
@@ -151,7 +142,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         if(bounds.getHigh() - bounds.getLow() > 1) {
             initValue = 1.;
         }
-        if (model.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) {
+        if (timeFormat.equals(TimeFormat.DOUBLE)) {
             windowTextField.setText(initValue + "");
             tickTextField.setText(initValue + "");
         } else {
@@ -162,6 +153,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         //Add listeners
         windowTimeUnitCombo.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getItem() != windowTimeUnitCombo.getSelectedItem()) {
                     refreshWindowTimeUnit();
@@ -171,6 +163,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
         tickTimeUnitCombo.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getItem() != tickTimeUnitCombo.getSelectedItem()) {
                     refreshTickTimeUnit();

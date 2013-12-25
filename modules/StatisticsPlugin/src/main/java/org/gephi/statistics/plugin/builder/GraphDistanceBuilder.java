@@ -54,14 +54,17 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=StatisticsBuilder.class)
 public class GraphDistanceBuilder implements StatisticsBuilder {
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(GraphDistanceBuilder.class, "GraphDistance.name");
     }
 
+    @Override
     public Statistics getStatistics() {
         return new GraphDistance();
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return GraphDistance.class;
     }

@@ -56,6 +56,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import org.gephi.attribute.api.TimeFormat;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerLoader;
@@ -69,7 +70,6 @@ import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Issue.Level;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
-import org.gephi.io.importer.api.TimeFormat;
 import org.openide.util.NbBundle;
 
 /**
@@ -620,15 +620,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
         //Clean autoNode
         if (!allowAutoNode()) {
-            for (Iterator<NodeDraftImpl> itr = nodeList.iterator(); itr.hasNext();) {
-                NodeDraftImpl node = itr.next();
+            for (NodeDraftImpl node : nodeList) {
                 if (node != null && node.isCreatedAuto()) {
                     int index = nodeMap.removeInt(node.getId());
                     nodeList.set(index, null);
                 }
             }
-            for (Iterator<EdgeDraftImpl> itr = edgeList.iterator(); itr.hasNext();) {
-                EdgeDraftImpl edge = itr.next();
+            for (EdgeDraftImpl edge : edgeList) {
                 if (edge != null && (edge.getSource().isCreatedAuto() || edge.getTarget().isCreatedAuto())) {
                     int index = edgeMap.remove(edge.getId());
                     edgeList.set(index, null);
@@ -718,7 +716,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         } else if (mergeStrategy.equals(EdgeWeightMergeStrategy.MAX)) {
             result = Math.max(source.getWeight(), dest.getWeight());
         } else if (mergeStrategy.equals(EdgeWeightMergeStrategy.MIN)) {
-            result = Math.min(source.getWeight(), dest.getWeight());;
+            result = Math.min(source.getWeight(), dest.getWeight());
         } else if (mergeStrategy.equals(EdgeWeightMergeStrategy.SUM)) {
             result = source.getWeight() + dest.getWeight();
         }

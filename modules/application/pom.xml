@@ -217,20 +217,20 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>spigot-plugin-ui</artifactId>
         </dependency>-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>statistics-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>statistics-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>statistics-plugin-ui</artifactId>
+        </dependency>
         <!--        <dependency>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>statistics-api</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>statistics-plugin</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>statistics-plugin-ui</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>${project.groupId}</groupId>
+                     <groupId>${project.groupId}</groupId>
                     <artifactId>timeline</artifactId>
                 </dependency>
         -->        
@@ -302,11 +302,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>io-exporter-plugin</artifactId>
         </dependency>
-        <!--
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-statistics</artifactId>
-        </dependency>-->
+        </dependency>
         <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-api</artifactId>

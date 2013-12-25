@@ -54,14 +54,17 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsBuilder.class)
 public class DegreeBuilder implements StatisticsBuilder {
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(DegreeBuilder.class, "InOutDegree.name");
     }
 
+    @Override
     public Statistics getStatistics() {
         return new Degree();
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return Degree.class;
     }

@@ -45,7 +45,6 @@ package org.gephi.statistics.api;
 import org.gephi.project.api.Workspace;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
-import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.utils.longtask.api.LongTaskListener;
 import org.gephi.utils.longtask.spi.LongTask;
 
