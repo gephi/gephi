@@ -47,6 +47,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -55,6 +56,7 @@ import net.miginfocom.swing.MigLayout;
 import org.gephi.attribute.api.AttributeUtils;
 import org.gephi.attribute.api.Table;
 import org.gephi.datalab.plugin.manipulators.general.ui.ImportCSVUIWizardAction.Mode;
+import org.gephi.datalab.utils.SupportedColumnTypeWrapper;
 import org.gephi.graph.api.GraphController;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -183,16 +185,18 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
 
     private void fillComboBoxWithColumnTypes(String column, JComboBox comboBox) {
         comboBox.removeAllItems();
-        for (Class type : AttributeUtils.getSupportedTypes()) {
-            //TODO: Show types with friendly text
-            comboBox.addItem(type);
+        List<SupportedColumnTypeWrapper> supportedTypesWrappers = SupportedColumnTypeWrapper.buildOrderedSupportedTypesList();
+
+        for (SupportedColumnTypeWrapper supportedColumnTypeWrapper : supportedTypesWrappers) {
+            comboBox.addItem(supportedColumnTypeWrapper);
         }
+        
         if (table.hasColumn(column)) {
             //Set type of the already existing column in the table and disable the edition:
-            comboBox.setSelectedItem(table.getColumn(column).getTypeClass());
+            comboBox.setSelectedItem(new SupportedColumnTypeWrapper(table.getColumn(column).getTypeClass()));
             comboBox.setEnabled(false);
         } else {
-            comboBox.setSelectedItem(String.class);//Set STRING by default
+            comboBox.setSelectedItem(new SupportedColumnTypeWrapper(String.class));//Set STRING by default
         }
     }
 

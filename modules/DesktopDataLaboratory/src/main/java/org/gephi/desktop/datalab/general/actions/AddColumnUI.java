@@ -41,6 +41,11 @@
  */
 package org.gephi.desktop.datalab.general.actions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -48,6 +53,7 @@ import org.gephi.attribute.api.AttributeModel;
 import org.gephi.attribute.api.AttributeUtils;
 import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.datalab.utils.SupportedColumnTypeWrapper;
 import org.gephi.graph.api.GraphController;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.netbeans.validation.api.ui.ValidationGroup;
@@ -118,17 +124,18 @@ public class AddColumnUI extends javax.swing.JPanel {
                 break;
         }
 
-        for (Class type : AttributeUtils.getSupportedTypes()) {
-            //TODO: Show types with friendly text
-            typeComboBox.addItem(type);
+        List<SupportedColumnTypeWrapper> supportedTypesWrappers = SupportedColumnTypeWrapper.buildOrderedSupportedTypesList();
+        
+        for (SupportedColumnTypeWrapper supportedColumnTypeWrapper : supportedTypesWrappers) {
+            typeComboBox.addItem(supportedColumnTypeWrapper);
         }
 
         int savedType = NbPreferences.forModule(AddColumnUI.class).getInt(COLUMN_TYPE_SAVED_PREFERENCES, -1);
         //Set last saved type or String by default:
-        if (savedType != -1) {
+        if (savedType != -1 && savedType < typeComboBox.getItemCount()) {
             typeComboBox.setSelectedIndex(savedType);
         } else {
-            typeComboBox.setSelectedItem(String.class);
+            typeComboBox.setSelectedItem(new SupportedColumnTypeWrapper(String.class));
         }
     }
 
@@ -136,7 +143,7 @@ public class AddColumnUI extends javax.swing.JPanel {
      * Execute the creation of the column, with the given parameters in setup and with the interface itself.
      */
     public void execute() {
-        Lookup.getDefault().lookup(AttributeColumnsController.class).addAttributeColumn(table, titleTextField.getText(), (Class) typeComboBox.getSelectedItem());
+        Lookup.getDefault().lookup(AttributeColumnsController.class).addAttributeColumn(table, titleTextField.getText(), ((SupportedColumnTypeWrapper) typeComboBox.getSelectedItem()).getType());
     }
 
     public void setOkButton(JButton okButton) {
