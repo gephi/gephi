@@ -123,6 +123,18 @@ public class AppearanceUIModel {
         }
     }
 
+    public boolean refreshSelectedFunction() {
+        Function sFunction = getSelectedFunction();
+        if (sFunction != null && sFunction.isAttribute()) {
+            for (Function func : getSelectedElementClass().equals(AppearanceUIController.NODE_ELEMENT) ? appearanceModel.getNodeFunctions() : appearanceModel.getEdgeFunctions()) {
+                if(func.equals(sFunction)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public void select() {
     }
 
