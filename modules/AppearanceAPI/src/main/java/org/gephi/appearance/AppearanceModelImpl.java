@@ -217,7 +217,7 @@ public class AppearanceModelImpl implements AppearanceModel {
         }
     }
 
-    public boolean isPartition(Column column) {
+    private boolean isPartition(Column column) {
         Index index;
         if (AttributeUtils.isNodeColumn(column)) {
             index = localScale ? graphModel.getNodeIndex(graphModel.getVisibleView()) : graphModel.getNodeIndex();
@@ -246,7 +246,7 @@ public class AppearanceModelImpl implements AppearanceModel {
         return false;
     }
 
-    public boolean isRanking(Column column) {
+    private boolean isRanking(Column column) {
         if (column.isNumber()) {
             Index index;
             if (AttributeUtils.isNodeColumn(column)) {

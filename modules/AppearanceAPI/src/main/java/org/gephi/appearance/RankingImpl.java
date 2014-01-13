@@ -69,7 +69,7 @@ public class RankingImpl implements Ranking {
 
     @Override
     public Number getMaxValue() {
-        return index.getMinValue(column);
+        return index.getMaxValue(column);
     }
 
     @Override
@@ -86,5 +86,27 @@ public class RankingImpl implements Ranking {
     public float normalize(Number value) {
         float normalizedValue = (float) (value.doubleValue() - getMinValue().doubleValue()) / (float) (getMaxValue().doubleValue() - getMinValue().doubleValue());
         return interpolator.interpolate(normalizedValue);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + (this.column != null ? this.column.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RankingImpl other = (RankingImpl) obj;
+        if (this.column != other.column && (this.column == null || !this.column.equals(other.column))) {
+            return false;
+        }
+        return true;
     }
 }
