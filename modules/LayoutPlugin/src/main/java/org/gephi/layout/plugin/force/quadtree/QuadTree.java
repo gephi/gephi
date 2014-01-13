@@ -362,6 +362,11 @@ public class QuadTree implements Node {
     }
 
     @Override
+    public boolean hasTimestamp(double timestamp) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
     public boolean removeTimestamp(double timestamp) {
         throw new UnsupportedOperationException("Not supported.");
     }
