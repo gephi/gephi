@@ -165,4 +165,38 @@ public class FunctionImpl implements RankingFunction, PartitionFunction, SimpleF
         }
         return super.toString();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 47 * hash + (this.column != null ? this.column.hashCode() : 0);
+        hash = 47 * hash + (this.transformer != null ? this.transformer.hashCode() : 0);
+        hash = 47 * hash + (this.partition != null ? this.partition.hashCode() : 0);
+        hash = 47 * hash + (this.ranking != null ? this.ranking.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FunctionImpl other = (FunctionImpl) obj;
+        if (this.column != other.column && (this.column == null || !this.column.equals(other.column))) {
+            return false;
+        }
+        if (this.transformer != other.transformer && (this.transformer == null || !this.transformer.equals(other.transformer))) {
+            return false;
+        }
+        if (this.partition != other.partition && (this.partition == null || !this.partition.equals(other.partition))) {
+            return false;
+        }
+        if (this.ranking != other.ranking && (this.ranking == null || !this.ranking.equals(other.ranking))) {
+            return false;
+        }
+        return true;
+    }
 }

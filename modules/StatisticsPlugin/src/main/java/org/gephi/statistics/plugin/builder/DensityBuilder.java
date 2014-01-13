@@ -54,14 +54,17 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=StatisticsBuilder.class)
 public class DensityBuilder implements StatisticsBuilder {
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(DensityBuilder.class, "GraphDensity.name");
     }
 
+    @Override
     public Statistics getStatistics() {
         return new GraphDensity();
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return GraphDensity.class;
     }

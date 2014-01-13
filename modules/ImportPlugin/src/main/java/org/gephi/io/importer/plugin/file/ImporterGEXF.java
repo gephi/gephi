@@ -47,6 +47,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import javax.xml.stream.*;
 import javax.xml.stream.events.XMLEvent;
+import org.gephi.attribute.api.TimeFormat;
 import org.gephi.io.importer.api.*;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -232,7 +233,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
             } else if ("datetime".equalsIgnoreCase(timeFormat)) {
                 container.setTimeFormat(TimeFormat.DATETIME);
             } else if ("timestamp".equalsIgnoreCase(timeFormat)) {
-                container.setTimeFormat(TimeFormat.TIMESTAMP);
+                container.setTimeFormat(TimeFormat.DATETIME);
             }
         } else if (mode.equalsIgnoreCase("dynamic")) {
             container.setTimeFormat(TimeFormat.DOUBLE);

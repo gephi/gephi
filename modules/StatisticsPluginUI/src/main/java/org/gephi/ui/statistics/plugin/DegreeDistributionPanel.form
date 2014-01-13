@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
@@ -76,11 +76,11 @@
     </Component>
     <Component class="org.jdesktop.swingx.JXLabel" name="descriptionLabel">
       <Properties>
-        <Property name="lineWrap" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/ui/statistics/plugin/Bundle.properties" key="DegreeDistributionPanel.descriptionLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
         <Property name="verticalAlignment" type="int" value="1"/>
+        <Property name="lineWrap" type="boolean" value="true"/>
       </Properties>
     </Component>
     <Component class="org.jdesktop.swingx.JXHeader" name="header">

@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.statistics.plugin.dynamic;
 
@@ -45,19 +45,17 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.attributes.type.DynamicDouble;
-import org.gephi.data.attributes.type.DynamicInteger;
-import org.gephi.data.attributes.type.Interval;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
+import org.gephi.attribute.time.Interval;
+import org.gephi.attribute.time.TimestampDoubleSet;
+import org.gephi.attribute.time.TimestampIntegerSet;
+import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
-import org.gephi.graph.api.HierarchicalDirectedGraph;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.spi.DynamicStatistics;
@@ -90,60 +88,49 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
     private boolean averageOnly;
     private boolean cancel = false;
     //Cols
-    private AttributeColumn dynamicInDegreeColumn;
-    private AttributeColumn dynamicOutDegreeColumn;
-    private AttributeColumn dynamicDegreeColumn;
+    private Column dynamicInDegreeColumn;
+    private Column dynamicOutDegreeColumn;
+    private Column dynamicDegreeColumn;
     //Average
-    private AttributeColumn dynamicAverageDegreeColumn;
-    private DynamicDouble averages;
+    private Map<Double, Double> averages;
 
     public DynamicDegree() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (graphController != null && graphController.getModel() != null) {
-            isDirected = graphController.getModel().isDirected();
+        if (graphController != null && graphController.getGraphModel() != null) {
+            isDirected = graphController.getGraphModel().isDirected();
         }
     }
 
+    @Override
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         this.graphModel = graphModel;
         this.isDirected = graphModel.isDirected();
+        this.averages = new HashMap<Double, Double>();
 
         //Attributes cols
         if (!averageOnly) {
-            AttributeTable nodeTable = attributeModel.getNodeTable();
+            Table nodeTable = attributeModel.getNodeTable();
             dynamicInDegreeColumn = nodeTable.getColumn(DYNAMIC_INDEGREE);
             dynamicOutDegreeColumn = nodeTable.getColumn(DYNAMIC_OUTDEGREE);
             dynamicDegreeColumn = nodeTable.getColumn(DYNAMIC_DEGREE);
             if (isDirected) {
                 if (dynamicInDegreeColumn == null) {
-                    dynamicInDegreeColumn = nodeTable.addColumn(DYNAMIC_INDEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.InDegree"), AttributeType.DYNAMIC_INT, AttributeOrigin.COMPUTED, new DynamicInteger());
+                    dynamicInDegreeColumn = nodeTable.addColumn(DYNAMIC_INDEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.InDegree"), TimestampIntegerSet.class, null);
                 }
                 if (dynamicOutDegreeColumn == null) {
-                    dynamicOutDegreeColumn = nodeTable.addColumn(DYNAMIC_OUTDEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.OutDegree"), AttributeType.DYNAMIC_INT, AttributeOrigin.COMPUTED, new DynamicInteger());
+                    dynamicOutDegreeColumn = nodeTable.addColumn(DYNAMIC_OUTDEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.OutDegree"), TimestampIntegerSet.class, null);
                 }
             }
             if (dynamicDegreeColumn == null) {
-                dynamicDegreeColumn = nodeTable.addColumn(DYNAMIC_DEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.Degree"), AttributeType.DYNAMIC_INT, AttributeOrigin.COMPUTED, new DynamicInteger());
+                dynamicDegreeColumn = nodeTable.addColumn(DYNAMIC_DEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.Degree"), TimestampIntegerSet.class, null);
             }
-        }
-
-        //Avg Column
-        AttributeTable graphTable = attributeModel.getGraphTable();
-        dynamicAverageDegreeColumn = graphTable.getColumn(DYNAMIC_AVGDEGREE);
-        if (dynamicAverageDegreeColumn == null) {
-            dynamicAverageDegreeColumn = graphTable.addColumn(DYNAMIC_AVGDEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.graphcolumn.AvgDegree"), AttributeType.DYNAMIC_DOUBLE, AttributeOrigin.COMPUTED, new DynamicDouble());
         }
     }
 
+    @Override
     public String getReport() {
-        //Transform to Map
-        Map<Double, Double> map = new HashMap<Double, Double>();
-        for (Interval<Double> interval : averages.getIntervals()) {
-            map.put(interval.getLow(), interval.getValue());
-        }
-
         //Time series
-        XYSeries dSeries = ChartUtils.createXYSeries(map, "Degree Time Series");
+        XYSeries dSeries = ChartUtils.createXYSeries(averages, "Degree Time Series");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(dSeries);
@@ -174,53 +161,33 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
                 + "<br /><br />" + degreeImageFile;
 
         /*for (Interval<Double> averages : averages) {
-        report += averages.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
-        }*/
+         report += averages.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
+         }*/
         report += "<br /><br /></BODY></HTML>";
         return report;
     }
 
+    @Override
     public void loop(GraphView window, Interval interval) {
-        HierarchicalGraph graph = graphModel.getHierarchicalGraph(window);
-        HierarchicalDirectedGraph directedGraph = null;
+        Graph graph = graphModel.getGraph(window);
+        DirectedGraph directedGraph = null;
         if (isDirected) {
-            directedGraph = graphModel.getHierarchicalDirectedGraph(window);
+            directedGraph = graphModel.getDirectedGraph(window);
         }
 
         long sum = 0;
         for (Node n : graph.getNodes().toArray()) {
-            int degree = graph.getTotalDegree(n);
+            int degree = graph.getDegree(n);
 
             if (!averageOnly) {
-                Interval<Integer> degreeInInterval = new Interval<Integer>(interval, degree);
-                DynamicInteger val = (DynamicInteger) n.getAttributes().getValue(dynamicDegreeColumn.getIndex());
-                if (val == null) {
-                    val = new DynamicInteger(degreeInInterval);
-                } else {
-                    val = new DynamicInteger(val, degreeInInterval);
-                }
-                n.getAttributes().setValue(dynamicDegreeColumn.getIndex(), val);
+                n.setAttribute(dynamicDegreeColumn, degree, interval.getLow());
 
                 if (isDirected) {
-                    int indegree = directedGraph.getTotalInDegree(n);
-                    Interval<Integer> inDegreeInInterval = new Interval<Integer>(interval, indegree);
-                    DynamicInteger inVal = (DynamicInteger) n.getAttributes().getValue(dynamicInDegreeColumn.getIndex());
-                    if (inVal == null) {
-                        inVal = new DynamicInteger(inDegreeInInterval);
-                    } else {
-                        inVal = new DynamicInteger(inVal, inDegreeInInterval);
-                    }
-                    n.getAttributes().setValue(dynamicInDegreeColumn.getIndex(), inVal);
+                    int indegree = directedGraph.getInDegree(n);
+                    n.setAttribute(dynamicInDegreeColumn, indegree, interval.getLow());
 
-                    int outdegree = directedGraph.getTotalOutDegree(n);
-                    Interval<Integer> outDegreeInInterval = new Interval<Integer>(interval, outdegree);
-                    DynamicInteger outVal = (DynamicInteger) n.getAttributes().getValue(dynamicOutDegreeColumn.getIndex());
-                    if (outVal == null) {
-                        outVal = new DynamicInteger(outDegreeInInterval);
-                    } else {
-                        outVal = new DynamicInteger(outVal, outDegreeInInterval);
-                    }
-                    n.getAttributes().setValue(dynamicOutDegreeColumn.getIndex(), outVal);
+                    int outdegree = directedGraph.getOutDegree(n);
+                    n.setAttribute(dynamicOutDegreeColumn, outdegree, interval.getLow());
                 }
             }
             sum += degree;
@@ -230,34 +197,43 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
         }
 
         double avg = sum / (double) graph.getNodeCount();
-
-        averages = new DynamicDouble(averages, new Interval<Double>(interval.getLow(), interval.getHigh(), false, true, avg));
+        averages.put(interval.getLow(), avg);
+        averages.put(interval.getHigh(), avg);
+        
+        graph.setAttribute(DYNAMIC_AVGDEGREE, avg, interval.getLow());
+        graph.setAttribute(DYNAMIC_AVGDEGREE, avg, interval.getHigh());
     }
 
+    @Override
     public void end() {
-        graphModel.getGraphVisible().getAttributes().setValue(dynamicAverageDegreeColumn.getIndex(), averages);
     }
 
+    @Override
     public void setBounds(Interval bounds) {
         this.bounds = bounds;
     }
 
+    @Override
     public void setWindow(double window) {
         this.window = window;
     }
 
+    @Override
     public void setTick(double tick) {
         this.tick = tick;
     }
 
+    @Override
     public double getWindow() {
         return window;
     }
 
+    @Override
     public double getTick() {
         return tick;
     }
 
+    @Override
     public Interval getBounds() {
         return bounds;
     }
@@ -278,11 +254,13 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
         return averageOnly;
     }
 
+    @Override
     public boolean cancel() {
         cancel = true;
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
     }
 }

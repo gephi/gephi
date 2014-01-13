@@ -104,4 +104,26 @@ public class PartitionImpl implements Partition {
     public Column getColumn() {
         return column;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 23 * hash + (this.column != null ? this.column.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PartitionImpl other = (PartitionImpl) obj;
+        if (this.column != other.column && (this.column == null || !this.column.equals(other.column))) {
+            return false;
+        }
+        return true;
+    }
 }

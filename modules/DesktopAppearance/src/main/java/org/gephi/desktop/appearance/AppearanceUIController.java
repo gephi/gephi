@@ -49,12 +49,17 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.gephi.appearance.api.AppearanceController;
 import org.gephi.appearance.api.AppearanceModel;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.TableObserver;
+import org.gephi.graph.api.GraphController;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -79,6 +84,8 @@ public class AppearanceUIController {
     private final Set<AppearanceUIModelListener> listeners;
     //Model
     private AppearanceUIModel model;
+    //Observer
+    private ColumnObserver tableObserver;
 
     public AppearanceUIController() {
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -98,6 +105,12 @@ public class AppearanceUIController {
                     workspace.add(model);
                 }
                 model.select();
+                if (tableObserver != null) {
+                    tableObserver.destroy();
+                }
+                tableObserver = new ColumnObserver(workspace);
+                tableObserver.start();
+
                 firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, model);
             }
 
@@ -117,6 +130,9 @@ public class AppearanceUIController {
                 AppearanceUIModel oldModel = model;
                 model = null;
                 firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, model);
+                if (tableObserver != null) {
+                    tableObserver.destroy();
+                }
             }
         });
 
@@ -258,6 +274,45 @@ public class AppearanceUIController {
         AppearanceUIModelEvent event = new AppearanceUIModelEvent(this, propertyName, oldValue, newValue);
         for (AppearanceUIModelListener listener : listeners) {
             listener.propertyChange(event);
+        }
+    }
+
+    private class ColumnObserver extends TimerTask {
+
+        private final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+        private static final int INTERVAL = 500;
+        private final Timer timer;
+        private final TableObserver nodeObserver;
+        private final TableObserver edgeObserver;
+
+        public ColumnObserver(Workspace workspace) {
+            timer = new Timer("RankingColumnObserver", true);
+            nodeObserver = gc.getAttributeModel(workspace).getNodeTable().getTableObserver();
+            edgeObserver = gc.getAttributeModel(workspace).getEdgeTable().getTableObserver();
+        }
+
+        @Override
+        public void run() {
+            if (nodeObserver.hasTableChanged() || edgeObserver.hasTableChanged()) {
+                Function oldValue = model.getSelectedFunction();
+                model.refreshSelectedFunction();
+                Function newValue = model.getSelectedFunction();
+                firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_FUNCTION, oldValue, newValue);
+            }
+        }
+
+        public void start() {
+            timer.schedule(this, INTERVAL, INTERVAL);
+        }
+
+        public void stop() {
+            timer.cancel();
+        }
+
+        public void destroy() {
+            stop();
+            nodeObserver.destroy();
+            edgeObserver.destroy();
         }
     }
 }
