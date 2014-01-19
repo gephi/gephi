@@ -685,8 +685,8 @@
                                             <arg value="-o"/>
                                             <arg value="${project.artifactId}-${project.version}.dmg"/>
                                             <arg value="-root"/>
-                                            <arg value="${project.build.directory}/${gephi.appbundle.name}.app"/>
-                                            <arg value="${project.build.directory}/${gephi.appbundle.name}.app"/>
+                                            <arg value="${project.build.directory}/${gephi.app.title}"/>
+                                            <arg value="${project.build.directory}/${gephi.app.title}"/>
                                         </exec>
                                     </target>
                                 </configuration>
