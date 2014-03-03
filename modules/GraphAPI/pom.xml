@@ -31,7 +31,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>graph-store</artifactId>
+            <artifactId>graphstore-api</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>graphstore-impl</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
