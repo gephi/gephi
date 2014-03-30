@@ -69,7 +69,7 @@ public class ContextRefreshThread extends TimerTask {
 
     private void initObserver() {
         if (observer == null || observer.isDestroyed()) {
-            observer = graphModel.getGraphObserver(graphModel.getGraphVisible(), false);
+            observer = graphModel.createGraphObserver(graphModel.getGraphVisible(), false);
         }
     }
 
