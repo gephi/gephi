@@ -36,7 +36,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>graphstore-impl</artifactId>
+            <artifactId>graphstore</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
