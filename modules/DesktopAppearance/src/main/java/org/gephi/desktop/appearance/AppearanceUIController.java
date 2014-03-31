@@ -231,6 +231,7 @@ public class AppearanceUIController {
         if (model != null) {
             TransformerUI oldValue = model.getSelectedTransformerUI();
             if (!oldValue.equals(ui)) {
+                model.setAutoApply(false);
                 model.setSelectedTransformerUI(ui);
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_TRANSFORMER_UI, oldValue, ui);
             }
@@ -241,8 +242,36 @@ public class AppearanceUIController {
         if (model != null) {
             Function oldValue = model.getSelectedFunction();
             if ((oldValue == null && function != null) || (oldValue != null && function == null) || (function != null && oldValue != null && !oldValue.equals(function))) {
+                model.setAutoApply(false);
                 model.setSelectedFunction(function);
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_FUNCTION, oldValue, function);
+            }
+        }
+    }
+
+    public void setAutoApply(boolean autoApply) {
+        if (model != null) {
+            model.setAutoApply(autoApply);
+            firePropertyChangeEvent(AppearanceUIModelEvent.SET_AUTO_APPLY, !autoApply, autoApply);
+        }
+    }
+
+    public void startAutoApply() {
+        if (model != null) {
+            AutoAppyTransformer aat = model.getAutoAppyTransformer();
+            if (aat != null) {
+                aat.start();
+                firePropertyChangeEvent(AppearanceUIModelEvent.START_STOP_AUTO_APPLY, false, true);
+            }
+        }
+    }
+
+    public void stopAutoApply() {
+        if (model != null) {
+            AutoAppyTransformer aat = model.getAutoAppyTransformer();
+            if (aat != null) {
+                aat.stop();
+                firePropertyChangeEvent(AppearanceUIModelEvent.START_STOP_AUTO_APPLY, true, false);
             }
         }
     }

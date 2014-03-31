@@ -41,25 +41,56 @@
  */
 package org.gephi.desktop.appearance;
 
-import java.beans.PropertyChangeEvent;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import org.gephi.appearance.api.Function;
 
 /**
  *
  * @author mbastian
  */
-public class AppearanceUIModelEvent extends PropertyChangeEvent {
+public class AutoAppyTransformer implements Runnable {
 
-    public static String MODEL = "model";
-    public static String SELECTED_ELEMENT_CLASS = "selectedElementClass";
-    public static String SELECTED_CATEGORY = "selectedCategory";
-    public static String SELECTED_TRANSFORMER_UI = "selectedTransformerUI";
-    public static String SELECTED_FUNCTION = "selectedFunction";
-    public static String ATTRIBUTE_LIST = "attributeList";
-    public static String START_STOP_AUTO_APPLY = "startStopAutoApply";
-    public static String SET_AUTO_APPLY = "setStopAutoApply";
-    
-    public AppearanceUIModelEvent(Object source, String propertyName,
-            Object oldValue, Object newValue) {
-        super(source, propertyName, oldValue, newValue);
+    private static final long DEFAULT_DELAY = 500;  //ms
+    private final Function function;
+    private final AppearanceUIController controller;
+    private ScheduledExecutorService executor;
+
+    public AutoAppyTransformer(AppearanceUIController controller, Function function) {
+        this.controller = controller;
+        this.function = function;
+    }
+
+    public void start() {
+        executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r, "Appearance Auto Transformer");
+                return t;
+            }
+        });
+        executor.scheduleWithFixedDelay(this, 0, getDelayInMs(), TimeUnit.MILLISECONDS);
+    }
+
+    public void stop() {
+        if (executor != null && !executor.isShutdown()) {
+            executor.shutdown();
+        }
+        executor = null;
+    }
+
+    @Override
+    public void run() {
+        controller.appearanceController.transform(function);
+    }
+
+    public boolean isRunning() {
+        return executor != null;
+    }
+
+    private long getDelayInMs() {
+        return DEFAULT_DELAY;
     }
 }

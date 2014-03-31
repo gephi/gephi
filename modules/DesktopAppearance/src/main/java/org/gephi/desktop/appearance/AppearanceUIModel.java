@@ -68,6 +68,7 @@ public class AppearanceUIModel {
     protected final Map<String, Map<TransformerCategory, TransformerUI>> selectedTransformerUI;
     protected final Map<String, Map<TransformerUI, Function>> selectedFunction;
     protected final Map<String, TransformerCategory> selectedCategory;
+    protected final Map<String, Map<TransformerCategory, AutoAppyTransformer>> selectedAutoTransformer;
     protected String selectedElementClass = AppearanceUIController.NODE_ELEMENT;
     protected Transformer selectedTransformer;
 
@@ -79,6 +80,7 @@ public class AppearanceUIModel {
         selectedCategory = new HashMap<String, TransformerCategory>();
         selectedTransformerUI = new HashMap<String, Map<TransformerCategory, TransformerUI>>();
         selectedFunction = new HashMap<String, Map<TransformerUI, Function>>();
+        selectedAutoTransformer = new HashMap<String, Map<TransformerCategory, AutoAppyTransformer>>();
 
         //Init selected
         for (String ec : ELEMENT_CLASSES) {
@@ -104,6 +106,7 @@ public class AppearanceUIModel {
         }
         selectedTransformerUI.put(elementClass, newMap);
         selectedFunction.put(elementClass, new HashMap<TransformerUI, Function>());
+        selectedAutoTransformer.put(elementClass, new HashMap<TransformerCategory, AutoAppyTransformer>());
     }
 
     private void refreshSelectedFunctions(String elementClass) {
@@ -127,7 +130,7 @@ public class AppearanceUIModel {
         Function sFunction = getSelectedFunction();
         if (sFunction != null && sFunction.isAttribute()) {
             for (Function func : getSelectedElementClass().equals(AppearanceUIController.NODE_ELEMENT) ? appearanceModel.getNodeFunctions() : appearanceModel.getEdgeFunctions()) {
-                if(func.equals(sFunction)) {
+                if (func.equals(sFunction)) {
                     return false;
                 }
             }
@@ -157,6 +160,15 @@ public class AppearanceUIModel {
         return selectedFunction.get(selectedElementClass).get(getSelectedTransformerUI());
     }
 
+    public AutoAppyTransformer getAutoAppyTransformer() {
+        String elm = getSelectedElementClass();
+        TransformerCategory ct = getSelectedCategory();
+        if (ct != null) {
+            return selectedAutoTransformer.get(elm).get(ct);
+        }
+        return null;
+    }
+
     public Collection<Function> getFunctions() {
         List<Function> functions = new ArrayList<Function>();
         for (Function func : selectedElementClass.equalsIgnoreCase(AppearanceUIController.NODE_ELEMENT) ? appearanceModel.getNodeFunctions() : appearanceModel.getEdgeFunctions()) {
@@ -168,6 +180,22 @@ public class AppearanceUIModel {
             }
         }
         return functions;
+    }
+
+    protected void setAutoApply(boolean autoApply) {
+        if (!autoApply) {
+            AutoAppyTransformer aat = getAutoAppyTransformer();
+            if (aat != null) {
+                aat.stop();
+            }
+        }
+        String elmt = getSelectedElementClass();
+        TransformerCategory cat = getSelectedCategory();
+        if (autoApply) {
+            selectedAutoTransformer.get(elmt).put(cat, new AutoAppyTransformer(controller, getSelectedFunction()));
+        } else {
+            selectedAutoTransformer.get(elmt).put(cat, null);
+        }
     }
 
     protected boolean isAttributeTransformerUI(TransformerUI ui) {
