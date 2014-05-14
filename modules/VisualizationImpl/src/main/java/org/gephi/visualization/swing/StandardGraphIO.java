@@ -507,7 +507,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         float newCameraLocation = Math.max(newCameraLocationX, newCameraLocationY);
 
         graphDrawable.cameraLocation[0] = limits.getMinXoctree() + graphWidth / 2;
-        graphDrawable.cameraLocation[1] = limits.getMinYoctree() + graphWidth / 2;
+        graphDrawable.cameraLocation[1] = limits.getMinYoctree() + graphHeight / 2;
         graphDrawable.cameraLocation[2] = newCameraLocation;
 
         graphDrawable.cameraTarget[0] = graphDrawable.cameraLocation[0];
