@@ -167,7 +167,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
 
     private void exportData(Graph graph) throws IOException {
         printOpen("graph");
-        printTag("Creator Gephi");
+        printTag("Creator \"Gephi\"");
         if (graph.isDirected() || graph.isMixed()) {
             printTag("directed 1");
         } else if (graph.isUndirected()) {
