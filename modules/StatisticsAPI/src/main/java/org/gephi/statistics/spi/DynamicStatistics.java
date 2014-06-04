@@ -42,8 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.statistics.spi;
 
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.type.Interval;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.time.Interval;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 

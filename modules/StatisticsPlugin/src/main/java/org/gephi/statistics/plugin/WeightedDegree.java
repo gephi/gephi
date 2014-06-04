@@ -46,17 +46,12 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.Table;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalDirectedGraph;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -67,6 +62,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -89,93 +85,123 @@ public class WeightedDegree implements Statistics, LongTask {
         return avgWDegree;
     }
 
+    @Override
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+        Graph graph = graphModel.getGraphVisible();
         execute(graph, attributeModel);
     }
 
-    public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
-        isDirected = graph instanceof DirectedGraph;
+    public void execute(Graph graph, AttributeModel attributeModel) {
+        isDirected = graph.isDirected();
         isCanceled = false;
-        degreeDist = new HashMap<Double, Integer>();
-        inDegreeDist = new HashMap<Double, Integer>();
-        outDegreeDist = new HashMap<Double, Integer>();
 
-        AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn degCol = nodeTable.getColumn(WDEGREE);
-        AttributeColumn inCol = nodeTable.getColumn(WINDEGREE);
-        AttributeColumn outCol = nodeTable.getColumn(WOUTDEGREE);
-        if (degCol == null) {
-            degCol = nodeTable.addColumn(WDEGREE, "Weighted Degree", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, 0.0);
-        }
-        if (isDirected) {
-            if (inCol == null) {
-                inCol = nodeTable.addColumn(WINDEGREE, "Weighted In-Degree", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, 0.0);
-            }
-            if (outCol == null) {
-                outCol = nodeTable.addColumn(WOUTDEGREE, "Weighted Out-Degree", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, 0.0);
-            }
-        }
+        initializeDegreeDists();
+        initializeAttributeColunms(attributeModel);
 
         graph.readLock();
 
-        Progress.start(progress, graph.getNodeCount());
-        int i = 0;
-
-        for (Node n : graph.getNodes()) {
-            AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
-            double totalWeight = 0;
-            if (isDirected) {
-                HierarchicalDirectedGraph hdg = graph.getGraphModel().getHierarchicalDirectedGraph();
-                double totalInWeight = 0;
-                double totalOutWeight = 0;
-                for (Iterator it = graph.getEdgesAndMetaEdges(n).iterator(); it.hasNext();) {
-                    Edge e = (Edge) it.next();
-                    if (e.getSource().getNodeData().equals(n.getNodeData())) {
-                        totalOutWeight += e.getWeight();
-                    }
-                    if (e.getTarget().getNodeData().equals(n.getNodeData())) {
-                        totalInWeight += e.getWeight();
-                    }
-                }
-                totalWeight = totalInWeight + totalOutWeight;
-                row.setValue(inCol, totalInWeight);
-                row.setValue(outCol, totalOutWeight);
-                if (!inDegreeDist.containsKey(totalInWeight)) {
-                    inDegreeDist.put(totalInWeight, 0);
-                }
-                inDegreeDist.put(totalInWeight, inDegreeDist.get(totalInWeight) + 1);
-                if (!outDegreeDist.containsKey(totalOutWeight)) {
-                    outDegreeDist.put(totalOutWeight, 0);
-                }
-                outDegreeDist.put(totalOutWeight, outDegreeDist.get(totalOutWeight) + 1);
-            } else {
-                for (Iterator it = graph.getEdgesAndMetaEdges(n).iterator(); it.hasNext();) {
-                    Edge e = (Edge) it.next();
-                    totalWeight += e.getWeight();
-                }
-            }
-
-            row.setValue(degCol, totalWeight);
-            avgWDegree += totalWeight;
-
-            if (!degreeDist.containsKey(totalWeight)) {
-                degreeDist.put(totalWeight, 0);
-            }
-            degreeDist.put(totalWeight, degreeDist.get(totalWeight) + 1);
-
-            if (isCanceled) {
-                break;
-            }
-            i++;
-            Progress.progress(progress, i);
-        }
-
-        avgWDegree /= (isDirected) ? 2 * graph.getNodeCount() : graph.getNodeCount();
+        avgWDegree = calculateAverageWeightedDegree(graph, isDirected, true);
 
         graph.readUnlockAll();
     }
 
+    public double calculateAverageWeightedDegree(Graph graph, boolean isDirected, boolean updateAttributes) {
+        double averageWeightedDegree = 0;
+
+        DirectedGraph directedGraph = null;
+
+        if (isDirected) {
+            directedGraph = (DirectedGraph) graph;
+        }
+
+        Progress.start(progress, graph.getNodeCount());
+
+        for (Node n : graph.getNodes()) {
+            double totalWeight = 0;
+            if (isDirected) {
+                double totalInWeight = 0;
+                double totalOutWeight = 0;
+                for (Edge e : directedGraph.getEdges(n)) {
+                    if (e.getSource().equals(n)) {
+                        totalOutWeight += e.getWeight();
+                    }
+                    if (e.getTarget().equals(n)) {
+                        totalInWeight += e.getWeight();
+                    }
+                }
+                totalWeight = totalInWeight + totalOutWeight;
+
+                n.setAttribute(WINDEGREE, totalInWeight);
+                n.setAttribute(WOUTDEGREE, totalOutWeight);
+                n.setAttribute(WDEGREE, totalWeight);
+
+                updateDegreeDists(totalInWeight, totalOutWeight, totalWeight);
+            } else {
+                for (Edge e : graph.getEdges(n)) {
+                    totalWeight += e.getWeight();
+                }
+                n.setAttribute(WDEGREE, totalWeight);
+                updateDegreeDists(totalWeight);
+            }
+
+            averageWeightedDegree += totalWeight;
+
+            if (isCanceled) {
+                break;
+            }
+            Progress.progress(progress);
+        }
+
+        averageWeightedDegree /= (isDirected) ? 2 * graph.getNodeCount() : graph.getNodeCount();
+
+        return averageWeightedDegree;
+
+    }
+
+    private void initializeDegreeDists() {
+        degreeDist = new HashMap<Double, Integer>();
+        inDegreeDist = new HashMap<Double, Integer>();
+        outDegreeDist = new HashMap<Double, Integer>();
+    }
+
+    private void initializeAttributeColunms(AttributeModel attributeModel) {
+        Table nodeTable = attributeModel.getNodeTable();
+        if (isDirected) {
+            if (!nodeTable.hasColumn(WINDEGREE)) {
+                nodeTable.addColumn(WINDEGREE, NbBundle.getMessage(WeightedDegree.class, "WeightedDegree.nodecolumn.InDegree"), Double.class, 0.0);
+            }
+            if (!nodeTable.hasColumn(WOUTDEGREE)) {
+                nodeTable.addColumn(WOUTDEGREE, NbBundle.getMessage(WeightedDegree.class, "WeightedDegree.nodecolumn.OutDegree"), Double.class, 0.0);
+            }
+        }
+        if (!nodeTable.hasColumn(WDEGREE)) {
+            nodeTable.addColumn(WDEGREE, NbBundle.getMessage(WeightedDegree.class, "WeightedDegree.nodecolumn.Degree"), Double.class, 0.0);
+        }
+    }
+
+    private void updateDegreeDists(double winDegree, double woutDegree, double wdegree) {
+        if (!inDegreeDist.containsKey(winDegree)) {
+            inDegreeDist.put(winDegree, 0);
+        }
+        inDegreeDist.put(winDegree, inDegreeDist.get(winDegree) + 1);
+        if (!outDegreeDist.containsKey(woutDegree)) {
+            outDegreeDist.put(woutDegree, 0);
+        }
+        outDegreeDist.put(woutDegree, outDegreeDist.get(woutDegree) + 1);
+        if (!degreeDist.containsKey(wdegree)) {
+            degreeDist.put(wdegree, 0);
+        }
+        degreeDist.put(wdegree, degreeDist.get(wdegree) + 1);
+    }
+
+    private void updateDegreeDists(double wdegree) {
+        if (!degreeDist.containsKey(wdegree)) {
+            degreeDist.put(wdegree, 0);
+        }
+        degreeDist.put(wdegree, degreeDist.get(wdegree) + 1);
+    }
+
+    @Override
     public String getReport() {
         String report = "";
 
@@ -282,11 +308,13 @@ public class WeightedDegree implements Statistics, LongTask {
         return report;
     }
 
+    @Override
     public boolean cancel() {
         this.isCanceled = true;
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progress = progressTicket;
     }

@@ -43,9 +43,6 @@ package org.gephi.desktop.statistics;
 
 import java.util.ArrayList;
 import org.gephi.desktop.statistics.api.StatisticsControllerUI;
-import org.gephi.dynamic.api.DynamicController;
-import org.gephi.dynamic.api.DynamicModelEvent;
-import org.gephi.dynamic.api.DynamicModelListener;
 import org.gephi.statistics.api.StatisticsController;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
@@ -61,23 +58,23 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsControllerUI.class)
 public class StatisticsControllerUIImpl implements StatisticsControllerUI {
 
-    private final DynamicModelListener dynamicModelListener;
+//    private final DynamicModelListener dynamicModelListener;
     private StatisticsModelUIImpl model;
 
     public StatisticsControllerUIImpl() {
-        dynamicModelListener = new DynamicModelListener() {
-
-            public void dynamicModelChanged(DynamicModelEvent event) {
-                if (event.getEventType().equals(DynamicModelEvent.EventType.IS_DYNAMIC_GRAPH)) {
-                    boolean isDynamic = (Boolean) event.getData();
-                    for (StatisticsUI ui : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
-                        if (ui.getCategory().equals(StatisticsUI.CATEGORY_DYNAMIC)) {
-                            setStatisticsUIVisible(ui, isDynamic);
-                        }
-                    }
-                }
-            }
-        };
+//        dynamicModelListener = new DynamicModelListener() {
+//
+//            public void dynamicModelChanged(DynamicModelEvent event) {
+//                if (event.getEventType().equals(DynamicModelEvent.EventType.IS_DYNAMIC_GRAPH)) {
+//                    boolean isDynamic = (Boolean) event.getData();
+//                    for (StatisticsUI ui : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
+//                        if (ui.getCategory().equals(StatisticsUI.CATEGORY_DYNAMIC)) {
+//                            setStatisticsUIVisible(ui, isDynamic);
+//                        }
+//                    }
+//                }
+//            }
+//        };
     }
 
     public void setup(StatisticsModelUIImpl model) {
@@ -88,25 +85,25 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
         unsetup();
 
         if (model != null) {
-            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-            boolean isDynamic = dynamicController.getModel(model.getWorkspace()).isDynamicGraph();
-            if (!isDynamic) {
-                for (StatisticsUI ui : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
-                    if (ui.getCategory().equals(StatisticsUI.CATEGORY_DYNAMIC)) {
-                        setStatisticsUIVisible(ui, false);
-                    }
-                }
-            }
-            //Add listener
-
-            dynamicController.addModelListener(dynamicModelListener);
+//            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+//            boolean isDynamic = dynamicController.getModel(model.getWorkspace()).isDynamicGraph();
+//            if (!isDynamic) {
+//                for (StatisticsUI ui : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
+//                    if (ui.getCategory().equals(StatisticsUI.CATEGORY_DYNAMIC)) {
+//                        setStatisticsUIVisible(ui, false);
+//                    }
+//                }
+//            }
+//            //Add listener
+//
+//            dynamicController.addModelListener(dynamicModelListener);
         }
     }
 
     public void unsetup() {
         if (model != null) {
-            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-            dynamicController.removeModelListener(dynamicModelListener);
+//            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+//            dynamicController.removeModelListener(dynamicModelListener);
         }
     }
 

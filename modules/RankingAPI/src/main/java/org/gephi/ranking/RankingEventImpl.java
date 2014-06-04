@@ -69,22 +69,27 @@ public class RankingEventImpl implements RankingEvent {
         this(eventType, source, null, null);
     }
 
+    @Override
     public EventType getEventType() {
         return eventType;
     }
 
+    @Override
     public RankingModel getSource() {
         return source;
     }
 
+    @Override
     public Ranking getRanking() {
         return ranking;
     }
 
+    @Override
     public Transformer getTransformer() {
         return transformer;
     }
 
+    @Override
     public boolean is(EventType... type) {
         for (EventType e : type) {
             if (e.equals(eventType)) {

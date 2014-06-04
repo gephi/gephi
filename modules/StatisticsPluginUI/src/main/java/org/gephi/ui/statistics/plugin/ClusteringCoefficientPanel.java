@@ -55,7 +55,7 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
         
         //Disable directed if the graph is undirecteds
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if(graphController.getModel().isUndirected()){
+        if(graphController.getGraphModel().isUndirected()){
             directedRadioButton.setEnabled(false);
         }
     }
@@ -113,7 +113,7 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(undirectedRadioButton)
                     .addComponent(directedRadioButton))
-                .addContainerGap(519, Short.MAX_VALUE))
+                .addContainerGap(532, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -47,8 +47,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.BorderFactory;
@@ -56,9 +54,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
+import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewProperty;
-import org.gephi.preview.api.ProcessingTarget;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.UIUtils;
@@ -69,29 +67,28 @@ import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
-import processing.core.PApplet;
 
 /**
  *
  * @author Jérémy Subtil, Mathieu Bastian
  */
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.preview//Preview//EN",
-autostore = false)
+        autostore = false)
 @TopComponent.Description(preferredID = "PreviewTopComponent",
-iconBase = "org/gephi/desktop/preview/resources/preview.png",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        iconBase = "org/gephi/desktop/preview/resources/preview.png",
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"preview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.preview.PreviewTopComponent")
 @ActionReference(path = "Menu/Window", position = 900)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_PreviewTopComponent",
-preferredID = "PreviewTopComponent")
+        preferredID = "PreviewTopComponent")
 public final class PreviewTopComponent extends TopComponent implements PropertyChangeListener {
 
     private final transient ProcessingListener processingListener = new ProcessingListener();
     //Data
     private transient PreviewUIModel model;
-    private transient ProcessingTarget target;
-    private transient PApplet sketch;
+    private transient G2DTarget target;
+    private transient PreviewSketch sketch;
 
     public PreviewTopComponent() {
         initComponents();
@@ -108,7 +105,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
         //background color
         ((JColorButton) backgroundButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
-
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
                 previewController.getModel().getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, (Color) evt.getNewValue());
@@ -118,21 +115,21 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         });
         southBusyLabel.setVisible(false);
         resetZoomButton.addActionListener(new ActionListener() {
-
+            @Override
             public void actionPerformed(ActionEvent e) {
-                target.resetZoom();
+                sketch.resetZoom();
             }
         });
         plusButton.addActionListener(new ActionListener() {
-
+            @Override
             public void actionPerformed(ActionEvent e) {
-                target.zoomPlus();
+                sketch.zoomPlus();
             }
         });
         minusButton.addActionListener(new ActionListener() {
-
+            @Override
             public void actionPerformed(ActionEvent e) {
-                target.zoomMinus();
+                sketch.zoomMinus();
             }
         });
 
@@ -146,13 +143,14 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         }
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(PreviewUIController.SELECT)) {
             this.model = (PreviewUIModel) evt.getNewValue();
             initTarget(model);
         } else if (evt.getPropertyName().equals(PreviewUIController.REFRESHED)) {
             SwingUtilities.invokeLater(new Runnable() {
-
+                @Override
                 public void run() {
                     target.refresh();
                 }
@@ -170,7 +168,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
     public void setRefresh(final boolean refresh) {
         SwingUtilities.invokeLater(new Runnable() {
-
+            @Override
             public void run() {
                 CardLayout cl = (CardLayout) previewPanel.getLayout();
                 cl.show(previewPanel, refresh ? "refreshCard" : "previewCard");
@@ -188,12 +186,9 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
                 setBackgroundColor(background);
             }
 
-            target = (ProcessingTarget) previewController.getRenderTarget(RenderTarget.PROCESSING_TARGET);
+            target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
             if (target != null) {
-                sketch = target.getApplet();
-                sketch.init();
-                sketch.registerPost(processingListener);
-                sketch.registerPre(processingListener);
+                sketch = new PreviewSketch(target);
                 sketchPanel.add(sketch, BorderLayout.CENTER);
             }
         } else if (previewUIModel == null) {
@@ -205,25 +200,23 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     public class ProcessingListener {
 
         public void post() {
-            final boolean isRedraw = target.isRedrawn();
-            SwingUtilities.invokeLater(new Runnable() {
-
-                public void run() {
-                    southBusyLabel.setVisible(isRedraw);
-                    ((JXBusyLabel) southBusyLabel).setBusy(isRedraw);
-                }
-            });
+//            final boolean isRedraw = target.isRedrawn();
+//            SwingUtilities.invokeLater(new Runnable() {
+//                public void run() {
+//                    southBusyLabel.setVisible(isRedraw);
+//                    ((JXBusyLabel) southBusyLabel).setBusy(isRedraw);
+//                }
+//            });
         }
 
         public void pre() {
-            final boolean isRedraw = target.isRedrawn();
-            SwingUtilities.invokeLater(new Runnable() {
-
-                public void run() {
-                    southBusyLabel.setVisible(isRedraw);
-                    ((JXBusyLabel) southBusyLabel).setBusy(isRedraw);
-                }
-            });
+//            final boolean isRedraw = target.isRedrawn();
+//            SwingUtilities.invokeLater(new Runnable() {
+//                public void run() {
+//                    southBusyLabel.setVisible(isRedraw);
+//                    ((JXBusyLabel) southBusyLabel).setBusy(isRedraw);
+//                }
+//            });
         }
     }
 
@@ -234,7 +227,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
      */
     public void showBannerPanel() {
         SwingUtilities.invokeLater(new Runnable() {
-
+            @Override
             public void run() {
                 bannerPanel.setVisible(true);
             }
@@ -252,7 +245,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
      */
     public void hideBannerPanel() {
         SwingUtilities.invokeLater(new Runnable() {
-
+            @Override
             public void run() {
                 bannerPanel.setVisible(false);
             }
@@ -260,7 +253,9 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     }
 
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

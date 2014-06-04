@@ -70,9 +70,11 @@ public class EditWindowControllerImpl implements EditWindowController {
         }
     }
 
+    @Override
     public void openEditWindow() {
         runAction(new Runnable() {
 
+            @Override
             public void run() {
                 EditToolTopComponent topComponent = findInstance();
                 topComponent.open();
@@ -82,9 +84,11 @@ public class EditWindowControllerImpl implements EditWindowController {
 
     }
 
+    @Override
     public void closeEditWindow() {
         runAction(new Runnable() {
 
+            @Override
             public void run() {
                 EditToolTopComponent topComponent = findInstance();
                 topComponent.disableEdit();
@@ -97,12 +101,14 @@ public class EditWindowControllerImpl implements EditWindowController {
 
         boolean open = false;
 
+        @Override
         public void run() {
             EditToolTopComponent topComponent = findInstance();
             open = topComponent.isOpened();
         }
     }
 
+    @Override
     public boolean isOpen() {
         IsOpenRunnable runnable = new IsOpenRunnable();
         if (SwingUtilities.isEventDispatchThread()) {
@@ -117,9 +123,11 @@ public class EditWindowControllerImpl implements EditWindowController {
         return runnable.open;
     }
 
+    @Override
     public void editNode(final Node node) {
         runAction(new Runnable() {
 
+            @Override
             public void run() {
                 EditToolTopComponent topComponent = findInstance();
                 topComponent.editNode(node);
@@ -127,9 +135,11 @@ public class EditWindowControllerImpl implements EditWindowController {
         });
     }
 
+    @Override
     public void editNodes(final Node[] nodes) {
         runAction(new Runnable() {
 
+            @Override
             public void run() {
                 EditToolTopComponent topComponent = findInstance();
                 topComponent.editNodes(nodes);
@@ -137,9 +147,11 @@ public class EditWindowControllerImpl implements EditWindowController {
         });
     }
 
+    @Override
     public void editEdge(final Edge edge) {
         runAction(new Runnable() {
 
+            @Override
             public void run() {
                 EditToolTopComponent topComponent = findInstance();
                 topComponent.editEdge(edge);
@@ -147,9 +159,11 @@ public class EditWindowControllerImpl implements EditWindowController {
         });
     }
 
+    @Override
     public void editEdges(final Edge[] edges) {
         runAction(new Runnable() {
 
+            @Override
             public void run() {
                 EditToolTopComponent topComponent = findInstance();
                 topComponent.editEdges(edges);
@@ -157,9 +171,11 @@ public class EditWindowControllerImpl implements EditWindowController {
         });
     }
 
+    @Override
     public void disableEdit() {
         runAction(new Runnable() {
 
+            @Override
             public void run() {
                 EditToolTopComponent topComponent = findInstance();
                 topComponent.disableEdit();

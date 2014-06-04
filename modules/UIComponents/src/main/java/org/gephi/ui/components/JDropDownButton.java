@@ -94,6 +94,7 @@ public class JDropDownButton extends JButton {
 
         addPropertyChangeListener(PROP_DROP_DOWN_MENU, new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent e) {
                 resetIcons();
             }
@@ -174,9 +175,11 @@ public class JDropDownButton extends JButton {
         if (null == menuListener) {
             menuListener = new PopupMenuListener() {
 
+                @Override
                 public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
                 }
 
+                @Override
                 public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
                     // If inside the button let the button's mouse listener
                     // deal with the state. The popup menu will be hidden and
@@ -190,6 +193,7 @@ public class JDropDownButton extends JButton {
                     }
                 }
 
+                @Override
                 public void popupMenuCanceled(PopupMenuEvent e) {
                 }
             };

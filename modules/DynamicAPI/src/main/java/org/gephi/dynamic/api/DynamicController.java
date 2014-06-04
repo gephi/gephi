@@ -3,9 +3,9 @@
  * Authors : Cezary Bartosiak
  *           Mathieu Bastian <mathieu.bastian@gephi.org>
  * Website : http://www.gephi.org
- * 
+ *
  * This file is part of Gephi.
- * 
+ *
  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
  Copyright 2011 Gephi Consortium. All rights reserved.
@@ -42,8 +42,6 @@
  */
 package org.gephi.dynamic.api;
 
-import org.gephi.data.attributes.api.Estimator;
-import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.project.api.Workspace;
 
 /**
@@ -81,8 +79,7 @@ public interface DynamicController {
      *
      * @param interval an object to get endpoints from
      */
-    public void setVisibleInterval(TimeInterval interval);
-
+//    public void setVisibleInterval(TimeInterval interval);
     /**
      * Sets the time interval wrapped by the {@code DynamicGraph} of the current
      * workspace.
@@ -112,41 +109,41 @@ public interface DynamicController {
     /**
      * Sets the current
      * <code>ESTIMATOR</code> used to get values from
-     * {@link org.gephi.data.attributes.type.DynamicType}. Default is <b><code>Estimator.FIRST</code></b>.
+     * {@link org.gephi.data.attributes.type.DynamicType}. Default is
+     * <b><code>Estimator.FIRST</code></b>.
      *
      * @param estimator the estimator that is to be set
      */
-    public void setEstimator(Estimator estimator);
-
+//    public void setEstimator(Estimator estimator);
     /**
      * Sets the current
      * <code>ESTIMATOR</code> used to get values from
-     * {@link org.gephi.data.attributes.type.DynamicType}. Default is <b><code>Estimator.FIRST</code></b>.
+     * {@link org.gephi.data.attributes.type.DynamicType}. Default is
+     * <b><code>Estimator.FIRST</code></b>.
      *
      * @param estimator the estimator that is to be set
      * @param workspace the workspace to get the model
      */
-    public void setEstimator(Estimator estimator, Workspace workspace);
-
+//    public void setEstimator(Estimator estimator, Workspace workspace);
     /**
      * Sets the current number
      * <code>ESTIMATOR</code> used to get values from
-     * {@link org.gephi.data.attributes.type.DynamicType}. Default is <b><code>Estimator.AVERAGE</code></b>.
+     * {@link org.gephi.data.attributes.type.DynamicType}. Default is
+     * <b><code>Estimator.AVERAGE</code></b>.
      *
      * @param estimator the number estimator that is to be set
      */
-    public void setNumberEstimator(Estimator estimator);
-
+//    public void setNumberEstimator(Estimator estimator);
     /**
      * Sets the current number
      * <code>ESTIMATOR</code> used to get values from
-     * {@link org.gephi.data.attributes.type.DynamicType}. Default is <b><code>Estimator.AVERAGE</code></b>.
+     * {@link org.gephi.data.attributes.type.DynamicType}. Default is
+     * <b><code>Estimator.AVERAGE</code></b>.
      *
      * @param estimator the number estimator that is to be set
      * @param workspace the workspace to get the model
      */
-    public void setNumberEstimator(Estimator estimator, Workspace workspace);
-
+//    public void setNumberEstimator(Estimator estimator, Workspace workspace);
     /**
      * Adds
      * <code>listener</code> to the listeners of this model. It receives events

@@ -47,15 +47,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.attribute.api.AttributeModel;
 import org.gephi.graph.api.*;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.util.Lookup;
 
 public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
 
@@ -68,9 +67,8 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
     ProgressTicket progressTicket;
     private boolean useMatrixFormat = false;
     private boolean useListFormat = true;
+    private boolean exportDynamicWeight = true;
     private boolean makeSymmetricMatrix = false;
-    private double getLow;//time interval, used for getting edge weight in dynamic graphs
-    private double getHigh;
 
     public boolean isMakeSymmetricMatrix() {
         return makeSymmetricMatrix;
@@ -109,8 +107,9 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
     @Override
     public boolean execute() {
         progressTicket.start();
-        attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-        graphModel = workspace.getLookup().lookup(GraphModel.class);
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        attributeModel = graphController.getAttributeModel(workspace);
+        graphModel = graphController.getGraphModel(workspace);
         Graph graph = null;
         if (exportVisible) {
             graph = graphModel.getGraphVisible();
@@ -127,19 +126,9 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
             if (cancel) {
                 break;
             }
-            useLabels &= (nodeIterable.iterator().next().getNodeData().getLabel() != null);
+            useLabels &= (nodeIterable.iterator().next().getLabel() != null);
         }
         System.err.println("use labels " + useLabels);
-
-        //find borders of the interval for edge.getWeight(low, high). If it's a static graph, then (-inf, inf)
-        DynamicModel dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
-        TimeInterval visibleInterval = dynamicModel != null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
-        getLow = Double.NEGATIVE_INFINITY;
-        getHigh = Double.POSITIVE_INFINITY;
-        if (visibleInterval != null) {
-            getLow = visibleInterval.getLow();
-            getHigh = visibleInterval.getHigh();
-        }
 
         if (!cancel) {
             try {
@@ -174,22 +163,22 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
 
     private void saveAsEdgeList1(boolean useLabels, Graph graph) throws IOException {
 
-        HashMap<Integer, String> idToLabel = new HashMap<Integer, String>();//systemId to changed label
+        HashMap<Object, String> idToLabel = new HashMap<Object, String>();//systemId to changed label
         HashSet<String> labelUsed = new HashSet<String>();
         //edgelist format forbids equal nodes
         if (useLabels) {
             for (Node node : graph.getNodes()) {
-                if (labelUsed.contains(node.getNodeData().getLabel())) {
+                if (labelUsed.contains(node.getLabel())) {
                     for (int i = 0;; i++) {
-                        if (!labelUsed.contains(node.getNodeData().getLabel() + "_" + i)) {
-                            idToLabel.put(node.getId(), node.getNodeData().getLabel() + "_" + i);
-                            labelUsed.add(node.getNodeData().getLabel() + "_" + i);
+                        if (!labelUsed.contains(node.getLabel() + "_" + i)) {
+                            idToLabel.put(node.getId(), node.getLabel() + "_" + i);
+                            labelUsed.add(node.getLabel() + "_" + i);
                             break;
                         }
                     }
                 } else {
-                    idToLabel.put(node.getId(), node.getNodeData().getLabel());
-                    labelUsed.add(node.getNodeData().getLabel());
+                    idToLabel.put(node.getId(), node.getLabel());
+                    labelUsed.add(node.getLabel());
                 }
             }
         }
@@ -205,21 +194,29 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
                 break;
             }
             Edge edge = edgeIterator.iterator().next();
+            double weight;
+            if (exportDynamicWeight) {
+                weight = edge.getWeight(graph.getView());
+            } else {
+                weight = edge.getWeight();
+            }
+
             if (useLabels) {
                 writer.write(formatLabel(idToLabel.get(edge.getSource().getId()), false) + " "
-                        + formatLabel(idToLabel.get(edge.getTarget().getId()), false) + " " + edge.getWeight(getLow, getHigh) + "\n");
+                        + formatLabel(idToLabel.get(edge.getTarget().getId()), false) + " " + weight + "\n");
             } else {
-                writer.write(formatLabel(edge.getSource().getNodeData().getId(), false) + " "
-                        + formatLabel(edge.getTarget().getNodeData().getId(), false) + " " + edge.getWeight(getLow, getHigh) + "\n");
+                writer.write(formatLabel(edge.getSource().getId().toString(), false) + " "
+                        + formatLabel(edge.getTarget().getId().toString(), false) + " " + weight + "\n");
             }
 
             if (!edge.isDirected()) {
+
                 if (useLabels) {
                     writer.write(formatLabel(idToLabel.get(edge.getTarget().getId()), false) + " "
-                            + formatLabel(idToLabel.get(edge.getSource().getId()), false) + " " + edge.getWeight(getLow, getHigh) + "\n");
+                            + formatLabel(idToLabel.get(edge.getSource().getId()), false) + " " + weight + "\n");
                 } else {
-                    writer.write(formatLabel(edge.getTarget().getNodeData().getId(), false) + " "
-                            + formatLabel(edge.getSource().getNodeData().getId(), false) + " " + edge.getWeight(getLow, getHigh) + "\n");
+                    writer.write(formatLabel(edge.getTarget().getId().toString(), false) + " "
+                            + formatLabel(edge.getSource().getId().toString(), false) + " " + weight + "\n");
                 }
             }
         }
@@ -250,7 +247,13 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
         int maxLengthOfEdgeWeight = 0;
         if (makeSymmetricMatrix) {
             for (Edge edge : graph.getEdges()) {
-                maxLengthOfEdgeWeight = Math.max(maxLengthOfEdgeWeight, Double.toString(edge.getWeight(getLow, getHigh)).length());
+                double weight;
+                if (exportDynamicWeight) {
+                    weight = edge.getWeight(graph.getView());
+                } else {
+                    weight = edge.getWeight();
+                }
+                maxLengthOfEdgeWeight = Math.max(maxLengthOfEdgeWeight, Double.toString(weight).length());
             }
         }
 
@@ -261,9 +264,9 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
             }
 
             if (useLabels) {
-                writer.write(formatLabel(idToNode.get(i).getNodeData().getLabel(), true));
+                writer.write(formatLabel(idToNode.get(i).getLabel(), true));
             } else {
-                writer.write(formatLabel(idToNode.get(i).getNodeData().getId(), true));
+                writer.write(formatLabel(idToNode.get(i).getId().toString(), true));
             }
         }
         writer.write("\n");
@@ -280,10 +283,13 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
                 }
                 Node target = idToNode.get(j);
                 double weight = 0;
-                if (graph.getEdge(source, target) != null) {
-                    weight = graph.getEdge(source, target).getWeight(getLow, getHigh);
-                } else if (graph.getEdge(target, source) != null && !graph.getEdge(target, source).isDirected()) {
-                    weight = graph.getEdge(target, source).getWeight(getLow, getHigh);
+                Edge edge = graph.getEdge(source, target);
+                if (edge != null) {
+                    if (exportDynamicWeight) {
+                        weight = edge.getWeight(graph.getView());
+                    } else {
+                        weight = edge.getWeight();
+                    }
                 }
                 writer.write(Double.toString(weight) + " ");
                 if (makeSymmetricMatrix) {

@@ -45,8 +45,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.attribute.api.AttributeModel;
 import org.gephi.graph.api.*;
 import org.gephi.preview.api.*;
 import org.gephi.preview.spi.*;
@@ -69,19 +68,16 @@ public class PreviewControllerImpl implements PreviewController {
     private PreviewModelImpl model;
     //Other controllers
     private final GraphController graphController;
-    private final AttributeController attributeController;
     //Registered renderers
     private Renderer[] registeredRenderers = null;
     private Boolean anyPluginRendererRegistered = null;
 
     public PreviewControllerImpl() {
         graphController = Lookup.getDefault().lookup(GraphController.class);
-        attributeController = Lookup.getDefault().lookup(AttributeController.class);
 
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
-
             @Override
             public void initialize(Workspace workspace) {
             }
@@ -126,8 +122,8 @@ public class PreviewControllerImpl implements PreviewController {
 
     @Override
     public synchronized void refreshPreview(Workspace workspace) {
-        GraphModel graphModel = graphController.getModel(workspace);
-        AttributeModel attributeModel = attributeController.getModel(model.getWorkspace());
+        GraphModel graphModel = graphController.getGraphModel(workspace);
+        AttributeModel attributeModel = graphController.getAttributeModel(model.getWorkspace());
         PreviewModelImpl previewModel = getModel(workspace);
         previewModel.clear();
 
@@ -154,9 +150,9 @@ public class PreviewControllerImpl implements PreviewController {
             renderers = model.getManagedEnabledRenderers();
         } else {
             ArrayList<Renderer> renderersList = new ArrayList<Renderer>();
-            for(Renderer renderer: model.getManagedEnabledRenderers()){
+            for (Renderer renderer : model.getManagedEnabledRenderers()) {
                 //Only mouse responsive renderers will be called while mouse is pressed
-                if(renderer instanceof MouseResponsiveRenderer){
+                if (renderer instanceof MouseResponsiveRenderer) {
                     renderersList.add(renderer);
                 }
             }
@@ -388,20 +384,20 @@ public class PreviewControllerImpl implements PreviewController {
         return anyPluginRendererRegistered;
     }
     private boolean mousePressed = false;
-    
+
     @Override
-    public boolean sendMouseEvent(PreviewMouseEvent event){
+    public boolean sendMouseEvent(PreviewMouseEvent event) {
         return sendMouseEvent(event, Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace());
     }
 
     @Override
     public boolean sendMouseEvent(PreviewMouseEvent event, Workspace workspace) {
-        if(workspace == null){
+        if (workspace == null) {
             return false;
         }
-        
+
         PreviewModel previewModel = getModel(workspace);
-        
+
         //Avoid drag events arriving to listeners if they did not consume previous press event.
         if ((event.type != PreviewMouseEvent.Type.DRAGGED && event.type != PreviewMouseEvent.Type.RELEASED) || mousePressed) {
             for (PreviewMouseListener listener : previewModel.getEnabledMouseListeners()) {

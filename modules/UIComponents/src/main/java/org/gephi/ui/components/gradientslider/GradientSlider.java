@@ -114,6 +114,7 @@ public class GradientSlider extends MultiThumbSlider {
 
     /** Returns the Color at the specified position.
      */
+    @Override
     public Object getValue(float pos) {
         for (int a = 0; a < thumbPositions.length - 1; a++) {
             if (thumbPositions[a] == pos) {
@@ -156,6 +157,7 @@ public class GradientSlider extends MultiThumbSlider {
      * the thumb at the selected index.
      *
      */
+    @Override
     public boolean doDoubleClick(int x, int y) {
         int i = getSelectedThumb();
         if (i != -1) {
@@ -176,6 +178,7 @@ public class GradientSlider extends MultiThumbSlider {
             index = i;
         }
 
+        @Override
         public void run() {
             setSelectedThumb(index);
         }
@@ -193,20 +196,24 @@ public class GradientSlider extends MultiThumbSlider {
         int lastSelectedThumb;
         PopupMenuListener popupMenuListener = new PopupMenuListener() {
 
+            @Override
             public void popupMenuCanceled(PopupMenuEvent e) {
                 setValueIsAdjusting(false);
                 SwingUtilities.invokeLater(new SelectThumbRunnable(lastSelectedThumb));
             }
 
+            @Override
             public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
                 setValueIsAdjusting(false);
                 SwingUtilities.invokeLater(new SelectThumbRunnable(lastSelectedThumb));
             }
 
+            @Override
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
                 setValueIsAdjusting(true);
                 SwingUtilities.invokeLater(new Runnable() {
 
+                    @Override
                     public void run() {
                         getFocusableComponent().requestFocus();
                     }
@@ -220,6 +227,7 @@ public class GradientSlider extends MultiThumbSlider {
 
         public abstract Component getFocusableComponent();
 
+        @Override
         public void show(Component c, int x, int y) {
             Color[] colors = getColors();
             lastSelectedThumb = getSelectedThumb();
@@ -238,6 +246,7 @@ public class GradientSlider extends MultiThumbSlider {
         ColorPicker mini;
         KeyListener commitListener = new KeyAdapter() {
 
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER) {
                     ColorPickerPopup.this.setVisible(false);
@@ -254,6 +263,7 @@ public class GradientSlider extends MultiThumbSlider {
             mini.setPreferredSize(new Dimension(220, 200));
             PropertyChangeListener p = new PropertyChangeListener() {
 
+                @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     ColorPicker p = (ColorPicker) evt.getSource();
                     Color[] colors = getColors();
@@ -270,10 +280,12 @@ public class GradientSlider extends MultiThumbSlider {
             add(mini);
         }
 
+        @Override
         public Component getFocusableComponent() {
             return mini.getColorPanel();
         }
 
+        @Override
         public void setColor(Color c) {
             mini.setRGB(c.getRed(), c.getGreen(), c.getBlue());
         }
@@ -282,6 +294,7 @@ public class GradientSlider extends MultiThumbSlider {
     /** This shows a mini ColorPicker panel to let the user
      * change the selected color.
      */
+    @Override
     public boolean doPopup(int x, int y) {
         if (popup == null) {
             popup = createPopup();
@@ -326,6 +339,7 @@ public class GradientSlider extends MultiThumbSlider {
         }
     }
 
+    @Override
     public void updateUI() {
         String name = UIManager.getString("GradientSliderUI");
         try {

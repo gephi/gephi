@@ -106,6 +106,7 @@ public final class WelcomeTopComponent extends JPanel {
     private void initAction() {
         openAction = new AbstractAction("", ImageUtilities.loadImageIcon("org/gephi/desktop/welcome/resources/gephifile20.png", false)) {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 JXHyperlink link = (JXHyperlink) e.getSource();
                 File file = (File) link.getClientProperty(LINK_PATH);
@@ -130,6 +131,7 @@ public final class WelcomeTopComponent extends JPanel {
         };
         newProjectLink.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
                 pc.newProject();
@@ -138,6 +140,7 @@ public final class WelcomeTopComponent extends JPanel {
         });
         openFileLink.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
                 pc.openFile();
@@ -187,6 +190,7 @@ public final class WelcomeTopComponent extends JPanel {
                 final String importer = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
                 JXHyperlink fileLink = new JXHyperlink(new AbstractAction() {
 
+                    @Override
                     public void actionPerformed(ActionEvent e) {
                         try {
                             stream.reset();
@@ -213,6 +217,7 @@ public final class WelcomeTopComponent extends JPanel {
         openOnStartupCheckbox.setSelected(openStartup);
         openOnStartupCheckbox.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 NbPreferences.forModule(WelcomeTopComponent.class).putBoolean(STARTUP_PREF, openOnStartupCheckbox.isSelected());
             }

@@ -4,22 +4,18 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.8.2-SNAPSHOT</version>
+        <version>0.9-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>io-generator-plugin</artifactId>
-    <version>0.8.2-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>GeneratorPlugin</name>
 
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>data-attributes-api</artifactId>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-generator-api</artifactId>

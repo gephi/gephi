@@ -42,20 +42,18 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.statistics;
 
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.TimestampIndex;
+import org.gephi.attribute.time.Interval;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.statistics.spi.StatisticsBuilder;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.api.*;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.type.Interval;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.dynamic.api.DynamicController;
-import org.gephi.dynamic.api.DynamicGraph;
-import org.gephi.dynamic.api.DynamicModel;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
@@ -86,10 +84,12 @@ public class StatisticsControllerImpl implements StatisticsController {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
 
+            @Override
             public void initialize(Workspace workspace) {
                 workspace.add(new StatisticsModelImpl());
             }
 
+            @Override
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(StatisticsModelImpl.class);
                 if (model == null) {
@@ -98,12 +98,15 @@ public class StatisticsControllerImpl implements StatisticsController {
                 }
             }
 
+            @Override
             public void unselect(Workspace workspace) {
             }
 
+            @Override
             public void close(Workspace workspace) {
             }
 
+            @Override
             public void disable() {
                 model = null;
             }
@@ -118,6 +121,7 @@ public class StatisticsControllerImpl implements StatisticsController {
         }
     }
 
+    @Override
     public void execute(final Statistics statistics, LongTaskListener listener) {
         StatisticsBuilder builder = getBuilder(statistics.getClass());
         LongTaskExecutor executor = new LongTaskExecutor(true, "Statistics " + builder.getName(), 10);
@@ -129,6 +133,7 @@ public class StatisticsControllerImpl implements StatisticsController {
             final DynamicLongTask dynamicLongTask = new DynamicLongTask((DynamicStatistics) statistics);
             executor.execute(dynamicLongTask, new Runnable() {
 
+                @Override
                 public void run() {
                     executeDynamic((DynamicStatistics) statistics, dynamicLongTask);
                 }
@@ -137,6 +142,7 @@ public class StatisticsControllerImpl implements StatisticsController {
             LongTask task = statistics instanceof LongTask ? (LongTask) statistics : null;
             executor.execute(task, new Runnable() {
 
+                @Override
                 public void run() {
                     execute(statistics);
                 }
@@ -144,13 +150,14 @@ public class StatisticsControllerImpl implements StatisticsController {
         }
     }
 
+    @Override
     public void execute(Statistics statistics) {
         if (statistics instanceof DynamicStatistics) {
             executeDynamic((DynamicStatistics) statistics, null);
         } else {
             GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-            GraphModel graphModel = graphController.getModel();
-            AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
+            GraphModel graphModel = graphController.getGraphModel();
+            AttributeModel attributeModel = graphController.getAttributeModel();
             statistics.execute(graphModel, attributeModel);
             model.addReport(statistics);
         }
@@ -158,41 +165,22 @@ public class StatisticsControllerImpl implements StatisticsController {
 
     private void executeDynamic(DynamicStatistics statistics, DynamicLongTask dynamicLongTask) {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        GraphModel graphModel = graphController.getModel();
-        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
-        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-        DynamicModel dynamicModel = dynamicController.getModel();
-        AttributeModel attributeModel = attributeController.getModel();
-        if (!dynamicModel.isDynamicGraph()) {
-            throw new IllegalArgumentException("The current graph must be a dynamic graph");
-        }
+        GraphModel graphModel = graphController.getGraphModel();
+        AttributeModel attributeModel = graphController.getAttributeModel();
 
         double window = statistics.getWindow();
         double tick = statistics.getTick();
         Interval bounds = statistics.getBounds();
         if (bounds == null) {
-            TimeInterval visibleInterval = dynamicModel.getVisibleInterval();
-            double low = visibleInterval.getLow();
-            if (Double.isInfinite(low)) {
-                low = dynamicModel.getMin();
-            }
-            double high = visibleInterval.getHigh();
-            if (Double.isInfinite(high)) {
-                high = dynamicModel.getMax();
-            }
-            bounds = new Interval(low, high);
+            bounds = graphModel.getTimeBoundsVisible();
             statistics.setBounds(bounds);
         }
-
 
         if (dynamicLongTask != null) {
             //Count
             int c = (int) ((bounds.getHigh() - window - bounds.getLow()) / tick);
             dynamicLongTask.start(c);
         }
-
-        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
-        DynamicGraph dynamicGraph = dynamicModel.createDynamicGraph(graph, bounds);
 
         //Init
         statistics.execute(graphModel, attributeModel);
@@ -201,7 +189,24 @@ public class StatisticsControllerImpl implements StatisticsController {
         for (double low = bounds.getLow(); low <= bounds.getHigh() - window; low += tick) {
             double high = low + window;
 
-            Graph g = dynamicGraph.getSnapshotGraph(low, high);
+//            Graph g = dynamicGraph.getSnapshotGraph(low, high);
+            
+            
+            GraphView currentView = graphModel.getVisibleView();
+            Graph graph = graphModel.getGraphVisible();
+            GraphView view = graphModel.createView();
+            Graph g = graphModel.getGraph(view);
+            
+            TimestampIndex<Node> nodeIndex = graphModel.getNodeTimestampIndex(currentView);
+            for(Node node : nodeIndex.get(low, high)) {
+                g.addNode(node);
+            }
+            
+            TimestampIndex<Edge> edgeIndex = graphModel.getEdgeTimestampIndex(currentView);
+            for(Edge edge : edgeIndex.get(low, high)) {
+                g.addEdge(edge);
+            }
+            
 
             statistics.loop(g.getView(), new Interval(low, high));
 

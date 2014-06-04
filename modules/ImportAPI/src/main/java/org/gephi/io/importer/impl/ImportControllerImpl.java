@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.importer.impl;
 
@@ -101,6 +101,7 @@ public class ImportControllerImpl implements ImportController {
         wizardUis = Lookup.getDefault().lookupAll(ImporterWizardUI.class).toArray(new ImporterWizardUI[0]);
     }
 
+    @Override
     public FileImporter getFileImporter(File file) {
         FileObject fileObject = FileUtil.toFileObject(file);
         fileObject = getArchivedFile(fileObject);   //Unzip and return content file
@@ -119,6 +120,7 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
+    @Override
     public FileImporter getFileImporter(String importerName) {
         FileImporterBuilder builder = getMatchingImporter(importerName);
         if (builder != null) {
@@ -127,6 +129,7 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
+    @Override
     public Container importFile(File file) throws FileNotFoundException {
         FileObject fileObject = FileUtil.toFileObject(file);
         if (fileObject != null) {
@@ -147,6 +150,7 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
+    @Override
     public Container importFile(File file, FileImporter importer) throws FileNotFoundException {
         FileObject fileObject = FileUtil.toFileObject(file);
         if (fileObject != null) {
@@ -166,6 +170,7 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
+    @Override
     public Container importFile(Reader reader, FileImporter importer) {
         //Create Container
         final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
@@ -191,6 +196,7 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
+    @Override
     public Container importFile(InputStream stream, FileImporter importer) {
         try {
             Reader reader = ImportUtils.getTextReader(stream);
@@ -200,6 +206,7 @@ public class ImportControllerImpl implements ImportController {
         }
     }
 
+    @Override
     public Container importDatabase(Database database, DatabaseImporter importer) {
         //Create Container
         final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
@@ -225,6 +232,7 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
+    @Override
     public Container importSpigot(SpigotImporter importer) {
         //Create Container
         final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
@@ -248,6 +256,7 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
+    @Override
     public void process(Container container) {
         Processor processor = Lookup.getDefault().lookup(Processor.class);
         if (processor == null) {
@@ -256,9 +265,10 @@ public class ImportControllerImpl implements ImportController {
         process(container, processor, null);
     }
 
+    @Override
     public void process(Container container, Processor processor, Workspace workspace) {
         container.closeLoader();
-        if (container.isAutoScale()) {
+        if (container.getUnloader().isAutoScale()) {
             Scaler scaler = Lookup.getDefault().lookup(Scaler.class);
             if (scaler != null) {
                 scaler.doScale(container);
@@ -347,6 +357,7 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
+    @Override
     public FileType[] getFileTypes() {
         ArrayList<FileType> list = new ArrayList<FileType>();
         for (FileImporterBuilder im : fileImporterBuilders) {
@@ -357,6 +368,7 @@ public class ImportControllerImpl implements ImportController {
         return list.toArray(new FileType[0]);
     }
 
+    @Override
     public boolean isFileSupported(File file) {
         FileObject fileObject = FileUtil.toFileObject(file);
         for (FileImporterBuilder im : fileImporterBuilders) {
@@ -372,6 +384,7 @@ public class ImportControllerImpl implements ImportController {
         return false;
     }
 
+    @Override
     public ImporterUI getUI(Importer importer) {
         for (ImporterUI ui : uis) {
             if (ui.isUIForImporter(importer)) {
@@ -381,6 +394,7 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
+    @Override
     public ImporterWizardUI getWizardUI(Importer importer) {
         for (ImporterWizardUI ui : wizardUis) {
             if (ui.isUIForImporter(importer)) {

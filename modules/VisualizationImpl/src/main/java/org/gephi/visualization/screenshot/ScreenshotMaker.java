@@ -1,66 +1,66 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.visualization.screenshot;
 
-import org.gephi.visualization.opengl.*;
-import com.sun.opengl.util.FileUtil;
-import com.sun.opengl.util.ImageUtil;
-import com.sun.opengl.util.TileRenderer;
+import com.jogamp.opengl.util.awt.ImageUtil;
 import java.awt.Cursor;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.imageio.ImageIO;
-import javax.media.opengl.GL;
+import javax.media.nativewindow.AbstractGraphicsDevice;
+import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLContext;
 import javax.media.opengl.GLDrawableFactory;
 import javax.media.opengl.GLPbuffer;
+import javax.media.opengl.GLProfile;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -68,9 +68,10 @@ import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.opengl.text.TextManager;
+import org.gephi.visualization.opengl.*;
 import org.gephi.visualization.swing.GLAbstractListener;
 import org.gephi.visualization.swing.GraphDrawableImpl;
+import org.gephi.visualization.text.TextManager;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -122,6 +123,7 @@ public class ScreenshotMaker implements VizArchitecture {
         finishedMessage = NbPreferences.forModule(ScreenshotMaker.class).getBoolean(SHOW_MESSAGE, finishedMessage);
     }
 
+    @Override
     public void initArchitecture() {
         drawable = VizController.getInstance().getDrawable();
         engine = VizController.getInstance().getEngine();
@@ -131,6 +133,21 @@ public class ScreenshotMaker implements VizArchitecture {
 
     public void takeScreenshot() {
         takeTicket = true;
+    }
+
+    private static String getExtension(File f) {
+        String ext = null;
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
+
+        if (i > 0 && i < s.length() - 1) {
+            ext = s.substring(i + 1).toLowerCase();
+        }
+
+        if (ext == null) {
+            return "";
+        }
+        return ext;
     }
 
     private void take(File file) throws Exception {
@@ -143,8 +160,11 @@ public class ScreenshotMaker implements VizArchitecture {
         int imageWidth = width;
         int imageHeight = height;
 
+        GLProfile profile = GLProfile.get(GLProfile.GL2);
+        GLCapabilities caps = new GLCapabilities(profile);
+        AbstractGraphicsDevice device = GLDrawableFactory.getFactory(profile).getDefaultDevice();
         //Caps
-        GLCapabilities caps = new GLCapabilities();
+
         caps.setAlphaBits(8);
         caps.setDoubleBuffered(false);
         caps.setHardwareAccelerated(true);
@@ -152,7 +172,8 @@ public class ScreenshotMaker implements VizArchitecture {
         caps.setNumSamples(antiAliasing);
 
         //Buffer
-        GLPbuffer pbuffer = GLDrawableFactory.getFactory().createGLPbuffer(caps, null, tileWidth, tileHeight, null);
+
+        GLPbuffer pbuffer = GLDrawableFactory.getFactory(profile).createGLPbuffer(device, caps, null, tileWidth, tileHeight, null);
         BufferedImage image = null;
         if (transparentBackground) {
             image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
@@ -166,9 +187,9 @@ public class ScreenshotMaker implements VizArchitecture {
         tileRenderer.setTileSize(tileWidth, tileHeight, 0);
         tileRenderer.setImageSize(imageWidth, imageHeight);
         if (transparentBackground) {
-            tileRenderer.setImageBuffer(GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, imageBuffer);
+            tileRenderer.setImageBuffer(GL2.GL_BGRA, GL2.GL_UNSIGNED_BYTE, imageBuffer);
         } else {
-            tileRenderer.setImageBuffer(GL.GL_BGR, GL.GL_UNSIGNED_BYTE, imageBuffer);
+            tileRenderer.setImageBuffer(GL2.GL_BGR, GL2.GL_UNSIGNED_BYTE, imageBuffer);
         }
         tileRenderer.trPerspective(drawable.viewField, (float) imageWidth / (float) imageHeight, drawable.nearDistance, drawable.farDistance);
 
@@ -178,14 +199,18 @@ public class ScreenshotMaker implements VizArchitecture {
         if (context.makeCurrent() == GLContext.CONTEXT_NOT_CURRENT) {
             throw new RuntimeException("Error making pbuffer's context current");
         }
-        GL gl = pbuffer.getGL();
-        gl.glMatrixMode(GL.GL_MODELVIEW);
+
+        System.out.println("Disabling snapshot");
+
+        GL2 gl = pbuffer.getGL().getGL2();
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
 
         //Init
         drawable.initConfig(gl);
         vizConfig.setDisableLOD(true);
         engine.initScreenshot(gl, GLAbstractListener.glu);
+
 
         //Textrender - swap to 3D
         textManager.setRenderer3d(true);
@@ -200,6 +225,7 @@ public class ScreenshotMaker implements VizArchitecture {
         context.release();
         pbuffer.destroy();
 
+
         //Textrender - back to 2D
         textManager.setRenderer3d(false);
         vizConfig.setDisableLOD(false);
@@ -208,18 +234,18 @@ public class ScreenshotMaker implements VizArchitecture {
         writeImage(image);
 
         /*Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("png");
-        if (iter.hasNext()) {
-        ImageWriter writer = iter.next();
-        ImageWriteParam iwp = writer.getDefaultWriteParam();
-        //iwp.setCompressionType("DEFAULT");
-        //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
-        //iwp.setCompressionQuality((int)(9*pngCompresssion));
-        FileImageOutputStream output = new FileImageOutputStream(file);
-        writer.setOutput(output);
-        IIOImage img = new IIOImage(image, null, null);
-        writer.write(null, img, iwp);
-        writer.dispose();
-        }*/
+         if (iter.hasNext()) {
+         ImageWriter writer = iter.next();
+         ImageWriteParam iwp = writer.getDefaultWriteParam();
+         //iwp.setCompressionType("DEFAULT");
+         //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
+         //iwp.setCompressionQuality((int)(9*pngCompresssion));
+         FileImageOutputStream output = new FileImageOutputStream(file);
+         writer.setOutput(output);
+         IIOImage img = new IIOImage(image, null, null);
+         writer.write(null, img, iwp);
+         writer.dispose();
+         }*/
 
         //oldContext.makeCurrent();
     }
@@ -256,7 +282,7 @@ public class ScreenshotMaker implements VizArchitecture {
         }
         String format = "png";
         if (file != null) {
-            format = FileUtil.getFileSuffix(file);
+            format = getExtension(file);
         }
         if (!ImageIO.write(image, format, file)) {
             throw new IOException("Unsupported file format");
@@ -279,22 +305,29 @@ public class ScreenshotMaker implements VizArchitecture {
         }
     }
 
-    private void beforeTaking() {
-        WindowManager.getDefault().getMainWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    private void beforeTaking() throws InterruptedException, InvocationTargetException {
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				WindowManager.getDefault().getMainWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			}
+		});
     }
 
-    private void afterTaking() {
-        WindowManager.getDefault().getMainWindow().setCursor(Cursor.getDefaultCursor());
-        if (finishedMessage && file != null) {
-            final String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getName());
-            SwingUtilities.invokeLater(new Runnable() {
-
-                public void run() {
-                    JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"), JOptionPane.INFORMATION_MESSAGE);
-                }
-            });
-        }
-    }
+	private void afterTaking() {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				WindowManager.getDefault().getMainWindow().setCursor(Cursor.getDefaultCursor());
+				if (finishedMessage && file != null) {
+					final String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getName());
+					JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"), JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+	}
+	
     private static final String DATE_FORMAT_NOW = "HHmmss";
 
     private String getDefaultFileName() {

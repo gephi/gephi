@@ -203,6 +203,7 @@ private void exportNotRecognizedCheckBoxActionPerformed(java.awt.event.ActionEve
     private javax.swing.JTextField spacesTextField;
     // End of variables declaration//GEN-END:variables
 
+    @Override
     public void validate(ValidationGroup group) {
         group.add(spacesTextField, Validators.REQUIRE_NON_EMPTY_STRING, Validators.REQUIRE_NON_NEGATIVE_NUMBER, Validators.REQUIRE_VALID_INTEGER);
     }

@@ -49,29 +49,28 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.ui.utils.UIUtils;
-import org.openide.util.NbBundle;
-import org.openide.windows.TopComponent;
-//import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays something.
  */
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.context//Context//EN",
-autostore = false)
+        autostore = false)
 @TopComponent.Description(preferredID = "ContextTopComponent",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "contextmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.clustering.ContextTopComponent")
 @ActionReference(path = "Menu/Window", position = 200)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_ContextTopComponent",
-preferredID = "ContextTopComponent")
+        preferredID = "ContextTopComponent")
 public final class ContextTopComponent extends TopComponent {
 
-    private ContextPanel contextPanel = new ContextPanel();
+    private final transient ContextPanel contextPanel = new ContextPanel();
 
     public ContextTopComponent() {
         initComponents();
@@ -85,22 +84,26 @@ public final class ContextTopComponent extends TopComponent {
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
-
+            @Override
             public void initialize(Workspace workspace) {
             }
 
+            @Override
             public void select(Workspace workspace) {
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                GraphModel gm = gc.getModel();
+                GraphModel gm = gc.getGraphModel(workspace);
                 contextPanel.refreshModel(gm);
             }
 
+            @Override
             public void unselect(Workspace workspace) {
             }
 
+            @Override
             public void close(Workspace workspace) {
             }
 
+            @Override
             public void disable() {
                 contextPanel.refreshModel(null);
             }

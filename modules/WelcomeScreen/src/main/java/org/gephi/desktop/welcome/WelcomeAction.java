@@ -48,6 +48,7 @@ import org.openide.windows.WindowManager;
 
 public final class WelcomeAction implements ActionListener {
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         WelcomeTopComponent component = WelcomeTopComponent.getInstance();
         JDialog dialog = new JDialog(WindowManager.getDefault().getMainWindow(),

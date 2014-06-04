@@ -1,55 +1,55 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
-
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.visualization.swing;
 
-import com.sun.opengl.util.BufferUtil;
+import com.jogamp.common.nio.Buffers;
 import java.awt.Color;
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLProfile;
 import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.config.GraphicalConfiguration;
@@ -76,9 +76,9 @@ public abstract class GLAbstractListener implements GLEventListener {
     public final float nearDistance = 1.0f;
     public final float farDistance = 100000f;
     private double aspectRatio = 0;
-    protected DoubleBuffer projMatrix = BufferUtil.newDoubleBuffer(16);
-    protected DoubleBuffer modelMatrix = BufferUtil.newDoubleBuffer(16);
-    protected IntBuffer viewport = BufferUtil.newIntBuffer(4);
+    protected FloatBuffer projMatrix = Buffers.newDirectFloatBuffer(16);
+    protected FloatBuffer modelMatrix = Buffers.newDirectFloatBuffer(16);
+    protected IntBuffer viewport = Buffers.newDirectIntBuffer(4);
     protected GraphicalConfiguration graphicalConfiguration;
     protected Lighting lighting = new Lighting();
     protected ScreenshotMaker screenshotMaker;
@@ -88,16 +88,18 @@ public abstract class GLAbstractListener implements GLEventListener {
         drawable.addGLEventListener(this);
     }
 
-    protected abstract void init(GL gl);
+    protected abstract void init(GL2 gl);
 
-    protected abstract void render3DScene(GL gl, GLU glu);
+    protected abstract void render3DScene(GL2 gl, GLU glu);
 
-    protected abstract void reshape3DScene(GL gl);
+    protected abstract void reshape3DScene(GL2 gl);
 
-    protected abstract void setCameraPosition(GL gl, GLU glu);
+    protected abstract void setCameraPosition(GL2 gl, GLU glu);
 
     protected GLCapabilities getCaps() {
-        GLCapabilities caps = new GLCapabilities();
+        GLProfile profile = GLProfile.get(GLProfile.GL2);
+        GLCapabilities caps = new GLCapabilities(profile);
+
         try {
             caps.setAlphaBits(8);		//if NOT opaque
             caps.setDoubleBuffered(true);
@@ -127,43 +129,43 @@ public abstract class GLAbstractListener implements GLEventListener {
         return caps;
     }
 
-    public void initConfig(GL gl) {
+    public void initConfig(GL2 gl) {
         //Disable Vertical synchro
         gl.setSwapInterval(0);
 
         //Depth
         if (vizController.getVizModel().isUse3d()) {
-            gl.glEnable(GL.GL_DEPTH_TEST);      //Enable Z-Ordering
-            gl.glDepthFunc(GL.GL_LEQUAL);
-            gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);	//Correct texture & colors perspective calculations
+            gl.glEnable(GL2.GL_DEPTH_TEST);      //Enable Z-Ordering
+            gl.glDepthFunc(GL2.GL_LEQUAL);
+            gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);	//Correct texture & colors perspective calculations
         } else {
-            gl.glDisable(GL.GL_DEPTH_TEST);     //Z is set by the order of drawing
+            gl.glDisable(GL2.GL_DEPTH_TEST);     //Z is set by the order of drawing
         }
 
         //Cull face
         if (vizController.getVizModel().isCulling()) {        //When enabled, increases performance but polygons must be drawn counterclockwise
-            gl.glEnable(GL.GL_CULL_FACE);
-            gl.glCullFace(GL.GL_BACK);      //Hide back face of polygons
+            gl.glEnable(GL2.GL_CULL_FACE);
+            gl.glCullFace(GL2.GL_BACK);      //Hide back face of polygons
         }
 
         //Point Smooth
         if (vizController.getVizConfig().isPointSmooth()) {        //Only for GL_POINTS
-            gl.glEnable(GL.GL_POINT_SMOOTH);
-            gl.glHint(GL.GL_POINT_SMOOTH_HINT, GL.GL_NICEST); //Point smoothing
+            gl.glEnable(GL2.GL_POINT_SMOOTH);
+            gl.glHint(GL2.GL_POINT_SMOOTH_HINT, GL2.GL_NICEST); //Point smoothing
         } else {
-            gl.glDisable(GL.GL_POINT_SMOOTH);
+            gl.glDisable(GL2.GL_POINT_SMOOTH);
         }
 
         //Light Smooth
         if (vizController.getVizConfig().isLineSmooth()) {         //Only for GL_LINES
-            gl.glEnable(GL.GL_LINE_SMOOTH);
+            gl.glEnable(GL2.GL_LINE_SMOOTH);
             if (vizController.getVizConfig().isLineSmoothNicest()) {
-                gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST);
+                gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
             } else {
-                gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_FASTEST);
+                gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_FASTEST);
             }
         } else {
-            gl.glDisable(GL.GL_LINE_SMOOTH);
+            gl.glDisable(GL2.GL_LINE_SMOOTH);
         }
 
         gl.glClearDepth(1.0f);
@@ -174,54 +176,54 @@ public abstract class GLAbstractListener implements GLEventListener {
 
         //Lighting
         if (vizController.getVizModel().isLighting()) {
-            gl.glEnable(GL.GL_LIGHTING);
+            gl.glEnable(GL2.GL_LIGHTING);
             setLighting(gl);
-            gl.glEnable(GL.GL_NORMALIZE);       //Normalise colors when glScale used
-            gl.glShadeModel(GL.GL_SMOOTH);
+            gl.glEnable(GL2.GL_NORMALIZE);       //Normalise colors when glScale used
+            gl.glShadeModel(GL2.GL_SMOOTH);
         } else {
-            gl.glDisable(GL.GL_LIGHTING);
-            gl.glShadeModel(GL.GL_FLAT);
+            gl.glDisable(GL2.GL_LIGHTING);
+            gl.glShadeModel(GL2.GL_FLAT);
         }
 
         //Blending
         if (vizController.getVizConfig().isBlending()) {
-            gl.glEnable(GL.GL_BLEND);
+            gl.glEnable(GL2.GL_BLEND);
             if (vizController.getVizConfig().isBlendCinema()) {
-                gl.glBlendFunc(GL.GL_CONSTANT_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);        //Black display
+                gl.glBlendFunc(GL2.GL_CONSTANT_COLOR, GL2.GL_ONE_MINUS_SRC_ALPHA);        //Black display
             } else {
-                gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);             //Use alpha values correctly
+                gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);             //Use alpha values correctly
             }
         }
 
 
         //Material
         if (vizController.getVizModel().isMaterial()) {
-            gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
-            gl.glEnable(GL.GL_COLOR_MATERIAL);                                      //Use color and avoid using glMaterial
+            gl.glColorMaterial(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE);
+            gl.glEnable(GL2.GL_COLOR_MATERIAL);                                      //Use color and avoid using glMaterial
         }
         //Mesh view
         if (vizController.getVizConfig().isWireFrame()) {
-            gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
+            gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
         }
 
-        gl.glEnable(GL.GL_TEXTURE_2D);
+        gl.glEnable(GL2.GL_TEXTURE_2D);
 
     }
 
-    protected void setLighting(GL gl) {
+    protected void setLighting(GL2 gl) {
         lighting = new Lighting();
         lighting.glInit(gl);
     }
 
     @Override
     public void init(GLAutoDrawable drawable) {
-        GL gl = drawable.getGL();
+        GL2 gl = drawable.getGL().getGL2();
 
         graphicalConfiguration = new GraphicalConfiguration();
         graphicalConfiguration.checkGeneralCompatibility(gl);
 
         //Reinit viewport, to ensure reshape to perform
-        viewport = BufferUtil.newIntBuffer(4);
+        viewport = Buffers.newDirectIntBuffer(4);
 
         resizing = false;
         initConfig(gl);
@@ -244,19 +246,20 @@ public abstract class GLAbstractListener implements GLEventListener {
         fps = 1000.0f / delta;
         if (fps < 100) {
             fpsAvg = (fpsAvg * fpsCount + fps) / ++fpsCount;
-        } 
+        }
 
-        GL gl = drawable.getGL();
+        GL2 gl = drawable.getGL().getGL2();
 
         if (vizController.getVizModel().isUse3d()) {
-            gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+            gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
         } else {
-            gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+            gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
         }
 
         render3DScene(gl, glu);
     }
 
+    @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         if (!resizing) {
             if (viewport.get(2) == width && viewport.get(3) == height)//NO need
@@ -284,39 +287,35 @@ public abstract class GLAbstractListener implements GLEventListener {
             viewportX = ((width - viewportW) / 2);
             viewportY = ((height - viewportH) / 2);
 
-            GL gl = drawable.getGL();
+            GL2 gl = drawable.getGL().getGL2();
 
             gl.glViewport(viewportX, viewportY, viewportW, viewportH);
-            gl.glGetIntegerv(GL.GL_VIEWPORT, viewport);//Update viewport buffer
+            gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport);//Update viewport buffer
 
-            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glMatrixMode(GL2.GL_PROJECTION);
             gl.glLoadIdentity();
             glu.gluPerspective(viewField, aspectRatio, nearDistance, farDistance);
-            gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projMatrix);//Update projection buffer
+            gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projMatrix);//Update projection buffer
 
 
-            gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
             gl.glLoadIdentity();
 
-            reshape3DScene(drawable.getGL());
+            reshape3DScene(drawable.getGL().getGL2());
 
             if (DEBUG) {
                 DEBUG = false;
-                System.err.println("GL_VENDOR: " + gl.glGetString(GL.GL_VENDOR));
-                System.err.println("GL_RENDERER: " + gl.glGetString(GL.GL_RENDERER));
-                System.err.println("GL_VERSION: " + gl.glGetString(GL.GL_VERSION));
+                System.err.println("GL_VENDOR: " + gl.glGetString(GL2.GL_VENDOR));
+                System.err.println("GL_RENDERER: " + gl.glGetString(GL2.GL_RENDERER));
+                System.err.println("GL_VERSION: " + gl.glGetString(GL2.GL_VERSION));
             }
 
             resizing = false;
         }
     }
 
-    public GL getGL() {
-        return drawable.getGL();
-    }
-
-    @Override
-    public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
+    public GL2 getGL() {
+        return drawable.getGL().getGL2();
     }
 
     public void setVizController(VizController vizController) {

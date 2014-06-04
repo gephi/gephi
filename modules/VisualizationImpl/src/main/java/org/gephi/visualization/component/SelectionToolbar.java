@@ -80,6 +80,7 @@ public class SelectionToolbar extends JToolBar {
         mouseButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.mouse.tooltip"));
         mouseButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (mouseButton.isSelected()) {
                     VizController.getInstance().getSelectionManager().setDirectMouseSelection();
@@ -93,6 +94,7 @@ public class SelectionToolbar extends JToolBar {
         rectangleButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.rectangle.tooltip"));
         rectangleButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (rectangleButton.isSelected()) {
                     VizController.getInstance().getSelectionManager().setRectangleSelection();
@@ -106,6 +108,7 @@ public class SelectionToolbar extends JToolBar {
         dragButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.drag.tooltip"));
         dragButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (dragButton.isSelected()) {
                     VizController.getInstance().getSelectionManager().setDraggingMouseSelection();
@@ -122,6 +125,7 @@ public class SelectionToolbar extends JToolBar {
         //Init events
         VizController.getInstance().getSelectionManager().addChangeListener(new ChangeListener() {
 
+            @Override
             public void stateChanged(ChangeEvent e) {
                 SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
                 if (selectionManager.isBlocked()) {
@@ -149,6 +153,7 @@ public class SelectionToolbar extends JToolBar {
     public void setEnabled(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 for (Component c : getComponents()) {
                     c.setEnabled(enabled);

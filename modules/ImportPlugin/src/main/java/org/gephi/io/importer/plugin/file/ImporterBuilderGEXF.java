@@ -57,19 +57,23 @@ public class ImporterBuilderGEXF implements FileImporterBuilder {
 
     public static final String IDENTIFER = "gexf";
 
+    @Override
     public FileImporter buildImporter() {
         return new ImporterGEXF();
     }
 
+    @Override
     public String getName() {
         return IDENTIFER;
     }
 
+    @Override
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gexf", NbBundle.getMessage(getClass(), "fileType_GEXF_Name"));
         return new FileType[]{ft};
     }
 
+    @Override
     public boolean isMatchingImporter(FileObject fileObject) {
         return fileObject.getExt().equalsIgnoreCase("gexf");
     }

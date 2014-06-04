@@ -114,6 +114,7 @@ public class ColumnSelectionPanel extends JPanel {
             checkBox.setEnabled(column.isEnabled());
             checkBox.addActionListener(new ActionListener() {
 
+                @Override
                 public void actionPerformed(ActionEvent evt) {
                     column.setSelected(checkBox.isSelected());
                 }

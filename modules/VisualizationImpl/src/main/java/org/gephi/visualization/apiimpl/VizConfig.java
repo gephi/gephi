@@ -1,44 +1,44 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.visualization.apiimpl;
 
 import java.awt.Color;
@@ -74,9 +74,7 @@ public class VizConfig {
     public static final String SELECTEDEDGE_IN_COLOR = "VizConfig.defaultEdgeInSelectedColor";
     public static final String SELECTEDEDGE_OUT_COLOR = "VizConfig.defaultEdgeOutSelectedColor";
     public static final String SELECTEDEDGE_BOTH_COLOR = "VizConfig.defaultEdgeBothSelectedColor";
-    public static final String SHOW_HULLS = "VizConfig.defaultShowHulls";
     public static final String EDGE_SCALE = "VizConfig.defaultEdgeScale";
-    public static final String META_EDGE_SCALE = "VizConfig.defaultMetaEdgeScale";
     //Const Prefs
     public static final String ANTIALIASING = "VizConfig.antialiasing";
     public static final String BLENDING = "VizConfig.blending";
@@ -138,7 +136,7 @@ public class VizConfig {
     public static final Color DEFAULT_RECTANGLE_SELECTION_COLOR = new Color(0.16f, 0.48f, 0.81f, 0.2f);
     public static final boolean DEFAULT_DRAGGING = true;
     public static final boolean DEFAULT_CAMERA_CONTROL = true;
-    public static final boolean DEFAULT_SHOW_FPS = false;
+    public static final boolean DEFAULT_SHOW_FPS = true;
     public static final boolean DEFAULT_REDUCE_FPS_MOUSE_OUT = true;
     public static final boolean DEFAULT_PAUSE_LOOP_MOUSE_OUT = false;
     public static final int DEFAULT_REDUCE_FPS_MOUSE_OUT_VALUE = 20;
@@ -191,9 +189,7 @@ public class VizConfig {
     protected Color defaultEdgeInSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_IN_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_IN_COLOR)));
     protected Color defaultEdgeOutSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_OUT_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_OUT_COLOR)));
     protected Color defaultEdgeBothSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_BOTH_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_BOTH_COLOR)));
-    protected boolean defaultShowHulls = NbPreferences.forModule(VizConfig.class).getBoolean(SHOW_HULLS, DEFAULT_SHOW_HULLS);
     protected float defaultEdgeScale = NbPreferences.forModule(VizConfig.class).getFloat(EDGE_SCALE, DEFAULT_EDGE_SCALE);
-    protected float defaultMetaEdgeScale = NbPreferences.forModule(VizConfig.class).getFloat(META_EDGE_SCALE, DEFAULT_META_EDGE_SCALE);
     //Preferences
     protected int antialiasing = NbPreferences.forModule(VizConfig.class).getInt(ANTIALIASING, DEFAULT_ANTIALIASING);
     protected boolean lineSmooth = false;       //Not useful, GL_LINES
@@ -215,7 +211,7 @@ public class VizConfig {
     protected int reduceFpsWhenMouseOutValue = NbPreferences.forModule(VizConfig.class).getInt(REDUCE_FPS_MOUSE_OUT_VALUE, DEFAULT_REDUCE_FPS_MOUSE_OUT_VALUE);
     protected boolean pauseLoopWhenMouseOut = NbPreferences.forModule(VizConfig.class).getBoolean(PAUSE_LOOP_MOUSE_OUT, DEFAULT_PAUSE_LOOP_MOUSE_OUT);
     protected boolean showArrows = true;        //Overriden in Engine
-    protected boolean lightenNonSelected = true;        //Overriden in Engine
+    protected boolean lightenNonSelected = false;        //Overriden in Engine
     protected float[] lightenNonSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(HIGHTLIGHT_COLOR, ColorUtils.encode(DEFAULT_HIGHTLIGHT_COLOR))).getRGBColorComponents(null);
     protected boolean lightenNonSelectedAnimation = NbPreferences.forModule(VizConfig.class).getBoolean(HIGHTLIGHT_ANIMATION, DEFAULT_HIGHTLIGHT_ANIMATION);
     protected float lightenNonSelectedFactor = 0.5f;        //Overriden in Engine
@@ -227,7 +223,7 @@ public class VizConfig {
     protected boolean labelMipMap = NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_MIPMAP, DEFAULT_LABEL_MIPMAP);
     protected boolean labelAntialiased = NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_ANTIALIASED, DEFAULT_LABEL_ANTIALIASED);
     protected boolean labelFractionalMetrics = NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_FRACTIONAL_METRICS, DEFAULT_LABEL_FRACTIONAL_METRICS);
-    protected boolean useLabelRenderer3d = false;//no working   
+    protected boolean useLabelRenderer3d = false;//no working
     protected boolean showVizVar = NbPreferences.forModule(VizConfig.class).getBoolean(VIZBAR, DEFAULT_VIZBAR);
     protected boolean contextMenu = NbPreferences.forModule(VizConfig.class).getBoolean(CONTEXT_MENU, DEFAULT_CONTEXT_MENU);
     protected boolean toolbar = NbPreferences.forModule(VizConfig.class).getBoolean(TOOLBAR, DEFAULT_TOOLBAR);
@@ -543,10 +539,6 @@ public class VizConfig {
         this.disableLOD = disableLOD;
     }
 
-    public boolean isDefaultShowHulls() {
-        return defaultShowHulls;
-    }
-
     public boolean isEnableAutoSelect() {
         return enableAutoSelect;
     }
@@ -565,9 +557,5 @@ public class VizConfig {
 
     public float getDefaultEdgeScale() {
         return defaultEdgeScale;
-    }
-
-    public float getDefaultMetaEdgeScale() {
-        return defaultMetaEdgeScale;
     }
 }

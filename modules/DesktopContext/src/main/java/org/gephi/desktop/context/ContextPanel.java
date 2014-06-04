@@ -1,69 +1,58 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.context;
 
-import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.NumberFormat;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import javax.swing.SwingUtilities;
-import org.gephi.graph.api.DirectedGraph;
-import org.gephi.graph.api.GraphEvent;
-import org.gephi.graph.api.GraphListener;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.graph.api.UndirectedGraph;
 import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ContextPanel extends javax.swing.JPanel implements GraphListener {
+public class ContextPanel extends javax.swing.JPanel {
 
     private enum GraphType {
 
@@ -77,38 +66,16 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         }
     }
     private GraphModel model;
-    private ContextPieChart pieChart;
     private NumberFormat formatter;
-    private boolean showPie = true;
-    private ThreadPoolExecutor consumerThread;
+    private ContextRefreshThread consumerThread;
 
     public ContextPanel() {
         initComponents();
         initDesign();
         refreshModel(null);
-
-        pieButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                pieChart.setChartVisible(pieButton.isSelected());
-            }
-        });
-        pieChart.setChartVisible(pieButton.isSelected());
-
-        //Event manager
-        consumerThread = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(5), new ThreadFactory() {
-
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r, "Context Panel consumer thread");
-                t.setDaemon(true);
-                return t;
-            }
-        }, new ThreadPoolExecutor.DiscardOldestPolicy());
     }
 
     private void initDesign() {
-        pieChart = new ContextPieChart();
-        piePanel.add(pieChart.getChartPanel(), BorderLayout.CENTER);
         labelNodes.setFont(labelNodes.getFont().deriveFont(Font.BOLD));
         labelEdges.setFont(labelEdges.getFont().deriveFont(Font.BOLD));
         formatter = NumberFormat.getPercentInstance();
@@ -116,35 +83,29 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
     }
 
     public void refreshModel(GraphModel model) {
-        if (this.model != null) {
-            this.model.removeGraphListener(this);
+        if (consumerThread != null) {
+            consumerThread.shutdown();
         }
         this.model = model;
         setEnable(model != null);
         if (this.model != null) {
-            model.addGraphListener(this);
-            refreshModelData();
-        }
-    }
-
-    private void refreshModelData() {
-        if (consumerThread.getQueue().remainingCapacity() > 0) {
-            consumerThread.execute(new RefreshRunnable());
+            consumerThread = new ContextRefreshThread(model, new RefreshRunnable());
         }
     }
 
     private class RefreshRunnable implements Runnable {
 
+        @Override
         public void run() {
-            HierarchicalGraph visibleGraph = model.getHierarchicalGraphVisible();
-            HierarchicalGraph fullGraph = model.getHierarchicalGraph();
+            Graph visibleGraph = model.getGraphVisible();
+            Graph fullGraph = model.getGraph();
             final int nodesFull = fullGraph.getNodeCount();
             final int nodesVisible = visibleGraph.getNodeCount();
-            final int edgesFull = fullGraph.getTotalEdgeCount();
-            final int edgesVisible = visibleGraph.getTotalEdgeCount();
-            final GraphType graphType = visibleGraph instanceof DirectedGraph ? GraphType.DIRECTED : visibleGraph instanceof UndirectedGraph ? GraphType.UNDIRECTED : GraphType.MIXED;
+            final int edgesFull = fullGraph.getEdgeCount();
+            final int edgesVisible = visibleGraph.getEdgeCount();
+            final GraphType graphType = model.isDirected() ? GraphType.DIRECTED : model.isUndirected() ? GraphType.UNDIRECTED : GraphType.MIXED;
             SwingUtilities.invokeLater(new Runnable() {
-
+                @Override
                 public void run() {
                     String visible = NbBundle.getMessage(ContextPanel.class, "ContextPanel.visible");
                     String nodeText = String.valueOf(nodesVisible);
@@ -156,15 +117,9 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
                     nodeLabel.setText(nodeText);
                     edgeLabel.setText(edgeText);
                     graphTypeLabel.setText(graphType.type);
-                    double percentage = 0.5 * nodesVisible / (double) nodesFull + 0.5 * edgesVisible / (double) edgesFull;
-                    pieChart.refreshChart(percentage);
                 }
             });
         }
-    }
-
-    public void graphChanged(GraphEvent event) {
-        refreshModelData();
     }
 
     private void setEnable(boolean enable) {
@@ -174,18 +129,16 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         edgeLabel.setEnabled(enable);
 
         if (!enable) {
-            nodeLabel.setText("NaN");
-            edgeLabel.setText("NaN");
+            nodeLabel.setText("");
+            edgeLabel.setText("");
             graphTypeLabel.setText("");
         }
-        pieButton.setEnabled(enable);
-        piePanel.setVisible(showPie);
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -193,8 +146,6 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         java.awt.GridBagConstraints gridBagConstraints;
 
         commandToolbar = new javax.swing.JToolBar();
-        pieButton = new javax.swing.JToggleButton();
-        piePanel = new javax.swing.JPanel();
         labelNodes = new javax.swing.JLabel();
         nodeLabel = new javax.swing.JLabel();
         labelEdges = new javax.swing.JLabel();
@@ -205,16 +156,9 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         setLayout(new java.awt.GridBagLayout());
 
         commandToolbar.setFloatable(false);
-        commandToolbar.setOrientation(1);
+        commandToolbar.setOrientation(javax.swing.SwingConstants.VERTICAL);
         commandToolbar.setRollover(true);
         commandToolbar.setOpaque(false);
-
-        pieButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/context/resources/pie.png"))); // NOI18N
-        pieButton.setFocusable(false);
-        pieButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        pieButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        commandToolbar.add(pieButton);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
@@ -222,17 +166,6 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.weighty = 1.0;
         add(commandToolbar, gridBagConstraints);
-
-        piePanel.setOpaque(false);
-        piePanel.setLayout(new java.awt.BorderLayout());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(piePanel, gridBagConstraints);
 
         labelNodes.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.labelNodes.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -287,7 +220,5 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
     private javax.swing.JLabel labelEdges;
     private javax.swing.JLabel labelNodes;
     private javax.swing.JLabel nodeLabel;
-    private javax.swing.JToggleButton pieButton;
-    private javax.swing.JPanel piePanel;
     // End of variables declaration//GEN-END:variables
 }

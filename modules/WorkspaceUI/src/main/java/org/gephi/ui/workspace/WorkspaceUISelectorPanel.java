@@ -89,6 +89,7 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel implements Chan
 
         leftArrowButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 Workspace sel = getPrecedentWorkspace(workspace);
                 ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -100,6 +101,7 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel implements Chan
 
         rightArrowButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 Workspace sel = getNextWorkspace(workspace);
                 ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -152,9 +154,11 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel implements Chan
         }
     }
 
+    @Override
     public void stateChanged(ChangeEvent e) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 workspaceLabel.setText(workspace.getLookup().lookup(WorkspaceInformation.class).getName());
             }

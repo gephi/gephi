@@ -3,21 +3,21 @@
 # This file is distributed under the same license as the Gephi package.
 # 
 # Translators:
-# Eduardo Ramos <eduramiba@gmail.com>, 2011.
+# Eduardo Ramos <eduramiba@gmail.com>, 2011-2012.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-16 21:29+0000\n"
+"PO-Revision-Date: 2012-12-31 01:22+0000\n"
 "Last-Translator: Eduardo Ramos <eduramiba@gmail.com>\n"
-"Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/gephi/language/es/)\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/gephi/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "CTL_GraphAction"
 msgstr "Grafo"
@@ -37,11 +37,17 @@ msgstr "Inicializando..."
 msgid "VizToolbar.Global.background"
 msgstr "Color de fondo (click izquierdo para cambiar negro-blanco, click derecho para escoger color)"
 
+msgid "VizToolbar.Global.groupBarTitle"
+msgstr "Global"
+
 msgid "VizToolbar.Global.screenshot"
 msgstr "Captura de pantalla"
 
 msgid "VizToolbar.Global.screenshot.configure"
 msgstr "Configurar..."
+
+msgid "VizToolbar.Nodes.groupBarTitle"
+msgstr "Nodos"
 
 msgid "VizToolbar.Nodes.showLabels"
 msgstr "Mostrar etiquetas de los nodos"
@@ -61,6 +67,9 @@ msgstr "Mostrar etiquetas de las aristas"
 msgid "VizToolbar.Edges.edgeScale"
 msgstr "Escala del peso de las aristas"
 
+msgid "VizToolbar.Edges.groupBarTitle"
+msgstr "Aristas"
+
 msgid "VizToolbar.Labels.font"
 msgstr "Fuente"
 
@@ -78,6 +87,9 @@ msgstr "Atributos"
 
 msgid "VizToolbar.Labels.fontScale"
 msgstr "Escala de la fuente"
+
+msgid "VizToolbar.Labels.groupBarTitle"
+msgstr "Etiquetas"
 
 msgid "NodeSettingsPanel.adjustTextCheckbox.text"
 msgstr "Ajustar al texto"

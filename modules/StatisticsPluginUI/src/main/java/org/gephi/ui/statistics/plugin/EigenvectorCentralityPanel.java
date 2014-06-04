@@ -56,7 +56,7 @@ public class EigenvectorCentralityPanel extends javax.swing.JPanel {
         
         //Disable directed if the graph is undirecteds
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if(graphController.getModel().isUndirected()){
+        if(graphController.getGraphModel().isUndirected()){
             directedRadioButton.setEnabled(false);
         }
     }
@@ -127,18 +127,14 @@ public class EigenvectorCentralityPanel extends javax.swing.JPanel {
             .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(directedRadioButton)
-                .addContainerGap(439, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(undirectedRadioButton)
-                .addContainerGap(422, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(8, 8, 8)
-                .addComponent(iterationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(204, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(directedRadioButton)
+                    .addComponent(undirectedRadioButton)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(8, 8, 8)
+                        .addComponent(iterationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

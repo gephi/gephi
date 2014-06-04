@@ -502,6 +502,7 @@ public class JRangeSlider extends JSlider {
          */
         public class ChangeHandler implements ChangeListener {
 
+            @Override
             public void stateChanged(ChangeEvent arg0) {
                 if (!lowerDragging && !upperDragging) {
                     calculateThumbLocation();
@@ -1069,6 +1070,7 @@ public class JRangeSlider extends JSlider {
          */
         public class ChangeHandler implements ChangeListener {
 
+            @Override
             public void stateChanged(ChangeEvent arg0) {
                 if (!lowerDragging && !upperDragging) {
                     calculateThumbLocation();

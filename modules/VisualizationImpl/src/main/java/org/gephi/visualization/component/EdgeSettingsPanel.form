@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <AuxValues>
@@ -32,15 +32,13 @@
                       <Component id="scalePanel" min="-2" pref="130" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="selectionColorPanel" min="-2" pref="176" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="metaScalePanel" min="-2" pref="134" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="showEdgesCheckbox" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="146" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -64,7 +62,6 @@
                           </Group>
                           <Component id="scalePanel" alignment="0" pref="61" max="32767" attributes="1"/>
                           <Component id="selectionColorPanel" alignment="0" pref="61" max="32767" attributes="1"/>
-                          <Component id="metaScalePanel" alignment="0" pref="61" max="32767" attributes="1"/>
                       </Group>
                   </Group>
               </Group>
@@ -98,7 +95,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JColorButton(Color.BLACK)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JColorButton(Color.BLACK, false, true)"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JCheckBox" name="sourceNodeColorCheckbox">
@@ -309,37 +306,6 @@
           </Constraints>
         </Component>
         <Component class="javax.swing.JSlider" name="scaleSlider">
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-              <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="11" weightX="1.0" weightY="1.0"/>
-            </Constraint>
-          </Constraints>
-        </Component>
-      </SubComponents>
-    </Container>
-    <Container class="javax.swing.JPanel" name="metaScalePanel">
-      <Properties>
-        <Property name="opaque" type="boolean" value="false"/>
-      </Properties>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JLabel" name="labelMetaScale">
-          <Properties>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gephi/visualization/component/Bundle.properties" key="EdgeSettingsPanel.labelMetaScale.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-            </Property>
-            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[136, 15]"/>
-            </Property>
-          </Properties>
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-              <GridBagConstraints gridX="0" gridY="0" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="3" insetsLeft="5" insetsBottom="2" insetsRight="0" anchor="17" weightX="0.0" weightY="0.0"/>
-            </Constraint>
-          </Constraints>
-        </Component>
-        <Component class="javax.swing.JSlider" name="metaScaleSlider">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
               <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="11" weightX="1.0" weightY="1.0"/>

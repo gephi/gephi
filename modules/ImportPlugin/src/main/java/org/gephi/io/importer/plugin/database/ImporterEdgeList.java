@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.importer.plugin.database;
 
@@ -50,14 +50,14 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
+import org.gephi.attribute.api.TimeFormat;
 import org.gephi.io.database.drivers.SQLUtils;
+import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.ElementDraft;
+import org.gephi.io.importer.api.ElementDraftFactory;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.PropertiesAssociations;
@@ -82,6 +82,7 @@ public class ImporterEdgeList implements DatabaseImporter {
     private String timeIntervalEnd;
     private String timeIntervalEndOpen;
 
+    @Override
     public boolean execute(ContainerLoader container) {
         this.container = container;
         this.report = new Report();
@@ -135,7 +136,7 @@ public class ImporterEdgeList implements DatabaseImporter {
     private void getNodes(Connection connection) throws SQLException {
 
         //Factory
-        ContainerLoader.DraftFactory factory = container.factory();
+        ElementDraftFactory factory = container.factory();
 
         //Properties
         PropertiesAssociations properties = database.getPropertiesAssociations();
@@ -150,12 +151,28 @@ public class ImporterEdgeList implements DatabaseImporter {
         }
 
         findNodeAttributesColumns(rs);
-        AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
         int count = 0;
         while (rs.next()) {
-            NodeDraft node = factory.newNodeDraft();
+            String id = null;
+            for (int i = 0; i < columnsCount; i++) {
+                String columnName = metaData.getColumnLabel(i + 1);
+                NodeProperties p = properties.getNodeProperty(columnName);
+                if (p.equals(NodeProperties.ID)) {
+                    String ide = rs.getString(i + 1);
+                    if (ide != null) {
+                        id = ide;
+                    }
+                }
+            }
+            NodeDraft node;
+            if (id != null) {
+                node = factory.newNodeDraft(id);
+            } else {
+                node = factory.newNodeDraft();
+            }
+
             for (int i = 0; i < columnsCount; i++) {
                 String columnName = metaData.getColumnLabel(i + 1);
                 NodeProperties p = properties.getNodeProperty(columnName);
@@ -163,11 +180,11 @@ public class ImporterEdgeList implements DatabaseImporter {
                     injectNodeProperty(p, rs, i + 1, node);
                 } else {
                     //Inject node attributes
-                    AttributeColumn col = nodeClass.getColumn(columnName);
-                    injectNodeAttribute(rs, i + 1, col, node);
+                    ColumnDraft col = container.getNodeColumn(columnName);
+                    injectElementAttribute(rs, i + 1, col, node);
                 }
             }
-            injectTimeIntervalProperty(node);
+//            injectTimeIntervalProperty(node);
             container.addNode(node);
             ++count;
         }
@@ -179,7 +196,7 @@ public class ImporterEdgeList implements DatabaseImporter {
     private void getEdges(Connection connection) throws SQLException {
 
         //Factory
-        ContainerLoader.DraftFactory factory = container.factory();
+        ElementDraftFactory factory = container.factory();
 
         //Properties
         PropertiesAssociations properties = database.getPropertiesAssociations();
@@ -193,12 +210,27 @@ public class ImporterEdgeList implements DatabaseImporter {
             return;
         }
         findEdgeAttributesColumns(rs);
-        AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
         int count = 0;
         while (rs.next()) {
-            EdgeDraft edge = factory.newEdgeDraft();
+            String id = null;
+            for (int i = 0; i < columnsCount; i++) {
+                String columnName = metaData.getColumnLabel(i + 1);
+                EdgeProperties p = properties.getEdgeProperty(columnName);
+                if (p.equals(EdgeProperties.ID)) {
+                    String ide = rs.getString(i + 1);
+                    if (ide != null) {
+                        id = ide;
+                    }
+                }
+            }
+            EdgeDraft edge;
+            if (id != null) {
+                edge = factory.newEdgeDraft(id);
+            } else {
+                edge = factory.newEdgeDraft();
+            }
             for (int i = 0; i < columnsCount; i++) {
                 String columnName = metaData.getColumnLabel(i + 1);
                 EdgeProperties p = properties.getEdgeProperty(columnName);
@@ -206,11 +238,11 @@ public class ImporterEdgeList implements DatabaseImporter {
                     injectEdgeProperty(p, rs, i + 1, edge);
                 } else {
                     //Inject edge attributes
-                    AttributeColumn col = edgeClass.getColumn(columnName);
-                    injectEdgeAttribute(rs, i + 1, col, edge);
+                    ColumnDraft col = container.getEdgeColumn(columnName);
+                    injectElementAttribute(rs, i + 1, col, edge);
                 }
             }
-            injectTimeIntervalProperty(edge);
+//            injectTimeIntervalProperty(edge);
             container.addEdge(edge);
             ++count;
         }
@@ -226,12 +258,6 @@ public class ImporterEdgeList implements DatabaseImporter {
 
     private void injectNodeProperty(NodeProperties p, ResultSet rs, int column, NodeDraft nodeDraft) throws SQLException {
         switch (p) {
-            case ID:
-                String id = rs.getString(column);
-                if (id != null) {
-                    nodeDraft.setId(id);
-                }
-                break;
             case LABEL:
                 String label = rs.getString(column);
                 if (label != null) {
@@ -302,7 +328,7 @@ public class ImporterEdgeList implements DatabaseImporter {
 
         }
     }
-    
+
     private TimeFormat getTimeFormat(ResultSet rs, int column) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         int type = metaData.getColumnType(column);
@@ -342,40 +368,33 @@ public class ImporterEdgeList implements DatabaseImporter {
         return res;
     }
 
-    private void injectTimeIntervalProperty(NodeDraft nodeDraft) {
-        if (timeIntervalStart != null && timeIntervalEnd != null) {
-            nodeDraft.addTimeInterval(timeIntervalStart, timeIntervalEnd, false, false);
-        } else if (timeIntervalStart != null && timeIntervalEndOpen != null) {
-            nodeDraft.addTimeInterval(timeIntervalStart, timeIntervalEndOpen, false, true);
-        } else if (timeIntervalStartOpen != null && timeIntervalEnd != null) {
-            nodeDraft.addTimeInterval(timeIntervalStartOpen, timeIntervalEnd, true, false);
-        } else if (timeIntervalStartOpen != null && timeIntervalEndOpen != null) {
-            nodeDraft.addTimeInterval(timeIntervalStartOpen, timeIntervalEndOpen, true, true);
-        } else if (timeIntervalStart != null) {
-            nodeDraft.addTimeInterval(timeIntervalStart, null);
-        } else if (timeIntervalStartOpen != null) {
-            nodeDraft.addTimeInterval(timeIntervalStartOpen, null, true, false);
-        } else if (timeIntervalEnd != null) {
-            nodeDraft.addTimeInterval(null, timeIntervalEnd);
-        } else if (timeIntervalEndOpen != null) {
-            nodeDraft.addTimeInterval(null, timeIntervalEndOpen, false, true);
-        }
-
-        //Reset temp data
-        timeIntervalStart = null;
-        timeIntervalStartOpen = null;
-        timeIntervalEnd = null;
-        timeIntervalEndOpen = null;
-    }
-
+//    private void injectTimeIntervalProperty(NodeDraft nodeDraft) {
+//        if (timeIntervalStart != null && timeIntervalEnd != null) {
+//            nodeDraft.addTimeInterval(timeIntervalStart, timeIntervalEnd, false, false);
+//        } else if (timeIntervalStart != null && timeIntervalEndOpen != null) {
+//            nodeDraft.addTimeInterval(timeIntervalStart, timeIntervalEndOpen, false, true);
+//        } else if (timeIntervalStartOpen != null && timeIntervalEnd != null) {
+//            nodeDraft.addTimeInterval(timeIntervalStartOpen, timeIntervalEnd, true, false);
+//        } else if (timeIntervalStartOpen != null && timeIntervalEndOpen != null) {
+//            nodeDraft.addTimeInterval(timeIntervalStartOpen, timeIntervalEndOpen, true, true);
+//        } else if (timeIntervalStart != null) {
+//            nodeDraft.addTimeInterval(timeIntervalStart, null);
+//        } else if (timeIntervalStartOpen != null) {
+//            nodeDraft.addTimeInterval(timeIntervalStartOpen, null, true, false);
+//        } else if (timeIntervalEnd != null) {
+//            nodeDraft.addTimeInterval(null, timeIntervalEnd);
+//        } else if (timeIntervalEndOpen != null) {
+//            nodeDraft.addTimeInterval(null, timeIntervalEndOpen, false, true);
+//        }
+//
+//        //Reset temp data
+//        timeIntervalStart = null;
+//        timeIntervalStartOpen = null;
+//        timeIntervalEnd = null;
+//        timeIntervalEndOpen = null;
+//    }
     private void injectEdgeProperty(EdgeProperties p, ResultSet rs, int column, EdgeDraft edgeDraft) throws SQLException {
         switch (p) {
-            case ID:
-                String id = rs.getString(column);
-                if (id != null) {
-                    edgeDraft.setId(id);
-                }
-                break;
             case LABEL:
                 String label = rs.getString(column);
                 if (label != null) {
@@ -441,189 +460,113 @@ public class ImporterEdgeList implements DatabaseImporter {
                 break;
         }
     }
-    
-    private void injectTimeIntervalProperty(EdgeDraft edgeDraft) {
-        if (timeIntervalStart != null && timeIntervalEnd != null) {
-            edgeDraft.addTimeInterval(timeIntervalStart, timeIntervalEnd, false, false);
-        } else if (timeIntervalStart != null && timeIntervalEndOpen != null) {
-            edgeDraft.addTimeInterval(timeIntervalStart, timeIntervalEndOpen, false, true);
-        } else if (timeIntervalStartOpen != null && timeIntervalEnd != null) {
-            edgeDraft.addTimeInterval(timeIntervalStartOpen, timeIntervalEnd, true, false);
-        } else if (timeIntervalStartOpen != null && timeIntervalEndOpen != null) {
-            edgeDraft.addTimeInterval(timeIntervalStartOpen, timeIntervalEndOpen, true, true);
-        } else if (timeIntervalStart != null) {
-            edgeDraft.addTimeInterval(timeIntervalStart, null);
-        } else if (timeIntervalStartOpen != null) {
-            edgeDraft.addTimeInterval(timeIntervalStartOpen, null, true, false);
-        } else if (timeIntervalEnd != null) {
-            edgeDraft.addTimeInterval(null, timeIntervalEnd);
-        } else if (timeIntervalEndOpen != null) {
-            edgeDraft.addTimeInterval(null, timeIntervalEndOpen, false, true);
+
+//    private void injectTimeIntervalProperty(EdgeDraft edgeDraft) {
+//        if (timeIntervalStart != null && timeIntervalEnd != null) {
+//            edgeDraft.addTimeInterval(timeIntervalStart, timeIntervalEnd, false, false);
+//        } else if (timeIntervalStart != null && timeIntervalEndOpen != null) {
+//            edgeDraft.addTimeInterval(timeIntervalStart, timeIntervalEndOpen, false, true);
+//        } else if (timeIntervalStartOpen != null && timeIntervalEnd != null) {
+//            edgeDraft.addTimeInterval(timeIntervalStartOpen, timeIntervalEnd, true, false);
+//        } else if (timeIntervalStartOpen != null && timeIntervalEndOpen != null) {
+//            edgeDraft.addTimeInterval(timeIntervalStartOpen, timeIntervalEndOpen, true, true);
+//        } else if (timeIntervalStart != null) {
+//            edgeDraft.addTimeInterval(timeIntervalStart, null);
+//        } else if (timeIntervalStartOpen != null) {
+//            edgeDraft.addTimeInterval(timeIntervalStartOpen, null, true, false);
+//        } else if (timeIntervalEnd != null) {
+//            edgeDraft.addTimeInterval(null, timeIntervalEnd);
+//        } else if (timeIntervalEndOpen != null) {
+//            edgeDraft.addTimeInterval(null, timeIntervalEndOpen, false, true);
+//        }
+//
+//        //Reset temp data
+//        timeIntervalStart = null;
+//        timeIntervalStartOpen = null;
+//        timeIntervalEnd = null;
+//        timeIntervalEndOpen = null;
+//    }
+    private void injectElementAttribute(ResultSet rs, int columnIndex, ColumnDraft column, ElementDraft draft) {
+        String elementName;
+        if (draft instanceof NodeDraft) {
+            elementName = "node";
+        } else {
+            elementName = "edge";
         }
-
-        //Reset temp data
-        timeIntervalStart = null;
-        timeIntervalStartOpen = null;
-        timeIntervalEnd = null;
-        timeIntervalEndOpen = null;
-    }
-
-    private void injectNodeAttribute(ResultSet rs, int columnIndex, AttributeColumn column, NodeDraft draft) {
-        switch (column.getType()) {
-            case BOOLEAN:
-                try {
-                    boolean val = rs.getBoolean(columnIndex);
-                    draft.addAttributeValue(column, val);
-                } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a BOOLEAN value for node attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+        Class typeClass = column.getTypeClass();
+        if (typeClass.equals(Boolean.class)) {
+            try {
+                boolean val = rs.getBoolean(columnIndex);
+                draft.setValue(column.getId(), val);
+            } catch (SQLException ex) {
+                report.logIssue(new Issue("Failed to get a BOOLEAN value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+            }
+        } else if (typeClass.equals(Double.class)) {
+            try {
+                double val = rs.getDouble(columnIndex);
+                draft.setValue(column.getId(), val);
+            } catch (SQLException ex) {
+                report.logIssue(new Issue("Failed to get a DOUBLE value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+            }
+        } else if (typeClass.equals(Float.class)) {
+            try {
+                float val = rs.getFloat(columnIndex);
+                draft.setValue(column.getId(), val);
+            } catch (SQLException ex) {
+                report.logIssue(new Issue("Failed to get a FLOAT value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+            }
+        } else if (typeClass.equals(Integer.class)) {
+            try {
+                int val = rs.getInt(columnIndex);
+                draft.setValue(column.getId(), val);
+            } catch (SQLException ex) {
+                report.logIssue(new Issue("Failed to get a INT value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+            }
+        } else if (typeClass.equals(Long.class)) {
+            try {
+                long val = rs.getLong(columnIndex);
+                draft.setValue(column.getId(), val);
+            } catch (SQLException ex) {
+                report.logIssue(new Issue("Failed to get a LONG value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+            }
+        } else if (typeClass.equals(Short.class)) {
+            try {
+                short val = rs.getShort(columnIndex);
+                draft.setValue(column.getId(), val);
+            } catch (SQLException ex) {
+                report.logIssue(new Issue("Failed to get a SHORT value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+            }
+        } else if (typeClass.equals(Byte.class)) {
+            try {
+                byte val = rs.getByte(columnIndex);
+                draft.setValue(column.getId(), val);
+            } catch (SQLException ex) {
+                report.logIssue(new Issue("Failed to get a BYTE value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+            }
+        } else {
+            try {
+                String val = rs.getString(columnIndex);
+                if (val != null) {
+                    draft.setValue(column.getId(), val);
+                } else {
+                    report.logIssue(new Issue("Failed to get a STRING value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.WARNING));
                 }
-                break;
-            case DOUBLE:
-                try {
-                    double val = rs.getDouble(columnIndex);
-                    draft.addAttributeValue(column, val);
-                } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a DOUBLE value for node attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
-                }
-                break;
-            case FLOAT:
-                try {
-                    float val = rs.getFloat(columnIndex);
-                    draft.addAttributeValue(column, val);
-                } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a FLOAT value for node attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
-                }
-                break;
-            case INT:
-                try {
-                    int val = rs.getInt(columnIndex);
-                    draft.addAttributeValue(column, val);
-                } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a INT value for node attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
-                }
-                break;
-            case LONG:
-                try {
-                    long val = rs.getLong(columnIndex);
-                    draft.addAttributeValue(column, val);
-                } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a LONG value for node attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
-                }
-                break;
-            default: //String
-                try {
-                    String val = rs.getString(columnIndex);
-                    if (val != null) {
-                        draft.addAttributeValue(column, val);
-                    } else {
-                        report.logIssue(new Issue("Failed to get a STRING value for node attribute '" + column.getId() + "'", Issue.Level.WARNING));
-                    }
-                } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a STRING value for node attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
-                }
-                break;
-        }
-    }
-
-    private void injectEdgeAttribute(ResultSet rs, int columnIndex, AttributeColumn column, EdgeDraft draft) {
-        switch (column.getType()) {
-            case BOOLEAN:
-                try {
-                    boolean val = rs.getBoolean(columnIndex);
-                    draft.addAttributeValue(column, val);
-                } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a BOOLEAN value for edge attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
-                }
-                break;
-            case DOUBLE:
-                try {
-                    double val = rs.getDouble(columnIndex);
-                    draft.addAttributeValue(column, val);
-                } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a DOUBLE value for edge attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
-                }
-                break;
-            case FLOAT:
-                try {
-                    float val = rs.getFloat(columnIndex);
-                    draft.addAttributeValue(column, val);
-                } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a FLOAT value for edge attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
-                }
-                break;
-            case INT:
-                try {
-                    int val = rs.getInt(columnIndex);
-                    draft.addAttributeValue(column, val);
-                } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a INT value for edge attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
-                }
-                break;
-            case LONG:
-                try {
-                    long val = rs.getLong(columnIndex);
-                    draft.addAttributeValue(column, val);
-                } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a LONG value for edge attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
-                }
-                break;
-            default: //String
-                try {
-                    String val = rs.getString(columnIndex);
-                    if (val != null) {
-                        draft.addAttributeValue(column, val);
-                    } else {
-                        report.logIssue(new Issue("Failed to get a BOOLEAN value for edge attribute '" + column.getId() + "'", Issue.Level.WARNING));
-                    }
-                } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a STRING value for edge attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
-                }
-                break;
+            } catch (SQLException ex) {
+                report.logIssue(new Issue("Failed to get a STRING value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+            }
         }
     }
 
     private void findNodeAttributesColumns(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
-        AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
         for (int i = 0; i < columnsCount; i++) {
             String columnName = metaData.getColumnLabel(i + 1);
             NodeProperties p = database.getPropertiesAssociations().getNodeProperty(columnName);
             if (p == null) {
                 //No property associated to this column is found, so we append it as an attribute
-
-                AttributeType type = AttributeType.STRING;
-                switch (metaData.getColumnType(i + 1)) {
-                    case Types.BIGINT:
-                        type = AttributeType.LONG;
-                        break;
-                    case Types.INTEGER:
-                        type = AttributeType.INT;
-                        break;
-                    case Types.TINYINT:
-                        type = AttributeType.INT;
-                        break;
-                    case Types.SMALLINT:
-                        type = AttributeType.INT;
-                        break;
-                    case Types.BOOLEAN:
-                        type = AttributeType.BOOLEAN;
-                        break;
-                    case Types.FLOAT:
-                        type = AttributeType.FLOAT;
-                        break;
-                    case Types.DOUBLE:
-                        type = AttributeType.DOUBLE;
-                        break;
-                    case Types.VARCHAR:
-                        type = AttributeType.STRING;
-                        break;
-                    default:
-                        report.logIssue(new Issue("Unknown SQL Type " + metaData.getColumnType(i + 1) + ", STRING used.", Issue.Level.WARNING));
-                        break;
-                }
-                report.log("Node attribute found: " + columnName + "(" + type + ")");
-                nodeClass.addColumn(columnName, type);
+                Class typeClass = findTypeClass(metaData, i);
+                container.addNodeColumn(columnName, typeClass);
             }
         }
     }
@@ -631,61 +574,73 @@ public class ImporterEdgeList implements DatabaseImporter {
     private void findEdgeAttributesColumns(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
-        AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
         for (int i = 0; i < columnsCount; i++) {
             String columnName = metaData.getColumnLabel(i + 1);
             EdgeProperties p = database.getPropertiesAssociations().getEdgeProperty(columnName);
             if (p == null) {
                 //No property associated to this column is found, so we append it as an attribute
-                AttributeType type = AttributeType.STRING;
-                switch (metaData.getColumnType(i + 1)) {
-                    case Types.BIGINT:
-                        type = AttributeType.LONG;
-                        break;
-                    case Types.INTEGER:
-                        type = AttributeType.INT;
-                        break;
-                    case Types.TINYINT:
-                        type = AttributeType.INT;
-                        break;
-                    case Types.SMALLINT:
-                        type = AttributeType.INT;
-                        break;
-                    case Types.BOOLEAN:
-                        type = AttributeType.BOOLEAN;
-                        break;
-                    case Types.FLOAT:
-                        type = AttributeType.FLOAT;
-                        break;
-                    case Types.DOUBLE:
-                        type = AttributeType.DOUBLE;
-                        break;
-                    case Types.VARCHAR:
-                        type = AttributeType.STRING;
-                        break;
-                    default:
-                        report.logIssue(new Issue("Unknown SQL Type " + metaData.getColumnType(i + 1) + ", STRING used.", Issue.Level.WARNING));
-                        break;
-                }
-
-                report.log("Edge attribute found: " + columnName + "(" + type + ")");
-                edgeClass.addColumn(columnName, type);
+                Class typeClass = findTypeClass(metaData, i);
+                container.addEdgeColumn(columnName, typeClass);
             }
         }
     }
 
+    private Class findTypeClass(ResultSetMetaData metaData, int columnIndex) throws SQLException {
+        Class type = String.class;
+        switch (metaData.getColumnType(columnIndex + 1)) {
+            case Types.BIGINT:
+                type = Long.class;
+                break;
+            case Types.INTEGER:
+                type = Integer.class;
+                break;
+            case Types.TINYINT:
+                type = Byte.class;
+                break;
+            case Types.SMALLINT:
+                type = Short.class;
+                break;
+            case Types.BOOLEAN:
+                type = Boolean.class;
+                break;
+            case Types.FLOAT:
+                type = Float.class;
+                break;
+            case Types.DOUBLE:
+                type = Double.class;
+                break;
+            case Types.VARCHAR:
+                type = String.class;
+                break;
+            case Types.BIT:
+                type = Boolean.class;
+                break;
+            case Types.REAL:
+                type = Float.class;
+                break;
+            default:
+                report.logIssue(new Issue("Unknown SQL Type " + metaData.getColumnType(columnIndex + 1) + ", STRING used.", Issue.Level.WARNING));
+                break;
+        }
+        return type;
+    }
+
+    @Override
     public void setDatabase(Database database) {
         this.database = (EdgeListDatabaseImpl) database;
     }
 
+    @Override
     public Database getDatabase() {
         return database;
     }
 
+    @Override
     public ContainerLoader getContainer() {
         return container;
     }
 
+    @Override
     public Report getReport() {
         return report;
     }

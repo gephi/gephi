@@ -109,6 +109,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
         this.slider = slider;
     }
 
+    @Override
     public Dimension getMaximumSize(JComponent s) {
         MultiThumbSlider mySlider = (MultiThumbSlider) s;
         if (mySlider.getOrientation() == MultiThumbSlider.HORIZONTAL) {
@@ -117,6 +118,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
         return new Dimension(DEPTH, MAX_LENGTH);
     }
 
+    @Override
     public Dimension getMinimumSize(JComponent s) {
         MultiThumbSlider mySlider = (MultiThumbSlider) s;
         if (mySlider.getOrientation() == MultiThumbSlider.HORIZONTAL) {
@@ -125,6 +127,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
         return new Dimension(DEPTH, MIN_LENGTH);
     }
 
+    @Override
     public Dimension getPreferredSize(JComponent s) {
         MultiThumbSlider mySlider = (MultiThumbSlider) s;
         if (mySlider.getOrientation() == MultiThumbSlider.HORIZONTAL) {
@@ -206,6 +209,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
     Thread animatingThread = null;
     Runnable animatingRunnable = new Runnable() {
 
+        @Override
         public void run() {
             boolean finished = false;
             while (!finished) {
@@ -270,6 +274,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
     private State pressedState;
     private int dx,  dy;
 
+    @Override
     public void mousePressed(MouseEvent e) {
         dx = 0;
         dy = 0;
@@ -390,18 +395,22 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
         return -1;
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
         mouseMoved(e);
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
         setCurrentIndicatedThumb(-1);
         setMouseInside(false);
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
+    @Override
     public void mouseMoved(MouseEvent e) {
         if (slider.isEnabled() == false) {
             return;
@@ -449,6 +458,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
         updateIndication();
     }
 
+    @Override
     public void mouseDragged(MouseEvent e) {
         if (slider.isEnabled() == false) {
             return;
@@ -511,6 +521,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
         }
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         if (slider.isEnabled() == false) {
             return;
@@ -618,6 +629,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
     }
     FocusListener focusListener = new FocusListener() {
 
+        @Override
         public void focusLost(FocusEvent e) {
             Component c = (Component) e.getSource();
             if (getProperty(slider, "MultiThumbSlider.indicateComponent", "true").toString().equals("true")) {
@@ -627,6 +639,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
             c.repaint();
         }
 
+        @Override
         public void focusGained(FocusEvent e) {
             Component c = (Component) e.getSource();
             int i = slider.getSelectedThumb(false);
@@ -685,6 +698,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
     }
     KeyListener keyListener = new KeyListener() {
 
+        @Override
         public void keyPressed(KeyEvent e) {
             if (slider.isEnabled() == false) {
                 return;
@@ -766,14 +780,17 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
             }
         }
 
+        @Override
         public void keyReleased(KeyEvent e) {
         }
 
+        @Override
         public void keyTyped(KeyEvent e) {
         }
     };
     PropertyChangeListener propertyListener = new PropertyChangeListener() {
 
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
             String name = e.getPropertyName();
             if (name.equals(MultiThumbSlider.VALUES_PROPERTY) ||
@@ -792,18 +809,22 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
     };
     ComponentListener compListener = new ComponentListener() {
 
+        @Override
         public void componentHidden(ComponentEvent e) {
         }
 
+        @Override
         public void componentMoved(ComponentEvent e) {
         }
 
+        @Override
         public void componentResized(ComponentEvent e) {
             calculateGeometry();
             Component c = (Component) e.getSource();
             c.repaint();
         }
 
+        @Override
         public void componentShown(ComponentEvent e) {
         }
     };
@@ -907,6 +928,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
         }
     }
 
+    @Override
     public void installUI(JComponent slider) {
         slider.addMouseListener(this);
         slider.addMouseMotionListener(this);
@@ -916,6 +938,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
         slider.addPropertyChangeListener(propertyListener);
     }
 
+    @Override
     public void paint(Graphics g, JComponent slider2) {
         if (slider2 != slider) {
             throw new RuntimeException("only use this UI on the GradientSlider it was constructed with");
@@ -945,6 +968,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
 
     protected abstract void paintThumbs(Graphics2D g);
 
+    @Override
     public void uninstallUI(JComponent slider) {
         slider.removeMouseListener(this);
         slider.removeMouseMotionListener(this);

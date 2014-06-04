@@ -195,6 +195,7 @@ public abstract class MultiThumbSlider extends JComponent {
      * to the next available thumb, or it may shift the focus to the
      * next focusable <code>JComponent</code>.
      */
+    @Override
     public void transferFocus() {
         transferFocus(true);
     }
@@ -242,6 +243,7 @@ public abstract class MultiThumbSlider extends JComponent {
      * to the previous available thumb, or it may shift the focus to the
      * previous focusable <code>JComponent</code>.
      */
+    @Override
     public void transferFocusBackward() {
         transferFocus(false);
     }

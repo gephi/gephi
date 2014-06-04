@@ -77,82 +77,102 @@ public class SingleRowAttributeValueWrapper implements EditWindowUtils.Attribute
             }
         }
         
+        @Override
         public Byte getValueByte() {
             return (Byte) row.getValue(column.getIndex());
         }
 
+        @Override
         public void setValueByte(Byte object) {
             row.setValue(column.getIndex(), object);
         }
 
+        @Override
         public Short getValueShort() {
             return (Short) row.getValue(column.getIndex());
         }
 
+        @Override
         public void setValueShort(Short object) {
             row.setValue(column.getIndex(), object);
         }
 
+        @Override
         public Character getValueCharacter() {
             return (Character) row.getValue(column.getIndex());
         }
 
+        @Override
         public void setValueCharacter(Character object) {
             row.setValue(column.getIndex(), object);
         }
 
+        @Override
         public String getValueString() {
             return (String) row.getValue(column.getIndex());
         }
 
+        @Override
         public void setValueString(String object) {
             row.setValue(column.getIndex(), object);
         }
 
+        @Override
         public Double getValueDouble() {
             return (Double) row.getValue(column.getIndex());
         }
 
+        @Override
         public void setValueDouble(Double object) {
             row.setValue(column.getIndex(), object);
         }
 
+        @Override
         public Float getValueFloat() {
             return (Float) row.getValue(column.getIndex());
         }
 
+        @Override
         public void setValueFloat(Float object) {
             row.setValue(column.getIndex(), object);
         }
 
+        @Override
         public Integer getValueInteger() {
             return (Integer) row.getValue(column.getIndex());
         }
 
+        @Override
         public void setValueInteger(Integer object) {
             row.setValue(column.getIndex(), object);
         }
 
+        @Override
         public Boolean getValueBoolean() {
             return (Boolean) row.getValue(column.getIndex());
         }
 
+        @Override
         public void setValueBoolean(Boolean object) {
             row.setValue(column.getIndex(), object);
         }
 
+        @Override
         public Long getValueLong() {
             return (Long) row.getValue(column.getIndex());
         }
 
+        @Override
         public void setValueLong(Long object) {
             row.setValue(column.getIndex(), object);
         }
 
+        @Override
         public String getValueAsString() {
             return convertToStringIfNotNull();
         }
 
+        @Override
         public void setValueAsString(String value) {
             row.setValue(column.getIndex(), column.getType().parse(value));
         }

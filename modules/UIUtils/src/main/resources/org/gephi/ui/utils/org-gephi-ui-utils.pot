@@ -77,3 +77,9 @@ msgstr "Histogram"
 
 msgid "ChartsUtils.report.histogram.yLabel"
 msgstr "Frequency"
+
+msgid "IntervalBoundValidator.invalid.bound.message"
+msgstr "Invalid interval bound (must be a float number or a date)"
+
+msgid "IntervalBoundValidator.invalid.interval.message"
+msgstr "Invalid interval (start must be lesser or equal than end)"

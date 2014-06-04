@@ -69,20 +69,25 @@ public final class EditToolTopComponent extends TopComponent {
 
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
 
+            @Override
             public void initialize(Workspace workspace) {
             }
 
+            @Override
             public void select(Workspace workspace) {
                 propertySheet.setEnabled(true);
             }
 
+            @Override
             public void unselect(Workspace workspace) {
                 disableEdit();
             }
 
+            @Override
             public void close(Workspace workspace) {
             }
 
+            @Override
             public void disable() {
                 propertySheet.setEnabled(false);
                 EditToolTopComponent.this.close();

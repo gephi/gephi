@@ -61,10 +61,12 @@ public class PreviewUIModelImpl implements PreviewUIModel {
         currentPreset = new DefaultPreset();
     }
 
+    @Override
     public PreviewPreset getCurrentPreset() {
         return currentPreset;
     }
 
+    @Override
     public float getVisibilityRatio() {
         return visibilityRatio;
     }
@@ -77,10 +79,12 @@ public class PreviewUIModelImpl implements PreviewUIModel {
         currentPreset = preset;
     }
 
+    @Override
     public boolean isRefreshing() {
         return refreshing;
     }
 
+    @Override
     public boolean isWorkspaceBarVisible() {
         return workspaceBarVisible;
     }

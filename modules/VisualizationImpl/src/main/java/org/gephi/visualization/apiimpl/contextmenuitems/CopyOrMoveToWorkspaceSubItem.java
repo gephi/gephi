@@ -42,24 +42,14 @@
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.gephi.dynamic.api.DynamicController;
-import org.gephi.dynamic.api.DynamicModel;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
-import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesManipulator {
+public class CopyOrMoveToWorkspaceSubItem extends BasicItem {
 
     private Workspace workspace;
     private boolean canExecute;
@@ -67,6 +57,7 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
     private int position;
     private final boolean copy;
 
+    @Override
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes = nodes;
     }
@@ -88,6 +79,7 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
         this.copy = copy;
     }
 
+    @Override
     public void execute() {
         if (workspace == null) {
             workspace = Lookup.getDefault().lookup(ProjectControllerUI.class).newWorkspace();
@@ -99,6 +91,7 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
         }
     }
 
+    @Override
     public String getName() {
         if (workspace != null) {
             return workspace.getLookup().lookup(WorkspaceInformation.class).getName();
@@ -107,42 +100,46 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
         }
     }
 
+    @Override
     public boolean canExecute() {
         return canExecute;
     }
 
+    @Override
     public int getType() {
         return type;
     }
 
+    @Override
     public int getPosition() {
         return position;
     }
 
+    @Override
     public Icon getIcon() {
         return null;
     }
 
     public void copyToWorkspace(Workspace workspace) {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
-        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-
-        Workspace currentWorkspace = projectController.getCurrentWorkspace();
-        AttributeModel sourceAttributeModel = attributeController.getModel(currentWorkspace);
-        AttributeModel destAttributeModel = attributeController.getModel(workspace);
-        destAttributeModel.mergeModel(sourceAttributeModel);
-
-        //Copy the TImeFormat
-        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-        dynamicController.setTimeFormat(dynamicController.getModel(currentWorkspace).getTimeFormat(), workspace);
-
-        GraphModel sourceModel = graphController.getModel(currentWorkspace);
-        GraphModel destModel = graphController.getModel(workspace);
-        Graph destGraph = destModel.getHierarchicalGraphVisible();
-        Graph sourceGraph = sourceModel.getHierarchicalGraphVisible();
-
-        destModel.pushNodes(sourceGraph, nodes);
+//        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+//        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
+//        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+//
+//        Workspace currentWorkspace = projectController.getCurrentWorkspace();
+//        AttributeModel sourceAttributeModel = attributeController.getModel(currentWorkspace);
+//        AttributeModel destAttributeModel = attributeController.getModel(workspace);
+//        destAttributeModel.mergeModel(sourceAttributeModel);
+//
+//        //Copy the TImeFormat
+//        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+//        dynamicController.setTimeFormat(dynamicController.getModel(currentWorkspace).getTimeFormat(), workspace);
+//
+//        GraphModel sourceModel = graphController.getModel(currentWorkspace);
+//        GraphModel destModel = graphController.getModel(workspace);
+//        Graph destGraph = destModel.getHierarchicalGraphVisible();
+//        Graph sourceGraph = sourceModel.getHierarchicalGraphVisible();
+//
+//        destModel.pushNodes(sourceGraph, nodes);
     }
 
     public void moveToWorkspace(Workspace workspace) {
@@ -151,9 +148,9 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
     }
 
     public void delete() {
-        HierarchicalGraph hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
-        for (Node n : nodes) {
-            hg.removeNode(n);
-        }
+//        HierarchicalGraph hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
+//        for (Node n : nodes) {
+//            hg.removeNode(n);
+//        }
     }
 }

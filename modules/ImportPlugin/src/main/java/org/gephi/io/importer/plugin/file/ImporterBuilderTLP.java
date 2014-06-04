@@ -57,19 +57,23 @@ public class ImporterBuilderTLP implements FileImporterBuilder {
 
     public static final String IDENTIFER = "tlp";
 
+    @Override
     public FileImporter buildImporter() {
         return new ImporterTLP();
     }
 
+    @Override
     public String getName() {
         return IDENTIFER;
     }
 
+    @Override
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".tlp", NbBundle.getMessage(getClass(), "fileType_TLP_Name"));
         return new FileType[]{ft};
     }
 
+    @Override
     public boolean isMatchingImporter(FileObject fileObject) {
         return fileObject.getExt().equalsIgnoreCase("tlp");
     }

@@ -52,6 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ContainerFactory.class)
 public class ImportContainerFactoryImpl implements ContainerFactory {
 
+    @Override
     public Container newContainer() {
         return new ImportContainerImpl();
     }

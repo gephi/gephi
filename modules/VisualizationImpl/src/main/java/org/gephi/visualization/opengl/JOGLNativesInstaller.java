@@ -53,7 +53,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
- * Manages the JOGL natives loading. Thanks to Michael Bien, Lilian Chamontin
+ * Manages the JOGL2 natives loading. Thanks to Michael Bien, Lilian Chamontin
  * and Kenneth Russell.
  *
  * @author Mathieu Bastan
@@ -65,7 +65,7 @@ public class JOGLNativesInstaller extends ModuleInstall {
 
     @Override
     public void restored() {
-        if (System.getProperty("org.gephi.jogl.init", "true").equals("true")) {
+        if (System.getProperty("org.gephi.joGL2.init", "true").equals("true")) {
             if (findCompatibleOsAndArch()) {
                 String nativeArch = nativeLibInfo.getSubDirectoryPath();
                 File joglDistFolder = InstalledFileLocator.getDefault().locate("modules/lib/" + nativeArch, "org-gephi-visualization-impl", false);
@@ -109,12 +109,12 @@ public class JOGLNativesInstaller extends ModuleInstall {
                 @Override
                 public void run() {
                     System.out.println("Loading native libraries");
-                    // disable JOGL and GlueGen runtime library loading from elsewhere
-                    com.sun.opengl.impl.NativeLibLoader.disableLoading();
-                    com.sun.gluegen.runtime.NativeLibLoader.disableLoading();
+                    // disable JOGL2 and GlueGen runtime library loading from elsewhere
+//                    com.sun.openGL2.impl.NativeLibLoader.disableLoading();
+//                    com.sun.gluegen.runtime.NativeLibLoader.disableLoading();
                     // Open GlueGen runtime library optimistically. Note that
                     // currently we do not need this on any platform except X11
-                    // ones, because JOGL doesn't use the GlueGen NativeLibrary
+                    // ones, because JOGL2 doesn't use the GlueGen NativeLibrary
                     // class anywhere except the DRIHack class, but if for
                     // example we add JOAL support then we will need this on
                     // every platform.
@@ -123,13 +123,13 @@ public class JOGLNativesInstaller extends ModuleInstall {
                     if (nativeLibInfo.mayNeedDRIHack()) {
                         // Run the DRI hack
                         try {
-                            driHackClass = Class.forName("com.sun.opengl.impl.x11.DRIHack");
+                            driHackClass = Class.forName("com.sun.openGL2.impl.x11.DRIHack");
                             driHackClass.getMethod("begin", new Class[]{}).invoke(null, new Object[]{});
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
-                    // Load core JOGL native library
+                    // Load core JOGL2 native library
                     loadLibrary(nativeLibDir, "jogl");
                     if (nativeLibInfo.mayNeedDRIHack()) {
                         // End DRI hack

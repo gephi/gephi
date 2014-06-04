@@ -59,17 +59,20 @@ public class UIExporterVNA implements ExporterUI {
     ExporterVNA exporter;
     ExporterVNASettings settings = new ExporterVNASettings();
 
+    @Override
     public JPanel getPanel() {
         panel = new UIExporterVNAPanel();
         return panel;
     }
 
+    @Override
     public void setup(Exporter exporter) {
         this.exporter = (ExporterVNA)exporter;
         settings.load(this.exporter);
         panel.setup((ExporterVNA)exporter);
     }
 
+    @Override
     public void unsetup(boolean update) {
         if (update)
         {
@@ -80,10 +83,12 @@ public class UIExporterVNA implements ExporterUI {
         exporter = null;
     }
 
+    @Override
     public boolean isUIForExporter(Exporter exporter) {
         return exporter instanceof ExporterVNA;
     }
 
+    @Override
     public String getDisplayName() {
         return org.openide.util.NbBundle.getMessage(UIExporterVNA.class, "UIExporterVNA.name");
     }

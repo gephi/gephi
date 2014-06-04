@@ -91,6 +91,7 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
 
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 initTransformersUI();
 
@@ -106,6 +107,7 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
         });
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName().equals(RankingUIModel.CURRENT_ELEMENT_TYPE)) {
             refreshSelectedElmntGroup((String) pce.getNewValue());
@@ -143,6 +145,7 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
     private void refreshDecoratedIcons() {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 int index = 0;
                 for (String elmtType : controller.getElementTypes()) {
@@ -194,6 +197,7 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
                         btn.setToolTipText(u.getDisplayName());
                         btn.addActionListener(new ActionListener() {
 
+                            @Override
                             public void actionPerformed(ActionEvent e) {
                                 model.setCurrentTransformer(t);
                             }
@@ -224,6 +228,7 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
             btn.setEnabled(false);
             btn.addActionListener(new ActionListener() {
 
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     model.setCurrentElementType(elmtType);
                 }
@@ -248,6 +253,7 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
     public void setEnabled(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 for (Component c : getComponents()) {
                     c.setEnabled(enabled);
@@ -262,6 +268,7 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
         Icon decoration = ImageUtilities.image2Icon(ImageUtilities.loadImage("org/gephi/desktop/ranking/resources/chain.png", false));
         return new DecoratedIcon(icon, decoration, new DecoratedIcon.DecorationController() {
 
+            @Override
             public boolean isDecorated() {
                 return model != null && model.isAutoTransformer(transformer);
             }

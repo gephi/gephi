@@ -75,6 +75,7 @@ public class SnippetPanel extends JPanel implements MouseListener, KeyListener, 
         }
 
         //~ Methods --------------------------------------------------------------------------------------------------------------
+        @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             g.setColor(lineColor);
@@ -130,10 +131,12 @@ public class SnippetPanel extends JPanel implements MouseListener, KeyListener, 
         private Dimension preferredSize;
 
         //~ Methods --------------------------------------------------------------------------------------------------------------
+        @Override
         public Dimension getPreferredSize(JComponent c) {
             return preferredSize;
         }
 
+        @Override
         public void installUI(JComponent c) {
             plainPainter.setText(((Title) c).name);
             plainPainter.setIcon(collapsedIcon);
@@ -151,6 +154,7 @@ public class SnippetPanel extends JPanel implements MouseListener, KeyListener, 
                     titlePreferredSize.height + TITLE_Y_OFFSET * 2);
         }
 
+        @Override
         public void paint(Graphics g, JComponent c) {
 
             Title title = (Title) c;
@@ -211,6 +215,7 @@ public class SnippetPanel extends JPanel implements MouseListener, KeyListener, 
         setLayout(new BorderLayout());
         title = new Title(snippetName) {
 
+            @Override
             public AccessibleContext getAccessibleContext() {
                 return SnippetPanel.this.getAccessibleContext();
             }
@@ -285,47 +290,58 @@ public class SnippetPanel extends JPanel implements MouseListener, KeyListener, 
         return snippetName;
     }
 
+    @Override
     public void focusGained(FocusEvent e) {
         title.repaint();
     }
 
+    @Override
     public void focusLost(FocusEvent e) {
         title.repaint();
     }
 
+    @Override
     public void keyPressed(final KeyEvent evt) {
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             setCollapsed(!isCollapsed());
         }
     }
 
+    @Override
     public void keyReleased(final KeyEvent evt) {
     } // not used
 
+    @Override
     public void keyTyped(final KeyEvent evt) {
     } // not used
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     } // not used
 
+    @Override
     public void mouseEntered(MouseEvent e) {
         title.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         title.setRollOver(true);
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
         title.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         title.setRollOver(false);
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         setCollapsed(!collapsed);
         requestFocus();
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
     } // not used
 
+    @Override
     public void requestFocus() {
         if (title != null) {
             title.requestFocus();

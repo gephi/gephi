@@ -104,6 +104,7 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         super(slider);
     }
 
+    @Override
     public int getClickLocationTolerance() {
         return TRIANGLE_SIZE;
     }
@@ -202,6 +203,7 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         img.getRaster().setDataElements(0, 0, max, 1, array);
     }
 
+    @Override
     public Dimension getMinimumSize(JComponent s) {
         Dimension d = super.getMinimumSize(s);
         if (slider.getOrientation() == GradientSlider.HORIZONTAL) {
@@ -212,6 +214,7 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         return d;
     }
 
+    @Override
     public Dimension getPreferredSize(JComponent s) {
         Dimension d = super.getPreferredSize(s);
         if (slider.getOrientation() == GradientSlider.HORIZONTAL) {
@@ -222,6 +225,7 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         return d;
     }
 
+    @Override
     protected Rectangle calculateTrackRect() {
         int w = slider.getWidth();
         int h = slider.getHeight();
@@ -258,6 +262,7 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         return r;
     }
 
+    @Override
     protected void calculateGeometry() {
         super.calculateGeometry();
         calculateImage();
@@ -302,6 +307,7 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         }
     }
 
+    @Override
     protected void paintTrack(Graphics2D g) {
         Composite oldComposite = g.getComposite();
         float alpha = slider.isEnabled() ? 1 : .5f;
@@ -435,11 +441,13 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         }
     }
 
+    @Override
     protected void paintFocus(Graphics2D g) {
     }
     static GeneralPath hTriangle = null;
     static GeneralPath vTriangle = null;
 
+    @Override
     protected void paintThumbs(Graphics2D g) {
         if (slider.isEnabled() == false) {
             return;

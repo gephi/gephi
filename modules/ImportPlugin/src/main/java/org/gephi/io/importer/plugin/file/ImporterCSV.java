@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Sebastien Heymann <sebastien.heymann@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Sebastien Heymann <sebastien.heymann@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.importer.plugin.file;
 
@@ -70,6 +70,7 @@ public class ImporterCSV implements FileImporter, LongTask {
     private ProgressTicket progressTicket;
     private boolean cancel = false;
 
+    @Override
     public boolean execute(ContainerLoader container) {
         this.container = container;
         this.report = new Report();
@@ -186,8 +187,7 @@ public class ImporterCSV implements FileImporter, LongTask {
     private void addNode(String id, String label) {
         NodeDraft node;
         if (!container.nodeExists(id)) {
-            node = container.factory().newNodeDraft();
-            node.setId(id);
+            node = container.factory().newNodeDraft(id);
             node.setLabel(label);
             container.addNode(node);
         }
@@ -200,49 +200,47 @@ public class ImporterCSV implements FileImporter, LongTask {
     private void addEdge(String source, String target, float weight) {
         NodeDraft sourceNode;
         if (!container.nodeExists(source)) {
-            sourceNode = container.factory().newNodeDraft();
-            sourceNode.setId(source);
+            sourceNode = container.factory().newNodeDraft(source);
             container.addNode(sourceNode);
         } else {
             sourceNode = container.getNode(source);
         }
         NodeDraft targetNode;
         if (!container.nodeExists(target)) {
-            targetNode = container.factory().newNodeDraft();
-            targetNode.setId(target);
+            targetNode = container.factory().newNodeDraft(target);
             container.addNode(targetNode);
         } else {
             targetNode = container.getNode(target);
         }
-        EdgeDraft edge = container.getEdge(sourceNode, targetNode);
-        if (edge == null) {
-            edge = container.factory().newEdgeDraft();
-            edge.setSource(sourceNode);
-            edge.setTarget(targetNode);
-            edge.setWeight(weight);
-            container.addEdge(edge);
-        } else {
-            edge.setWeight(edge.getWeight() + weight);
-        }
+        EdgeDraft edge = container.factory().newEdgeDraft();
+        edge.setSource(sourceNode);
+        edge.setTarget(targetNode);
+        edge.setWeight(weight);
+        container.addEdge(edge);
     }
 
+    @Override
     public void setReader(Reader reader) {
         this.reader = reader;
     }
 
+    @Override
     public ContainerLoader getContainer() {
         return container;
     }
 
+    @Override
     public Report getReport() {
         return report;
     }
 
+    @Override
     public boolean cancel() {
         cancel = true;
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
     }

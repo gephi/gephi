@@ -68,6 +68,7 @@ public class DecoratedIcon implements Icon {
         this.decorationController = decorationController;
     }
 
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         orig.paintIcon(c, g, x, y);
         if (decorationController == null || decorationController.isDecorated()) {
@@ -75,10 +76,12 @@ public class DecoratedIcon implements Icon {
         }
     }
 
+    @Override
     public int getIconWidth() {
         return orig.getIconWidth();
     }
 
+    @Override
     public int getIconHeight() {
         return orig.getIconHeight();
     }

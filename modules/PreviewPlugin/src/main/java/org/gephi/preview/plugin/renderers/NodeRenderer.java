@@ -43,7 +43,10 @@ package org.gephi.preview.plugin.renderers;
 
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfGState;
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.*;
 import org.gephi.preview.plugin.builders.NodeBuilder;
@@ -54,7 +57,6 @@ import org.gephi.preview.types.DependantColor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
-import processing.core.PGraphics;
 
 /**
  *
@@ -68,12 +70,14 @@ public class NodeRenderer implements Renderer {
     protected DependantColor defaultBorderColor = new DependantColor(Color.BLACK);
     protected float defaultOpacity = 100f;
 
+    @Override
     public void preProcess(PreviewModel previewModel) {
     }
 
+    @Override
     public void render(Item item, RenderTarget target, PreviewProperties properties) {
-        if (target instanceof ProcessingTarget) {
-            renderProcessing(item, (ProcessingTarget) target, properties);
+        if (target instanceof G2DTarget) {
+            renderG2D(item, (G2DTarget) target, properties);
         } else if (target instanceof SVGTarget) {
             renderSVG(item, (SVGTarget) target, properties);
         } else if (target instanceof PDFTarget) {
@@ -81,7 +85,7 @@ public class NodeRenderer implements Renderer {
         }
     }
 
-    public void renderProcessing(Item item, ProcessingTarget target, PreviewProperties properties) {
+    public void renderG2D(Item item, G2DTarget target, PreviewProperties properties) {
         //Params
         Float x = item.getData(NodeItem.X);
         Float y = item.getData(NodeItem.Y);
@@ -95,18 +99,19 @@ public class NodeRenderer implements Renderer {
         }
 
         //Graphics
-        PGraphics graphics = target.getGraphics();
+        Graphics2D graphics = target.getGraphics();
 
-//        x = x - size;
-//        y = y - size;
+        x = x - (size / 2f);
+        y = y - (size / 2f);
+        Ellipse2D.Float ellipse = new Ellipse2D.Float(x, y, size, size);
         if (borderSize > 0) {
-            graphics.stroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha);
-            graphics.strokeWeight(borderSize);
-        } else {
-            graphics.noStroke();
+            graphics.setColor(new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha));
+            graphics.setStroke(new BasicStroke(borderSize));
+            graphics.draw(ellipse);
         }
-        graphics.fill(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-        graphics.ellipse(x, y, size, size);
+
+        graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha));
+        graphics.fill(ellipse);
     }
 
     public void renderSVG(Item item, SVGTarget target, PreviewProperties properties) {
@@ -125,7 +130,7 @@ public class NodeRenderer implements Renderer {
         }
 
         Element nodeElem = target.createElement("circle");
-        nodeElem.setAttribute("class", node.getNodeData().getId());
+        nodeElem.setAttribute("class", node.getId().toString());
         nodeElem.setAttribute("cx", x.toString());
         nodeElem.setAttribute("cy", y.toString());
         nodeElem.setAttribute("r", size.toString());
@@ -171,34 +176,38 @@ public class NodeRenderer implements Renderer {
         }
     }
 
+    @Override
     public PreviewProperty[] getProperties() {
         return new PreviewProperty[]{
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_WIDTH, Float.class,
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderWidth.displayName"),
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderWidth.description"),
-                    PreviewProperty.CATEGORY_NODES).setValue(defaultBorderWidth),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_COLOR, DependantColor.class,
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.displayName"),
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.description"),
-                    PreviewProperty.CATEGORY_NODES).setValue(defaultBorderColor),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_OPACITY, Float.class,
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.opacity.displayName"),
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.opacity.description"),
-                    PreviewProperty.CATEGORY_NODES).setValue(defaultOpacity)};
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_WIDTH, Float.class,
+            NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderWidth.displayName"),
+            NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderWidth.description"),
+            PreviewProperty.CATEGORY_NODES).setValue(defaultBorderWidth),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_COLOR, DependantColor.class,
+            NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.displayName"),
+            NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.description"),
+            PreviewProperty.CATEGORY_NODES).setValue(defaultBorderColor),
+            PreviewProperty.createProperty(this, PreviewProperty.NODE_OPACITY, Float.class,
+            NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.opacity.displayName"),
+            NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.opacity.description"),
+            PreviewProperty.CATEGORY_NODES).setValue(defaultOpacity)};
     }
-    
-    private boolean showNodes(PreviewProperties properties){
+
+    private boolean showNodes(PreviewProperties properties) {
         return properties.getFloatValue(PreviewProperty.NODE_OPACITY) > 0;
     }
 
+    @Override
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
         return item instanceof NodeItem && showNodes(properties);
     }
 
+    @Override
     public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
         return itemBuilder instanceof NodeBuilder && showNodes(properties);
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.name");
     }

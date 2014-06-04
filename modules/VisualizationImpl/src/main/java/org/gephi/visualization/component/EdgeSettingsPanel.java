@@ -1,44 +1,44 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.visualization.component;
 
 import java.awt.Color;
@@ -61,7 +61,9 @@ import org.gephi.visualization.VizModel;
  */
 public class EdgeSettingsPanel extends javax.swing.JPanel {
 
-    /** Creates new form EdgeSettingsPanel */
+    /**
+     * Creates new form EdgeSettingsPanel
+     */
     public EdgeSettingsPanel() {
         initComponents();
     }
@@ -69,7 +71,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
     public void setup() {
         VizModel vizModel = VizController.getInstance().getVizModel();
         vizModel.addPropertyChangeListener(new PropertyChangeListener() {
-
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("init")) {
                     refreshSharedConfig();
@@ -89,15 +91,13 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                     refreshSharedConfig();
                 } else if (evt.getPropertyName().equals("edgeScale")) {
                     refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("metaEdgeScale")) {
-                    refreshSharedConfig();
                 }
             }
         });
         refreshSharedConfig();
 
         showEdgesCheckbox.addItemListener(new ItemListener() {
-
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 vizModel.setShowEdges(showEdgesCheckbox.isSelected());
@@ -105,63 +105,53 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
             }
         });
         ((JColorButton) edgeColorButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
-
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 vizModel.setEdgeUniColor(((JColorButton) edgeColorButton).getColorArray());
             }
         });
         sourceNodeColorCheckbox.addItemListener(new ItemListener() {
-
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 vizModel.setEdgeHasUniColor(!sourceNodeColorCheckbox.isSelected());
             }
         });
         selectionColorCheckbox.addItemListener(new ItemListener() {
-
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 vizModel.setEdgeSelectionColor(selectionColorCheckbox.isSelected());
             }
         });
         edgeInSelectionColorChooser.addActionListener(new ActionListener() {
-
+            @Override
             public void actionPerformed(ActionEvent ae) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 vizModel.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor().getComponents(null));
             }
         });
         edgeBothSelectionColorChooser.addActionListener(new ActionListener() {
-
+            @Override
             public void actionPerformed(ActionEvent ae) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 vizModel.setEdgeBothSelectionColor(edgeBothSelectionColorChooser.getColor().getComponents(null));
             }
         });
         edgeOutSelectionColorChooser.addActionListener(new ActionListener() {
-
+            @Override
             public void actionPerformed(ActionEvent ae) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 vizModel.setEdgeOutSelectionColor(edgeOutSelectionColorChooser.getColor().getComponents(null));
             }
         });
         scaleSlider.addChangeListener(new ChangeListener() {
-
+            @Override
             public void stateChanged(ChangeEvent e) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 if (vizModel.getEdgeScale() != (scaleSlider.getValue() / 10f + 0.1f)) {
                     vizModel.setEdgeScale(scaleSlider.getValue() / 10f + 0.1f);
-                }
-            }
-        });
-        metaScaleSlider.addChangeListener(new ChangeListener() {
-
-            public void stateChanged(ChangeEvent e) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                int val = metaScaleSlider.getValue();
-                if (vizModel.getMetaEdgeScale() != (val / 50f + 0.0001f)) {
-                    vizModel.setMetaEdgeScale(val / 50f + 0.0001f);
                 }
             }
         });
@@ -200,9 +190,6 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         if (scaleSlider.getValue() / 10f + 0.1f != vizModel.getEdgeScale()) {
             scaleSlider.setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
         }
-        if (metaScaleSlider.getValue() / 50f + 0.0001f != vizModel.getMetaEdgeScale()) {
-            metaScaleSlider.setValue((int) ((vizModel.getMetaEdgeScale() - 0.0001f) * 50));
-        }
     }
 
     private void setEnable(boolean enable) {
@@ -211,9 +198,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         sourceNodeColorCheckbox.setEnabled(enable && showEdgesCheckbox.isSelected());
         labelEdgeColor.setEnabled(enable && showEdgesCheckbox.isSelected());
         scaleSlider.setEnabled(enable && showEdgesCheckbox.isSelected());
-        metaScaleSlider.setEnabled(enable && showEdgesCheckbox.isSelected());
         labelScale.setEnabled(enable && showEdgesCheckbox.isSelected());
-        labelMetaScale.setEnabled(enable && showEdgesCheckbox.isSelected());
         selectionColorCheckbox.setEnabled(enable && showEdgesCheckbox.isSelected());
         edgeInSelectionColorChooser.setEnabled(enable && showEdgesCheckbox.isSelected() && selectionColorCheckbox.isSelected());
         edgeBothSelectionColorChooser.setEnabled(enable && showEdgesCheckbox.isSelected() && selectionColorCheckbox.isSelected());
@@ -222,10 +207,11 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         labelOut.setEnabled(enable && showEdgesCheckbox.isSelected() && selectionColorCheckbox.isSelected());
         labelBoth.setEnabled(enable && showEdgesCheckbox.isSelected() && selectionColorCheckbox.isSelected());
     }
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -234,7 +220,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
 
         showEdgesCheckbox = new javax.swing.JCheckBox();
         labelEdgeColor = new javax.swing.JLabel();
-        edgeColorButton = new JColorButton(Color.BLACK);
+        edgeColorButton = new JColorButton(Color.BLACK, false, true);
         sourceNodeColorCheckbox = new javax.swing.JCheckBox();
         selectionColorPanel = new javax.swing.JPanel();
         selectionColorCheckbox = new javax.swing.JCheckBox();
@@ -247,11 +233,8 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         scalePanel = new javax.swing.JPanel();
         labelScale = new javax.swing.JLabel();
         scaleSlider = new javax.swing.JSlider();
-        metaScalePanel = new javax.swing.JPanel();
-        labelMetaScale = new javax.swing.JLabel();
-        metaScaleSlider = new javax.swing.JSlider();
 
-        showEdgesCheckbox.setFont(new java.awt.Font("Tahoma", 1, 11));
+        showEdgesCheckbox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         showEdgesCheckbox.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.showEdgesCheckbox.text")); // NOI18N
 
         labelEdgeColor.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.labelEdgeColor.text")); // NOI18N
@@ -348,7 +331,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
         selectionColorPanel.add(edgeBothSelectionColorChooser, gridBagConstraints);
 
-        labelIn.setFont(new java.awt.Font("Tahoma", 0, 10));
+        labelIn.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         labelIn.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.labelIn.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -357,7 +340,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 10, 0, 0);
         selectionColorPanel.add(labelIn, gridBagConstraints);
 
-        labelOut.setFont(new java.awt.Font("Tahoma", 0, 10));
+        labelOut.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         labelOut.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.labelOut.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -367,7 +350,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(7, 10, 0, 0);
         selectionColorPanel.add(labelOut, gridBagConstraints);
 
-        labelBoth.setFont(new java.awt.Font("Tahoma", 0, 10));
+        labelBoth.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         labelBoth.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.labelBoth.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -395,26 +378,6 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         scalePanel.add(scaleSlider, gridBagConstraints);
 
-        metaScalePanel.setOpaque(false);
-        metaScalePanel.setLayout(new java.awt.GridBagLayout());
-
-        labelMetaScale.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.labelMetaScale.text")); // NOI18N
-        labelMetaScale.setMaximumSize(new java.awt.Dimension(136, 15));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 5, 2, 0);
-        metaScalePanel.add(labelMetaScale, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        metaScalePanel.add(metaScaleSlider, gridBagConstraints);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -432,13 +395,11 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                         .addGap(28, 28, 28)
                         .addComponent(scalePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(selectionColorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(metaScalePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(selectionColorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(showEdgesCheckbox)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(146, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -457,8 +418,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                                 .addGap(13, 13, 13)
                                 .addComponent(sourceNodeColorCheckbox))
                             .addComponent(scalePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
-                            .addComponent(selectionColorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
-                            .addComponent(metaScalePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE))))
+                            .addComponent(selectionColorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE))))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -470,11 +430,8 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelBoth;
     private javax.swing.JLabel labelEdgeColor;
     private javax.swing.JLabel labelIn;
-    private javax.swing.JLabel labelMetaScale;
     private javax.swing.JLabel labelOut;
     private javax.swing.JLabel labelScale;
-    private javax.swing.JPanel metaScalePanel;
-    private javax.swing.JSlider metaScaleSlider;
     private javax.swing.JPanel scalePanel;
     private javax.swing.JSlider scaleSlider;
     private javax.swing.JCheckBox selectionColorCheckbox;

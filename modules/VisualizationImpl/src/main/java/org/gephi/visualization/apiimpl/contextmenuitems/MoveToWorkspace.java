@@ -57,10 +57,12 @@ public class MoveToWorkspace extends CopyOrMoveToWorkspace{
         return false;
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(CopyOrMoveToWorkspace.class, "GraphContextMenu_MoveToWorkspace");
     }
 
+    @Override
     public int getPosition() {
         return 100;
     }

@@ -68,15 +68,19 @@ public class AttributeFactoryImpl implements AttributeValueFactory, AttributeRow
         if (value == null) {
             return new AttributeValueImpl((AttributeColumnImpl) column, null);
         }
-
-        AttributeType targetType = column.getType();
-        if (!value.getClass().equals(targetType.getType())) {
-            try {
-                value = targetType.parse(value.toString());//Try to convert to target type
-            } catch (Exception ex) {
-                return new AttributeValueImpl((AttributeColumnImpl) column, null);//Could not parse
+        
+        //If the column is not a delegate (wrong type value allowed), try to convert value to correct type if necessary
+        if(!column.getOrigin().equals(AttributeOrigin.DELEGATE)){
+            AttributeType targetType = column.getType();
+            if (!value.getClass().equals(targetType.getType())) {
+                try {
+                    value = targetType.parse(value.toString());//Try to convert to target type
+                } catch (Exception ex) {
+                    return new AttributeValueImpl((AttributeColumnImpl) column, null);//Could not parse
+                }
             }
         }
+
         
         Object managedValue = value;
         if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {

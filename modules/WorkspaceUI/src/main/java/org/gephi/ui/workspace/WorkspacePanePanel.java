@@ -147,6 +147,7 @@ public final class WorkspacePanePanel extends javax.swing.JPanel implements Mous
     private javax.swing.JLabel workspaceLabel;
     // End of variables declaration//GEN-END:variables
 
+    @Override
     public void mouseClicked(MouseEvent e) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         if (pc.getCurrentWorkspace() != workspace) {
@@ -154,16 +155,20 @@ public final class WorkspacePanePanel extends javax.swing.JPanel implements Mous
         }
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
         setBackground(UIManager.getDefaults().getColor("ComboBox.selectionBackground"));
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
         setBackground(UIManager.getDefaults().getColor("ComboBox.background"));
     }
@@ -171,6 +176,7 @@ public final class WorkspacePanePanel extends javax.swing.JPanel implements Mous
 
     private class DeleteAction extends AbstractAction {
 
+        @Override
         public void actionPerformed(ActionEvent actionEvent) {
             String message = NbBundle.getMessage(WorkspacePanePanel.class, "WorkspacePanePanel_closeWorkspace_Question");
             String title = NbBundle.getMessage(WorkspacePanePanel.class, "WorkspacePanePanel_closeWorkspace_Title");

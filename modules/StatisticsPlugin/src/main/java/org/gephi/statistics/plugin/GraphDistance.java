@@ -1,44 +1,44 @@
 /*
-Copyright 2008-2011 Gephi
-Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2011 Gephi
+ Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.statistics.plugin;
 
 import java.io.IOException;
@@ -49,12 +49,9 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Stack;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -67,10 +64,11 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
- * Ref: Ulrik Brandes, A Faster Algorithm for Betweenness Centrality,
- * in Journal of Mathematical Sociology 25(2):163-177, (2001)
+ * Ref: Ulrik Brandes, A Faster Algorithm for Betweenness Centrality, in Journal
+ * of Mathematical Sociology 25(2):163-177, (2001)
  *
  * @author pjmcswee
  */
@@ -79,113 +77,129 @@ public class GraphDistance implements Statistics, LongTask {
     public static final String BETWEENNESS = "betweenesscentrality";
     public static final String CLOSENESS = "closnesscentrality";
     public static final String ECCENTRICITY = "eccentricity";
-    /** */
+    /**
+     *      */
     private double[] betweenness;
-    /** */
+    /**
+     *      */
     private double[] closeness;
-    /** */
+    /**
+     *      */
     private double[] eccentricity;
-    /** */
+    /**
+     *      */
     private int diameter;
     private int radius;
-    /** */
+    /**
+     *      */
     private double avgDist;
-    /** */
+    /**
+     *      */
     private int N;
-    /** */
+    /**
+     *      */
     private boolean isDirected;
-    /** */
+    /**
+     *      */
     private ProgressTicket progress;
-    /** */
+    /**
+     *      */
     private boolean isCanceled;
     private int shortestPaths;
     private boolean isNormalized;
-
-    public GraphDistance() {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (graphController != null && graphController.getModel() != null) {
-            isDirected = graphController.getModel().isDirected();
-        }
-    }
 
     public double getPathLength() {
         return avgDist;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public double getDiameter() {
         return diameter;
     }
+    
+    public double getRadius() {
+        return radius;
+    }
 
+    public GraphDistance() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getGraphModel() != null) {
+            isDirected = graphController.getGraphModel().isDirected();
+        }
+    }
+    
     /**
      *
      * @param graphModel
+     * @param attributeModel
      */
+    @Override
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        HierarchicalGraph graph = null;
+        isDirected = graphModel.isDirected();
+
+        Graph graph = null;
         if (isDirected) {
-            graph = graphModel.getHierarchicalDirectedGraphVisible();
+            graph = graphModel.getDirectedGraphVisible();
         } else {
-            graph = graphModel.getHierarchicalUndirectedGraphVisible();
+            graph = graphModel.getUndirectedGraphVisible();
         }
         execute(graph, attributeModel);
     }
 
-    public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+    public void execute(Graph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
-        AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn eccentricityCol = nodeTable.getColumn(ECCENTRICITY);
-        AttributeColumn closenessCol = nodeTable.getColumn(CLOSENESS);
-        AttributeColumn betweenessCol = nodeTable.getColumn(BETWEENNESS);
-        if (eccentricityCol == null) {
-            eccentricityCol = nodeTable.addColumn(ECCENTRICITY, "Eccentricity", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        }
-        if (closenessCol == null) {
-            closenessCol = nodeTable.addColumn(CLOSENESS, "Closeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        }
-        if (betweenessCol == null) {
-            betweenessCol = nodeTable.addColumn(BETWEENNESS, "Betweenness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        }
+        
+        initializeAttributeColunms(attributeModel); 
 
         hgraph.readLock();
 
         N = hgraph.getNodeCount();
+        
+        initializeStartValues();
+        
+        HashMap<Node, Integer> indicies = createIndiciesMap(hgraph);
 
-        betweenness = new double[N];
-        eccentricity = new double[N];
-        closeness = new double[N];
-        diameter = 0;
-        avgDist = 0;
-        shortestPaths = 0;
-        radius = Integer.MAX_VALUE;
-        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
-        int index = 0;
-        for (Node s : hgraph.getNodes()) {
-            indicies.put(s, index);
-            index++;
-        }
-
+        Map<String, double[]> metrics = calculateDistanceMetrics(hgraph, indicies, isDirected, isNormalized);
+        
+        eccentricity = metrics.get(ECCENTRICITY);
+        closeness = metrics.get(CLOSENESS);
+        betweenness = metrics.get(BETWEENNESS);
+        
+        saveCalculatedValues(hgraph, indicies, eccentricity, betweenness, closeness);
+                
+        hgraph.readUnlock();
+    }
+    
+    public Map<String, double[]> calculateDistanceMetrics(Graph hgraph, HashMap<Node, Integer> indicies, boolean directed, boolean normalized) {
+        int n = hgraph.getNodeCount();
+        
+        HashMap<String, double[]> metrics = new HashMap<String, double[]>();
+        
+        double[] nodeEccentricity = new double[n];
+        double[] nodeBetweenness = new double[n];
+        double[] nodeCloseness = new double[n];
+        
+        metrics.put(ECCENTRICITY, nodeEccentricity);
+        metrics.put(CLOSENESS, nodeCloseness);
+        metrics.put(BETWEENNESS, nodeBetweenness);
+        
         Progress.start(progress, hgraph.getNodeCount());
         int count = 0;
+        
+        
         for (Node s : hgraph.getNodes()) {
             Stack<Node> S = new Stack<Node>();
 
-            LinkedList<Node>[] P = new LinkedList[N];
-            double[] theta = new double[N];
-            int[] d = new int[N];
-            for (int j = 0; j < N; j++) {
-                P[j] = new LinkedList<Node>();
-                theta[j] = 0;
-                d[j] = -1;
-            }
-
+            LinkedList<Node>[] P = new LinkedList[n];
+            double[] theta = new double[n];
+            int[] d = new int[n];
+            
             int s_index = indicies.get(s);
-
-            theta[s_index] = 1;
-            d[s_index] = 0;
+            
+            setInitParametetrsForNode(s, P, theta, d, s_index, n);
 
             LinkedList<Node> Q = new LinkedList<Node>();
             Q.addLast(s);
@@ -194,12 +208,7 @@ public class GraphDistance implements Statistics, LongTask {
                 S.push(v);
                 int v_index = indicies.get(v);
 
-                EdgeIterable edgeIter = null;
-                if (isDirected) {
-                    edgeIter = ((HierarchicalDirectedGraph) hgraph).getOutEdgesAndMetaOutEdges(v);
-                } else {
-                    edgeIter = hgraph.getEdgesAndMetaEdges(v);
-                }
+                EdgeIterable edgeIter = getEdgeIter(hgraph, v, directed);
 
                 for (Edge edge : edgeIter) {
                     Node reachable = hgraph.getOpposite(v, edge);
@@ -216,25 +225,25 @@ public class GraphDistance implements Statistics, LongTask {
                 }
             }
             double reachable = 0;
-            for (int i = 0; i < N; i++) {
+            for (int i = 0; i < n; i++) {
                 if (d[i] > 0) {
                     avgDist += d[i];
-                    eccentricity[s_index] = (int) Math.max(eccentricity[s_index], d[i]);
-                    closeness[s_index] += d[i];
+                    nodeEccentricity[s_index] = (int) Math.max(nodeEccentricity[s_index], d[i]);
+                    nodeCloseness[s_index] += d[i];
                     diameter = Math.max(diameter, d[i]);
                     reachable++;
                 }
             }
 
-            radius = (int) Math.min(eccentricity[s_index], radius);
+            radius = (int) Math.min(nodeEccentricity[s_index], radius);
 
             if (reachable != 0) {
-                closeness[s_index] /= reachable;
+                nodeCloseness[s_index] /= reachable;
             }
 
             shortestPaths += reachable;
 
-            double[] delta = new double[N];
+            double[] delta = new double[n];
             while (!S.empty()) {
                 Node w = S.pop();
                 int w_index = indicies.get(w);
@@ -245,35 +254,105 @@ public class GraphDistance implements Statistics, LongTask {
                     delta[u_index] += (theta[u_index] / theta[w_index]) * (1 + delta[w_index]);
                 }
                 if (w != s) {
-                    betweenness[w_index] += delta[w_index];
+                    nodeBetweenness[w_index] += delta[w_index];
                 }
             }
             count++;
             if (isCanceled) {
                 hgraph.readUnlockAll();
-                return;
+                return metrics;
             }
             Progress.progress(progress, count);
         }
 
         avgDist /= shortestPaths;//mN * (mN - 1.0f);
 
+        calculateCorrection(hgraph, indicies, nodeBetweenness, nodeCloseness, directed, normalized);
+        
+        return metrics;
+    }
+    
+    private void setInitParametetrsForNode(Node s, LinkedList<Node>[] P, double[] theta, int[] d, int index, int n) {           
+            for (int j = 0; j < n; j++) {
+                P[j] = new LinkedList<Node>();
+                theta[j] = 0;
+                d[j] = -1;
+            }
+            theta[index] = 1;
+            d[index] = 0;
+    }
+    
+    private EdgeIterable getEdgeIter(Graph hgraph, Node v, boolean directed) {
+            EdgeIterable edgeIter = null;
+            if (directed) {
+                edgeIter = ((DirectedGraph) hgraph).getOutEdges(v);
+            } else {
+                edgeIter = hgraph.getEdges(v);
+             }
+            return edgeIter;
+    }
+    
+    private void initializeAttributeColunms(AttributeModel attributeModel) {
+        Table nodeTable = attributeModel.getNodeTable();
+        if (!nodeTable.hasColumn(ECCENTRICITY)) {
+            nodeTable.addColumn(ECCENTRICITY, "Eccentricity", Double.class, new Double(0));
+        }
+        if (!nodeTable.hasColumn(CLOSENESS)) {
+            nodeTable.addColumn(CLOSENESS, "Closeness Centrality", Double.class, new Double(0));
+        }
+        if (!nodeTable.hasColumn(BETWEENNESS)) {
+            nodeTable.addColumn(BETWEENNESS, "Betweenness Centrality", Double.class, new Double(0));
+        }
+    }
+    
+     public  HashMap<Node, Integer> createIndiciesMap(Graph hgraph) {
+       HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
+        int index = 0;
         for (Node s : hgraph.getNodes()) {
-            AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
+            indicies.put(s, index);
+            index++;
+        } 
+        return indicies;
+    }
+     
+     public void initializeStartValues() {
+        betweenness = new double[N];
+        eccentricity = new double[N];
+        closeness = new double[N];
+        diameter = 0;
+        avgDist = 0;
+        shortestPaths = 0;
+        radius = Integer.MAX_VALUE;
+     }
+     
+     private void calculateCorrection(Graph hgraph, HashMap<Node, Integer> indicies,
+             double[] nodeBetweenness, double[] nodeCloseness, boolean directed, boolean normalized) {
+         
+         int n = hgraph.getNodeCount();
+         
+         for (Node s : hgraph.getNodes()) {
+            
+             int s_index = indicies.get(s);
+
+            if (!directed) {
+                nodeBetweenness[s_index] /= 2;
+            }
+            if (normalized) {
+                nodeCloseness[s_index] = (nodeCloseness[s_index] == 0) ? 0 : 1.0 / nodeCloseness[s_index];
+                nodeBetweenness[s_index] /= directed ? (n - 1) * (n - 2) : (n - 1) * (n - 2) / 2;
+            }     
+         }
+     }
+     
+     private void saveCalculatedValues(Graph hgraph, HashMap<Node, Integer> indicies,
+            double[] nodeEccentricity, double[] nodeBetweenness, double[] nodeCloseness) {
+        for (Node s : hgraph.getNodes()) {
             int s_index = indicies.get(s);
 
-            if (!isDirected) {
-                betweenness[s_index] /= 2;
-            }
-            if (isNormalized) {
-                closeness[s_index] = (closeness[s_index] == 0) ? 0 : 1.0 / closeness[s_index];
-                betweenness[s_index] /= isDirected ? (N - 1) * (N - 2) : (N - 1) * (N - 2) / 2;
-            }
-            row.setValue(eccentricityCol, eccentricity[s_index]);
-            row.setValue(closenessCol, closeness[s_index]);
-            row.setValue(betweenessCol, betweenness[s_index]);
+            s.setAttribute(ECCENTRICITY, nodeEccentricity[s_index]);
+            s.setAttribute(CLOSENESS, nodeCloseness[s_index]);
+            s.setAttribute(BETWEENNESS, nodeBetweenness[s_index]);
         }
-        hgraph.readUnlock();
     }
 
     public void setNormalized(boolean isNormalized) {
@@ -330,6 +409,7 @@ public class GraphDistance implements Statistics, LongTask {
      *
      * @return
      */
+    @Override
     public String getReport() {
         String htmlIMG1 = "";
         String htmlIMG2 = "";
@@ -364,9 +444,10 @@ public class GraphDistance implements Statistics, LongTask {
     }
 
     /**
-     * 
+     *
      * @return
      */
+    @Override
     public boolean cancel() {
         this.isCanceled = true;
         return true;
@@ -376,6 +457,7 @@ public class GraphDistance implements Statistics, LongTask {
      *
      * @param progressTicket
      */
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progress = progressTicket;
     }

@@ -100,6 +100,7 @@ public class JPopupPane {
         }
         static final int ITEM_WIDTH = 400;
 
+        @Override
         public Dimension getPreferredSize() {
             int count = view.getComponentCount();
             int height = count > 0 ? view.getComponent(0).getPreferredSize().height : 0;
@@ -128,14 +129,17 @@ public class JPopupPane {
         public BottomLineBorder() {
         }
 
+        @Override
         public Insets getBorderInsets(Component c) {
             return ins;
         }
 
+        @Override
         public boolean isBorderOpaque() {
             return false;
         }
 
+        @Override
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
             Color old = g.getColor();
             g.setColor(col);
@@ -146,6 +150,7 @@ public class JPopupPane {
 
     private class HideAWTListener extends ComponentAdapter implements AWTEventListener, WindowStateListener {
 
+        @Override
         public void eventDispatched(java.awt.AWTEvent aWTEvent) {
             if (aWTEvent instanceof MouseEvent) {
                 MouseEvent mv = (MouseEvent) aWTEvent;
@@ -163,6 +168,7 @@ public class JPopupPane {
             }
         }
 
+        @Override
         public void windowStateChanged(WindowEvent windowEvent) {
             if (showingPopup) {
                 int oldState = windowEvent.getOldState();
@@ -179,12 +185,14 @@ public class JPopupPane {
 
         }
 
+        @Override
         public void componentResized(ComponentEvent evt) {
             if (showingPopup) {
                 resizePopup();
             }
         }
 
+        @Override
         public void componentMoved(ComponentEvent evt) {
             if (showingPopup) {
                 resizePopup();

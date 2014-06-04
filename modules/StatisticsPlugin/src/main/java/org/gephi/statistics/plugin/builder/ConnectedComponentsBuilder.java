@@ -54,14 +54,17 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=StatisticsBuilder.class)
 public class ConnectedComponentsBuilder implements StatisticsBuilder {
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(ConnectedComponentsBuilder.class, "ConnectedComponents.name");
     }
 
+    @Override
     public Statistics getStatistics() {
         return new ConnectedComponents();
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return ConnectedComponents.class;
     }

@@ -4,21 +4,44 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.8.2-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
+        <version>0.9-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>graph-api</artifactId>
-    <version>0.8.2-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>GraphAPI</name>
+
+    <!-- Additional repository for picking up graph-store (built separately) -->
+    <repositories>
+        <repository>
+            <id>gephi-snapshots</id>
+            <name>Gephi 3rd Party</name>
+            <url>http://nexus.gephi.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>project-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>graphstore-api</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>graphstore</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
         </dependency>
     </dependencies>
 
@@ -29,8 +52,11 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>org.gephi.graph.api</publicPackage>
                         <publicPackage>org.gephi.graph.spi</publicPackage>
+                        <publicPackage>org.gephi.graph.api</publicPackage>
+                        <publicPackage>org.gephi.attribute.api</publicPackage>
+                        <publicPackage>org.gephi.attribute.spi</publicPackage>
+                        <publicPackage>org.gephi.attribute.time</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

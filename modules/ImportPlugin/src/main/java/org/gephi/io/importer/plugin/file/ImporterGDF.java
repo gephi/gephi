@@ -1,44 +1,44 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>,
-Sebastien Heymann <sebastien.heymann@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>,
+ Sebastien Heymann <sebastien.heymann@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.importer.plugin.file;
 
@@ -49,10 +49,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ContainerLoader;
+import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Issue;
@@ -62,7 +61,6 @@ import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-
 import org.openide.util.NbBundle;
 
 /**
@@ -93,6 +91,7 @@ public class ImporterGDF implements FileImporter, LongTask {
         edgeLineStart = new String[]{"edgedef>", "Edgedef>"};
     }
 
+    @Override
     public boolean execute(ContainerLoader container) {
         this.container = container;
         this.report = new Report();
@@ -123,7 +122,7 @@ public class ImporterGDF implements FileImporter, LongTask {
             }
 
             //Create Node
-            NodeDraft node = container.factory().newNodeDraft();
+            NodeDraft node = null;
 
             Matcher m = pattern.matcher(nodeLine);
             int count = 0;
@@ -138,7 +137,9 @@ public class ImporterGDF implements FileImporter, LongTask {
                         if (count == 0) {
                             //Id
                             id = data;
-                            node.setId(data);
+                            if (node == null) {
+                                node = container.factory().newNodeDraft(id);
+                            }
                         } else if (count - 1 < nodeColumns.length) {
                             if (nodeColumns[count - 1] != null) {
                                 setNodeData(node, nodeColumns[count - 1], data);
@@ -236,7 +237,7 @@ public class ImporterGDF implements FileImporter, LongTask {
             String columnString = columns[i];
             String typeString = "";
             String columnName = "";
-            AttributeType type = AttributeType.STRING;
+            Class type = String.class;
             try {
                 typeString = columnString.substring(columnString.lastIndexOf(" ")).trim().toLowerCase();
             } catch (IndexOutOfBoundsException e) {
@@ -265,21 +266,21 @@ public class ImporterGDF implements FileImporter, LongTask {
             typeString = typeString.replaceAll("\\([0-9]*\\)", "");
 
             if (typeString.equals("varchar")) {
-                type = AttributeType.STRING;
+                type = String.class;
             } else if (typeString.equals("bool")) {
-                type = AttributeType.BOOLEAN;
+                type = Boolean.class;
             } else if (typeString.equals("boolean")) {
-                type = AttributeType.BOOLEAN;
+                type = Boolean.class;
             } else if (typeString.equals("integer")) {
-                type = AttributeType.INT;
+                type = Integer.class;
             } else if (typeString.equals("tinyint")) {
-                type = AttributeType.INT;
+                type = Integer.class;
             } else if (typeString.equals("int")) {
-                type = AttributeType.INT;
+                type = Integer.class;
             } else if (typeString.equals("double")) {
-                type = AttributeType.DOUBLE;
+                type = Double.class;
             } else if (typeString.equals("float")) {
-                type = AttributeType.FLOAT;
+                type = Float.class;
             } else {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat5", typeString), Issue.Level.WARNING));
             }
@@ -315,11 +316,11 @@ public class ImporterGDF implements FileImporter, LongTask {
                 nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.LABELVISIBLE);
                 report.log("Node property found: labelvisible");
             } else {
-                AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
-                if (!nodeClass.hasColumn(columnName)) {
-                    AttributeColumn newColumn = nodeClass.addColumn(columnName, type);
-                    nodeColumns[i - 1] = new GDFColumn(newColumn);
-                    report.log("Node attribute " + columnName + " (" + type.getTypeString() + ")");
+                ColumnDraft column = container.getNodeColumn(columnName);
+                if (column == null) {
+                    column = container.addNodeColumn(columnName, type);
+                    nodeColumns[i - 1] = new GDFColumn(column);
+                    report.log("Node attribute " + columnName + " (" + type.getSimpleName() + ")");
                 } else {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat8", columnName), Issue.Level.SEVERE));
                 }
@@ -335,7 +336,7 @@ public class ImporterGDF implements FileImporter, LongTask {
             String columnString = columns[i];
             String typeString = "";
             String columnName = "";
-            AttributeType type = AttributeType.STRING;
+            Class type = String.class;
             try {
                 typeString = columnString.substring(columnString.lastIndexOf(" ")).trim().toLowerCase();
             } catch (IndexOutOfBoundsException e) {
@@ -364,21 +365,21 @@ public class ImporterGDF implements FileImporter, LongTask {
             typeString = typeString.replaceAll("\\([0-9]*\\)", "");
 
             if (typeString.equals("varchar")) {
-                type = AttributeType.STRING;
+                type = String.class;
             } else if (typeString.equals("bool")) {
-                type = AttributeType.BOOLEAN;
+                type = Boolean.class;
             } else if (typeString.equals("boolean")) {
-                type = AttributeType.BOOLEAN;
+                type = Boolean.class;
             } else if (typeString.equals("integer")) {
-                type = AttributeType.INT;
+                type = Integer.class;
             } else if (typeString.equals("tinyint")) {
-                type = AttributeType.INT;
+                type = Integer.class;
             } else if (typeString.equals("int")) {
-                type = AttributeType.INT;
+                type = Integer.class;
             } else if (typeString.equals("double")) {
-                type = AttributeType.DOUBLE;
+                type = Double.class;
             } else if (typeString.equals("float")) {
-                type = AttributeType.FLOAT;
+                type = Float.class;
             } else {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat5", typeString), Issue.Level.WARNING));
             }
@@ -402,11 +403,11 @@ public class ImporterGDF implements FileImporter, LongTask {
                 edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.LABELVISIBLE);
                 report.log("Edge property found: labelvisible");
             } else {
-                AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
-                if (!edgeClass.hasColumn(columnName)) {
-                    AttributeColumn newColumn = edgeClass.addColumn(columnName, type);
-                    edgeColumns[i - 2] = new GDFColumn(newColumn);
-                    report.log("Edge attribute " + columnName + " (" + type.getTypeString() + ")");
+                ColumnDraft column = container.getEdgeColumn(columnName);
+                if (column == null) {
+                    column = container.addEdgeColumn(columnName, type);
+                    edgeColumns[i - 2] = new GDFColumn(column);
+                    report.log("Edge attribute " + columnName + " (" + type.getSimpleName() + ")");
                 } else {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat9", columnName), Issue.Level.SEVERE));
                 }
@@ -462,9 +463,6 @@ public class ImporterGDF implements FileImporter, LongTask {
                     case LABELVISIBLE:
                         node.setLabelVisible(Boolean.parseBoolean(data));
                         break;
-                    case VISIBLE:
-                        node.setVisible(Boolean.parseBoolean(data));
-                        break;
                 }
             } catch (Exception e) {
                 String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3", column.getNodeColumn(), node, data);
@@ -472,9 +470,9 @@ public class ImporterGDF implements FileImporter, LongTask {
             }
         } else if (column.getAttributeColumn() != null) {
             try {
-                node.addAttributeValue(column.getAttributeColumn(), data);
+                node.parseAndSetValue(column.getAttributeColumn().getId(), data);
             } catch (Exception e) {
-                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getType(), column.getAttributeColumn().getTitle(), node);
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getTypeClass().getSimpleName(), column.getAttributeColumn().getTitle(), node);
                 report.logIssue(new Issue(message, Issue.Level.WARNING, e));
             }
         }
@@ -490,17 +488,14 @@ public class ImporterGDF implements FileImporter, LongTask {
                             edge.setColor(rgb[0], rgb[1], rgb[2]);
                         }
                         break;
-                    case VISIBLE:
-                        edge.setVisible(Boolean.parseBoolean(data));
-                        break;
                     case WEIGHT:
                         edge.setWeight(Float.parseFloat(data));
                         break;
                     case DIRECTED:
                         if (Boolean.parseBoolean(data)) {
-                            edge.setType(EdgeDraft.EdgeType.DIRECTED);
+                            edge.setDirection(EdgeDirection.DIRECTED);
                         } else {
-                            edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
+                            edge.setDirection(EdgeDirection.UNDIRECTED);
                         }
                         break;
                     case LABEL:
@@ -516,31 +511,36 @@ public class ImporterGDF implements FileImporter, LongTask {
             }
         } else if (column.getAttributeColumn() != null) {
             try {
-                edge.addAttributeValue(column.getAttributeColumn(), data);
+                edge.parseAndSetValue(column.getAttributeColumn().getId(), data);
             } catch (Exception e) {
-                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getType(), column.getAttributeColumn().getTitle(), edge);
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getTypeClass().getSimpleName(), column.getAttributeColumn().getTitle(), edge);
                 report.logIssue(new Issue(message, Issue.Level.WARNING, e));
             }
         }
     }
 
+    @Override
     public void setReader(Reader reader) {
         this.reader = reader;
     }
 
+    @Override
     public ContainerLoader getContainer() {
         return container;
     }
 
+    @Override
     public Report getReport() {
         return report;
     }
 
+    @Override
     public boolean cancel() {
         cancel = true;
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
     }
@@ -556,7 +556,7 @@ public class ImporterGDF implements FileImporter, LongTask {
 
             VISIBLE, COLOR, WEIGHT, DIRECTED, LABEL, LABELVISIBLE
         };
-        private AttributeColumn column;
+        private ColumnDraft column;
         private NodeGuessColumn nodeColumn;
         private EdgeGuessColumn edgeColumn;
 
@@ -568,7 +568,7 @@ public class ImporterGDF implements FileImporter, LongTask {
             this.edgeColumn = column;
         }
 
-        public GDFColumn(AttributeColumn column) {
+        public GDFColumn(ColumnDraft column) {
             this.column = column;
         }
 
@@ -580,7 +580,7 @@ public class ImporterGDF implements FileImporter, LongTask {
             return edgeColumn;
         }
 
-        public AttributeColumn getAttributeColumn() {
+        public ColumnDraft getAttributeColumn() {
             return column;
         }
     }

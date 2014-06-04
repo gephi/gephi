@@ -86,21 +86,25 @@ public class EdgePencil implements Tool {
 
         //Add workspace listener for updating edge pencil panel options and status
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
-
+            @Override
             public void initialize(Workspace workspace) {
                 updatePanel();
             }
 
+            @Override
             public void select(Workspace workspace) {
                 updatePanel();
             }
 
+            @Override
             public void unselect(Workspace workspace) {
             }
 
+            @Override
             public void close(Workspace workspace) {
             }
 
+            @Override
             public void disable() {
             }
         });
@@ -109,17 +113,19 @@ public class EdgePencil implements Tool {
     private void updatePanel() {
         if (edgePencilPanel != null) {
             GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-            if (gc.getModel() != null) {
-                edgePencilPanel.setType(gc.getModel().isDirected() || gc.getModel().isMixed());
+            if (gc.getGraphModel() != null) {
+                edgePencilPanel.setType(gc.getGraphModel().isDirected() || gc.getGraphModel().isMixed());
             }
             sourceNode = null;
             edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
         }
     }
 
+    @Override
     public void select() {
     }
 
+    @Override
     public void unselect() {
         listeners = null;
         sourceNode = null;
@@ -127,10 +133,11 @@ public class EdgePencil implements Tool {
         weight = edgePencilPanel.getWeight();
     }
 
+    @Override
     public ToolEventListener[] getListeners() {
         listeners = new ToolEventListener[2];
         listeners[0] = new NodeClickEventListener() {
-
+            @Override
             public void clickNodes(Node[] nodes) {
                 Node n = nodes[0];
 
@@ -142,16 +149,14 @@ public class EdgePencil implements Tool {
                     weight = edgePencilPanel.getWeight();
                     boolean directed = edgePencilPanel.isDirected;
                     Edge edge = Lookup.getDefault().lookup(GraphElementsController.class).createEdge(sourceNode, n, directed);
-                    edge.getEdgeData().setR(color.getRed() / 255f);
-                    edge.getEdgeData().setG(color.getGreen() / 255f);
-                    edge.getEdgeData().setB(color.getBlue() / 255f);
+                    edge.setColor(color);
                     sourceNode = null;
                     edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
                 }
             }
         };
         listeners[1] = new MouseClickEventListener() {
-
+            @Override
             public void mouseClick(int[] positionViewport, float[] position3d) {
                 if (sourceNode != null) {
                     //Cancel
@@ -163,9 +168,10 @@ public class EdgePencil implements Tool {
         return listeners;
     }
 
+    @Override
     public ToolUI getUI() {
         return new ToolUI() {
-
+            @Override
             public JPanel getPropertiesBar(Tool tool) {
                 edgePencilPanel = new EdgePencilPanel();
                 edgePencilPanel.setColor(color);
@@ -174,24 +180,29 @@ public class EdgePencil implements Tool {
                 return edgePencilPanel;
             }
 
+            @Override
             public String getName() {
                 return NbBundle.getMessage(EdgePencil.class, "EdgePencil.name");
             }
 
+            @Override
             public Icon getIcon() {
                 return new ImageIcon(getClass().getResource("/org/gephi/tools/plugin/resources/edgepencil.png"));
             }
 
+            @Override
             public String getDescription() {
                 return NbBundle.getMessage(EdgePencil.class, "EdgePencil.description");
             }
 
+            @Override
             public int getPosition() {
                 return 130;
             }
         };
     }
 
+    @Override
     public ToolSelectionType getSelectionType() {
         return ToolSelectionType.SELECTION;
     }

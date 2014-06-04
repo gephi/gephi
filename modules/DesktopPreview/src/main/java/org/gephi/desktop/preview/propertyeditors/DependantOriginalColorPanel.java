@@ -60,6 +60,7 @@ public class DependantOriginalColorPanel extends javax.swing.JPanel implements I
         initComponents();
         colorButton.addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 Color newColor = (Color) evt.getNewValue();
                 propertyEditor.setValue(new DependantOriginalColor(newColor));
@@ -71,6 +72,7 @@ public class DependantOriginalColorPanel extends javax.swing.JPanel implements I
         customRadio.addItemListener(this);
     }
 
+    @Override
     public void itemStateChanged(ItemEvent e) {
         if (customRadio.isSelected()) {
             colorButton.setEnabled(true);

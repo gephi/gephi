@@ -43,12 +43,11 @@ package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.dynamic.DynamicUtilities;
-import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.io.exporter.spi.CharacterExporter;
@@ -57,6 +56,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -66,11 +66,10 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
 
     private boolean exportVisible = false;
     private Workspace workspace;
-    private Writer writer;
     private GraphModel graphModel;
     private AttributeModel attributeModel;
+    private Writer writer;
     private ProgressTicket progressTicket;
-    private TimeInterval visibleInterval;
     private boolean cancel = false;
     //options
     private int spaces = 2;
@@ -79,6 +78,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportCoordinates = true;
     private boolean exportNodeSize = true;
     private boolean exportEdgeSize = true;
+    private boolean exportDynamicWeight = true;
     private boolean exportColor = true;
     private boolean exportNotRecognizedElements = true;
     //data to normalize
@@ -87,9 +87,6 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     double minY, maxY;
     double minZ, maxZ;
     double minSize, maxSize;
-    
-    private double getLow;//borders for dynamic edge weight
-    private double getHigh;
 
     public boolean isNormalize() {
         return normalize;
@@ -99,35 +96,29 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         this.normalize = normalize;
     }
 
+    @Override
     public void setExportVisible(boolean exportVisible) {
         this.exportVisible = exportVisible;
     }
 
+    @Override
     public boolean isExportVisible() {
         return exportVisible;
     }
 
+    @Override
     public boolean execute() {
-        attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-        graphModel = workspace.getLookup().lookup(GraphModel.class);
-        Graph graph;
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        graphModel = graphController.getGraphModel(workspace);
+        attributeModel = graphController.getAttributeModel(workspace);
+        Graph graph = null;
         if (exportVisible) {
             graph = graphModel.getGraphVisible();
         } else {
             graph = graphModel.getGraph();
         }
         progressTicket.start(graph.getNodeCount() + graph.getEdgeCount());
-        DynamicModel dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
-        visibleInterval = dynamicModel != null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
 
-        getLow = Double.NEGATIVE_INFINITY;//whole interval, if graph is not dynamic
-        getHigh = Double.POSITIVE_INFINITY;
-        if (visibleInterval != null)
-        {
-            getLow = visibleInterval.getLow();
-            getHigh = visibleInterval.getHigh();
-        }
-        
         graph.readLock();
 
         if (normalize) {
@@ -143,7 +134,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         graph.readUnlock();
         return !cancel;
     }
-    
+
     private void printOpen(String s) throws IOException {
         for (int i = 0; i < currentSpaces; i++) {
             writer.write(' ');
@@ -177,38 +168,42 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     private void exportData(Graph graph) throws IOException {
         printOpen("graph");
         printTag("Creator Gephi");
-        if (graph.getGraphModel().isDirected()) {
+        if (graph.isDirected() || graph.isMixed()) {
             printTag("directed 1");
-        } else if (graph.getGraphModel().isUndirected()) {
+        } else if (graph.isUndirected()) {
             printTag("directed 0");
         }
         for (Node node : graph.getNodes()) {
             if (cancel) {
                 break;
             }
-            printNode(node);
+            printNode(node, graph);
         }
         for (Edge edge : graph.getEdges()) {
             if (cancel) {
                 break;
             }
-            printEdge(edge, graph.getGraphModel().isMixed());
+            printEdge(edge, graph);
         }
         printClose();
     }
 
-    private void printEdge(Edge edge, boolean graphMixed) throws IOException {
+    private void printEdge(Edge edge, Graph graph) throws IOException {
         printOpen("edge");
         printTag("id " + edge.getId());
         printTag("source " + edge.getSource().getId());
         printTag("target " + edge.getTarget().getId());
-        if (exportLabel && edge.getEdgeData().getLabel() != null) {
-            printTag("label \"" + edge.getEdgeData().getLabel() + "\"");
+        if (exportLabel && edge.getLabel() != null) {
+            printTag("label \"" + edge.getLabel() + "\"");
         }
         if (exportEdgeSize) {
-            printTag("value " + edge.getWeight(getLow, getHigh));
+            if (exportDynamicWeight) {
+                printTag("value " + edge.getWeight(graph.getView()));
+            } else {
+                printTag("value " + edge.getWeight());
+            }
         }
-        if (graphMixed) { //if graph not mixed, then all edges have the same direction, described earlier
+        if (graph.isMixed()) { //if graph not mixed, then all edges have the same direction, described earlier
             if (edge.isDirected()) {
                 printTag("directed 1");
             } else if (!edge.isDirected()) {
@@ -217,14 +212,12 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         }
 
         if (exportNotRecognizedElements) {
-            for (int i = 0; i < edge.getAttributes().countValues(); i++) {
-                String s = attributeModel.getEdgeTable().getColumn(i).getTitle();
-                //don't print again standart attributes
-                if (edge.getAttributes().getValue(i) != null && !s.equals("Weight")
-                        && !s.equals("Id") && !s.equals("Time Interval")
-                        && DynamicUtilities.getDynamicValue(edge.getAttributes().getValue(i),
-                        visibleInterval.getLow(), visibleInterval.getHigh()) != null) {
-                    printTag(formatTitle(s) + " \"" + formatValue(edge.getAttributes().getValue(i)) + "\"");
+            for (Column col : attributeModel.getEdgeTable()) {
+                if (!col.isProperty()) {
+                    Object value = edge.getAttribute(col, graph.getView());
+                    if (value != null) {
+                        printTag(formatTitle(col.getTitle()) + " \"" + formatValue(value) + "\"");
+                    }
                 }
             }
         }
@@ -233,51 +226,48 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         progressTicket.progress();
     }
 
-    private void printNode(Node node) throws IOException {
+    private void printNode(Node node, Graph graph) throws IOException {
         printOpen("node");
         printTag("id " + node.getId());
-        if (exportLabel && node.getNodeData().getLabel() != null) {
-            printTag("label \"" + node.getNodeData().getLabel() + "\"");
+        if (exportLabel && node.getLabel() != null) {
+            printTag("label \"" + node.getLabel() + "\"");
         }
         if (exportCoordinates || exportNodeSize || exportColor) {
             printOpen("graphics");
             if (exportCoordinates) {
                 if (!normalize) {
-                    printTag("x " + node.getNodeData().x());
-                    printTag("y " + node.getNodeData().y());
-                    printTag("z " + node.getNodeData().z());
+                    printTag("x " + node.x());
+                    printTag("y " + node.y());
+                    printTag("z " + node.z());
                 } else {
-                    printTag("x " + (node.getNodeData().x() - minX) / (maxX - minX));
-                    printTag("y " + (node.getNodeData().y() - minY) / (maxY - minY));
-                    printTag("z " + (node.getNodeData().z() - minZ) / (maxZ - minZ));
+                    printTag("x " + (node.x() - minX) / (maxX - minX));
+                    printTag("y " + (node.y() - minY) / (maxY - minY));
+                    printTag("z " + (node.z() - minZ) / (maxZ - minZ));
                 }
             }
             if (exportNodeSize) {
                 if (!normalize) {
-                    printTag("w " + node.getNodeData().getSize());
-                    printTag("h " + node.getNodeData().getSize());
-                    printTag("d " + node.getNodeData().getSize());
+                    printTag("w " + node.size());
+                    printTag("h " + node.size());
+                    printTag("d " + node.size());
                 } else {
-                    printTag("w " + (node.getNodeData().getSize() - minSize) / (maxSize - minSize));
-                    printTag("h " + (node.getNodeData().getSize() - minSize) / (maxSize - minSize));
-                    printTag("d " + (node.getNodeData().getSize() - minSize) / (maxSize - minSize));
+                    printTag("w " + (node.size() - minSize) / (maxSize - minSize));
+                    printTag("h " + (node.size() - minSize) / (maxSize - minSize));
+                    printTag("d " + (node.size() - minSize) / (maxSize - minSize));
                 }
             }
             if (exportColor) {
-                printTag("fill \"#" + Integer.toString((int) (node.getNodeData().r() * 255), 16)
-                        + Integer.toString((int) (node.getNodeData().g() * 255), 16) + Integer.toString((int) (node.getNodeData().b() * 255), 16) + "\"");
+                printTag("fill \"#" + Integer.toString((int) (node.r() * 255), 16)
+                        + Integer.toString((int) (node.g() * 255), 16) + Integer.toString((int) (node.b() * 255), 16) + "\"");
             }
             printClose();
         }
         if (exportNotRecognizedElements) {
-            for (int i = 0; i < node.getAttributes().countValues(); i++) {
-                if (node.getAttributes().getValue(i) != null) {
-                    String s = attributeModel.getNodeTable().getColumn(i).getTitle();
-                    //don't print again standart attributes
-                    if (!s.equals("d") && !s.equals("Label") && !s.equals("Id") && !s.equals("Time Interval")
-                            && DynamicUtilities.getDynamicValue(node.getAttributes().getValue(i),
-                            visibleInterval.getLow(), visibleInterval.getHigh()) != null) {
-                        printTag(formatTitle(s) + " \"" + formatValue(node.getAttributes().getValue(i)) + "\"");
+            for (Column col : attributeModel.getNodeTable()) {
+                if (!col.isProperty()) {
+                    Object value = node.getAttribute(col, graph.getView());
+                    if (value != null) {
+                        printTag(formatTitle(col.getTitle()) + " \"" + formatValue(value) + "\"");
                     }
                 }
             }
@@ -286,23 +276,28 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         progressTicket.progress();
     }
 
+    @Override
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }
 
+    @Override
     public void setWriter(Writer writer) {
         this.writer = writer;
     }
 
+    @Override
     public boolean cancel() {
         cancel = true;
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
     }
@@ -378,16 +373,16 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
             if (cancel) {
                 break;
             }
-            minX = Math.min(minX, node.getNodeData().x());
-            minY = Math.min(minY, node.getNodeData().y());
-            minZ = Math.min(minZ, node.getNodeData().z());
+            minX = Math.min(minX, node.x());
+            minY = Math.min(minY, node.y());
+            minZ = Math.min(minZ, node.z());
 
-            maxX = Math.max(maxX, node.getNodeData().x());
-            maxY = Math.max(maxY, node.getNodeData().y());
-            maxZ = Math.max(maxZ, node.getNodeData().z());
+            maxX = Math.max(maxX, node.x());
+            maxY = Math.max(maxY, node.y());
+            maxZ = Math.max(maxZ, node.z());
 
-            minSize = Math.min(minSize, node.getNodeData().getSize());
-            maxSize = Math.max(maxSize, node.getNodeData().getSize());
+            minSize = Math.min(minSize, node.size());
+            maxSize = Math.max(maxSize, node.size());
         }
     }
 
@@ -403,14 +398,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     }
 
     private String formatValue(Object obj) {
-        System.err.println("tos " + obj.toString());
-        String res;
-        if (visibleInterval != null) {
-            //dynamic value could be null, if it doesn't exist in visibleInterval, but such cases are filtered higher
-            res = DynamicUtilities.getDynamicValue(obj, visibleInterval.getLow(), visibleInterval.getHigh()).toString();
-        } else {
-            res = obj.toString();
-        }
+        String res = obj.toString();
         return res.replace("\r\n", " ").replace("\n", " ").replace('\"', ' ');//remove " and line feeds
     }
 }

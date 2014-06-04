@@ -1,57 +1,55 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.visualization.selection;
 
 import java.util.Arrays;
-import javax.media.opengl.GL;
-import javax.media.opengl.GLPbuffer;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
-import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.apiimpl.GraphDrawable;
-import org.gephi.visualization.apiimpl.ModelImpl;
-import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.lib.gleem.linalg.Vecf;
+import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.selection.SelectionArea;
+import org.gephi.visualization.apiimpl.GraphDrawable;
+import org.gephi.visualization.apiimpl.VizConfig;
+import org.gephi.visualization.model.node.NodeModel;
 
 /**
  *
@@ -60,14 +58,15 @@ import org.gephi.lib.gleem.linalg.Vecf;
 public class Rectangle implements SelectionArea {
 
     private static float[] pointRect = {1, 1};
+    private final GraphDrawable drawable;
+    private final VizConfig config;
+    private final float[] color;
+    //Variables
     private float[] startPosition;
     private float[] rectangle = new float[2];
     private float[] center = new float[2];
     private float[] rectangleSize = new float[2];
-    private GraphDrawable drawable;
     private boolean stop = true;
-    private VizConfig config;
-    private float[] color;
     private boolean blocking = true;
     private boolean ctrl = false;
 
@@ -77,6 +76,7 @@ public class Rectangle implements SelectionArea {
         color = config.getRectangleSelectionColor().getRGBComponents(null);
     }
 
+    @Override
     public float[] getSelectionAreaRectancle() {
         if (stop) {
             return pointRect;
@@ -92,6 +92,7 @@ public class Rectangle implements SelectionArea {
         return rectangleSize;
     }
 
+    @Override
     public float[] getSelectionAreaCenter() {
         if (stop) {
             return null;
@@ -101,13 +102,14 @@ public class Rectangle implements SelectionArea {
         return center;
     }
 
-    public boolean mouseTest(Vecf distanceFromMouse, ModelImpl object) {
+    @Override
+    public boolean mouseTest(Vecf distanceFromMouse, NodeModel nodeModel) {
         if (stop) {
-            return object.selectionTest(distanceFromMouse, 0);
+            return nodeModel.selectionTest(distanceFromMouse, 0);
         }
-        float x = object.getViewportX();
-        float y = object.getViewportY();
-        float rad = object.getViewportRadius();
+        float x = nodeModel.getViewportX();
+        float y = nodeModel.getViewportY();
+        float rad = nodeModel.getViewportRadius();
 
         boolean res = true;
         if (startPosition[0] > rectangle[0]) {
@@ -131,14 +133,6 @@ public class Rectangle implements SelectionArea {
         return res;
     }
 
-    public boolean select(Renderable object) {
-        return true;
-    }
-
-    public boolean unselect(Renderable object) {
-        return true;
-    }
-
     public void start(float[] mousePosition) {
         this.startPosition = Arrays.copyOf(mousePosition, 2);
         this.rectangle[0] = startPosition[0];
@@ -159,10 +153,12 @@ public class Rectangle implements SelectionArea {
         }
     }
 
+    @Override
     public boolean isEnabled() {
         return true;
     }
 
+    @Override
     public boolean blockSelection() {
         return blocking;
     }
@@ -171,7 +167,8 @@ public class Rectangle implements SelectionArea {
         this.blocking = blocking;
     }
 
-    public void drawArea(GL gl, GLU glu) {
+    @Override
+    public void drawArea(GL2 gl, GLU glu) {
         if (!stop) {
             float x = startPosition[0];
             float y = startPosition[1];
@@ -179,17 +176,17 @@ public class Rectangle implements SelectionArea {
             float h = rectangle[1] - startPosition[1];
             //System.out.println("x:"+x+"  y:"+y+"   w:"+w+"   h:"+h);
 
-            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glMatrixMode(GL2.GL_PROJECTION);
             gl.glPushMatrix();
             gl.glLoadIdentity();
             glu.gluOrtho2D(0, drawable.getViewportWidth(), 0, drawable.getViewportHeight());
-            gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
             gl.glPushMatrix();
             gl.glLoadIdentity();
 
             gl.glColor4f(color[0], color[1], color[2], color[3]);
 
-            gl.glBegin(GL.GL_QUADS);
+            gl.glBegin(GL2.GL_QUADS);
             gl.glVertex3f(x + w, y, 0);
             gl.glVertex3f(x, y, 0);
             gl.glVertex3f(x, y + h, 0);
@@ -197,7 +194,7 @@ public class Rectangle implements SelectionArea {
             gl.glEnd();
 
             gl.glColor4f(color[0], color[1], color[2], 1f);
-            gl.glBegin(GL.GL_LINE_LOOP);
+            gl.glBegin(GL2.GL_LINE_LOOP);
             gl.glVertex3f(x + w, y, 0);
             gl.glVertex3f(x, y, 0);
             gl.glVertex3f(x, y + h, 0);
@@ -205,9 +202,9 @@ public class Rectangle implements SelectionArea {
             gl.glEnd();
 
             gl.glPopMatrix();
-            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glMatrixMode(GL2.GL_PROJECTION);
             gl.glPopMatrix();
-            gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
         } else {
             startPosition = null;
         }

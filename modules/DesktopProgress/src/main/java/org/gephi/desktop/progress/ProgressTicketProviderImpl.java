@@ -53,6 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ProgressTicketProvider.class, position = 10)
 public class ProgressTicketProviderImpl implements ProgressTicketProvider {
 
+    @Override
     public ProgressTicket createTicket(String taskName, Cancellable cancellable) {
         return new ProgressTicketImpl(taskName, cancellable);
     }

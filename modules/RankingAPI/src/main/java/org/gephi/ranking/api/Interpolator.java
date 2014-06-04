@@ -1,76 +1,80 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.ranking.api;
 
 /**
- * Abstract clas that defines the single {@link #interpolate(float)} method. This 
- * abstract class is implemented by built-in interpolators.
- * 
+ * Abstract clas that defines the single {@link #interpolate(float)} method.
+ * This abstract class is implemented by built-in interpolators.
+ *
  * @author Mathieu Bastian
  */
 public abstract class Interpolator {
 
     /**
-     * Linear interpolation <code>x = interpolate(x)<code>
+     * Linear interpolation
+     * <code>x = interpolate(x)
+     * <code>
      */
     public static final Interpolator LINEAR = new Interpolator() {
-
+        @Override
         public float interpolate(float x) {
             return x;
         }
     };
     /**
-     * Log2 interpolation <code>Math.log(1 + x)/Math.log(2) = interpolate(x)</code>
+     * Log2 interpolation
+     * <code>Math.log(1 + x)/Math.log(2) = interpolate(x)</code>
      */
     public static final Interpolator LOG2 = new Interpolator() {
-
+        @Override
         public float interpolate(float x) {
             return (float) (Math.log(1 + x) / Math.log(2));
         }
     };
 
     /**
-     * Builds a bezier interpolator with two control points (px1, py1) and
-     * (px2, py2). The points should all be in range [0, 1].
+     * Builds a bezier interpolator with two control points (px1, py1) and (px2,
+     * py2). The points should all be in range [0, 1].
+     *
      * @param px1 the x-coordinate of first control point, between [0, 1]
      * @param py1 the y-coordinate of first control point, between [0, 1]
      * @param px2 the x-coordinate of second control point, between [0, 1]
@@ -82,8 +86,9 @@ public abstract class Interpolator {
     }
 
     /**
-     * This function takes an input value between 0 and 1 and returns another value,
-     * also between 0 and 1.
+     * This function takes an input value between 0 and 1 and returns another
+     * value, also between 0 and 1.
+     *
      * @param x a value between 0 and 1
      * @return a value between 0 and 1. Values outside of this boundary may be
      * clamped to the interval [0,1] and cause undefined results.
@@ -94,8 +99,9 @@ public abstract class Interpolator {
      * Bezier curve interpolator.
      * <p>
      * Basically, a cubic Bezier curve is created with start point (0,0) and
-     * endpoint (1,1).  The other two control points (px1, py1) and (px2, py2) are
-     * given by the user, where px1, py1, px1, and px2 are all in the range [0,1].
+     * endpoint (1,1). The other two control points (px1, py1) and (px2, py2)
+     * are given by the user, where px1, py1, px1, and px2 are all in the range
+     * [0,1].
      * </p>
      */
     //Author David C. Browne
@@ -103,8 +109,8 @@ public abstract class Interpolator {
 
         /**
          * the coordinates of the 2 2D control points for a cubic Bezier curve,
-         * with implicit start point (0,0) and end point (1,1) -- each individual
-         * coordinate value must be in range [0,1]
+         * with implicit start point (0,0) and end point (1,1) -- each
+         * individual coordinate value must be in range [0,1]
          */
         private final float x1, y1, x2, y2;
         /**
@@ -117,20 +123,23 @@ public abstract class Interpolator {
          */
         private static final int SAMPLE_SIZE = 16;
         /**
-         * difference in t used to calculate each of the xSamples values -- power of
-         * 2 sample size should provide exact representation of this value and its
-         * integer multiples (integer in range of [0..SAMPLE_SIZE]
+         * difference in t used to calculate each of the xSamples values --
+         * power of 2 sample size should provide exact representation of this
+         * value and its integer multiples (integer in range of [0..SAMPLE_SIZE]
          */
         private static final float SAMPLE_INCREMENT = 1f / SAMPLE_SIZE;
         /**
-         * x values for the bezier curve, sampled at increments of 1/SAMPLE_SIZE --
-         * this is used to find the good initial guess for parameter t, given an x
+         * x values for the bezier curve, sampled at increments of 1/SAMPLE_SIZE
+         * -- this is used to find the good initial guess for parameter t, given
+         * an x
          */
         private final float[] xSamples = new float[SAMPLE_SIZE + 1];
 
         /**
-         * constructor -- cubic bezier curve will be represented by control points
-         * (0,0) (px1,py1) (px2,py2) (1,1) -- px1, py1, px2, py2 all in range [0,1]
+         * constructor -- cubic bezier curve will be represented by control
+         * points (0,0) (px1,py1) (px2,py2) (1,1) -- px1, py1, px2, py2 all in
+         * range [0,1]
+         *
          * @param px1 is x-coordinate of first control point, in range [0,1]
          * @param py1 is y-coordinate of first control point, in range [0,1]
          * @param px2 is x-coordinate of second control point, in range [0,1]
@@ -162,10 +171,13 @@ public abstract class Interpolator {
         }
 
         /**
-         * get the y-value of the cubic bezier curve that corresponds to the x input
+         * get the y-value of the cubic bezier curve that corresponds to the x
+         * input
+         *
          * @param x is x-value of cubic bezier curve, in range [0,1]
          * @return corresponding y-value of cubic bezier curve -- in range [0,1]
          */
+        @Override
         public float interpolate(float x) {
             // check user input for precondition
             if (x < 0) {
@@ -185,11 +197,13 @@ public abstract class Interpolator {
         }
 
         /**
-         * use Bernstein basis to evaluate 1D cubic Bezier curve (quicker and more
-         * numerically stable than power basis) -- 1D control coordinates are
-         * (0, p1, p2, 1), where p1 and p2 are in range [0,1], and there is no
-         * ordering constraint on p1 and p2, i.e., p1 <= p2 does not have to be true
-         * @param t is the paramaterized value in range [0,1]
+         * use Bernstein basis to evaluate 1D cubic Bezier curve (quicker and
+         * more numerically stable than power basis) -- 1D control coordinates
+         * are (0, p1, p2, 1), where p1 and p2 are in range [0,1], and there is
+         * no ordering constraint on p1 and p2, i.e., p1 <= p2 does not have to
+         * be true @param t is the pa
+         *
+         * ramaterized value in range [0,1]
          * @param p1 is 1st control point coordinate in range [0,1]
          * @param p2 is 2nd control point coordinate in range [0,1]
          * @return the value of the Bezier curve at parameter t
@@ -204,11 +218,12 @@ public abstract class Interpolator {
         }
 
         /**
-         * evaluate Bernstein basis derivative of 1D cubic Bezier curve, where 1D
-         * control points are (0, p1, p2, 1), where p1 and p2 are in range [0,1], and
-         * there is no ordering constraint on p1 and p2, i.e., p1 <= p2 does not have
-         * to be true
-         * @param t is the paramaterized value in range [0,1]
+         * evaluate Bernstein basis derivative of 1D cubic Bezier curve, where
+         * 1D control points are (0, p1, p2, 1), where p1 and p2 are in range
+         * [0,1], and there is no ordering constraint on p1 and p2, i.e., p1 <=
+         * p2 does not have to be true @param t is the paramaterized
+         *
+         * value in range [0,1]
          * @param p1 is 1st control point coordinate in range [0,1]
          * @param p2 is 2nd control point coordinate in range [0,1]
          * @return the value of the Bezier curve at parameter t
@@ -223,11 +238,13 @@ public abstract class Interpolator {
         }
 
         /**
-         * find an initial good guess for what parameter t might produce the x-value
-         * on the Bezier curve -- uses linear interpolation on the x-value sample
-         * array that was created on construction
+         * find an initial good guess for what parameter t might produce the
+         * x-value on the Bezier curve -- uses linear interpolation on the
+         * x-value sample array that was created on construction
+         *
          * @param x is x-value of cubic bezier curve, in range [0,1]
-         * @return a good initial guess for parameter t (in range [0,1]) that gives x
+         * @return a good initial guess for parameter t (in range [0,1]) that
+         * gives x
          */
         private float getInitialGuessForT(float x) {
             // find which places in the array that x would be sandwiched between,
@@ -256,8 +273,9 @@ public abstract class Interpolator {
 
         /**
          * find the parameter t that produces the given x-value for the curve --
-         * uses Newton-Raphson to refine the value as opposed to subdividing until
-         * we are within some tolerance
+         * uses Newton-Raphson to refine the value as opposed to subdividing
+         * until we are within some tolerance
+         *
          * @param x is x-value of cubic bezier curve, in range [0,1]
          * @return the parameter t (in range [0,1]) that produces x
          */

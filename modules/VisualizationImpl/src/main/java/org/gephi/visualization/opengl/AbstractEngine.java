@@ -1,74 +1,70 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.visualization.opengl;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import org.gephi.visualization.apiimpl.ModelImpl;
-
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
-import org.gephi.graph.api.Model;
-import org.gephi.graph.api.Renderable;
+import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.visualization.apiimpl.Engine;
 import org.gephi.visualization.apiimpl.GraphIO;
-import org.gephi.visualization.apiimpl.VizEventManager;
-import org.gephi.visualization.api.objects.ModelClass;
-import org.gephi.visualization.api.objects.ModelClassLibrary;
 import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.api.selection.SelectionArea;
+import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.visualization.bridge.DataBridge;
-import org.gephi.visualization.bridge.EventBridge;
-import org.gephi.lib.gleem.linalg.Vecf;
-import org.gephi.visualization.mode.ModeManager;
-import org.gephi.visualization.opengl.octree.Octree;
-import org.gephi.visualization.opengl.text.TextManager;
+import org.gephi.visualization.model.ModelClass;
+import org.gephi.visualization.model.ModelClassLibrary;
+import org.gephi.visualization.model.node.NodeModel;
+import org.gephi.visualization.octree.Octree;
 import org.gephi.visualization.swing.GraphDrawableImpl;
+import org.gephi.visualization.text.TextManager;
 
 /**
- * Abstract graphic engine. Real graphic engines inherit from this class and can use the common functionalities.
+ * Abstract graphic engine. Real graphic engines inherit from this class and can
+ * use the common functionalities.
  *
  * @author Mathieu Bastian
  */
@@ -79,10 +75,6 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
         MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z
     };
-    public static final int CLASS_NODE = 0;
-    public static final int CLASS_EDGE = 1;
-    public static final int CLASS_ARROW = 2;
-    public static final int CLASS_POTATO = 3;
     //Architecture
     protected GraphDrawableImpl graphDrawable;
     protected GraphIO graphIO;
@@ -90,10 +82,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected SelectionArea currentSelectionArea;
     protected ModelClassLibrary modelClassLibrary;
     protected DataBridge dataBridge;
-    protected EventBridge eventBridge;
     protected VizController vizController;
     protected VizConfig vizConfig;
-    protected ModeManager modeManager;
     protected TextManager textManager;
     //States
     protected boolean rectangleSelection;
@@ -105,23 +95,25 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected float lightenAnimationDelta = 0f;
     //Octree
     protected Octree octree;
+    //User config
+    protected ModelClass nodeClass;
+    protected ModelClass edgeClass;
 
+    @Override
     public void initArchitecture() {
         this.graphDrawable = VizController.getInstance().getDrawable();
         this.graphIO = VizController.getInstance().getGraphIO();
         this.modelClassLibrary = VizController.getInstance().getModelClassLibrary();
         this.dataBridge = VizController.getInstance().getDataBridge();
-        this.eventBridge = VizController.getInstance().getEventBridge();
         this.vizController = VizController.getInstance();
         this.vizConfig = VizController.getInstance().getVizConfig();
-        this.modeManager = VizController.getInstance().getModeManager();
         this.textManager = VizController.getInstance().getTextManager();
         initObject3dClass();
         initSelection();
 
         //Vizconfig events
         vizController.getVizModel().addPropertyChangeListener(new PropertyChangeListener() {
-
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 configChanged = true;
                 if (evt.getPropertyName().equals("backgroundColor")) {
@@ -130,24 +122,22 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
                     reinit = true;
                 }
 
-                getModelClasses()[AbstractEngine.CLASS_EDGE].setEnabled(vizController.getVizModel().isShowEdges());
-                getModelClasses()[AbstractEngine.CLASS_ARROW].setEnabled(vizController.getVizModel().isShowEdges() && vizConfig.isShowArrows());
-                getModelClasses()[AbstractEngine.CLASS_POTATO].setEnabled(vizController.getVizModel().isShowHulls());
+                edgeClass.setEnabled(vizController.getVizModel().isShowEdges());
             }
         });
     }
 
-    public abstract void beforeDisplay(GL gl, GLU glu);
+    public abstract void beforeDisplay(GL2 gl, GLU glu);
 
-    public abstract void display(GL gl, GLU glu);
+    public abstract void display(GL2 gl, GLU glu);
 
-    public abstract void afterDisplay(GL gl, GLU glu);
+    public abstract void afterDisplay(GL2 gl, GLU glu);
 
-    public abstract void initEngine(GL gl, GLU glu);
+    public abstract void initEngine(GL2 gl, GLU glu);
 
-    public abstract void initScreenshot(GL gl, GLU glu);
+    public abstract void initScreenshot(GL2 gl, GLU glu);
 
-    public abstract void cameraHasBeenMoved(GL gl, GLU glu);
+    public abstract void cameraHasBeenMoved(GL2 gl, GLU glu);
 
     public abstract void mouseMove();
 
@@ -161,12 +151,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract Scheduler getScheduler();
 
-    public abstract void addObject(int classID, ModelImpl obj);
-
-    public abstract void removeObject(int classID, ModelImpl obj);
-
-    public abstract void worldUpdated(int cacheMarker);
-
+//    public abstract void addObject(int classID, Model obj);
+//    public abstract void removeObject(int classID, Model obj);
     public abstract void updateObjectsPosition();
 
     public abstract boolean updateWorld();
@@ -177,18 +163,13 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract void initSelection();
 
-    public abstract ModelClass[] getModelClasses();
-
     protected abstract void startAnimating();
 
     protected abstract void stopAnimating();
 
-    public abstract ModelImpl[] getSelectedObjects(int modelClass);
-
-    public abstract void selectObject(Model obj);
-
-    public abstract void selectObject(Model[] objs);
-
+//    public abstract Model[] getSelectedObjects(int modelClass);
+//    public abstract void selectNodes(NodeModel obj);
+//    public abstract void selectObject(NodeModel[] objs);
     public abstract void resetSelection();
 
     /**
@@ -196,37 +177,11 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
      */
     public abstract void resetObjectClass(ModelClass object3dClass);
 
-    public float cameraDistance(ModelImpl object) {
-        float[] cameraLocation = graphDrawable.getCameraLocation();
-        double distance = Math.sqrt(Math.pow((double) object.getObj().x() - cameraLocation[0], 2d)
-                + Math.pow((double) object.getObj().y() - cameraLocation[1], 2d)
-                + Math.pow((double) object.getObj().z() - cameraLocation[2], 2d));
-        object.setCameraDistance((float) distance);
-
-        return (float) distance - object.getObj().getRadius();
-    }
-
-    protected void setViewportPosition(ModelImpl object) {
-        double[] res = graphDrawable.myGluProject(object.getObj().x(), object.getObj().y(), object.getObj().z());
-        object.setViewportX((float) res[0]);
-        object.setViewportY((float) res[1]);
-
-        res = graphDrawable.myGluProject(object.getObj().x() + object.getObj().getRadius(), object.getObj().y(), object.getObj().z());
-        float rad = Math.abs((float) res[0] - object.getViewportX());
-        object.setViewportRadius(rad);
-    }
-
     public void reinit() {
         reinit = true;
     }
 
-    protected boolean isUnderMouse(ModelImpl obj) {
-        if (vizConfig.isEnableAutoSelect() && obj.isAutoSelected()) {
-            return true;
-        }
-        if (obj.onlyAutoSelect()) {
-            return false;
-        }
+    protected boolean isUnderMouse(NodeModel obj) {
         if (!currentSelectionArea.isEnabled()) {
             return false;
         }
@@ -278,6 +233,14 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public Octree getOctree() {
         return octree;
+    }
+
+    public ModelClass getNodeClass() {
+        return nodeClass;
+    }
+
+    public ModelClass getEdgeClass() {
+        return edgeClass;
     }
 
     protected class EngineLifeCycle {

@@ -70,6 +70,7 @@ class JMenuToggleButton extends JToggleButton {
 
         addMouseMotionListener(new MouseMotionAdapter() {
 
+            @Override
             public void mouseMoved(MouseEvent e) {
                 mouseInArrowArea = isInArrowArea(e.getPoint());
                 setRolloverIcon(mouseInArrowArea ? regIcon : lineIcon);
@@ -79,6 +80,7 @@ class JMenuToggleButton extends JToggleButton {
 
         addMouseListener(new MouseAdapter() {
 
+            @Override
             public void mousePressed(MouseEvent e) {
                 if (isInArrowArea(e.getPoint())) {
                     JPopupMenu popup = getPopupMenu();
@@ -88,12 +90,14 @@ class JMenuToggleButton extends JToggleButton {
                 }
             }
 
+            @Override
             public void mouseEntered(MouseEvent e) {
                 mouseInArrowArea = isInArrowArea(e.getPoint());
                 setRolloverIcon(mouseInArrowArea ? regIcon : lineIcon);
                 setRolloverSelectedIcon(mouseInArrowArea ? regIcon : lineIcon);
             }
 
+            @Override
             public void mouseExited(MouseEvent e) {
                 mouseInArrowArea = false;
                 setRolloverIcon(regIcon);
@@ -122,6 +126,7 @@ class JMenuToggleButton extends JToggleButton {
             this.arrowWidth = arrowWidth;
         }
 
+        @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
             origIcon.paintIcon(c, g, x, y);
 
@@ -133,10 +138,12 @@ class JMenuToggleButton extends JToggleButton {
                     x + origIcon.getIconWidth() - arrowWidth - 3, y + getIconHeight());
         }
 
+        @Override
         public int getIconWidth() {
             return origIcon.getIconWidth();
         }
 
+        @Override
         public int getIconHeight() {
             return origIcon.getIconHeight();
         }
@@ -144,6 +151,7 @@ class JMenuToggleButton extends JToggleButton {
 
     private class Model extends JToggleButton.ToggleButtonModel {
 
+        @Override
         public void setPressed(boolean b) {
             if (mouseInArrowArea) {
                 return;

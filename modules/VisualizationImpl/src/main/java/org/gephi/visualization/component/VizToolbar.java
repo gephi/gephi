@@ -79,6 +79,7 @@ public class VizToolbar extends JToolBar {
     public void setEnable(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 for (Component c : getComponents()) {
                     c.setEnabled(enabled);

@@ -345,10 +345,12 @@ public final class UIUtils {
         if (button.getUI() instanceof com.sun.java.swing.plaf.windows.WindowsButtonUI) {
             button.setUI(new com.sun.java.swing.plaf.windows.WindowsButtonUI() {
 
+                @Override
                 protected BasicButtonListener createButtonListener(AbstractButton b) {
                     return new BasicButtonListener(b); // Fix for  Issue 71546
                 }
 
+                @Override
                 protected void paintFocus(Graphics g, AbstractButton b, Rectangle viewRect, Rectangle textRect,
                         Rectangle iconRect) {
                     int width = b.getWidth();
@@ -363,10 +365,12 @@ public final class UIUtils {
         else if (button.getUI() instanceof com.sun.java.swing.plaf.windows.WindowsToggleButtonUI) {
             button.setUI(new com.sun.java.swing.plaf.windows.WindowsToggleButtonUI() {
 
+                @Override
                 protected BasicButtonListener createButtonListener(AbstractButton b) {
                     return new BasicButtonListener(b); // Fix for  Issue 71546
                 }
 
+                @Override
                 protected void paintFocus(Graphics g, AbstractButton b, Rectangle viewRect, Rectangle textRect,
                         Rectangle iconRect) {
                     int width = b.getWidth();
@@ -427,6 +431,7 @@ public final class UIUtils {
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
 
+                    @Override
                     public void run() {
                         tableHeader.printAll(tableScreenshotGraphics);
                     }
@@ -446,6 +451,7 @@ public final class UIUtils {
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
 
+                    @Override
                     public void run() {
                         printSrc.printAll(tableScreenshotGraphics);
                     }
@@ -511,6 +517,7 @@ public final class UIUtils {
 
         final Runnable screenshotPerformer = new Runnable() {
 
+            @Override
             public void run() {
                 if (component instanceof JTable || (component instanceof JViewport && ((JViewport) component).getView() instanceof JTable)) {
                     result[0] = createTableScreenshot(component);

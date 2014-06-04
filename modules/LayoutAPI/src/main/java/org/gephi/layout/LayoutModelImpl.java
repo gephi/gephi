@@ -73,13 +73,13 @@ import org.openide.util.Lookup;
 public class LayoutModelImpl implements LayoutModel {
 
     //Listeners
-    private List<PropertyChangeListener> listeners;
+    private final List<PropertyChangeListener> listeners;
     //Data
+    private final Map<LayoutPropertyKey, Object> savedProperties;
     private Layout selectedLayout;
     private LayoutBuilder selectedBuilder;
-    private Map<LayoutPropertyKey, Object> savedProperties;
     //Util
-    private LongTaskExecutor executor;
+    private final LongTaskExecutor executor;
 
     public LayoutModelImpl() {
         listeners = new ArrayList<PropertyChangeListener>();
@@ -87,25 +87,30 @@ public class LayoutModelImpl implements LayoutModel {
 
         executor = new LongTaskExecutor(true, "layout", 5);
         executor.setLongTaskListener(new LongTaskListener() {
+            @Override
             public void taskFinished(LongTask task) {
                 setRunning(false);
             }
         });
         executor.setDefaultErrorHandler(new LongTaskErrorHandler() {
+            @Override
             public void fatalError(Throwable t) {
                 Logger.getLogger("").log(Level.SEVERE, "", t.getCause() != null ? t.getCause() : t);
             }
         });
     }
 
+    @Override
     public Layout getSelectedLayout() {
         return selectedLayout;
     }
 
+    @Override
     public LayoutBuilder getSelectedBuilder() {
         return selectedBuilder;
     }
 
+    @Override
     public Layout getLayout(LayoutBuilder layoutBuilder) {
         Layout layout = layoutBuilder.buildLayout();
         selectedBuilder = layoutBuilder;
@@ -130,11 +135,12 @@ public class LayoutModelImpl implements LayoutModel {
 
     public void injectGraph() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (selectedLayout != null && graphController.getModel() != null) {
-            selectedLayout.setGraphModel(graphController.getModel());
+        if (selectedLayout != null && graphController.getGraphModel() != null) {
+            selectedLayout.setGraphModel(graphController.getGraphModel());
         }
     }
 
+    @Override
     public boolean isRunning() {
         return executor.isRunning();
     }
@@ -143,12 +149,14 @@ public class LayoutModelImpl implements LayoutModel {
         firePropertyChangeEvent(RUNNING, !running, running);
     }
 
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
 
+    @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         listeners.remove(listener);
     }

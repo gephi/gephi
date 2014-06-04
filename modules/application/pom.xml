@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.gephi</groupId>
         <artifactId>gephi-parent</artifactId>
-        <version>0.8.2-SNAPSHOT</version>
+        <version>0.9-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
@@ -21,6 +21,100 @@
             <groupId>org.netbeans.cluster</groupId>
             <artifactId>platform</artifactId>
             <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org-jdesktop-layout</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-api-search</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-api-visual</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-core-execution</artifactId>
+                    <groupId>org.netbeans.modules</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-core-netigso</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-core-osgi</artifactId>
+                    <groupId>org.netbeans.modules</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-core-output2</artifactId>
+                    <groupId>org.netbeans.modules</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-libs-osgi</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-libs-felix</artifactId>
+                    <groupId>org.netbeans.modules</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-libs-jsr223</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-libs-testng</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-modules-core-kit</artifactId>
+                    <groupId>org.netbeans.modules</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-modules-netbinox</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-openide-compat</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-openide-execution</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-openide-options</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-openide-util-enumerations</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-modules-editor-mimelookup-impl</artifactId>
+                    <groupId>org.netbeans.modules</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-modules-print</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-modules-favorites</artifactId>
+                    <groupId>org.netbeans.modules</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-modules-javahelp</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-modules-sampler</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-modules-spi-actions</artifactId>
+                    <groupId>org.netbeans.modules</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -41,15 +135,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io-exporter-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>graph-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>data-attributes-api</artifactId>
+            <artifactId>io-exporter-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -67,18 +157,18 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>preview-export-ui</artifactId>
         </dependency>
-        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dynamic-api</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>utils</artifactId>
         </dependency>
-        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>datalab-api</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization-api</artifactId>
@@ -109,14 +199,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ranking-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ranking-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>ui-utils</artifactId>
         </dependency>
         <dependency>
@@ -125,24 +207,16 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ranking-plugin-ui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>settings-upgrader</artifactId>
         </dependency>
-        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>spigot-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>spigot-plugin-ui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>spline-editor</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>statistics-api</artifactId>
@@ -155,21 +229,18 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>statistics-plugin-ui</artifactId>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>timeline</artifactId>
-        </dependency>
+        <!--        <dependency>
+                     <groupId>${project.groupId}</groupId>
+                    <artifactId>timeline</artifactId>
+                </dependency>
+        -->        
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>tools-api</artifactId>
-        </dependency>
+        </dependency>       
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>algorithms-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>utils-collection</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -187,10 +258,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization</artifactId>
         </dependency>
-        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>tools-plugin</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>welcome-screen</artifactId>
@@ -233,57 +304,45 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-ranking</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>desktop-statistics</artifactId>
         </dependency>
-        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>clustering-api</artifactId>
-        </dependency>
-        <dependency>
+        </dependency>-->
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-propertyeditor</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>layout-plugin</artifactId>
         </dependency>
-        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-spigot</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-generate</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>partition-api</artifactId>
+            <artifactId>appearance-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-partition</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>graph-dhns</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>attributes</artifactId>
+            <artifactId>desktop-appearance</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-importer-plugin</artifactId>
         </dependency>
-        <dependency>
+        <!--  <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-datalab</artifactId>
         </dependency>
@@ -294,7 +353,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-impl</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>export-plugin-ui</artifactId>
@@ -311,38 +370,34 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>perspective-api</artifactId>
         </dependency>
-        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-clustering</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>import-plugin-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-hierarchy</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>desktop-perspective</artifactId>
         </dependency>
-        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-plugin-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>datalab-plugin</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-layout</artifactId>
         </dependency>
-        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dynamic-impl</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-import</artifactId>
@@ -353,12 +408,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>partition-plugin</artifactId>
+            <artifactId>appearance-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>partition-plugin-ui</artifactId>
-        </dependency>
+            <artifactId>appearance-plugin-ui</artifactId>
+        </dependency><!--
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-tools</artifactId>
@@ -366,19 +421,19 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-timeline</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>directory-chooser</artifactId>
         </dependency>
-        <dependency>
+        <!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-filters</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>clustering-plugin</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>core-library-wrapper</artifactId>
@@ -486,26 +541,17 @@
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
-                       
-                    <!-- Attach the final ZIP files for deployment -->
+                    
+                    <!-- Avoid jar goal -->
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>attach-zip</id>
-                                <phase>pre-integration-test</phase>
+                                <phase>none</phase>
                                 <goals>
-                                    <goal>attach-artifact</goal>
+                                    <goal>jar</goal>
                                 </goals>
-                                <configuration>
-                                    <artifacts>
-                                        <artifact>
-                                            <file>${project.build.directory}/${project.artifactId}-${project.version}.zip</file>
-                                            <type>zip</type>
-                                        </artifact>
-                                    </artifacts>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -555,9 +601,9 @@
                         <configuration>
                             <fromDir>${gephi.updates.site}</fromDir>
                             <includes>*</includes>
-                            <url>${gephi.snapshot.repository.url}</url>
-                            <toDir>external/updates</toDir>
-                            <serverId>${gephi.snapshot.repository.id}</serverId>
+                            <url>${gephi.default.repository.url}</url>
+                            <toDir>${gephi.updates.repository.path}</toDir>
+                            <serverId>${gephi.default.repository.id}</serverId>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -566,7 +612,7 @@
         
         <!-- Profile used along with deployment to create the dmg archive -->
         <profile>
-            <id>deploy-dmg</id>
+            <id>create-dmg</id>
             <build>
                 <plugins>
                     
@@ -586,6 +632,8 @@
                                 
                                         <delete includeEmptyDirs="true" failonerror="false">
                                             <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app"/>
+                                            <fileset dir="${project.build.directory}/${gephi.app.title}"/>
+                                            <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}.dmg"/>
                                         </delete>
                                 
                                         <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app"/>
@@ -609,13 +657,17 @@
                                             <arg value="${gephi.appbundle.name}.app"/> 
                                         </exec>
                                         
+                                        <mkdir dir="${project.build.directory}/${gephi.app.title}"/>
+                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app" todir="${project.build.directory}/${gephi.app.title}/" />
+                                        <symlink link="${project.build.directory}/${gephi.app.title}/Applications" resource="/Applications" failonerror="false" />
+                                        
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="hdiutil">
                                             <arg value="create"/> 
                                             <arg value="-noanyowners"/> 
                                             <arg value="-imagekey"/> 
                                             <arg value="zlib-level=9"/> 
                                             <arg value="-srcfolder"/> 
-                                            <arg value="${gephi.appbundle.name}.app"/> 
+                                            <arg value="${project.build.directory}/${gephi.app.title}"/> 
                                             <arg value="${project.artifactId}-${project.version}.dmg"/>
                                         </exec>
 
@@ -633,15 +685,23 @@
                                             <arg value="-o"/>
                                             <arg value="${project.artifactId}-${project.version}.dmg"/>
                                             <arg value="-root"/>
-                                            <arg value="${gephi.appbundle.name}.app"/>
-                                            <arg value="${gephi.appbundle.name}.app"/>
+                                            <arg value="${project.build.directory}/${gephi.app.title}"/>
+                                            <arg value="${project.build.directory}/${gephi.app.title}"/>
                                         </exec>
                                     </target>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
-                    
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profile used along with deployment to attach the dmg archive -->
+        <profile>
+            <id>deploy-dmg</id>
+            <build>
+                <plugins>
                     <!-- Attach the final DMG for deployment -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -661,6 +721,30 @@
                                         </artifact>
                                     </artifacts>
                                 </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>   
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profile activated for windows/macos release only. Should be called alone so it only creates the windows installer/compressed dmg -->
+        <profile>
+            <id>release-extra</id>
+            <build>
+                <plugins>
+                    <!-- Avoid updatesite.xml.gz attach -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>nbm-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-standalone-zip</id>
+                                <phase>none</phase>       
+                            </execution>
+                            <execution>
+                                <id>autoupdate</id>
+                                <phase>none</phase>
                             </execution>
                         </executions>
                     </plugin>
@@ -727,9 +811,14 @@
                                         <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true">
                                             <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe gephi.ico 0"/>
                                         </exec>
-                                        
                                         <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true">
                                             <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe gephifile.ico 1"/>
+                                        </exec>
+                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true">
+                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephi.ico 0"/>
+                                        </exec>
+                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true">
+                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephifile.ico 1"/>
                                         </exec>
                                     </target>
                                 </configuration>
@@ -785,7 +874,7 @@
             <id>release-macos</id>
             <build>
                 <plugins>
-                    <!-- Deploy exe artifact -->
+                    <!-- Deploy dmg artifact -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>

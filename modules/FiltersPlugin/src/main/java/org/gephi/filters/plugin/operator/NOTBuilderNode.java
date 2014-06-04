@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
+import org.gephi.filters.spi.AttributableFilter;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
@@ -156,6 +157,20 @@ public class NOTBuilderNode implements FilterBuilder {
                     hgraph.removeNode(n);
                 }
                 nodeFilter.finish();
+            }
+            
+            if (filter instanceof AttributableFilter && ((AttributableFilter) filter).getType()==AttributableFilter.Type.NODE && ((AttributableFilter) filter).init(hgraph)) {
+                List<Node> nodeToRemove = new ArrayList<Node>();
+                AttributableFilter attributableFilter = (AttributableFilter) filter;
+                for (Node n : hgraph.getNodes().toArray()) {
+                    if (attributableFilter.evaluate(hgraph, n)) {
+                        nodeToRemove.add(n);
+                    }
+                }
+                for (Node n : nodeToRemove) {
+                    hgraph.removeNode(n);
+                }
+                attributableFilter.finish();
             }
 
             return hgraph;

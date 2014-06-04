@@ -143,6 +143,7 @@ class ReportSelection implements Transferable {
      *
      * @return
      */
+    @Override
     public DataFlavor[] getTransferDataFlavors() {
         return (DataFlavor[]) flavors.toArray(new DataFlavor[flavors.size()]);
     }
@@ -152,6 +153,7 @@ class ReportSelection implements Transferable {
      * @param flavor
      * @return
      */
+    @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
         return flavors.contains(flavor);
     }
@@ -162,6 +164,7 @@ class ReportSelection implements Transferable {
      * @return
      * @throws java.awt.datatransfer.UnsupportedFlavorException
      */
+    @Override
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
         if (String.class.equals(flavor.getRepresentationClass())) {
             return html;
@@ -304,6 +307,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
             NbPreferences.forModule(SimpleHTMLReport.class).put(LAST_PATH, destinationFolder.getAbsolutePath());
             Thread saveReportThread = new Thread(new Runnable() {
 
+                @Override
                 public void run() {
                     try {
                         if (saveReport(html, destinationFolder)) {
@@ -404,6 +408,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
      * @param pageIndex
      * @return
      */
+    @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
 
         boolean last = false;

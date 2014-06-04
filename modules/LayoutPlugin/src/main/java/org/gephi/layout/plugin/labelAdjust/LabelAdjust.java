@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Jacomy
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Jacomy
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.layout.plugin.labelAdjust;
 
@@ -73,16 +73,19 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         super(layoutBuilder);
     }
 
+    @Override
     public void resetPropertiesValues() {
         speed = 1;
         radiusScale = 1.1f;
         adjustBySize = true;
     }
 
+    @Override
     public void initAlgo() {
         setConverged(false);
     }
 
+    @Override
     public void goAlgo() {
         this.graph = graphModel.getGraphVisible();
         graph.readLock();
@@ -90,10 +93,10 @@ public class LabelAdjust extends AbstractLayout implements Layout {
 
         //Reset Layout Data
         for (Node n : nodes) {
-            if (n.getNodeData().getLayoutData() == null || !(n.getNodeData().getLayoutData() instanceof LabelAdjustLayoutData)) {
-                n.getNodeData().setLayoutData(new LabelAdjustLayoutData());
+            if (n.getLayoutData() == null || !(n.getLayoutData() instanceof LabelAdjustLayoutData)) {
+                n.setLayoutData(new LabelAdjustLayoutData());
             }
-            LabelAdjustLayoutData layoutData = n.getNodeData().getLayoutData();
+            LabelAdjustLayoutData layoutData = n.getLayoutData();
             layoutData.freeze = 0;
             layoutData.dx = 0;
             layoutData.dy = 0;
@@ -107,11 +110,12 @@ public class LabelAdjust extends AbstractLayout implements Layout {
 
         List<Node> correctNodes = new ArrayList<Node>();
         for (Node n : nodes) {
-            float x = n.getNodeData().x();
-            float y = n.getNodeData().y();
-            float w = n.getNodeData().getTextData().getWidth();
-            float h = n.getNodeData().getTextData().getHeight();
-            float radius = n.getNodeData().getRadius();
+            float x = n.x();
+            float y = n.y();
+//            float w = n.getTextData().getWidth();
+//            float h = n.getTextData().getHeight();
+            float w = 0f, h = 0f;
+            float radius = n.size() / 2f;
 
             if (w > 0 && h > 0) {
                 // Get the rectangle occupied by the node (size + label)
@@ -147,12 +151,12 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         //Compute repulsion - with neighbours in the 8 quadnodes around the node
         for (Node n : correctNodes) {
             timeStamp++;
-            LabelAdjustLayoutData layoutData = n.getNodeData().getLayoutData();
+            LabelAdjustLayoutData layoutData = n.getLayoutData();
             QuadNode quad = quadTree.getQuadNode(layoutData.labelAdjustQuadNode);
 
             //Repulse with adjacent quad - but only one per pair of nodes, timestamp is guaranteeing that
             for (Node neighbour : quadTree.getAdjacentNodes(quad.row, quad.col)) {
-                LabelAdjustLayoutData neighborLayoutData = neighbour.getNodeData().getLayoutData();
+                LabelAdjustLayoutData neighborLayoutData = neighbour.getLayoutData();
                 if (neighbour != n && neighborLayoutData.freeze < timeStamp) {
                     boolean collision = repulse(n, neighbour);
                     someCollision = someCollision || collision;
@@ -166,15 +170,15 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         } else {
             // apply forces
             for (Node n : correctNodes) {
-                LabelAdjustLayoutData layoutData = n.getNodeData().getLayoutData();
-                if (!n.getNodeData().isFixed()) {
+                LabelAdjustLayoutData layoutData = n.getLayoutData();
+                if (!n.isFixed()) {
                     layoutData.dx *= speed;
                     layoutData.dy *= speed;
-                    float x = n.getNodeData().x() + layoutData.dx;
-                    float y = n.getNodeData().y() + layoutData.dy;
+                    float x = n.x() + layoutData.dx;
+                    float y = n.y() + layoutData.dy;
 
-                    n.getNodeData().setX(x);
-                    n.getNodeData().setY(y);
+                    n.setX(x);
+                    n.setY(y);
                 }
             }
         }
@@ -184,15 +188,16 @@ public class LabelAdjust extends AbstractLayout implements Layout {
 
     private boolean repulse(Node n1, Node n2) {
         boolean collision = false;
-        float n1x = n1.getNodeData().x();
-        float n1y = n1.getNodeData().y();
-        float n2x = n2.getNodeData().x();
-        float n2y = n2.getNodeData().y();
-        float n1w = n1.getNodeData().getTextData().getWidth();
-        float n2w = n2.getNodeData().getTextData().getWidth();
-        float n1h = n1.getNodeData().getTextData().getHeight();
-        float n2h = n2.getNodeData().getTextData().getHeight();
-        LabelAdjustLayoutData n2Data = n2.getNodeData().getLayoutData();
+        float n1x = n1.x();
+        float n1y = n1.y();
+        float n2x = n2.x();
+        float n2y = n2.y();
+//        float n1w = n1.getTextData().getWidth();
+//        float n2w = n2.getTextData().getWidth();
+//        float n1h = n1.getTextData().getHeight();
+//        float n2h = n2.getTextData().getHeight();
+        float n1w = 0f, n2w = 0f, n1h = 0f, n2h = 0;
+        LabelAdjustLayoutData n2Data = n2.getLayoutData();
 
         double n1xmin = n1x - 0.5 * n1w;
         double n2xmin = n2x - 0.5 * n2w;
@@ -208,9 +213,9 @@ public class LabelAdjust extends AbstractLayout implements Layout {
             double xDist = n2x - n1x;
             double yDist = n2y - n1y;
             double dist = Math.sqrt(xDist * xDist + yDist * yDist);
-            boolean sphereCollision = dist < radiusScale * (n1.getNodeData().getRadius() + n2.getNodeData().getRadius());
+            boolean sphereCollision = dist < radiusScale * (n1.size() + n2.size());
             if (sphereCollision) {
-                double f = 0.1 * n1.getNodeData().getRadius() / dist;
+                double f = 0.1 * n1.size() / dist;
                 if (dist > 0) {
                     n2Data.dx = (float) (n2Data.dx + xDist / dist * f);
                     n2Data.dy = (float) (n2Data.dy + yDist / dist * f);
@@ -253,12 +258,14 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         return collision;
     }
 
+    @Override
     public void endAlgo() {
         for (Node n : graph.getNodes()) {
-            n.getNodeData().setLayoutData(null);
+            n.setLayoutData(null);
         }
     }
 
+    @Override
     public LayoutProperty[] getProperties() {
         List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
         final String LABELADJUST_CATEGORY = "LabelAdjust";
@@ -345,11 +352,12 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         }
 
         public void add(Node node) {
-            float x = node.getNodeData().x();
-            float y = node.getNodeData().y();
-            float w = node.getNodeData().getTextData().getWidth();
-            float h = node.getNodeData().getTextData().getHeight();
-            float radius = node.getNodeData().getRadius();
+            float x = node.x();
+            float y = node.y();
+//            float w = node.getTextData().getWidth();
+//            float h = node.getTextData().getHeight();
+            float w = 0f, h = 0f;
+            float radius = node.size();
 
             // Get the rectangle occupied by the node (size + label)
             float nxmin = Math.min(x - w / 2, x - radius);
@@ -371,7 +379,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
             //Get the node center
             int centerX = (int) Math.floor((COLUMNS - 1) * (x - xmin) / (xmax - xmin));
             int centerY = (int) Math.floor((ROWS - 1) * (((ymax - ymin) - (y - ymin)) / (ymax - ymin)));
-            LabelAdjustLayoutData layoutData = node.getNodeData().getLayoutData();
+            LabelAdjustLayoutData layoutData = node.getLayoutData();
             layoutData.labelAdjustQuadNode = quads[centerY * COLUMNS + centerX].index;
         }
 

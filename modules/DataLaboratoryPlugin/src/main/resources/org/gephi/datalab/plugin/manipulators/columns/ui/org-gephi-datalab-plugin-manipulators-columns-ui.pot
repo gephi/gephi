@@ -71,3 +71,34 @@ msgstr "Show linear regression"
 
 msgid "NumberColumnStatisticsReportUI.divisionsLabel.text"
 msgstr "Divisions:"
+
+msgid "ConvertColumnToDynamicUI.descriptionLabel.text"
+msgstr "Convert column ''{0}'' to a dynamic column"
+
+msgid "ConvertColumnToDynamicUI.new.title"
+msgstr "{0}_dynamic"
+
+msgid "ConvertColumnToDynamicUI.titleLabel.text"
+msgstr "Title:"
+
+msgid "ConvertColumnToDynamicUI.intervalOpenCheckbox.text"
+msgstr "Open"
+
+msgid "ConvertColumnToDynamicUI.intervalStartLabel.text"
+msgstr "Interval start:"
+
+msgid "ConvertColumnToDynamicUI.intervalStartText.text"
+msgstr "-Infinity"
+
+msgid "ConvertColumnToDynamicUI.intervalEndLabel.text"
+msgstr "Interval end:"
+
+msgid "ConvertColumnToDynamicUI.intervalEndText.text"
+msgstr "Infinity"
+
+msgid "ConvertColumnToDynamicUI.replaceColumnCheckbox.text"
+msgstr "Replace column"
+
+msgid "ConvertColumnToDynamicUI.replaceColumnCheckbox.toolTipText"
+msgstr ""
+"Replace original column with dynamic column instead of creating a new one"

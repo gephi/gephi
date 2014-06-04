@@ -61,18 +61,22 @@ public abstract class AbstractItem implements Item {
         this.data = new HashMap<String, Object>();
     }
 
+    @Override
     public String getType() {
         return type;
     }
 
+    @Override
     public Object getSource() {
         return source;
     }
 
+    @Override
     public <D> D getData(String key) {
         return (D) data.get(key);
     }
 
+    @Override
     public void setData(String key, Object value) {
         data.put(key, value);
     }
@@ -81,6 +85,7 @@ public abstract class AbstractItem implements Item {
         return data;
     }
 
+    @Override
     public String[] getKeys() {
         return data.keySet().toArray(new String[0]);
     }

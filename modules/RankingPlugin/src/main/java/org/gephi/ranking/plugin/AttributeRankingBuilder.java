@@ -41,17 +41,14 @@
  */
 package org.gephi.ranking.plugin;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import org.gephi.data.attributes.api.*;
-import org.gephi.data.attributes.type.DynamicType;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.dynamic.api.DynamicController;
-import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.time.TimestampValueSet;
 import org.gephi.graph.api.*;
 import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.RankingModel;
@@ -73,68 +70,36 @@ import org.openide.util.lookup.ServiceProvider;
 public class AttributeRankingBuilder implements RankingBuilder {
 
     private final GraphController graphController;
-    private final AttributeController attributeController;
-    private final AttributeUtils attributeUtils;
 
     public AttributeRankingBuilder() {
-        attributeController = Lookup.getDefault().lookup(AttributeController.class);
-        attributeUtils = Lookup.getDefault().lookup(AttributeUtils.class);
         graphController = Lookup.getDefault().lookup(GraphController.class);
     }
 
     @Override
     public Ranking[] buildRanking(RankingModel model) {
-        AttributeModel attributeModel = attributeController.getModel(model.getWorkspace());
+        AttributeModel attributeModel = graphController.getAttributeModel(model.getWorkspace());
         List<Ranking> rankings = new ArrayList<Ranking>();
-        GraphModel graphModel = graphController.getModel(model.getWorkspace());
+        GraphModel graphModel = graphController.getGraphModel(model.getWorkspace());
 
         //Nodes
-        for (AttributeColumn col : attributeModel.getNodeTable().getColumns()) {
-            if (attributeUtils.isNumberColumn(col)) {
+        for (Column col : attributeModel.getNodeTable()) {
+            if (!col.isProperty() && col.isNumber()) {
                 AttributeRanking ranking = new AttributeRanking(Ranking.NODE_ELEMENT, col, graphModel, model);
                 rankings.add(ranking);
             }
         }
 
         //Edges
-        for (AttributeColumn col : attributeModel.getEdgeTable().getColumns()) {
-            if (attributeUtils.isNumberColumn(col)) {
+        for (Column col : attributeModel.getEdgeTable()) {
+            if (!col.isProperty() && col.isNumber()) {
                 AttributeRanking ranking = new AttributeRanking(Ranking.EDGE_ELEMENT, col, graphModel, model);
                 rankings.add(ranking);
-            }
-        }
-
-        //Dynamic
-        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-        if (dynamicController != null) {
-            DynamicModel dynamicModel = dynamicController.getModel();
-            if (dynamicModel != null) {
-                TimeInterval visibleInterval = dynamicModel.getVisibleInterval();
-
-                //Nodes
-                for (AttributeColumn col : attributeModel.getNodeTable().getColumns()) {
-                    if (attributeUtils.isDynamicNumberColumn(col)) {
-                        DynamicAttributeRanking ranking = new DynamicAttributeRanking(Ranking.NODE_ELEMENT, col, graphModel, model,
-                                visibleInterval, dynamicModel.getNumberEstimator());
-                        rankings.add(ranking);
-                    }
-                }
-
-                //Edges
-                for (AttributeColumn col : attributeModel.getEdgeTable().getColumns()) {
-                    if (attributeUtils.isDynamicNumberColumn(col)) {
-                        DynamicAttributeRanking ranking = new DynamicAttributeRanking(Ranking.EDGE_ELEMENT, col, graphModel, model,
-                                visibleInterval, dynamicModel.getNumberEstimator());
-                        rankings.add(ranking);
-                    }
-                }
             }
         }
 
         //Sort attributes by alphabetical order
         Ranking[] rankingArray = rankings.toArray(new Ranking[0]);
         Arrays.sort(rankingArray, new Comparator<Ranking>() {
-
             @Override
             public int compare(Ranking a, Ranking b) {
                 return (a.toString().compareTo(b.toString()));
@@ -151,27 +116,25 @@ public class AttributeRankingBuilder implements RankingBuilder {
         }
         if (ranking instanceof AttributeRanking) {
             return ((AttributeRanking) ranking).clone();
-        } else if (ranking instanceof DynamicAttributeRanking) {
-            return ((DynamicAttributeRanking) ranking).clone();
         } else {
-            throw new IllegalArgumentException("Ranking must be an AttributeRanking or DynamicAttributeRanking");
+            throw new IllegalArgumentException("Ranking must be an AttributeRanking");
         }
     }
 
-    public static class AttributeRanking extends AbstractRanking<Attributable> {
+    public static class AttributeRanking extends AbstractRanking<Element> {
 
-        private final AttributeColumn column;
+        private final Column column;
         private final Graph graph;
 
-        public AttributeRanking(String elementType, AttributeColumn column, GraphModel graphModel, RankingModel rankingModel) {
+        public AttributeRanking(String elementType, Column column, GraphModel graphModel, RankingModel rankingModel) {
             super(elementType, column.getId(), rankingModel);
             this.column = column;
             this.graph = rankingModel.useLocalScale() ? graphModel.getGraphVisible() : graphModel.getGraph();
         }
 
         @Override
-        public Number getValue(Attributable attributable) {
-            return (Number) attributable.getAttributes().getValue(column.getIndex());
+        public Number getValue(Element attributable) {
+            return (Number) attributable.getAttribute(column, graph.getView());
         }
 
         @Override
@@ -182,24 +145,24 @@ public class AttributeRankingBuilder implements RankingBuilder {
         @Override
         public Number unNormalize(float normalizedValue) {
             double val = (normalizedValue * (getMaximumValue().doubleValue() - getMinimumValue().doubleValue())) + getMinimumValue().doubleValue();
-            switch (column.getType()) {
-                case BIGDECIMAL:
-                    return new BigDecimal(val);
-                case BIGINTEGER:
-                    return new BigInteger("" + val);
-                case DOUBLE:
-                    return new Double(val);
-                case FLOAT:
-                    return new Float(val);
-                case INT:
-                    return new Integer((int) val);
-                case LONG:
-                    return new Long((long) val);
-                case SHORT:
-                    return new Short((short) val);
-                default:
-                    return new Double(val);
+            Class type = column.getTypeClass();
+            if (column.isDynamic()) {
+                type = AttributeUtils.getStaticType((Class<? extends TimestampValueSet>) type);
             }
+            if (type.equals(Double.class)) {
+                return new Double(val);
+            } else if (type.equals(Integer.class)) {
+                return new Integer((int) val);
+            } else if (type.equals(Float.class)) {
+                return new Float(val);
+            } else if (type.equals(Long.class)) {
+                return new Long((long) val);
+            } else if (type.equals(Short.class)) {
+                return new Short((short) val);
+            } else if (type.equals(Byte.class)) {
+                return new Byte((byte) val);
+            }
+            return new Double(val);
         }
 
         @Override
@@ -225,145 +188,9 @@ public class AttributeRankingBuilder implements RankingBuilder {
 
         @Override
         protected AttributeRanking clone() {
-            GraphModel graphModel = graph.getGraphModel();
+            GraphModel graphModel = graph.getView().getGraphModel();
             AttributeRanking newRanking = new AttributeRanking(elementType, column, graphModel, rankingModel);
             return newRanking;
-        }
-    }
-
-    public static class DynamicAttributeRanking extends AbstractRanking<Attributable> {
-
-        private final AttributeColumn column;
-        private final Graph graph;
-        private final TimeInterval timeInterval;
-        private final Estimator estimator;
-        private final boolean localScale;
-
-        public DynamicAttributeRanking(String elementType, AttributeColumn column, GraphModel graphModel, RankingModel rankingModel, TimeInterval timeInterval, Estimator estimator) {
-            super(elementType, column.getId(), rankingModel);
-            this.column = column;
-            this.timeInterval = timeInterval;
-            this.estimator = estimator;
-            this.localScale = rankingModel.useLocalScale();
-            this.graph = rankingModel.useLocalScale() ? graphModel.getGraphVisible() : graphModel.getGraph();;
-        }
-
-        @Override
-        public Number getValue(Attributable attributable) {
-            DynamicType<? extends Number> dynamicType = (DynamicType<? extends Number>) attributable.getAttributes().getValue(column.getIndex());
-            if (dynamicType != null) {
-                return (Number) dynamicType.getValue(timeInterval == null ? Double.NEGATIVE_INFINITY : timeInterval.getLow(),
-                        timeInterval == null ? Double.POSITIVE_INFINITY : timeInterval.getHigh(), estimator);
-            }
-            return null;
-        }
-
-        public Number getValue(Attributable attributable, TimeInterval timeInterval, Estimator estimator) {
-            DynamicType<? extends Number> dynamicType = (DynamicType<? extends Number>) attributable.getAttributes().getValue(column.getIndex());
-            if (dynamicType != null) {
-                return (Number) dynamicType.getValue(timeInterval == null ? Double.NEGATIVE_INFINITY : timeInterval.getLow(),
-                        timeInterval == null ? Double.POSITIVE_INFINITY : timeInterval.getHigh(), estimator);
-            }
-            return null;
-        }
-
-        @Override
-        public float normalize(Number value) {
-            return (value.floatValue() - getMinimumValue().floatValue()) / (float) (getMaximumValue().floatValue() - getMinimumValue().floatValue());
-        }
-
-        @Override
-        public Number unNormalize(float normalizedValue) {
-            double val = (normalizedValue * (getMaximumValue().doubleValue() - getMinimumValue().doubleValue())) + getMinimumValue().doubleValue();
-            switch (column.getType()) {
-                case BIGDECIMAL:
-                    return new BigDecimal(val);
-                case BIGINTEGER:
-                    return new BigInteger("" + val);
-                case DOUBLE:
-                    return new Double(val);
-                case FLOAT:
-                    return new Float(val);
-                case INT:
-                    return new Integer((int) val);
-                case LONG:
-                    return new Long((long) val);
-                case SHORT:
-                    return new Short((short) val);
-                default:
-                    return new Double(val);
-            }
-        }
-
-        @Override
-        public String getDisplayName() {
-            return column.getTitle();
-        }
-
-        @Override
-        public Number getMaximumValue() {
-            if (maximum == null) {
-                DynamicAttributeRanking.refreshMinMax(this, graph);
-            }
-            return maximum;
-        }
-
-        @Override
-        public Number getMinimumValue() {
-            if (minimum == null) {
-                DynamicAttributeRanking.refreshMinMax(this, graph);
-            }
-            return minimum;
-        }
-
-        @Override
-        protected DynamicAttributeRanking clone() {
-            TimeInterval visibleInterval = timeInterval;
-            Estimator currentEstimator = estimator;
-            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-            if (dynamicController != null) {
-                DynamicModel dynamicModel = dynamicController.getModel(graph.getGraphModel().getWorkspace());
-                if (dynamicModel != null) {
-                    visibleInterval = dynamicModel.getVisibleInterval();
-                    currentEstimator = dynamicModel.getNumberEstimator();
-                }
-            }
-            DynamicAttributeRanking newRanking = new DynamicAttributeRanking(elementType, column,
-                    graph.getGraphModel(), rankingModel, visibleInterval, currentEstimator);
-            return newRanking;
-        }
-
-        public static void refreshMinMax(DynamicAttributeRanking ranking, Graph graph) {
-            boolean localScale = ranking.localScale;
-            if (ranking.getElementType().equals(Ranking.NODE_ELEMENT)) {
-                List<Comparable> objects = new ArrayList<Comparable>();
-                for (Node node : graph.getNodes().toArray()) {
-                    Comparable value = (Comparable) ranking.getValue(node, localScale ? ranking.timeInterval : null, Estimator.MIN);
-                    if (value != null) {
-                        objects.add(value);
-                    }
-                    value = (Comparable) ranking.getValue(node, localScale ? ranking.timeInterval : null, Estimator.MAX);
-                    if (value != null) {
-                        objects.add(value);
-                    }
-                }
-                ranking.setMinimumValue((Number) getMin(objects.toArray(new Comparable[0])));
-                ranking.setMaximumValue((Number) getMax(objects.toArray(new Comparable[0])));
-            } else if (ranking.getElementType().equals(Ranking.EDGE_ELEMENT)) {
-                List<Comparable> objects = new ArrayList<Comparable>();
-                for (Edge edge : graph.getEdges().toArray()) {
-                    Comparable value = (Comparable) ranking.getValue(edge, localScale ? ranking.timeInterval : null, Estimator.MIN);
-                    if (value != null) {
-                        objects.add(value);
-                    }
-                    value = (Comparable) ranking.getValue(edge, localScale ? ranking.timeInterval : null, Estimator.MAX);
-                    if (value != null) {
-                        objects.add(value);
-                    }
-                }
-                ranking.setMinimumValue((Number) getMin(objects.toArray(new Comparable[0])));
-                ranking.setMaximumValue((Number) getMax(objects.toArray(new Comparable[0])));
-            }
         }
     }
 }

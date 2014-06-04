@@ -64,6 +64,7 @@ final class DefaultPanel extends javax.swing.JPanel {
         initComponents();
         nodeFontButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), nodeFont);
                 if (font != null) {
@@ -74,6 +75,7 @@ final class DefaultPanel extends javax.swing.JPanel {
         });
         edgeFontButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), edgeFont);
                 if (font != null) {

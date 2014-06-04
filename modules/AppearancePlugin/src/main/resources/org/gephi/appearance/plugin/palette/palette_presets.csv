@@ -1,0 +1,18 @@
+name,dark,hmin,hmax,cmin,cmax,lmin,lmax
+Default,FALSE,0,360,0,3,0,1.5
+Fancy (light background),FALSE,0,360,0.4,1.2,1,1.5
+Fancy (dark background),TRUE,0,360,0.2,1.2,0.1,0.6
+Shades,FALSE,0,240,0,0.4,0,1.5
+Tarnish,FALSE,0,360,0,0.4,0.4,1.1
+Pastel,FALSE,0,360,0,0.9,1,1.5
+Pimp,FALSE,0,360,0.9,3,0.4,1
+Intense,FALSE,0,360,0.6,3,0.2,1.1
+Fluo,TRUE,0,300,1,3,1.1,1.5
+Red Roses,TRUE,330,20,0.3,3,0.5,1.5
+Ochre Sand,TRUE,20,60,0.3,1.6,0.5,1.5
+Yellow Lime,TRUE,60,90,0.3,3,0.5,1.5
+Green Mint,TRUE,90,150,0.3,3,0.5,1.5
+Ice Cube,TRUE,150,200,0,3,0.5,1.5
+Blue Ocean,TRUE,220,260,0.2,2.5,0,0.8
+Indigo Night,TRUE,260,290,1.2,3,0.5,1.5
+Purple Wine,TRUE,290,330,0,3,0,0.6

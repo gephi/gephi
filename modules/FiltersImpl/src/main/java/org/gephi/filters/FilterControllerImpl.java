@@ -273,7 +273,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         HierarchicalGraph result;
         if (model.getCurrentQuery() == query) {
             GraphView view = model.getCurrentResult();
-            if (view != null) {
+            if (view == null) {
                 return;
             }
             result = model.getGraphModel().getHierarchicalGraph(view);

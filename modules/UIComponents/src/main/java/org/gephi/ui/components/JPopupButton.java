@@ -66,6 +66,7 @@ public class JPopupButton extends JButton {
         items = new ArrayList<JPopupButtonItem>();
         addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 JPopupMenu menu = createPopup();
                 menu.show(JPopupButton.this, 0, getHeight());
@@ -79,6 +80,7 @@ public class JPopupButton extends JButton {
             JRadioButtonMenuItem r = new JRadioButtonMenuItem(item.object.toString(), item.icon, item == selectedItem);
             r.addActionListener(new ActionListener() {
 
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     if (item != selectedItem) {
                         selectedItem = item;

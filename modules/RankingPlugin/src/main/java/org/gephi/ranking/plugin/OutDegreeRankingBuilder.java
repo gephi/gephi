@@ -72,8 +72,8 @@ public class OutDegreeRankingBuilder implements RankingBuilder {
     @Override
     public Ranking[] buildRanking(RankingModel model) {
         Workspace workspace = model.getWorkspace();
-        GraphModel graphModel = graphController.getModel(workspace);
-        if (graphModel.isDirected()) {
+        GraphModel graphModel = graphController.getGraphModel(workspace);
+        if (graphModel.isDirected() || graphModel.isMixed()) {
             return new Ranking[]{new OutDegreeRanking(Ranking.NODE_ELEMENT, graphModel, model)};
         }
 
@@ -139,7 +139,7 @@ public class OutDegreeRankingBuilder implements RankingBuilder {
 
         @Override
         protected OutDegreeRanking clone() {
-            GraphModel graphModel = graph.getGraphModel();
+            GraphModel graphModel = graph.getView().getGraphModel();
             return new OutDegreeRanking(elementType, graphModel, rankingModel);
         }
     }

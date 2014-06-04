@@ -4,7 +4,7 @@
 
     <groupId>org.gephi</groupId>
     <artifactId>gephi-parent</artifactId>
-    <version>0.8.2-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>gephi</name>
@@ -49,7 +49,7 @@
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
         
         <!-- Netbeans Platfrom version -->
-        <netbeans.version>RELEASE721</netbeans.version>
+        <netbeans.version>RELEASE74</netbeans.version>
         
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>7.2</gephi.platform.localization.version>
@@ -97,6 +97,8 @@
         <gephi.snapshot.repository.id>gephi-nexus</gephi.snapshot.repository.id>
         <gephi.release.repository.url>http://nexus.gephi.org/nexus/content/repositories/releases</gephi.release.repository.url>
         <gephi.snapshot.repository.url>http://nexus.gephi.org/nexus/content/repositories/snapshots</gephi.snapshot.repository.url>
+        <gephi.default.repository.id>${gephi.snapshot.repository.id}</gephi.default.repository.id>
+        <gephi.default.repository.url>${gephi.snapshot.repository.url}</gephi.default.repository.url>
         
         <!-- Location of the NBM autoupdate folder -->
         <gephi.updates.site>${project.build.directory}/netbeans_site</gephi.updates.site>
@@ -108,21 +110,27 @@
         <gephi.menu.app.name>Gephi ${project.version}</gephi.menu.app.name>
         <gephi.innosetup.path>C:/Program Files (x86)/Inno Setup 5</gephi.innosetup.path>
         
+        <!-- Javadoc export path -->
+        <gephi.javadoc.repository.path>external/apidocs</gephi.javadoc.repository.path>
+        
+        <!-- NBMs updates export path -->
+        <gephi.updates.repository.path>external/updates</gephi.updates.repository.path>
+        
         <!--==== Plugin Versions ==================================================================================-->
 
         <gephi.maven-antrun-plugin.version>1.7</gephi.maven-antrun-plugin.version>
 
-        <gephi.maven-assembly-plugin.version>2.3</gephi.maven-assembly-plugin.version>
+        <gephi.maven-assembly-plugin.version>2.4</gephi.maven-assembly-plugin.version>
 
         <gephi.maven-clean-plugin.version>2.5</gephi.maven-clean-plugin.version>
 
-        <gephi.maven-compiler-plugin.version>2.5.1</gephi.maven-compiler-plugin.version>
+        <gephi.maven-compiler-plugin.version>3.1</gephi.maven-compiler-plugin.version>
 
-        <gephi.maven-dependency-plugin.version>2.5.1</gephi.maven-dependency-plugin.version>
+        <gephi.maven-dependency-plugin.version>2.8</gephi.maven-dependency-plugin.version>
 
         <gephi.maven-deploy-plugin.version>2.7</gephi.maven-deploy-plugin.version>
 
-        <gephi.maven-enforcer-plugin.version>1.0.1</gephi.maven-enforcer-plugin.version>
+        <gephi.maven-enforcer-plugin.version>1.3.1</gephi.maven-enforcer-plugin.version>
 
         <gephi.maven-gpg-plugin.version>1.4</gephi.maven-gpg-plugin.version>
 
@@ -132,7 +140,7 @@
 
         <gephi.maven-jarsigner-plugin.version>1.2</gephi.maven-jarsigner-plugin.version>
 
-        <gephi.maven-javadoc-plugin.version>2.9</gephi.maven-javadoc-plugin.version> 
+        <gephi.maven-javadoc-plugin.version>2.9.1</gephi.maven-javadoc-plugin.version> 
 
         <gephi.maven-license-plugin.version>1.9.0</gephi.maven-license-plugin.version>
 
@@ -140,15 +148,15 @@
 
         <gephi.maven-resources-plugin.version>2.6</gephi.maven-resources-plugin.version>
 
-        <gephi.maven-site-plugin.version>3.1</gephi.maven-site-plugin.version>
+        <gephi.maven-site-plugin.version>3.3</gephi.maven-site-plugin.version>
 
-        <gephi.maven-source-plugin.version>2.2</gephi.maven-source-plugin.version>
+        <gephi.maven-source-plugin.version>2.2.1</gephi.maven-source-plugin.version>
 
-        <gephi.maven-surefire-plugin.version>2.12.4</gephi.maven-surefire-plugin.version>
+        <gephi.maven-surefire-plugin.version>2.16</gephi.maven-surefire-plugin.version>
 
-        <gephi.build-helper-maven-plugin.version>1.7</gephi.build-helper-maven-plugin.version>
+        <gephi.build-helper-maven-plugin.version>1.8</gephi.build-helper-maven-plugin.version>
 
-        <gephi.nbm-maven-plugin.version>3.7</gephi.nbm-maven-plugin.version>
+        <gephi.nbm-maven-plugin.version>3.11.1</gephi.nbm-maven-plugin.version>
         
         <gephi.maven-reactor-plugin.version>1.0</gephi.maven-reactor-plugin.version>
         
@@ -166,18 +174,18 @@
         <repository>
             <id>netbeans</id>
             <name>NetBeans</name>
-            <url>http://bits.netbeans.org/maven2/</url>
+            <url>http://bits.netbeans.org/nexus/content/groups/netbeans/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
-            <id>gephi</id>
+            <id>gephi-thirdparty</id>
             <name>Gephi 3rd Party</name>
             <url>http://nexus.gephi.org/nexus/content/repositories/thirdparty/</url>
-        </repository>
-        <repository>
-            <url>http://download.java.net/maven/2/</url>
-            <id>beans-binding</id>
-            <layout>default</layout>
-            <name>Repository for library Library[beans-binding]</name>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -392,27 +400,12 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ranking-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>ranking-plugin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>ui-utils</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>ui-components</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>ranking-plugin-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -428,11 +421,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>spigot-plugin-ui</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>spline-editor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -547,11 +535,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-ranking</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-statistics</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -587,12 +570,12 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>partition-api</artifactId>
+                <artifactId>appearance-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-partition</artifactId>
+                <artifactId>desktop-appearance</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -697,12 +680,12 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>partition-plugin</artifactId>
+                <artifactId>appearance-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>partition-plugin-ui</artifactId>
+                <artifactId>appearance-plugin-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -742,6 +725,16 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    
+    <!-- TestNG dependency -->
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8.7</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         
@@ -976,18 +969,6 @@
                                     <goal>jar</goal>
                                 </goals> 
                             </execution>
-                            <execution>
-                                <id>aggregate-javadoc</id>
-                                <goals>
-                                    <goal>aggregate</goal>
-                                </goals>
-                                <phase>install</phase>
-                                <configuration>
-                                    <show>public</show>
-                                    <doctitle>Gephi ${project.version} API Index</doctitle>
-                                    <subpackages>org.gephi.clustering.api:org.gephi.clustering.spi:org.gephi.data.attributes.api:org.gephi.data.attributes.spi:org.gephi.data.attributes.type:org.gephi.data.properties:org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.dynamic.api:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.partition.api:org.gephi.partition.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.ranking.api:org.gephi.ranking.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress</subpackages>
-                                </configuration>
-                            </execution>
                         </executions>
                     </plugin>
             
@@ -1003,59 +984,19 @@
                             </execution>
                         </executions>
                     </plugin>
-                    
-                    <!-- Assembler to produce final sources and javadoc artifacts -->
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>assembly-javadoc-sources</id>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                                <phase>install</phase>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <tarLongFileMode>gnu</tarLongFileMode>
-                            <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-                            <finalName>${project.name}-${project.version}</finalName>
-                            <descriptors>
-                                <descriptor>src/assemble/javadoc.xml</descriptor>
-                                <descriptor>src/assemble/sources.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </plugin>
                 </plugins>
             </build>
         </profile>
         
+        <!-- Properties for release -->
         <profile>
-            <id>upload-apidocs</id>
-            <build>
-                <plugins>
-                    <!-- Upload the javadoc automatically -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>wagon-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>upload-jar-to-folder</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>upload</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <fromDir>${project.build.directory}/site/apidocs</fromDir>
-                            <url>${gephi.snapshot.repository.url}</url>
-                            <toDir>external/apidocs</toDir>
-                            <serverId>${gephi.snapshot.repository.id}</serverId>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
+            <id>release</id>
+            <properties>
+                <gephi.default.repository.id>${gephi.release.repository.id}</gephi.default.repository.id>
+                <gephi.default.repository.url>${gephi.release.repository.url}</gephi.default.repository.url>
+                <gephi.javadoc.repository.path>external/apidocs/${project.version}</gephi.javadoc.repository.path>
+                <gephi.updates.repository.path>external/updates/${project.version}</gephi.updates.repository.path>
+            </properties>
         </profile>
         
         <!-- Profile activated for windows/macos release only. Should be called alone so it only creates the windows installer/compressed dmg -->
@@ -1082,6 +1023,140 @@
                             </execution>
                         </executions>
                     </plugin>
+                    
+                    <!-- Skip Javadoc creation -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution> 
+                                <id>attach-javadocs</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+            
+                    <!-- Skip sources attach -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>none</phase> 
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profile activated alone to aggregate and upload javadoc -->
+        <profile>
+            <id>export-javadoc</id>
+            <build>
+                <plugins>                    
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <inherited>false</inherited>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <show>public</show>
+                            <doctitle>Gephi ${project.version} API Index</doctitle>
+                            <subpackages>org.gephi.clustering.api:org.gephi.clustering.spi:org.gephi.data.attributes.api:org.gephi.data.attributes.spi:org.gephi.data.attributes.type:org.gephi.data.properties:org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.dynamic.api:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.partition.api:org.gephi.partition.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.appearance.api:org.gephi.appearance.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress</subpackages>
+                            <nohelp>true</nohelp>
+                            <detectLinks>true</detectLinks>
+                            <detectOfflineLinks>true</detectOfflineLinks> 
+                        </configuration>
+                    </plugin>
+                    
+                    <!-- Upload the javadoc automatically -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>wagon-maven-plugin</artifactId>
+                        <configuration>
+                            <fromDir>${project.build.directory}/site/apidocs</fromDir>
+                            <url>${gephi.default.repository.url}</url>
+                            <toDir>${gephi.javadoc.repository.path}</toDir>
+                            <serverId>${gephi.default.repository.id}</serverId>
+                        </configuration>
+                    </plugin>
+                    
+                    <!-- Assembler to produce final sources and javadoc artifacts -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <tarLongFileMode>gnu</tarLongFileMode>
+                            <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                            <finalName>${project.name}-${project.version}</finalName>
+                            <descriptors>
+                                <descriptor>src/assemble/javadoc.xml</descriptor>
+                            </descriptors>
+                            <attach>false</attach>
+                        </configuration>
+                    </plugin>
+                    
+                    <!-- Deploy javadoc and sources artifact -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <packaging>jar</packaging>
+                            <generatePom>false</generatePom>
+                            <repositoryId>${gephi.default.repository.id}</repositoryId>
+                            <url>${gephi.default.repository.url}</url>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <groupId>${project.groupId}</groupId>
+                            <version>${project.version}</version>
+                            <classifier>javadoc</classifier>
+                            <file>${project.build.directory}/${brandingToken}-${project.version}-javadoc.jar</file>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profile activated alone to aggregate and upload sources -->
+        <profile>
+            <id>export-sources</id>
+            <build>
+                <plugins>                    
+                    <!-- Assembler to produce final sources and javadoc artifacts -->
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <tarLongFileMode>gnu</tarLongFileMode>
+                            <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                            <finalName>${project.name}-${project.version}</finalName>
+                            <descriptors>
+                                <descriptor>src/assemble/sources.xml</descriptor>
+                            </descriptors>
+                            <attach>false</attach>
+                        </configuration>
+                    </plugin>
+                    
+                    <!-- Deploy javadoc and sources artifact -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <packaging>tar.gz</packaging>
+                            <generatePom>false</generatePom>
+                            <repositoryId>${gephi.default.repository.id}</repositoryId>
+                            <url>${gephi.default.repository.url}</url>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <groupId>${project.groupId}</groupId>
+                            <version>${project.version}</version>
+                            <classifier>sources</classifier>
+                            <file>${project.build.directory}/${brandingToken}-${project.version}-sources.tar.gz</file>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -1091,52 +1166,34 @@
     <modules>
         <module>modules/branding</module>
         <module>modules/application</module>
-        <module>modules/LongTaskAPI</module>
         <module>modules/AlgorithmsPlugin</module>
-        <module>modules/AttributeColumnPropertyEditor</module>
-        <module>modules/AttributesAPI</module>
-        <module>modules/AttributesImpl</module>
-        <module>modules/ClusteringAPI</module>
-        <module>modules/ClusteringPlugin</module>
-        <module>modules/CollectionUtils</module>
-        <module>modules/DataLaboratoryAPI</module>
-        <module>modules/DataLaboratoryPlugin</module>
+        <module>modules/AppearanceAPI</module>
+        <module>modules/AppearancePlugin</module>
+        <module>modules/AppearancePluginUI</module>
+        <module>modules/LongTaskAPI</module>
         <module>modules/DBDrivers</module>
         <module>modules/DesktopBranding</module>
-        <module>modules/DesktopClustering</module>
         <module>modules/DesktopContext</module>
-        <module>modules/DesktopDataLaboratory</module>
-        <module>modules/DesktopExport</module>
-        <module>modules/DesktopFilters</module>
         <module>modules/DesktopGenerate</module>
-        <module>modules/DesktopHierarchy</module>
+        <module>modules/DesktopExport</module>
         <module>modules/DesktopImport</module>
         <module>modules/DesktopLayout</module>
-        <module>modules/DesktopPartition</module>
+        <module>modules/DesktopAppearance</module>
         <module>modules/DesktopPerspective</module>
         <module>modules/DesktopPreview</module>
         <module>modules/DesktopProgress</module>
         <module>modules/DesktopProject</module>
-        <module>modules/DesktopRanking</module>
         <module>modules/DesktopRecentFiles</module>
-        <module>modules/DesktopSpigot</module>
         <module>modules/DesktopStatistics</module>
-        <module>modules/DesktopTimeline</module>
-        <module>modules/DesktopTools</module>
-        <module>modules/DHNSGraph</module>
         <module>modules/DirectoryChooser</module>
         <module>modules/DynamicAPI</module>
-        <module>modules/DynamicImpl</module>
         <module>modules/ExportAPI</module>
         <module>modules/ExportPlugin</module>
         <module>modules/ExportPluginUI</module>
-        <module>modules/FiltersAPI</module>
-        <module>modules/FiltersImpl</module>
-        <module>modules/FiltersPlugin</module>
-        <module>modules/FiltersPluginUI</module>
         <module>modules/GeneratorAPI</module>
         <module>modules/GeneratorPlugin</module>
         <module>modules/GeneratorPluginUI</module>
+        <module>modules/Gleem</module>
         <module>modules/GraphAPI</module>
         <module>modules/ImportAPI</module>
         <module>modules/ImportPlugin</module>
@@ -1144,9 +1201,6 @@
         <module>modules/LayoutAPI</module>
         <module>modules/LayoutPlugin</module>
         <module>modules/MostRecentFilesAPI</module>
-        <module>modules/PartitionAPI</module>
-        <module>modules/PartitionPlugin</module>
-        <module>modules/PartitionPluginUI</module>
         <module>modules/PerspectiveAPI</module>
         <module>modules/PreviewAPI</module>
         <module>modules/PreviewExport</module>
@@ -1156,19 +1210,11 @@
         <module>modules/ProcessorPluginUI</module>
         <module>modules/ProjectAPI</module>
         <module>modules/ProjectUI</module>
-        <module>modules/RankingAPI</module>
-        <module>modules/RankingPlugin</module>
-        <module>modules/RankingPluginUI</module>
         <module>modules/SettingsUpgrader</module>
-        <module>modules/SpigotPlugin</module>
-        <module>modules/SpigotPluginUI</module>
-        <module>modules/SplineEditor</module>
         <module>modules/StatisticsAPI</module>
         <module>modules/StatisticsPlugin</module>
         <module>modules/StatisticsPluginUI</module>
-        <module>modules/TimelineAPI</module>
         <module>modules/ToolsAPI</module>
-        <module>modules/ToolsPlugin</module>
         <module>modules/UIComponents</module>
         <module>modules/UIUtils</module>
         <module>modules/Utils</module>
@@ -1177,7 +1223,6 @@
         <module>modules/VisualizationImpl</module>
         <module>modules/WelcomeScreen</module>
         <module>modules/WorkspaceUI</module>
-        <module>modules/Gleem</module>
         <module>modules/CoreLibraryWrapper</module>
         <module>modules/UILibraryWrapper</module>
     </modules>

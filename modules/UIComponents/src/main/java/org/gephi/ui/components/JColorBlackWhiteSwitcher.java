@@ -96,6 +96,7 @@ public class JColorBlackWhiteSwitcher extends JButton {
          */
         addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (!color.equals(Color.BLACK) && !color.equals(Color.WHITE)) {
                     //Color is not white or black. Set to white to be swithed un future clicks
@@ -119,14 +120,17 @@ public class JColorBlackWhiteSwitcher extends JButton {
 
     class ColorIcon implements Icon {
 
+        @Override
         public int getIconWidth() {
             return ICON_WIDTH;
         }
 
+        @Override
         public int getIconHeight() {
             return ICON_HEIGHT;
         }
 
+        @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
             if (c.isEnabled()) {
                 g.setColor(Color.BLACK);

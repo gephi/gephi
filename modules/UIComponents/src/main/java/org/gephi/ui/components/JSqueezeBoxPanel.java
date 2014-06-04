@@ -144,9 +144,11 @@ public class JSqueezeBoxPanel extends JPanel {
     public static final class VerticalLayout implements LayoutManager {
         //~ Methods --------------------------------------------------------------------------------------------------------------
 
+        @Override
         public void addLayoutComponent(final String name, final Component comp) {
         }
 
+        @Override
         public void layoutContainer(final Container parent) {
             final Insets insets = parent.getInsets();
             final int posX = insets.left;
@@ -174,6 +176,7 @@ public class JSqueezeBoxPanel extends JPanel {
             }
         }
 
+        @Override
         public Dimension minimumLayoutSize(final Container parent) {
             final Dimension d = new Dimension(parent.getInsets().left + parent.getInsets().right,
                     parent.getInsets().top + parent.getInsets().bottom);
@@ -197,6 +200,7 @@ public class JSqueezeBoxPanel extends JPanel {
             return d;
         }
 
+        @Override
         public Dimension preferredLayoutSize(final Container parent) {
             final Dimension d = new Dimension(parent.getInsets().left + parent.getInsets().right,
                     parent.getInsets().top + parent.getInsets().bottom);
@@ -220,6 +224,7 @@ public class JSqueezeBoxPanel extends JPanel {
             return d;
         }
 
+        @Override
         public void removeLayoutComponent(final Component comp) {
         }
     }

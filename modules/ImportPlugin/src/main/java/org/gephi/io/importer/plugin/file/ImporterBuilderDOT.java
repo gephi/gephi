@@ -57,19 +57,23 @@ public final class ImporterBuilderDOT implements FileImporterBuilder {
 
     public static final String IDENTIFER = "dot";
 
+    @Override
     public FileImporter buildImporter() {
         return new ImporterDOT();
     }
 
+    @Override
     public String getName() {
         return IDENTIFER;
     }
 
+    @Override
     public FileType[] getFileTypes() {
         FileType ft = new FileType(new String[]{".dot", ".gv"}, NbBundle.getMessage(getClass(), "fileType_GraphViz_Name"));
         return new FileType[]{ft};
     }
 
+    @Override
     public boolean isMatchingImporter(FileObject fileObject) {
         return fileObject.getExt().equalsIgnoreCase("dot") || fileObject.getExt().equalsIgnoreCase("gv");
     }

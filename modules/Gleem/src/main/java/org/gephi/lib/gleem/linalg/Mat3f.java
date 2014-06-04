@@ -184,6 +184,7 @@ public class Mat3f {
     return out;
   }
 
+  @Override
   public String toString() {
     String endl = System.getProperty("line.separator");
     return "(" +

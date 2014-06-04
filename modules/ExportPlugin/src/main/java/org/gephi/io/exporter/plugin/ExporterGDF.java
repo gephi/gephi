@@ -44,27 +44,23 @@ package org.gephi.io.exporter.plugin;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.dynamic.DynamicUtilities;
-import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.attribute.api.AttributeModel;
+import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.time.TimestampValueSet;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
 import org.gephi.io.exporter.api.FileType;
-import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.io.exporter.spi.CharacterExporter;
+import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -84,6 +80,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportColors = true;
     private boolean exportPosition = true;
     private boolean exportAttributes = true;
+    private boolean exportDynamicWeight = true;
     private boolean exportVisibility = false;
     //Settings Helper
     private float minSize;
@@ -97,24 +94,22 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
     //Columns
     private NodeColumnsGDF[] defaultNodeColumnsGDFs;
     private EdgeColumnsGDF[] defaultEdgeColumnsGDFs;
-    private AttributeColumn[] nodeColumns;
-    private AttributeColumn[] edgeColumns;
+    private Column[] nodeColumns;
+    private Column[] edgeColumns;
     //Buffer
     private Writer writer;
-    //Dynamic
-    private TimeInterval visibleInterval;
 
+    @Override
     public boolean execute() {
-        AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-        GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        AttributeModel attributeModel = graphController.getAttributeModel(workspace);
+        GraphModel graphModel = graphController.getGraphModel(workspace);
         Graph graph = null;
         if (exportVisible) {
             graph = graphModel.getGraphVisible();
         } else {
             graph = graphModel.getGraph();
         }
-        DynamicModel dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
-        visibleInterval = dynamicModel != null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
         try {
             exportData(graph, attributeModel);
         } catch (Exception e) {
@@ -153,11 +148,11 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         }
 
         //Attributes Node columns
-        for (AttributeColumn c : nodeColumns) {
-            if (!c.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+        for (Column c : nodeColumns) {
+            if (!c.isProperty()) {
                 stringBuilder.append(c.getTitle());
                 stringBuilder.append(" ");
-                DataTypeGDF dataTypeGDF = getDataTypeGDF(c.getType());
+                DataTypeGDF dataTypeGDF = getDataTypeGDF(c.getTypeClass());
                 stringBuilder.append(dataTypeGDF.toString().toUpperCase());
                 if (c.getDefaultValue() != null) {
                     stringBuilder.append(" default ");
@@ -188,10 +183,9 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             if (cancel) {
                 break;
             }
-            NodeData nodeData = node.getNodeData();
 
             //Id
-            stringBuilder.append(nodeData.getId());
+            stringBuilder.append(node.getId());
             stringBuilder.append(",");
 
             //Default columns
@@ -203,12 +197,11 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             }
 
             //Attributes columns
-            for (AttributeColumn c : nodeColumns) {
-                if (!c.getOrigin().equals(AttributeOrigin.PROPERTY)) {
-                    Object val = node.getNodeData().getAttributes().getValue(c.getIndex());
-                    val = DynamicUtilities.getDynamicValue(val, visibleInterval.getLow(), visibleInterval.getHigh());
+            for (Column c : nodeColumns) {
+                if (!c.isProperty()) {
+                    Object val = node.getAttribute(c, graph.getView());
                     if (val != null) {
-                        if (c.getType().equals(AttributeType.STRING) || c.getType().equals(AttributeType.LIST_STRING)) {
+                        if (c.getTypeClass().equals(String.class) || c.getTypeClass().equals(String[].class)) {
                             String quote = !useQuotes ? "" : simpleQuotes ? "'" : "\"";
                             stringBuilder.append(quote);
                             stringBuilder.append(val.toString());
@@ -232,10 +225,9 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         stringBuilder.append("edgedef> node1,node2,");
 
         //Edge settings helper
-        HierarchicalGraph hg = (HierarchicalGraph) graph;
-        for (Edge e : hg.getEdgesAndMetaEdges()) {
-            edgeColors = edgeColors || e.getEdgeData().r() != -1;
-            edgeLabels = edgeLabels || (e.getEdgeData().getLabel() != null && !e.getEdgeData().getLabel().isEmpty());
+        for (Edge e : graph.getEdges()) {
+            edgeColors = edgeColors || e.alpha() != 0;
+            edgeLabels = edgeLabels || (e.getLabel() != null && !e.getLabel().isEmpty());
         }
 
         //Edge columns title
@@ -253,11 +245,11 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         }
 
         //Attributes Edge columns
-        for (AttributeColumn c : edgeColumns) {
-            if (!c.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+        for (Column c : edgeColumns) {
+            if (!c.isProperty()) {
                 stringBuilder.append(c.getTitle());
                 stringBuilder.append(" ");
-                DataTypeGDF dataTypeGDF = getDataTypeGDF(c.getType());
+                DataTypeGDF dataTypeGDF = getDataTypeGDF(c.getTypeClass());
                 stringBuilder.append(dataTypeGDF.toString().toUpperCase());
                 if (c.getDefaultValue() != null) {
                     stringBuilder.append(" default ");
@@ -271,24 +263,15 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         stringBuilder.setLength(stringBuilder.length() - 1);
         stringBuilder.append("\n");
 
-        //MetaEdges
-        EdgeIterable edgeIterable;
-        if (graph.getGraphModel().isHierarchical()) {
-            HierarchicalGraph hierarchicalGraph = (HierarchicalGraph) graph;
-            edgeIterable = hierarchicalGraph.getEdgesAndMetaEdges();
-        } else {
-            edgeIterable = graph.getEdges();
-        }
-
         //Edge lines
-        for (Edge edge : edgeIterable) {
+        for (Edge edge : graph.getEdges()) {
             if (cancel) {
                 break;
             }
             //Source & Target
-            stringBuilder.append(edge.getSource().getNodeData().getId());
+            stringBuilder.append(edge.getSource().getId());
             stringBuilder.append(",");
-            stringBuilder.append(edge.getTarget().getNodeData().getId());
+            stringBuilder.append(edge.getTarget().getId());
             stringBuilder.append(",");
 
             //Default columns
@@ -300,12 +283,11 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             }
 
             //Attributes columns
-            for (AttributeColumn c : edgeColumns) {
-                if (!c.getOrigin().equals(AttributeOrigin.PROPERTY)) {
-                    Object val = edge.getEdgeData().getAttributes().getValue(c.getIndex());
-                    val = DynamicUtilities.getDynamicValue(val, visibleInterval.getLow(), visibleInterval.getHigh());
+            for (Column c : edgeColumns) {
+                if (!c.isProperty()) {
+                    Object val = edge.getAttribute(c, graph.getView());
                     if (val != null) {
-                        if (c.getType().equals(AttributeType.STRING) || c.getType().equals(AttributeType.LIST_STRING)) {
+                        if (c.getTypeClass().equals(String.class) || c.getTypeClass().equals(String[].class)) {
                             String quote = !useQuotes ? "" : simpleQuotes ? "'" : "\"";
                             stringBuilder.append(quote);
                             stringBuilder.append(val.toString());
@@ -336,27 +318,27 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
     }
 
     private void attributesNodeColumns(AttributeModel attributeModel) {
-        List<AttributeColumn> cols = new ArrayList<AttributeColumn>();
+        List<Column> cols = new ArrayList<Column>();
         if (exportAttributes && attributeModel != null) {
-            for (AttributeColumn column : attributeModel.getNodeTable().getColumns()) {
+            for (Column column : attributeModel.getNodeTable()) {
                 if (!isNodeDefaultColumn(column.getId())) {
                     cols.add(column);
                 }
             }
         }
-        nodeColumns = cols.toArray(new AttributeColumn[0]);
+        nodeColumns = cols.toArray(new Column[0]);
     }
 
     private void attributesEdgeColumns(AttributeModel attributeModel) {
-        List<AttributeColumn> cols = new ArrayList<AttributeColumn>();
+        List<Column> cols = new ArrayList<Column>();
         if (exportAttributes && attributeModel != null) {
-            for (AttributeColumn column : attributeModel.getEdgeTable().getColumns()) {
+            for (Column column : attributeModel.getEdgeTable()) {
                 if (!isEdgeDefaultColumn(column.getId())) {
                     cols.add(column);
                 }
             }
         }
-        edgeColumns = cols.toArray(new AttributeColumn[0]);
+        edgeColumns = cols.toArray(new Column[0]);
     }
 
     private boolean isNodeDefaultColumn(String id) {
@@ -379,7 +361,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
     private void defaultNodeColumns(Graph graph) {
         NodeColumnsGDF labelColumn = new NodeColumnsGDF("label") {
-
             @Override
             public boolean isEnable() {
                 return true;
@@ -387,7 +368,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                String label = node.getNodeData().getLabel();
+                String label = node.getLabel();
                 if (label != null) {
                     String quote = !useQuotes ? "" : simpleQuotes ? "'" : "\"";
                     builder.append(quote);
@@ -398,7 +379,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         };
 
         NodeColumnsGDF visibleColumn = new NodeColumnsGDF("visible", DataTypeGDF.BOOLEAN) {
-
             @Override
             public boolean isEnable() {
                 return exportVisibility;
@@ -411,7 +391,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         };
 
         NodeColumnsGDF labelVisibleColumn = new NodeColumnsGDF("labelvisible", DataTypeGDF.BOOLEAN) {
-
             @Override
             public boolean isEnable() {
                 return exportVisibility;
@@ -419,12 +398,11 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                builder.append(node.getNodeData().getTextData().isVisible());
+                builder.append(node.getTextProperties().isVisible());
             }
         };
 
         NodeColumnsGDF widthColumn = new NodeColumnsGDF("width", DataTypeGDF.DOUBLE) {
-
             @Override
             public boolean isEnable() {
                 return exportPosition;
@@ -432,7 +410,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                float size = node.getNodeData().getSize();
+                float size = node.size();
                 if (normalize) {
                     size = (size - minSize) / (maxSize - minSize);
                 }
@@ -441,7 +419,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         };
 
         NodeColumnsGDF heightColumn = new NodeColumnsGDF("height", DataTypeGDF.DOUBLE) {
-
             @Override
             public boolean isEnable() {
                 return exportPosition;
@@ -449,7 +426,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                float size = node.getNodeData().getSize();
+                float size = node.size();
                 if (normalize) {
                     size = (size - minSize) / (maxSize - minSize);
                 }
@@ -458,7 +435,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         };
 
         NodeColumnsGDF xColumn = new NodeColumnsGDF("x", DataTypeGDF.DOUBLE) {
-
             @Override
             public boolean isEnable() {
                 return exportPosition;
@@ -466,7 +442,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                float x = node.getNodeData().x();
+                float x = node.x();
                 if (normalize && x != 0.0) {
                     x = (x - minX) / (maxX - minX);
                 }
@@ -475,7 +451,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         };
 
         NodeColumnsGDF yColumn = new NodeColumnsGDF("y", DataTypeGDF.DOUBLE) {
-
             @Override
             public boolean isEnable() {
                 return exportPosition;
@@ -483,7 +458,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                float y = node.getNodeData().y();
+                float y = node.y();
                 if (normalize && y != 0.0) {
                     y = (y - minY) / (maxY - minY);
                 }
@@ -492,7 +467,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         };
 
         NodeColumnsGDF colorColumn = new NodeColumnsGDF("color") {
-
             @Override
             public boolean isEnable() {
                 return exportColors;
@@ -502,17 +476,16 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             public void writeData(StringBuilder builder, Node node) {
                 String quote = "'";
                 builder.append(quote);
-                builder.append((int) (node.getNodeData().r() * 255f));
+                builder.append((int) (node.r() * 255f));
                 builder.append(",");
-                builder.append((int) (node.getNodeData().g() * 255f));
+                builder.append((int) (node.g() * 255f));
                 builder.append(",");
-                builder.append((int) (node.getNodeData().b() * 255f));
+                builder.append((int) (node.b() * 255f));
                 builder.append(quote);
             }
         };
 
         NodeColumnsGDF fixedColumn = new NodeColumnsGDF("fixed", DataTypeGDF.BOOLEAN) {
-
             @Override
             public boolean isEnable() {
                 return exportVisibility;
@@ -520,12 +493,11 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                builder.append(node.getNodeData().isFixed());
+                builder.append(node.isFixed());
             }
         };
 
         NodeColumnsGDF styleColumn = new NodeColumnsGDF("style", DataTypeGDF.INT) {
-
             @Override
             public boolean isEnable() {
                 return false;
@@ -551,7 +523,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
     private void defaultEdgeColumns(final Graph graph) {
         EdgeColumnsGDF labelColumn = new EdgeColumnsGDF("label") {
-
             @Override
             public boolean isEnable() {
                 return edgeLabels;
@@ -559,7 +530,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Edge edge) {
-                String label = edge.getEdgeData().getLabel();
+                String label = edge.getLabel();
                 if (label != null) {
                     String quote = !useQuotes ? "" : simpleQuotes ? "'" : "\"";
                     builder.append(quote);
@@ -570,7 +541,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         };
 
         EdgeColumnsGDF weightColumn = new EdgeColumnsGDF("weight", DataTypeGDF.DOUBLE) {
-
             @Override
             public boolean isEnable() {
                 return true;
@@ -578,12 +548,17 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Edge edge) {
-                builder.append(edge.getWeight(visibleInterval.getLow(), visibleInterval.getHigh()));
+                double weight;
+                if (exportDynamicWeight) {
+                    weight = edge.getWeight(graph.getView());
+                } else {
+                    weight = edge.getWeight();
+                }
+                builder.append(weight);
             }
         };
 
         EdgeColumnsGDF directedColumn = new EdgeColumnsGDF("directed", DataTypeGDF.BOOLEAN) {
-
             @Override
             public boolean isEnable() {
                 return true;
@@ -596,7 +571,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         };
 
         EdgeColumnsGDF colorColumn = new EdgeColumnsGDF("color") {
-
             @Override
             public boolean isEnable() {
                 return exportColors && edgeColors;
@@ -604,21 +578,20 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Edge edge) {
-                if (edge.getEdgeData().r() != -1) {
+                if (edge.alpha() != 0) {
                     String quote = "'";
                     builder.append(quote);
-                    builder.append((int) (edge.getEdgeData().r() * 255f));
+                    builder.append((int) (edge.r() * 255f));
                     builder.append(",");
-                    builder.append((int) (edge.getEdgeData().g() * 255f));
+                    builder.append((int) (edge.g() * 255f));
                     builder.append(",");
-                    builder.append((int) (edge.getEdgeData().b() * 255f));
+                    builder.append((int) (edge.b() * 255f));
                     builder.append(quote);
                 }
             }
         };
 
         EdgeColumnsGDF visibleColumn = new EdgeColumnsGDF("visible", DataTypeGDF.BOOLEAN) {
-
             @Override
             public boolean isEnable() {
                 return exportVisibility;
@@ -631,7 +604,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         };
 
         EdgeColumnsGDF labelVisibleColumn = new EdgeColumnsGDF("labelvisible", DataTypeGDF.BOOLEAN) {
-
             @Override
             public boolean isEnable() {
                 return exportVisibility;
@@ -639,12 +611,11 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Edge edge) {
-                builder.append(edge.getEdgeData().getTextData().isVisible());
+                builder.append(edge.getTextProperties().isVisible());
             }
         };
 
         EdgeColumnsGDF edgeIdColumn = new EdgeColumnsGDF("id", DataTypeGDF.VARCHAR) {
-
             @Override
             public boolean isEnable() {
                 return false;
@@ -674,21 +645,22 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         maxSize = Float.NEGATIVE_INFINITY;
 
         for (Node node : graph.getNodes()) {
-            NodeData nodeData = node.getNodeData();
-            minX = Math.min(minX, nodeData.x());
-            maxX = Math.max(maxX, nodeData.x());
-            minY = Math.min(minY, nodeData.y());
-            maxY = Math.max(maxY, nodeData.y());
-            minSize = Math.min(minSize, nodeData.getSize());
-            maxSize = Math.max(maxSize, nodeData.getSize());
+            minX = Math.min(minX, node.x());
+            maxX = Math.max(maxX, node.x());
+            minY = Math.min(minY, node.y());
+            maxY = Math.max(maxY, node.y());
+            minSize = Math.min(minSize, node.size());
+            maxSize = Math.max(maxSize, node.size());
         }
     }
 
+    @Override
     public boolean cancel() {
         cancel = true;
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
     }
@@ -758,34 +730,28 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         this.useQuotes = useQuotes;
     }
 
-    private DataTypeGDF getDataTypeGDF(AttributeType type) {
-        switch (type) {
-            case BOOLEAN:
-                return DataTypeGDF.BOOLEAN;
-            case DOUBLE:
-                return DataTypeGDF.DOUBLE;
-            case FLOAT:
-                return DataTypeGDF.FLOAT;
-            case INT:
-                return DataTypeGDF.INTEGER;
-            case LONG:
-                return DataTypeGDF.INTEGER;
-            case STRING:
-                return DataTypeGDF.VARCHAR;
-            case DYNAMIC_BOOLEAN:
-                return DataTypeGDF.BOOLEAN;
-            case DYNAMIC_DOUBLE:
-                return DataTypeGDF.DOUBLE;
-            case DYNAMIC_FLOAT:
-                return DataTypeGDF.FLOAT;
-            case DYNAMIC_INT:
-                return DataTypeGDF.INTEGER;
-            case DYNAMIC_LONG:
-                return DataTypeGDF.INTEGER;
-            case DYNAMIC_STRING:
-                return DataTypeGDF.VARCHAR;
-            default:
-                return DataTypeGDF.VARCHAR;
+    private DataTypeGDF getDataTypeGDF(Class type) {
+        if (AttributeUtils.isDynamicType(type)) {
+            type = AttributeUtils.getStaticType((Class<? extends TimestampValueSet>) type);
+        }
+        if (type.equals(Boolean.class)) {
+            return DataTypeGDF.BOOLEAN;
+        } else if (type.equals(Double.class)) {
+            return DataTypeGDF.DOUBLE;
+        } else if (type.equals(Float.class)) {
+            return DataTypeGDF.FLOAT;
+        } else if (type.equals(Integer.class)) {
+            return DataTypeGDF.INTEGER;
+        } else if (type.equals(Long.class)) {
+            return DataTypeGDF.INTEGER;
+        } else if (type.equals(Short.class)) {
+            return DataTypeGDF.INTEGER;
+        } else if (type.equals(Byte.class)) {
+            return DataTypeGDF.TINYINT;
+        } else if (type.equals(String.class)) {
+            return DataTypeGDF.VARCHAR;
+        } else {
+            return DataTypeGDF.VARCHAR;
         }
     }
 
@@ -868,22 +834,27 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         }
     }
 
+    @Override
     public boolean isExportVisible() {
         return exportVisible;
     }
 
+    @Override
     public void setExportVisible(boolean exportVisible) {
         this.exportVisible = exportVisible;
     }
 
+    @Override
     public void setWriter(Writer writer) {
         this.writer = writer;
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }
 
+    @Override
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }

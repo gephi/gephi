@@ -60,6 +60,7 @@ public class RandomGraphUIImpl implements RandomGraphUI {
     public RandomGraphUIImpl() {
     }
 
+    @Override
     public JPanel getPanel() {
         if (panel == null) {
             panel = new RandomGraphPanel();
@@ -67,6 +68,7 @@ public class RandomGraphUIImpl implements RandomGraphUI {
         return RandomGraphPanel.createValidationPanel(panel);
     }
 
+    @Override
     public void setup(Generator generator) {
         this.randomGraph = (RandomGraph) generator;
 
@@ -78,6 +80,7 @@ public class RandomGraphUIImpl implements RandomGraphUI {
         panel.edgeField.setText(String.valueOf(randomGraph.getWiringProbability()));
     }
 
+    @Override
     public void unsetup() {
         //Set params
         randomGraph.setNumberOfNodes(Integer.parseInt(panel.nodeField.getText()));
