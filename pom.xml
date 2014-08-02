@@ -44,12 +44,12 @@
     <!-- Properties -->
     <properties>        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gephi.maven.requiredVersion>3.0.4</gephi.maven.requiredVersion>
+        <gephi.maven.requiredVersion>3.2.1</gephi.maven.requiredVersion>
         <netbeans.run.params.ide/>
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
         
         <!-- Netbeans Platfrom version -->
-        <netbeans.version>RELEASE721</netbeans.version>
+        <netbeans.version>RELEASE74</netbeans.version>
         
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>7.2</gephi.platform.localization.version>
@@ -124,7 +124,7 @@
 
         <gephi.maven-clean-plugin.version>2.5</gephi.maven-clean-plugin.version>
 
-        <gephi.maven-compiler-plugin.version>3.0</gephi.maven-compiler-plugin.version>
+        <gephi.maven-compiler-plugin.version>3.1</gephi.maven-compiler-plugin.version>
 
         <gephi.maven-dependency-plugin.version>2.6</gephi.maven-dependency-plugin.version>
 
@@ -156,7 +156,7 @@
 
         <gephi.build-helper-maven-plugin.version>1.7</gephi.build-helper-maven-plugin.version>
 
-        <gephi.nbm-maven-plugin.version>3.9</gephi.nbm-maven-plugin.version>
+        <gephi.nbm-maven-plugin.version>3.13.3</gephi.nbm-maven-plugin.version>
         
         <gephi.maven-reactor-plugin.version>1.0</gephi.maven-reactor-plugin.version>
         
