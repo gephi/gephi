@@ -72,7 +72,9 @@
             <file name="org-netbeans-modules-print-action-PageSetupAction.shadow_hidden"/>
             <file name="org-netbeans-modules-print-action-PrintAction.shadow_hidden"/>
             <file name="org-openide-actions-PageSetupAction.instance_hidden"/>
+            <file name="org-openide-actions-PageSetupAction.shadow_hidden"/>
             <file name="org-openide-actions-PrintAction.instance_hidden"/>
+            <file name="org-openide-actions-PrintAction.shadow_hidden"/>
             <file name="org-openide-actions-SaveAction.instance_hidden"/>
             <file name="org-openide-actions-SaveAction.shadow_hidden"/>
             <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
@@ -128,15 +130,21 @@
                 <attr name="position" intvalue="11000"/>
             </file>
             <file name="org-netbeans-modules-favorites-templates-TemplatesAction.shadow_hidden"/>
+            <file name="org-netbeans-modules-templates-actions-TemplatesAction.shadow_hidden"/>
             <file name="org-openide-actions-ToolsAction.shadow_hidden"/>
         </folder>
         <folder name="View">
             <file name="Separator1.instance_hidden"/>
             <file name="Separator2.instance_hidden"/>
+            <file name="Separator3.instance_hidden"/>
+            <file name="ShowEditorOnlyAction.shadow_hidden"/>
             <file name="org-netbeans-core-actions-HTMLViewAction.instance_hidden"/>
             <file name="org-netbeans-core-actions-HTMLViewAction.shadow_hidden"/>
             <file name="org-netbeans-core-actions-LogAction.shadow_hidden"/>
+            <file name="org-netbeans-core-multiview-EditorsAction.instance_hidden"/>
+            <file name="org-netbeans-core-multiview-SplitAction.instance_hidden"/>
             <file name="org-netbeans-core-windows-actions-ToolbarsListAction.instance_hidden"/>
+            <file name="org-netbeans-core-windows-actions-ToolbarsListAction.shadow_hidden"/>
         </folder>
         <folder name="Window">
             <file name="CloneDocumentAction.shadow_hidden"/>
