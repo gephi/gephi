@@ -388,12 +388,17 @@ public class QuadTree implements Node {
 
     @Override
     public Object getAttribute(String key, GraphView view) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported.");
     }
 
     @Override
     public Object getAttribute(Column column, GraphView view) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public boolean hasTimestamp(double timestamp) {
+        throw new UnsupportedOperationException("Not supported.");
     }
 
     class FirstAdd implements AddBehaviour {

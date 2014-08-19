@@ -184,7 +184,7 @@ public class DataBridge implements VizArchitecture {
         nodes = new NodeModel[10];
         edges = new EdgeModel[10];
         if (graphModel != null) {
-            observer = graphModel.getGraphObserver(graph, false);
+            observer = graphModel.createGraphObserver(graph, false);
         }
     }
 

@@ -127,6 +127,10 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             refreshCenterPanel();
             refreshCombo();
             refreshControls();
+        } else if(pce.getPropertyName().equals(AppearanceUIModelEvent.SET_AUTO_APPLY)) {
+            refreshControls();
+        } else if(pce.getPropertyName().equals(AppearanceUIModelEvent.START_STOP_AUTO_APPLY)) {
+            refreshControls();
         }
         //        if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
         //            listButton.setSelected((Boolean) pce.getNewValue());
@@ -174,11 +178,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 //            listButton.setSelected(false);
 //            localScaleButton.setSelected(false);
 //        }
-
-
         //Chooser
 //        ((RankingChooser) centerPanel).refreshModel(model);
-
         //Toolbar
 //        ((RankingToolbar) categoryToolbar).refreshModel(model);
     }
@@ -217,7 +218,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                         centerPanel.repaint();
 
                         //setCenterPanel
-
                         return;
                     }
                 }
@@ -284,11 +284,37 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             public void run() {
                 if (model != null) {
                     if (model.getSelectedFunction() != null) {
-                        applyButton.setEnabled(true);
+                        enableAutoButton.setEnabled(true);
+                        if (model.getAutoAppyTransformer() != null) {
+                            applyButton.setVisible(false);
+                            enableAutoButton.setSelected(true);
+                            AutoAppyTransformer aat = model.getAutoAppyTransformer();
+                            if (aat.isRunning()) {
+                                autoApplyButton.setVisible(false);
+                                stopAutoApplyButton.setVisible(true);
+                                stopAutoApplyButton.setSelected(true);
+                            } else {
+                                autoApplyButton.setVisible(true);
+                                autoApplyButton.setSelected(false);
+                                stopAutoApplyButton.setVisible(false);
+                            }
+                        } else {
+                            autoApplyButton.setVisible(false);
+                            stopAutoApplyButton.setVisible(false);
+                            enableAutoButton.setSelected(false);
+                            applyButton.setVisible(true);
+                            applyButton.setEnabled(true);
+                        }
+
                     }
                     return;
                 }
+                //Disable
+                stopAutoApplyButton.setVisible(false);
+                autoApplyButton.setVisible(false);
+                applyButton.setVisible(true);
                 applyButton.setEnabled(false);
+                enableAutoButton.setEnabled(false);
             }
         });
     }
@@ -327,8 +353,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                 splineEditor.setVisible(true);
                 function.getRanking().setInterpolator(
                         new Interpolator.BezierInterpolator(
-                        (float) splineEditor.getControl1().getX(), (float) splineEditor.getControl1().getY(),
-                        (float) splineEditor.getControl2().getX(), (float) splineEditor.getControl2().getY()));
+                                (float) splineEditor.getControl1().getX(), (float) splineEditor.getControl1().getY(),
+                                (float) splineEditor.getControl2().getX(), (float) splineEditor.getControl2().getY()));
             }
         });
         applyButton.addActionListener(new ActionListener() {
@@ -337,6 +363,30 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                 controller.appearanceController.transform(model.getSelectedFunction());
             }
         });
+        autoApplyButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.startAutoApply();
+            }
+        });
+        stopAutoApplyButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.stopAutoApply();
+            }
+
+        });
+        enableAutoButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.setAutoApply(model.getAutoAppyTransformer() == null);
+            }
+        });
+        stopAutoApplyButton.setVisible(false);
+        autoApplyButton.setVisible(false);
 
 //        listButton = new JToggleButton();
 //        listButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/ranking/resources/list.png"))); // NOI18N
@@ -422,9 +472,10 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         splineButton = new org.jdesktop.swingx.JXHyperlink();
         controlPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
-        autoApplyButton = new javax.swing.JToggleButton();
+        stopAutoApplyButton = new javax.swing.JToggleButton();
         autoApplyToolbar = new javax.swing.JToolBar();
         enableAutoButton = new javax.swing.JToggleButton();
+        autoApplyButton = new javax.swing.JToggleButton();
 
         setOpaque(true);
         setLayout(new java.awt.BorderLayout());
@@ -523,19 +574,20 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.insets = new java.awt.Insets(0, 18, 3, 5);
         controlPanel.add(applyButton, gridBagConstraints);
 
-        autoApplyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/appearance/resources/apply.gif"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(autoApplyButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.autoApplyButton.text")); // NOI18N
-        autoApplyButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.autoApplyButton.toolTipText")); // NOI18N
-        autoApplyButton.setFocusable(false);
-        autoApplyButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        autoApplyButton.setMargin(new java.awt.Insets(0, 7, 0, 7));
-        autoApplyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        stopAutoApplyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/appearance/resources/stop.png"))); // NOI18N
+        stopAutoApplyButton.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(stopAutoApplyButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.stopAutoApplyButton.text")); // NOI18N
+        stopAutoApplyButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.stopAutoApplyButton.toolTipText")); // NOI18N
+        stopAutoApplyButton.setFocusable(false);
+        stopAutoApplyButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        stopAutoApplyButton.setMargin(new java.awt.Insets(0, 7, 0, 7));
+        stopAutoApplyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 3, 5);
-        controlPanel.add(autoApplyButton, gridBagConstraints);
+        controlPanel.add(stopAutoApplyButton, gridBagConstraints);
 
         autoApplyToolbar.setFloatable(false);
         autoApplyToolbar.setRollover(true);
@@ -555,6 +607,20 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         controlPanel.add(autoApplyToolbar, gridBagConstraints);
+
+        autoApplyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/appearance/resources/apply.gif"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(autoApplyButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.autoApplyButton.text")); // NOI18N
+        autoApplyButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.autoApplyButton.toolTipText")); // NOI18N
+        autoApplyButton.setFocusable(false);
+        autoApplyButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        autoApplyButton.setMargin(new java.awt.Insets(0, 7, 0, 7));
+        autoApplyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 3, 5);
+        controlPanel.add(autoApplyButton, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -579,6 +645,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private javax.swing.JToggleButton localScaleButton;
     private javax.swing.JPanel mainPanel;
     private org.jdesktop.swingx.JXHyperlink splineButton;
+    private javax.swing.JToggleButton stopAutoApplyButton;
     private javax.swing.JToolBar tranformerToolbar;
     // End of variables declaration//GEN-END:variables
 

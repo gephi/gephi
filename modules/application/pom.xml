@@ -633,6 +633,8 @@
                                 
                                         <delete includeEmptyDirs="true" failonerror="false">
                                             <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app"/>
+                                            <fileset dir="${project.build.directory}/${gephi.app.title}"/>
+                                            <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}.dmg"/>
                                         </delete>
                                 
                                         <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app"/>
@@ -656,13 +658,17 @@
                                             <arg value="${gephi.appbundle.name}.app"/> 
                                         </exec>
                                         
+                                        <mkdir dir="${project.build.directory}/${gephi.app.title}"/>
+                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app" todir="${project.build.directory}/${gephi.app.title}/" />
+                                        <symlink link="${project.build.directory}/${gephi.app.title}/Applications" resource="/Applications" failonerror="false" />
+                                        
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="hdiutil">
                                             <arg value="create"/> 
                                             <arg value="-noanyowners"/> 
                                             <arg value="-imagekey"/> 
                                             <arg value="zlib-level=9"/> 
                                             <arg value="-srcfolder"/> 
-                                            <arg value="${gephi.appbundle.name}.app"/> 
+                                            <arg value="${project.build.directory}/${gephi.app.title}"/> 
                                             <arg value="${project.artifactId}-${project.version}.dmg"/>
                                         </exec>
 
@@ -680,8 +686,8 @@
                                             <arg value="-o"/>
                                             <arg value="${project.artifactId}-${project.version}.dmg"/>
                                             <arg value="-root"/>
-                                            <arg value="${gephi.appbundle.name}.app"/>
-                                            <arg value="${gephi.appbundle.name}.app"/>
+                                            <arg value="${project.build.directory}/${gephi.app.title}"/>
+                                            <arg value="${project.build.directory}/${gephi.app.title}"/>
                                         </exec>
                                     </target>
                                 </configuration>
