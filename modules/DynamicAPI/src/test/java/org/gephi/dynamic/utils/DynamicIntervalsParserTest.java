@@ -39,7 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.datalab.utils;
+package org.gephi.dynamic.utils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +51,7 @@ import org.junit.Test;
  *
  * @author Eduardo Ramos<eduramiba@gmail.com>
  */
-public class DynamicParserTest {
+public class DynamicIntervalsParserTest {
     
     private String parseDynamic(String str) throws Exception{
         return parseDynamic(str, String.class);
@@ -79,11 +79,11 @@ public class DynamicParserTest {
     
     private String parseDynamic(String str, Class type) throws Exception{
         if(type != null){
-            System.out.println(representListAsIntervalsString(DynamicParser.parseIntervalsWithValues(type, str)));
-            return representListAsIntervalsString(DynamicParser.parseIntervalsWithValues(type, str));
+            System.out.println(representListAsIntervalsString(DynamicIntervalsParser.parseIntervalsWithValues(type, str)));
+            return representListAsIntervalsString(DynamicIntervalsParser.parseIntervalsWithValues(type, str));
         }else{
-            System.out.println(representListAsIntervalsString(DynamicParser.parseIntervals(str)));
-            return representListAsIntervalsString(DynamicParser.parseIntervals(str));
+            System.out.println(representListAsIntervalsString(DynamicIntervalsParser.parseIntervals(str)));
+            return representListAsIntervalsString(DynamicIntervalsParser.parseIntervals(str));
         }
     }
 

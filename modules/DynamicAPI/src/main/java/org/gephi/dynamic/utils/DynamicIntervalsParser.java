@@ -39,27 +39,23 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.datalab.utils;
+package org.gephi.dynamic.utils;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import org.gephi.attribute.api.AttributeUtils;
 import org.gephi.attribute.time.Interval;
 import org.gephi.attribute.time.IntervalWithValue;
 
 /**
  * <p>
- * Class for parsing dynamic types with several intervals.</p>
+ * Class for parsing dynamic types with several intervals.
+ * </p>
  *
  * <p>
  * Examples of valid dynamic intervals are:
@@ -82,7 +78,7 @@ import org.gephi.attribute.time.IntervalWithValue;
  *
  * @author Eduardo Ramos<eduramiba@gmail.com>
  */
-public final class DynamicParser {
+public final class DynamicIntervalsParser {
 
     private static final char LOPEN = '(';
     private static final char LCLOSE = '[';
@@ -123,7 +119,13 @@ public final class DynamicParser {
 
         return result;
     }
-
+    
+    /**
+     * Parses intervals with values (of <code>type</code> Class) or without values (null <code>type</code> Class)
+     * @param type Class of the intervals' values or null to parse intervals without values
+     * @param input Input to parse
+     * @return List<Interval>
+     */
     public static List<Interval> parseIntervals(Class type, String input) throws IOException, ParseException, IllegalArgumentException {
         if (input.equalsIgnoreCase("<empty>")) {
             return null;
@@ -263,8 +265,8 @@ public final class DynamicParser {
     private static Interval buildInterval(Class type, ArrayList<String> values, boolean lopen, boolean ropen) throws ParseException {
         double low, high;
 
-        low = parseTime(values.get(0));
-        high = parseTime(values.get(1));
+        low = DynamicUtilities.parseTime(values.get(0));
+        high = DynamicUtilities.parseTime(values.get(1));
 
         if (type == null) {
             return new Interval(low, high, lopen, ropen);
@@ -279,12 +281,12 @@ public final class DynamicParser {
                         || type.equals(Long.class)
                         || type.equals(BigInteger.class)
                         ) {
-                    valString = removeDecimalDigitsFromString(valString);
+                    valString = DynamicUtilities.removeDecimalDigitsFromString(valString);
                 } else if (type.equals(Float.class)
                         || type.equals(Double.class)
                         || type.equals(BigDecimal.class)
                         ) {
-                    valString = infinityIgnoreCase(valString);
+                    valString = DynamicUtilities.infinityIgnoreCase(valString);
                 }
                 
                 value = AttributeUtils.parse(valString, type);
@@ -293,71 +295,4 @@ public final class DynamicParser {
             return new IntervalWithValue(low, high, lopen, ropen, value);
         }
     }
-
-    //For date parsing:
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static DatatypeFactory dateFactory;
-
-    static {
-        try {
-            dateFactory = DatatypeFactory.newInstance();
-        } catch (DatatypeConfigurationException ex) {
-        }
-    }
-
-    //Throws exception when a date can't be parsed
-    public static double getDoubleFromXMLDateString(String str) throws ParseException {
-        try {
-            return dateFactory.newXMLGregorianCalendar(str.length() > 23 ? str.substring(0, 23) : str).
-                    toGregorianCalendar().getTimeInMillis();
-        } catch (IllegalArgumentException ex) {
-            //Try simple format
-            Date date = dateFormat.parse(str);
-            return date.getTime();
-        }
-    }
-
-    public static double parseTime(String time) throws ParseException {
-        double value;
-        try {
-            //Try first to parse as a single double:
-            value = Double.parseDouble(infinityIgnoreCase(time));
-            if (Double.isNaN(value)) {
-                throw new IllegalArgumentException("NaN is not allowed as an interval bound");
-            }
-        } catch (Exception ex) {
-            //Try to parse as date instead
-            value = getDoubleFromXMLDateString(time);
-        }
-
-        return value;
-    }
-
-    /**
-     * Method for allowing inputs such as "infinity" when parsing decimal numbers
-     *
-     * @param value Input String
-     * @return Input String with fixed "Infinity" syntax if necessary.
-     */
-    private static String infinityIgnoreCase(String value) {
-        if (value.equalsIgnoreCase("Infinity")) {
-            return "Infinity";
-        }
-        if (value.equalsIgnoreCase("-Infinity")) {
-            return "-Infinity";
-        }
-
-        return value;
-    }
-
-    /**
-     * Removes the decimal digits and point of the numbers of string when necessary. Used for trying to parse decimal numbers as not decimal. For example BigDecimal to BigInteger.
-     *
-     * @param s String to remove decimal digits
-     * @return String without dot and decimal digits.
-     */
-    private static String removeDecimalDigitsFromString(String s) {
-        return removeDecimalDigitsFromStringPattern.matcher(s).replaceAll("");
-    }
-    private static final Pattern removeDecimalDigitsFromStringPattern = Pattern.compile("\\.[0-9]*");
 }

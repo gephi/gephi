@@ -44,7 +44,9 @@ package org.gephi.desktop.datalab;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 
 /**
  * Class to keep available state (in data laboratory) of the columns of a table of a workspace.
@@ -54,7 +56,12 @@ import org.gephi.attribute.api.Column;
 public class AvailableColumnsModel {
 
     private static final int MAX_AVAILABLE_COLUMNS = 20;
-    private ArrayList<Column> availableColumns = new ArrayList<Column>();
+    private final List<Column> availableColumns = new ArrayList<Column>();
+    private final Table table;
+
+    public AvailableColumnsModel(Table table) {
+        this.table = table;
+    }
 
     public boolean isColumnAvailable(Column column) {
         return availableColumns.contains(column);
@@ -116,5 +123,22 @@ public class AvailableColumnsModel {
 
     public int getAvailableColumnsCount() {
         return availableColumns.size();
+    }
+    
+    /**
+     * Syncronizes this AvailableColumnsModel to contain the table current columns, checking for deleted and new columns.
+     */
+    public void syncronizeTableColumns(){
+        List<Column> availableColumnsCopy = new ArrayList<Column>(availableColumns);
+        
+        for (Column column : availableColumnsCopy) {
+            if(!table.hasColumn(column.getId())){
+                removeAvailableColumn(column);
+            }
+        }
+        
+        for (Column column : table) {
+            addAvailableColumn(column);
+        }
     }
 }

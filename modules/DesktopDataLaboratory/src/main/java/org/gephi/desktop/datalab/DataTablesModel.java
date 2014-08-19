@@ -42,9 +42,7 @@
 package org.gephi.desktop.datalab;
 
 import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
 import org.gephi.attribute.api.Table;
-import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.graph.api.GraphController;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
@@ -53,29 +51,22 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class DataTablesModel /*implements AttributeListener*/ {
+public class DataTablesModel  {
 
-    private AvailableColumnsModel nodeAvailableColumnsModel;
-    private AvailableColumnsModel edgeAvailableColumnsModel;
-    private AttributeModel attributeModel;
+    private final AvailableColumnsModel nodeAvailableColumnsModel;
+    private final AvailableColumnsModel edgeAvailableColumnsModel;
+    private final AttributeModel attributeModel;
 
     public DataTablesModel(Workspace workspace) {
-        nodeAvailableColumnsModel = new AvailableColumnsModel();
-        edgeAvailableColumnsModel = new AvailableColumnsModel();
-
         attributeModel = Lookup.getDefault().lookup(GraphController.class).getAttributeModel(workspace);
+        
+        nodeAvailableColumnsModel = new AvailableColumnsModel(attributeModel.getNodeTable());
+        edgeAvailableColumnsModel = new AvailableColumnsModel(attributeModel.getEdgeTable());
+
 
         //Try to make available all columns at start by default:
-        for (Column column : attributeModel.getNodeTable().getColumns()) {
-            System.out.println("");
-            nodeAvailableColumnsModel.addAvailableColumn(column);
-        }
-
-        for (Column column : attributeModel.getEdgeTable().getColumns()) {
-            edgeAvailableColumnsModel.addAvailableColumn(column);
-        }
-
-//        attributeModel.addAttributeListener(this);
+        nodeAvailableColumnsModel.syncronizeTableColumns();
+        edgeAvailableColumnsModel.syncronizeTableColumns();
     }
 
     public AvailableColumnsModel getEdgeAvailableColumnsModel() {
@@ -95,32 +86,4 @@ public class DataTablesModel /*implements AttributeListener*/ {
             return null;//Graph table or other table, not supported in data laboratory for now.
         }
     }
-
-//    public void attributesChanged(AttributeEvent event) {
-//        Table table = event.getSource();
-//        AvailableColumnsModel tableAvailableColumnsModel = getTableAvailableColumnsModel(table);
-//        if (tableAvailableColumnsModel != null) {
-//            switch (event.getEventType()) {
-//                case ADD_COLUMN:
-//                    for (Column c : event.getData().getAddedColumns()) {
-//                        if (!tableAvailableColumnsModel.addAvailableColumn(c)) {//Add as available by default. Will only be added if the max number of available columns is not surpassed
-//                            break;
-//                        }
-//                    }
-//                    break;
-//                case REMOVE_COLUMN:
-//                    for (Column c : event.getData().getRemovedColumns()) {
-//                        tableAvailableColumnsModel.removeAvailableColumn(c);
-//                    }
-//                    break;
-//                case REPLACE_COLUMN:
-//                    for (Column c : event.getData().getRemovedColumns()) {
-//                        tableAvailableColumnsModel.removeAvailableColumn(c);
-//                        tableAvailableColumnsModel.addAvailableColumn(table.getColumn(c.getId()));
-//                    }
-//                    break;
-//            }
-//        }
-//        Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
-//    }
 }

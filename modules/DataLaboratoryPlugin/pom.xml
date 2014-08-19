@@ -26,6 +26,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>dynamic-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>core-library-wrapper</artifactId>
         </dependency>
         <dependency>

@@ -49,7 +49,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
@@ -65,8 +65,6 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.table.TableColumnExt;
-import org.jdesktop.swingx.table.TableColumnModelExt;
 import org.openide.awt.MouseUtils;
 import org.openide.util.Lookup;
 
@@ -206,12 +204,12 @@ public class NodeDataTable {
             columns.add(new AttributeNodeDataColumn(c));
         }
 
+        
         if (model == null) {
             model = new NodeDataTableModel(graph.getNodes().toArray(), columns.toArray(new NodeDataColumn[0]));
             table.setModel(model);
         } else {
-            model.setNodes(graph.getNodes().toArray());
-            model.setColumns(columns.toArray(new NodeDataColumn[0]));
+            model.configure(graph.getNodes().toArray(), columns.toArray(new NodeDataColumn[0]));
         }
 
         setNodesSelection(selectedNodes);//Keep row selection before refreshing.
@@ -267,30 +265,6 @@ public class NodeDataTable {
         this.showEdgesNodesLabels = showEdgesNodesLabels;
     }
 
-    private String[] getHiddenColumns() {
-        List<String> hiddenCols = new ArrayList<String>();
-        TableColumnModelExt columnModel = (TableColumnModelExt) table.getColumnModel();
-        for (int i = 0; i < columnModel.getColumnCount(); i++) {
-            TableColumnExt col = columnModel.getColumnExt(i);
-            if (!col.isVisible()) {
-                hiddenCols.add((String) col.getHeaderValue());
-            }
-        }
-        return hiddenCols.toArray(new String[0]);
-    }
-
-    private void setHiddenColumns(String[] columns) {
-        TableColumnModelExt columnModel = (TableColumnModelExt) table.getColumnModel();
-        for (int i = 0; i < columnModel.getColumnCount(); i++) {
-            TableColumnExt col = columnModel.getColumnExt(i);
-			for (String column : columns) {
-				if (column.equals(col.getHeaderValue())) {
-					col.setVisible(false);
-				}
-			}
-        }
-    }
-
     private class NodeDataTableModel extends AbstractTableModel {
 
         private Node[] nodes;
@@ -341,21 +315,23 @@ public class NodeDataTable {
             return columns;
         }
 
-        public void setColumns(NodeDataColumn[] columns) {
-            boolean columnsChanged = columns.length != this.columns.length;
-            this.columns = columns;
-            if (columnsChanged) {
-                fireTableStructureChanged();
-            }
-        }
-
         public Node[] getNodes() {
             return nodes;
         }
 
-        public void setNodes(Node[] edges) {
-            this.nodes = edges;
-            fireTableDataChanged();
+        public void configure(Node[] nodes, NodeDataColumn[] columns){
+            Set<NodeDataColumn> oldColumns = new HashSet<NodeDataColumn>(Arrays.asList(this.columns));
+            Set<NodeDataColumn> newColumns = new HashSet<NodeDataColumn>(Arrays.asList(columns));
+
+            boolean columnsChanged = !oldColumns.equals(newColumns);
+            this.columns = columns;
+            this.nodes = nodes;
+            
+            if (columnsChanged) {
+                fireTableStructureChanged();//Only firing this event if columns change is useful because JXTable will not reset columns width if there is no change
+            }else{
+                fireTableDataChanged();
+            }
         }
     }
 
@@ -424,6 +400,25 @@ public class NodeDataTable {
 
         public boolean isEditable() {
             return attributeColumnsController.canChangeColumnData(column);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final AttributeNodeDataColumn other = (AttributeNodeDataColumn) obj;
+            return this.column == other.column || (this.column != null && this.column.equals(other.column));
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 59 * hash + (this.column != null ? this.column.hashCode() : 0);
+            return hash;
         }
     }
 

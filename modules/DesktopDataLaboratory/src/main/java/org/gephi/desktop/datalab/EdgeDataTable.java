@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
@@ -264,8 +265,7 @@ public class EdgeDataTable {
             model = new EdgeDataTableModel(graph.getEdges().toArray(), columns.toArray(new EdgeDataColumn[0]));
             table.setModel(model);
         } else {
-            model.setEdges(graph.getEdges().toArray());
-            model.setColumns(columns.toArray(new EdgeDataColumn[0]));
+            model.configure(graph.getEdges().toArray(), columns.toArray(new EdgeDataColumn[0]));
         }
 
         setEdgesSelection(selectedEdges);//Keep row selection before refreshing.
@@ -395,21 +395,23 @@ public class EdgeDataTable {
             return columns;
         }
 
-        public void setColumns(EdgeDataColumn[] columns) {
-            boolean columnsChanged = columns.length != this.columns.length;
-            this.columns = columns;
-            if (columnsChanged) {
-                fireTableStructureChanged();
-            }
-        }
-
         public Edge[] getEdges() {
             return edges;
         }
+        
+        public void configure(Edge[] edges, EdgeDataColumn[] columns){
+            Set<EdgeDataColumn> oldColumns = new HashSet<EdgeDataColumn>(Arrays.asList(this.columns));
+            Set<EdgeDataColumn> newColumns = new HashSet<EdgeDataColumn>(Arrays.asList(columns));
 
-        public void setEdges(Edge[] edges) {
+            boolean columnsChanged = !oldColumns.equals(newColumns);
+            this.columns = columns;
             this.edges = edges;
-            fireTableDataChanged();
+            
+            if (columnsChanged) {
+                fireTableStructureChanged();//Only firing this event if columns change is useful because JXTable will not reset columns width if there is no change
+            }else{
+                fireTableDataChanged();
+            }
         }
     }
 
@@ -470,6 +472,27 @@ public class EdgeDataTable {
                     return null;
                 }
             }
+            
+            
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 89 * hash + (this.column != null ? this.column.hashCode() : 0);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final AttributeEdgeDataColumn other = (AttributeEdgeDataColumn) obj;
+            return this.column == other.column || (this.column != null && this.column.equals(other.column));
         }
 
         public void setValueFor(Edge edge, Object value) {

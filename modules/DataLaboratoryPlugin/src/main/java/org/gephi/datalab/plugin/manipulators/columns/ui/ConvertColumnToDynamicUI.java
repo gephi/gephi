@@ -51,8 +51,7 @@ import org.gephi.datalab.plugin.manipulators.columns.ConvertColumnToDynamic;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulatorUI;
-import org.gephi.datalab.utils.DynamicParser;
-
+import org.gephi.dynamic.utils.DynamicUtilities;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.gephi.ui.utils.IntervalBoundValidator;
 import org.netbeans.validation.api.ui.ValidationGroup;
@@ -135,8 +134,8 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
             manipulator.setTitle(titleTextField.getText());
             try {
                 manipulator.setReplaceColumn(replaceColumn);
-                manipulator.setLow(DynamicParser.parseTime(intervalStart));
-                manipulator.setHigh(DynamicParser.parseTime(intervalEnd));
+                manipulator.setLow(DynamicUtilities.parseTime(intervalStart));
+                manipulator.setHigh(DynamicUtilities.parseTime(intervalEnd));
             } catch (ParseException ex) {
                 Exceptions.printStackTrace(ex);
             }
