@@ -66,7 +66,8 @@ public class IndexedAttributeModel extends AbstractAttributeModel {
 
     @Override
     public Object getManagedValue(Object obj, AttributeType attributeType) {
-        return dataIndex.pushData(obj);
+        //return dataIndex.pushData(obj);
+	return obj;
     }
 
     @Override
