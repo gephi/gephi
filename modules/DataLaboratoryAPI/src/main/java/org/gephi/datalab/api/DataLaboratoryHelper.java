@@ -307,7 +307,14 @@ public class DataLaboratoryHelper {
 
             @Override
             public void run() {
-                m.execute();
+		this.setDefaultUncaughtExceptionHandler(
+							new Thread.UncaughtExceptionHandler() {
+							    @Override public void uncaughtException(Thread t, Throwable e) {
+								System.err.println(t.getName()+": "+e);
+								e.printStackTrace(System.err);
+							    }
+							});
+		m.execute();
             }
         }.start();
     }
