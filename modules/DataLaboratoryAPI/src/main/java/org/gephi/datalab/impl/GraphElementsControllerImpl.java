@@ -79,14 +79,17 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     private static final float DEFAULT_NODE_SIZE = 10f;
     private static final float DEFAULT_EDGE_WEIGHT = 1f;
 
-    public Node createNode(String label) {
+    public Node createNode(String label, Graph graph) {
         Node newNode = buildNode(label);
-        getGraph().addNode(newNode);
+        graph.addNode(newNode);
         return newNode;
     }
 
-    public Node createNode(String label, String id) {
-        Graph graph = getGraph();
+    public Node createNode(String label) {
+	return createNode(label, getGraph());
+    }
+
+    public Node createNode(String label, String id, Graph graph) {
         if (graph.getNode(id) == null) {
             Node newNode = buildNode(label, id);
             graph.addNode(newNode);
@@ -94,6 +97,10 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         } else {
             return null;
         }
+    }
+
+    public Node createNode(String label, String id) {
+	return createNode(label, id, getGraph());
     }
 
     public Node duplicateNode(Node node) {

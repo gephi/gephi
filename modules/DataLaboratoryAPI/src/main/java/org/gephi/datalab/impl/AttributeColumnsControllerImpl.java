@@ -593,21 +593,21 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (idColumn != null) {
                     id = reader.get(idColumn);
                     if (id == null || id.isEmpty()) {
-                        node = gec.createNode(null);//id null or empty, assign one
+                        node = gec.createNode(null, graph);//id null or empty, assign one
                     } else {
                         graph.readLock();
                         node = graph.getNode(id);
                         graph.readUnlock();
                         if (node != null) {//Node with that id already in graph
                             if (assignNewNodeIds) {
-                                node = gec.createNode(null);
+                                node = gec.createNode(null, graph);
                             }
                         } else {
-                            node = gec.createNode(null, id);//New id in the graph
+                            node = gec.createNode(null, id, graph);//New id in the graph
                         }
                     }
                 } else {
-                    node = gec.createNode(null);
+                    node = gec.createNode(null, graph);
                 }
                 //Assign attributes to the current node:
                 nodeAttributes = node.getNodeData().getAttributes();
