@@ -103,7 +103,7 @@ public class AttributeEventManager implements Runnable {
 	    int evtsIndex = 0;
 
 	    outereventloop:
-            while ((evts = eventQueue.peek()) != null) {
+            while (evts != null || (evts = eventQueue.poll()) != null) {
 		for(; evtsIndex < evts.size(); ++evtsIndex) {
 		    AbstractEvent evt = evts.get(evtsIndex);
 		    if (precEvt != null) {
@@ -128,14 +128,16 @@ public class AttributeEventManager implements Runnable {
 		    precEvt = evt;
 		}
 		evtsIndex = 0;
-                eventQueue.poll();
+		evts = null;
             }
 
             if (precEvt != null) {
                 AttributeEvent event = createEvent(precEvt, eventCompress, eventCompressObjects);
-                for (AttributeListener l : listeners.toArray(new AttributeListener[0])) {
-                    l.attributesChanged(event);
-                }
+		synchronized(listeners) {
+		    for (AttributeListener l : listeners) {
+			l.attributesChanged(event);
+		    }
+		}
             }
             rate++;
 
