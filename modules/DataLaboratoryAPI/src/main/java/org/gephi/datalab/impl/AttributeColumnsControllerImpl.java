@@ -79,6 +79,7 @@ import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.MassAttributeUpdate;
 import org.gephi.graph.api.Node;
 import org.gephi.utils.StatisticsUtils;
@@ -589,7 +590,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
             //Create nodes:
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-            Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+	    // Both getModel and getGraph are expensive operations, so fetch them once here
+	    // and pass down to createNode et al.
+	    GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+            Graph graph = graphModel.getGraph();
             String id = null;
             Node node;
             Attributes nodeAttributes;
@@ -602,21 +606,21 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (idColumn != null) {
                     id = reader.get(idColumn);
                     if (id == null || id.isEmpty()) {
-                        node = gec.createNode(null, graph, massUpdate);//id null or empty, assign one
+                        node = gec.createNode(null, graphModel, graph, massUpdate);//id null or empty, assign one
                     } else {
                         graph.readLock();
                         node = graph.getNode(id);
                         graph.readUnlock();
                         if (node != null) {//Node with that id already in graph
                             if (assignNewNodeIds) {
-                                node = gec.createNode(null, graph, massUpdate);
+                                node = gec.createNode(null, graphModel, graph, massUpdate);
                             }
                         } else {
-                            node = gec.createNode(null, id, graph, massUpdate);//New id in the graph
+                            node = gec.createNode(null, id, graphModel, graph, massUpdate);//New id in the graph
                         }
                     }
                 } else {
-                    node = gec.createNode(null, graph, massUpdate);
+                    node = gec.createNode(null, graphModel, graph, massUpdate);
                 }
                 //Assign attributes to the current node:
                 nodeAttributes = node.getNodeData().getAttributes();
