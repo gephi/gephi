@@ -55,12 +55,27 @@ public interface GraphFactory {
     public Node newNode();
 
     /**
+     * Create a new node, with default identifier and using a mass attribute update object to buffer consequent events.
+     * @param massUpdate mass update buffer object
+     * @return          a new node instance
+     */
+    public Node newNode(MassAttributeUpdate massUpdate);
+
+    /**
      * Create a new node with an identifier. If <code>id</code> is <code>null</code>
      * a default identifier is used.
      * @param id        a unique identifier, could be <code>null</code>
      * @return          a new node instance
      */
     public Node newNode(String id);
+
+    /**
+     * Create a new node, with default identifier and using a mass attribute update object to buffer consequent events.
+     * @param id        a unique identifier, could be <code>null</code>
+     * @param massUpdate mass update buffer object
+     * @return          a new node instance
+     */
+    public Node newNode(String id, MassAttributeUpdate massUpdate);
 
     /**
      * Create a new edge. This method don't force the type of edge (directed or

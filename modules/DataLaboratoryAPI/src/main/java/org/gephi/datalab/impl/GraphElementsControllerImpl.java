@@ -58,6 +58,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.MassAttributeUpdate;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.UndirectedGraph;
@@ -79,19 +80,19 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     private static final float DEFAULT_NODE_SIZE = 10f;
     private static final float DEFAULT_EDGE_WEIGHT = 1f;
 
-    public Node createNode(String label, Graph graph) {
-        Node newNode = buildNode(label);
+    public Node createNode(String label, Graph graph, MassAttributeUpdate massUpdate) {
+        Node newNode = buildNode(label, massUpdate);
         graph.addNode(newNode);
         return newNode;
     }
 
     public Node createNode(String label) {
-	return createNode(label, getGraph());
+	return createNode(label, getGraph(), null);
     }
 
-    public Node createNode(String label, String id, Graph graph) {
+    public Node createNode(String label, String id, Graph graph, MassAttributeUpdate massUpdate) {
         if (graph.getNode(id) == null) {
-            Node newNode = buildNode(label, id);
+            Node newNode = buildNode(label, id, massUpdate);
             graph.addNode(newNode);
             return newNode;
         } else {
@@ -100,7 +101,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     public Node createNode(String label, String id) {
-	return createNode(label, id, getGraph());
+	return createNode(label, id, getGraph(), null);
     }
 
     public Node duplicateNode(Node node) {
@@ -528,17 +529,17 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         return Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
     }
 
-    private Node buildNode(String label) {
-        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode();
+    private Node buildNode(String label, MassAttributeUpdate massUpdate) {
+        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode(massUpdate);
         newNode.getNodeData().setSize(DEFAULT_NODE_SIZE);
-        newNode.getNodeData().setLabel(label);
+        newNode.getNodeData().setLabel(label, massUpdate);
         return newNode;
     }
 
-    private Node buildNode(String label, String id) {
-        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode(id);
+    private Node buildNode(String label, String id, MassAttributeUpdate massUpdate) {
+        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode(id, massUpdate);
         newNode.getNodeData().setSize(DEFAULT_NODE_SIZE);
-        newNode.getNodeData().setLabel(label);
+        newNode.getNodeData().setLabel(label, massUpdate);
         return newNode;
     }
 
@@ -554,7 +555,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     private Node copyNodeRecursively(Node node, Node parent, HierarchicalGraph hg) {
         NodeData nodeData = node.getNodeData();
-        Node copy = buildNode(nodeData.getLabel());
+        Node copy = buildNode(nodeData.getLabel(), null);
         NodeData copyData = copy.getNodeData();
 
         //Copy properties (position, size and color):

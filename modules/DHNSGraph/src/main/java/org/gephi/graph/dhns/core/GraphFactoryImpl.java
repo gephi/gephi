@@ -47,6 +47,7 @@ import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.MassAttributeUpdate;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.TextData;
@@ -79,10 +80,14 @@ public class GraphFactoryImpl implements GraphFactory {
     }
 
     public AttributeRow newNodeAttributes(NodeData nodeData) {
+	return newNodeAttributes(nodeData, null);
+    }
+
+    private AttributeRow newNodeAttributes(NodeData nodeData, MassAttributeUpdate massUpdate) {
         if (attributesFactory == null) {
             return null;
         }
-        return attributesFactory.newNodeRow(nodeData);
+        return attributesFactory.newNodeRow(nodeData, massUpdate);
     }
 
     public AttributeRow newEdgeAttributes(EdgeData edgeData) {
@@ -107,27 +112,39 @@ public class GraphFactoryImpl implements GraphFactory {
     }
 
     public AbstractNode newNode() {
-        return newNode(null, 0);
+        return newNode(null, 0, null);
+    }
+
+    public AbstractNode newNode(MassAttributeUpdate massUpdate) {
+	return newNode(null, 0, massUpdate);
     }
 
     public AbstractNode newNode(int viewId) {
-        return newNode(null, viewId);
+        return newNode(null, viewId, null);
     }
 
-    public AbstractNode newNode(String id, int viewId) {
+    private AbstractNode newNode(String id, int viewId, MassAttributeUpdate massUpdate) {
         AbstractNode node = new AbstractNode(idGen.newNodeId(), viewId, 0, 0, 0, null);  //with wiew = 0
-        node.getNodeData().setAttributes(newNodeAttributes(node.getNodeData()));
+        node.getNodeData().setAttributes(newNodeAttributes(node.getNodeData(), massUpdate));
         node.getNodeData().setTextData(newTextData());
         if (id != null) {
-            node.getNodeData().setId(id);
+            node.getNodeData().setId(id, massUpdate);
         } else {
-            node.getNodeData().setId("" + node.getId());
+            node.getNodeData().setId("" + node.getId(), massUpdate);
         }
         return node;
     }
 
+    public AbstractNode newNode(String id, int viewId) {
+	return newNode(id, viewId, null);
+    }
+
     public AbstractNode newNode(String id) {
-        return newNode(id, 0);
+        return newNode(id, 0, null);
+    }
+
+    public AbstractNode newNode(String id, MassAttributeUpdate massUpdate) {
+	return newNode(id, 0, massUpdate);
     }
 
     public AbstractEdge newEdge(Node source, Node target) {

@@ -49,6 +49,7 @@ import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.TextData;
+import org.gephi.graph.api.MassAttributeUpdate;
 import org.gephi.graph.dhns.utils.avl.ViewNodeTree;
 
 /**
@@ -203,12 +204,16 @@ public class NodeDataImpl implements NodeData, GroupData {
         this.b = b;
     }
 
-    public void setLabel(String label) {
+    public void setLabel(String label, MassAttributeUpdate massUpdate) {
         if (attributes != null) {
-            attributes.setValue(PropertiesColumn.NODE_LABEL.getIndex(), label);
+	    attributes.setValue(PropertiesColumn.NODE_LABEL.getIndex(), label, massUpdate);
         } else {
             this.label = label;
         }
+    }
+
+    public void setLabel(String Label) {
+	setLabel(label, null);
     }
 
     public float alpha() {
@@ -242,13 +247,17 @@ public class NodeDataImpl implements NodeData, GroupData {
         return (String) attributes.getValue(PropertiesColumn.NODE_ID.getIndex());
     }
 
-    public String setId(String id) {
+    public String setId(String id, MassAttributeUpdate massUpdate) {
         if (attributes == null) {
             return null;
         }
         String oldId = (String) attributes.getValue(PropertiesColumn.NODE_ID.getIndex());
-        attributes.setValue(PropertiesColumn.NODE_ID.getIndex(), id);
+        attributes.setValue(PropertiesColumn.NODE_ID.getIndex(), id, massUpdate);
         return oldId;
+    }
+
+    public String setId(String id) {
+	return setId(id, null);
     }
 
     public boolean isFixed() {

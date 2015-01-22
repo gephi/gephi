@@ -44,6 +44,7 @@ package org.gephi.data.attributes.api;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.MassAttributeUpdate;
 import org.gephi.graph.api.NodeData;
 
 /**
@@ -61,6 +62,15 @@ public interface AttributeRowFactory {
      * @see     AttributeModel#getNodeTable()
      */
     public AttributeRow newNodeRow(NodeData nodeData);
+
+    /**
+     * Returns a new row for the <b>node</b> table, using an optional mass update buffer.
+     *
+     * @param massUpdate mass update buffer object
+     * @return  a newly created row for the node table
+     * @see     AttributeModel#getNodeTable()
+     */
+    public AttributeRow newNodeRow(NodeData nodeData, MassAttributeUpdate massUpdate);
 
     /**
      * Returns a new row for the <b>edge</b> table.

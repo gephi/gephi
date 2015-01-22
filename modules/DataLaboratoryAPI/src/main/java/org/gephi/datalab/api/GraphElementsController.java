@@ -44,6 +44,7 @@ package org.gephi.datalab.api;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.MassAttributeUpdate;
 import org.gephi.graph.api.Node;
 
 /**
@@ -62,12 +63,13 @@ public interface GraphElementsController {
     Node createNode(String label);
 
     /**
-     * Creates a node with default id and the given label in the given graph (which must match the graph managed by this controller).
+     * Creates a node with default id and the given label in the given graph (which must match the graph managed by this controller)
+     * and with an optional MassAttributeUpdate to batch events.
      * @param label Label for the node
      * @param graph Graph to insert the node into
      * @return The new created node
      */
-    Node createNode(String label, Graph graph);
+    Node createNode(String label, Graph graph, MassAttributeUpdate massUpdate);
 
     /**
      * <p>Creates a node with the given id and label.</p>
@@ -79,14 +81,15 @@ public interface GraphElementsController {
     Node createNode(String label, String id);
 
     /**
-     * <p>Creates a node with the given id and label, in the given graph (which must match the graph managed by this controller)</p>
+     * <p>Creates a node with the given id and label, in the given graph (which must match the graph managed by this controller)
+     * and with an optional MassAttributeUpdate to batch events.</p>
      * <p>If a node with that id already exists, no node will be created</p>
      * @param label Label for the node
      * @param id Id for the node
      * @param graph Graph to insert the node into
      * @return The new created node or null if a node with the given id already exists
      */
-    Node createNode(String label, String id, Graph graph);
+    Node createNode(String label, String id, Graph graph, MassAttributeUpdate massUpdate);
 
     /**
      * <p>Duplicates a node if it is in the graph, and returns the new node.</p>

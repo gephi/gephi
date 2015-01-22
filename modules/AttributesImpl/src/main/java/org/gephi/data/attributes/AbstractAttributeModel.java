@@ -52,6 +52,7 @@ import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.event.AbstractEvent;
 import org.gephi.data.attributes.event.AttributeEventManager;
 import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.graph.api.MassAttributeUpdate;
 import org.gephi.project.api.Workspace;
 import org.openide.util.NbBundle;
 
@@ -192,4 +193,9 @@ public abstract class AbstractAttributeModel implements AttributeModel {
     public Workspace getWorkspace(){
         return this.workspace;
     }
+
+    public MassAttributeUpdate startMassUpdate() {
+	return new MassAttributeUpdateImpl(eventManager);
+    }
+
 }

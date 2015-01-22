@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.data.attributes.api;
 
 import org.gephi.project.api.Workspace;
+import org.gephi.graph.api.MassAttributeUpdate;
 
 /**
  * Represents the data model, like a standard database would do. As a database,
@@ -155,4 +156,14 @@ public interface AttributeModel {
      * @return the workspace that owns this Attribute model or null if it is independent from a Workspace
      */
     public Workspace getWorkspace();
+
+    /**
+     * Start a mass update against this table. The mass update object will be
+     * configured to dispatch events against this table when it reaches
+     * a threshold level, or when its <code>close</code> method is called.
+     *
+     * @return  A new mass update object bound to this table.
+     */
+    public MassAttributeUpdate startMassUpdate();
+
 }

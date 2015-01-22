@@ -47,7 +47,9 @@ import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.event.AbstractEvent;
 import org.gephi.data.attributes.event.ValueEvent;
+import org.gephi.graph.api.MassAttributeUpdate;
 
 /**
  *
@@ -62,12 +64,16 @@ public class AttributeRowImpl implements AttributeRow {
     protected int rowVersion = -1;
 
     public AttributeRowImpl(AttributeTableImpl attributeTable, Object object) {
-        this.attributeTable = attributeTable;
-        this.object = object;
-        reset();
+	this(attributeTable, object, null);
     }
 
-    public void reset() {
+    public AttributeRowImpl(AttributeTableImpl attributeTable, Object object, MassAttributeUpdate massUpdate) {
+        this.attributeTable = attributeTable;
+        this.object = object;
+        reset(massUpdate);
+    }   
+
+    private void reset(MassAttributeUpdate massUpdate) {
         rowVersion = attributeTable.getVersion();
         int attSize = attributeTable.countColumns();
 
@@ -78,8 +84,13 @@ public class AttributeRowImpl implements AttributeRow {
         }
 
         for (int i = 0; i < attSize; i++) {
-            setValue(i, attributeTable.getColumn(i).defaultValue, false);
+	    AttributeValueImpl val = attributeTable.getColumn(i).defaultValue;
+	    setValue(i, val, false, massUpdate);
         }
+    }
+
+    public void reset() {
+	reset(null);
     }
 
     public void setValues(AttributeRow attributeRow) {
@@ -92,43 +103,55 @@ public class AttributeRowImpl implements AttributeRow {
         }
     }
 
-    public void setValue(int index, Object value) {
+    public void setValue(int index, Object value, MassAttributeUpdate massUpdate) {
         AttributeColumn column = attributeTable.getColumn(index);
         if (column != null) {
-            setValue(column, value);
+            setValue(column, value, massUpdate);
         } else {
             throw new IllegalArgumentException("The column doesn't exist");
         }
     }
 
-    public void setValue(String column, Object value) {
+    public void setValue(int index, Object value) {
+	setValue(index, value, null);
+    }
+
+    public void setValue(String column, Object value, MassAttributeUpdate massUpdate) {
         if (column == null) {
             throw new NullPointerException("Column is null");
         }
         AttributeColumn attributeColumn = attributeTable.getColumn(column);
         if (attributeColumn != null) {
-            setValue(attributeColumn, value);
+            setValue(attributeColumn, value, massUpdate);
         } else {
             //add column
             AttributeType type = AttributeType.parse(value);
             //System.out.println("parsed value type: " + value.getClass());
             if (type != null) {
                 attributeColumn = attributeTable.addColumn(column, type);
-                setValue(attributeColumn, value);
+                setValue(attributeColumn, value, massUpdate);
             }
         }
     }
 
-    public void setValue(AttributeColumn column, Object value) {
+    public void setValue(String column, Object value) {
+	setValue(column, value, null);
+    }
+
+    public void setValue(AttributeColumn column, Object value, MassAttributeUpdate massUpdate) {
         if (column == null) {
             throw new NullPointerException("Column is null");
         }
 
         AttributeValue attValue = attributeTable.getFactory().newValue(column, value);
-        setValue(attValue);
+        setValue(attValue, massUpdate);
     }
 
-    public void setValue(AttributeValue value) {
+    public void setValue(AttributeColumn column, Object value) {
+	setValue(column, value, null);
+    }
+
+    public void setValue(AttributeValue value, MassAttributeUpdate massUpdate) {
         AttributeColumn column = value.getColumn();
         if (attributeTable.getColumn(column.getIndex()) != column) {
             column = attributeTable.getColumn(column);
@@ -138,10 +161,21 @@ public class AttributeRowImpl implements AttributeRow {
             value = attributeTable.getFactory().newValue(column, value.getValue());
         }
 
-        setValue(column.getIndex(), (AttributeValueImpl) value, true);
+        setValue(column.getIndex(), (AttributeValueImpl) value, true, massUpdate);
     }
 
-    private void setValue(int index, AttributeValueImpl value, boolean doUpdateColumns) {
+    public void setValue(AttributeValue value) {
+	setValue(value, null);
+    }
+
+    private void queueOrFire(AbstractEvent ev, MassAttributeUpdateImpl massUpdate) {
+	if(massUpdate == null)
+	    attributeTable.model.fireAttributeEvent(ev);
+	else
+	    massUpdate.queueEvent(ev);
+    }
+
+    private void setValue(int index, AttributeValueImpl value, boolean doUpdateColumns, MassAttributeUpdate massUpdate) {
         if (doUpdateColumns) {
             updateColumns();
         }
@@ -150,12 +184,16 @@ public class AttributeRowImpl implements AttributeRow {
 
         this.values[index] = value;
 
+	MassAttributeUpdateImpl massUpdateImpl = null;
+	if(massUpdate != null)
+	    massUpdateImpl = (MassAttributeUpdateImpl)massUpdate;
+
         if (!(oldValue != null && oldValue.equals(value))
                 && index > 0 && !value.getColumn().getOrigin().equals(AttributeOrigin.COMPUTED)) {    //0 is the index of node id and edge id cols, not useful to send these events
             if (oldValue != null) {
-                attributeTable.model.fireAttributeEvent(new ValueEvent(EventType.UNSET_VALUE, attributeTable, object, oldValue));
+		queueOrFire(new ValueEvent(EventType.UNSET_VALUE, attributeTable, object, oldValue), massUpdateImpl);
             }
-            attributeTable.model.fireAttributeEvent(new ValueEvent(EventType.SET_VALUE, attributeTable, object, value));
+            queueOrFire(new ValueEvent(EventType.SET_VALUE, attributeTable, object, value), massUpdateImpl);
         }
     }
 
@@ -241,7 +279,7 @@ public class AttributeRowImpl implements AttributeRow {
                 }
 
                 if (!found) {
-                    setValue(i, tableCol.defaultValue, false);
+                    setValue(i, tableCol.defaultValue, false, null);
                 }
             }
 
