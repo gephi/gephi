@@ -1,5 +1,5 @@
 #  Copyright 2008-2012 Gephi
-#  Website : http://www.gephi.org
+#  Website: http://www.gephi.org
 #
 # This file is part of Gephi.
 #
