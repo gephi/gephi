@@ -108,22 +108,31 @@ public class GraphDistance implements Statistics, LongTask {
     private int shortestPaths;
     private boolean isNormalized;
 
+    /** 
+      * Gets the average shortest path length in the network
+      * @return average shortest path length for all nodes
+      */
     public double getPathLength() {
         return avgDist;
     }
 
     /**
-     *
-     * @return
+     * @return the diameter of the network
      */
     public double getDiameter() {
         return diameter;
     }
     
+    /**
+     * @return the radius of the network
+     */
     public double getRadius() {
         return radius;
     }
 
+    /**
+      * Construct a GraphDistance calculator for the current graph model
+      */
     public GraphDistance() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         if (graphController != null && graphController.getGraphModel() != null) {
