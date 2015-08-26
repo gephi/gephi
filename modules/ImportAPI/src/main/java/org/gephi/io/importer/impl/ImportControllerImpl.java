@@ -108,13 +108,6 @@ public class ImportControllerImpl implements ImportController {
         FileImporterBuilder builder = getMatchingImporter(fileObject);
         if (fileObject != null && builder != null) {
             FileImporter fi = builder.buildImporter();
-            if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
-                try {
-                    fileObject.delete();
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
             return fi;
         }
         return null;
@@ -137,13 +130,6 @@ public class ImportControllerImpl implements ImportController {
             FileImporterBuilder builder = getMatchingImporter(fileObject);
             if (fileObject != null && builder != null) {
                 Container c = importFile(fileObject.getInputStream(), builder.buildImporter());
-                if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
-                    try {
-                        fileObject.delete();
-                    } catch (IOException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }
                 return c;
             }
         }
@@ -157,13 +143,6 @@ public class ImportControllerImpl implements ImportController {
             fileObject = getArchivedFile(fileObject);   //Unzip and return content file
             if (fileObject != null) {
                 Container c = importFile(fileObject.getInputStream(), importer);
-                if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
-                    try {
-                        fileObject.delete();
-                    } catch (IOException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }
                 return c;
             }
         }

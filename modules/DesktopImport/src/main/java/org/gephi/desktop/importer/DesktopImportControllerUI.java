@@ -184,13 +184,6 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                     }
                 }
             }, taskName, errorHandler);
-            if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
-                try {
-                    fileObject.delete();
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
