@@ -57,6 +57,8 @@
                         <publicPackage>org.gephi.attribute.api</publicPackage>
                         <publicPackage>org.gephi.attribute.spi</publicPackage>
                         <publicPackage>org.gephi.attribute.time</publicPackage>
+                        <publicPackage>it.unimi.dsi.fastutil.*</publicPackage>
+                        <publicPackage>org.joda.time.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

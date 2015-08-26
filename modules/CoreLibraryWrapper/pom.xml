@@ -17,11 +17,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.1</version>
-        </dependency>
-        <dependency>
             <groupId>net.java.dev</groupId>
             <artifactId>stax-utils</artifactId>
             <version>snapshot-20100402</version>
@@ -93,16 +88,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>it.unimi.dsi</groupId>
-            <artifactId>fastutil</artifactId>
-            <version>6.5.9</version>
-        </dependency>
-        <dependency>
-            <groupId>colt</groupId>
-            <artifactId>colt</artifactId>
-            <version>1.2.0</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -112,7 +97,6 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>org.joda.time.*</publicPackage>
                         <publicPackage>org.apache.commons.codec.*</publicPackage>
                         <publicPackage>org.apache.commons.compress.*</publicPackage>
                         <publicPackage>org.jfree.*</publicPackage>
@@ -129,7 +113,6 @@
                         <publicPackage>org.apache.xml.*</publicPackage>
                         <publicPackage>org.xml.sax.*</publicPackage>
                         <publicPackage>javanet.staxutils.*</publicPackage>
-                        <publicPackage>it.unimi.dsi.fastutil.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
