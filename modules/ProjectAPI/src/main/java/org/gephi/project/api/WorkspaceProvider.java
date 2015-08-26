@@ -49,11 +49,34 @@ package org.gephi.project.api;
  */
 public interface WorkspaceProvider {
 
+    /**
+     * Returns the current workspace or null if none.
+     *
+     * @return current workspace or null if missing
+     */
     public Workspace getCurrentWorkspace();
 
+    /**
+     * Returns true if the project has a current workspace.
+     *
+     * @return true if has a current workspace, false otherwise
+     */
     public boolean hasCurrentWorkspace();
 
+    /**
+     * Returns all the workspaces.
+     * <p>
+     * Returns an empty array if no workspaces.
+     *
+     * @return an array of all workspaces
+     */
     public Workspace[] getWorkspaces();
 
+    /**
+     * Retrieve a workspace based on its unique identifier.
+     *
+     * @param id workspace's unique identifier
+     * @return found workspace or null if not found
+     */
     public Workspace getWorkspace(int id);
 }

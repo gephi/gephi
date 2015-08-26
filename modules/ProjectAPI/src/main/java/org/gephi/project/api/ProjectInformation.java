@@ -38,37 +38,113 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.project.api;
 
+import java.beans.PropertyChangeListener;
 import java.io.File;
-import javax.swing.event.ChangeListener;
 
 /**
- * Hosts various information about a project the module is maintaining.
+ * Hosts various information about a project.
+ * <p>
+ * Clients can subscribe to changes by using the 
+ * {@link #addChangeListener(java.beans.PropertyChangeListener) } method. It
+ * triggers the following events:
+ * <ul>
+ * <li><b>EVENT_OPEN:</b> Project opened
+ * <li><b>EVENT_CLOSE:</b> Project closed
+ * <li><b>EVENT_RENAME:</b> Project renamed
+ * <li><b>EVENT_SET_FILE:</b> Project file set
+ * </ul>
  *
  * @author Mathieu Bastian
  * @see Project
  */
 public interface ProjectInformation {
 
+    public static final String EVENT_OPEN = "open";
+    public static final String EVENT_CLOSE = "close";
+    public static final String EVENT_RENAME = "rename";
+    public static final String EVENT_SET_FILE = "setFile";
+
+    /**
+     * Returns true if the project is open.
+     *
+     * @return true if open, false otherwise
+     */
     public boolean isOpen();
 
+    /**
+     * Returns true if the project is closed.
+     *
+     * @return true if closed, false otherwise
+     */
     public boolean isClosed();
 
+    /**
+     * Returns true if the project is invalid.
+     *
+     * @return true if invalid, false otherwise
+     */
     public boolean isInvalid();
 
+    /**
+     * Returns the name of the project.
+     * <p>
+     * The name can't be null and has a default value (e.g. Project 1).
+     *
+     * @return the project's name
+     */
     public String getName();
 
+    /**
+     * Returns true if the project is associated with a file.
+     * <p>
+     * A project is associated with a file if it has been saved/loaded to/from a
+     * file.
+     *
+     * @return true if associated with a file, false otherwise
+     */
     public boolean hasFile();
 
+    /**
+     * Returns the filename associated with this project.
+     * <p>
+     * Returns an empty string if the project isn't associated with a file.
+     *
+     * @see #hasFile()
+     * @return file name
+     */
     public String getFileName();
 
+    /**
+     * Returns the file associated with this project.
+     * <p>
+     * Returns null if the project isn't associated with a file.
+     *
+     * @see #hasFile()
+     * @return file or null if none
+     */
     public File getFile();
 
+    /**
+     * Returns the project this information class belongs to.
+     *
+     * @return project reference
+     */
     public Project getProject();
 
-    public void addChangeListener(ChangeListener listener);
+    /**
+     * Add change listener.
+     *
+     * @param listener change listener
+     */
+    public void addChangeListener(PropertyChangeListener listener);
 
-    public void removeChangeListener(ChangeListener listener);
+    /**
+     * Remove change listener.
+     *
+     * @param listener change listener
+     */
+    public void removeChangeListener(PropertyChangeListener listener);
 }

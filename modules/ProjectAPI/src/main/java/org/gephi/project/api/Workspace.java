@@ -91,15 +91,14 @@ public interface Workspace extends Lookup.Provider {
      * storing models in this lookup.
      * <p>
      * May contains:
-     * <ol><li><code>GraphModel</code></li>
-     * <li><code>AttributeModel</code></li>
+     * <ul><li><code>GraphModel</code></li>
      * <li><code>LayoutModel</code></li>
      * <li><code>StatisticsModel</code></li>
      * <li><code>FiltersModel</code></li>
      * <li><code>PreviewModel</code></li>
      * <li><code>VizModel</code></li>
      * <li>...</li>
-     * </ol>
+     * </ul>
      *
      * @return the workspace's lookup
      */

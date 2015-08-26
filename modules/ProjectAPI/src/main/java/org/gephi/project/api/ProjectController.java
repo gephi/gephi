@@ -87,8 +87,6 @@ public interface ProjectController {
 
     public void closeCurrentWorkspace();
 
-    public void cleanWorkspace(Workspace workspace);
-
     public Workspace duplicateWorkspace(Workspace workspace);
 
     public void setSource(Workspace workspace, String source);

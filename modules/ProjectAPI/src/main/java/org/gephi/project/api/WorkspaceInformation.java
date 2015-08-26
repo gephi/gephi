@@ -41,29 +41,86 @@
  */
 package org.gephi.project.api;
 
-import javax.swing.event.ChangeListener;
+import java.beans.PropertyChangeListener;
 
 /**
- * Hosts various information about a workspace the module is maintaining.
+ * Hosts various information about a workspace.
+ * <p>
+ * Clients can subscribe to changes by using the 
+ * {@link #addChangeListener(java.beans.PropertyChangeListener) } method. It
+ * triggers the following events:
+ * <ul>
+ * <li><b>EVENT_OPEN:</b> Workspace opened
+ * <li><b>EVENT_CLOSE:</b> Workspace closed
+ * <li><b>EVENT_RENAME:</b> Workspace renamed
+ * <li><b>EVENT_SET_SOURCE:</b> Workspace source set
+ * </ul>
  *
  * @author Mathieu Bastian
  * @see Workspace
  */
 public interface WorkspaceInformation {
 
+    public static final String EVENT_OPEN = "open";
+    public static final String EVENT_CLOSE = "close";
+    public static final String EVENT_RENAME = "rename";
+    public static final String EVENT_SET_SOURCE = "setSource";
+
+    /**
+     * Returns true if the workspace is open.
+     *
+     * @return true if open, false otherwise
+     */
     public boolean isOpen();
 
+    /**
+     * Returns true if the workspace is closed.
+     *
+     * @return true if closed, false otherwise
+     */
     public boolean isClosed();
 
+    /**
+     * Returns true if the workspace is invalid.
+     *
+     * @return true if invalid, false otherwise
+     */
     public boolean isInvalid();
 
-    public boolean hasSource();
-
-    public String getSource();
-
+    /**
+     * Returns the name of the workspace.
+     * <p>
+     * The name can't be null and has a default value (e.g. Workspace 1).
+     *
+     * @return the workspace's name
+     */
     public String getName();
 
-    public void addChangeListener(ChangeListener listener);
+    /**
+     * Returns true if the workspace has a source.
+     *
+     * @return true if has a source, false otherwise
+     */
+    public boolean hasSource();
 
-    public void removeChangeListener(ChangeListener listener);
+    /**
+     * Returns the workspace's source or null if missing.
+     *
+     * @return workspace's source or null if missing
+     */
+    public String getSource();
+
+    /**
+     * Add change listener.
+     *
+     * @param listener change listener
+     */
+    public void addChangeListener(PropertyChangeListener listener);
+
+    /**
+     * Remove change listener.
+     *
+     * @param listener change listener
+     */
+    public void removeChangeListener(PropertyChangeListener listener);
 }

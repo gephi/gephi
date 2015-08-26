@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.project.spi;
 
 import javax.xml.stream.XMLStreamReader;
@@ -46,53 +46,68 @@ import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
 
 /**
- * Interface modules implement to notify the system they can read/write part
- * of the .gephi project file to serialize states and data.
+ * Interface modules implement to notify the system they can read/write part of
+ * the .gephi project file to serialize states and data.
  * <h3>How saving a project works</h3>
- * <ol><li>The saving task is looking for all implementations of this interface and
- * asks to return an XML element that represents data for each workspace.</li>
+ * <ol><li>The saving task is looking for all implementations of this interface
+ * and asks to return an XML element that represents data for each
+ * workspace.</li>
  * <li>All of these elements are written in the .gephi project file.</li></ol>
  * <h3>How loading a project works</h3>
- * <ol><li>The loading task is looking for all implementations of this interface and
- * asks for the identifier returned by <code>getIdentifier()</code>.</li>
- * <li>When traversing the gephi project XML document it tries to match markups with
- * identifiers. When match, call this provider <code>readXML()</code> method
- * with the XML element.</li></ol>
- * 
- * <p>Thus this interface allows any module to serialize and deserialize its data
+ * <ol><li>The loading task is looking for all implementations of this interface
+ * and asks for the identifier returned by <code>getIdentifier()</code>.</li>
+ * <li>When traversing the gephi project XML document it tries to match markups
+ * with identifiers. When match, call this provider <code>readXML()</code>
+ * method with the XML element.</li></ol>
+ *
+ * <p>
+ * Thus this interface allows any module to serialize and deserialize its data
  * to gephi project files.</p>
- * 
+ *
  * <p>
- * In order to have your <code>WorkspacePersistenceProvider</code> called, 
- * you must annotate it with <code>@ServiceProvider(service = WorkspacePersistenceProvider.class, position = xy)</code>
+ * In order to have your <code>WorkspacePersistenceProvider</code> called, you
+ * must annotate it with
+ * <code>@ServiceProvider(service = WorkspacePersistenceProvider.class, position = xy)</code>
  * </p>
  * <p>
- * The <code>position</code> parameter is optional but often useful when when you need other <code>WorkspacePersistenceProvider</code> data deserialized before yours.
+ * The <code>position</code> parameter is optional but often useful when when
+ * you need other <code>WorkspacePersistenceProvider</code> data deserialized
+ * before yours.
  * </p>
- * 
+ *
  * @author Mathieu Bastian
  * @see Workspace
  */
 public interface WorkspacePersistenceProvider {
 
     /**
-     * <p>This is automatically called when saving a project file.</p>
-     * <p>Your implementation must enclose all your data xml in a tag with the name provided in your <code>getIdentifier</code> method.</p>
-     * @param writer XMLStreamWriter for xml serialization of this persistence provider data
+     * This is automatically called when saving a project file.
+     * <p>
+     * Your implementation must enclose all your data xml in a tag with the name
+     * provided in your <code>getIdentifier</code> method.
+     *
+     * @param writer XMLStreamWriter for xml serialization of this persistence
+     * provider data
      * @param workspace Current workspace being serialized
      */
     public void writeXML(XMLStreamWriter writer, Workspace workspace);
 
     /**
-     * <p>This is automatically called when a start element with the tag name provided in your <code>getIdentifier</code> method.</p>
-     * <p>Your implementation must detect the tag end element to stop reading.</p>
-     * @param reader XMLStreamReader for deserialization of this persistence provider data previously serialized
+     * This is automatically called when a start element with the tag name
+     * provided in your <code>getIdentifier</code> method.
+     * <p>
+     * Your implementation must detect the tag end element to stop reading.
+     *
+     * @param reader XMLStreamReader for deserialization of this persistence
+     * provider data previously serialized
      * @param workspace Current workspace being deserialized
      */
     public void readXML(XMLStreamReader reader, Workspace workspace);
 
     /**
-     * Unique XML tag identifier for your <code>WorkspacePersistenceProvider</code>
+     * Unique XML tag identifier for your
+     * <code>WorkspacePersistenceProvider</code>.
+     *
      * @return Unique identifier describing your data
      */
     public String getIdentifier();

@@ -41,10 +41,10 @@
  */
 package org.gephi.workspace.impl;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.project.api.WorkspaceInformation;
 
 /**
@@ -61,7 +61,7 @@ public class WorkspaceInformationImpl implements WorkspaceInformation {
     private Status status = Status.CLOSED;
     private String source;
     //Lookup
-    private final transient List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+    private final transient List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
 
     public WorkspaceInformationImpl(String name) {
         this.name = name;
@@ -82,12 +82,15 @@ public class WorkspaceInformationImpl implements WorkspaceInformation {
     }
 
     public void setName(String name) {
+        String oldValue = this.name;
         this.name = name;
-        fireChangeEvent();
+        fireChangeEvent(WorkspaceInformation.EVENT_RENAME, oldValue, name);
     }
 
     public void setSource(String source) {
+        String oldValue = this.source;
         this.source = source;
+        fireChangeEvent(WorkspaceInformation.EVENT_SET_SOURCE, oldValue, source);
     }
 
     @Override
@@ -101,13 +104,15 @@ public class WorkspaceInformationImpl implements WorkspaceInformation {
     }
 
     public void open() {
-        this.status = Status.OPEN;
-        fireChangeEvent();
+        Status oldValue = status;
+        status = Status.OPEN;
+        fireChangeEvent(WorkspaceInformation.EVENT_OPEN, oldValue, status);
     }
 
     public void close() {
-        this.status = Status.CLOSED;
-        fireChangeEvent();
+        Status oldValue = status;
+        status = Status.CLOSED;
+        fireChangeEvent(WorkspaceInformation.EVENT_CLOSE, oldValue, status);
     }
 
     public void invalid() {
@@ -130,19 +135,22 @@ public class WorkspaceInformationImpl implements WorkspaceInformation {
     }
 
     @Override
-    public void addChangeListener(ChangeListener listener) {
+    public void addChangeListener(PropertyChangeListener listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void removeChangeListener(ChangeListener listener) {
+    public void removeChangeListener(PropertyChangeListener listener) {
         listeners.remove(listener);
     }
 
-    public void fireChangeEvent() {
-        ChangeEvent event = new ChangeEvent(this);
-        for (ChangeListener listener : listeners) {
-            listener.stateChanged(event);
+    public void fireChangeEvent(String eventName, Object oldValue, Object newValue) {
+        if ((oldValue == null && newValue != null) || (oldValue != null && newValue == null)
+                || (oldValue != null && !oldValue.equals(newValue))) {
+            PropertyChangeEvent event = new PropertyChangeEvent(this, eventName, oldValue, newValue);
+            for (PropertyChangeListener listener : listeners) {
+                listener.propertyChange(event);
+            }
         }
     }
 }

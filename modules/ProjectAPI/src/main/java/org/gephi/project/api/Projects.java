@@ -38,19 +38,34 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.project.api;
 
 /**
  * Hosts the project lists and the currently selected project.
- * 
+ *
  * @author Mathieu Bastian
  */
 public interface Projects {
 
+    /**
+     * Returns true if a project is selected.
+     *
+     * @return true if current project, false otherwise
+     */
     public boolean hasCurrentProject();
 
+    /**
+     * Returns the current project or null if missing.
+     *
+     * @return current project or null if missing
+     */
     public Project getCurrentProject();
 
+    /**
+     * Returns an array of all projects.
+     *
+     * @return project array
+     */
     public Project[] getProjects();
 }

@@ -41,11 +41,11 @@
  */
 package org.gephi.project.impl;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectInformation;
 
@@ -65,23 +65,25 @@ public class ProjectInformationImpl implements ProjectInformation {
     private Status status = Status.CLOSED;
     private File file;
     //Event
-    private final transient List<ChangeListener> listeners;
+    private final transient List<PropertyChangeListener> listeners;
 
     public ProjectInformationImpl(Project project, String name) {
         this.project = project;
         this.name = name;
-        listeners = new ArrayList<ChangeListener>();
+        listeners = new ArrayList<PropertyChangeListener>();
         status = Status.CLOSED;
     }
 
     public void open() {
-        this.status = Status.OPEN;
-        fireChangeEvent();
+        Status oldStatus = status;
+        status = Status.OPEN;
+        fireChangeEvent(ProjectInformation.EVENT_OPEN, oldStatus, status);
     }
 
     public void close() {
-        this.status = Status.CLOSED;
-        fireChangeEvent();
+        Status oldStatus = status;
+        status = Status.CLOSED;
+        fireChangeEvent(ProjectInformation.EVENT_CLOSE, oldStatus, status);
     }
 
     @Override
@@ -120,8 +122,9 @@ public class ProjectInformationImpl implements ProjectInformation {
     }
 
     public void setName(String name) {
+        String oldName = this.name;
         this.name = name;
-        fireChangeEvent();
+        fireChangeEvent(ProjectInformation.EVENT_RENAME, oldName, name);
     }
 
     @Override
@@ -135,25 +138,29 @@ public class ProjectInformationImpl implements ProjectInformation {
     }
 
     public void setFile(File file) {
+        File oldFile = this.file;
         this.file = file;
-        fireChangeEvent();
+        fireChangeEvent(ProjectInformation.EVENT_SET_FILE, oldFile, file);
     }
 
     //EVENTS
     @Override
-    public void addChangeListener(ChangeListener listener) {
+    public void addChangeListener(PropertyChangeListener listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void removeChangeListener(ChangeListener listener) {
+    public void removeChangeListener(PropertyChangeListener listener) {
         listeners.remove(listener);
     }
 
-    public void fireChangeEvent() {
-        ChangeEvent event = new ChangeEvent(this);
-        for (ChangeListener listener : listeners) {
-            listener.stateChanged(event);
+    public void fireChangeEvent(String eventName, Object oldValue, Object newValue) {
+        if ((oldValue == null && newValue != null) || (oldValue != null && newValue == null)
+                || (oldValue != null && !oldValue.equals(newValue))) {
+            PropertyChangeEvent event = new PropertyChangeEvent(this, eventName, oldValue, newValue);
+            for (PropertyChangeListener listener : listeners) {
+                listener.propertyChange(event);
+            }
         }
     }
 }

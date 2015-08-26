@@ -46,41 +46,34 @@ import java.io.DataOutputStream;
 import org.gephi.project.api.Workspace;
 
 /**
+ * This class is similar to {@link WorkspacePersistenceProvider} except that it
+ * allows bytes serialization instead of XML.
  *
- * @author mbastian
+ * @author Mathieu Bastian
  */
 public interface WorkspaceBytesPersistenceProvider {
 
     /**
-     * <p>This is automatically called when saving a project file.</p>
-     * <p>Your implementation must enclose all your data xml in a tag with the
-     * name provided in your
-     * <code>getIdentifier</code> method.</p>
+     * This is automatically called when saving a project file.
      *
-     * @param writer XMLStreamWriter for xml serialization of this persistence
-     * provider data
-     * @param workspace Current workspace being serialized
+     * @param stream DataOutputStream stream to write to
+     * @param workspace current workspace being serialized
      */
     public void writeBytes(DataOutputStream stream, Workspace workspace);
 
     /**
-     * <p>This is automatically called when a start element with the tag name
-     * provided in your
-     * <code>getIdentifier</code> method.</p>
-     * <p>Your implementation must detect the tag end element to stop
-     * reading.</p>
+     * This is automatically called when loading a project file.
      *
-     * @param reader XMLStreamReader for deserialization of this persistence
-     * provider data previously serialized
-     * @param workspace Current workspace being deserialized
+     * @param stream DataInputStream stream to read from
+     * @param workspace current workspace being deserialized
      */
     public void readBytes(DataInputStream stream, Workspace workspace);
 
     /**
-     * Unique XML tag identifier for your
-     * <code>WorkspacePersistenceProvider</code>
+     * Unique tag identifier for your
+     * <code>WorkspaceBytesPersistenceProvider</code>
      *
-     * @return Unique identifier describing your data
+     * @return unique identifier describing your data
      */
     public String getIdentifier();
 }

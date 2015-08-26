@@ -38,30 +38,73 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.project.api;
 
 /**
- * Hosts user data about a project. These information are usually saved to the
- * project file.
+ * Hosts user data about a project.
+ * <p>
+ * These information are also saved to the project file.
  *
  * @author Mathieu Bastian
  */
 public interface ProjectMetaData {
 
+    /**
+     * Returns the keywords of this project.
+     *
+     * @return the project's keywords or empty string if missing
+     */
     public String getKeywords();
 
+    /**
+     * Returns the author of this project.
+     * <p>
+     * The default value is the computer's user name.
+     *
+     * @return project's author
+     */
     public String getAuthor();
 
+    /**
+     * Returns the description of this project.
+     *
+     * @return the project's description or empty string if missing
+     */
     public String getDescription();
 
+    /**
+     * Returns the title of this project.
+     *
+     * @return the project's title or empty string if missing
+     */
     public String getTitle();
 
+    /**
+     * Sets the project's author.
+     *
+     * @param author author
+     */
     public void setAuthor(String author);
 
+    /**
+     * Sets the project's description.
+     *
+     * @param description description
+     */
     public void setDescription(String description);
 
+    /**
+     * Sets the project's keywords.
+     *
+     * @param keywords keywords
+     */
     public void setKeywords(String keywords);
 
+    /**
+     * Sets the project's title.
+     *
+     * @param title title
+     */
     public void setTitle(String title);
 }

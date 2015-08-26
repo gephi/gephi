@@ -38,12 +38,16 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.project.spi;
 
 import org.gephi.project.api.Workspace;
 
 /**
+ * Interface to implement workspace duplicate providers.
+ * <p>
+ * Implementations should take care of duplicating the models they are
+ * responsible for.
  *
  * @author Mathieu Bastian
  */
