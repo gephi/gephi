@@ -268,10 +268,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>workspace-ui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>desktop-context</artifactId>
         </dependency>
         <dependency>
@@ -380,7 +376,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-perspective</artifactId>
+            <artifactId>desktop-banner</artifactId>
         </dependency>
         <!--        <dependency>
             <groupId>${project.groupId}</groupId>

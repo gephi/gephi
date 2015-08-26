@@ -294,6 +294,11 @@
             </dependency>
             <dependency>
                 <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-swing-tabcontrol</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
                 <artifactId>org-netbeans-modules-nbjunit</artifactId>
                 <version>${netbeans.version}</version>
                 <scope>test</scope>
@@ -490,11 +495,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>workspace-ui</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-context</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -645,7 +645,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-perspective</artifactId>
+                <artifactId>desktop-banner</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1179,7 +1179,6 @@
         <module>modules/DesktopImport</module>
         <module>modules/DesktopLayout</module>
         <module>modules/DesktopAppearance</module>
-        <module>modules/DesktopPerspective</module>
         <module>modules/DesktopPreview</module>
         <module>modules/DesktopProgress</module>
         <module>modules/DesktopProject</module>
@@ -1222,8 +1221,8 @@
         <module>modules/VisualizationAPI</module>
         <module>modules/VisualizationImpl</module>
         <module>modules/WelcomeScreen</module>
-        <module>modules/WorkspaceUI</module>
         <module>modules/CoreLibraryWrapper</module>
         <module>modules/UILibraryWrapper</module>
+        <module>modules/DesktopBanner</module>
     </modules>
 </project>

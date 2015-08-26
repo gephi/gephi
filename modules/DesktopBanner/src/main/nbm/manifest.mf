@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+AutoUpdate-Essential-Module: true
+OpenIDE-Module-Install: org/gephi/desktop/banner/Installer.class
+OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/banner/Bundle.properties
+OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}
