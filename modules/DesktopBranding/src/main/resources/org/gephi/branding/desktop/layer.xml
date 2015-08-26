@@ -21,10 +21,6 @@
         <!--folder name="Edit">
             <file name="Separator1.instance_hidden"/>
             <file name="Separator2.instance_hidden"/>
-            <file name="org-gephi-branding-desktop-actions-CleanWorkspace.instance">
-                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-CleanWorkspace.instance"/>
-                <attr name="position" intvalue="2700"/>
-            </file>
             <file name="org-gephi-branding-desktop-actions-DeleteWorkspace.instance">
                 <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-DeleteWorkspace.instance"/>
                 <attr name="position" intvalue="2600"/>
@@ -90,10 +86,6 @@
             <attr name="position" intvalue="200"/>
             <file name="Separator1.instance_hidden"/>
             <file name="Separator2.instance_hidden"/>
-            <file name="org-gephi-branding-desktop-actions-CleanWorkspace.instance">
-                <attr name="originalFile" stringvalue="Actions/Workspace/org-gephi-branding-desktop-actions-CleanWorkspace.instance"/>
-                <attr name="position" intvalue="2700"/>
-            </file>
             <file name="org-gephi-branding-desktop-actions-DeleteWorkspace.instance">
                 <attr name="originalFile" stringvalue="Actions/Workspace/org-gephi-branding-desktop-actions-DeleteWorkspace.instance"/>
                 <attr name="position" intvalue="2600"/>
