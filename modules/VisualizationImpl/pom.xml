@@ -51,6 +51,16 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization-api</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.opengl</groupId>
+                    <artifactId>jogl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.gluegen.runtime</groupId>
+                    <artifactId>gluegen-rt</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -123,6 +133,8 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
                     <publicPackages>
+                        <publicPackage>javax.media.*</publicPackage>
+                        <publicPackage>com.jogamp.*</publicPackage>
                         <publicPackage>org.gephi.visualization</publicPackage>
                         <publicPackage>org.gephi.visualization.api.initializer</publicPackage>
                         <publicPackage>org.gephi.visualization.api.objects</publicPackage>

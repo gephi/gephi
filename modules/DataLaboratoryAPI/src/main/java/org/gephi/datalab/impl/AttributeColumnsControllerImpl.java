@@ -83,6 +83,7 @@ import org.gephi.utils.StatisticsUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.gephi.data.attributes.type.AbstractList;
 
 /**
  * Implementation of the AttributeColumnsController interface declared in the Data Laboratory API.
@@ -270,12 +271,24 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             Object value;
             for (Attributes row : getTableAttributeRows(table)) {
                 value = row.getValue(column.getIndex());
+                boolean result = false;
+
                 if (value != null) {
-                    matcher = pattern.matcher(value.toString());
-                } else {
-                    matcher = pattern.matcher("");
+                    if(value instanceof AbstractList) {
+
+                        AbstractList<?> list = (AbstractList<?>)value;
+
+                        //iterate over values individually and test each one instead of treating it like on string.
+                        for(int rpt=0;rpt < list.size();rpt++) {
+                            result |= pattern.matcher(list.getItem(rpt).toString()).matches();
+                        }
+                    }
+                    else {
+                        result = pattern.matcher(value.toString()).matches();
+                    }
                 }
-                row.setValue(newColumn.getIndex(), matcher.matches());
+
+                row.setValue(newColumn.getIndex(), result);
             }
             return newColumn;
         } else {
