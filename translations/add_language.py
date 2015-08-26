@@ -1,5 +1,5 @@
 #  Copyright 2008-2012 Gephi
-#  Website : http://www.gephi.org
+#  Website: https://gephi.github.io/
 #
 # This file is part of Gephi.
 #
@@ -12,7 +12,7 @@
 # Development and Distribution License("CDDL") (collectively, the
 # "License"). You may not use this file except in compliance with the
 # License. You can obtain a copy of the License at
-# http://gephi.org/about/legal/license-notice/
+# https://gephi.github.io/developers/license/
 # or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
 # specific language governing permissions and limitations under the
 # License.  When distributing the software, include this License Header
