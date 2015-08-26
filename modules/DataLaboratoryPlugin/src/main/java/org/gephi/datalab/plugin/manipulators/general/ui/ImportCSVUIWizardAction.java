@@ -98,6 +98,9 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
             Boolean createNewNodes = (Boolean) wizardDescriptor.getProperty("create-new-nodes");
 
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+	    DataTablesController dtc = Lookup.getDefault().lookup(DataTablesController.class);
+	    dtc.setRefreshSuspended(true);
+
             switch ((Mode) wizardDescriptor.getProperty("mode")) {
                 case NODES_TABLE:
                     ac.importCSVToNodesTable(file, separator, charset, columnNames, columnTypes, assignNewNodeIds);
@@ -106,7 +109,10 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
                     ac.importCSVToEdgesTable(file, separator, charset, columnNames, columnTypes, createNewNodes);
                     break;
             }
-            Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
+
+	    dtc.setRefreshSuspended(false);
+	    dtc.refreshCurrentTable();
+            
         }
         step1.unSetup();
         step2.unSetup();

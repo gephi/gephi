@@ -216,4 +216,11 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
         return isDataTablesReady();
     }
+
+    public void setRefreshSuspended(boolean suspended) {
+	if(listener != null) {
+	    listener.setRefreshSuspended(suspended);
+	}
+    }
+
 }

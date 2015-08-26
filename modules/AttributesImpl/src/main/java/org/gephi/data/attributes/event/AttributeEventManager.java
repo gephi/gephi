@@ -65,7 +65,7 @@ public class AttributeEventManager implements Runnable {
     private final AbstractAttributeModel model;
     private final List<AttributeListener> listeners;
     private final AtomicReference<Thread> thread = new AtomicReference<Thread>();
-    private final LinkedBlockingQueue<AbstractEvent> eventQueue;
+    private final LinkedBlockingQueue<ArrayList<AbstractEvent>> eventQueue;
     private final Object lock = new Object();
     private final LinkedList<Integer> rateList = new LinkedList<Integer>();
     private double avgRate = 1.0;
@@ -74,7 +74,7 @@ public class AttributeEventManager implements Runnable {
 
     public AttributeEventManager(AbstractAttributeModel model) {
         this.model = model;
-        this.eventQueue = new LinkedBlockingQueue<AbstractEvent>();
+        this.eventQueue = new LinkedBlockingQueue<ArrayList<AbstractEvent>>();
         this.listeners = Collections.synchronizedList(new ArrayList<AttributeListener>());
     }
 
@@ -97,36 +97,47 @@ public class AttributeEventManager implements Runnable {
             List<Object> eventCompressObjects = null;
 
             AbstractEvent precEvt = null;
-            AbstractEvent evt = null;
-            while ((evt = eventQueue.peek()) != null) {
-                if (precEvt != null) {
-                    if ((evt instanceof ValueEvent || evt instanceof ColumnEvent) && precEvt.getEventType().equals(evt.getEventType()) && precEvt.getAttributeTable() == evt.getAttributeTable()) {     //Same type
-                        if (eventCompress == null) {
-                            eventCompress = new ArrayList<Object>();
-                            eventCompress.add(precEvt.getData());
-                        }
-                        if (evt instanceof ValueEvent) {
-                            if (eventCompressObjects == null) {
-                                eventCompressObjects = new ArrayList<Object>();
-                                eventCompressObjects.add(((ValueEvent) precEvt).getObject());
-                            }
-                            eventCompressObjects.add(((ValueEvent) evt).getObject());
-                        }
+            ArrayList<AbstractEvent> evts = null;
+	    // Loop counter persists even when we break out of the inner 'for' loop
+	    // so that we resume correctly after breaking.
+	    int evtsIndex = 0;
 
-                        eventCompress.add(evt.getData());
-                    } else {
-                        break;
-                    }
-                }
-                eventQueue.poll();
-                precEvt = evt;
+	    outereventloop:
+            while (evts != null || (evts = eventQueue.poll()) != null) {
+		for(; evtsIndex < evts.size(); ++evtsIndex) {
+		    AbstractEvent evt = evts.get(evtsIndex);
+		    if (precEvt != null) {
+			if ((evt instanceof ValueEvent || evt instanceof ColumnEvent) && precEvt.getEventType().equals(evt.getEventType()) && precEvt.getAttributeTable() == evt.getAttributeTable()) {     //Same type
+			    if (eventCompress == null) {
+				eventCompress = new ArrayList<Object>();
+				eventCompress.add(precEvt.getData());
+			    }
+			    if (evt instanceof ValueEvent) {
+				if (eventCompressObjects == null) {
+				    eventCompressObjects = new ArrayList<Object>();
+				    eventCompressObjects.add(((ValueEvent) precEvt).getObject());
+				}
+				eventCompressObjects.add(((ValueEvent) evt).getObject());
+			    }
+
+			    eventCompress.add(evt.getData());
+			} else {
+			    break outereventloop;
+			}
+		    }
+		    precEvt = evt;
+		}
+		evtsIndex = 0;
+		evts = null;
             }
 
             if (precEvt != null) {
                 AttributeEvent event = createEvent(precEvt, eventCompress, eventCompressObjects);
-                for (AttributeListener l : listeners.toArray(new AttributeListener[0])) {
-                    l.attributesChanged(event);
-                }
+		synchronized(listeners) {
+		    for (AttributeListener l : listeners) {
+			l.attributesChanged(event);
+		    }
+		}
             }
             rate++;
 
@@ -184,11 +195,17 @@ public class AttributeEventManager implements Runnable {
         this.stop = stop;
     }
 
-    public void fireEvent(AbstractEvent event) {
-        eventQueue.add(event);
+    public void fireEvents(ArrayList<AbstractEvent> events) {
+        eventQueue.add(events);
         synchronized (lock) {
             lock.notifyAll();
         }
+    }
+
+    public void fireEvent(AbstractEvent event) {
+	ArrayList<AbstractEvent> events = new ArrayList<AbstractEvent>(1);
+	events.add(event);
+	fireEvents(events);
     }
 
     public void start() {

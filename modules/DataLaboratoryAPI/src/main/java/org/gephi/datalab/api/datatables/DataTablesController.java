@@ -82,4 +82,7 @@ public interface DataTablesController extends DataTablesCommonInterface {
      * @return True if listener found, false otherwise
      */
     boolean prepareDataTables();
+
+    void setRefreshSuspended(boolean suspended);
+
 }

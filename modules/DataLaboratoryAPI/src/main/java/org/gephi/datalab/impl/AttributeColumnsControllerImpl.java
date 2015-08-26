@@ -57,6 +57,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeTable;
@@ -78,6 +79,8 @@ import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.MassAttributeUpdate;
 import org.gephi.graph.api.Node;
 import org.gephi.utils.StatisticsUtils;
 import org.openide.util.Exceptions;
@@ -93,7 +96,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeColumnsController.class)
 public class AttributeColumnsControllerImpl implements AttributeColumnsController {
 
-    public boolean setAttributeValue(Object value, Attributes row, AttributeColumn column) {
+    public boolean setAttributeValue(Object value, Attributes row, AttributeColumn column, MassAttributeUpdate massUpdate) {
         AttributeType targetType = column.getType();
         if (value != null && !value.getClass().equals(targetType.getType())) {
             try {
@@ -106,9 +109,13 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         if (value == null && !canClearColumnData(column)) {
             return false;//Do not set a null value when the column can't have a null value.
         } else {
-            row.setValue(column.getIndex(), value);
+	    row.setValue(column.getIndex(), value, massUpdate);
             return true;
         }
+    }
+
+    public boolean setAttributeValue(Object value, Attributes row, AttributeColumn column) {
+	return setAttributeValue(value, row, column, null);
     }
 
     public AttributeColumn addAttributeColumn(AttributeTable table, String title, AttributeType type) {
@@ -554,9 +561,11 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
 
         CsvReader reader = null;
+	MassAttributeUpdate massUpdate = null;
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
-            AttributeTable nodesTable = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
+	    AttributeModel attModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
+            AttributeTable nodesTable = attModel.getNodeTable();
             String idColumn = null;
             ArrayList<AttributeColumn> columnsList = new ArrayList<AttributeColumn>();
             HashMap<AttributeColumn, String> columnHeaders = new HashMap<AttributeColumn, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
@@ -581,10 +590,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
             //Create nodes:
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-            Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+	    // Both getModel and getGraph are expensive operations, so fetch them once here
+	    // and pass down to createNode et al.
+	    GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+            Graph graph = graphModel.getGraph();
             String id = null;
             Node node;
             Attributes nodeAttributes;
+	    massUpdate = attModel.startMassUpdate();
             reader = new CsvReader(new FileInputStream(file), separator, charset);
             reader.setTrimWhitespace(false);
             reader.readHeaders();
@@ -593,26 +606,26 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (idColumn != null) {
                     id = reader.get(idColumn);
                     if (id == null || id.isEmpty()) {
-                        node = gec.createNode(null);//id null or empty, assign one
+                        node = gec.createNode(null, graphModel, graph, massUpdate);//id null or empty, assign one
                     } else {
                         graph.readLock();
                         node = graph.getNode(id);
                         graph.readUnlock();
                         if (node != null) {//Node with that id already in graph
                             if (assignNewNodeIds) {
-                                node = gec.createNode(null);
+                                node = gec.createNode(null, graphModel, graph, massUpdate);
                             }
                         } else {
-                            node = gec.createNode(null, id);//New id in the graph
+                            node = gec.createNode(null, id, graphModel, graph, massUpdate);//New id in the graph
                         }
                     }
                 } else {
-                    node = gec.createNode(null);
+                    node = gec.createNode(null, graphModel, graph, massUpdate);
                 }
                 //Assign attributes to the current node:
                 nodeAttributes = node.getNodeData().getAttributes();
                 for (AttributeColumn column : columnsList) {
-                    setAttributeValue(reader.get(columnHeaders.get(column)), nodeAttributes, column);
+                    setAttributeValue(reader.get(columnHeaders.get(column)), nodeAttributes, column, massUpdate);
                 }
             }
         } catch (FileNotFoundException ex) {
@@ -621,6 +634,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             Exceptions.printStackTrace(ex);
         } finally {
             reader.close();
+	    if(massUpdate != null)
+		massUpdate.close();
         }
     }
 

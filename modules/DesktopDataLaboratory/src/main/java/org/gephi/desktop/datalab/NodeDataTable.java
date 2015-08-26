@@ -112,7 +112,7 @@ public class NodeDataTable {
         attributeUtils = AttributeUtils.getDefault();
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
-        outlineTable = new Outline();
+        outlineTable = new HackedOutline();
         outlineTable.setColumnHidingAllowed(false);
 
         quickFilter = new QuickFilter() {
@@ -646,3 +646,6 @@ public class NodeDataTable {
         return nodes;
     }
 }
+
+
+

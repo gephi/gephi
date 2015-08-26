@@ -85,11 +85,29 @@ public interface Attributes {
     public void setValue(String column, Object value);
 
     /**
+     * Sets the value for a specified column. Accepts <code>null</code> values. Uses optional <code>massUpdate</code>
+     * object to batch update events if any are generated.
+     * @param column    the column <b>id</b> or <b>title</b>
+     * @param value     the value that is to be set at the specified column position
+     * @param massUpdate mass update buffer object
+     */
+    public void setValue(String column, Object value, MassAttributeUpdate massUpdate);
+
+    /**
      * Sets the value for a specified column position. Accepts <code>null</code> values.
      * @param index     the column index
      * @param value     the value that is to be set at the specified column position
      */
     public void setValue(int index, Object value);
+
+    /**
+     * Sets the value for a specified column position. Accepts <code>null</code> values. Uses optional <code>massUpdate</code>
+     * object to batch update events if any are generated.
+     * @param index     the column index
+     * @param value     the value that is to be set at the specified column position
+     * @param massUpdate mass update buffer object
+     */
+    public void setValue(int index, Object value, MassAttributeUpdate massUpdate);
 
     /**
      * Resets the content of the row.

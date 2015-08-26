@@ -48,5 +48,7 @@ package org.gephi.datalab.api.datatables;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface DataTablesEventListener extends DataTablesCommonInterface {
+
+    public void setRefreshSuspended(boolean suspended);
     
 }

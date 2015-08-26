@@ -88,6 +88,13 @@ public interface NodeData extends Renderable, Attributable {
     public void setLabel(String label);
 
     /**
+     * Sets this node label, using optional <code>massUpdate</code> for event buffering.
+     * @param label         the label that is to be set as this node label
+     * @param massUpdate    mass-update bufffer object
+     */
+    public void setLabel(String label, MassAttributeUpdate massUpdate);
+
+    /**
      * Returns the string identifier of this node. This identifier can be set
      * by users, in contrario of {@link Node#getId()} which is set by the system.
      * <p>

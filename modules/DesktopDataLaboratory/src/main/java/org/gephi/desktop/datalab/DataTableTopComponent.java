@@ -144,6 +144,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private int previousEdgeColumnsFilterIndex = 0;
     //Executor
     private RefreshOnceHelperThread refreshOnceHelperThread;
+    private boolean refreshSuspended;
 
     public DataTableTopComponent() {
 
@@ -340,14 +341,16 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     }
 
     public void graphChanged(GraphEvent event) {
-        SwingUtilities.invokeLater(new Runnable() {
+	if(!refreshSuspended) {
+	    SwingUtilities.invokeLater(new Runnable() {
 
-            public void run() {
-                if (isOpened()) {
-                    refreshOnce(false);
-                }
-            }
-        });
+		public void run() {
+		    if (isOpened()) {
+			refreshOnce(false);
+		    }
+		}
+	    });
+	}
     }
 
     /**
@@ -358,6 +361,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * refresh all UI including manipulators
      */
     private void refreshOnce(boolean refreshTableOnly) {
+
         if (refreshOnceHelperThread == null || !refreshOnceHelperThread.isAlive() || (refreshOnceHelperThread.refreshTableOnly && !refreshTableOnly)) {
             refreshOnceHelperThread = new RefreshOnceHelperThread(refreshTableOnly);
             refreshOnceHelperThread.start();
@@ -609,14 +613,21 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             }
         });
     }
+    
+    public void setRefreshSuspended(boolean suspended) {
+	this.refreshSuspended = suspended;
+    }
 
     public void refreshCurrentTable() {
-        SwingUtilities.invokeLater(new Runnable() {
+	if(!refreshSuspended) {
+	    SwingUtilities.invokeLater(new Runnable() {
+		    
+		public void run() {
+		    refreshAllOnce();
+		}
 
-            public void run() {
-                refreshAllOnce();
-            }
-        });
+	    });
+	}
     }
 
     public void setNodeTableSelection(final Node[] nodes) {

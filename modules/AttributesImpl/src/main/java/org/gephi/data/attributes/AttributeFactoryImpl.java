@@ -50,6 +50,7 @@ import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.MassAttributeUpdate;
 import org.gephi.graph.api.NodeData;
 
 /**
@@ -91,6 +92,10 @@ public class AttributeFactoryImpl implements AttributeValueFactory, AttributeRow
 
     public AttributeRowImpl newNodeRow(NodeData nodeData) {
         return new AttributeRowImpl(model.getNodeTable(), nodeData);
+    }
+
+    public AttributeRowImpl newNodeRow(NodeData nodeData, MassAttributeUpdate massUpdate) {
+        return new AttributeRowImpl(model.getNodeTable(), nodeData, massUpdate);
     }
 
     public AttributeRowImpl newEdgeRow(EdgeData edgeData) {
