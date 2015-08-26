@@ -96,6 +96,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
     //Architecture
     private Reader reader;
     private ContainerLoader container;
+    private EdgeDirection edgeDefault;
     private boolean cancel;
     private Report report;
     private ProgressTicket progress;
@@ -198,11 +199,18 @@ public class ImporterGraphML implements FileImporter, LongTask {
         }
 
         //Edge Type
+        // Container edge type should NOT be set to default edge type, as this is 
+        // not what it really means. Mixed is the appropriate type, as GraphML supports
+        // mixed edge types. 
+        
+        container.setEdgeDefault(EdgeDirectionDefault.MIXED);
+        edgeDefault = EdgeDirection.DIRECTED;
+        
         if (!defaultEdgeType.isEmpty()) {
             if (defaultEdgeType.equalsIgnoreCase("undirected")) {
-                container.setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
+                edgeDefault = EdgeDirection.UNDIRECTED;
             } else if (defaultEdgeType.equalsIgnoreCase("directed")) {
-                container.setEdgeDefault(EdgeDirectionDefault.DIRECTED);
+                edgeDefault = EdgeDirection.DIRECTED;
             } else {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_defaultedgetype", defaultEdgeType), Issue.Level.SEVERE));
             }
@@ -397,7 +405,10 @@ public class ImporterGraphML implements FileImporter, LongTask {
                 edge.setType(EdgeDirection.UNDIRECTED);
             } else {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_edgetype", directed, edge), Issue.Level.SEVERE));
+                edge.setType(edgeDefault);
             }
+        }else{
+            edge.setType(edgeDefault);
         }
 
 
