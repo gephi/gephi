@@ -4,19 +4,19 @@
 
 - **Fast** Powered by a built-in OpenGL engine, Gephi is able to push the envelope with very large networks. Visualize networks up to a million elements. All actions (e.g. layout, filter, drag) run in real-time.
 
-- **Simple** Easy to install and [get started](http://gephi.org/users/quick-start/). An UI that is centered around the visualization. Like Photoshop™ for graphs.
+- **Simple** Easy to install and [get started](https://gephi.github.io/users/quick-start). An UI that is centered around the visualization. Like Photoshop™ for graphs.
 
-- **Modular** Extend Gephi with [plug-ins](http://gephi.org/plugins/). The architecture is built on top of Netbeans Platform and can be extended or reused easily through well-written APIs.
+- **Modular** Extend Gephi with [plug-ins](https://marketplace.gephi.org). The architecture is built on top of Netbeans Platform and can be extended or reused easily through well-written APIs.
 
-[Download Gephi](http://gephi.org/users/download/) for Windows, Mac OS X and Linux and consult the [release notes](https://wiki.gephi.org/index.php/Gephi_Releases). Example datasets can be found on our [wiki](https://wiki.gephi.org/index.php?title=Datasets).
+[Download Gephi](https://gephi.github.io/users/download) for Windows, Mac OS X and Linux and consult the [release notes](https://github.com/gephi/gephi/wiki/Releases). Example datasets can be found on our [wiki](https://github.com/gephi/gephi/wiki/Datasets).
 
-![Gephi](http://gephi.org/wp-content/themes/gephi/images/screenshots/select-tool-mini.png)
+![Gephi](https://gephi.github.io/images/screenshots/select-tool-mini.png)
 
 ## Install and use Gephi
 
-Download and [Install](http://gephi.org/users/install) Gephi on your computer. 
+Download and [Install](https://gephi.github.io/users/install/) Gephi on your computer. 
 
-Get started with the [Quick Start](http://gephi.org/users/quick-start/) and follow the [Tutorials](http://gephi.org/users/). Load a sample [dataset](https://wiki.gephi.org/index.php?title=Datasets) and start to play with the data.
+Get started with the [Quick Start](https://gephi.github.io/users/quick-start/) and follow the [Tutorials](https://gephi.github.io/users/). Load a sample [dataset](https://github.com/gephi/gephi/wiki/Datasets) and start to play with the data.
 
 If you run into any trouble or have questions consult our [forum](http://forum.gephi.org).
 
@@ -24,7 +24,7 @@ If you run into any trouble or have questions consult our [forum](http://forum.g
 
 ### Stable
 
-- Latest stable release on [gephi.org](http://gephi.org/download).
+- Latest stable release on [gephi.org](https://gephi.github.io/users/download/).
 
 ### Nightly builds
 
@@ -56,7 +56,7 @@ Consult the [**Javadoc**](http://gephi.org/docs/api) for an overview of the APIs
 
         git clone git@github.com:username/gephi.git
 
-- Run the following command or [open the project in Netbeans](http://wiki.gephi.org/index.php/Build_Gephi)
+- Run the following command or [open the project in Netbeans](https://github.com/gephi/gephi/wiki/How-to-build-Gephi)
 
         mvn clean install
 
@@ -69,11 +69,11 @@ Consult the [**Javadoc**](http://gephi.org/docs/api) for an overview of the APIs
 
 Gephi is extensible and lets users create plug-ins to add new features, or to modify existing features. For example, you can create a new layout algorithm, add a metric, create a filter or a tool, support a new file format or database, or modify the visualization.
 
-- [**Plugins Portal**](http://wiki.gephi.org/index.php/Plugins_portal)
+- [**Plugins Portal**](https://github.com/gephi/gephi/wiki/Plugins)
 
-- [Plugins Quick Start (5 minutes)](http://wiki.gephi.org/index.php/Plugin_Quick_Start_(5_minutes))
+- [Plugins Quick Start (5 minutes)](https://github.com/gephi/gephi/wiki/Plugin-Quick-Start)
 
-- Browse the [plugins](http://gephi.org/plugins) created by the community
+- Browse the [plugins](https://marketplace.gephi.org/) created by the community
 
 - We've created a [**Plugins Bootcamp**](https://github.com/gephi/gephi-plugins-bootcamp) to learn by examples.
 
@@ -81,16 +81,16 @@ Gephi is extensible and lets users create plug-ins to add new features, or to mo
 
 The Gephi Toolkit project packages essential Gephi modules (Graph, Layout, Filters, IO…) in a standard Java library which any Java project can use for getting things done. It can be used on a server or command-line tool to do the same things Gephi does but automatically.
 
-- [Download](http://gephi.org/toolkit/)
+- [Download](http://gephi.github.io/toolkit/)
 
 - [GitHub Project](https://github.com/gephi/gephi-toolkit)
 
-- [Toolkit Portal](https://wiki.gephi.org/index.php/Toolkit_portal)
+- [Toolkit Portal](https://github.com/gephi/gephi/wiki/Toolkit)
 
 ## License
 
-Gephi main source code is distributed under the dual license [CDDL 1.0](http://www.opensource.org/licenses/CDDL-1.0) and [GNU General Public License v3](http://www.gnu.org/licenses/gpl.html). Read the [Legal FAQs](https://gephi.org/about/legal/faq/)  to learn more.
-
+Gephi main source code is distributed under the dual license [CDDL 1.0](http://www.opensource.org/licenses/CDDL-1.0) and [GNU General Public License v3](http://www.gnu.org/licenses/gpl.html). Read the [Legal FAQs](http://gephi.github.io/legal/faq/)  to learn more.
+	
 Copyright 2011 Gephi Consortium. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
@@ -98,7 +98,7 @@ General Public License Version 3 only ("GPL") or the Common
 Development and Distribution License("CDDL") (collectively, the
 "License"). You may not use this file except in compliance with the
 License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
+http://gephi.github.io/developers/license/
 or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
 specific language governing permissions and limitations under the
 License.  When distributing the software, include this License Header
