@@ -93,8 +93,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     private boolean closeProject = false;
     private boolean newWorkspace = false;
     private boolean deleteWorkspace = false;
-    private boolean cleanWorkspace = false;
     private boolean duplicateWorkspace = false;
+    private boolean renameWorkspace = false;
     //Project
     private ProjectController controller;
     //Utilities
@@ -253,8 +253,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             closeProject = false;
             newWorkspace = false;
             deleteWorkspace = false;
-            cleanWorkspace = false;
             duplicateWorkspace = false;
+            renameWorkspace = false;
 
             //Title bar
             SwingUtilities.invokeLater(new Runnable() {
@@ -323,10 +323,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         });
     }
 
-    public boolean canCleanWorkspace() {
-        return cleanWorkspace;
-    }
-
     public boolean canCloseProject() {
         return closeProject;
     }
@@ -345,6 +341,10 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
     public boolean canDuplicateWorkspace() {
         return duplicateWorkspace;
+    }
+
+    public boolean canRenameWorkspace() {
+        return renameWorkspace;
     }
 
     public boolean canOpenFile() {
@@ -372,8 +372,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         openFile = false;
         newWorkspace = false;
         deleteWorkspace = false;
-        cleanWorkspace = false;
         duplicateWorkspace = false;
+        renameWorkspace = false;
     }
 
     private void unlockProjectActions() {
@@ -385,8 +385,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             projectProperties = true;
             if (controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).hasCurrentWorkspace()) {
                 deleteWorkspace = true;
-                cleanWorkspace = true;
                 duplicateWorkspace = true;
+                renameWorkspace = true;
             }
         }
         openProject = true;
@@ -500,10 +500,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         return controller.newWorkspace(controller.getCurrentProject());
     }
 
-    public void cleanWorkspace() {
-        controller.cleanWorkspace(controller.getCurrentWorkspace());
-    }
-
     public void deleteWorkspace() {
         if (controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces().length == 1) {
             //Close project
@@ -514,8 +510,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             closeProject = false;
             newWorkspace = false;
             deleteWorkspace = false;
-            cleanWorkspace = false;
             duplicateWorkspace = false;
+            renameWorkspace = false;
 
             //Title bar
             SwingUtilities.invokeLater(new Runnable() {

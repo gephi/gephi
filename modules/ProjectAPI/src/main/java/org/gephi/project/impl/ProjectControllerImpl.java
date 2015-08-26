@@ -272,10 +272,6 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     @Override
-    public void cleanWorkspace(Workspace workspace) {
-    }
-
-    @Override
     public Workspace duplicateWorkspace(Workspace workspace) {
         if (projects.hasCurrentProject()) {
             Workspace duplicate = newWorkspace(projects.getCurrentProject());

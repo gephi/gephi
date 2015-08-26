@@ -73,8 +73,6 @@ public interface ProjectControllerUI {
 
     public void closeProject();
 
-    public void cleanWorkspace();
-
     public void renameWorkspace(final String name);
 
     public boolean canNewProject();
@@ -93,7 +91,7 @@ public interface ProjectControllerUI {
 
     public boolean canDeleteWorkspace();
 
-    public boolean canCleanWorkspace();
+    public boolean canRenameWorkspace();
 
     public boolean canProjectProperties();
 }
