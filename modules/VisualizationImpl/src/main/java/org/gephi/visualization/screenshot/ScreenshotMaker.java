@@ -41,36 +41,25 @@
  */
 package org.gephi.visualization.screenshot;
 
-import com.jogamp.opengl.util.awt.ImageUtil;
 import java.awt.Cursor;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.imageio.ImageIO;
-import javax.media.nativewindow.AbstractGraphicsDevice;
-import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLContext;
-import javax.media.opengl.GLDrawableFactory;
-import javax.media.opengl.GLPbuffer;
-import javax.media.opengl.GLProfile;
+import com.jogamp.opengl.GLAutoDrawable;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.*;
-import org.gephi.visualization.swing.GLAbstractListener;
-import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.visualization.text.TextManager;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.NbBundle;
@@ -93,7 +82,7 @@ public class ScreenshotMaker implements VizArchitecture {
     private final String AUTOSAVE_DEFAULT = "ScreenshotMaker_Autosave_Default";
     private final String SHOW_MESSAGE = "ScreenshotMaker_Show_Message";
     //Architecture
-    private GraphDrawableImpl drawable;
+    private GraphDrawable drawable;
     private AbstractEngine engine;
     private TextManager textManager;
     private VizConfig vizConfig;
@@ -151,103 +140,104 @@ public class ScreenshotMaker implements VizArchitecture {
     }
 
     private void take(File file) throws Exception {
-
-        //System.out.println("Take Screenshot to " + file.getName());
-
-        // Fix the image size for now
-        int tileWidth = width / 16;
-        int tileHeight = height / 12;
-        int imageWidth = width;
-        int imageHeight = height;
-
-        GLProfile profile = GLProfile.get(GLProfile.GL2);
-        GLCapabilities caps = new GLCapabilities(profile);
-        AbstractGraphicsDevice device = GLDrawableFactory.getFactory(profile).getDefaultDevice();
-        //Caps
-
-        caps.setAlphaBits(8);
-        caps.setDoubleBuffered(false);
-        caps.setHardwareAccelerated(true);
-        caps.setSampleBuffers(true);
-        caps.setNumSamples(antiAliasing);
-
-        //Buffer
-
-        GLPbuffer pbuffer = GLDrawableFactory.getFactory(profile).createGLPbuffer(device, caps, null, tileWidth, tileHeight, null);
-        BufferedImage image = null;
-        if (transparentBackground) {
-            image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
-        } else {
-            image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_3BYTE_BGR);
-        }
-        ByteBuffer imageBuffer = ByteBuffer.wrap(((DataBufferByte) image.getRaster().getDataBuffer()).getData());
-
-        //Tile rendering
-        TileRenderer tileRenderer = new TileRenderer();
-        tileRenderer.setTileSize(tileWidth, tileHeight, 0);
-        tileRenderer.setImageSize(imageWidth, imageHeight);
-        if (transparentBackground) {
-            tileRenderer.setImageBuffer(GL2.GL_BGRA, GL2.GL_UNSIGNED_BYTE, imageBuffer);
-        } else {
-            tileRenderer.setImageBuffer(GL2.GL_BGR, GL2.GL_UNSIGNED_BYTE, imageBuffer);
-        }
-        tileRenderer.trPerspective(drawable.viewField, (float) imageWidth / (float) imageHeight, drawable.nearDistance, drawable.farDistance);
-
-        //Get gl
-        //GLContext oldContext = GLContext.getCurrent();
-        GLContext context = pbuffer.getContext();
-        if (context.makeCurrent() == GLContext.CONTEXT_NOT_CURRENT) {
-            throw new RuntimeException("Error making pbuffer's context current");
-        }
-
-        System.out.println("Disabling snapshot");
-
-        GL2 gl = pbuffer.getGL().getGL2();
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadIdentity();
-
-        //Init
-        drawable.initConfig(gl);
-        vizConfig.setDisableLOD(true);
-        engine.initScreenshot(gl, GLAbstractListener.glu);
-
-
-        //Textrender - swap to 3D
-        textManager.setRenderer3d(true);
-
-        //Render in buffer
-        do {
-            tileRenderer.beginTile(gl);
-            drawable.renderScreenshot(pbuffer);
-        } while (tileRenderer.endTile(gl));
-
-        //Clean
-        context.release();
-        pbuffer.destroy();
-
-
-        //Textrender - back to 2D
-        textManager.setRenderer3d(false);
-        vizConfig.setDisableLOD(false);
-        //Write image
-        ImageUtil.flipImageVertically(image);
-        writeImage(image);
-
-        /*Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("png");
-         if (iter.hasNext()) {
-         ImageWriter writer = iter.next();
-         ImageWriteParam iwp = writer.getDefaultWriteParam();
-         //iwp.setCompressionType("DEFAULT");
-         //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
-         //iwp.setCompressionQuality((int)(9*pngCompresssion));
-         FileImageOutputStream output = new FileImageOutputStream(file);
-         writer.setOutput(output);
-         IIOImage img = new IIOImage(image, null, null);
-         writer.write(null, img, iwp);
-         writer.dispose();
-         }*/
-
-        //oldContext.makeCurrent();
+//
+//        //System.out.println("Take Screenshot to " + file.getName());
+//
+//        // Fix the image size for now
+//        int tileWidth = width / 16;
+//        int tileHeight = height / 12;
+//        int imageWidth = width;
+//        int imageHeight = height;
+//
+//        GLProfile profile = GLProfile.get(GLProfile.GL2);
+//        GLCapabilities caps = new GLCapabilities(profile);
+//        AbstractGraphicsDevice device = GLDrawableFactory.getFactory(profile).getDefaultDevice();
+//        //Caps
+//
+//        caps.setAlphaBits(8);
+//        caps.setDoubleBuffered(false);
+//        caps.setHardwareAccelerated(true);
+//        caps.setSampleBuffers(true);
+//        caps.setNumSamples(antiAliasing);
+//        caps.setPBuffer(true);
+//
+//        //Buffer
+//
+//        GLPbuffer pbuffer = GLDrawableFactory.getFactory(profile).createGLPbuffer(device, caps, null, tileWidth, tileHeight, null);
+//        BufferedImage image = null;
+//        if (transparentBackground) {
+//            image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
+//        } else {
+//            image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_3BYTE_BGR);
+//        }
+//        ByteBuffer imageBuffer = ByteBuffer.wrap(((DataBufferByte) image.getRaster().getDataBuffer()).getData());
+//
+//        //Tile rendering
+//        TileRenderer tileRenderer = new TileRenderer();
+//        tileRenderer.setTileSize(tileWidth, tileHeight, 0);
+//        tileRenderer.setImageSize(imageWidth, imageHeight);
+//        if (transparentBackground) {
+//            tileRenderer.setImageBuffer(GL2.GL_BGRA, GL2.GL_UNSIGNED_BYTE, imageBuffer);
+//        } else {
+//            tileRenderer.setImageBuffer(GL2.GL_BGR, GL2.GL_UNSIGNED_BYTE, imageBuffer);
+//        }
+//        tileRenderer.trPerspective(drawable.viewField, (float) imageWidth / (float) imageHeight, drawable.nearDistance, drawable.farDistance);
+//
+//        //Get gl
+//        //GLContext oldContext = GLContext.getCurrent();
+//        GLContext context = pbuffer.getContext();
+//        if (context.makeCurrent() == GLContext.CONTEXT_NOT_CURRENT) {
+//            throw new RuntimeException("Error making pbuffer's context current");
+//        }
+//
+//        System.out.println("Disabling snapshot");
+//
+//        GL2 gl = pbuffer.getGL().getGL2();
+//        gl.glMatrixMode(GL2.GL_MODELVIEW);
+//        gl.glLoadIdentity();
+//
+//        //Init
+//        drawable.initConfig(gl);
+//        vizConfig.setDisableLOD(true);
+//        engine.initScreenshot(gl, GLAbstractListener.glu);
+//
+//
+//        //Textrender - swap to 3D
+//        textManager.setRenderer3d(true);
+//
+//        //Render in buffer
+//        do {
+//            tileRenderer.beginTile(gl);
+//            drawable.renderScreenshot(pbuffer);
+//        } while (tileRenderer.endTile(gl));
+//
+//        //Clean
+//        context.release();
+//        pbuffer.destroy();
+//
+//
+//        //Textrender - back to 2D
+//        textManager.setRenderer3d(false);
+//        vizConfig.setDisableLOD(false);
+//        //Write image
+//        ImageUtil.flipImageVertically(image);
+//        writeImage(image);
+//
+//        /*Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("png");
+//         if (iter.hasNext()) {
+//         ImageWriter writer = iter.next();
+//         ImageWriteParam iwp = writer.getDefaultWriteParam();
+//         //iwp.setCompressionType("DEFAULT");
+//         //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
+//         //iwp.setCompressionQuality((int)(9*pngCompresssion));
+//         FileImageOutputStream output = new FileImageOutputStream(file);
+//         writer.setOutput(output);
+//         IIOImage img = new IIOImage(image, null, null);
+//         writer.write(null, img, iwp);
+//         writer.dispose();
+//         }*/
+//
+//        //oldContext.makeCurrent();
     }
 
     private void writeImage(BufferedImage image) throws Exception {

@@ -41,12 +41,13 @@
  */
 package org.gephi.visualization.swing;
 
+import com.jogamp.nativewindow.ScalableSurface;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.Component;
 import java.awt.Dimension;
-import javax.media.opengl.GL2;
-import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.glu.GLU;
 import javax.swing.JPopupMenu;
 import javax.swing.ToolTipManager;
 
@@ -54,7 +55,7 @@ import javax.swing.ToolTipManager;
  *
  * @author Mathieu Bastian
  */
-public class GraphCanvas extends GraphDrawableImpl {
+public class GraphCanvas extends GLAbstractListener {
 
     private final GLCanvas glCanvas;
     private final GLUT glut = new GLUT();
@@ -62,8 +63,10 @@ public class GraphCanvas extends GraphDrawableImpl {
     public GraphCanvas() {
         super();
         glCanvas = new GLCanvas(getCaps());
+//        glCanvas.setSurfaceScale(new float[]{ScalableSurface.AUTOMAX_PIXELSCALE, ScalableSurface.AUTOMAX_PIXELSCALE});
         super.initDrawable(glCanvas);
         glCanvas.setMinimumSize(new Dimension(0, 0));   //Fix Canvas resize Issue
+        globalScale = glCanvas.getCurrentSurfaceScale(new float[2])[0];
 
         //Basic init
         graphComponent = (Component) glCanvas;
@@ -72,6 +75,11 @@ public class GraphCanvas extends GraphDrawableImpl {
         //False lets the components appear on top of the canvas
         JPopupMenu.setDefaultLightWeightPopupEnabled(false);
         ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false);
+    }
+
+    @Override
+    protected void init(GL2 gl) {
+
     }
 
     @Override
@@ -96,6 +104,10 @@ public class GraphCanvas extends GraphDrawableImpl {
             gl.glMatrixMode(GL2.GL_MODELVIEW);
             gl.glPopMatrix();
         }
-        super.render3DScene(gl, glu);
     }
+
+    @Override
+    protected void reshape3DScene(GL2 gl) {
+    }
+
 }

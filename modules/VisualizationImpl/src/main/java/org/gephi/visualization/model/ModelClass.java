@@ -44,8 +44,8 @@ package org.gephi.visualization.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.initializer.Modeler;
 

@@ -3,8 +3,8 @@ package org.gephi.visualization.screenshot;
 import java.awt.Dimension;
 import java.nio.Buffer;
 
-import javax.media.opengl.*;
-import javax.media.opengl.glu.gl2.*;
+import com.jogamp.opengl.*;
+import com.jogamp.opengl.glu.gl2.*;
 
 /**
  * Note: Code copied from JOGL 2.0.2 sources http://jogamp.org/deployment/maven/org/jogamp/jogl/jogl/2.0.2/

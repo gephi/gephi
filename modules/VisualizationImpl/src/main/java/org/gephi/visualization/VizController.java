@@ -49,6 +49,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.selection.SelectionManager;
+import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.GraphIO;
 import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.apiimpl.VizConfig;
@@ -61,7 +62,7 @@ import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.CompatibilityEngine;
 import org.gephi.visualization.scheduler.CompatibilityScheduler;
 import org.gephi.visualization.screenshot.ScreenshotMaker;
-import org.gephi.visualization.swing.GraphDrawableImpl;
+import org.gephi.visualization.swing.GLAbstractListener;
 import org.gephi.visualization.swing.StandardGraphIO;
 import org.gephi.visualization.text.TextManager;
 import org.openide.util.Lookup;
@@ -88,7 +89,7 @@ public class VizController implements VisualizationController {
         return instance;
     }
     //Architecture
-    private GraphDrawableImpl drawable;
+    private GLAbstractListener drawable;
     private AbstractEngine engine;
     private Scheduler scheduler;
     private VizConfig vizConfig;
@@ -122,8 +123,8 @@ public class VizController implements VisualizationController {
         if (vizConfig.isUseGLJPanel()) {
             drawable = commander.createPanel();
         } else {
-//            drawable = commander.createCanvas();
             drawable = commander.createNewtCanvas();
+//              drawable = commander.createCanvas();
         }
         drawable.initArchitecture();
         engine.initArchitecture();
@@ -249,7 +250,7 @@ public class VizController implements VisualizationController {
         return currentModel;
     }
 
-    public GraphDrawableImpl getDrawable() {
+    public GraphDrawable getDrawable() {
         return drawable;
     }
 

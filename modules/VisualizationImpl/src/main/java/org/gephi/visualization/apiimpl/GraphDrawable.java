@@ -41,10 +41,13 @@
  */
 package org.gephi.visualization.apiimpl;
 
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
 import java.awt.Component;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import org.gephi.lib.gleem.linalg.Vec3f;
+import org.gephi.visualization.config.GraphicalConfiguration;
 
 /**
  *
@@ -53,6 +56,8 @@ import org.gephi.lib.gleem.linalg.Vec3f;
 public interface GraphDrawable {
 
     public Component getGraphComponent();
+
+    public float getGlobalScale();
 
     public int getViewportHeight();
 
@@ -75,4 +80,18 @@ public interface GraphDrawable {
     public FloatBuffer getProjectionMatrix();
 
     public IntBuffer getViewport();
+
+    public double[] myGluProject(float x, float y);
+
+    public float[] myGluProject(float x, float y, float z);
+
+    public void display();
+
+    public void setCameraPosition(GL2 gl, GLU glu);
+
+    public void initConfig(GL2 gl);
+
+    public GraphicalConfiguration getGraphicalConfiguration();
+
+    public void destroy();
 }

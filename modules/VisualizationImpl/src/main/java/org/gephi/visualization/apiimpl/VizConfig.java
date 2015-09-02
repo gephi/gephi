@@ -159,7 +159,6 @@ public class VizConfig {
     public static final boolean DEFAULT_DISABLE_LOD = false;
     public static final boolean DEFAULT_SHOW_HULLS = true;
     public static final float DEFAULT_EDGE_SCALE = 2f;
-    public static final float DEFAULT_META_EDGE_SCALE = 2f;
     //Default config - loaded in the VizModel
     protected boolean defaultUse3d = NbPreferences.forModule(VizConfig.class).getBoolean(USE_3D, DEFAULT_USE_3D);
     protected boolean defaultLighting = false;  //Overriden by use3d

@@ -42,14 +42,14 @@
 package org.gephi.visualization.scheduler;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.CompatibilityEngine;
-import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**
  *
@@ -66,7 +66,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     AtomicBoolean stopDrag = new AtomicBoolean();
     AtomicBoolean mouseClick = new AtomicBoolean();
     //Architeture
-    private GraphDrawableImpl graphDrawable;
+    private GraphDrawable graphDrawable;
     private CompatibilityEngine engine;
     private VizConfig vizConfig;
     //Animators

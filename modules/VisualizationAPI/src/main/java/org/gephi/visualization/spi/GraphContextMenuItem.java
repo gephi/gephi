@@ -75,7 +75,7 @@ import org.gephi.graph.api.Node;
  * To provide a context menu item, a class has to implement this interface and
  * have a
  * <code>@ServiceProvider</code> annotation
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface GraphContextMenuItem {
 

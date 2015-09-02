@@ -41,12 +41,14 @@
  */
 package org.gephi.visualization.swing;
 
+import com.jogamp.opengl.GL2;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.text.NumberFormat;
-import javax.media.opengl.awt.GLJPanel;
+import com.jogamp.opengl.awt.GLJPanel;
+import com.jogamp.opengl.glu.GLU;
 import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizController;
 
@@ -54,7 +56,7 @@ import org.gephi.visualization.VizController;
  *
  * @author Mathieu Bastian
  */
-public class GraphPanel extends GraphDrawableImpl {
+public class GraphPanel extends GLAbstractListener {
 
     private GLJPanel gljPanel;
     private NumberFormat formatter;
@@ -65,16 +67,16 @@ public class GraphPanel extends GraphDrawableImpl {
         formatter.setMaximumFractionDigits(1);
 
         //Init GLJPanel as the drawable
-        gljPanel = new GLJPanel(getCaps(), null, null) {
-            //@Override
-            @Override
-            public void paintComponent(Graphics g) {
-                Graphics2D g2d = (Graphics2D) g;
-                render2DBackground(g2d);
-                super.paintComponent(g2d);
-                render2DForeground(g2d);
-            }
-        };
+//        gljPanel = new GLJPanel(getCaps(), null, null) {
+//            //@Override
+//            @Override
+//            public void paintComponent(Graphics g) {
+//                Graphics2D g2d = (Graphics2D) g;
+//                render2DBackground(g2d);
+//                super.paintComponent(g2d);
+//                render2DForeground(g2d);
+//            }
+//        };
         //gljPanel.setOpaque(false);
 
         graphComponent = gljPanel;
@@ -113,5 +115,20 @@ public class GraphPanel extends GraphDrawableImpl {
         yP[3] = viewport.get(3) - limits.getMinYviewport();
         g.setColor(Color.red);
         g.drawPolygon(xP, yP, 4);
+    }
+
+    @Override
+    protected void init(GL2 gl) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void render3DScene(GL2 gl, GLU glu) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void reshape3DScene(GL2 gl) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

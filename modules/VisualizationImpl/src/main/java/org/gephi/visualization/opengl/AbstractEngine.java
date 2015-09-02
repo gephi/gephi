@@ -41,15 +41,16 @@
  */
 package org.gephi.visualization.opengl;
 
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
 import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.visualization.apiimpl.Engine;
+import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.GraphIO;
 import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.apiimpl.VizConfig;
@@ -59,7 +60,6 @@ import org.gephi.visualization.model.ModelClass;
 import org.gephi.visualization.model.ModelClassLibrary;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.octree.Octree;
-import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.visualization.text.TextManager;
 
 /**
@@ -76,7 +76,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z
     };
     //Architecture
-    protected GraphDrawableImpl graphDrawable;
+    protected GraphDrawable graphDrawable;
     protected GraphIO graphIO;
     protected VizEventManager vizEventManager;
     protected SelectionArea currentSelectionArea;

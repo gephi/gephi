@@ -42,8 +42,8 @@
 package org.gephi.visualization.selection;
 
 import java.util.Arrays;
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
 import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.selection.SelectionArea;

@@ -75,7 +75,6 @@ public abstract class NodeModel implements Model, TextModel {
     //Edges
     protected EdgeModel[] edges;
     protected int edgeLength;
-    protected int edgeCount;
 
     public NodeModel(Node node) {
         this.node = node;
@@ -266,7 +265,6 @@ public abstract class NodeModel implements Model, TextModel {
         int id = edgeLength++;
         growEdges(id);
         edges[id] = model;
-        edgeCount++;
         if (model.getSourceModel() == this) {
             model.setOctantSourceId(id);
         } else {
@@ -282,7 +280,6 @@ public abstract class NodeModel implements Model, TextModel {
             id = model.getOctantTargetId();
         }
         edges[id] = null;
-        edgeCount--;
     }
 
     public EdgeModel[] getEdges() {

@@ -41,14 +41,24 @@
  */
 package org.gephi.visualization;
 
-import javax.media.opengl.GLProfile;
+import com.jogamp.newt.NewtFactory;
+import com.jogamp.opengl.GLProfile;
 import org.openide.modules.ModuleInstall;
 
 public class Installer extends ModuleInstall {
 
     @Override
     public void restored() {
+        // Workaround for bug jogl 1163
+        NewtFactory.setWindowIcons(null);
+
         //Init JOGL, recommended
         GLProfile.initSingleton();
+    }
+
+    @Override
+    public void close() {
+        // Destroy JOGL
+        VizController.getInstance().destroy();
     }
 }

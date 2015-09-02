@@ -47,6 +47,7 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -54,14 +55,15 @@ import org.gephi.project.api.WorkspaceListener;
 import org.gephi.tools.api.ToolController;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 @ConvertAsProperties(dtd = "-//org.gephi.visualization.component//Graph//EN",
         autostore = false)
@@ -77,7 +79,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     private AbstractEngine engine;
     private VizBarController vizBarController;
 //    private Map<Integer, ContextMenuItemManipulator> keyActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();
-    private final transient GraphDrawableImpl drawable;
+    private final transient GraphDrawable drawable;
 
     public GraphTopComponent() {
         initComponents();
@@ -93,24 +95,24 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         drawable = VizController.getInstance().getDrawable();
 
         //Request component activation and therefore initialize JOGL2 component
-//        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
-//            @Override
-//            public void run() {
-//                open();
-//                SwingUtilities.invokeLater(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        requestActive();
-//                        add(drawable.getGraphComponent(), BorderLayout.CENTER);
-//                        remove(waitingLabel);
-//                    }
-//                });
-//            }
-//        });
+        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+            @Override
+            public void run() {
+                open();
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        requestActive();
+                        add(drawable.getGraphComponent(), BorderLayout.CENTER);
+                        remove(waitingLabel);
+                    }
+                });
+            }
+        });
         initKeyEventContextMenuActionMappings();
 
-        add(drawable.getGraphComponent(), BorderLayout.CENTER);
-        remove(waitingLabel);
+//        add(drawable.getGraphComponent(), BorderLayout.CENTER);
+//        remove(waitingLabel);
     }
 
     private void initCollapsePanel() {
@@ -287,23 +289,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     // End of variables declaration//GEN-END:variables
 
     @Override
-    protected void componentShowing() {
-        super.componentShowing();
-        engine.startDisplay();
-
-    }
-
-    @Override
-    protected void componentHidden() {
-        super.componentHidden();
-        engine.stopDisplay();
-    }
-
-    @Override
-    public void componentOpened() {
-    }
-
-    @Override
     protected void componentActivated() {
         java.awt.Toolkit.getDefaultToolkit().addAWTEventListener(this, AWTEvent.KEY_EVENT_MASK);
     }
@@ -311,11 +296,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     @Override
     protected void componentDeactivated() {
         java.awt.Toolkit.getDefaultToolkit().removeAWTEventListener(this);
-    }
-
-    @Override
-    public void componentClosed() {
-        engine.stopDisplay();
     }
 
     void writeProperties(java.util.Properties p) {

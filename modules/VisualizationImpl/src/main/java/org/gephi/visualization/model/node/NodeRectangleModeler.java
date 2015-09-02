@@ -41,9 +41,9 @@
  */
 package org.gephi.visualization.model.node;
 
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
-import javax.media.opengl.glu.GLUquadric;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.glu.GLUquadric;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.model.Model;
 import org.gephi.visualization.opengl.CompatibilityEngine;

@@ -43,8 +43,8 @@ package org.gephi.visualization.model.edge;
 
 import com.jogamp.common.nio.Buffers;
 import java.nio.FloatBuffer;
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.lib.gleem.linalg.Vec3f;

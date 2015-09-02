@@ -43,7 +43,7 @@ package org.gephi.visualization.opengl;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.media.opengl.GL2;
+import com.jogamp.opengl.GL2;
 import org.gephi.ui.utils.PrefsUtils;
 import org.openide.util.NbPreferences;
 

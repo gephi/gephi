@@ -42,8 +42,8 @@
 package org.gephi.visualization.model.edge;
 
 import java.awt.geom.Rectangle2D;
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.ElementProperties;
 import org.gephi.visualization.VizModel;

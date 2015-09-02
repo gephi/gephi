@@ -66,7 +66,7 @@ import org.gephi.visualization.selection.Rectangle;
 public class StandardGraphIO implements GraphIO, VizArchitecture {
 
     //Architecture
-    protected GraphDrawableImpl graphDrawable;
+    protected GLAbstractListener graphDrawable;
     protected AbstractEngine engine;
     protected VizEventManager vizEventManager;
     protected VizController vizController;
@@ -86,7 +86,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
     @Override
     public void initArchitecture() {
-        this.graphDrawable = VizController.getInstance().getDrawable();
+        this.graphDrawable = (GLAbstractListener) VizController.getInstance().getDrawable();
         this.engine = VizController.getInstance().getEngine();
         this.vizEventManager = VizController.getInstance().getVizEventManager();
         this.vizController = VizController.getInstance();
@@ -104,7 +104,6 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         if (vizController.getVizConfig().isSelectionEnable()) {
             graphDrawable.graphComponent.addMouseMotionListener(this);
         }
-
     }
 
     @Override
@@ -121,8 +120,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             return;
         }
 
-        float x = e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x;
-        float y = e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y;
+        float x = graphDrawable.getGlobalScale() * (e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x);
+        float y = graphDrawable.getGlobalScale() * (e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y);
 
         if (SwingUtilities.isRightMouseButton(e)) {
             //Save the coordinate of the start
@@ -153,8 +152,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         //Update mouse position because the movement during dragging
         if (graphDrawable.getGraphComponent().isShowing()) {
 
-            float x = e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x;
-            float y = e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y;
+            float x = graphDrawable.getGlobalScale() * (e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x);
+            float y = graphDrawable.getGlobalScale() * (e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y);
             mousePosition[0] = x;
             mousePosition[1] = graphDrawable.viewport.get(3) - y;
         }
@@ -195,8 +194,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             return;
         }
 
-        float x = e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x;
-        float y = e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y;
+        float x = graphDrawable.getGlobalScale() * (e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x);
+        float y = graphDrawable.getGlobalScale() * (e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y);
         mousePosition[0] = x;
         mousePosition[1] = graphDrawable.viewport.get(3) - y;
 
@@ -235,8 +234,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             return;
         }
 
-        float x = e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x;//TODO Pourqoui ce osnt des float et pas des int
-        float y = e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y;
+        float x = graphDrawable.getGlobalScale() * (e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x);//TODO Pourqoui ce osnt des float et pas des int
+        float y = graphDrawable.getGlobalScale() * (e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y);
 
         if (rightButtonMoving[0] != -1) {
             //The right button is pressed

@@ -7,15 +7,15 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
 import org.gephi.graph.api.Node;
 import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.node.NodeModel;
-import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**
  *
@@ -27,7 +27,7 @@ public class Octree {
     protected static final int NULL_ID = -1;
     //Architecture
     protected GraphLimits limits;
-    private GraphDrawableImpl drawable;
+    private GraphDrawable drawable;
     protected VizController vizController;
     //Params
     protected final int maxDepth;
