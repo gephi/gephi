@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>net.java.dev</groupId>
+  <artifactId>stax-utils</artifactId>
+  <versioning>
+    <latest>snapshot-20100402</latest>
+    <release>snapshot-20100402</release>
+    <versions>
+      <version>snapshot-20100402</version>
+    </versions>
+    <lastUpdated>20120412022342</lastUpdated>
+  </versioning>
+</metadata>

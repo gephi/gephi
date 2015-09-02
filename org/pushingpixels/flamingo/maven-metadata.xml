@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.pushingpixels</groupId>
+  <artifactId>flamingo</artifactId>
+  <versioning>
+    <latest>5.0-gephi</latest>
+    <release>5.0-gephi</release>
+    <versions>
+      <version>5.0</version>
+      <version>5.0-gephi</version>
+    </versions>
+    <lastUpdated>20120416152659</lastUpdated>
+  </versioning>
+</metadata>
