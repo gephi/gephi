@@ -47,11 +47,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for SumNumbers AttributeColumnsMergeStrategy.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=AttributeRowsMergeStrategyBuilder.class)
 public class SumNumbersBuilder implements AttributeRowsMergeStrategyBuilder {
 
+    @Override
     public AttributeRowsMergeStrategy getAttributeRowsMergeStrategy() {
         return new SumNumbers();
     }

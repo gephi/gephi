@@ -43,12 +43,12 @@ package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import java.math.BigDecimal;
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
-import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.Element;
 import org.gephi.utils.StatisticsUtils;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -57,51 +57,61 @@ import org.openide.util.NbBundle;
 /**
  * AttributeRowsMergeStrategy for any number or number list column that
  * calculates the minimum of all the values.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class MinimumNumber implements AttributeRowsMergeStrategy {
 
-    private Attributes[] rows;
-    private AttributeColumn column;
+    private Element[] rows;
+    private Column column;
     private BigDecimal result;
 
-    public void setup(Attributes[] rows, Attributes selectedRow, AttributeColumn column) {
+    @Override
+    public void setup(Element[] rows, Element selectedRow, Column column) {
         this.rows = rows;
         this.column = column;
     }
 
+    @Override
     public Object getReducedValue() {
         return result;
     }
 
+    @Override
     public void execute() {
         result = StatisticsUtils.minValue(Lookup.getDefault().lookup(AttributeColumnsController.class).getRowsColumnNumbers(rows, column));
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(AverageNumber.class, "MinimumNumber.name");
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(AverageNumber.class, "MinimumNumber.description");
     }
 
+    @Override
     public boolean canExecute() {
-        return AttributeUtils.getDefault().isNumberOrNumberListColumn(column);
+        return AttributeUtils.isNumberType(column.getTypeClass());
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 100;
     }
 
+    @Override
     public int getPosition() {
         return 600;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/minus-white.png", true);
     }

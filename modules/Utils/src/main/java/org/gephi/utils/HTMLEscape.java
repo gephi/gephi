@@ -43,7 +43,7 @@ package org.gephi.utils;
 
 /**
  * Class for escaping html of a String to show it in a hrml report without problems
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class HTMLEscape {
 

@@ -52,39 +52,47 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * GeneralActionsManipulator shows a wizard UI for importing a CSV file to nodes/edges table.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=GeneralActionsManipulator.class)
 public class ImportCSV implements GeneralActionsManipulator{
 
+    @Override
     public void execute() {
         Lookup.getDefault().lookup(ImportCSVUIWizardAction.class).performAction();
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(ImportCSV.class, "ImportCSV.name");
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 100;
     }
 
+    @Override
     public int getPosition() {
         return 100;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-excel.png", true);
     }

@@ -47,7 +47,7 @@ import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
 /**
  * General abstract class for AttributeColumnManipulators that create a new column from a regular expression and another column.
  * They need a title for the new column and a pattern (regex).
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public abstract class GeneralCreateColumnFromRegex implements AttributeColumnsManipulator{
     protected String title;

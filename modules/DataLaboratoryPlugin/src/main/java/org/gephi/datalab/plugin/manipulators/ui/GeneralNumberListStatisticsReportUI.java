@@ -43,8 +43,8 @@ package org.gephi.datalab.plugin.manipulators.ui;
 
 import java.math.BigDecimal;
 import javax.swing.JPanel;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
@@ -59,7 +59,7 @@ import org.openide.windows.WindowManager;
 
 /**
  * UI for NumberColumnStatisticsReport AttributeColumnsManipulator.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI, ManipulatorUI {
 
@@ -92,9 +92,11 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel impl
         setChartControlsEnabled(statistics != null);//Disable chart controls if no numbers available
     }
 
-    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls) {
+    @Override
+    public void setup(AttributeColumnsManipulator m, Table table, Column column, DialogControls dialogControls) {
     }
 
+    @Override
     public void setup(Manipulator m, DialogControls dialogControls) {
     }
 
@@ -108,6 +110,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel impl
         divisionsComboBox.setEnabled(enabled);
     }
 
+    @Override
     public void unSetup() {
         if (reportDialog != null) {
             reportDialog.dispose();
@@ -123,14 +126,17 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel impl
         }
     }
 
+    @Override
     public String getDisplayName() {
         return dialogTitle;
     }
 
+    @Override
     public JPanel getSettingsPanel() {
         return this;
     }
 
+    @Override
     public boolean isModal() {
         return false;
     }

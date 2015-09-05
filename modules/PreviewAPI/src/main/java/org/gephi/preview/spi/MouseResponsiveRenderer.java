@@ -44,7 +44,7 @@ package org.gephi.preview.spi;
 /**
  * <b>Optionally</b> implement this interface in a <code>Renderer</code> that needs to be responsive to mouse events.
  * Only renderers that implement this interface will be drawn while mouse events are being attended (such as dragging).
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface MouseResponsiveRenderer {
     public boolean needsPreviewMouseListener(PreviewMouseListener previewMouseListener);

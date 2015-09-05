@@ -75,7 +75,7 @@ import org.openide.util.NbBundle;
 /**
  * Utils class to build and change charts.
  * Scatter plots implemented to be able to draw or not lines and linear regression.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class ChartsUtils {
 

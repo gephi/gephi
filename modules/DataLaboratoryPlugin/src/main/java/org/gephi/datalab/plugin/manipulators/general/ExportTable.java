@@ -52,40 +52,48 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * GeneralActionsManipulator that exports a table to CSV.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=GeneralActionsManipulator.class)
 public class ExportTable implements GeneralActionsManipulator {
 
+    @Override
     public void execute() {
         DataTablesController dtc=Lookup.getDefault().lookup(DataTablesController.class);
         dtc.exportCurrentTable(DataTablesController.ExportMode.CSV);
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(ExportTable.class, "ExportTable.name");
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 100;
     }
 
+    @Override
     public int getPosition() {
         return 200;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-excel.png", true);
     }

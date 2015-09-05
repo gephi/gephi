@@ -50,7 +50,7 @@ import org.gephi.ui.tools.plugin.edit.EditWindowUtils.AttributeValueWrapper;
 
 /**
  *
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class MultipleRowsAttributeValueWrapper implements AttributeValueWrapper {
 

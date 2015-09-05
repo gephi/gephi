@@ -42,53 +42,63 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
-import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.Element;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
  * AttributeRowsMergeStrategy that simply keeps sets null value to the merged row.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class SetNull implements AttributeRowsMergeStrategy {
 
-    public void setup(Attributes[] rows, Attributes selectedRow, AttributeColumn column) {
+    @Override
+    public void setup(Element[] rows, Element selectedRow, Column column) {
     }
 
+    @Override
     public Object getReducedValue() {
         return null;
     }
 
+    @Override
     public void execute() {
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(AverageNumber.class, "SetNull.name");
     }
 
+    @Override
     public String getDescription() {
         return null;
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 0;
     }
 
+    @Override
     public int getPosition() {
         return 200;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/broom.png", true);
     }

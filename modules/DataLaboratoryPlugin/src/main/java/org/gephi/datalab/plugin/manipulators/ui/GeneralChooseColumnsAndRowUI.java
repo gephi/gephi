@@ -45,23 +45,24 @@ import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsAndRowChooser;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Node;
 
 /**
  * UI for GeneralColumnsChooser (ClearNodesData and ClearEdgesData)
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class GeneralChooseColumnsAndRowUI extends javax.swing.JPanel implements ManipulatorUI {
 
     private GeneralColumnsAndRowChooser columnsAndRowChooser;
     private ColumnCheckBox[] columnsCheckBoxes;
-    private Object[] rows;//Node or edge
+    private Element[] rows;//Node or edge
 
     /** Creates new form GeneralChooseColumnsUI */
     public GeneralChooseColumnsAndRowUI(String rowDescription, String columnsDescription) {
@@ -70,41 +71,46 @@ public class GeneralChooseColumnsAndRowUI extends javax.swing.JPanel implements 
         columnsDescriptionLabel.setText(columnsDescription);
     }
 
+    @Override
     public void setup(Manipulator m, DialogControls dialogControls) {
         this.columnsAndRowChooser = (GeneralColumnsAndRowChooser) m;
         refreshColumns();
         refreshRows();
     }
 
+    @Override
     public void unSetup() {
         columnsAndRowChooser.setColumns(getChosenColumns());
         columnsAndRowChooser.setRow(rows[rowComboBox.getSelectedIndex()]);
     }
 
+    @Override
     public String getDisplayName() {
         return columnsAndRowChooser.getName();
     }
 
+    @Override
     public JPanel getSettingsPanel() {
         return this;
     }
 
+    @Override
     public boolean isModal() {
         return true;
     }
 
-    public AttributeColumn[] getChosenColumns() {
-        ArrayList<AttributeColumn> columnsToClearDataList = new ArrayList<AttributeColumn>();
+    public Column[] getChosenColumns() {
+        ArrayList<Column> columnsToClearDataList = new ArrayList<Column>();
         for (ColumnCheckBox c : columnsCheckBoxes) {
             if (c.isSelected()) {
                 columnsToClearDataList.add(c.getColumn());
             }
         }
-        return columnsToClearDataList.toArray(new AttributeColumn[0]);
+        return columnsToClearDataList.toArray(new Column[0]);
     }
 
     private void refreshColumns() {
-        AttributeColumn[] columns = columnsAndRowChooser.getColumns();
+        Column[] columns = columnsAndRowChooser.getColumns();
         columnsCheckBoxes = new ColumnCheckBox[columns.length];
         contentPanel.removeAll();
         contentPanel.setLayout(new MigLayout("", "[pref!]"));
@@ -125,10 +131,10 @@ public class GeneralChooseColumnsAndRowUI extends javax.swing.JPanel implements 
         for (int i = 0; i < rows.length; i++) {
             if (rows[i] instanceof Node) {
                 node = (Node) rows[i];
-                rowComboBox.addItem(node.getId() + " - " + node.getNodeData().getLabel());
+                rowComboBox.addItem(node.getId() + " - " + node.getLabel());
             } else {
                 edge = (Edge) rows[i];
-                rowComboBox.addItem(edge.getId() + " - " + edge.getEdgeData().getLabel());
+                rowComboBox.addItem(edge.getId() + " - " + edge.getLabel());
             }
             if (rows[i] == sourceRow) {
                 rowComboBox.setSelectedIndex(i);
@@ -139,9 +145,9 @@ public class GeneralChooseColumnsAndRowUI extends javax.swing.JPanel implements 
     private static class ColumnCheckBox {
 
         private JCheckBox checkBox;
-        private AttributeColumn column;
+        private Column column;
 
-        public ColumnCheckBox(AttributeColumn column, boolean selected) {
+        public ColumnCheckBox(Column column, boolean selected) {
             checkBox = new JCheckBox(column.getTitle(), selected);
             this.column = column;
         }
@@ -158,7 +164,7 @@ public class GeneralChooseColumnsAndRowUI extends javax.swing.JPanel implements 
             return checkBox;
         }
 
-        public AttributeColumn getColumn() {
+        public Column getColumn() {
             return column;
         }
     }

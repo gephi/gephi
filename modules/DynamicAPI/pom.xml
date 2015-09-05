@@ -39,6 +39,7 @@
                     <publicPackages>
                         <publicPackage>org.gephi.dynamic</publicPackage>
                         <publicPackage>org.gephi.dynamic.api</publicPackage>
+                        <publicPackage>org.gephi.dynamic.utils</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

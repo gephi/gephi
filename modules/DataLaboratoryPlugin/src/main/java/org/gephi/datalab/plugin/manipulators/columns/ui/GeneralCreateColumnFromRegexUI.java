@@ -47,8 +47,8 @@ import java.util.regex.PatternSyntaxException;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.plugin.manipulators.columns.GeneralCreateColumnFromRegex;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
@@ -60,12 +60,12 @@ import org.openide.util.NbBundle;
 
 /**
  * UI for CreateBooleanMatchesColumn AttributeColumnsManipulator
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
 
     private DialogControls dialogControls;
-    private AttributeTable table;
+    private Table table;
 
     public enum Mode {
 
@@ -82,35 +82,42 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
         initComponents();
         regexTextField.getDocument().addDocumentListener(new DocumentListener() {
 
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 refreshPattern();
             }
 
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 refreshPattern();
             }
 
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 refreshPattern();
             }
         });
         titleTextField.getDocument().addDocumentListener(new DocumentListener() {
 
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 refreshOkButton();
             }
 
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 refreshOkButton();
             }
 
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 refreshOkButton();
             }
         });
     }
 
-    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls) {
+    @Override
+    public void setup(AttributeColumnsManipulator m, Table table, Column column, DialogControls dialogControls) {
         this.manipulator = (GeneralCreateColumnFromRegex) m;
         this.table = table;
         this.dialogControls = dialogControls;
@@ -125,15 +132,18 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
         refreshPattern();
     }
 
+    @Override
     public void unSetup() {
         manipulator.setTitle(titleTextField.getText());
         manipulator.setPattern(pattern);
     }
 
+    @Override
     public String getDisplayName() {
         return manipulator.getName();
     }
 
+    @Override
     public JPanel getSettingsPanel() {
         ValidationPanel validationPanel = new ValidationPanel();
         validationPanel.setInnerComponent(this);
@@ -145,6 +155,7 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
         return validationPanel;
     }
 
+    @Override
     public boolean isModal() {
         return true;
     }

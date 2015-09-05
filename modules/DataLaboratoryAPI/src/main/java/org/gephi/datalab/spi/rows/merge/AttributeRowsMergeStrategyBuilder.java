@@ -45,7 +45,7 @@ package org.gephi.datalab.spi.rows.merge;
  * <p>This interface is used for providing RowsMergeStrategy instances
  * using the Netbeans Lookup but avoiding the singleton it causes.</p>
  * <p>Each RowsMergeStrategy should have a RowsMergeStrategyBuilder and publish it with <code>@ServiceProvider(service=RowsMergeStrategyBuilder.class)</code> annotation.</p>
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface AttributeRowsMergeStrategyBuilder {
 

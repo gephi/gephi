@@ -49,7 +49,7 @@ import org.gephi.graph.api.Edge;
 /**
  * Manipulator for edges.
  * @see Manipulator
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface EdgesManipulator extends ContextMenuItemManipulator{
     /**

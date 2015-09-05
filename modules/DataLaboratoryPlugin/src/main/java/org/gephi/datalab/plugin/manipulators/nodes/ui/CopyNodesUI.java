@@ -52,7 +52,7 @@ import org.gephi.datalab.spi.ManipulatorUI;
 
 /**
  * UI for CopyNodes nodes manipulator.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class CopyNodesUI extends javax.swing.JPanel implements ManipulatorUI {
 
@@ -66,23 +66,28 @@ public class CopyNodesUI extends javax.swing.JPanel implements ManipulatorUI {
         spinnerText.setEditable(false);//Not editable with keyboard
     }
 
+    @Override
     public void setup(Manipulator m, DialogControls dialogControls) {
         this.manipulator = (CopyNodes) m;
         copiesSpinner.setValue(manipulator.getCopies());
     }
 
+    @Override
     public void unSetup() {
         manipulator.setCopies((Integer) copiesSpinner.getValue());
     }
 
+    @Override
     public String getDisplayName() {
         return manipulator.getName();
     }
 
+    @Override
     public JPanel getSettingsPanel() {
         return this;
     }
 
+    @Override
     public boolean isModal() {
         return true;
     }

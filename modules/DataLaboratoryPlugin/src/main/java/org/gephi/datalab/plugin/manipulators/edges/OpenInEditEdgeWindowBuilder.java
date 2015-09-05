@@ -47,11 +47,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for OpenInEditEdgeWindow edges manipulator.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=EdgesManipulatorBuilder.class)
 public class OpenInEditEdgeWindowBuilder implements EdgesManipulatorBuilder{
 
+    @Override
     public EdgesManipulator getEdgesManipulator() {
         return new OpenInEditEdgeWindow();
     }

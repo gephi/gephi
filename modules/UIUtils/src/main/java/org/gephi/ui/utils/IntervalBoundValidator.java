@@ -41,16 +41,19 @@
  */
 package org.gephi.ui.utils;
 
+import java.text.ParseException;
 import javax.swing.text.JTextComponent;
+import org.gephi.dynamic.utils.DynamicUtilities;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
+import org.openide.util.NbBundle;
 
 /**
  * Utils class to validate a string that contains a valid title for a column of
  * a
  * <code>AttributeTable</code>.
  *
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class IntervalBoundValidator implements Validator<String> {
 
@@ -65,28 +68,27 @@ public class IntervalBoundValidator implements Validator<String> {
 
     @Override
     public boolean validate(Problems prblms, String componentName, String value) {
-        return false;
-//        try {
-//            double time = DynamicParser.parseTime(value);
-//            if (intervalStartTextField != null) {
-//                //Also validate that this (end time) is greater or equal than start time.
-//                try {
-//                    double startTime = DynamicParser.parseTime(intervalStartTextField.getText());
-//                    if (time < startTime) {
-//                        prblms.add(NbBundle.getMessage(IntervalBoundValidator.class, "IntervalBoundValidator.invalid.interval.message"));
-//                        return false;
-//                    } else {
-//                        return true;
-//                    }
-//                } catch (ParseException parseException) {
-//                    return true;
-//                }
-//            } else {
-//                return true;
-//            }
-//        } catch (ParseException ex) {
-//            prblms.add(NbBundle.getMessage(IntervalBoundValidator.class, "IntervalBoundValidator.invalid.bound.message"));
-//            return false;
-//        }
+        try {
+            double time = DynamicUtilities.parseTime(value);
+            if (intervalStartTextField != null) {
+                //Also validate that this (end time) is greater or equal than start time.
+                try {
+                    double startTime = DynamicUtilities.parseTime(intervalStartTextField.getText());
+                    if (time < startTime) {
+                        prblms.add(NbBundle.getMessage(IntervalBoundValidator.class, "IntervalBoundValidator.invalid.interval.message"));
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } catch (ParseException parseException) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        } catch (ParseException ex) {
+            prblms.add(NbBundle.getMessage(IntervalBoundValidator.class, "IntervalBoundValidator.invalid.bound.message"));
+            return false;
+        }
     }
 }

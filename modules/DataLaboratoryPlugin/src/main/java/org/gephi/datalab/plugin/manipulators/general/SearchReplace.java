@@ -42,13 +42,13 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.general;
 
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.general.ui.SearchReplaceUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.GeneralActionsManipulator;
+import org.gephi.graph.api.GraphController;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.ImageUtilities;
@@ -58,11 +58,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * GeneralActionsManipulator that shows a UI for doing search/replace tasks with normal and regex features.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service = GeneralActionsManipulator.class)
 public class SearchReplace implements GeneralActionsManipulator {
 
+    @Override
     public void execute() {
         SearchReplaceUI ui = Lookup.getDefault().lookup(SearchReplaceUI.class);
         if (ui.isActive()) {
@@ -81,44 +82,51 @@ public class SearchReplace implements GeneralActionsManipulator {
         ui.setActive(false);
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(SearchReplace.class, "SearchReplace.name");
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
-        AttributeTable currentTable = getCurrentTable();
+        Table currentTable = getCurrentTable();
         return currentTable != null && Lookup.getDefault().lookup(AttributeColumnsController.class).getTableRowsCount(currentTable) > 0;//Make sure that there is at least 1 row
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 100;
     }
 
+    @Override
     public int getPosition() {
         return 0;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/binocular--pencil.png", true);
     }
 
-    private AttributeTable getCurrentTable() {
+    private Table getCurrentTable() {
         DataTablesController dtc = Lookup.getDefault().lookup(DataTablesController.class);
         if (dtc.getDataTablesEventListener() == null) {
             return null;
         }
         if (dtc.isNodeTableMode()) {
-            return Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
+            return Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
         } else {
-            return Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
+            return Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
         }
     }
 }

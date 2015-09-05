@@ -50,43 +50,52 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that centers the graph view to show a node.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class SelectOnGraph extends BasicNodesManipulator {
     private Node node;
 
+    @Override
     public void setup(Node[] nodes, Node clickedNode) {
         this.node=clickedNode;
     }
 
+    @Override
     public void execute() {
         VizController.getInstance().getSelectionManager().centerOnNode(node);
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(SelectOnGraph.class, "SelectOnGraph.name");
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 100;
     }
 
+    @Override
     public int getPosition() {
         return 0;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/magnifier--arrow.png", true);
     }

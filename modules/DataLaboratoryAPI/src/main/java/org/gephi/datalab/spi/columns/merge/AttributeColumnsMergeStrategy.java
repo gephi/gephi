@@ -41,15 +41,15 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.spi.columns.merge;
 
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.spi.Manipulator;
 
 /**
  * <p>Service for defining strategies for merging attribute columns of a table.</p>
  * <p>Has the same interface as a manipulator.</p>
  * @see Manipulator
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface AttributeColumnsMergeStrategy extends Manipulator{
 
@@ -59,5 +59,5 @@ public interface AttributeColumnsMergeStrategy extends Manipulator{
      * @param table Table of the columns
      * @param columns Columns to merge
      */
-    void setup(AttributeTable table, AttributeColumn[] columns);
+    void setup(Table table, Column[] columns);
 }

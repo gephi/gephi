@@ -52,16 +52,18 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that deletes one or more nodes.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class DeleteNodes extends BasicNodesManipulator {
 
     private Node[] nodes;
 
+    @Override
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes = nodes;
     }
 
+    @Override
     public void execute() {
         if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.confirmation.message"), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
@@ -69,6 +71,7 @@ public class DeleteNodes extends BasicNodesManipulator {
         }
     }
 
+    @Override
     public String getName() {
         if (nodes.length > 1) {
             return NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.name.multiple");
@@ -77,26 +80,32 @@ public class DeleteNodes extends BasicNodesManipulator {
         }
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 100;
     }
 
+    @Override
     public int getPosition() {
         return 300;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/cross.png", true);
     }

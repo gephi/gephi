@@ -52,22 +52,25 @@ import org.openide.util.NbBundle;
 
 /**
  * Edges manipulator that deletes one or more edges and allows the user to choose what of their nodes to delete at the same time.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class DeleteEdgesWithNodes extends BasicEdgesManipulator  {
 
     private Edge[] edges;
     private boolean deleteSource,deleteTarget;
 
+    @Override
     public void setup(Edge[] edges, Edge clickedEdge) {
         this.edges = edges;
     }
 
+    @Override
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         gec.deleteEdgesWithNodes(edges,deleteSource,deleteTarget);
     }
 
+    @Override
     public String getName() {
         if (edges.length > 1) {
             return NbBundle.getMessage(DeleteEdgesWithNodes.class, "DeleteEdgesWithNodes.name.multiple");
@@ -76,26 +79,32 @@ public class DeleteEdgesWithNodes extends BasicEdgesManipulator  {
         }
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return new DeleteEdgesWithNodesUI();
     }
 
+    @Override
     public int getType() {
         return 100;
     }
 
+    @Override
     public int getPosition() {
         return 400;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/cross.png", true);
     }

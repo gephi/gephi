@@ -51,7 +51,7 @@ import org.gephi.graph.api.Node;
  * It is possible to reuse actions implementations by adding both <code>ServiceProvider</code> annotations.</b></p>
  * Manipulator for nodes.
  * @see Manipulator
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface NodesManipulator extends ContextMenuItemManipulator {
     /**

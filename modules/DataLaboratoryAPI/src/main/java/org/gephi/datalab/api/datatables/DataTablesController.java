@@ -41,14 +41,14 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.api.datatables;
 
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Table;
 
 /**
  * <p>This interface defines part of the Data Laboratory API.</p>
  * <p>It provides methods to control the Data Table UI that shows a table for nodes and edges.</p>
  * <p>This is done by registering the data table ui as a listener of these events that can be requested with this controller.
  * <b>Note that data table ui will not be registered to listen to the events of this controller until it is instanced opening Data Laboratory Group</b></p>
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface DataTablesController extends DataTablesCommonInterface {
 
@@ -56,7 +56,7 @@ public interface DataTablesController extends DataTablesCommonInterface {
      * Request the tables implementation to show the given table (nodes or edges table)
      * @param table Table to show
      */
-    void selectTable(AttributeTable table);
+    void selectTable(Table table);
 
     /**
      * Register a listener for these requests.

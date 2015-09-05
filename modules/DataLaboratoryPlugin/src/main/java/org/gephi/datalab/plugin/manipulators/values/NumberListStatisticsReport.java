@@ -42,61 +42,69 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.values;
 
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralNumberListStatisticsReportUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.values.AttributeValueManipulator;
+import org.gephi.graph.api.Element;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
  * AttributeValueManipulator that shows a report with statistics values and charts of a dynamic number/number list AttributeValue.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class NumberListStatisticsReport implements AttributeValueManipulator {
 
     private Number[] numbers;
-    private AttributeColumn column;
+    private Column column;
 
-    public void setup(AttributeRow row, AttributeColumn column) {
+    @Override
+    public void setup(Element row, Column column) {
         this.column = column;
-        AttributeUtils attributeUtils = AttributeUtils.getDefault();
-        if (attributeUtils.isNumberListColumn(column) || attributeUtils.isDynamicNumberColumn(column)) {
-            numbers = Lookup.getDefault().lookup(AttributeColumnsController.class).getRowNumbers(row, new AttributeColumn[]{column});
+        if (AttributeUtils.isNumberType(column.getTypeClass())) {
+            numbers = Lookup.getDefault().lookup(AttributeColumnsController.class).getRowNumbers(row, new Column[]{column});
         }
     }
 
+    @Override
     public void execute() {
     }
 
+    @Override
     public String getName() {
         return getMessage("NumberListStatisticsReport.name");
     }
 
+    @Override
     public String getDescription() {
         return getMessage("NumberListStatisticsReport.description");
     }
 
+    @Override
     public boolean canExecute() {
         return numbers != null && numbers.length > 1;//Column is number list column and there is numbers to show
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return new GeneralNumberListStatisticsReportUI(numbers, column.getTitle(), getName());
     }
 
+    @Override
     public int getType() {
         return 100;
     }
 
+    @Override
     public int getPosition() {
         return 0;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/chart-up.png", true);
     }

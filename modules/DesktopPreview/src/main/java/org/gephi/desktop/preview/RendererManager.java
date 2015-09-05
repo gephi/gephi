@@ -71,7 +71,7 @@ import org.openide.util.NbBundle;
 /**
  * UI for managing preview renderers enabled state and execution order.
  *
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class RendererManager extends javax.swing.JPanel implements PropertyChangeListener {
 

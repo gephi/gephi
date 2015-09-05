@@ -42,13 +42,13 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.spi.values;
 
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.spi.Manipulator;
+import org.gephi.graph.api.Element;
 
 /**
  * Manipulator for a single AttributeValue (cells) on right click.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface AttributeValueManipulator extends Manipulator{
 
@@ -58,5 +58,5 @@ public interface AttributeValueManipulator extends Manipulator{
      * @param row Row
      * @param column Column
      */
-    void setup (AttributeRow row, AttributeColumn column);
+    void setup (Element row, Column column);
 }

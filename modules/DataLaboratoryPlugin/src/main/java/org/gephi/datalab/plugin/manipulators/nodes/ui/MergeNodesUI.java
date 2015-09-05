@@ -54,14 +54,13 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.plugin.manipulators.nodes.MergeNodes;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
-import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Node;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.util.ImageUtilities;
@@ -75,7 +74,6 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
     private JCheckBox deleteMergedNodesCheckBox;
     private JComboBox nodesComboBox;
     private Node[] nodes;
-    private Attributes[] rows;
     private StrategyComboBox[] strategiesComboBoxes;
     private StrategyConfigurationButton[] strategiesConfigurationButtons;
 
@@ -84,11 +82,13 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
         initComponents();
     }
 
+    @Override
     public void setup(Manipulator m, DialogControls dialogControls) {
         manipulator = (MergeNodes) m;
         loadSettings();
     }
 
+    @Override
     public void unSetup() {
         manipulator.setDeleteMergedNodes(deleteMergedNodesCheckBox.isSelected());
         manipulator.setSelectedNode(nodes[nodesComboBox.getSelectedIndex()]);
@@ -99,14 +99,17 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
         manipulator.setMergeStrategies(chosenStrategies);
     }
 
+    @Override
     public String getDisplayName() {
         return manipulator.getName();
     }
 
+    @Override
     public JPanel getSettingsPanel() {
         return this;
     }
 
+    @Override
     public boolean isModal() {
         return true;
     }
@@ -122,12 +125,7 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
     }
 
     private void loadColumnsStrategies(JPanel settingsPanel) {
-        AttributeColumn[] columns = manipulator.getColumns();
-        //Prepare node rows:
-        rows = new Attributes[nodes.length];
-        for (int i = 0; i < nodes.length; i++) {
-            rows[i] = nodes[i].getAttributes();
-        }
+        Column[] columns = manipulator.getColumns();
 
         strategiesConfigurationButtons = new StrategyConfigurationButton[columns.length];
         strategiesComboBoxes = new StrategyComboBox[columns.length];
@@ -155,10 +153,10 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
         }
     }
 
-    private List<AttributeRowsMergeStrategy> getColumnAvailableStrategies(AttributeColumn column) {
+    private List<AttributeRowsMergeStrategy> getColumnAvailableStrategies(Column column) {
         ArrayList<AttributeRowsMergeStrategy> availableStrategies = new ArrayList<AttributeRowsMergeStrategy>();
         for (AttributeRowsMergeStrategy strategy : DataLaboratoryHelper.getDefault().getAttributeRowsMergeStrategies()) {
-            strategy.setup(rows, manipulator.getSelectedNode().getAttributes(), column);
+            strategy.setup(nodes, manipulator.getSelectedNode(), column);
             if (strategy.canExecute()) {
                 availableStrategies.add(strategy);
             }
@@ -188,7 +186,7 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
         Node selectedNode = manipulator.getSelectedNode();
 
         for (int i = 0; i < nodes.length; i++) {
-            nodesComboBox.addItem(nodes[i].getId() + " - " + nodes[i].getNodeData().getLabel());
+            nodesComboBox.addItem(nodes[i].getId() + " - " + nodes[i].getLabel());
             if (nodes[i] == selectedNode) {
                 nodesComboBox.setSelectedIndex(i);
             }
@@ -226,6 +224,7 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
             setEnabled(strategy != null && strategy.getUI() != null);//Has strategy and the strategy has UI
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             DataLaboratoryHelper.getDefault().showAttributeRowsMergeStrategyUIDialog(getStrategy(strategyIndex));
         }

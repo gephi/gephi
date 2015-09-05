@@ -42,8 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.columns.ui.CopyDataToOtherColumnUI;
@@ -55,55 +55,63 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * AttributeColumnsManipulator that copies data from a AttributeColumn of a AttributeTable to other AttributeColumn.
+ * AttributeColumnsManipulator that copies data from a Column of a Table to other AttributeColumn.
  * Allows the user to select the target column in the UI
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
 public class CopyDataToOtherColumn implements AttributeColumnsManipulator {
 
-    AttributeColumn targetColumn;
+    Column targetColumn;
 
-    public void execute(AttributeTable table, AttributeColumn column) {
+    @Override
+    public void execute(Table table, Column column) {
         if (targetColumn != null && targetColumn != column) {
             Lookup.getDefault().lookup(AttributeColumnsController.class).copyColumnDataToOtherColumn(table, column, targetColumn);
             Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
         }
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(CopyDataToOtherColumn.class, "CopyDataToOtherColumn.name");
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
-    public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
+    @Override
+    public boolean canManipulateColumn(Table table, Column column) {
         return true;
     }
 
-    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
+    @Override
+    public AttributeColumnsManipulatorUI getUI(Table table,Column column) {
         return new CopyDataToOtherColumnUI();
     }
 
+    @Override
     public int getType() {
         return 0;
     }
 
+    @Override
     public int getPosition() {
         return 200;
     }
 
+    @Override
     public Image getIcon() {
         return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/table-duplicate-column.png");
     }
 
-    public AttributeColumn getTargetColumn() {
+    public Column getTargetColumn() {
         return targetColumn;
     }
 
-    public void setTargetColumn(AttributeColumn targetColumn) {
+    public void setTargetColumn(Column targetColumn) {
         this.targetColumn = targetColumn;
     }
 }

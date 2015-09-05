@@ -47,7 +47,6 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import javax.swing.JComponent;
-import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.openide.DialogDisplayer;
@@ -73,6 +72,7 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
     private ImportCSVUIWizardPanel2 step2;
     private WizardDescriptor wizardDescriptor;
 
+    @Override
     public void performAction() {
         wizardDescriptor = new WizardDescriptor(getPanels());
         step1.setWizardDescriptor(wizardDescriptor);
@@ -90,7 +90,7 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
             Character separator = (Character) wizardDescriptor.getProperty("separator");
             Charset charset = (Charset) wizardDescriptor.getProperty("charset");
             String[] columnNames = (String[]) wizardDescriptor.getProperty("columns-names");
-            AttributeType[] columnTypes = (AttributeType[]) wizardDescriptor.getProperty("columns-types");
+            Class[] columnTypes = (Class[]) wizardDescriptor.getProperty("columns-types");
 
             //Nodes import parameters:
             Boolean assignNewNodeIds = (Boolean) wizardDescriptor.getProperty("assign-new-node-ids");
@@ -153,6 +153,7 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
         return panels;
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(ImportCSVUIWizardAction.class, "ImportCSVUIWizardAction.name");
     }
@@ -162,6 +163,7 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
         return null;
     }
 
+    @Override
     public HelpCtx getHelpCtx() {
         return HelpCtx.DEFAULT_HELP;
     }

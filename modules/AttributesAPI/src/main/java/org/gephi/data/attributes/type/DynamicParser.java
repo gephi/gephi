@@ -73,7 +73,7 @@ import org.gephi.data.attributes.api.AttributeType;
  * <p>Gephi will always format intervals in the correct way.</p>
  * 
  * <p>See https://gephi.org/users/supported-graph-formats/spreadsheet for more examples</p>
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public final class DynamicParser {
 

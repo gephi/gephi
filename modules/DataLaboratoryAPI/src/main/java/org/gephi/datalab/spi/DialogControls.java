@@ -45,7 +45,7 @@ package org.gephi.datalab.spi;
  * <p>An instance of this interface is passed to any type of manipulator UI, allowing the
  * UIs to enable/disable the dialog controls</p>
  * <p>For now allows to enable/disable the Ok button of the dialog</p>
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface DialogControls {
 

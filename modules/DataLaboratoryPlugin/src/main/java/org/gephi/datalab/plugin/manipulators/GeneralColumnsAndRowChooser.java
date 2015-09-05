@@ -42,11 +42,12 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators;
 
 import org.gephi.datalab.plugin.manipulators.nodes.CopyNodeDataToOtherNodes;
+import org.gephi.graph.api.Element;
 
 /**
  * Interface in common for choosing columns to manipulate.
  * Used to be able to get/set the columns to copy and row (node or edge) to user in the GeneralChooseColumnsAndRowUI.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  * @see CopyNodeDataToOtherNodes
  */
 public interface GeneralColumnsAndRowChooser extends GeneralColumnsChooser{
@@ -55,17 +56,17 @@ public interface GeneralColumnsAndRowChooser extends GeneralColumnsChooser{
      * Provide rows (nodes or edges) to show in the GeneralChooseColumnsAndRowUI to be selected or not.
      * @return Nodes or edges set to select one
      */
-    Object[] getRows();
+    Element[] getRows();
 
     /**
      * Provide initially selected node or edge in the GeneralChooseColumnsAndRowUI
      * @return Initially selected node or edge
      */
-    Object getRow();
+    Element getRow();
 
     /**
      * The GeneralChooseColumnsAndRowUI will use this method to set the row to finally manipulate, after the GeneralChooseColumnsAndRowUI is closed.
      * @param row Selected node or edge depending on the manipulator
      */
-    void setRow(Object row);
+    void setRow(Element row);
 }

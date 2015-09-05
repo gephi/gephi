@@ -48,7 +48,7 @@ import javax.swing.JPanel;
  * <p>Must provide a JPanel, a window name/title and indicate if it is modal.</p>
  * <p>The panel will be shown in a dialog with Ok/Cancel options only.</p>
  * <p>The ok button can be enabled/disabled with the <code>DialogControls</code> instance passed at setup</p>
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface ManipulatorUI {
 

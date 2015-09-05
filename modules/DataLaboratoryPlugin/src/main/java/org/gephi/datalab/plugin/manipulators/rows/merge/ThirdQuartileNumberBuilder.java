@@ -47,11 +47,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for ThirdQuartileNumber AttributeColumnsMergeStrategy.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=AttributeRowsMergeStrategyBuilder.class)
 public class ThirdQuartileNumberBuilder implements AttributeRowsMergeStrategyBuilder {
 
+    @Override
     public AttributeRowsMergeStrategy getAttributeRowsMergeStrategy() {
         return new ThirdQuartileNumber();
     }

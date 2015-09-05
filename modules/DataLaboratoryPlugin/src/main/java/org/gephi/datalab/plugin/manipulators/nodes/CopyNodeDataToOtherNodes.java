@@ -43,13 +43,14 @@ package org.gephi.datalab.plugin.manipulators.nodes;
 
 import java.util.ArrayList;
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsAndRowChooser;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralChooseColumnsAndRowUI;
 import org.gephi.datalab.spi.ManipulatorUI;
+import org.gephi.graph.api.Element;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -57,27 +58,29 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that copies the given columns data of one node to the other selected nodes.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class CopyNodeDataToOtherNodes extends BasicNodesManipulator implements GeneralColumnsAndRowChooser {
 
     private Node clickedNode;
     private Node[] nodes;
-    private AttributeColumn[] columnsToCopyData;
+    private Column[] columnsToCopyData;
 
+    @Override
     public void setup(Node[] nodes, Node clickedNode) {
         this.clickedNode = clickedNode;
         this.nodes = nodes;
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        ArrayList<AttributeColumn> columnsToCopyDataList = new ArrayList<AttributeColumn>();
-        for (AttributeColumn column : Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumns()) {
+        ArrayList<Column> columnsToCopyDataList = new ArrayList<Column>();
+        for (Column column : Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable()) {
             if (ac.canChangeColumnData(column)) {
                 columnsToCopyDataList.add(column);
             }
         }
-        columnsToCopyData = columnsToCopyDataList.toArray(new AttributeColumn[0]);
+        columnsToCopyData = columnsToCopyDataList.toArray(new Column[0]);
     }
 
+    @Override
     public void execute() {
         if (columnsToCopyData.length >= 0) {
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
@@ -86,51 +89,63 @@ public class CopyNodeDataToOtherNodes extends BasicNodesManipulator implements G
         }
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.name");
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.description");
     }
 
+    @Override
     public boolean canExecute() {
         return nodes.length > 1;//At least 2 nodes to copy data from one to the other.
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return new GeneralChooseColumnsAndRowUI(NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.ui.rowDescription"),NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.ui.columnsDescription"));
     }
 
+    @Override
     public int getType() {
         return 200;
     }
 
+    @Override
     public int getPosition() {
         return 200;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/broom--arrow.png", true);
     }
 
-    public AttributeColumn[] getColumns() {
+    @Override
+    public Column[] getColumns() {
         return columnsToCopyData;
     }
 
-    public void setColumns(AttributeColumn[] columnsToClearData) {
+    @Override
+    public void setColumns(Column[] columnsToClearData) {
         this.columnsToCopyData = columnsToClearData;
     }
 
-    public Object[] getRows() {
+    @Override
+    public Element[] getRows() {
         return nodes;
     }
 
-    public Object getRow() {
+    @Override
+    public Element getRow() {
         return clickedNode;
     }
 
-    public void setRow(Object row) {
+    @Override
+    public void setRow(Element row) {
         clickedNode=(Node) row;
     }
 }

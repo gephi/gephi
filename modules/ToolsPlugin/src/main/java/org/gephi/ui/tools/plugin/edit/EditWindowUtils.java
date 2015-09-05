@@ -46,7 +46,7 @@ import org.gephi.data.attributes.api.AttributeType;
 
 /**
  *
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class EditWindowUtils {
 

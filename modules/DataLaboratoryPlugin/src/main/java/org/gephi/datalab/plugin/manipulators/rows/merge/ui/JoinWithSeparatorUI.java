@@ -49,7 +49,7 @@ import org.gephi.datalab.spi.ManipulatorUI;
 
 /**
  * UI for JoinWithSeparator AttributeRowsMergeStrategy
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class JoinWithSeparatorUI extends javax.swing.JPanel implements ManipulatorUI{
     JoinWithSeparator manipulator;
@@ -58,23 +58,28 @@ public class JoinWithSeparatorUI extends javax.swing.JPanel implements Manipulat
         initComponents();
     }
     
+    @Override
     public void setup(Manipulator m, DialogControls dialogControls) {
         manipulator=(JoinWithSeparator) m;
         separatorText.setText(manipulator.getSeparator());
     }
 
+    @Override
     public void unSetup() {
         manipulator.setSeparator(separatorText.getText());
     }
 
+    @Override
     public String getDisplayName() {
         return manipulator.getName();
     }
 
+    @Override
     public JPanel getSettingsPanel() {
         return this;
     }
 
+    @Override
     public boolean isModal() {
         return true;
     }
