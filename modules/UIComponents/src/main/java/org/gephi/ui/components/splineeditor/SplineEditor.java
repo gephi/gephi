@@ -39,7 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.ui.components.splineEditor;
+package org.gephi.ui.components.splineeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
