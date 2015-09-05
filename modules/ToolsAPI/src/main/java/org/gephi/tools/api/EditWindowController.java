@@ -46,7 +46,7 @@ import org.gephi.graph.api.Node;
 
 /**
  * Controller API for requesting the opening and usage of edit window.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface  EditWindowController {
     void openEditWindow();

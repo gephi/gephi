@@ -66,6 +66,7 @@ public class ImportCSVUIWizardPanel2 implements WizardDescriptor.Panel {
     // is kept separate. This can be more efficient: if the wizard is created
     // but never displayed, or not all panels are displayed, it is better to
     // create only those which really need to be visible.
+    @Override
     public Component getComponent() {
         if (component == null) {
             component = new ImportCSVUIVisualPanel2(this);
@@ -73,6 +74,7 @@ public class ImportCSVUIWizardPanel2 implements WizardDescriptor.Panel {
         return component;
     }
 
+    @Override
     public HelpCtx getHelp() {
         // Show no Help button for this panel:
         return HelpCtx.DEFAULT_HELP;
@@ -80,18 +82,21 @@ public class ImportCSVUIWizardPanel2 implements WizardDescriptor.Panel {
         // return new HelpCtx(SampleWizardPanel1.class);
     }
 
+    @Override
     public boolean isValid() {
         return component.isValidCSV();
     }
     
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1); // or can use ChangeSupport in NB 6.0
 
+    @Override
     public final void addChangeListener(ChangeListener l) {
         synchronized (listeners) {
             listeners.add(l);
         }
     }
 
+    @Override
     public final void removeChangeListener(ChangeListener l) {
         synchronized (listeners) {
             listeners.remove(l);
@@ -113,6 +118,7 @@ public class ImportCSVUIWizardPanel2 implements WizardDescriptor.Panel {
     // settings object will be the WizardDescriptor, so you can use
     // WizardDescriptor.getProperty & putProperty to store information entered
     // by the user.
+    @Override
     public void readSettings(Object settings) {
         component.setSeparator((Character) wizardDescriptor.getProperty("separator"));
         component.setFile((File) wizardDescriptor.getProperty("file"));
@@ -125,6 +131,7 @@ public class ImportCSVUIWizardPanel2 implements WizardDescriptor.Panel {
         component.unSetup();
     }
 
+    @Override
     public void storeSettings(Object settings) {
         wizardDescriptor.putProperty("columns-names", component.getColumnsToImport());
         wizardDescriptor.putProperty("columns-types", component.getColumnsToImportTypes());

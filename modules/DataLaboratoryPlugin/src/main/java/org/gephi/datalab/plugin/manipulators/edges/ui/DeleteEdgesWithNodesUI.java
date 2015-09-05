@@ -50,7 +50,7 @@ import org.openide.util.NbPreferences;
 
 /**
  * UI for DeleteEdgesWithNodes edges manipulator.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class DeleteEdgesWithNodesUI extends javax.swing.JPanel implements ManipulatorUI {
     private static final String DELETE_SOURCE_SAVED_PREFERENCES = "DeleteEdgesWithNodesUI_deleteSource";
@@ -62,12 +62,14 @@ public class DeleteEdgesWithNodesUI extends javax.swing.JPanel implements Manipu
         initComponents();
     }
 
+    @Override
     public void setup(Manipulator m, DialogControls dialogControls) {
         del=(DeleteEdgesWithNodes) m;
         deleteSource.setSelected(NbPreferences.forModule(DeleteEdgesWithNodesUI.class).getBoolean(DELETE_SOURCE_SAVED_PREFERENCES, true));
         deleteTarget.setSelected(NbPreferences.forModule(DeleteEdgesWithNodesUI.class).getBoolean(DELETE_TARGET_SAVED_PREFERENCES, true));
     }
 
+    @Override
     public void unSetup() {
         del.setDeleteSource(deleteSource.isSelected());
         del.setDeleteTarget(deleteTarget.isSelected());
@@ -75,14 +77,17 @@ public class DeleteEdgesWithNodesUI extends javax.swing.JPanel implements Manipu
         NbPreferences.forModule(DeleteEdgesWithNodesUI.class).putBoolean(DELETE_TARGET_SAVED_PREFERENCES, deleteTarget.isSelected());
     }
 
+    @Override
     public String getDisplayName() {
         return del.getName();
     }
 
+    @Override
     public JPanel getSettingsPanel() {
         return this;
     }
 
+    @Override
     public boolean isModal() {
         return true;
     }

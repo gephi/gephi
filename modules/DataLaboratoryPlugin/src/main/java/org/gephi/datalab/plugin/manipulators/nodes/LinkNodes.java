@@ -58,7 +58,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that links at least 2 different nodes creating edges. Asks the user to select a source node and whether to create directed or undirected edges. It will create edges between the
  * source node and all of the other nodes.
  *
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class LinkNodes extends BasicNodesManipulator {
 
@@ -67,17 +67,19 @@ public class LinkNodes extends BasicNodesManipulator {
     private static boolean directed;
     private static GraphModel graphModel;
 
+    @Override
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes = nodes;
         this.sourceNode = clickedNode;//Choose clicked node as source by default (but the user can select it or other one in the UI)
 
-        GraphModel currentGraphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        GraphModel currentGraphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         if (graphModel != currentGraphModel) {//If graph model has changed since last execution, change default mode for edges to create in UI, else keep this parameter across calls
             directed = currentGraphModel.isDirected() || currentGraphModel.isMixed();//Get graph directed state. Set to true if graph is directed or mixed
             graphModel = currentGraphModel;
         }
     }
 
+    @Override
     public void execute() {
         if (nodes.length > 1) {
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
@@ -89,30 +91,37 @@ public class LinkNodes extends BasicNodesManipulator {
         }
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(LinkNodes.class, "LinkNodes.name");
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(LinkNodes.class, "LinkNodes.description");
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return nodes.length > 1 ? new LinkNodesUI() : null;//Use link nodes UI if more than one node selected, otherwise add edge to graph action will be called in execute.
     }
 
+    @Override
     public int getType() {
         return 500;
     }
 
+    @Override
     public int getPosition() {
         return 100;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/edge.png", true);
     }

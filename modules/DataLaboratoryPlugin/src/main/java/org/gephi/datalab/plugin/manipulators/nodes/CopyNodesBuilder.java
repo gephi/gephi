@@ -47,11 +47,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for CopyNodes nodes manipulator.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=NodesManipulatorBuilder.class)
 public class CopyNodesBuilder implements NodesManipulatorBuilder{
 
+    @Override
     public NodesManipulator getNodesManipulator() {
         return new CopyNodes();
     }

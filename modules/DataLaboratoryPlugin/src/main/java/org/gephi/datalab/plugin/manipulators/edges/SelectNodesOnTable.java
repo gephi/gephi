@@ -52,15 +52,17 @@ import org.openide.util.NbBundle;
 
 /**
  * Edges manipulator that selects source and target node of an edge and selects them in nodes table.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class SelectNodesOnTable extends BasicEdgesManipulator {
     private Edge clickedEdge;
 
+    @Override
     public void setup(Edge[] edges, Edge clickedEdge) {
         this.clickedEdge=clickedEdge;
     }
 
+    @Override
     public void execute() {
         Node[] nodes=new Node[]{clickedEdge.getSource(),clickedEdge.getTarget()};
         DataTablesController dtc=Lookup.getDefault().lookup(DataTablesController.class);
@@ -68,30 +70,37 @@ public class SelectNodesOnTable extends BasicEdgesManipulator {
         dtc.selectNodesTable();
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(SelectNodesOnTable.class, "SelectNodesOnTable.name");
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 100;
     }
 
+    @Override
     public int getPosition() {
         return 200;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-select-row.png", true);
     }

@@ -57,7 +57,7 @@ import java.awt.Color;
  * </ul>
  * Several constructors are provided for various use cases.
  * @see SparklineGraph
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class SparklineParameters {
 

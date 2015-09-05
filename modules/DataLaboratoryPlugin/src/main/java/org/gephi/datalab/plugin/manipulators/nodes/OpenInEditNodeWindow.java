@@ -51,22 +51,25 @@ import org.openide.util.NbBundle;
 
 /**
  * Opens the selected node(s) one or various in Edit window.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class OpenInEditNodeWindow extends BasicNodesManipulator {
 
     private Node[] nodes;
 
+    @Override
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes = nodes;
     }
 
+    @Override
     public void execute() {
         EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
         edc.openEditWindow();
         edc.editNodes(nodes);
     }
 
+    @Override
     public String getName() {
         if (nodes.length > 1) {
             return NbBundle.getMessage(OpenInEditNodeWindow.class, "OpenInEditNodeWindow.name.multiple");
@@ -75,6 +78,7 @@ public class OpenInEditNodeWindow extends BasicNodesManipulator {
         }
     }
 
+    @Override
     public String getDescription() {
         if (nodes.length > 1) {
             return NbBundle.getMessage(OpenInEditNodeWindow.class, "OpenInEditNodeWindow.description.multiple");
@@ -83,22 +87,27 @@ public class OpenInEditNodeWindow extends BasicNodesManipulator {
         }
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 0;
     }
 
+    @Override
     public int getPosition() {
         return 0;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/edit.png", true);
     }

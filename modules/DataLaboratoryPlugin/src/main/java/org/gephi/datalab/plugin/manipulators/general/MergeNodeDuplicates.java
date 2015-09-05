@@ -43,13 +43,14 @@ package org.gephi.datalab.plugin.manipulators.general;
 
 import java.util.List;
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.plugin.manipulators.general.ui.MergeNodeDuplicatesUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.PluginGeneralActionsManipulator;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -59,7 +60,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * PluginGeneralActionsManipulator that automatically detects and merges node duplicates based on a column
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service = PluginGeneralActionsManipulator.class)
 public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
@@ -72,9 +73,10 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
     private List<List<Node>> duplicateGroups;
     private boolean deleteMergedNodes;
     private boolean caseSensitive;
-    private AttributeColumn[] columns;
+    private Column[] columns;
     private AttributeRowsMergeStrategy[] mergeStrategies;
 
+    @Override
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         for (List<Node> nodes : duplicateGroups) {
@@ -84,43 +86,56 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
         NbPreferences.forModule(MergeNodeDuplicates.class).putBoolean(CASE_SENSITIVE_SAVED_PREFERENCES, caseSensitive);
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(MergeNodeDuplicates.class, "MergeNodeDuplicates.name");
     }
 
+    @Override
     public String getDescription() {
         return "MergeNodeDuplicates.description";
     }
 
+    @Override
     public boolean canExecute() {
         return Lookup.getDefault().lookup(GraphElementsController.class).getNodesCount() > 0;
     }
 
+    @Override
     public ManipulatorUI getUI() {
-        columns = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumns();
+        Table nodeTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+        int cols = nodeTable.countColumns();
+        
+        columns = new Column[cols];
+        for (int i = 0; i < cols; i++) {
+            columns[i] = nodeTable.getColumn(i);
+        }
         mergeStrategies = new AttributeRowsMergeStrategy[columns.length];
         deleteMergedNodes = NbPreferences.forModule(MergeNodeDuplicates.class).getBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, true);
         caseSensitive = NbPreferences.forModule(MergeNodeDuplicates.class).getBoolean(CASE_SENSITIVE_SAVED_PREFERENCES, true);
         return new MergeNodeDuplicatesUI();
     }
 
+    @Override
     public int getType() {
         return 100;
     }
 
+    @Override
     public int getPosition() {
         return 0;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/merge.png", true);
     }
 
-    public AttributeColumn[] getColumns() {
+    public Column[] getColumns() {
         return columns;
     }
 
-    public void setColumns(AttributeColumn[] columns) {
+    public void setColumns(Column[] columns) {
         this.columns = columns;
     }
 

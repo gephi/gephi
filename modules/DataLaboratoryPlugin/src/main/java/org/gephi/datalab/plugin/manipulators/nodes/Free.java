@@ -42,8 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
-import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.api.GraphElementsController;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
@@ -52,24 +52,27 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that frees (not fixed position) one or more nodes.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class Free extends BasicNodesManipulator {
 
     private Node[] nodes;
     private Node clickedNode;
 
+    @Override
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes = nodes;
         this.clickedNode = clickedNode;
     }
 
+    @Override
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         gec.setNodesFixed(nodes, false);
         Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
     }
 
+    @Override
     public String getName() {
         if (nodes.length > 1) {
             return NbBundle.getMessage(Settle.class, "Free.name.multiple");
@@ -78,27 +81,33 @@ public class Free extends BasicNodesManipulator {
         }
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         return gec.isNodeFixed(clickedNode);
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 400;
     }
 
+    @Override
     public int getPosition() {
         return 100;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/free.png", true);
     }

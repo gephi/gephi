@@ -53,7 +53,7 @@ import org.openide.windows.WindowManager;
 /**
  * Implementation of EditWindowController interface of Tools API.
  *
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service = EditWindowController.class)
 public class EditWindowControllerImpl implements EditWindowController {

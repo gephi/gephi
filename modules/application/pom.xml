@@ -165,10 +165,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>utils</artifactId>
         </dependency>
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>datalab-api</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization-api</artifactId>
@@ -328,6 +328,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>desktop-datalab</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>appearance-api</artifactId>
         </dependency>
         <dependency>
@@ -338,10 +342,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>io-importer-plugin</artifactId>
         </dependency>
-        <!--  <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-datalab</artifactId>
-        </dependency>
+        <!--
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-plugin</artifactId>
@@ -378,13 +379,13 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-banner</artifactId>
         </dependency>
-        <!--        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>filters-plugin-ui</artifactId>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>datalab-plugin</artifactId>
+        </dependency>
+        <!--        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>filters-plugin-ui</artifactId>
         </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -498,11 +499,10 @@
             <!-- Localization dependency -->
             <dependencies>
                 <dependency>
-                    <groupId>org.netbeans</groupId>
-                    <artifactId>platform-localization</artifactId>
-                    <type>zip</type>
+                    <groupId>nl.cloudfarming.client</groupId>
+                    <artifactId>lib-platform-l10n</artifactId>
                     <version>${gephi.platform.localization.version}</version>
-                </dependency>
+               </dependency>
             </dependencies>
             
             <build>

@@ -47,11 +47,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for SelectNeighboursOnTable nodes manipulator.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=NodesManipulatorBuilder.class)
 public class SelectNeighboursOnTableBuilder implements NodesManipulatorBuilder{
 
+    @Override
     public NodesManipulator getNodesManipulator() {
         return new SelectNeighboursOnTable();
     }

@@ -47,11 +47,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for DeleteEdgesWithNodes edges manipulator.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=EdgesManipulatorBuilder.class)
 public class DeleteEdgesWithNodesBuilder implements EdgesManipulatorBuilder{
 
+    @Override
     public EdgesManipulator getEdgesManipulator() {
         return new DeleteEdgesWithNodes();
     }

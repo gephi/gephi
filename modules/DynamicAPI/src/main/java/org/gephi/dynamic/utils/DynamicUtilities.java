@@ -1,6 +1,6 @@
 /*
  * Copyright 2008-2010 Gephi
- * Authors : Cezary Bartosiak
+ * Authors : Cezary Bartosiak, Eduardo Ramos
  * Website : http://www.gephi.org
  *
  * This file is part of Gephi.
@@ -39,15 +39,97 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.dynamic;
+package org.gephi.dynamic.utils;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.regex.Pattern;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 /**
- * Contains only static, and toolkit functions, like type conversion for the
- * needs of dynamic stuff.
+ * Contains only static, and toolkit functions, like type conversion for the needs of dynamic stuff.
  *
- * @author Cezary Bartosiak
+ * @author Cezary Bartosiak, Eduardo Ramos
  */
 public final class DynamicUtilities {
+
+    //For date parsing:
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static DatatypeFactory dateFactory;
+
+    static {
+        try {
+            dateFactory = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException ex) {
+        }
+    }
+
+    //Throws exception when a date can't be parsed
+    public static double getDoubleFromXMLDateString(String str) throws ParseException {
+        try {
+            return dateFactory.newXMLGregorianCalendar(str.length() > 23 ? str.substring(0, 23) : str).
+                    toGregorianCalendar().getTimeInMillis();
+        } catch (IllegalArgumentException ex) {
+            //Try simple format
+            Date date = dateFormat.parse(str);
+            return date.getTime();
+        }
+    }
+
+    /**
+     * Method for allowing inputs such as "infinity" when parsing decimal numbers
+     *
+     * @param value Input String
+     * @return Input String with fixed "Infinity" syntax if necessary.
+     */
+    public static String infinityIgnoreCase(String value) {
+        if (value.equalsIgnoreCase("Infinity")) {
+            return "Infinity";
+        }
+        if (value.equalsIgnoreCase("-Infinity")) {
+            return "-Infinity";
+        }
+
+        return value;
+    }
+    
+    /**
+     * Tries to parse a string as a timestamp.
+     * First checks if the input is a timestamp number.
+     * Then tries to parse it as a date.
+     * @param time Input string
+     * @return timestamp
+     */
+    public static double parseTime(String time) throws ParseException {
+        double value;
+        try {
+            //Try first to parse as a single double:
+            value = Double.parseDouble(infinityIgnoreCase(time));
+            if (Double.isNaN(value)) {
+                throw new IllegalArgumentException("NaN is not allowed as an interval bound");
+            }
+        } catch (Exception ex) {
+            //Try to parse as date instead
+            value = getDoubleFromXMLDateString(time);
+        }
+
+        return value;
+    }
+
+    /**
+     * Removes the decimal digits and point of the numbers of string when necessary. Used for trying to parse decimal numbers as not decimal. For example BigDecimal to BigInteger.
+     *
+     * @param s String to remove decimal digits
+     * @return String without dot and decimal digits.
+     */
+    protected static String removeDecimalDigitsFromString(String s) {
+        return removeDecimalDigitsFromStringPattern.matcher(s).replaceAll("");
+    }
+    protected static final Pattern removeDecimalDigitsFromStringPattern = Pattern.compile("\\.[0-9]*");
+
 //    private static DatatypeFactory dateFactory;
 //
 //    static {

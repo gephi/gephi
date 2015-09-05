@@ -47,11 +47,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for MedianNumber AttributeColumnsMergeStrategy.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=AttributeColumnsMergeStrategyBuilder.class)
 public class InterQuartileRangeNumberBuilder implements AttributeColumnsMergeStrategyBuilder{
 
+    @Override
     public AttributeColumnsMergeStrategy getAttributeColumnsMergeStrategy() {
         return new InterQuartileRangeNumber();
     }

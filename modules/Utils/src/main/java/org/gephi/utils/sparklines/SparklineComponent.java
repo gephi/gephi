@@ -52,7 +52,7 @@ import javax.swing.JComponent;
  * <p>Simple component that holds a <code>SparklineGraph</code> and auto-repaints it when mouse interaction happens if desired
  * (indicate it with <code>updateMouseXPosition</code> parameter in constructors).</p>
  * <p>It also takes care to update sparkline width and height to the component width and height when resized</p>
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class SparklineComponent extends JComponent {
 

@@ -50,7 +50,7 @@ import org.gephi.graph.api.Node;
 
 /**
  * UI for LinkNodes nodes manipulator.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class LinkNodesUI extends javax.swing.JPanel implements ManipulatorUI {
 
@@ -62,6 +62,7 @@ public class LinkNodesUI extends javax.swing.JPanel implements ManipulatorUI {
         initComponents();
     }
 
+    @Override
     public void setup(Manipulator m, DialogControls dialogControls) {
         manipulator = (LinkNodes) m;
         nodes = manipulator.getNodes();
@@ -74,26 +75,30 @@ public class LinkNodesUI extends javax.swing.JPanel implements ManipulatorUI {
         Node sourceNode = manipulator.getSourceNode();
         //Prepare combo box with nodes data:
         for (int i = 0; i < nodes.length; i++) {
-            sourceNodeComboBox.addItem(nodes[i].getId() + " - " + nodes[i].getNodeData().getLabel());
+            sourceNodeComboBox.addItem(nodes[i].getId() + " - " + nodes[i].getLabel());
             if (nodes[i] == sourceNode) {
                 sourceNodeComboBox.setSelectedIndex(i);
             }
         }
     }
 
+    @Override
     public void unSetup() {
         manipulator.setSourceNode(nodes[sourceNodeComboBox.getSelectedIndex()]);
         manipulator.setDirected(directedEdge.isSelected());
     }
 
+    @Override
     public String getDisplayName() {
         return manipulator.getName();
     }
 
+    @Override
     public JPanel getSettingsPanel() {
         return this;
     }
 
+    @Override
     public boolean isModal() {
         return true;
     }

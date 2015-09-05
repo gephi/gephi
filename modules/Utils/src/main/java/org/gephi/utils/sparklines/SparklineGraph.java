@@ -54,7 +54,7 @@ import java.util.ArrayList;
  * <p>Use <code>SparklineComponent</code> class to easily include interactive sparklines in your GUI</p>
  *
  * @see SparklineParameters
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class SparklineGraph {
 

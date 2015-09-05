@@ -53,7 +53,7 @@ import java.awt.image.BufferedImage;
  * The result graphics are like:
  * |{background color}|time-interval{fill color}|{background color}|
  *
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class TimeIntervalGraphics {
 

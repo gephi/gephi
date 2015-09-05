@@ -48,7 +48,7 @@ import java.util.Collection;
 
 /**
  * Class with some statistics methods for calculating values such as the average, median, sum, max and min of a list of numbers.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class StatisticsUtils {
 

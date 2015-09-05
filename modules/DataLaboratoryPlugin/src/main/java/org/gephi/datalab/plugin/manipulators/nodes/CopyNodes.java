@@ -52,17 +52,19 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that copies one or more nodes one or more times.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class CopyNodes extends BasicNodesManipulator {
 
     private Node[] nodes;
     private int copies = 1;
 
+    @Override
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes = nodes;
     }
 
+    @Override
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         for (int i = 0; i < copies; i++) {
@@ -70,6 +72,7 @@ public class CopyNodes extends BasicNodesManipulator {
         }
     }
 
+    @Override
     public String getName() {
         if (nodes.length > 1) {
             return NbBundle.getMessage(CopyNodes.class, "CopyNodes.name.multiple");
@@ -78,26 +81,32 @@ public class CopyNodes extends BasicNodesManipulator {
         }
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return new CopyNodesUI();
     }
 
+    @Override
     public int getType() {
         return 500;
     }
 
+    @Override
     public int getPosition() {
         return 200;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/duplicate.png", true);
     }

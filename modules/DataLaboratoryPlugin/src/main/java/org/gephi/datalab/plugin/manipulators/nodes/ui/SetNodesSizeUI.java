@@ -52,7 +52,7 @@ import org.gephi.datalab.spi.ManipulatorUI;
 
 /**
  * UI for SetNodesSize nodes manipulator.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class SetNodesSizeUI extends javax.swing.JPanel implements ManipulatorUI {
 
@@ -64,23 +64,28 @@ public class SetNodesSizeUI extends javax.swing.JPanel implements ManipulatorUI 
         sizeText.setDocument(new FloatJTextFieldFilter());
     }
 
+    @Override
     public void setup(Manipulator m, DialogControls dialogControls) {
         this.manipulator = (SetNodesSize) m;
         sizeText.setText(String.valueOf(manipulator.getSize()));
     }
 
+    @Override
     public void unSetup() {
         manipulator.setSize(Float.parseFloat(sizeText.getText()));
     }
 
+    @Override
     public String getDisplayName() {
         return manipulator.getName();
     }
 
+    @Override
     public JPanel getSettingsPanel() {
         return this;
     }
 
+    @Override
     public boolean isModal() {
         return true;
     }

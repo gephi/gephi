@@ -51,21 +51,24 @@ import org.openide.util.NbBundle;
 
 /**
  * Opens the selected edge(s) one or various in Edit window.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class OpenInEditEdgeWindow extends BasicEdgesManipulator  {
     Edge[] edges;
 
+    @Override
     public void setup(Edge[] edges, Edge clickedEdge) {
         this.edges=edges;
     }
 
+    @Override
     public void execute() {
         EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
         edc.openEditWindow();
         edc.editEdges(edges);
     }
 
+    @Override
     public String getName() {
         if (edges.length > 1) {
             return NbBundle.getMessage(OpenInEditEdgeWindow.class, "OpenInEditEdgeWindow.name.multiple");
@@ -74,6 +77,7 @@ public class OpenInEditEdgeWindow extends BasicEdgesManipulator  {
         }
     }
 
+    @Override
     public String getDescription() {
         if (edges.length > 1) {
             return NbBundle.getMessage(OpenInEditEdgeWindow.class, "OpenInEditEdgeWindow.description.multiple");
@@ -82,22 +86,27 @@ public class OpenInEditEdgeWindow extends BasicEdgesManipulator  {
         }
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 0;
     }
 
+    @Override
     public int getPosition() {
         return 0;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/edit.png", true);
     }

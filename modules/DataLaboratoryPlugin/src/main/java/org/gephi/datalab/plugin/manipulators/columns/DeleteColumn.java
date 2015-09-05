@@ -43,8 +43,8 @@ package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
 import javax.swing.JOptionPane;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
@@ -55,44 +55,52 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * AttributeColumnsManipulator that deletes a AttributeColumn of a AttributeTable.
+ * AttributeColumnsManipulator that deletes a Column of a AttributeTable.
  * Only allows to delete columns with DATA AttributeOrigin.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
 public class DeleteColumn implements AttributeColumnsManipulator {
 
-    public void execute(AttributeTable table, AttributeColumn column) {
+    @Override
+    public void execute(Table table, Column column) {
         if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearColumnData.class, "DeleteColumn.confirmation.message", column.getTitle()), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             Lookup.getDefault().lookup(AttributeColumnsController.class).deleteAttributeColumn(table, column);
             Lookup.getDefault().lookup(DataTablesController.class).selectTable(table);
         }
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(DeleteColumn.class, "DeleteColumn.name");
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
-    public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
+    @Override
+    public boolean canManipulateColumn(Table table, Column column) {
         return Lookup.getDefault().lookup(AttributeColumnsController.class).canDeleteColumn(column);
     }
 
-    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
+    @Override
+    public AttributeColumnsManipulatorUI getUI(Table table,Column column) {
         return null;
     }
 
+    @Override
     public int getType() {
         return 0;
     }
 
+    @Override
     public int getPosition() {
         return 0;
     }
 
+    @Override
     public Image getIcon() {
         return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/table-delete-column.png");
     }

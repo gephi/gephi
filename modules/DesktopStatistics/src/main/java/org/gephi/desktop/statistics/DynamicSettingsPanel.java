@@ -53,7 +53,6 @@ import javax.swing.JPanel;
 import org.gephi.attribute.api.AttributeModel;
 import org.gephi.attribute.api.TimeFormat;
 import org.gephi.attribute.time.Interval;
-import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.GraphController;

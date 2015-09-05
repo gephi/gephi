@@ -50,7 +50,7 @@ import org.openide.util.NbPreferences;
 
 /**
  * UI for ClearEdges GeneralActionsManipulator
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class ClearEdgesUI extends javax.swing.JPanel implements ManipulatorUI {
     ClearEdges manipulator;
@@ -59,12 +59,14 @@ public class ClearEdgesUI extends javax.swing.JPanel implements ManipulatorUI {
         initComponents();
     }
 
+    @Override
     public void setup(Manipulator m, DialogControls dialogControls) {
         manipulator=(ClearEdges) m;
         deleteDirectedCheckbox.setSelected(manipulator.isDeleteDirected());
         deleteUndirectedChekbox.setSelected(manipulator.isDeleteUndirected());
     }
 
+    @Override
     public void unSetup() {
         manipulator.setDeleteDirected(deleteDirectedCheckbox.isSelected());
         manipulator.setDeleteUndirected(deleteUndirectedChekbox.isSelected());
@@ -72,14 +74,17 @@ public class ClearEdgesUI extends javax.swing.JPanel implements ManipulatorUI {
         NbPreferences.forModule(ClearEdges.class).putBoolean(ClearEdges.DELETE_UNDIRECTED_SAVED_PREFERENCES, deleteUndirectedChekbox.isSelected());
     }
 
+    @Override
     public String getDisplayName() {
         return manipulator.getName();
     }
 
+    @Override
     public JPanel getSettingsPanel() {
         return this;
     }
 
+    @Override
     public boolean isModal() {
         return true;
     }

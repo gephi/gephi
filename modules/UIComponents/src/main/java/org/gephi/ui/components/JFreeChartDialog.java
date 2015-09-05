@@ -47,7 +47,7 @@ import org.jfree.chart.JFreeChart;
 
 /**
  * UI for showing a JFreeChart with the advantages of ChartPanel and also allows to resize the chart up to a maximum dimension.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class JFreeChartDialog extends javax.swing.JDialog {
 

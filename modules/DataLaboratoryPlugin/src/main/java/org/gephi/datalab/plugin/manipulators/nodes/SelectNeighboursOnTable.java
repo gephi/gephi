@@ -42,8 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
-import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.api.GraphElementsController;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
@@ -52,12 +52,13 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that selects in nodes table all neighbours of a node.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class SelectNeighboursOnTable extends BasicNodesManipulator{
     private Node node;
     private Node[] neighbours;
 
+    @Override
     public void setup(Node[] nodes, Node clickedNode) {
         this.node = clickedNode;
         if (Lookup.getDefault().lookup(GraphElementsController.class).isNodeInGraph(node)) {
@@ -65,34 +66,42 @@ public class SelectNeighboursOnTable extends BasicNodesManipulator{
         }
     }
 
+    @Override
     public void execute() {
         Lookup.getDefault().lookup(DataTablesController.class).setNodeTableSelection(neighbours);
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(SelectNeighboursOnTable.class, "SelectNeighboursOnTable.name");
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
         return neighbours != null;//Do not enable if the node has no neighbours.
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 100;
     }
 
+    @Override
     public int getPosition() {
         return 100;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-select-row.png", true);
     }

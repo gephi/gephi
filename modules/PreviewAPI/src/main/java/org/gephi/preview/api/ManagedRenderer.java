@@ -49,7 +49,7 @@ import org.gephi.preview.spi.Renderer;
  * <code>PreviewModel</code>.
  *
  * @see PreviewModel
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class ManagedRenderer {
 

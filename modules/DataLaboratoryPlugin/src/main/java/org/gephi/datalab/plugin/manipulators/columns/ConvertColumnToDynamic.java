@@ -42,8 +42,8 @@
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.columns.ui.ConvertColumnToDynamicUI;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
@@ -54,48 +54,55 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
 public class ConvertColumnToDynamic implements AttributeColumnsManipulator {
 
     private String title;
     private double low, high;
-    private boolean lopen, ropen;
     private boolean replaceColumn;
 
-    public void execute(AttributeTable table, AttributeColumn column) {
+    @Override
+    public void execute(Table table, Column column) {
         if (replaceColumn) {
-            Lookup.getDefault().lookup(AttributeColumnsController.class).convertAttributeColumnToDynamic(table, column, low, high, lopen, ropen);
+            Lookup.getDefault().lookup(AttributeColumnsController.class).convertAttributeColumnToDynamic(table, column, low, high);
         } else {
-            Lookup.getDefault().lookup(AttributeColumnsController.class).convertAttributeColumnToNewDynamicColumn(table, column, low, high, lopen, ropen, title);
+            Lookup.getDefault().lookup(AttributeColumnsController.class).convertAttributeColumnToNewDynamicColumn(table, column, low, high, title);
         }
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(ConvertColumnToDynamic.class, "ConvertColumnToDynamic.name");
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
-    public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
+    @Override
+    public boolean canManipulateColumn(Table table, Column column) {
         return Lookup.getDefault().lookup(AttributeColumnsController.class).canConvertColumnToDynamic(column);
     }
 
-    public AttributeColumnsManipulatorUI getUI(AttributeTable table, AttributeColumn column) {
+    @Override
+    public AttributeColumnsManipulatorUI getUI(Table table, Column column) {
         return new ConvertColumnToDynamicUI();
     }
 
+    @Override
     public int getType() {
         return 400;
     }
 
+    @Override
     public int getPosition() {
         return 0;
     }
 
+    @Override
     public Image getIcon() {
         return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/table-insert-column.png");
     }
@@ -122,22 +129,6 @@ public class ConvertColumnToDynamic implements AttributeColumnsManipulator {
 
     public void setHigh(double high) {
         this.high = high;
-    }
-
-    public boolean isLopen() {
-        return lopen;
-    }
-
-    public void setLopen(boolean lopen) {
-        this.lopen = lopen;
-    }
-
-    public boolean isRopen() {
-        return ropen;
-    }
-
-    public void setRopen(boolean ropen) {
-        this.ropen = ropen;
     }
 
     public boolean isReplaceColumn() {

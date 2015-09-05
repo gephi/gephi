@@ -22,10 +22,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dynamic-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>graph-api</artifactId>
         </dependency>
         <dependency>
@@ -44,6 +40,13 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
@@ -55,14 +58,8 @@
                     <publicPackages>
                         <publicPackage>org.gephi.datalab.api</publicPackage>
                         <publicPackage>org.gephi.datalab.api.datatables</publicPackage>
-                        <publicPackage>org.gephi.datalab.spi</publicPackage>
-                        <publicPackage>org.gephi.datalab.spi.columns</publicPackage>
-                        <publicPackage>org.gephi.datalab.spi.columns.merge</publicPackage>
-                        <publicPackage>org.gephi.datalab.spi.edges</publicPackage>
-                        <publicPackage>org.gephi.datalab.spi.general</publicPackage>
-                        <publicPackage>org.gephi.datalab.spi.nodes</publicPackage>
-                        <publicPackage>org.gephi.datalab.spi.rows.merge</publicPackage>
-                        <publicPackage>org.gephi.datalab.spi.values</publicPackage>
+                        <publicPackage>org.gephi.datalab.spi.*</publicPackage>
+                        <publicPackage>org.gephi.datalab.utils</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

@@ -47,11 +47,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for AverageNumber AttributeColumnsMergeStrategy.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=AttributeColumnsMergeStrategyBuilder.class)
 public class AverageNumberBuilder implements AttributeColumnsMergeStrategyBuilder{
 
+    @Override
     public AttributeColumnsMergeStrategy getAttributeColumnsMergeStrategy() {
         return new AverageNumber();
     }

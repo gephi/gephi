@@ -51,7 +51,7 @@ import org.openide.util.NbBundle;
  * a
  * <code>AttributeTable</code>.
  *
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class ColumnTitleValidator implements Validator<String> {
 

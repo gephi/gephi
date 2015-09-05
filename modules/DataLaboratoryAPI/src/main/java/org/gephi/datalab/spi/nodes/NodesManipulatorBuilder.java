@@ -46,7 +46,7 @@ package org.gephi.datalab.spi.nodes;
  * using the Netbeans Lookup but avoiding the singleton it causes.</p>
  * <p>Each NodesManipulator should have a NodesManipulatorBuilder
  * with <code>@ServiceProvider(service=NodesManipulatorBuilder.class)</code> annotation to be public.</p>
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface NodesManipulatorBuilder {
 

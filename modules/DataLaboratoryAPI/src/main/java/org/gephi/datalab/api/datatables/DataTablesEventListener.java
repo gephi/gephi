@@ -45,7 +45,7 @@ package org.gephi.datalab.api.datatables;
  * <p>This is the interface for a listener of <code>DataTablesController</code> requests.</p>
  * <p><b>Only data table UI should be an implementation of this listener</b></p>
  * @see DataTablesController
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface DataTablesEventListener extends DataTablesCommonInterface {
     

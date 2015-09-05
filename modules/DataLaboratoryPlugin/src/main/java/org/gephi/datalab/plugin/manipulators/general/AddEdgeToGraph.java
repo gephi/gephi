@@ -57,7 +57,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * GeneralActionsManipulator that adds a new edge to the graph, asking for source and target nodes and type of edge in UI.
  *
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service = GeneralActionsManipulator.class)
 public class AddEdgeToGraph implements GeneralActionsManipulator {
@@ -66,26 +66,31 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
     private boolean directed;
     private GraphModel graphModel = null;
 
+    @Override
     public void execute() {
         if (source != null && target != null) {
             Lookup.getDefault().lookup(GraphElementsController.class).createEdge(source, target, directed);
         }
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(AddNodeToGraph.class, "AddEdgeToGraph.name");
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
         return Lookup.getDefault().lookup(GraphElementsController.class).getNodesCount() > 0;//At least 1 nodes
     }
 
+    @Override
     public ManipulatorUI getUI() {
-        GraphModel currentGraphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        GraphModel currentGraphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         if (graphModel != currentGraphModel) {//If graph model has changed since last execution, change default mode for edges to create in UI, else keep this parameter across calls
             directed = currentGraphModel.isDirected() || currentGraphModel.isMixed();//Get graph directed state. Set to true if graph is directed or mixed
             graphModel = currentGraphModel;
@@ -94,14 +99,17 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
         return new AddEdgeToGraphUI();
     }
 
+    @Override
     public int getType() {
         return 0;
     }
 
+    @Override
     public int getPosition() {
         return 200;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/plus-white.png", true);
     }

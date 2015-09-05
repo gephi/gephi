@@ -43,8 +43,8 @@ package org.gephi.datalab.plugin.manipulators.general;
 
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
-import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.api.GraphElementsController;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.GeneralActionsManipulator;
 import org.gephi.graph.api.Node;
@@ -56,11 +56,12 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * GeneralActionsManipulator that adds a new node to the graph, asking for its label.
  * Uses the default id for the node.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=GeneralActionsManipulator.class)
 public class AddNodeToGraph implements GeneralActionsManipulator{
 
+    @Override
     public void execute() {
         String label = JOptionPane.showInputDialog(null, NbBundle.getMessage(AddNodeToGraph.class, "AddNodeToGraph.dialog.text"), NbBundle.getMessage(AddNodeToGraph.class, "AddNodeToGraph.name"), JOptionPane.QUESTION_MESSAGE);
         if (label != null) {
@@ -69,30 +70,37 @@ public class AddNodeToGraph implements GeneralActionsManipulator{
         }
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(AddNodeToGraph.class, "AddNodeToGraph.name");
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 0;
     }
 
+    @Override
     public int getPosition() {
         return 0;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/plus-circle.png",true);
     }

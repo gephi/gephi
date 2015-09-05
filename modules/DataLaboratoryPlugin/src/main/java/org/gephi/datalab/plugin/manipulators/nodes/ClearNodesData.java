@@ -43,13 +43,13 @@ package org.gephi.datalab.plugin.manipulators.nodes;
 
 import java.util.ArrayList;
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsChooser;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralChooseColumnsUI;
 import org.gephi.datalab.spi.ManipulatorUI;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -57,25 +57,27 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that clears the given columns data of one or more nodes except the id and computed attributes.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class ClearNodesData extends BasicNodesManipulator implements  GeneralColumnsChooser {
 
     private Node[] nodes;
-    private AttributeColumn[] columnsToClearData;
+    private Column[] columnsToClearData;
 
+    @Override
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes = nodes;
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        ArrayList<AttributeColumn> columnsToClearDataList = new ArrayList<AttributeColumn>();
-        for (AttributeColumn column : Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumns()) {
+        ArrayList<Column> columnsToClearDataList = new ArrayList<Column>();
+        for (Column column : Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable()) {
             if (ac.canClearColumnData(column)) {
                 columnsToClearDataList.add(column);
             }
         }
-        columnsToClearData = columnsToClearDataList.toArray(new AttributeColumn[0]);
+        columnsToClearData = columnsToClearDataList.toArray(new Column[0]);
     }
 
+    @Override
     public void execute() {
         if (columnsToClearData.length >= 0) {
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
@@ -84,6 +86,7 @@ public class ClearNodesData extends BasicNodesManipulator implements  GeneralCol
         }
     }
 
+    @Override
     public String getName() {
         if (nodes.length > 1) {
             return NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.name.multiple");
@@ -92,35 +95,43 @@ public class ClearNodesData extends BasicNodesManipulator implements  GeneralCol
         }
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.description");
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return new GeneralChooseColumnsUI(NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.ui.description"));
     }
 
+    @Override
     public int getType() {
         return 200;
     }
 
+    @Override
     public int getPosition() {
         return 100;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/clear-data.png", true);
     }
 
-    public AttributeColumn[] getColumns() {
+    @Override
+    public Column[] getColumns() {
         return columnsToClearData;
     }
 
-    public void setColumns(AttributeColumn[] columnsToClearData) {
+    @Override
+    public void setColumns(Column[] columnsToClearData) {
         this.columnsToClearData = columnsToClearData;
     }
 }

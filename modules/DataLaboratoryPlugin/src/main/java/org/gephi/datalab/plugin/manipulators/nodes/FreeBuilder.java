@@ -47,11 +47,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for Free nodes manipulator.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=NodesManipulatorBuilder.class)
 public class FreeBuilder implements NodesManipulatorBuilder{
 
+    @Override
     public NodesManipulator getNodesManipulator() {
         return new Free();
     }

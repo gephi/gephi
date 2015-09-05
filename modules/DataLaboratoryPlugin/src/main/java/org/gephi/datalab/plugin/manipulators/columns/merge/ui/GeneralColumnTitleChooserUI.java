@@ -44,7 +44,7 @@ package org.gephi.datalab.plugin.manipulators.columns.merge.ui;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Table;
 import org.gephi.datalab.plugin.manipulators.columns.merge.GeneralColumnTitleChooser;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
@@ -56,13 +56,13 @@ import org.netbeans.validation.api.ui.ValidationPanel;
 /**
  * UI for general merge strategies that only need to select a title for the column to create.
  * Takes care to validate the column title.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class GeneralColumnTitleChooserUI extends javax.swing.JPanel implements ManipulatorUI {
 
     private GeneralColumnTitleChooser manipulator;
     private DialogControls dialogControls;
-    private AttributeTable table;
+    private Table table;
     private String displayName;
 
     /** Creates new form GeneralColumnTitleChooserUI */
@@ -70,14 +70,17 @@ public class GeneralColumnTitleChooserUI extends javax.swing.JPanel implements M
         initComponents();
         titleTextField.getDocument().addDocumentListener(new DocumentListener() {
 
+            @Override
             public void insertUpdate(DocumentEvent e) {
                 refreshOkButton();
             }
 
+            @Override
             public void removeUpdate(DocumentEvent e) {
                 refreshOkButton();
             }
 
+            @Override
             public void changedUpdate(DocumentEvent e) {
                 refreshOkButton();
             }
@@ -89,6 +92,7 @@ public class GeneralColumnTitleChooserUI extends javax.swing.JPanel implements M
         dialogControls.setOkButtonEnabled(text != null && !text.isEmpty() && table != null && !table.hasColumn(text));//Title not empty and not repeated.
     }
 
+    @Override
     public void setup(Manipulator m, DialogControls dialogControls) {
         this.manipulator = (GeneralColumnTitleChooser) m;
         this.table = manipulator.getTable();
@@ -98,14 +102,17 @@ public class GeneralColumnTitleChooserUI extends javax.swing.JPanel implements M
         refreshOkButton();
     }
 
+    @Override
     public void unSetup() {
         manipulator.setColumnTitle(titleTextField.getText());
     }
 
+    @Override
     public String getDisplayName() {
         return displayName;
     }
 
+    @Override
     public JPanel getSettingsPanel() {
         ValidationPanel validationPanel = new ValidationPanel();
         validationPanel.setInnerComponent(this);
@@ -117,6 +124,7 @@ public class GeneralColumnTitleChooserUI extends javax.swing.JPanel implements M
         return validationPanel;
     }
 
+    @Override
     public boolean isModal() {
         return true;
     }

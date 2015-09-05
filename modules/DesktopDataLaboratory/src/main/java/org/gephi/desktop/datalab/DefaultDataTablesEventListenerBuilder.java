@@ -53,6 +53,7 @@ import org.openide.windows.WindowManager;
 @ServiceProvider(service=DataTablesEventListenerBuilder.class)
 public class DefaultDataTablesEventListenerBuilder implements DataTablesEventListenerBuilder{
 
+    @Override
     public DataTablesEventListener getDataTablesEventListener() {
         return (DataTableTopComponent)WindowManager.getDefault().findTopComponent("DataTableTopComponent");
     }

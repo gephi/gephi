@@ -47,7 +47,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class DynamicParserTest {
     

@@ -54,7 +54,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.plugin.manipulators.general.MergeNodeDuplicates;
@@ -62,7 +62,7 @@ import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
-import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Node;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.util.ImageUtilities;
@@ -71,7 +71,7 @@ import org.openide.util.NbBundle;
 
 /**
  * UI for MergeNodeDuplicates PluginGeneralActionsManipulator
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI {
 
@@ -79,12 +79,12 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
     private static final ImageIcon INFO_LABELS_ICON = ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/information.png", true);
     private MergeNodeDuplicates manipulator;
     private DialogControls dialogControls;
-    private AttributeColumn[] columns;
+    private Column[] columns;
     private List<List<Node>> duplicateGroups;
     private JCheckBox deleteMergedNodesCheckBox;
     private JCheckBox caseSensitiveCheckBox;
     private JComboBox baseColumnComboBox;
-    private Attributes[] rows;
+    private Element[] rows;
     private StrategyComboBox[] strategiesComboBoxes;
     private StrategyConfigurationButton[] strategiesConfigurationButtons;
 
@@ -93,6 +93,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
         initComponents();
     }
 
+    @Override
     public void setup(Manipulator m, DialogControls dialogControls) {
         manipulator = (MergeNodeDuplicates) m;
         this.dialogControls = dialogControls;
@@ -100,6 +101,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
         loadSettings();
     }
 
+    @Override
     public void unSetup() {
         manipulator.setDeleteMergedNodes(deleteMergedNodesCheckBox.isSelected());
         manipulator.setCaseSensitive(caseSensitiveCheckBox.isSelected());
@@ -113,14 +115,17 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
         }
     }
 
+    @Override
     public String getDisplayName() {
         return manipulator.getName();
     }
 
+    @Override
     public JPanel getSettingsPanel() {
         return this;
     }
 
+    @Override
     public boolean isModal() {
         return true;
     }
@@ -155,9 +160,9 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
             
             List<Node> nodes = duplicateGroups.get(0);//Use first group of duplicated nodes to set strategies for all of them
             //Prepare node rows:
-            rows = new Attributes[nodes.size()];
+            rows = new Element[nodes.size()];
             for (int i = 0; i < nodes.size(); i++) {
-                rows[i] = nodes.get(0).getAttributes();
+                rows[i] = nodes.get(i);
             }
 
             strategiesConfigurationButtons = new StrategyConfigurationButton[columns.length];
@@ -191,7 +196,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
         scrollStrategies.setViewportView(strategiesPanel);
     }
 
-    private List<AttributeRowsMergeStrategy> getColumnAvailableStrategies(AttributeColumn column) {
+    private List<AttributeRowsMergeStrategy> getColumnAvailableStrategies(Column column) {
         ArrayList<AttributeRowsMergeStrategy> availableStrategies = new ArrayList<AttributeRowsMergeStrategy>();
         for (AttributeRowsMergeStrategy strategy : DataLaboratoryHelper.getDefault().getAttributeRowsMergeStrategies()) {
             strategy.setup(rows, rows[0], column);
@@ -210,7 +215,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
 
     private void loadBaseColumn(JPanel settingsPanel) {
         baseColumnComboBox = new JComboBox();
-        for (AttributeColumn column : columns) {
+        for (Column column : columns) {
             baseColumnComboBox.addItem(column.getTitle());
         }
         settingsPanel.add(new JLabel(getMessage("MergeNodeDuplicatesUI.baseColumnText")), "split 2");
@@ -221,6 +226,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
         //Reload duplicates on parameteres of detection change:
         ActionListener listener = new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 refreshDuplicatesAndStrategies();
             }
@@ -250,7 +256,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
 
     class StrategyConfigurationButton extends JButton implements ActionListener {
 
-        private int strategyIndex;
+        private final int strategyIndex;
 
         public StrategyConfigurationButton(int strategyIndex) {
             this.strategyIndex = strategyIndex;
@@ -264,6 +270,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
             setEnabled(strategy != null && strategy.getUI() != null);//Has strategy and the strategy has UI
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             DataLaboratoryHelper.getDefault().showAttributeRowsMergeStrategyUIDialog(getStrategy(strategyIndex));
         }
@@ -271,8 +278,8 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
 
     class StrategyComboBox extends JComboBox implements ActionListener {
 
-        private StrategyConfigurationButton button;
-        private StrategyInfoLabel infoLabel;
+        private final StrategyConfigurationButton button;
+        private final StrategyInfoLabel infoLabel;
 
         public StrategyComboBox(StrategyConfigurationButton button, StrategyInfoLabel infoLabel) {
             this.button = button;
@@ -293,7 +300,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
 
     class StrategyInfoLabel extends JLabel {
 
-        private int strategyIndex;
+        private final int strategyIndex;
 
         public StrategyInfoLabel(int strategyIndex) {
             this.strategyIndex = strategyIndex;
@@ -347,7 +354,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
 
     class StrategyWrapper {
 
-        private AttributeRowsMergeStrategy strategy;
+        private final AttributeRowsMergeStrategy strategy;
 
         public StrategyWrapper(AttributeRowsMergeStrategy strategy) {
             this.strategy = strategy;

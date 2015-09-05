@@ -47,11 +47,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for SelectSourceOnGraph edges manipulator.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=EdgesManipulatorBuilder.class)
 public class SelectSourceOnGraphBuilder implements EdgesManipulatorBuilder{
 
+    @Override
     public EdgesManipulator getEdgesManipulator() {
         return new SelectSourceOnGraph();
     }

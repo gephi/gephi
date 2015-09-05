@@ -51,7 +51,7 @@ import org.gephi.project.api.Workspace;
  * 
  * <p>In order to enable a <code>PreviewMouseListener</code>, annotate it with <code>ServiceProvider</code> annotation and implement <code>MouseResponsiveRenderer</code> 
  * in a <code>Renderer</code> and return true for the listener in the <code>needsPreviewMouseListener</code> method.</p>
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface PreviewMouseListener {
     

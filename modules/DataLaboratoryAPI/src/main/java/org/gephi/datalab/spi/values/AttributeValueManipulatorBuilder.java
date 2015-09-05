@@ -46,7 +46,7 @@ package org.gephi.datalab.spi.values;
  * using the Netbeans Lookup but avoiding the singleton it causes.</p>
  * <p>Each AttributeValueManipulator should have a AttributeValueManipulatorBuilder
  * with <code>@ServiceProvider(service=AttributeValueManipulatorBuilder.class)</code> annotation to be public.</p>
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface AttributeValueManipulatorBuilder {
 

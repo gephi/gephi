@@ -47,7 +47,7 @@ import java.awt.event.KeyEvent;
  * <p>Mouse event for preview. Contains the event type and graph coordinates for the event.
  * If you attend a <code>PreviewMouseEvent</code>, it should be marked as consumed.</p>
  * <p>The public keyEvent field contains the keyboard state for the given mouse event. Can be null.</p>
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class PreviewMouseEvent {
 

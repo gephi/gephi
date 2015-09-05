@@ -41,16 +41,16 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.spi.rows.merge;
 
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.spi.Manipulator;
-import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.Element;
 
 /**
  * <p>Service for defining strategies for merging a column of rows of a table.</p>
  * <p>Has the same interface as a manipulator.</p>
  * <p>When a <code>RowsMergeStrategy</code> is executed it must reduce all values to one that should be returned later when <code>getReducedValue</code> is called</p>
  * @see Manipulator
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface AttributeRowsMergeStrategy extends Manipulator{
 
@@ -61,7 +61,7 @@ public interface AttributeRowsMergeStrategy extends Manipulator{
      * @param selectedRow Main row of the row group to merge
      * @param column Column to merge
      */
-    void setup(Attributes[] rows, Attributes selectedRow, AttributeColumn column);
+    void setup(Element[] rows, Element selectedRow, Column column);
     
     /**
      * This method is always called after the strategy is set up and executed.

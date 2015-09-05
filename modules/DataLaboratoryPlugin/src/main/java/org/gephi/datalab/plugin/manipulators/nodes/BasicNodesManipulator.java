@@ -50,14 +50,17 @@ import org.gephi.datalab.spi.nodes.NodesManipulator;
  */
 public abstract class BasicNodesManipulator implements NodesManipulator{
 
+    @Override
     public boolean isAvailable() {
         return true;
     }
 
+    @Override
     public ContextMenuItemManipulator[] getSubItems() {
         return null;
     }
 
+    @Override
     public Integer getMnemonicKey() {
         return null;
     }

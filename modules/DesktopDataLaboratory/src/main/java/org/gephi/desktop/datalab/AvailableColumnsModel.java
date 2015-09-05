@@ -44,7 +44,9 @@ package org.gephi.desktop.datalab;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import org.gephi.data.attributes.api.AttributeColumn;
+import java.util.List;
+import org.gephi.attribute.api.Column;
+import org.gephi.attribute.api.Table;
 
 /**
  * Class to keep available state (in data laboratory) of the columns of a table of a workspace.
@@ -54,9 +56,14 @@ import org.gephi.data.attributes.api.AttributeColumn;
 public class AvailableColumnsModel {
 
     private static final int MAX_AVAILABLE_COLUMNS = 20;
-    private ArrayList<AttributeColumn> availableColumns = new ArrayList<AttributeColumn>();
+    private final List<Column> availableColumns = new ArrayList<Column>();
+    private final Table table;
 
-    public boolean isColumnAvailable(AttributeColumn column) {
+    public AvailableColumnsModel(Table table) {
+        this.table = table;
+    }
+
+    public boolean isColumnAvailable(Column column) {
         return availableColumns.contains(column);
     }
 
@@ -65,7 +72,7 @@ public class AvailableColumnsModel {
      * @param column Column to add
      * @return True if the column was successfully added, false otherwise (no more columns can be available)
      */
-    public boolean addAvailableColumn(AttributeColumn column) {
+    public boolean addAvailableColumn(Column column) {
         if (canAddAvailableColumn()) {
             if (!availableColumns.contains(column)) {
                 availableColumns.add(column);
@@ -81,7 +88,7 @@ public class AvailableColumnsModel {
      * @param column Column to make not available
      * @return True if the column could be removed
      */
-    public boolean removeAvailableColumn(AttributeColumn column) {
+    public boolean removeAvailableColumn(Column column) {
         return availableColumns.remove(column);
     }
 
@@ -104,17 +111,35 @@ public class AvailableColumnsModel {
      * Return available columns, sorted by index
      * @return 
      */
-    public AttributeColumn[] getAvailableColumns() {
-        Collections.sort(availableColumns, new Comparator<AttributeColumn>() {
+    public Column[] getAvailableColumns() {
+        Collections.sort(availableColumns, new Comparator<Column>() {
 
-            public int compare(AttributeColumn o1, AttributeColumn o2) {
+            @Override
+            public int compare(Column o1, Column o2) {
                 return o1.getIndex() - o2.getIndex();
             }
         });
-        return availableColumns.toArray(new AttributeColumn[0]);
+        return availableColumns.toArray(new Column[0]);
     }
 
     public int getAvailableColumnsCount() {
         return availableColumns.size();
+    }
+    
+    /**
+     * Syncronizes this AvailableColumnsModel to contain the table current columns, checking for deleted and new columns.
+     */
+    public void syncronizeTableColumns(){
+        List<Column> availableColumnsCopy = new ArrayList<Column>(availableColumns);
+        
+        for (Column column : availableColumnsCopy) {
+            if(!table.hasColumn(column.getId())){
+                removeAvailableColumn(column);
+            }
+        }
+        
+        for (Column column : table) {
+            addAvailableColumn(column);
+        }
     }
 }

@@ -41,8 +41,8 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.impl;
 
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.attribute.api.Table;
+import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.api.datatables.DataTablesEventListener;
 import org.gephi.datalab.api.datatables.DataTablesEventListenerBuilder;
@@ -54,7 +54,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Implementation of the DataTablesController interface
  * declared in the Data Laboratory API.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  * @see DataTablesController
  */
 @ServiceProvider(service = DataTablesController.class)
@@ -62,59 +62,68 @@ public class DataTablesControllerImpl implements DataTablesController {
 
     DataTablesEventListener listener;
 
+    @Override
     public void setDataTablesEventListener(DataTablesEventListener listener) {
         this.listener = listener;
     }
 
+    @Override
     public DataTablesEventListener getDataTablesEventListener() {
         return listener;
     }
 
+    @Override
     public boolean isDataTablesReady() {
         return listener!=null;
     }
 
+    @Override
     public void selectNodesTable() {
         if (listener != null) {
             listener.selectNodesTable();
         }
     }
 
+    @Override
     public void selectEdgesTable() {
         if (listener != null) {
             listener.selectEdgesTable();
         }
     }
 
-    public void selectTable(AttributeTable table) {
+    @Override
+    public void selectTable(Table table) {
         if (listener != null) {
-            AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-            if (ac.getModel().getNodeTable() == table) {
-                selectNodesTable();
-            } else {
+            if (Lookup.getDefault().lookup(AttributeColumnsController.class).isEdgeTable(table)) {
                 selectEdgesTable();
+            } else {
+                selectNodesTable();
             }
         }
     }
 
+    @Override
     public void refreshCurrentTable() {
         if (listener != null) {
             listener.refreshCurrentTable();
         }
     }
 
+    @Override
     public void setNodeTableSelection(Node[] nodes) {
         if (listener != null) {
             listener.setNodeTableSelection(nodes);
         }
     }
 
+    @Override
     public void setEdgeTableSelection(Edge[] edges) {
         if (listener != null) {
             listener.setEdgeTableSelection(edges);
         }
     }
 
+    @Override
     public Node[] getNodeTableSelection() {
         if (listener != null) {
             return listener.getNodeTableSelection();
@@ -123,6 +132,7 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
     }
 
+    @Override
     public Edge[] getEdgeTableSelection() {
         if (listener != null) {
             return listener.getEdgeTableSelection();
@@ -131,6 +141,7 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
     }
 
+    @Override
     public boolean isNodeTableMode() {
         if (listener != null) {
             return listener.isNodeTableMode();
@@ -139,6 +150,7 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
     }
 
+    @Override
     public boolean isEdgeTableMode() {
         if (listener != null) {
             return listener.isEdgeTableMode();
@@ -147,6 +159,7 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
     }
 
+    @Override
     public boolean isShowOnlyVisible() {
         if (listener != null) {
             return listener.isShowOnlyVisible();
@@ -155,18 +168,21 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
     }
 
+    @Override
     public void setShowOnlyVisible(boolean showOnlyVisible){
         if (listener != null) {
             listener.setShowOnlyVisible(showOnlyVisible);
         }
     }
 
+    @Override
     public void exportCurrentTable(ExportMode exportMode) {
         if (listener != null) {
             listener.exportCurrentTable(exportMode);
         }
     }
 
+    @Override
     public boolean isUseSparklines() {
         if (listener != null) {
             return listener.isUseSparklines();
@@ -175,12 +191,14 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
     }
 
+    @Override
     public void setUseSparklines(boolean useSparklines) {
         if (listener != null) {
             listener.setUseSparklines(useSparklines);
         }
     }
 
+    @Override
     public boolean isTimeIntervalGraphics() {
         if (listener != null) {
             return listener.isTimeIntervalGraphics();
@@ -189,12 +207,14 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
     }
 
+    @Override
     public void setTimeIntervalGraphics(boolean timeIntervalGraphics) {
         if (listener != null) {
             listener.setTimeIntervalGraphics(timeIntervalGraphics);
         }
     }
 
+    @Override
     public boolean isShowEdgesNodesLabels() {
         if (listener != null) {
             return listener.isShowEdgesNodesLabels();
@@ -203,12 +223,14 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
     }
 
+    @Override
     public void setShowEdgesNodesLabels(boolean showEdgesNodesLabels) {
         if (listener != null) {
             listener.setShowEdgesNodesLabels(showEdgesNodesLabels);
         }
     }
 
+    @Override
     public boolean prepareDataTables() {
         DataTablesEventListenerBuilder builder=Lookup.getDefault().lookup(DataTablesEventListenerBuilder.class);
         if(builder!=null){

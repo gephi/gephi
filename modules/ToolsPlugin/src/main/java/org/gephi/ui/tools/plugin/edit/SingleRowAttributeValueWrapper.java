@@ -50,7 +50,7 @@ import org.gephi.graph.api.Attributes;
 
 /**
  *
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class SingleRowAttributeValueWrapper implements EditWindowUtils.AttributeValueWrapper {
 

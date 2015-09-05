@@ -22,17 +22,12 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="intervalEndLabel" max="32767" attributes="0"/>
-                          <Component id="intervalStartLabel" pref="92" max="32767" attributes="0"/>
+                          <Component id="intervalStartLabel" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="intervalStartText" pref="201" max="32767" attributes="0"/>
+                          <Component id="intervalStartText" max="32767" attributes="0"/>
                           <Component id="intervalEndText" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="intervalStartOpenCheckbox" max="32767" attributes="0"/>
-                          <Component id="intervalEndOpenCheckbox" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="descriptionLabel" max="32767" attributes="0"/>
@@ -43,7 +38,7 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="titleLabel" min="-2" pref="30" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="titleTextField" max="32767" attributes="0"/>
+                      <Component id="titleTextField" pref="245" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -59,15 +54,13 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="intervalStartLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="intervalStartText" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="intervalStartOpenCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="intervalEndLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="intervalEndText" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="intervalEndOpenCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="71" max="32767" attributes="0"/>
+              <EmptySpace pref="73" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="filler1" alignment="1" min="-2" pref="23" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -154,22 +147,6 @@
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/datalab/plugin/manipulators/columns/ui/Bundle.properties" key="ConvertColumnToDynamicUI.intervalEndText.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="intervalStartOpenCheckbox">
-      <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicUI.class, &quot;ConvertColumnToDynamicUI.intervalOpenCheckbox.text&quot;)" type="code"/>
-        </Property>
-        <Property name="horizontalTextPosition" type="int" value="10"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="intervalEndOpenCheckbox">
-      <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicUI.class, &quot;ConvertColumnToDynamicUI.intervalOpenCheckbox.text&quot;)" type="code"/>
-        </Property>
-        <Property name="horizontalTextPosition" type="int" value="10"/>
       </Properties>
     </Component>
   </SubComponents>

@@ -50,7 +50,7 @@
         <netbeans.version>RELEASE802</netbeans.version>
         
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
-        <gephi.platform.localization.version>7.2</gephi.platform.localization.version>
+        <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
         
         <!-- Modules specification version, overrides project version -->
         <gephi.modules.specification.version>0.8.2</gephi.modules.specification.version>
@@ -1129,9 +1129,12 @@
         <module>modules/AppearancePlugin</module>
         <module>modules/AppearancePluginUI</module>
         <module>modules/LongTaskAPI</module>
+        <module>modules/DataLaboratoryAPI</module>
+        <module>modules/DataLaboratoryPlugin</module>
         <module>modules/DBDrivers</module>
         <module>modules/DesktopBranding</module>
         <module>modules/DesktopContext</module>
+        <module>modules/DesktopDataLaboratory</module>
         <module>modules/DesktopGenerate</module>
         <module>modules/DesktopExport</module>
         <module>modules/DesktopImport</module>

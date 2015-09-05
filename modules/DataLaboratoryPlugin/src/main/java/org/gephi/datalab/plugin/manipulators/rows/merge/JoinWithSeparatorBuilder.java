@@ -47,11 +47,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for JoinWithSeparator AttributeColumnsMergeStrategy.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=AttributeRowsMergeStrategyBuilder.class)
 public class JoinWithSeparatorBuilder implements AttributeRowsMergeStrategyBuilder {
 
+    @Override
     public AttributeRowsMergeStrategy getAttributeRowsMergeStrategy() {
         return new JoinWithSeparator();
     }

@@ -47,11 +47,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for InterQuartileRangeNumber AttributeColumnsMergeStrategy.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=AttributeRowsMergeStrategyBuilder.class)
 public class InterQuartileRangeNumberBuilder implements AttributeRowsMergeStrategyBuilder {
 
+    @Override
     public AttributeRowsMergeStrategy getAttributeRowsMergeStrategy() {
         return new InterQuartileRangeNumber();
     }

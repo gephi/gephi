@@ -49,7 +49,7 @@ import org.gephi.datalab.spi.Manipulator;
  * <p>They are added as buttons in Data table toolbar.</p>
  * <p>The implementations don't need a builder and can simply be published with <code>@ServiceProvider(service = GeneralActionsManipulator.class)</code> annotation</p>
  * @see Manipulator
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface GeneralActionsManipulator extends Manipulator {
 

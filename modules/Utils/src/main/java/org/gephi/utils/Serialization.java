@@ -47,7 +47,7 @@ import java.beans.PropertyEditorManager;
 
 /**
  * Class for serialization utils such as writing any object value to a String and retrieving it by String + class name.
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class Serialization {
 

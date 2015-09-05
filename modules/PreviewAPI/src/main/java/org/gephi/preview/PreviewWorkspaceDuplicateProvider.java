@@ -52,7 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 @ServiceProvider(service=WorkspaceDuplicateProvider.class)
 public class PreviewWorkspaceDuplicateProvider implements WorkspaceDuplicateProvider{

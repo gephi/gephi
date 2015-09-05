@@ -59,7 +59,7 @@ import org.gephi.datalab.spi.nodes.NodesManipulator;
  * <p>The only methods that are called before setting up a manipulator (subtypes have special setup methods) with the data are getType and getPosition.
  * This way, the other methods behaviour can depend on the data that has been setup before</p>
  * @see NodesManipulator
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public interface Manipulator {
 

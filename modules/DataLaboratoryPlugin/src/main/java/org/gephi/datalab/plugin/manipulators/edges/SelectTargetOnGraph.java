@@ -51,44 +51,53 @@ import org.openide.util.NbBundle;
 
 /**
  * Edges manipulator that shows the target node of an edge centered in graph view.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class SelectTargetOnGraph extends BasicEdgesManipulator {
     private Edge clickedEdge;
 
+    @Override
     public void setup(Edge[] edges, Edge clickedEdge) {
         this.clickedEdge=clickedEdge;
     }
 
+    @Override
     public void execute() {
         Node source=clickedEdge.getTarget();
         VizController.getInstance().getSelectionManager().centerOnNode(source);
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(SelectTargetOnGraph.class, "SelectTargetOnGraph.name");
     }
 
+    @Override
     public String getDescription() {
         return "";
     }
 
+    @Override
     public boolean canExecute() {
         return true;
     }
 
+    @Override
     public ManipulatorUI getUI() {
         return null;
     }
 
+    @Override
     public int getType() {
         return 100;
     }
 
+    @Override
     public int getPosition() {
         return 100;
     }
 
+    @Override
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/magnifier--arrow.png", true);
     }

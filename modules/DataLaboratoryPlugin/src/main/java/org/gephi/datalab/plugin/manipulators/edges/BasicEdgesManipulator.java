@@ -50,14 +50,17 @@ import org.gephi.datalab.spi.edges.EdgesManipulator;
  */
 public abstract class BasicEdgesManipulator implements EdgesManipulator{
 
+    @Override
     public boolean isAvailable() {
         return true;
     }
 
+    @Override
     public ContextMenuItemManipulator[] getSubItems() {
         return null;
     }
 
+    @Override
     public Integer getMnemonicKey() {
         return null;
     }
