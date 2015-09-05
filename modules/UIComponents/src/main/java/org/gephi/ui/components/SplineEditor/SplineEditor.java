@@ -39,7 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.ui.components.SplineEditor;
+package org.gephi.ui.components.splineEditor;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -55,9 +55,7 @@ import org.openide.windows.WindowManager;
  * Adaptation of the SwingX demo SplineEditor. Used to get a
  * {@link Interpolator} for computing.
  * <p>
- * <a
- * href="http://www.jroller.com/gfx/entry/swing_demos_animations_and_swing">Romain
- * Guy's article<a>
+ * <a href="http://www.jroller.com/gfx/entry/swing_demos_animations_and_swing">Romain Guy's article</a>
  *
  * @author Mathieu Bastian
  */
