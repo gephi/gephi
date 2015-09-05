@@ -12,6 +12,7 @@
             <excludes>
                 <exclude>**/target/**</exclude>
                 <exclude>.git/**</exclude>
+                <exclude>**/*.log</exclude>
             </excludes>
         </fileSet>
     </fileSets>

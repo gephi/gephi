@@ -522,6 +522,9 @@
                                 <goals>
                                     <goal>autoupdate</goal>
                                 </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/site</outputDirectory>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -552,6 +555,15 @@
                         </executions>
                     </plugin>
 
+                    <!-- Do not generate a source jar -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <configuration>
+                            <skipSource>true</skipSource>
+                        </configuration>
+                    </plugin>
+
                     <!-- Unpack the localization dependency -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -573,34 +585,49 @@
                             </execution>
                         </executions>
                     </plugin>
-                </plugins>
-            </build>
-        </profile>
-        
-        <profile>
-            <id>upload-updates</id>
-            <build>
-                <plugins>
-                    <!-- Upload the autoupdate site automatically -->
+                    
+                    <!-- Copy parent's site into target/site -->
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>wagon-maven-plugin</artifactId>
+                        <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>upload-jar-to-folder</id>
-                                <phase>deploy</phase>
+                                <phase>site</phase>
+                                <configuration>
+                                    <target>
+                                        <copy todir="${project.build.directory}/site">
+                                            <fileset dir="${basedir}/../../target/site"/>
+                                        </copy>
+                                    </target>
+                                </configuration>
                                 <goals>
-                                    <goal>upload</goal>
+                                    <goal>run</goal>
                                 </goals>
                             </execution>
                         </executions>
-                        <configuration>
-                            <fromDir>${gephi.updates.site}</fromDir>
-                            <includes>*</includes>
-                            <url>${gephi.default.repository.url}</url>
-                            <toDir>${gephi.updates.repository.path}</toDir>
-                            <serverId>${gephi.default.repository.id}</serverId>
-                        </configuration>
+                    </plugin>
+
+                    <!-- Attach parent's sources artifact -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${basedir}/../../target/${brandingToken}-${project.version}-sources.tar.gz</file>
+                                            <type>tar.gz</type>
+                                            <classifier>sources</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
@@ -890,6 +917,33 @@
                                     <version>${project.version}</version>
                                     <file>${project.build.directory}/${project.artifactId}-${project.version}.dmg</file>
                                 </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile that pushes the /site folder to GitHub's gh-pages -->
+        <profile>
+            <id>push-site</id>
+            <build>
+                <plugins>
+                     <!-- Publish site folder to GitHub's gh-pages branch -->
+                    <plugin>
+                        <groupId>com.github.github</groupId>
+                        <artifactId>site-maven-plugin</artifactId>
+                        <configuration>
+                            <message>Creating site for ${project.version}</message>
+                            <path>${project.version}</path>
+                            <merge>true</merge>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>site</goal>
+                                </goals>
+                                <phase>site</phase>
                             </execution>
                         </executions>
                     </plugin>
