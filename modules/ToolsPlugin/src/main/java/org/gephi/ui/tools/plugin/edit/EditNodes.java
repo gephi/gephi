@@ -42,15 +42,14 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.ui.tools.plugin.edit;
 
 import java.awt.Color;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.attributes.api.AttributeValue;
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
+import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
 import org.gephi.ui.tools.plugin.edit.EditWindowUtils.AttributeValueWrapper;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -80,7 +79,7 @@ public class EditNodes extends AbstractNode {
     public EditNodes(Node node) {
         super(Children.LEAF);
         this.nodes = new Node[]{node};
-        setName(node.getNodeData().getLabel());
+        setName(node.getLabel());
         multipleNodes = false;
     }
 
@@ -95,7 +94,7 @@ public class EditNodes extends AbstractNode {
         if (multipleNodes) {
             setName(NbBundle.getMessage(EditNodes.class, "EditNodes.multiple.elements"));
         } else {
-            setName(nodes[0].getNodeData().getLabel());
+            setName(nodes[0].getLabel());
         }
     }
 
@@ -121,37 +120,40 @@ public class EditNodes extends AbstractNode {
             if (nodes.length > 1) {
                 set.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.attributes.text.multiple"));
             } else {
-                set.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.attributes.text", nodes[0].getNodeData().getLabel()));
+                set.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.attributes.text", nodes[0].getLabel()));
             }
 
-            AttributeRow row = (AttributeRow) nodes[0].getNodeData().getAttributes();
+            Node row =  nodes[0];
             AttributeValueWrapper wrap;
-            for (AttributeValue value : row.getValues()) {
-
+            for (String key : row.getAttributeKeys()) {
+                Column column = null;//TODO somehow get this from graphstore API
+                
                 if (multipleNodes) {
-                    wrap = new MultipleRowsAttributeValueWrapper(nodes, value.getColumn(),currentTimeFormat);
+                    wrap = new MultipleRowsAttributeValueWrapper(nodes, column,currentTimeFormat);
                 } else {
-                    wrap = new SingleRowAttributeValueWrapper(nodes[0], value.getColumn(),currentTimeFormat);
+                    wrap = new SingleRowAttributeValueWrapper(nodes[0], column,currentTimeFormat);
                 }
-                AttributeType type = value.getColumn().getType();
+                
                 Property p;
-                if (ac.canChangeColumnData(value.getColumn())) {
+                Class<?> type = column.getTypeClass();
+                PropertyEditor propEditor = PropertyEditorManager.findEditor(type);
+                if (ac.canChangeColumnData(column)) {
                     //Editable column, provide "set" method:
-                    if (!EditWindowUtils.NotSupportedTypes.contains(type)) {//The AttributeType can be edited by default:
-                        p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), "setValue" + type.getType().getSimpleName());
+                    if (propEditor != null) {//The type can be edited by default:
+                        p = new PropertySupport.Reflection(wrap, type, "getValue" + type.getSimpleName(), "setValue" + type.getSimpleName());
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", "setValueAsString");
                     }
                 } else {
                     //Not editable column, do not provide "set" method:
-                    if (!EditWindowUtils.NotSupportedTypes.contains(type)) {//The AttributeType can be edited by default:
-                        p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), null);
+                    if (propEditor != null) {//The type can be edited by default:
+                        p = new PropertySupport.Reflection(wrap, type, "getValue" + type.getSimpleName(), null);
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", null);
                     }
                 }
-                p.setDisplayName(value.getColumn().getTitle());
-                p.setName(value.getColumn().getId());
+                p.setDisplayName(column.getTitle());
+                p.setName(column.getId());
                 set.put(p);
             }
             return set;
@@ -196,20 +198,19 @@ public class EditNodes extends AbstractNode {
                 Node node = nodes[0];
                 Sheet.Set set = new Sheet.Set();
                 set.setName("properties");
-                set.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.properties.text", node.getNodeData().getLabel()));
-                NodeData data = node.getNodeData();
+                set.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.properties.text", node.getLabel()));
 
                 Property p;
                 //Size:
-                p = new PropertySupport.Reflection(data, Float.TYPE, "getSize", "setSize");
+                p = new PropertySupport.Reflection(node, Float.TYPE, "size", "setSize");
                 p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.size.text"));
                 p.setName("size");
                 set.put(p);
 
                 //All position coordinates:
-                set.put(buildGeneralPositionProperty(data, "x"));
-                set.put(buildGeneralPositionProperty(data, "y"));
-                set.put(buildGeneralPositionProperty(data, "z"));
+                set.put(buildGeneralPositionProperty(node, "x"));
+                set.put(buildGeneralPositionProperty(node, "y"));
+                set.put(buildGeneralPositionProperty(node, "z"));
 
                 //Color:
                 SingleNodePropertiesWrapper nodeWrapper = new SingleNodePropertiesWrapper(node);
@@ -228,31 +229,29 @@ public class EditNodes extends AbstractNode {
 
     public class SingleNodePropertiesWrapper {
 
-        private Node node;
+        private final Node node;
 
         public SingleNodePropertiesWrapper(Node node) {
             this.node = node;
         }
 
         public Color getNodeColor() {
-            NodeData data = node.getNodeData();
-            return new Color(data.r(), data.g(), data.b(), data.alpha());
+            return new Color(node.r(), node.g(), node.b(), node.alpha());
         }
 
         public void setNodeColor(Color c) {
             if (c != null) {
-                NodeData data = node.getNodeData();
-                data.setR(c.getRed() / 255f);
-                data.setG(c.getGreen() / 255f);
-                data.setB(c.getBlue() / 255f);
-                data.setAlpha(c.getAlpha() / 255f);
+                node.setR(c.getRed() / 255f);
+                node.setG(c.getGreen() / 255f);
+                node.setB(c.getBlue() / 255f);
+                node.setAlpha(c.getAlpha() / 255f);
             }
         }
     }
 
     public class MultipleNodesPropertiesWrapper {
 
-        Node[] nodes;
+        private final Node[] nodes;
 
         public MultipleNodesPropertiesWrapper(Node[] nodes) {
             this.nodes = nodes;
@@ -271,7 +270,7 @@ public class EditNodes extends AbstractNode {
         public void setNodesX(Float x) {
             nodesX = x;
             for (Node node : nodes) {
-                node.getNodeData().setX(x);
+                node.setX(x);
             }
         }
 
@@ -282,7 +281,7 @@ public class EditNodes extends AbstractNode {
         public void setNodesY(Float y) {
             nodesY = y;
             for (Node node : nodes) {
-                node.getNodeData().setY(y);
+                node.setY(y);
             }
         }
 
@@ -293,7 +292,7 @@ public class EditNodes extends AbstractNode {
         public void setNodesZ(Float z) {
             nodesZ = z;
             for (Node node : nodes) {
-                node.getNodeData().setZ(z);
+                node.setZ(z);
             }
         }
 
@@ -304,13 +303,11 @@ public class EditNodes extends AbstractNode {
         public void setNodesColor(Color c) {
             if (c != null) {
                 nodesColor = c;
-                NodeData data;
                 for (Node node : nodes) {
-                    data = node.getNodeData();
-                    data.setR(c.getRed() / 255f);
-                    data.setG(c.getGreen() / 255f);
-                    data.setB(c.getBlue() / 255f);
-                    data.setAlpha(c.getAlpha() / 255f);
+                    node.setR(c.getRed() / 255f);
+                    node.setG(c.getGreen() / 255f);
+                    node.setB(c.getBlue() / 255f);
+                    node.setAlpha(c.getAlpha() / 255f);
                 }
             }
         }
@@ -322,7 +319,7 @@ public class EditNodes extends AbstractNode {
         public void setNodesSize(Float size) {
             nodesSize = size;
             for (Node node : nodes) {
-                node.getNodeData().setSize(size);
+                node.setSize(size);
             }
         }
     }
@@ -331,9 +328,9 @@ public class EditNodes extends AbstractNode {
      * Used to build property for each position coordinate (x,y,z) in the same way.
      * @return Property for that coordinate
      */
-    private Property buildGeneralPositionProperty(NodeData data, String coordinate) throws NoSuchMethodException {
+    private Property buildGeneralPositionProperty(Node node, String coordinate) throws NoSuchMethodException {
         //Position:
-        Property p = new PropertySupport.Reflection(data, Float.TYPE, coordinate, "set" + coordinate.toUpperCase());
+        Property p = new PropertySupport.Reflection(node, Float.TYPE, coordinate, "set" + coordinate.toUpperCase());
         p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.position.text", coordinate));
         p.setName(coordinate);
         return p;

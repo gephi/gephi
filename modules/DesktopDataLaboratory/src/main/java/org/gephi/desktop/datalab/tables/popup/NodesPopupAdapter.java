@@ -11,7 +11,7 @@ import javax.swing.JPopupMenu;
 import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
-import org.gephi.desktop.datalab.tables.ElementsDataTable;
+import org.gephi.desktop.datalab.tables.AbstractElementsDataTable;
 import org.gephi.desktop.datalab.utils.PopupMenuUtils;
 import org.gephi.graph.api.Node;
 
@@ -21,7 +21,7 @@ import org.gephi.graph.api.Node;
  */
 public class NodesPopupAdapter extends AbstractPopupAdapter<Node> {
 
-    public NodesPopupAdapter(ElementsDataTable<Node> elementsDataTable) {
+    public NodesPopupAdapter(AbstractElementsDataTable<Node> elementsDataTable) {
         super(elementsDataTable);
     }
 

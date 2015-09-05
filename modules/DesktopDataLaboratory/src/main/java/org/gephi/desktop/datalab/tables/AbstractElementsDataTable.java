@@ -65,7 +65,7 @@ import org.openide.util.Lookup;
  * @author Mathieu Bastian
  * @author Eduardo Ramos
  */
-public abstract class ElementsDataTable<T extends Element> {
+public abstract class AbstractElementsDataTable<T extends Element> {
 
    protected boolean useSparklines = false;
    protected boolean timeIntervalGraphics = false;
@@ -81,7 +81,7 @@ public abstract class ElementsDataTable<T extends Element> {
 //    private TimeFormat currentTimeFormat;
 //    private SparkLinesRenderer sparkLinesRenderer;
 
-    public ElementsDataTable() {
+    public AbstractElementsDataTable() {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         table = new JXTable();
@@ -233,30 +233,6 @@ public abstract class ElementsDataTable<T extends Element> {
 
     public void setTimeIntervalGraphics(boolean timeIntervalGraphics) {
         this.timeIntervalGraphics = timeIntervalGraphics;
-    }
-
-    private String[] getHiddenColumns() {
-        List<String> hiddenCols = new ArrayList<String>();
-        TableColumnModelExt columnModel = (TableColumnModelExt) table.getColumnModel();
-        for (int i = 0; i < columnModel.getColumnCount(); i++) {
-            TableColumnExt col = columnModel.getColumnExt(i);
-            if (!col.isVisible()) {
-                hiddenCols.add((String) col.getHeaderValue());
-            }
-        }
-        return hiddenCols.toArray(new String[0]);
-    }
-
-    private void setHiddenColumns(String[] columns) {
-        TableColumnModelExt columnModel = (TableColumnModelExt) table.getColumnModel();
-        for (int i = 0; i < columnModel.getColumnCount(); i++) {
-            TableColumnExt col = columnModel.getColumnExt(i);
-            for (String column : columns) {
-                if (column.equals(col.getHeaderValue())) {
-                    col.setVisible(false);
-                }
-            }
-        }
     }
 
     public T getElementFromRow(int row) {

@@ -11,7 +11,7 @@ import javax.swing.JPopupMenu;
 import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.edges.EdgesManipulator;
-import org.gephi.desktop.datalab.tables.ElementsDataTable;
+import org.gephi.desktop.datalab.tables.AbstractElementsDataTable;
 import org.gephi.desktop.datalab.utils.PopupMenuUtils;
 import org.gephi.graph.api.Edge;
 
@@ -21,7 +21,7 @@ import org.gephi.graph.api.Edge;
  */
 public class EdgesPopupAdapter extends AbstractPopupAdapter<Edge> {
 
-    public EdgesPopupAdapter(ElementsDataTable<Edge> elementsDataTable) {
+    public EdgesPopupAdapter(AbstractElementsDataTable<Edge> elementsDataTable) {
         super(elementsDataTable);
     }
 

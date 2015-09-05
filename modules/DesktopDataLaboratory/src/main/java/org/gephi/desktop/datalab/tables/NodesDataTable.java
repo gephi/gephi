@@ -56,7 +56,7 @@ import org.gephi.graph.api.Node;
  *
  * @author Eduardo Ramos
  */
-public final class NodesDataTable extends ElementsDataTable<Node> {
+public final class NodesDataTable extends AbstractElementsDataTable<Node> {
 
     public NodesDataTable() {
         super();

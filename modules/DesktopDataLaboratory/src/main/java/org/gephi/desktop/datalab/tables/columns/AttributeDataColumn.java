@@ -41,6 +41,7 @@
  */
 package org.gephi.desktop.datalab.tables.columns;
 
+import java.util.Arrays;
 import org.gephi.attribute.api.AttributeUtils;
 import org.gephi.attribute.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
@@ -51,17 +52,24 @@ import org.gephi.graph.api.Element;
  * @author Eduardo Ramos
  */
 public class AttributeDataColumn<T extends Element> implements ElementDataColumn<T> {
+
     private final AttributeColumnsController attributeColumnsController;
     private final Column column;
+    private final Class columnClassForTable;
+
     private boolean useSparklines = false;
+    private boolean returnOriginalValue;
+    private boolean isArrayType;
 
     public AttributeDataColumn(AttributeColumnsController attributeColumnsController, Column column) {
         this.attributeColumnsController = attributeColumnsController;
         this.column = column;
+
+        this.columnClassForTable = prepareColumnClassForTable();
+        refreshValueGenerationFlags();
     }
 
-    @Override
-    public Class getColumnClass() {
+    private Class<?> prepareColumnClassForTable() {
         if (useSparklines && AttributeUtils.isDynamicType(column.getTypeClass())) {
             return column.getTypeClass();//TODO update dynamics
         } else if (Number.class.isAssignableFrom(column.getTypeClass())) {
@@ -74,32 +82,45 @@ public class AttributeDataColumn<T extends Element> implements ElementDataColumn
     }
 
     @Override
+    public Class getColumnClass() {
+        return columnClassForTable;
+    }
+
+    @Override
     public String getColumnName() {
         return column.getTitle();
+    }
+
+    private void refreshValueGenerationFlags() {
+        isArrayType =column.getTypeClass().isArray();
+        returnOriginalValue = useSparklines && AttributeUtils.isDynamicType(column.getTypeClass())
+                || Number.class.isAssignableFrom(column.getTypeClass())
+                || column.getTypeClass().equals(Boolean.class)
+                || isArrayType;
     }
 
     @Override
     public Object getValueFor(T element) {
         Object value = element.getAttribute(column);
-        if (useSparklines && AttributeUtils.isDynamicType(column.getTypeClass())) {
-            return value;
-        } else if (Number.class.isAssignableFrom(column.getTypeClass())) {
-            return value;
-        } else if (column.getTypeClass() == Boolean.class) {
+        if (returnOriginalValue) {
             return value;
         } else {
-            //Show values as Strings like in Edit window and other parts of the program to be consistent
             if (value != null) {
+//TODO adapt this
 //                    if (value instanceof TimestampSet) {//When type is dynamic, take care to show proper time format
 //                        return ((TimestampSet) value).toString(currentTimeFormat == TimeFormat.DOUBLE);
 //                    } else {
-                return value.toString();
 //                    }
+                
+                if(isArrayType){
+                    return Arrays.toString((Object[]) value);
+                }
+                
+                return value.toString();
             } else {
                 return null;
             }
         }
-
     }
 
     @Override
@@ -137,5 +158,6 @@ public class AttributeDataColumn<T extends Element> implements ElementDataColumn
 
     public void setUseSparklines(boolean useSparklines) {
         this.useSparklines = useSparklines;
+        refreshValueGenerationFlags();
     }
 }

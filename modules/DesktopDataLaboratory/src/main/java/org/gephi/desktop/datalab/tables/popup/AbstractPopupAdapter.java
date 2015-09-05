@@ -47,7 +47,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import org.gephi.desktop.datalab.tables.ElementsDataTable;
+import org.gephi.desktop.datalab.tables.AbstractElementsDataTable;
 import org.gephi.graph.api.Element;
 import org.jdesktop.swingx.JXTable;
 import org.openide.awt.MouseUtils;
@@ -58,10 +58,10 @@ import org.openide.awt.MouseUtils;
  */
 public abstract class AbstractPopupAdapter<T extends Element> extends MouseUtils.PopupMouseAdapter {
 
-    protected final ElementsDataTable<T> elementsDataTable;
+    protected final AbstractElementsDataTable<T> elementsDataTable;
     protected final JXTable table;
 
-    public AbstractPopupAdapter(ElementsDataTable<T> elementsDataTable) {
+    public AbstractPopupAdapter(AbstractElementsDataTable<T> elementsDataTable) {
         super();
         this.elementsDataTable = elementsDataTable;
         this.table = elementsDataTable.getTable();

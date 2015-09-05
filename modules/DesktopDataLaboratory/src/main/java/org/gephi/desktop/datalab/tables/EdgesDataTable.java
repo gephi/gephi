@@ -57,7 +57,7 @@ import org.openide.util.NbBundle;
  *
  * @author Eduardo Ramos
  */
-public final class EdgesDataTable extends ElementsDataTable<Edge> {
+public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
 
     public EdgesDataTable() {
         super();

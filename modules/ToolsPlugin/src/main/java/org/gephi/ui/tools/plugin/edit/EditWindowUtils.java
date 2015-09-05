@@ -41,44 +41,11 @@
  */
 package org.gephi.ui.tools.plugin.edit;
 
-import java.util.EnumSet;
-import org.gephi.data.attributes.api.AttributeType;
-
 /**
  *
  * @author Eduardo Ramos
  */
 public class EditWindowUtils {
-
-    /**
-     * These AttributeTypes are not supported by default by netbeans property editor. We will use attributes of these types as Strings and parse them.
-     */
-    public static EnumSet<AttributeType> NotSupportedTypes = EnumSet.of(
-            AttributeType.BIGINTEGER,
-            AttributeType.BIGDECIMAL,
-            AttributeType.LIST_BIGDECIMAL,
-            AttributeType.LIST_BIGINTEGER,
-            AttributeType.LIST_BOOLEAN,
-            AttributeType.LIST_BYTE,
-            AttributeType.LIST_CHARACTER,
-            AttributeType.LIST_DOUBLE,
-            AttributeType.LIST_FLOAT,
-            AttributeType.LIST_INTEGER,
-            AttributeType.LIST_LONG,
-            AttributeType.LIST_SHORT,
-            AttributeType.LIST_STRING,
-            AttributeType.TIME_INTERVAL,
-            AttributeType.DYNAMIC_BIGDECIMAL,
-            AttributeType.DYNAMIC_BIGINTEGER,
-            AttributeType.DYNAMIC_BOOLEAN,
-            AttributeType.DYNAMIC_BYTE,
-            AttributeType.DYNAMIC_CHAR,
-            AttributeType.DYNAMIC_DOUBLE,
-            AttributeType.DYNAMIC_FLOAT,
-            AttributeType.DYNAMIC_INT,
-            AttributeType.DYNAMIC_LONG,
-            AttributeType.DYNAMIC_SHORT,
-            AttributeType.DYNAMIC_STRING);
 
     interface AttributeValueWrapper {
 
