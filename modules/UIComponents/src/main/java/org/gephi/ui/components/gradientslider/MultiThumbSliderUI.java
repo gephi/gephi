@@ -545,11 +545,11 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
 
     /** This retrieves a property.
      * If the component has this property manually set (by calling
-     * <code>component.putClientProperty()</code), then that value will be returned.
+     * <code>component.putClientProperty()</code>), then that value will be returned.
      * Otherwise this method refers to <code>UIManager.get()</code>.  If that
-     * value is missing, this returns <code>defaultValue</code>
+     * value is missing, this returns <code>defaultValue</code>.
      *
-     * @param jc
+     * @param jc component
      * @param propertyName the property name
      * @param defaultValue if no other value is found, this is returned
      * @return the property value
@@ -566,12 +566,14 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
         return defaultValue;
     }
 
-    /** How many pixels can you deviate from a thumb and and still "click" it.*/
+    /** How many pixels can you deviate from a thumb and and still "click" it
+     * @return click location tolerance
+     */
     public abstract int getClickLocationTolerance();
 
     /** Makes sure the thumbs are in the right order.
      *
-     * @param state
+     * @param state state
      * @return true if the thumbs are valid.  False if there are two
      * thumbs with the same value (this is not allowed)
      */
@@ -662,8 +664,8 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
      * <P>This method will not add a thumb if there is already a very
      * small distance between these two endpoints
      *
-     * @param index1
-     * @param index2
+     * @param index1 index 1
+     * @param index2 index 2
      * @return true if a new thumb was added
      */
     protected boolean addThumb(int index1, int index2) {

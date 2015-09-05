@@ -50,12 +50,15 @@ import java.beans.PropertyEditorManager;
  * @author Eduardo Ramos<eduramiba@gmail.com>
  */
 public class Serialization {
-    
+
     /**
-     * Converts any value to a serialized String.
-     * Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     * Converts any value to a serialized String. Uses
+     * <code>PropertyEditor</code> for serialization except for values of
+     * <code>Font</code> class.
+     *
      * @param value Value to serialize as String
-     * @return Result String or null if the value can't be serialized with a <code>PropertyEditor</code>
+     * @return Result String or null if the value can't be serialized with a
+     * <code>PropertyEditor</code>
      */
     public static String getValueAsText(Object value) {
         if (value.getClass().equals(Font.class)) {
@@ -73,11 +76,14 @@ public class Serialization {
     }
 
     /**
-     * Deserializes a serialized String of the given class.
-     * Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     * Deserializes a serialized String of the given class. Uses
+     * <code>PropertyEditor</code> for serialization except for values of
+     * <code>Font</code> class.
+     *
      * @param valueStr String to deserialize
      * @param valueClass Class of the serialized value
-     * @return Deserialized value or null if it can't be deserialized with a <code>PropertyEditor</code>
+     * @return Deserialized value or null if it can't be deserialized with a
+     * <code>PropertyEditor</code>
      */
     public static Object readValueFromText(String valueStr, Class valueClass) {
         if (valueClass.equals(Font.class)) {
@@ -97,14 +103,16 @@ public class Serialization {
             }
         }
     }
-    
+
     /**
-     * Deserializes a serialized String of the given class name.
-     * Returns null if the class can't be found.
-     * Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     * Deserializes a serialized String of the given class name. Returns null if
+     * the class can't be found. Uses <code>PropertyEditor</code> for
+     * serialization except for values of <code>Font</code> class.
+     *
      * @param valueStr String to deserialize
      * @param valueClassStr Class name of the serialized value
-     * @return Deserialized value or null if it can't be deserialized with a <code>PropertyEditor</code>
+     * @return Deserialized value or null if it can't be deserialized with a
+     * <code>PropertyEditor</code>
      */
     public static Object readValueFromText(String valueStr, String valueClassStr) {
         try {

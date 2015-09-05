@@ -179,9 +179,6 @@ public final class ImportUtils {
         return fileObject;
     }
 
-    /**
-     * Uncompress a Bzip2 file.
-     */
     public static File getBzipFile(FileObject in, File out, boolean isTar) throws IOException {
 
         // Stream buffer
@@ -240,9 +237,6 @@ public final class ImportUtils {
         return out;
     }
 
-    /**
-     * Uncompress a GZIP file.
-     */
     public static File getGzFile(FileObject in, File out, boolean isTar) throws IOException {
 
         // Stream buffer

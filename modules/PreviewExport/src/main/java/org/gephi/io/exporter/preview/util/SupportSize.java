@@ -45,7 +45,7 @@ package org.gephi.io.exporter.preview.util;
 /**
  * Implementation of the size of an export support.
  *
- * @author Jérémy Subtil <jeremy.subtil@gephi.org>
+ * @author Jérémy Subtil
  */
 public class SupportSize {
 

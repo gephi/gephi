@@ -20,15 +20,15 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 
 /**
- * <p>Utility class to guess the encoding of a given text file.</p>
- *
- * <p>Unicode files encoded in UTF-16 (low or big endian) or UTF-8 files
+ * Utility class to guess the encoding of a given text file.
+ * <p>
+ * Unicode files encoded in UTF-16 (low or big endian) or UTF-8 files
  * with a Byte Order Marker are correctly discovered. For UTF-8 files with no BOM, if the buffer
- * is wide enough, the charset should also be discovered.</p>
- *
- * <p>A byte buffer of 4KB is usually sufficient to be able to guess the encoding.</p>
- *
- * <p>Usage:</p>
+ * is wide enough, the charset should also be discovered.
+ * <p>
+ * A byte buffer of 4KB is usually sufficient to be able to guess the encoding.
+ * <p>
+ * Usage:
  * <pre>
  * // guess the encoding
  * Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
@@ -55,12 +55,13 @@ public class CharsetToolkit {
     private Charset defaultCharset;
     private Charset charset;
     private boolean enforce8Bit = true;
-    private PushbackInputStream input;
+    private final PushbackInputStream input;
 
     /**
      * Constructor of the <code>CharsetToolkit</code> utility class.
      *
-     * @param file of which we want to know the encoding.
+     * @param stream of which we want to know the encoding.
+     * @throws IOException if an io error occurs
      */
     public CharsetToolkit(InputStream stream) throws IOException {
         this.defaultCharset = getDefaultSystemCharset();
@@ -127,6 +128,8 @@ public class CharsetToolkit {
 
     /**
      * Retrieves the default Charset
+     * 
+     * @return charset
      */
     public Charset getDefaultCharset() {
         return defaultCharset;
@@ -381,7 +384,6 @@ public class CharsetToolkit {
      * method <code>guessEncoding()</code>.
      *
      * @return a <code>BufferedReader</code>
-     * @throws FileNotFoundException if the file is not found.
      */
     public BufferedReader getReader() {
         LineNumberReader reader = new LineNumberReader(new InputStreamReader(input, getCharset()));

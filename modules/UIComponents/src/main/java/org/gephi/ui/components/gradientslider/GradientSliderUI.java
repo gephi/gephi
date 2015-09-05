@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.ui.components.gradientslider;
 
 import java.awt.AlphaComposite;
@@ -59,45 +59,63 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
-/** The UI for the GradientSlider class.
- * 
- * There are 3 properties you can use to customize the UI
- * of a GradientSlider.  You can set these for each slider
- * by calling:
- * <BR><code>slider.putClientProperty(key,value);</code>
- * <P>Or you can set these globally by calling:
- * <BR><code>UIManager.put(key,value);</code>
- * <P>The three properties are:
- * <P><TABLE BORDER="1" CELLPADDING=5>
- * <TR>
- * <TD>Property Name</TD><TD>Default Value</TD><TD>Description</DT>
- * </TR>
- * <TR>
- * <TD>GradientSlider.useBevel</TD><TD>"false"</TD><TD>If this is <code>true</code>, then this slider will be painted in a rectangle with a bevel effect around the borders.  If this is <code>false</code>, then this slider will be painted in a rounded rectangle.</DT>
- * </TR>
- * <TR>
- * <TD>GradientSlider.showTranslucency</TD><TD>"true"</TD><TD>If this is <code>true</code>, then the slider will reflect the opacity of the colors in the gradient, and paint a checkered background underneath the colors to indicate opacity.  If this is <code>false</code>, then this slider will always paint with completely opaque colors, although the actual colors may be translucent.</DT>
- * </TR>
- * <TR>
- * <TD>GradientSlider.includeOpacity</TD><TD>"true"</TD><TD>This is used when the user double-clicks a color and a ColorPicker dialog is invoked.  (So this value may not have any meaning if you override <code>GradientSlider.doDoubleClick()</code>.)  This controls whether the opacity/alpha controls are available in that dialog.  This does <i>not</i> control whether translucent colors can be used in this slider: translucent colors are always allowed, if the user can enter them.</TD>
- * </TR>
- * <TR>
- * <TD>MultiThumbSlider.indicateComponent</TD><TD>"true"</TD><TD>If this is <code>true</code>, then the thumbs will only paint on this component when the mouse is inside this slider <i>or</i> when this slider as the keyboard focus.</DT>
- * </TR>
- * <TR>
- * <TD>MultiThumbSlider.indicateThumb</TD><TD>"true"</TD><TD>If this is <code>true</code>, then the thumb the mouse is over will gently fade into a slightly different color.</DT>
- * </TR>
- * </TABLE>
+/**
+ * The UI for the GradientSlider class.
  *
+ * There are 3 properties you can use to customize the UI of a GradientSlider.
+ * You can set these for each slider by calling
+ * <code>slider.putClientProperty(key,value);</code>
+ * <P>
+ * Or you can set these globally by calling:
+ * <BR><code>UIManager.put(key,value);</code>
+ * <P>
+ * The three properties are:
+ * <TABLE BORDER="1" CELLPADDING="5" summary="">
+ * <TR>
+ * <TD>Property Name</TD><TD>Default Value</TD><TD>Description
+ * <TR>
+ * <TD>GradientSlider.useBevel</TD><TD>"false"</TD><TD>If this is
+ * <code>true</code>, then this slider will be painted in a rectangle with a
+ * bevel effect around the borders. If this is <code>false</code>, then this
+ * slider will be painted in a rounded rectangle.
+ * <TR>
+ * <TD>GradientSlider.showTranslucency</TD><TD>"true"</TD><TD>If this is
+ * <code>true</code>, then the slider will reflect the opacity of the colors in
+ * the gradient, and paint a checkered background underneath the colors to
+ * indicate opacity. If this is <code>false</code>, then this slider will always
+ * paint with completely opaque colors, although the actual colors may be
+ * translucent.
+ * <TR>
+ * <TD>GradientSlider.includeOpacity</TD><TD>"true"</TD><TD>This is used when
+ * the user double-clicks a color and a ColorPicker dialog is invoked. (So this
+ * value may not have any meaning if you override
+ * <code>GradientSlider.doDoubleClick()</code>.) This controls whether the
+ * opacity/alpha controls are available in that dialog. This does <i>not</i>
+ * control whether translucent colors can be used in this slider: translucent
+ * colors are always allowed, if the user can enter them.</TD>
+ * </TR>
+ * <TR>
+ * <TD>MultiThumbSlider.indicateComponent</TD><TD>"true"</TD><TD>If this is
+ * <code>true</code>, then the thumbs will only paint on this component when the
+ * mouse is inside this slider <i>or</i> when this slider as the keyboard
+ * focus.
+ * <TR>
+ * <TD>MultiThumbSlider.indicateThumb</TD><TD>"true"</TD><TD>If this is
+ * <code>true</code>, then the thumb the mouse is over will gently fade into a
+ * slightly different color.
+ * </TABLE>
  */
 public class GradientSliderUI extends MultiThumbSliderUI {
 
     int TRIANGLE_SIZE = 8;
-    /** The width of this image is the absolute widest the track will
-     * ever become.
+    /**
+     * The width of this image is the absolute widest the track will ever
+     * become.
      */
     BufferedImage img = new BufferedImage(1000, 1, BufferedImage.TYPE_INT_ARGB);
-    /** A temporary array used for the buffered image */
+    /**
+     * A temporary array used for the buffered image
+     */
     int[] array = new int[img.getWidth()];
 
     public GradientSliderUI(GradientSlider slider) {
@@ -113,7 +131,8 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         float[] f = slider.getThumbPositions();
         Color[] c = ((GradientSlider) slider).getColors();
 
-        /** make sure we DO have a value at 0 and 1:
+        /**
+         * make sure we DO have a value at 0 and 1:
          */
         if (f[0] != 0) {
             float[] f2 = new float[f.length + 1];
@@ -136,13 +155,15 @@ public class GradientSliderUI extends MultiThumbSliderUI {
             c[c.length - 1] = c[c.length - 2];
         }
 
-        /** Now, finally paint */
+        /**
+         * Now, finally paint
+         */
         int[] argb = new int[c.length];
         for (int a = 0; a < argb.length; a++) {
-            argb[a] = ((c[a].getAlpha() & 0xff) << 24) +
-                    ((c[a].getRed() & 0xff) << 16) +
-                    ((c[a].getGreen() & 0xff) << 8) +
-                    ((c[a].getBlue() & 0xff) << 0);
+            argb[a] = ((c[a].getAlpha() & 0xff) << 24)
+                    + ((c[a].getRed() & 0xff) << 16)
+                    + ((c[a].getGreen() & 0xff) << 8)
+                    + ((c[a].getBlue() & 0xff) << 0);
         }
         int max;
         if (slider.getOrientation() == GradientSlider.HORIZONTAL) {
@@ -195,10 +216,10 @@ public class GradientSliderUI extends MultiThumbSliderUI {
                 a1 = 255;
                 a2 = 255;
             }
-            array[z] = (((int) (a1 * (1 - colorFraction) + a2 * colorFraction)) << 24) +
-                    (((int) (r1 * (1 - colorFraction) + r2 * colorFraction)) << 16) +
-                    (((int) (g1 * (1 - colorFraction) + g2 * colorFraction)) << 8) +
-                    (((int) (b1 * (1 - colorFraction) + b2 * colorFraction)));
+            array[z] = (((int) (a1 * (1 - colorFraction) + a2 * colorFraction)) << 24)
+                    + (((int) (r1 * (1 - colorFraction) + r2 * colorFraction)) << 16)
+                    + (((int) (g1 * (1 - colorFraction) + g2 * colorFraction)) << 8)
+                    + (((int) (b1 * (1 - colorFraction) + b2 * colorFraction)));
         }
         img.getRaster().setDataElements(0, 0, max, 1, array);
     }
@@ -281,9 +302,11 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         checkerPaint = new TexturePaint(bi, new Rectangle(0, 0, bi.getWidth(), bi.getHeight()));
     }
 
-    /** The "frame" includes the trackRect and possible some extra padding.
-     * For example, the frame might be the rounded rectangle enclosing the
-     * track (if rounded rectangles are turned on)
+    /**
+     * The "frame" includes the trackRect and possible some extra padding. For
+     * example, the frame might be the rounded rectangle enclosing the track (if
+     * rounded rectangles are turned on)
+     *
      * @return
      */
     private Shape getFrame() {
@@ -337,19 +360,17 @@ public class GradientSliderUI extends MultiThumbSliderUI {
             } else {
                 transform.rotate(-Math.PI / 2, trackRect.x, trackRect.y + trackRect.height);
             }
-        } else {
-            if (slider.isInverted()) {
-                //flip horizontal:
-                double x1 = trackRect.x;
-                double x2 = trackRect.x + trackRect.width;
+        } else if (slider.isInverted()) {
+            //flip horizontal:
+            double x1 = trackRect.x;
+            double x2 = trackRect.x + trackRect.width;
                 //m00*x1+m02 = x2
-                //m00*x2+m02 = x1
-                double m00 = (x2 - x1) / (x1 - x2);
-                double m02 = x1 - m00 * x2;
-                transform.setTransform(m00, 0, 0, 1, m02, 0);
-            } else {
-                //no transform necessary
-            }
+            //m00*x2+m02 = x1
+            double m00 = (x2 - x1) / (x1 - x2);
+            double m02 = x1 - m00 * x2;
+            transform.setTransform(m00, 0, 0, 1, m02, 0);
+        } else {
+            //no transform necessary
         }
 
         g.transform(transform);
@@ -372,8 +393,8 @@ public class GradientSliderUI extends MultiThumbSliderUI {
             int first, last;
             Color[] colors = ((GradientSlider) slider).getColors();
             float[] f = slider.getThumbPositions();
-            if ((slider.isInverted() == false && slider.getOrientation() == GradientSlider.HORIZONTAL) ||
-                    (slider.isInverted() == true && slider.getOrientation() == GradientSlider.VERTICAL)) {
+            if ((slider.isInverted() == false && slider.getOrientation() == GradientSlider.HORIZONTAL)
+                    || (slider.isInverted() == true && slider.getOrientation() == GradientSlider.VERTICAL)) {
                 first = 0;
                 last = colors.length - 1;
                 while (f[first] < 0) {
@@ -467,7 +488,6 @@ public class GradientSliderUI extends MultiThumbSliderUI {
             vTriangle.lineTo(0, 0);
             vTriangle.closePath();
         }
-
 
         AffineTransform t = new AffineTransform();
         int dx = trackRect.x + trackRect.width;

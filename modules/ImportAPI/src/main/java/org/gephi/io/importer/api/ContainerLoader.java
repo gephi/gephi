@@ -54,20 +54,9 @@ import org.gephi.io.importer.spi.Importer;
  * Use the draft factory for getting
  * <code>NodeDraft</code> and
  * <code>EdgeDraft</code> instances.
- * <p>
- * For pushing columns associated to nodes and edges, retrieve attribute model
- * by calling {@link #getAttributeModel()}.
- * <h3>How to push nodes with attributes</h3>
- * There is two steps, first identify columns and then push values.
- * <pre>//Add a URL column to nodes, must be done once only before importing nodes
- * AttributeColumn col = getAttributeModel().getNodeTable().addColumn("url", AttributeType.STRING);
- * //Write the URL value to a node draft
- * nodeDraft.addAttributeValue(col, "http://gephi.org");
- * </pre>
  *
  * @author Mathieu Bastian
  * @see Importer
- * @see AttributeModel
  */
 public interface ContainerLoader {
 

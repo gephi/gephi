@@ -84,7 +84,6 @@ public class JDropDownToggleButton extends JToggleButton {
     public static final String PROP_DROP_DOWN_MENU = "dropDownMenu";
     private PopupMenuListener menuListener;
 
-    /** Creates a new instance of DropDownToggleButton */
     public JDropDownToggleButton(Icon icon, JPopupMenu popup) {
         assert null != icon;
 

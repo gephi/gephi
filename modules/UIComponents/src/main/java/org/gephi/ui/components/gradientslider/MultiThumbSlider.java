@@ -72,18 +72,20 @@ import javax.swing.event.ChangeListener;
  * <code>doPopup()</code>.  The UI will invoke these methods as needed; this gives the
  * user a chance to edit the values represented at a particular point.
  * <P>Also using the keyboard:
- * <LI>In a horizontal slider, the user can press modifier+left or modifer+right to insert
+ * <ul>
+ * <li>In a horizontal slider, the user can press modifier+left or modifer+right to insert
  * a new thumb to the left/right of the currently selected thumb.  (Where "modifier" refers
  * to <code>Toolkit.getDefaultTookit().getMenuShortcutKeyMask()</code>.  On Mac this is META, and on Windows
  * this is CONTROL.)  Likewise on a vertical slider the up/down arrow keys can be used to add
  * thumbs.
- * <LI>The delete/backspace key can be used to remove thumbs.
- * <LI>In a horizontal slider, the down arrow key can be used to invoke <code>doPopup()</code>.
+ * <li>The delete/backspace key can be used to remove thumbs.
+ * <li>In a horizontal slider, the down arrow key can be used to invoke <code>doPopup()</code>.
  * This should invoke a <code>JPopupMenu</code> that is keyboard accessible, so the user should be
  * able to navigate this component without a mouse.  Likewise on a vertical slider the right
  * arrow key should do the same.
- * <LI>The space bar or return key invokes <code>doDoubleClick()</code>.</LI>
- * <P>Because thumbs can be abstractly inserted, this values each thumb represents should be
+ * <li>The space bar or return key invokes <code>doDoubleClick()</code>.
+ * </ul>
+ * <p>Because thumbs can be abstractly inserted, this values each thumb represents should be
  * tween-able.  That is, if there is a value at zero and a value at one, the call
  * <code>getValue(.5f)</code> must return a value that is halfway between those values.
  * <P>Also note that although the thumbs must always be between zero and one: the minimum
@@ -169,6 +171,7 @@ public abstract class MultiThumbSlider extends JComponent {
     }
 
     /** Removes a <code>ChangeListener</code> from this slider.
+     * @param l the <code>ChangeListener</code> to remove.
      */
     public void removeChangeListener(ChangeListener l) {
         if (changeListeners == null) {
@@ -336,6 +339,7 @@ public abstract class MultiThumbSlider extends JComponent {
 
     /**
      * Returns true if the slider is blocked. No more colors can be added by user.
+     * @return true if blocked
      */
     public boolean isBlocked() {
         return blocked;
@@ -407,7 +411,7 @@ public abstract class MultiThumbSlider extends JComponent {
      *
      * <P>This triggers a <code>PropertyChangeEvent</code> for
      * <code>ADJUST_PROPERTY</code>.
-     * @param b
+     * @param b value
      */
     public void setValueIsAdjusting(boolean b) {
         if (b == adjusting) {
@@ -597,6 +601,7 @@ public abstract class MultiThumbSlider extends JComponent {
 
     /** Whether thumbs are automatically added when the
      * user clicks in a space that doesn't already have a thumb.
+     * @return true if auto adding
      */
     public boolean isAutoAdding() {
         return autoAdd;
@@ -628,6 +633,7 @@ public abstract class MultiThumbSlider extends JComponent {
     }
 
     /** Whether this slider is inverted or not.
+     * @return true if inverted
      */
     public boolean isInverted() {
         return inverted;
@@ -637,6 +643,7 @@ public abstract class MultiThumbSlider extends JComponent {
      *
      * <P>This triggers a <code>PropertyChangeEvent</code> for
      * <code>INVERTED_PROPERTY</code>.
+     * @param b value
      */
     public void setInverted(boolean b) {
         if (inverted == b) {

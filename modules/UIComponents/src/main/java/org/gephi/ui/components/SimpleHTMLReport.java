@@ -95,10 +95,6 @@ class ReportSelection implements Transferable {
     }
     private String html;
 
-    /**
-     *
-     * @param html
-     */
     public ReportSelection(String html) {
         this.html = html;
         String newHTML = new String();
@@ -139,31 +135,16 @@ class ReportSelection implements Transferable {
         this.html = newHTML;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public DataFlavor[] getTransferDataFlavors() {
         return (DataFlavor[]) flavors.toArray(new DataFlavor[flavors.size()]);
     }
 
-    /**
-     *
-     * @param flavor
-     * @return
-     */
     @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
         return flavors.contains(flavor);
     }
 
-    /**
-     *
-     * @param flavor
-     * @return
-     * @throws java.awt.datatransfer.UnsupportedFlavorException
-     */
     @Override
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
         if (String.class.equals(flavor.getRepresentationClass())) {
@@ -173,10 +154,6 @@ class ReportSelection implements Transferable {
     }
 }
 
-/**
- *
- * @author pjmcswee
- */
 public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
     private String mHTMLReport;
@@ -377,20 +354,10 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
     }//GEN-LAST:event_copyButtonActionPerformed
 
-    /**
-     *
-     * @param evt
-     */
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         dispose(); // TODO add your handling code here:
     }//GEN-LAST:event_closeButtonActionPerformed
-    /**
-     * @param args the command line arguments
-     *
-     * public static void main(String args[]) { java.awt.EventQueue.invokeLater(new Runnable() { public void run() { SimpleHTMLReport dialog = new SimpleHTMLReport(new javax.swing.JFrame(), true);
-     * dialog.addWindowListener(new java.awt.event.WindowAdapter() { public void windowClosing(java.awt.event.WindowEvent e) { System.exit(0); } }); dialog.setVisible(true); } }); }
-     *
-     */
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
     private javax.swing.JButton copyButton;
@@ -401,13 +368,6 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
     private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
 
-    /**
-     *
-     * @param graphics
-     * @param pageFormat
-     * @param pageIndex
-     * @return
-     */
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
 

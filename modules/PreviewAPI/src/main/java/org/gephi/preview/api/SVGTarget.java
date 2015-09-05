@@ -64,7 +64,7 @@ import org.w3c.dom.Text;
 public interface SVGTarget extends RenderTarget {
 
     /**
-     * SVG <code>Boolean<code> property whether to rescale stroke's width/thickness.
+     * SVG <code>Boolean</code> property whether to rescale stroke's width/thickness.
      */
     public static final String SCALE_STROKES = "svg.scale.strokes";
     /**

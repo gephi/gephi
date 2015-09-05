@@ -27,7 +27,8 @@ public class Xml10FilterReader extends FilterReader {
 
     /**
      * Every overload of {@link Reader#read()} method delegates to this one so
-     * it is enough to override only this one. <br />
+     * it is enough to override only this one.
+     * <p>
      * To skip invalid characters this method shifts only valid chars to left
      * and returns decreased value of the original read method. So after last
      * valid character there will be some unused chars in the buffer.

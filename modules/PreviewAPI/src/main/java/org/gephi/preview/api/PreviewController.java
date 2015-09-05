@@ -114,6 +114,7 @@ public interface PreviewController {
      * This task overrides the preview model <code>managedRenderers</code> and uses the given <code>Renderer</code> array, <b>respecting the array order</b>.
      * Then all items in the preview model are rendered.
      * @param target the target to render items to
+     * @param renderers renderers to use
      */
     public void render(RenderTarget target, Renderer[] renderers);
     
@@ -123,6 +124,7 @@ public interface PreviewController {
      * This task overrides the preview model <code>managedRenderers</code> and uses the given <code>Renderer</code> array, <b>respecting the array order</b>.
      * Then all items in the preview model are rendered.
      * @param target the target to render items to
+     * @param renderers renderers to use
      * @param workspace the workspace to get the preview model from
      */
     public void render(RenderTarget target, Renderer[] renderers, Workspace workspace);
@@ -130,7 +132,7 @@ public interface PreviewController {
     /**
      * Creates a new render target of the given type. 
      * <p>
-     * Default render targets names are {@link RenderTarget#PROCESSING_TARGET},
+     * Default render targets names are {@link RenderTarget#G2D_TARGET},
      * {@link RenderTarget#SVG_TARGET} and {@link RenderTarget#PDF_TARGET}.
      * <p>
      * Render targets usually need some parameters when built. Parameters values
@@ -145,7 +147,7 @@ public interface PreviewController {
      * Creates a new render target of the given type in the preview model
      * contained by <code>workspace</code>.
      * <p>
-     * Default render targets names are {@link RenderTarget#PROCESSING_TARGET},
+     * Default render targets names are {@link RenderTarget#G2D_TARGET},
      * {@link RenderTarget#SVG_TARGET} and {@link RenderTarget#PDF_TARGET}.
      * <p>
      * Render targets usually need some parameters when built. Parameters values
@@ -180,7 +182,7 @@ public interface PreviewController {
     /**
      * Sends a <code>PreviewMouseEvent</code> to the given workspace.
      * @param event PreviewMouseEvent
-     * @param workspace
+     * @param workspace workspace
      * @return True if the event was consumed, false otherwise
      */
     public boolean sendMouseEvent(PreviewMouseEvent event, Workspace workspace);

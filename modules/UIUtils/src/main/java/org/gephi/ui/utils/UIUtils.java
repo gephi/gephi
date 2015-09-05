@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.ui.utils;
 
 // Copied from org.netbeans.lib.profiler.ui
@@ -72,9 +72,13 @@ public final class UIUtils {
     private static Color unfocusedSelFg;
 
     //~ Methods ------------------------------------------------------------------------------------------------------------------
-    /** Determines if current L&F is AquaLookAndFeel */
+    /**
+     * Determines if current Look and Feel is AquaLookAndFeel.
+     *
+     * @return true if aqua look and feel
+     */
     public static boolean isAquaLookAndFeel() {
-        // is current L&F some kind of AquaLookAndFeel?
+        // is current Look and Feel some kind of AquaLookAndFeel?
         return UIManager.getLookAndFeel().getID().equals("Aqua"); //NOI18N
     }
 
@@ -100,33 +104,48 @@ public final class UIUtils {
         return new JLabel("X").getPreferredSize().height + 2; //NOI18N
     }
 
-    /** Determines if current L&F is GTKLookAndFeel */
+    /**
+     * Determines if current Look and Feel is GTKLookAndFeel.
+     * @return true if gtk look and feel
+     */
     public static boolean isGTKLookAndFeel() {
-        // is current L&F some kind of GTKLookAndFeel?
+        // is current Look and Feel some kind of GTKLookAndFeel?
         return UIManager.getLookAndFeel().getID().equals("GTK"); //NOI18N
     }
 
-    /** Determines if current L&F is Nimbus */
+    /**
+     * Determines if current Look and Feel is Nimbus.
+     * @return true if nimbus look and feel
+     */
     public static boolean isNimbusLookAndFeel() {
-        // is current L&F Nimbus?
+        // is current Look and Feel Nimbus?
         return UIManager.getLookAndFeel().getID().equals("Nimbus"); //NOI18N
     }
 
-    /** Determines if current L&F is GTK using Nimbus theme */
+    /**
+     * Determines if current Look and Feel is GTK using Nimbus theme.
+     * @return true if nimbus gtk theme
+     */
     public static boolean isNimbusGTKTheme() {
-        // is current L&F GTK using Nimbus theme?
+        // is current Look and Feel GTK using Nimbus theme?
         return isGTKLookAndFeel() && "nimbus".equals(Toolkit.getDefaultToolkit().getDesktopProperty("gnome.Net/ThemeName")); //NOI18N
     }
 
-    /** Determines if current L&F is Nimbus or GTK with Nimbus theme*/
+    /**
+     * Determines if current Look and Feel is Nimbus or GTK with Nimbus theme.
+     * @return true if nimbus
+     */
     public static boolean isNimbus() {
-        // is current L&F Nimbus or GTK with Nimbus theme?
+        // is current Look and Feel Nimbus or GTK with Nimbus theme?
         return isNimbusLookAndFeel() || isNimbusGTKTheme();
     }
 
-    /** Determines if current L&F is MetalLookAndFeel */
+    /**
+     * Determines if current Look and Feel is MetalLookAndFeel.
+     * @return true if metal look and feel
+     */
     public static boolean isMetalLookAndFeel() {
-        // is current L&F some kind of MetalLookAndFeel?
+        // is current Look and Feel some kind of MetalLookAndFeel?
         return UIManager.getLookAndFeel().getID().equals("Metal"); //NOI18N
     }
 
@@ -188,7 +207,10 @@ public final class UIUtils {
     }
 
     // Copied from org.openide.awt.HtmlLabelUI
-    /** Get the system-wide unfocused selection background color */
+    /**
+     * Get the system-wide unfocused selection background color.
+     * @return unfocused selection background
+     */
     public static Color getUnfocusedSelectionBackground() {
         if (unfocusedSelBg == null) {
             //allow theme/ui custom definition
@@ -215,7 +237,10 @@ public final class UIUtils {
     }
 
     // Copied from org.openide.awt.HtmlLabelUI
-    /** Get the system-wide unfocused selection foreground color */
+    /**
+     * Get the system-wide unfocused selection foreground color.
+     * @return unfocused selection foreground
+     */
     public static Color getUnfocusedSelectionForeground() {
         if (unfocusedSelFg == null) {
             //allow theme/ui custom definition
@@ -282,7 +307,10 @@ public final class UIUtils {
         return profilerResultsBackground;
     }
 
-    /** Determines if current L&F is Windows Classic LookAndFeel */
+    /**
+     * Determines if current Look and Feel is Windows Classic LookAndFeel.
+     * @return true if windows classic look and feel
+     */
     public static boolean isWindowsClassicLookAndFeel() {
         if (!isWindowsLookAndFeel()) {
             return false;
@@ -291,13 +319,19 @@ public final class UIUtils {
         return (!isWindowsXPLookAndFeel() && !isWindowsVistaLookAndFeel());
     }
 
-    /** Determines if current L&F is WindowsLookAndFeel */
+    /**
+     * Determines if current Look and Feel is WindowsLookAndFeel.
+     * @return true if windows look and feel
+     */
     public static boolean isWindowsLookAndFeel() {
-        // is current L&F some kind of WindowsLookAndFeel?
+        // is current Look and Feel some kind of WindowsLookAndFeel?
         return UIManager.getLookAndFeel().getID().equals("Windows"); //NOI18N
     }
 
-    /** Determines if current L&F is Windows XP LookAndFeel */
+    /**
+     * Determines if current Look and Feel is Windows XP LookAndFeel.
+     * @return true if windows xp look and feel
+     */
     public static boolean isWindowsXPLookAndFeel() {
         if (!isWindowsLookAndFeel()) {
             return false;
@@ -314,6 +348,10 @@ public final class UIUtils {
         return ((xpThemeActiveOS) && (!xpThemeDisabled) && !vistaOs);
     }
 
+    /**
+     * Determines if current Look and Feel is Windows XP LookAndFeel.
+     * @return true if windows vista look and feel
+     */
     public static boolean isWindowsVistaLookAndFeel() {
         if (!isWindowsLookAndFeel()) {
             return false;
@@ -333,12 +371,13 @@ public final class UIUtils {
     // Classic Windows LaF doesn't draw dotted focus rectangle inside JButton if parent is JToolBar,
     // XP Windows LaF doesn't draw dotted focus rectangle inside JButton at all
     // This method installs customized Windows LaF that draws dotted focus rectangle inside JButton always
-
     // On JDK 1.5 the XP Windows LaF enforces special border to all buttons, overriding any custom border
     // set by setBorder(). Class responsible for this is WindowsButtonListener. See Issue 71546.
     // Also fixes buttons size in JToolbar.
-    /** Ensures that focus will be really painted if button is focused
-     * and fixes using custom border for JDK 1.5 & XP LaF
+    /**
+     * Ensures that focus will be really painted if button is focused and fixes
+     * using custom border for JDK 1.5 and XP LaF
+     * @param button button
      */
     public static void fixButtonUI(AbstractButton button) {
         // JButton

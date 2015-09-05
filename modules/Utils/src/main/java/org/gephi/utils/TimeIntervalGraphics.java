@@ -47,9 +47,11 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 /**
- * <p>Class to draw time intervals as graphics, being able to indicate the colors to use (or default colors). The result graphics are like:</p>
- *
- * <p>|{background color}|time-interval{fill color}|{background color}|</p>
+ * Class to draw time intervals as graphics, being able to indicate the colors
+ * to use (or default colors). 
+ * <p>
+ * The result graphics are like:
+ * |{background color}|time-interval{fill color}|{background color}|
  *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
@@ -62,7 +64,8 @@ public class TimeIntervalGraphics {
     private double range;
 
     /**
-     * Create a new TimeIntervalGraphics with the given minimum and maximum times to render intervals later.
+     * Create a new TimeIntervalGraphics with the given minimum and maximum
+     * times to render intervals later.
      *
      * @param min Minimum time of all intervals
      * @param max Maximum time of all intervals
@@ -83,10 +86,14 @@ public class TimeIntervalGraphics {
     }
 
     /**
-     * Creates a time interval graphic representation with default colors. If starts or ends are infinite, they will be normalized to the min or max values range.
+     * Creates a time interval graphic representation with default colors. If
+     * starts or ends are infinite, they will be normalized to the min or max
+     * values range.
      *
-     * @param start Start of the interval (must be greater or equal than minimum time)
-     * @param end End of the interval (must be lesser or equal than maximum time)
+     * @param start Start of the interval (must be greater or equal than minimum
+     * time)
+     * @param end End of the interval (must be lesser or equal than maximum
+     * time)
      * @param width Image width
      * @param height Image height
      * @return Generated image for the interval
@@ -96,11 +103,14 @@ public class TimeIntervalGraphics {
     }
 
     /**
-     * Creates a time interval graphic representation with the indicated fill and border colors (or null to use default colors). If starts or ends are infinite, they will be normalized to the min or
-     * max values range.
+     * Creates a time interval graphic representation with the indicated fill
+     * and border colors (or null to use default colors). If starts or ends are
+     * infinite, they will be normalized to the min or max values range.
      *
-     * @param start Start of the interval (must be greater or equal than minimum time)
-     * @param end End of the interval (must be lesser or equal than maximum time)
+     * @param start Start of the interval (must be greater or equal than minimum
+     * time)
+     * @param end End of the interval (must be lesser or equal than maximum
+     * time)
      * @param width Image width
      * @param height Image height
      * @param fill Fill color for the interval
@@ -112,11 +122,14 @@ public class TimeIntervalGraphics {
     }
 
     /**
-     * Creates a time interval graphic representation with the indicated fill and border colors (or null to use default colors). If starts or ends are infinite, they will be normalized to the min or
-     * max values range.
+     * Creates a time interval graphic representation with the indicated fill
+     * and border colors (or null to use default colors). If starts or ends are
+     * infinite, they will be normalized to the min or max values range.
      *
-     * @param start Start of the interval (must be greater or equal than minimum time)
-     * @param end End of the interval (must be lesser or equal than maximum time)
+     * @param start Start of the interval (must be greater or equal than minimum
+     * time)
+     * @param end End of the interval (must be lesser or equal than maximum
+     * time)
      * @param width Image width
      * @param height Image height
      * @param fill Fill color for the interval
@@ -132,11 +145,15 @@ public class TimeIntervalGraphics {
     }
 
     /**
-     * Creates a time interval graphic representation with the indicated fill, border and background colors (or null to use default colors). If starts or ends are infinite, they will be normalized to
-     * the min or max values range.
+     * Creates a time interval graphic representation with the indicated fill,
+     * border and background colors (or null to use default colors). If starts
+     * or ends are infinite, they will be normalized to the min or max values
+     * range.
      *
-     * @param starts Starts of the intervals (must be greater or equal than minimum time)
-     * @param ends Ends of the intervals (must be lesser or equal than maximum time)
+     * @param starts Starts of the intervals (must be greater or equal than
+     * minimum time)
+     * @param ends Ends of the intervals (must be lesser or equal than maximum
+     * time)
      * @param width Image width
      * @param height Image height
      * @param fill Fill color for the interval

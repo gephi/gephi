@@ -52,12 +52,11 @@ import org.openide.util.ImageUtilities;
 public class IconWithArrow implements Icon {
 
     private static final String ARROW_IMAGE_NAME = "org/openide/awt/resources/arrow.png"; //NOI18N
-    private Icon orig;
-    private Icon arrow = ImageUtilities.image2Icon(ImageUtilities.loadImage(ARROW_IMAGE_NAME, false));
-    private boolean paintRollOver;
+    private final Icon orig;
+    private final Icon arrow = ImageUtilities.image2Icon(ImageUtilities.loadImage(ARROW_IMAGE_NAME, false));
+    private final boolean paintRollOver;
     private static final int GAP = 6;
 
-    /** Creates a new instance of IconWithArrow */
     public IconWithArrow(Icon orig, boolean paintRollOver) {
         this.orig = orig;
         this.paintRollOver = paintRollOver;

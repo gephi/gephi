@@ -126,7 +126,7 @@ public interface Renderer {
      * Render <code>item</code> to <code>target</code> using the global properties
      * and item data.
      * <p>
-     * The target can be one of the default target {@link ProcessingTarget}, 
+     * The target can be one of the default target {@link G2DTarget}, 
      * {@link SVGTarget} or {@link PDFTarget}. Each target contains an access to 
      * it's drawing canvas so the renderer can draw visual items.
      * @param item the item to be rendered

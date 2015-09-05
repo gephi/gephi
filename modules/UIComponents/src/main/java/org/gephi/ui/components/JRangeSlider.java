@@ -76,6 +76,8 @@ public class JRangeSlider extends JSlider {
     /**
      * Constructs a RangeSlider with the specified default minimum and maximum
      * values.
+     * @param min minimum
+     * @param max maximum
      */
     public JRangeSlider(int min, int max) {
         super(min, max);
@@ -109,6 +111,7 @@ public class JRangeSlider extends JSlider {
 
     /**
      * Sets the lower value in the range.
+     * @param value lower value
      */
     @Override
     public void setValue(int value) {
@@ -129,6 +132,7 @@ public class JRangeSlider extends JSlider {
 
     /**
      * Returns the upper value in the range.
+     * @return upper value
      */
     public int getUpperValue() {
         return getValue() + getExtent();
@@ -136,6 +140,7 @@ public class JRangeSlider extends JSlider {
 
     /**
      * Sets the upper value in the range.
+     * @param value upper value
      */
     public void setUpperValue(int value) {
         // Compute new extent.
@@ -169,7 +174,7 @@ public class JRangeSlider extends JSlider {
 
         /** Color of selected range. */
         //private Color rangeColor = new Color(168,223,85,178);//nice green
-        private Color rangeColor = new Color(49, 220, 251, 178);//nice vista blue
+        private final Color rangeColor = new Color(49, 220, 251, 178);//nice vista blue
         /** Location and size of thumb for upper value. */
         private Rectangle upperThumbRect;
         /** Indicator that determines whether upper thumb is selected. */

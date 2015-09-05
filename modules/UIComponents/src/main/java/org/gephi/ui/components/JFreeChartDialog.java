@@ -54,9 +54,6 @@ public class JFreeChartDialog extends javax.swing.JDialog {
     private ChartPanel chartPanel;
     private static final int MAX_DIMENSION=3000;
 
-    /**
-     * Chart can't be null.
-     */
     public JFreeChartDialog(java.awt.Frame parent, String title, JFreeChart chart, int initialWidth, int initialHeight) {
         super(parent, false);
         setTitle(title);
@@ -65,9 +62,6 @@ public class JFreeChartDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
     }
 
-    /**
-     * Chart can't be null.
-     */
     public JFreeChartDialog(java.awt.Frame parent, JFreeChart chart) {
         super(parent, false);
         initialize(chart);

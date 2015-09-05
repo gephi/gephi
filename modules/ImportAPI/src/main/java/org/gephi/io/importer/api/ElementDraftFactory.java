@@ -56,6 +56,7 @@ public interface ElementDraftFactory {
     /**
      * Returns an empty node draft instance.
      *
+     * @param id node id
      * @return an instance of <code>NodeDraft</code>
      */
     public NodeDraft newNodeDraft(String id);
@@ -69,9 +70,10 @@ public interface ElementDraftFactory {
     public EdgeDraft newEdgeDraft();
 
     /**
-     * Returns an empty node draft instance.
+     * Returns an empty edge draft instance.
      *
-     * @return an instance of <code>NodeDraft</code>
+     * @param id edge id
+     * @return an instance of <code>EdgeDraft</code>
      */
     public EdgeDraft newEdgeDraft(String id);
 }

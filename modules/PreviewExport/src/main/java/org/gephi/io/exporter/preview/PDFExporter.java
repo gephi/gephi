@@ -69,7 +69,7 @@ import org.openide.util.Lookup;
 /**
  * Class exporting the preview graph as a PDF file.
  *
- * @author Jérémy Subtil <jeremy.subtil@gephi.org>
+ * @author Jérémy Subtil
  * @author Mathieu Bastian
  */
 public class PDFExporter implements ByteExporter, VectorExporter, LongTask {

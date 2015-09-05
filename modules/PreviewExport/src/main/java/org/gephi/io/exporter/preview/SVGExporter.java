@@ -63,7 +63,7 @@ import org.w3c.dom.Document;
 /**
  * Class exporting the preview graph as an SVG image.
  *
- * @author Jérémy Subtil <jeremy.subtil@gephi.org>
+ * @author Jérémy Subtil
  */
 public class SVGExporter implements CharacterExporter, VectorExporter, LongTask {
 

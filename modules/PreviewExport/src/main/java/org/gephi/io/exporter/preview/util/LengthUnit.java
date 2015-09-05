@@ -45,7 +45,7 @@ package org.gephi.io.exporter.preview.util;
 /**
  * Enum representing a set of lenght units.
  *
- * @author Jérémy Subtil <jeremy.subtil@gephi.org>
+ * @author Jérémy Subtil
  */
 public enum LengthUnit {
 

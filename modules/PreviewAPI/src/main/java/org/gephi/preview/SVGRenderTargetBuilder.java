@@ -186,7 +186,7 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
     /**
      * Implementation of the size of an export support.
      *
-     * @author Jérémy Subtil <jeremy.subtil@gephi.org>
+     * @author Jérémy Subtil
      */
     public static class SupportSize {
 
@@ -237,7 +237,7 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
     /**
      * Enum representing a set of lenght units.
      *
-     * @author Jérémy Subtil <jeremy.subtil@gephi.org>
+     * @author Jérémy Subtil
      */
     public enum LengthUnit {
 

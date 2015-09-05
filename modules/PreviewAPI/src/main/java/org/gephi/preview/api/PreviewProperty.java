@@ -151,7 +151,7 @@ public class PreviewProperty {
      */
     public static final String NODE_LABEL_FONT = "node.label.font";
     /**
-     * Node Label <code>Boolean></code> property defining whether to use node's size
+     * Node Label <code>Boolean</code> property defining whether to use node's size
      * in label size calculation.
      */
     public static final String NODE_LABEL_PROPORTIONAL_SIZE = "node.label.proportinalSize";
