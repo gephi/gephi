@@ -84,6 +84,8 @@ import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.desktop.datalab.general.actions.AddColumnUI;
 import org.gephi.desktop.datalab.general.actions.CSVExportUI;
 import org.gephi.desktop.datalab.general.actions.MergeColumnsUI;
+import org.gephi.desktop.datalab.tables.EdgesDataTable;
+import org.gephi.desktop.datalab.tables.NodesDataTable;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
@@ -174,8 +176,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private java.util.Timer observersTimer;
     
     //Table
-    private NodeDataTable nodeTable;
-    private EdgeDataTable edgeTable;
+    private NodesDataTable nodeTable;
+    private EdgesDataTable edgeTable;
     //General actions buttons
     private ArrayList<JComponent> generalActionsButtons = new ArrayList<JComponent>();
     //States
@@ -215,8 +217,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
 
         //Init tables
-        nodeTable = new NodeDataTable();
-        edgeTable = new EdgeDataTable();
+        nodeTable = new NodesDataTable();
+        edgeTable = new EdgesDataTable();
 
         nodeTable.setUseSparklines(useSparklines);
         nodeTable.setTimeIntervalGraphics(timeIntervalGraphics);
@@ -527,11 +529,11 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                     }
 
                     //Model
-                    nodeTable.refreshModel(graph, cols, dataTablesModel);
+                    nodeTable.refreshModel(graph.getNodes().toArray(), cols, dataTablesModel);
                     refreshFilterColumns();
 
                     busylabel.setBusy(false);
-                    nodeTable.scrollToFirstNodeSelected();
+                    nodeTable.scrollToFirstElementSelected();
                 } catch (Exception e) {
                     Exceptions.printStackTrace(e);
                     JLabel errorLabel = new JLabel(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.error"), SwingConstants.CENTER);
@@ -575,11 +577,11 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                     }
 
                     //Model
-                    edgeTable.refreshModel(graph, cols, dataTablesModel);
+                    edgeTable.refreshModel(graph.getEdges().toArray(), cols, dataTablesModel);
                     refreshFilterColumns();
 
                     busylabel.setBusy(false);
-                    edgeTable.scrollToFirstEdgeSelected();
+                    edgeTable.scrollToFirstElementSelected();
                 } catch (Exception e) {
                     Exceptions.printStackTrace(e);
                     JLabel errorLabel = new JLabel(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.error"), SwingConstants.CENTER);
@@ -728,8 +730,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
             @Override
             public void run() {
-                nodeTable.setNodesSelection(nodes);
-                nodeTable.scrollToFirstNodeSelected();
+                nodeTable.setElementsSelection(nodes);
+                nodeTable.scrollToFirstElementSelected();
             }
         });
     }
@@ -740,20 +742,20 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
             @Override
             public void run() {
-                edgeTable.setEdgesSelection(edges);
-                edgeTable.scrollToFirstEdgeSelected();
+                edgeTable.setElementsSelection(edges);
+                edgeTable.scrollToFirstElementSelected();
             }
         });
     }
 
     @Override
     public Node[] getNodeTableSelection() {
-        return nodeTable.getNodesFromSelectedRows();
+        return nodeTable.getElementsFromSelectedRows().toArray(new Node[0]);
     }
 
     @Override
     public Edge[] getEdgeTableSelection() {
-        return edgeTable.getEdgesFromSelectedRows();
+        return edgeTable.getElementsFromSelectedRows().toArray(new Edge[0]);
     }
 
     @Override
@@ -841,7 +843,6 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
     private String prepareTableExportFileName() {
         String fileName = null;
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         ProjectInformation projectInfo = pc.getCurrentProject().getLookup().lookup(ProjectInformation.class);
         if (projectInfo.hasFile()) {
             fileName = removeFileNameExtension(projectInfo.getFileName());
@@ -1260,7 +1261,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                 if (classDisplayed == ClassDisplayed.NODE) {
                     final ContextMenuItemManipulator item = nodesActionMappings.get(evt.getKeyCode());
                     if (item != null) {
-                        Node[] nodes = nodeTable.getNodesFromSelectedRows();
+                        Node[] nodes = nodeTable.getElementsFromSelectedRows().toArray(new Node[0]);
                         if (nodes.length > 0) {
                             ((NodesManipulator) item).setup(nodes, nodes[0]);
                             if (item.isAvailable() && item.canExecute()) {
@@ -1272,7 +1273,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                 } else if (classDisplayed == ClassDisplayed.EDGE) {
                     final ContextMenuItemManipulator item = edgesActionMappings.get(evt.getKeyCode());
                     if (item != null) {
-                        Edge[] edges = edgeTable.getEdgesFromSelectedRows();
+                        Edge[] edges = edgeTable.getElementsFromSelectedRows().toArray(new Edge[0]);
                         if (edges.length > 0) {
                             ((EdgesManipulator) item).setup(edges, edges[0]);
                             if (item.isAvailable() && item.canExecute()) {

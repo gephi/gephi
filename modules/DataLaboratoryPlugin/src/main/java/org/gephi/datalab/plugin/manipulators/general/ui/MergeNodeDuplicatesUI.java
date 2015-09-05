@@ -256,7 +256,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
 
     class StrategyConfigurationButton extends JButton implements ActionListener {
 
-        private int strategyIndex;
+        private final int strategyIndex;
 
         public StrategyConfigurationButton(int strategyIndex) {
             this.strategyIndex = strategyIndex;
@@ -278,8 +278,8 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
 
     class StrategyComboBox extends JComboBox implements ActionListener {
 
-        private StrategyConfigurationButton button;
-        private StrategyInfoLabel infoLabel;
+        private final StrategyConfigurationButton button;
+        private final StrategyInfoLabel infoLabel;
 
         public StrategyComboBox(StrategyConfigurationButton button, StrategyInfoLabel infoLabel) {
             this.button = button;
@@ -300,7 +300,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
 
     class StrategyInfoLabel extends JLabel {
 
-        private int strategyIndex;
+        private final int strategyIndex;
 
         public StrategyInfoLabel(int strategyIndex) {
             this.strategyIndex = strategyIndex;
@@ -354,7 +354,7 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
 
     class StrategyWrapper {
 
-        private AttributeRowsMergeStrategy strategy;
+        private final AttributeRowsMergeStrategy strategy;
 
         public StrategyWrapper(AttributeRowsMergeStrategy strategy) {
             this.strategy = strategy;

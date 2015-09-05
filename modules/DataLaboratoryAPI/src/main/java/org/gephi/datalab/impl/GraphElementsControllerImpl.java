@@ -398,7 +398,9 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         
         //Copy attributes:
         for (Column column : nodeTable) {
-            copy.setAttribute(column, node.getAttribute(column));
+            if(!column.isReadOnly()){
+                copy.setAttribute(column, node.getAttribute(column));
+            }
         }
 
         g.addNode(copy);

@@ -242,9 +242,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         for (Element row : getTableAttributeRows(table)) {
             value = row.getAttribute(column);
             if (valuesFrequencies.containsKey(value)) {
-                valuesFrequencies.put(value, new Integer(valuesFrequencies.get(value) + 1));
+                valuesFrequencies.put(value,valuesFrequencies.get(value) + 1);
             } else {
-                valuesFrequencies.put(value, new Integer(1));
+                valuesFrequencies.put(value, 1);
             }
         }
 
