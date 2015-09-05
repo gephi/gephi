@@ -498,11 +498,10 @@
             <!-- Localization dependency -->
             <dependencies>
                 <dependency>
-                    <groupId>org.netbeans</groupId>
-                    <artifactId>platform-localization</artifactId>
-                    <type>zip</type>
+                    <groupId>nl.cloudfarming.client</groupId>
+                    <artifactId>lib-platform-l10n</artifactId>
                     <version>${gephi.platform.localization.version}</version>
-                </dependency>
+               </dependency>
             </dependencies>
             
             <build>
