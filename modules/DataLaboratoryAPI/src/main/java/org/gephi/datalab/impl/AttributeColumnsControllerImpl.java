@@ -55,11 +55,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.gephi.attribute.api.AttributeUtils;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Origin;
-import org.gephi.attribute.api.Table;
-import org.gephi.attribute.time.TimestampValueSet;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Origin;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
@@ -68,7 +67,8 @@ import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.store.GraphStoreConfiguration;
+import org.gephi.graph.api.types.TimestampMap;
+import org.gephi.graph.impl.GraphStoreConfiguration;
 import org.gephi.utils.StatisticsUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -136,7 +136,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     private Column convertColumnToDynamic(Table table, Column column, double low, double high, String newColumnTitle) {
         Class oldType = column.getTypeClass();
-        Class<? extends TimestampValueSet> newType = AttributeUtils.getDynamicType(oldType);
+        Class<? extends TimestampMap> newType = AttributeUtils.getDynamicType(oldType);
 
         if (newColumnTitle != null) {
             if (newColumnTitle.equals(column.getTitle())) {
@@ -355,9 +355,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         } else {
             Table table;
             if(row instanceof Node){
-                table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+                table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
             }else{
-                table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+                table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
             }
             
             for (Column column : table) {
@@ -392,9 +392,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         } else {
             Table table;
             if(row instanceof Node){
-                table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+                table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
             }else{
-                table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+                table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
             }
             
             for (Column column : table) {
@@ -428,13 +428,13 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     @Override
     public boolean isNodeTable(Table table) {
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        return table == gc.getAttributeModel().getNodeTable();
+        return table == gc.getGraphModel().getNodeTable();
     }
 
     @Override
     public boolean isEdgeTable(Table table) {
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        return table == gc.getAttributeModel().getEdgeTable();
+        return table == gc.getGraphModel().getEdgeTable();
     }
 
     @Override
@@ -455,12 +455,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     
     @Override
     public boolean isNodeColumn(Column column){
-        return isTableColumn(Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable(), column);
+        return isTableColumn(Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable(), column);
     }
     
     @Override
     public boolean isEdgeColumn(Column column){
-        return isTableColumn(Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable(), column);
+        return isTableColumn(Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable(), column);
     }
 
     @Override
@@ -565,7 +565,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         CsvReader reader = null;
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
-            Table nodesTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+            Table nodesTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
             String idColumn = null;
             ArrayList<Column> columnsList = new ArrayList<Column>();
             HashMap<Column, String> columnHeaders = new HashMap<Column, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
@@ -646,7 +646,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         CsvReader reader = null;
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
-            Table edgesTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
+            Table edgesTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
             String idColumn = null;
             String sourceColumn = null;
             String targetColumn = null;
@@ -940,7 +940,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             throw new IllegalArgumentException("Column must be a dynamic number column");
         }
         ArrayList<Number> numbers = new ArrayList<Number>();
-        TimestampValueSet dynamicList = (TimestampValueSet) row.getAttribute(column);
+        TimestampMap dynamicList = (TimestampMap) row.getAttribute(column);
         if (dynamicList == null) {
             return numbers;
         }

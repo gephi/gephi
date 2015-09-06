@@ -44,9 +44,8 @@ package org.gephi.statistics.plugin;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -449,12 +448,12 @@ public class Modularity implements Statistics, LongTask {
     }
 
     @Override
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel) {
         Graph hgraph = graphModel.getUndirectedGraphVisible();
-        execute(hgraph, attributeModel);
+        execute(hgraph, graphModel);
     }
 
-    public void execute(Graph hgraph, AttributeModel attributeModel) {
+    public void execute(Graph hgraph, GraphModel graphModel) {
         isCanceled = false;
 
         hgraph.readLock();
@@ -467,7 +466,7 @@ public class Modularity implements Statistics, LongTask {
         modularity = computedModularityMetrics.get("modularity");
         modularityResolution = computedModularityMetrics.get("modularityResolution");
 
-        saveValues(comStructure, hgraph, attributeModel, structure);
+        saveValues(comStructure, hgraph, graphModel, structure);
 
         hgraph.readUnlock();
     }
@@ -607,8 +606,8 @@ public class Modularity implements Statistics, LongTask {
         return res;
     }
 
-    private void saveValues(int[] struct, Graph hgraph, AttributeModel attributeModel, CommunityStructure theStructure) {
-        Table nodeTable = attributeModel.getNodeTable();
+    private void saveValues(int[] struct, Graph hgraph, GraphModel graphModel, CommunityStructure theStructure) {
+        Table nodeTable = graphModel.getNodeTable();
         Column modCol = nodeTable.getColumn(MODULARITY_CLASS);
         if (modCol == null) {
             modCol = nodeTable.addColumn(MODULARITY_CLASS, "Modularity Class", Integer.class, new Integer(0));

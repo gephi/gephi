@@ -47,7 +47,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import javax.xml.stream.*;
 import javax.xml.stream.events.XMLEvent;
-import org.gephi.attribute.api.TimeFormat;
+import org.gephi.graph.api.TimeFormat;
 import org.gephi.io.importer.api.*;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -705,7 +705,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 edge.parseAndSetValue(column.getId(), value);
             }
 //            //Data attribute value
-//            AttributeColumn column = container.getAttributeModel().getEdgeTable().getColumn(fore);
+//            AttributeColumn column = container.getGraphModel().getEdgeTable().getColumn(fore);
 //            if (column != null) {
 //                if (!startDate.isEmpty() || !endDate.isEmpty()) {
 //                    //Dynamic

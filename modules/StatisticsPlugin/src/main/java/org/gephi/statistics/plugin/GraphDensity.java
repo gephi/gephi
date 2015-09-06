@@ -43,7 +43,6 @@ package org.gephi.statistics.plugin;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import org.gephi.attribute.api.AttributeModel;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -81,7 +80,7 @@ public class GraphDensity implements Statistics {
     }
 
     @Override
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel) {
         Graph graph;
         if (isDirected) {
             graph = graphModel.getDirectedGraphVisible();

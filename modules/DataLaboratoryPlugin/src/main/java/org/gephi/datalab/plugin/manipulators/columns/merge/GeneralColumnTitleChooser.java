@@ -41,7 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Table;
 
 /**
  * Interface that general merge strategies that only need to choose a title for the column to create

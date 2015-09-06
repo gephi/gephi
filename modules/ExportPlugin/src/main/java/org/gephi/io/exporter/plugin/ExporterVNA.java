@@ -43,8 +43,7 @@ package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
@@ -65,7 +64,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     private Workspace workspace;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
-    private AttributeModel attributeModel;
+    private GraphModel graphModel;
     //settings
     private boolean exportEdgeWeight = true;
     private boolean exportCoords = true;
@@ -99,8 +98,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
 
     @Override
     public boolean execute() {
-        attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-        GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
+        graphModel = workspace.getLookup().lookup(GraphModel.class);
         Graph graph;
         if (exportVisible) {
             graph = graphModel.getGraphVisible();
@@ -155,7 +153,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     }
 
     private boolean atLeastOneNonStandartAttribute() {
-        for (Column col : attributeModel.getNodeTable()) {
+        for (Column col : graphModel.getNodeTable()) {
             if (!col.isProperty()) {
                 return true;
             }
@@ -170,7 +168,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         //header
         stringBuilder.append("*Node data\n");
         stringBuilder.append("ID");
-        for (Column column : attributeModel.getNodeTable()) {
+        for (Column column : graphModel.getNodeTable()) {
             if (!column.isProperty()) {
                 stringBuilder.append(" ").append(column.getTitle().replace(' ', '_').toString());
                 //replace spaces because importer can't read attributes titles in quotes
@@ -185,7 +183,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
                 break;
             }
             stringBuilder.append(printParameter(node.getId()));
-            for (Column column : attributeModel.getNodeTable()) {
+            for (Column column : graphModel.getNodeTable()) {
                 if (!column.isProperty()) {
                     Object value = node.getAttribute(column, graph.getView());
                     if (value != null) {
@@ -295,7 +293,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         }
 
         if (exportAttributes) {
-            for (Column column : attributeModel.getEdgeTable()) {
+            for (Column column : graphModel.getEdgeTable()) {
                 if (!column.isProperty()) {
                     Object value = edge.getAttribute(column, graph.getView());
                     if (value != null) {
@@ -319,7 +317,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             stringBuilder.append(" strength");
         }
         if (exportAttributes) {
-            for (Column col : attributeModel.getEdgeTable()) {
+            for (Column col : graphModel.getEdgeTable()) {
                 if (!col.isProperty()) {
                     stringBuilder.append(" ").append(printParameter(col.getTitle()).replace(' ', '_'));
                     //replace spaces because importer can't read attributes titles in quotes

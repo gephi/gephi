@@ -42,8 +42,8 @@
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.columns.ui.ConvertColumnToDynamicUI;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;

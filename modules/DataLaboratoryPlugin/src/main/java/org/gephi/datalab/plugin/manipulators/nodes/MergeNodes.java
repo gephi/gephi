@@ -42,7 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.nodes.ui.MergeNodesUI;
@@ -83,7 +83,7 @@ public class MergeNodes extends BasicNodesManipulator {
         selectedNode = clickedNode != null ? clickedNode : nodes[0];
         
         
-        columns = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable().getColumns();
+        columns = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable().getColumns();
         mergeStrategies = new AttributeRowsMergeStrategy[columns.length];
         deleteMergedNodes = NbPreferences.forModule(MergeNodes.class).getBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, true);
     }

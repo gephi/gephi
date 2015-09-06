@@ -54,7 +54,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.plugin.manipulators.nodes.MergeNodes;
 import org.gephi.datalab.spi.DialogControls;

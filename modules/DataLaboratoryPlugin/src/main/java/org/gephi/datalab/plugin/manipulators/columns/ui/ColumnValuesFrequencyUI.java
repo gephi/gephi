@@ -43,8 +43,8 @@ package org.gephi.datalab.plugin.manipulators.columns.ui;
 
 import java.util.Map;
 import javax.swing.JPanel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.plugin.manipulators.columns.ColumnValuesFrequency;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;

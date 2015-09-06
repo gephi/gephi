@@ -51,9 +51,9 @@ import java.util.List;
 import javax.swing.ButtonModel;
 import javax.swing.JCheckBox;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Origin;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.Origin;
 import org.gephi.visualization.text.TextModelImpl;
 import org.openide.util.Lookup;
 
@@ -118,7 +118,7 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
         List<Column> selectedColumns = new ArrayList<Column>();
         AttributesCheckBox[] target;
         if (elementButtonGroup.getSelection() == nodesToggleButton.getModel()) {
-            for (Column c : graphController.getAttributeModel().getNodeTable()) {
+            for (Column c : graphController.getGraphModel().getNodeTable()) {
                 if (c.getOrigin().equals(Origin.DATA)) {
                     availableColumns.add(c);
                 } else if (showProperties) {
@@ -134,7 +134,7 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
             nodeCheckBoxs = new AttributesCheckBox[availableColumns.size()];
             target = nodeCheckBoxs;
         } else {
-            for (Column c : graphController.getAttributeModel().getEdgeTable()) {
+            for (Column c : graphController.getGraphModel().getEdgeTable()) {
                 if (c.getOrigin().equals(Origin.DATA)) {
                     availableColumns.add(c);
                 } else if (showProperties) {

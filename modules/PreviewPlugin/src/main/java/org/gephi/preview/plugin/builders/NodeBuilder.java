@@ -41,7 +41,6 @@
  */
 package org.gephi.preview.plugin.builders;
 
-import org.gephi.attribute.api.AttributeModel;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.Item;
@@ -57,7 +56,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class NodeBuilder implements ItemBuilder {
 
     @Override
-    public Item[] getItems(Graph graph, AttributeModel attributeModel) {
+    public Item[] getItems(Graph graph) {
 
         Item[] items = new NodeItem[graph.getNodeCount()];
         int i = 0;

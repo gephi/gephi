@@ -49,9 +49,8 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Stack;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -137,7 +136,7 @@ public class GraphDistance implements Statistics, LongTask {
      * @param attributeModel
      */
     @Override
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel) {
         isDirected = graphModel.isDirected();
 
         Graph graph = null;
@@ -146,13 +145,13 @@ public class GraphDistance implements Statistics, LongTask {
         } else {
             graph = graphModel.getUndirectedGraphVisible();
         }
-        execute(graph, attributeModel);
+        execute(graph, graphModel);
     }
 
-    public void execute(Graph hgraph, AttributeModel attributeModel) {
+    public void execute(Graph hgraph, GraphModel graphModel) {
         isCanceled = false;
         
-        initializeAttributeColunms(attributeModel); 
+        initializeAttributeColunms(graphModel); 
 
         hgraph.readLock();
 
@@ -292,8 +291,8 @@ public class GraphDistance implements Statistics, LongTask {
             return edgeIter;
     }
     
-    private void initializeAttributeColunms(AttributeModel attributeModel) {
-        Table nodeTable = attributeModel.getNodeTable();
+    private void initializeAttributeColunms(GraphModel graphModel) {
+        Table nodeTable = graphModel.getNodeTable();
         if (!nodeTable.hasColumn(ECCENTRICITY)) {
             nodeTable.addColumn(ECCENTRICITY, "Eccentricity", Double.class, new Double(0));
         }

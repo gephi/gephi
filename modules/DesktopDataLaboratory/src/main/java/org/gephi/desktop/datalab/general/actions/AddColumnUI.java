@@ -45,11 +45,11 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.utils.SupportedColumnTypeWrapper;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
@@ -109,7 +109,7 @@ public class AddColumnUI extends javax.swing.JPanel {
      * @param mode Mode
      */
     public void setup(Mode mode) {
-        AttributeModel am = Lookup.getDefault().lookup(GraphController.class).getAttributeModel();
+        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         //Set description text for the mode of column creation:
         switch (mode) {
             case NODES_TABLE:

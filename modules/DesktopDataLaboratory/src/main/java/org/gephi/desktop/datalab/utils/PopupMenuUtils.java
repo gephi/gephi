@@ -47,7 +47,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.datalab.spi.Manipulator;

@@ -50,12 +50,12 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.columns.merge.AttributeColumnsMergeStrategy;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
@@ -149,14 +149,14 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         availableColumnsModel.clear();
         columnsToMergeModel.clear();
 
-        AttributeModel am = Lookup.getDefault().lookup(GraphController.class).getAttributeModel();
+        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         Column[] columns;
         if (mode == Mode.NODES_TABLE) {
             table = am.getNodeTable();
-            columns = table.getColumns();
+            columns = table.toArray();
         } else {
             table = am.getEdgeTable();
-            columns = table.getColumns();
+            columns = table.toArray();
         }
 
         for (int i = 0; i < columns.length; i++) {

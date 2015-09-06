@@ -43,8 +43,7 @@ package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -67,7 +66,6 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportVisible = false;
     private Workspace workspace;
     private GraphModel graphModel;
-    private AttributeModel attributeModel;
     private Writer writer;
     private ProgressTicket progressTicket;
     private boolean cancel = false;
@@ -110,7 +108,6 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     public boolean execute() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         graphModel = graphController.getGraphModel(workspace);
-        attributeModel = graphController.getAttributeModel(workspace);
         Graph graph = null;
         if (exportVisible) {
             graph = graphModel.getGraphVisible();
@@ -212,7 +209,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         }
 
         if (exportNotRecognizedElements) {
-            for (Column col : attributeModel.getEdgeTable()) {
+            for (Column col : graphModel.getEdgeTable()) {
                 if (!col.isProperty()) {
                     Object value = edge.getAttribute(col, graph.getView());
                     if (value != null) {
@@ -263,7 +260,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
             printClose();
         }
         if (exportNotRecognizedElements) {
-            for (Column col : attributeModel.getNodeTable()) {
+            for (Column col : graphModel.getNodeTable()) {
                 if (!col.isProperty()) {
                     Object value = node.getAttribute(col, graph.getView());
                     if (value != null) {

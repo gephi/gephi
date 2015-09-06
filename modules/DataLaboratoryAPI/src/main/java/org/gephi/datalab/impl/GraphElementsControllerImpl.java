@@ -44,8 +44,8 @@ package org.gephi.datalab.impl;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
@@ -204,8 +204,8 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     @Override
     public Node mergeNodes(Node[] nodes, Node selectedNode, AttributeRowsMergeStrategy[] mergeStrategies, boolean deleteMergedNodes) {
-        Table nodesTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
-        Table edgesTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
+        Table nodesTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
+        Table edgesTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
         if (selectedNode == null) {
             selectedNode = nodes[0];//Use first node as selected node if null
         }
@@ -394,7 +394,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         copy.setB(node.b());
         copy.setAlpha(node.alpha());
 
-        Table nodeTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+        Table nodeTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
         
         //Copy attributes:
         for (Column column : nodeTable) {

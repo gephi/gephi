@@ -53,7 +53,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.plugin.manipulators.general.ui.ImportCSVUIWizardAction.Mode;
 import org.gephi.datalab.utils.SupportedColumnTypeWrapper;
 import org.gephi.graph.api.GraphController;
@@ -103,12 +103,12 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
             loadDescription(settingsPanel);
             switch (mode) {
                 case NODES_TABLE:
-                    table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+                    table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
                     loadColumns(settingsPanel);
                     loadNodesTableSettings(settingsPanel);
                     break;
                 case EDGES_TABLE:
-                    table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
+                    table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
                     loadColumns(settingsPanel);
                     loadEdgesTableSettings(settingsPanel);
                     break;

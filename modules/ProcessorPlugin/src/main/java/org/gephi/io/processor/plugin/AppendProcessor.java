@@ -91,13 +91,12 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
 
         //Architecture
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        graphModel = graphController.getGraphModel();
 
         Graph graph = graphModel.getGraph();
         GraphFactory factory = graphModel.factory();
 
         //Attributes - Creates columns for properties
-        attributeModel = graphController.getAttributeModel();
         flushColumns();
 
         //Dynamic

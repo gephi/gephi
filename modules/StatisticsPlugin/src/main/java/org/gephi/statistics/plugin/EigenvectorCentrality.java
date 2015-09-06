@@ -43,9 +43,8 @@ package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
@@ -122,7 +121,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
      * @param attributeModel
      */
     @Override
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel) {
         isDirected = graphModel.isDirected();
         isCanceled = false;
 
@@ -132,12 +131,12 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         } else {
             graph = graphModel.getUndirectedGraphVisible();
         }
-        execute(graph, attributeModel);
+        execute(graph, graphModel);
     }
 
-    public void execute(Graph hgraph, AttributeModel attributeModel) {
+    public void execute(Graph hgraph, GraphModel graphModel) {
 
-        Column column = initializeAttributeColunms(attributeModel);
+        Column column = initializeAttributeColunms(graphModel);
 
         int N = hgraph.getNodeCount();
         hgraph.readLock();
@@ -159,8 +158,8 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         Progress.finish(progress);
     }
 
-    private Column initializeAttributeColunms(AttributeModel attributeModel) {
-        Table nodeTable = attributeModel.getNodeTable();
+    private Column initializeAttributeColunms(GraphModel graphModel) {
+        Table nodeTable = graphModel.getNodeTable();
         Column eigenCol = nodeTable.getColumn(EIGENVECTOR);
         if (eigenCol == null) {
             eigenCol = nodeTable.addColumn(EIGENVECTOR, "Eigenvector Centrality", Double.class, new Double(0));

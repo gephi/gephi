@@ -43,8 +43,8 @@
 package org.gephi.datalab.spi.columns;
 
 import java.awt.Image;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 
 /**
  * <p>Manipulation action to use for Data Laboratory column manipulator buttons.</p>

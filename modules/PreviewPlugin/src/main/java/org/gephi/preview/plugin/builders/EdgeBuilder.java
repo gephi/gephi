@@ -41,7 +41,6 @@
  */
 package org.gephi.preview.plugin.builders;
 
-import org.gephi.attribute.api.AttributeModel;
 import org.gephi.graph.api.*;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.EdgeItem;
@@ -56,7 +55,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class EdgeBuilder implements ItemBuilder {
 
     @Override
-    public Item[] getItems(Graph graph, AttributeModel attributeModel) {
+    public Item[] getItems(Graph graph) {
 
         EdgeItem[] items = new EdgeItem[graph.getEdgeCount()];
         int i = 0;

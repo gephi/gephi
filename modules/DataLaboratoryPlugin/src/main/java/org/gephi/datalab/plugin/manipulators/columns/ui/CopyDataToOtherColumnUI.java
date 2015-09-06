@@ -43,8 +43,8 @@ package org.gephi.datalab.plugin.manipulators.columns.ui;
 
 import java.util.ArrayList;
 import javax.swing.JPanel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.columns.CopyDataToOtherColumn;
 import org.gephi.datalab.spi.DialogControls;

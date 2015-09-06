@@ -47,7 +47,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.gephi.attribute.api.AttributeModel;
 import org.gephi.graph.api.*;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
@@ -62,7 +61,6 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
     private Workspace workspace;
     private Writer writer;
     private GraphModel graphModel;
-    private AttributeModel attributeModel;
     private boolean cancel = false;
     ProgressTicket progressTicket;
     private boolean useMatrixFormat = false;
@@ -108,7 +106,6 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
     public boolean execute() {
         progressTicket.start();
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        attributeModel = graphController.getAttributeModel(workspace);
         graphModel = graphController.getGraphModel(workspace);
         Graph graph = null;
         if (exportVisible) {

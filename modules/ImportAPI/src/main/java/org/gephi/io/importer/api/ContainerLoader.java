@@ -41,8 +41,7 @@
  */
 package org.gephi.io.importer.api;
 
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.TimeFormat;
+import org.gephi.graph.api.TimeFormat;
 import org.gephi.io.importer.spi.Importer;
 
 /**

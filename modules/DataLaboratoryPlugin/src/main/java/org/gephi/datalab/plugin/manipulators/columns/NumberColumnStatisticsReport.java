@@ -42,9 +42,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
-import org.gephi.attribute.api.AttributeUtils;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralNumberListStatisticsReportUI;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;

@@ -43,7 +43,7 @@ package org.gephi.datalab.plugin.manipulators.edges;
 
 import java.util.ArrayList;
 import javax.swing.Icon;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsChooser;
@@ -69,7 +69,7 @@ public class ClearEdgesData extends BasicEdgesManipulator implements GeneralColu
         this.edges = edges;
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         ArrayList<Column> columnsToClearDataList = new ArrayList<Column>();
-        for (Column column : Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable()) {
+        for (Column column : Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable()) {
             if (ac.canClearColumnData(column)) {
                 columnsToClearDataList.add(column);
             }

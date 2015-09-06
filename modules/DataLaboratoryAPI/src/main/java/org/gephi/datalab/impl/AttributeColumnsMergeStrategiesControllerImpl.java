@@ -45,15 +45,16 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import org.gephi.attribute.api.AttributeUtils;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Origin;
-import org.gephi.attribute.api.Table;
-import org.gephi.attribute.time.TimestampSet;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Origin;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.graph.api.Element;
-import org.gephi.graph.store.GraphStoreConfiguration;
+import org.gephi.graph.api.types.TimestampMap;
+import org.gephi.graph.api.types.TimestampSet;
+import org.gephi.graph.impl.GraphStoreConfiguration;
 import org.gephi.utils.StatisticsUtils;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -170,7 +171,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Object value;
         double start, end;
-        TimestampSet timeInterval;
+        TimestampMap timeInterval;
         for (Element row : ac.getTableAttributeRows(table)) {
             if (startColumnIndex != -1) {
                 value = row.getAttribute(startColumn);
@@ -234,7 +235,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Object value;
         double start, end;
-        TimestampSet timeInterval;
+        TimestampMap timeInterval;
         for (Element row : ac.getTableAttributeRows(table)) {
             if (startColumnIndex != -1) {
                 value = row.getAttribute(startColumn);

@@ -45,8 +45,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.datatables.AttributeTableCSVExporter;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -69,7 +69,7 @@ public class CSVExportUI extends javax.swing.JPanel {
      */
     public CSVExportUI(Table table, boolean edgesTable) {
         initComponents();
-        this.columns = table.getColumns();
+        this.columns = table.toArray();
         this.edgesTable = edgesTable;
         separatorComboBox.addItem(new SeparatorWrapper((','), getMessage("CSVExportUI.comma")));
         separatorComboBox.addItem(new SeparatorWrapper((';'), getMessage("CSVExportUI.semicolon")));

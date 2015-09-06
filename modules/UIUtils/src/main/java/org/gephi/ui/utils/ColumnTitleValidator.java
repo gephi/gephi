@@ -41,7 +41,7 @@
  */
 package org.gephi.ui.utils;
 
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Table;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.openide.util.NbBundle;

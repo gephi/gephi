@@ -45,8 +45,8 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.appearance.api.Partition;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Index;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Index;
 
 /**
  *

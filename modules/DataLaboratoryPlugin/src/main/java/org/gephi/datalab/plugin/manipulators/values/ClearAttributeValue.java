@@ -42,7 +42,7 @@
 package org.gephi.datalab.plugin.manipulators.values;
 
 import javax.swing.Icon;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.values.AttributeValueManipulator;

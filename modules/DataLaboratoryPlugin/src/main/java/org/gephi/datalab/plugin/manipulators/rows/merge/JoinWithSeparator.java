@@ -42,7 +42,7 @@
 package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import javax.swing.Icon;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.plugin.manipulators.rows.merge.ui.JoinWithSeparatorUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;

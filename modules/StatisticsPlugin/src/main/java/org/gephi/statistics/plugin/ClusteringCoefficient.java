@@ -47,9 +47,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.DirectedGraph;
@@ -240,7 +239,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     }
 
     @Override
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel) {
         isDirected = graphModel.isDirected();
 
         Graph hgraph = null;
@@ -250,16 +249,16 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             hgraph = graphModel.getUndirectedGraphVisible();
         }
 
-        execute(hgraph, attributeModel);
+        execute(hgraph, graphModel);
     }
 
-    public void execute(Graph hgraph, AttributeModel attributeModel) {
+    public void execute(Graph hgraph, GraphModel graphModel) {
         isCanceled = false;
 
         HashMap<String, Double> resultValues = new HashMap<String, Double>();
 
         if (isDirected) {
-            avgClusteringCoeff = bruteForce(hgraph, attributeModel);
+            avgClusteringCoeff = bruteForce(hgraph, graphModel);
         } else {
             initStartValues(hgraph);
             resultValues = computeTriangles(hgraph, network, triangles, nodeClustering, isDirected);
@@ -269,7 +268,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
 
         //Set results in columns
-        Table nodeTable = attributeModel.getNodeTable();
+        Table nodeTable = graphModel.getNodeTable();
         Column clusteringCol = nodeTable.getColumn(CLUSTERING_COEFF);
         if (clusteringCol == null) {
             clusteringCol = nodeTable.addColumn(CLUSTERING_COEFF, "Clustering Coefficient", Double.class, new Double(0));
@@ -577,9 +576,9 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         return resultValues;
     }
 
-    private double bruteForce(Graph hgraph, AttributeModel attributeModel) {
+    private double bruteForce(Graph hgraph, GraphModel graphModel) {
         //The atrributes computed by the statistics
-        Column clusteringColumn = initializeAttributeColunms(attributeModel);
+        Column clusteringColumn = initializeAttributeColunms(graphModel);
 
         float totalCC = 0;
 
@@ -657,12 +656,12 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
     }
 
-    private Column initializeAttributeColunms(AttributeModel attributeModel) {
+    private Column initializeAttributeColunms(GraphModel graphModel) {
 
-        if (attributeModel == null) {
+        if (graphModel == null) {
             return null;
         }
-        Table nodeTable = attributeModel.getNodeTable();
+        Table nodeTable = graphModel.getNodeTable();
         Column clusteringCol = nodeTable.getColumn("clustering");
 
         if (clusteringCol == null) {

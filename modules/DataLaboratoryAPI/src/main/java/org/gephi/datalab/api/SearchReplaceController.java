@@ -44,7 +44,7 @@ package org.gephi.datalab.api;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;

@@ -45,8 +45,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
@@ -98,17 +97,17 @@ public class Degree implements Statistics, LongTask {
      * @param graphModel
      */
     @Override
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel) {
         Graph graph = graphModel.getGraphVisible();
-        execute(graph, attributeModel);
+        execute(graph, graphModel);
     }
 
-    public void execute(Graph graph, AttributeModel attributeModel) {
+    public void execute(Graph graph, GraphModel graphModel) {
         isDirected = graph.isDirected();
         isCanceled = false;
 
         initializeDegreeDists();
-        initializeAttributeColunms(attributeModel);
+        initializeAttributeColunms(graphModel);
 
         graph.readLock();
 
@@ -177,8 +176,8 @@ public class Degree implements Statistics, LongTask {
         return averageDegree;
     }
 
-    private void initializeAttributeColunms(AttributeModel attributeModel) {
-        Table nodeTable = attributeModel.getNodeTable();
+    private void initializeAttributeColunms(GraphModel graphModel) {
+        Table nodeTable = graphModel.getNodeTable();
         if (isDirected) {
             if (!nodeTable.hasColumn(INDEGREE)) {
                 nodeTable.addColumn(INDEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.InDegree"), Integer.class, 0);

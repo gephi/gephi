@@ -46,9 +46,8 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
@@ -93,7 +92,7 @@ public class ConnectedComponents implements Statistics, LongTask {
     }
 
     @Override
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel) {
         isDirected = graphModel.isDirected();
         isCanceled = false;
 
@@ -101,19 +100,19 @@ public class ConnectedComponents implements Statistics, LongTask {
 
         undirectedGraph.readLock();
 
-        weaklyConnected(undirectedGraph, attributeModel);
+        weaklyConnected(undirectedGraph, graphModel);
         if (isDirected) {
             DirectedGraph directedGraph = graphModel.getDirectedGraphVisible();
-            stronglyConnected(directedGraph, attributeModel);
+            stronglyConnected(directedGraph, graphModel);
         }
 
         undirectedGraph.readUnlock();
     }
 
-    public void weaklyConnected(UndirectedGraph graph, AttributeModel attributeModel) {
+    public void weaklyConnected(UndirectedGraph graph, GraphModel graphModel) {
         isCanceled = false;
 
-        Column componentCol = initializeWeeklyConnectedColumn(attributeModel);
+        Column componentCol = initializeWeeklyConnectedColumn(graphModel);
 
         HashMap<Node, Integer> indicies = createIndiciesMap(graph);
 
@@ -189,8 +188,8 @@ public class ConnectedComponents implements Statistics, LongTask {
         return components;
     }
 
-    private Column initializeWeeklyConnectedColumn(AttributeModel attributeModel) {
-        Table nodeTable = attributeModel.getNodeTable();
+    private Column initializeWeeklyConnectedColumn(GraphModel graphModel) {
+        Table nodeTable = graphModel.getNodeTable();
         Column componentCol = nodeTable.getColumn(WEAKLY);
         if (componentCol == null) {
             componentCol = nodeTable.addColumn(WEAKLY, "Component ID", Integer.class, new Integer(0));
@@ -225,8 +224,8 @@ public class ConnectedComponents implements Statistics, LongTask {
         }
     }
 
-    private Column initializeStronglyConnectedColumn(AttributeModel attributeModel) {
-        Table nodeTable = attributeModel.getNodeTable();
+    private Column initializeStronglyConnectedColumn(GraphModel graphModel) {
+        Table nodeTable = graphModel.getNodeTable();
         Column componentCol = nodeTable.getColumn(STRONG);
         if (componentCol == null) {
             componentCol = nodeTable.addColumn(STRONG, "Strongly-Connected ID", Integer.class, new Integer(0));
@@ -234,11 +233,11 @@ public class ConnectedComponents implements Statistics, LongTask {
         return componentCol;
     }
 
-    public void stronglyConnected(DirectedGraph hgraph, AttributeModel attributeModel) {
+    public void stronglyConnected(DirectedGraph hgraph, GraphModel graphModel) {
         count = 1;
         stronglyCount = 0;
 
-        Column componentCol = initializeStronglyConnectedColumn(attributeModel);
+        Column componentCol = initializeStronglyConnectedColumn(graphModel);
 
         HashMap<Node, Integer> indicies = createIndiciesMap(hgraph);
 

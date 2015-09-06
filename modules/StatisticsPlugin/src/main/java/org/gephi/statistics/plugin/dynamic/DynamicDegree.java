@@ -45,18 +45,16 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
-import org.gephi.attribute.time.Interval;
-import org.gephi.attribute.time.TimestampDoubleSet;
-import org.gephi.attribute.time.TimestampIntegerSet;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.types.TimestampIntegerMap;
 import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -102,27 +100,27 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
     }
 
     @Override
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel) {
         this.graphModel = graphModel;
         this.isDirected = graphModel.isDirected();
         this.averages = new HashMap<Double, Double>();
 
         //Attributes cols
         if (!averageOnly) {
-            Table nodeTable = attributeModel.getNodeTable();
+            Table nodeTable = graphModel.getNodeTable();
             dynamicInDegreeColumn = nodeTable.getColumn(DYNAMIC_INDEGREE);
             dynamicOutDegreeColumn = nodeTable.getColumn(DYNAMIC_OUTDEGREE);
             dynamicDegreeColumn = nodeTable.getColumn(DYNAMIC_DEGREE);
             if (isDirected) {
                 if (dynamicInDegreeColumn == null) {
-                    dynamicInDegreeColumn = nodeTable.addColumn(DYNAMIC_INDEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.InDegree"), TimestampIntegerSet.class, null);
+                    dynamicInDegreeColumn = nodeTable.addColumn(DYNAMIC_INDEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.InDegree"), TimestampIntegerMap.class, null);
                 }
                 if (dynamicOutDegreeColumn == null) {
-                    dynamicOutDegreeColumn = nodeTable.addColumn(DYNAMIC_OUTDEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.OutDegree"), TimestampIntegerSet.class, null);
+                    dynamicOutDegreeColumn = nodeTable.addColumn(DYNAMIC_OUTDEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.OutDegree"), TimestampIntegerMap.class, null);
                 }
             }
             if (dynamicDegreeColumn == null) {
-                dynamicDegreeColumn = nodeTable.addColumn(DYNAMIC_DEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.Degree"), TimestampIntegerSet.class, null);
+                dynamicDegreeColumn = nodeTable.addColumn(DYNAMIC_DEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.Degree"), TimestampIntegerMap.class, null);
             }
         }
     }

@@ -45,7 +45,7 @@ package org.gephi.datalab.utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.graph.api.AttributeUtils;
 
 /**
  * Simple wrapper class for column type selection in UI.

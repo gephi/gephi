@@ -47,12 +47,12 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 
 /**
  * <p>This interface defines part of the Data Laboratory API basic actions.</p>

@@ -48,8 +48,8 @@ import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.attribute.api.AttributeUtils;
-import org.gephi.attribute.time.Interval;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Interval;
 
 /**
  * <p>

@@ -51,7 +51,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.RowFilter;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.graph.api.Element;
 import org.jdesktop.swingx.JXTable;

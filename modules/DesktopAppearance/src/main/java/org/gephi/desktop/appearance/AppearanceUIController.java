@@ -57,9 +57,8 @@ import org.gephi.appearance.api.Function;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.TableObserver;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.TableObserver;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -316,8 +315,8 @@ public class AppearanceUIController {
 
         public ColumnObserver(Workspace workspace) {
             timer = new Timer("RankingColumnObserver", true);
-            nodeObserver = gc.getAttributeModel(workspace).getNodeTable().createTableObserver();
-            edgeObserver = gc.getAttributeModel(workspace).getEdgeTable().createTableObserver();
+            nodeObserver = gc.getGraphModel(workspace).getNodeTable().createTableObserver();
+            edgeObserver = gc.getGraphModel(workspace).getEdgeTable().createTableObserver();
         }
 
         @Override

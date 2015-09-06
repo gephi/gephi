@@ -43,7 +43,7 @@ package org.gephi.datalab.plugin.manipulators.nodes;
 
 import java.util.ArrayList;
 import javax.swing.Icon;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsChooser;
@@ -69,7 +69,7 @@ public class ClearNodesData extends BasicNodesManipulator implements  GeneralCol
         this.nodes = nodes;
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         ArrayList<Column> columnsToClearDataList = new ArrayList<Column>();
-        for (Column column : Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable()) {
+        for (Column column : Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable()) {
             if (ac.canClearColumnData(column)) {
                 columnsToClearDataList.add(column);
             }

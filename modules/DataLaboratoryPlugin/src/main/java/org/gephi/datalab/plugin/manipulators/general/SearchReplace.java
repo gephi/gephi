@@ -42,7 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.general;
 
 import javax.swing.Icon;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.general.ui.SearchReplaceUI;
@@ -124,9 +124,9 @@ public class SearchReplace implements GeneralActionsManipulator {
             return null;
         }
         if (dtc.isNodeTableMode()) {
-            return Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+            return Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
         } else {
-            return Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
+            return Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
         }
     }
 }

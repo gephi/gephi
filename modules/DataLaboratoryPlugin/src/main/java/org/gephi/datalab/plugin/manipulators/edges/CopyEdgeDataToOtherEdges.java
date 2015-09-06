@@ -43,7 +43,7 @@ package org.gephi.datalab.plugin.manipulators.edges;
 
 import java.util.ArrayList;
 import javax.swing.Icon;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsAndRowChooser;
@@ -73,7 +73,7 @@ public class CopyEdgeDataToOtherEdges extends BasicEdgesManipulator implements G
         this.edges = edges;
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         ArrayList<Column> columnsToCopyDataList = new ArrayList<Column>();
-        for (Column column : Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable()) {
+        for (Column column : Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable()) {
             if (ac.canChangeColumnData(column)) {
                 columnsToCopyDataList.add(column);
             }

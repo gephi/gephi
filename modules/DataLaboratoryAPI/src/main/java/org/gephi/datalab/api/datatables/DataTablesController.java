@@ -41,7 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.api.datatables;
 
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Table;
 
 /**
  * <p>This interface defines part of the Data Laboratory API.</p>

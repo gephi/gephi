@@ -41,7 +41,7 @@
  */
 package org.gephi.appearance.api;
 
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 
 /**
  *

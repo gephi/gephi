@@ -45,8 +45,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Severity;
 import org.netbeans.validation.api.ui.ValidationGroup;
@@ -72,7 +72,7 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
         initComponents();
         this.table = table;
         this.availableColumnsModel = availableColumnsModel;
-        columns = table.getColumns();
+        columns = table.toArray();
         refreshColumns();
         refreshAvailableColumnsControls();
     }

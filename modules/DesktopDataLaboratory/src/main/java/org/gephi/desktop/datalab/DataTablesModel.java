@@ -41,9 +41,9 @@
  */
 package org.gephi.desktop.datalab;
 
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
@@ -55,13 +55,13 @@ public class DataTablesModel  {
 
     private final AvailableColumnsModel nodeAvailableColumnsModel;
     private final AvailableColumnsModel edgeAvailableColumnsModel;
-    private final AttributeModel attributeModel;
+    private final GraphModel graphModel;
 
     public DataTablesModel(Workspace workspace) {
-        attributeModel = Lookup.getDefault().lookup(GraphController.class).getAttributeModel(workspace);
+        graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         
-        nodeAvailableColumnsModel = new AvailableColumnsModel(attributeModel.getNodeTable());
-        edgeAvailableColumnsModel = new AvailableColumnsModel(attributeModel.getEdgeTable());
+        nodeAvailableColumnsModel = new AvailableColumnsModel(graphModel.getNodeTable());
+        edgeAvailableColumnsModel = new AvailableColumnsModel(graphModel.getEdgeTable());
 
 
         //Try to make available all columns at start by default:
@@ -78,9 +78,9 @@ public class DataTablesModel  {
     }
     
     private AvailableColumnsModel getTableAvailableColumnsModel(Table table) {
-        if (attributeModel.getNodeTable() == table) {
+        if (graphModel.getNodeTable() == table) {
             return nodeAvailableColumnsModel;
-        } else if (attributeModel.getEdgeTable() == table) {
+        } else if (graphModel.getEdgeTable() == table) {
             return edgeAvailableColumnsModel;
         } else {
             return null;//Graph table or other table, not supported in data laboratory for now.

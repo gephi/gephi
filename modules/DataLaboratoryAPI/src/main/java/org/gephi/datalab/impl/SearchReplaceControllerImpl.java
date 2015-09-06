@@ -43,8 +43,8 @@ package org.gephi.datalab.impl;
 
 import java.util.Set;
 import java.util.regex.Matcher;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.api.SearchReplaceController;
@@ -106,10 +106,10 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         Table table;
         Column column;
         if (result.getFoundNode() != null) {
-            table = gc.getAttributeModel().getNodeTable();
+            table = gc.getGraphModel().getNodeTable();
             column = table.getColumn(result.getFoundColumnIndex());
         } else {
-            table = gc.getAttributeModel().getEdgeTable();
+            table = gc.getGraphModel().getEdgeTable();
             column = table.getColumn(result.getFoundColumnIndex());
         }
         return Lookup.getDefault().lookup(AttributeColumnsController.class).canChangeColumnData(column);
@@ -138,10 +138,10 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
             //Get value to re-match and replace:
             if (result.getFoundNode() != null) {
                 attributes = result.getFoundNode();
-                column = gc.getAttributeModel().getNodeTable().getColumn(result.getFoundColumnIndex());
+                column = gc.getGraphModel().getNodeTable().getColumn(result.getFoundColumnIndex());
             } else {
                 attributes = result.getFoundEdge();
-                column = gc.getAttributeModel().getEdgeTable().getColumn(result.getFoundColumnIndex());
+                column = gc.getGraphModel().getEdgeTable().getColumn(result.getFoundColumnIndex());
             }
             value = attributes.getAttribute(column);
             str = value != null ? value.toString() : "";
@@ -195,7 +195,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         SearchResult result = null;
         Set<Integer> columnsToSearch = searchOptions.getColumnsToSearch();
         boolean searchAllColumns = columnsToSearch.isEmpty();
-        Table table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+        Table table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
         Node[] nodes = searchOptions.getNodesToSearch();
         Node row;
         Column column;
@@ -229,7 +229,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         SearchResult result = null;
         Set<Integer> columnsToSearch = searchOptions.getColumnsToSearch();
         boolean searchAllColumns = columnsToSearch.isEmpty();
-        Table table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
+        Table table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
         Edge[] edges = searchOptions.getEdgesToSearch();
         Edge row;
         Column column;

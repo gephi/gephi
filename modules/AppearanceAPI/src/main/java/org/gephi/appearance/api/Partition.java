@@ -42,7 +42,7 @@
 package org.gephi.appearance.api;
 
 import java.awt.Color;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 
 /**
  *

@@ -44,8 +44,7 @@ package org.gephi.preview.plugin.builders;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
@@ -65,7 +64,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class NodeLabelBuilder implements ItemBuilder {
 
     @Override
-    public Item[] getItems(Graph graph, AttributeModel attributeModel) {
+    public Item[] getItems(Graph graph) {
 
         boolean useTextData = false;
         for (Node n : graph.getNodes()) {

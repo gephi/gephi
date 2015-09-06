@@ -50,13 +50,12 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.TimeFormat;
-import org.gephi.attribute.time.Interval;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Interval;
+import org.gephi.graph.api.TimeFormat;
 import org.gephi.lib.validation.PositiveNumberValidator;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.gephi.ui.components.richtooltip.RichTooltip;
@@ -114,8 +113,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
     public void setup(DynamicStatistics dynamicStatistics) {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         GraphModel graphModel = graphController.getGraphModel();
-        AttributeModel attributeModel = graphController.getAttributeModel();
-        TimeFormat timeFormat = attributeModel.getTimeFormat();
+        TimeFormat timeFormat = graphModel.getTimeFormat();
 
         //Bounds
         bounds = dynamicStatistics.getBounds();

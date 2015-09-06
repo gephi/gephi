@@ -67,10 +67,9 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
-import org.gephi.attribute.api.TableObserver;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
+import org.gephi.graph.api.TableObserver;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.api.datatables.AttributeTableCSVExporter;
 import org.gephi.datalab.api.datatables.DataTablesController;
@@ -257,8 +256,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         enableTableControls();
 
         graphModel = gc.getGraphModel(workspace);
-        nodesTableObserver = gc.getAttributeModel(workspace).getNodeTable().createTableObserver();
-        edgesTableObserver = gc.getAttributeModel(workspace).getEdgeTable().createTableObserver();
+        nodesTableObserver = gc.getGraphModel(workspace).getNodeTable().createTableObserver();
+        edgesTableObserver = gc.getGraphModel(workspace).getEdgeTable().createTableObserver();
         graphObserver = graphModel.createGraphObserver(graphModel.getGraph(), false);
 
         refreshAllOnce();
@@ -419,9 +418,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     }
 
     private AvailableColumnsModel getTableAvailableColumnsModel(Table table) {
-        if (Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable() == table) {
+        if (Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable() == table) {
             return nodeAvailableColumnsModel;
-        } else if (Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable() == table) {
+        } else if (Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable() == table) {
             return edgeAvailableColumnsModel;
         } else {
             return null;//Graph table or other table, not supported in data laboratory for now.
@@ -514,7 +513,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                     nodeAvailableColumnsModel.syncronizeTableColumns();
                     final Column[] cols = nodeAvailableColumnsModel.getAvailableColumns();
                     
-                    refreshAvailableColumnsButton(nodeAvailableColumnsModel, Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable());
+                    refreshAvailableColumnsButton(nodeAvailableColumnsModel, Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable());
 
                     //Nodes from graph
                     Graph graph;
@@ -562,7 +561,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                     edgeAvailableColumnsModel.syncronizeTableColumns();
                     final Column[] cols = edgeAvailableColumnsModel.getAvailableColumns();
                     
-                    refreshAvailableColumnsButton(edgeAvailableColumnsModel, Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable());
+                    refreshAvailableColumnsButton(edgeAvailableColumnsModel, Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable());
 
                     //Edges from graph
                     Graph graph;
@@ -824,11 +823,11 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         boolean edgesTable;
 
         if (classDisplayed == ClassDisplayed.NODE) {
-            table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+            table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
             edgesTable = false;
             fileName += " [Nodes]";
         } else {
-            table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
+            table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
             edgesTable = true;
             fileName += " [Edges]";
         }
@@ -908,7 +907,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * Creates the buttons that call the AttributeColumnManipulators.
      */
     private void prepareColumnManipulatorsButtons() {
-        AttributeModel attributeModel = Lookup.getDefault().lookup(GraphController.class).getAttributeModel();
+        GraphModel attributeModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         Table table;
         Column[] columns;
         if (classDisplayed == ClassDisplayed.NODE) {
@@ -1482,9 +1481,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         Table table;
         AvailableColumnsModel availableColumnsModel;
         if (classDisplayed == ClassDisplayed.NODE) {
-            table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+            table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
         } else {
-            table = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getEdgeTable();
+            table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
         }
         availableColumnsModel = getTableAvailableColumnsModel(table);
         DialogDescriptor dd = new DialogDescriptor(new AvailableColumnsPanel(table, availableColumnsModel).getValidationPanel(), NbBundle.getMessage(DataTableTopComponent.class, "AvailableColumnsPanel.title"));

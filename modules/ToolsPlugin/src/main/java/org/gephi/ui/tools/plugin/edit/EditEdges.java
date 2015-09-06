@@ -44,7 +44,7 @@ package org.gephi.ui.tools.plugin.edit;
 import java.awt.Color;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;

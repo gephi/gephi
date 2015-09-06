@@ -1,6 +1,7 @@
 package org.gephi.dynamic.utils;
 
-import org.gephi.attribute.time.Interval;
+import org.gephi.graph.api.Interval;
+
 
 /**
  * Represents an Interval with an associated value for it

@@ -50,9 +50,9 @@ import javax.swing.event.ChangeListener;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.VizController;
@@ -246,7 +246,7 @@ public class TextModelImpl {
 
     public void readXML(XMLStreamReader reader, Workspace workspace) throws XMLStreamException {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        AttributeModel attributeModel = graphController != null ? graphController.getAttributeModel(workspace) : null;
+        GraphModel graphModel = graphController != null ? graphController.getGraphModel(workspace) : null;
         List<Column> nodeCols = new ArrayList<Column>();
         List<Column> edgeCols = new ArrayList<Column>();
 
@@ -307,13 +307,13 @@ public class TextModelImpl {
                         edgeColumn = true;
                     } else if ("column".equalsIgnoreCase(name)) {
                         String id = reader.getAttributeValue(null, "id");
-                        if (nodeColumn && attributeModel != null) {
-                            Column col = attributeModel.getNodeTable().getColumn(id);
+                        if (nodeColumn && graphModel != null) {
+                            Column col = graphModel.getNodeTable().getColumn(id);
                             if (col != null) {
                                 nodeCols.add(col);
                             }
-                        } else if (edgeColumn && attributeModel != null) {
-                            Column col = attributeModel.getEdgeTable().getColumn(id);
+                        } else if (edgeColumn && graphModel != null) {
+                            Column col = graphModel.getEdgeTable().getColumn(id);
                             if (col != null) {
                                 edgeCols.add(col);
                             }

@@ -42,14 +42,13 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.statistics.spi;
 
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.time.Interval;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.Interval;
 
 /**
  * Define a dynamic statistics implementation. A Dynamic Statistics uses
- * a sliding window on a dynamc network to compute results.
+ * a sliding window on a dynamic network to compute results.
  * <p>
  * The dynamic statistic execution is a three-steps process:
  * <ol><li>The <code>execute()</code> method is called to init the statistic
@@ -68,9 +67,8 @@ public interface DynamicStatistics extends Statistics {
      * the statistics with the graph and attributes. The graph model holds the
      * graph structure and the attribute model the attribute columns.
      * @param graphModel the graph model
-     * @param attributeModel the attribute model
      */
-    public void execute(GraphModel graphModel, AttributeModel attributeModel);
+    public void execute(GraphModel graphModel);
 
     /**
      * Iteration of the dynamic statistics algorithm on a new interval. The 

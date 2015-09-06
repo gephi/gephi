@@ -42,11 +42,11 @@
 package org.gephi.io.processor.plugin;
 
 import java.awt.Color;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.AttributeUtils;
-import org.gephi.attribute.api.Origin;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Origin;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ContainerUnloader;
@@ -62,10 +62,10 @@ public abstract class AbstractProcessor {
 
     protected Workspace workspace;
     protected ContainerUnloader container;
-    protected AttributeModel attributeModel;
+    protected GraphModel graphModel;
 
     protected void flushColumns() {
-        Table nodeTable = attributeModel.getNodeTable();
+        Table nodeTable = graphModel.getNodeTable();
         for (ColumnDraft col : container.getNodeColumns()) {
             if (!nodeTable.hasColumn(col.getId())) {
                 Class typeClass = col.getTypeClass();
@@ -75,7 +75,7 @@ public abstract class AbstractProcessor {
                 nodeTable.addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, col.getDefaultValue(), true);
             }
         }
-        Table edgeTable = attributeModel.getEdgeTable();
+        Table edgeTable = graphModel.getEdgeTable();
         for (ColumnDraft col : container.getEdgeColumns()) {
             if (!edgeTable.hasColumn(col.getId())) {
                 Class typeClass = col.getTypeClass();

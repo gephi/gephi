@@ -43,7 +43,7 @@ package org.gephi.ranking;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import org.gephi.attribute.api.AttributeModel;
+import org.gephi.graph.api.AttributeModel;
 import org.gephi.graph.api.GraphController;
 import org.gephi.ranking.api.RankingEvent;
 import org.openide.util.Lookup;

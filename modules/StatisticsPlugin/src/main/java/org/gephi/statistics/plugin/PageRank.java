@@ -43,9 +43,8 @@ package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
@@ -121,20 +120,20 @@ public class PageRank implements Statistics, LongTask {
     }
 
     @Override
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel) {
         Graph graph;
         if (isDirected) {
             graph = graphModel.getDirectedGraphVisible();
         } else {
             graph = graphModel.getUndirectedGraphVisible();
         }
-        execute(graph, attributeModel);
+        execute(graph, graphModel);
     }
 
-    public void execute(Graph hgraph, AttributeModel attributeModel) {
+    public void execute(Graph hgraph, GraphModel graphModel) {
         isCanceled = false;
 
-        Column column = initializeAttributeColunms(attributeModel);
+        Column column = initializeAttributeColunms(graphModel);
 
         hgraph.readLock();
 
@@ -147,8 +146,8 @@ public class PageRank implements Statistics, LongTask {
         hgraph.readUnlockAll();
     }
 
-    private Column initializeAttributeColunms(AttributeModel attributeModel) {
-        Table nodeTable = attributeModel.getNodeTable();
+    private Column initializeAttributeColunms(GraphModel graphModel) {
+        Table nodeTable = graphModel.getNodeTable();
         Column pagerankCol = nodeTable.getColumn(PAGERANK);
 
         if (pagerankCol == null) {

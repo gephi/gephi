@@ -45,7 +45,6 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import org.gephi.attribute.api.AttributeModel;
 import org.gephi.graph.api.*;
 import org.gephi.preview.api.*;
 import org.gephi.preview.spi.*;
@@ -123,7 +122,6 @@ public class PreviewControllerImpl implements PreviewController {
     @Override
     public synchronized void refreshPreview(Workspace workspace) {
         GraphModel graphModel = graphController.getGraphModel(workspace);
-        AttributeModel attributeModel = graphController.getAttributeModel(model.getWorkspace());
         PreviewModelImpl previewModel = getModel(workspace);
         previewModel.clear();
 
@@ -169,7 +167,7 @@ public class PreviewControllerImpl implements PreviewController {
             //Only build items of this builder if some renderer needs it:
             if (isItemBuilderNeeded(b, previewModel.getProperties(), renderers)) {
                 try {
-                    Item[] items = b.getItems(graph, attributeModel);
+                    Item[] items = b.getItems(graph);
                     if (items != null) {
                         previewModel.loadItems(b.getType(), items);
                     }

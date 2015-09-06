@@ -41,7 +41,6 @@
  */
 package org.gephi.graph.api;
 
-import org.gephi.attribute.api.AttributeModel;
 import org.gephi.project.api.Workspace;
 
 /**
@@ -55,55 +54,18 @@ import org.gephi.project.api.Workspace;
 public interface GraphController {
 
     /**
-     * Returns the graph model for the current workspace, or
-     * <code>null</code> if project is empty.
+     * Returns the graph model for the current workspace, or <code>null</code>
+     * if project is empty.
      *
      * @return the current graph model
      */
     public GraphModel getGraphModel();
 
     /**
-     * Returns the graph model for the given
-     * <code>workspace</code>.
+     * Returns the graph model for the given <code>workspace</code>.
      *
-     * @param workspace the workspace that graph modl is to be returned
+     * @param workspace the workspace that graph model is to be returned
      * @return the <code>workspace</code>'s graph model
      */
     public GraphModel getGraphModel(Workspace workspace);
-
-    /**
-     * Returns the model for the current
-     * <code>Workspace</code>. May return
-     * <code>null</code> if there currently no
-     * <code>Worksapce</code> active.
-     * <p>
-     * The controller maintains the current project status and is responsible of
-     * maintaining one
-     * <code>AttributeModel</code> instance per
-     * <code>Workspace</code>. Hence, the model can also be accessed by using
-     * the following code:
-     * <pre>
-     * Workspace.getLookup().get(AttributeModel.class);
-     * </pre>
-     *
-     * @return the currently active model
-     */
-    public AttributeModel getAttributeModel();
-
-    /**
-     * Returns the model for the given
-     * <code>Workspace</code>.
-     * <p>
-     * The controller maintains the current project status and is responsible of
-     * maintaining one
-     * <code>AttributeModel</code> instance per
-     * <code>Workspace</code>. Hence, the model can also be accessed by using
-     * the following code:
-     * <pre>
-     * Workspace.getLookup().get(AttributeModel.class);
-     * </pre>
-     *
-     * @return the attribute model for <code>workspace</code>.
-     */
-    public AttributeModel getAttributeModel(Workspace workspace);
 }

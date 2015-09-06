@@ -41,7 +41,6 @@
  */
 package org.gephi.preview.spi;
 
-import org.gephi.attribute.api.AttributeModel;
 import org.gephi.graph.api.Graph;
 import org.gephi.preview.api.Item;
 
@@ -73,15 +72,13 @@ public interface ItemBuilder {
 
     /**
      * Build items from the
-     * <code>graph</code> and
-     * <code>attributeModel</code>.
+     * <code>graph</code>.
      *
      * @param graph the graph to build items from
-     * @param attributeModel the attribute model associated to the graph
      * @return an array of new items, from the same type returned by
      * {@link #getType()}
      */
-    public Item[] getItems(Graph graph, AttributeModel attributeModel);
+    public Item[] getItems(Graph graph);
 
     /**
      * Returns the type of this builder.

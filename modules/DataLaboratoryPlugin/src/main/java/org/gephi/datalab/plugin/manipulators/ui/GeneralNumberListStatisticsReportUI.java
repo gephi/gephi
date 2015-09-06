@@ -43,8 +43,8 @@ package org.gephi.datalab.plugin.manipulators.ui;
 
 import java.math.BigDecimal;
 import javax.swing.JPanel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;

@@ -44,7 +44,7 @@ package org.gephi.datalab.plugin.manipulators.columns.merge.ui;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.plugin.manipulators.columns.merge.GeneralColumnTitleChooser;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;

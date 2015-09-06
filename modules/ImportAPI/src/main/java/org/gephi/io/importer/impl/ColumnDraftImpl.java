@@ -41,7 +41,7 @@
  */
 package org.gephi.io.importer.impl;
 
-import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.io.importer.api.ColumnDraft;
 
 /**

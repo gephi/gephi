@@ -42,7 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.spi.values;
 
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.graph.api.Element;
 

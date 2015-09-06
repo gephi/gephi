@@ -45,7 +45,7 @@ package org.gephi.io.importer.impl;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectOpenHashMap;
 import java.awt.Color;
-import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ElementDraft;
 

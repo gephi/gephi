@@ -44,9 +44,8 @@ package org.gephi.statistics.plugin;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
@@ -103,19 +102,19 @@ public class Hits implements Statistics, LongTask {
     }
 
     @Override
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel) {
         Graph graph = null;
         if (useUndirected) {
             graph = graphModel.getUndirectedGraphVisible();
         } else {
             graph = graphModel.getDirectedGraphVisible();
         }
-        execute(graph, attributeModel);
+        execute(graph, graphModel);
     }
 
-    public void execute(Graph hgraph, AttributeModel attributeModel) {
+    public void execute(Graph hgraph, GraphModel graphModel) {
 
-        initializeAttributeColunms(attributeModel);
+        initializeAttributeColunms(graphModel);
 
         hgraph.readLock();
 
@@ -164,8 +163,8 @@ public class Hits implements Statistics, LongTask {
         }
     }
 
-    private void initializeAttributeColunms(AttributeModel attributeModel) {
-        Table nodeTable = attributeModel.getNodeTable();
+    private void initializeAttributeColunms(GraphModel graphModel) {
+        Table nodeTable = graphModel.getNodeTable();
 
         if (!nodeTable.hasColumn(AUTHORITY)) {
             nodeTable.addColumn(AUTHORITY, "Authority", Float.class, new Float(0));

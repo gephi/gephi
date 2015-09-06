@@ -45,16 +45,15 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
-import org.gephi.attribute.time.Interval;
-import org.gephi.attribute.time.TimestampDoubleSet;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.plugin.ClusteringCoefficient;
 import org.gephi.statistics.spi.DynamicStatistics;
@@ -99,17 +98,17 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
     }
 
     @Override
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel) {
         this.graphModel = graphModel;
         this.isDirected = graphModel.isDirected();
         this.averages = new HashMap<Double, Double>();
 
         //Attributes cols
         if (!averageOnly) {
-            Table nodeTable = attributeModel.getNodeTable();
+            Table nodeTable = graphModel.getNodeTable();
             dynamicCoefficientColumn = nodeTable.getColumn(DYNAMIC_CLUSTERING_COEFFICIENT);
             if (dynamicCoefficientColumn == null) {
-                dynamicCoefficientColumn = nodeTable.addColumn(DYNAMIC_CLUSTERING_COEFFICIENT, NbBundle.getMessage(DynamicClusteringCoefficient.class, "DynamicClusteringCoefficient.nodecolumn.ClusteringCoefficient"), TimestampDoubleSet.class, null);
+                dynamicCoefficientColumn = nodeTable.addColumn(DYNAMIC_CLUSTERING_COEFFICIENT, NbBundle.getMessage(DynamicClusteringCoefficient.class, "DynamicClusteringCoefficient.nodecolumn.ClusteringCoefficient"), TimestampDoubleMap.class, null);
             }
         }
     }

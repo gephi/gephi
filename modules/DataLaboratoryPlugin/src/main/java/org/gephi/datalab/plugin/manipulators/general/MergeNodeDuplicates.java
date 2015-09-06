@@ -43,8 +43,8 @@ package org.gephi.datalab.plugin.manipulators.general;
 
 import java.util.List;
 import javax.swing.Icon;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.plugin.manipulators.general.ui.MergeNodeDuplicatesUI;
 import org.gephi.datalab.spi.ManipulatorUI;
@@ -103,7 +103,7 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
 
     @Override
     public ManipulatorUI getUI() {
-        Table nodeTable = Lookup.getDefault().lookup(GraphController.class).getAttributeModel().getNodeTable();
+        Table nodeTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
         int cols = nodeTable.countColumns();
         
         columns = new Column[cols];

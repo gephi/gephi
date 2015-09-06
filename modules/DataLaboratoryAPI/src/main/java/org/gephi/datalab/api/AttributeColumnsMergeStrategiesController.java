@@ -42,8 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.api;
 
 import java.text.SimpleDateFormat;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 
 /**
  * This interface defines part of the Data Laboratory API basic actions.

@@ -87,8 +87,8 @@ public class DynamicGraph implements Generator {
         }
 
         if (wiringProbability > 0) {
-//            AttributeColumn oldWeight = container.getAttributeModel().getEdgeTable().getColumn(PropertiesColumn.EDGE_WEIGHT.getIndex());
-//            AttributeColumn weightCol = container.getAttributeModel().getEdgeTable().replaceColumn(oldWeight, PropertiesColumn.EDGE_WEIGHT.getId(), PropertiesColumn.EDGE_WEIGHT.getTitle(), AttributeType.DYNAMIC_FLOAT, AttributeOrigin.PROPERTY, null);
+//            AttributeColumn oldWeight = container.getGraphModel().getEdgeTable().getColumn(PropertiesColumn.EDGE_WEIGHT.getIndex());
+//            AttributeColumn weightCol = container.getGraphModel().getEdgeTable().replaceColumn(oldWeight, PropertiesColumn.EDGE_WEIGHT.getId(), PropertiesColumn.EDGE_WEIGHT.getTitle(), AttributeType.DYNAMIC_FLOAT, AttributeOrigin.PROPERTY, null);
 
             for (int i = 0; i < numberOfNodes - 1; i++) {
                 NodeDraft node1 = nodeArray[i];

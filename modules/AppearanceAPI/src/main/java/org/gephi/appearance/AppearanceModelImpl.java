@@ -57,10 +57,9 @@ import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.SimpleTransformer;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerUI;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.AttributeUtils;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Index;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Index;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
@@ -73,7 +72,6 @@ import org.openide.util.Lookup;
 public class AppearanceModelImpl implements AppearanceModel {
 
     private final Workspace workspace;
-    private final AttributeModel attributeModel;
     private final GraphModel graphModel;
     private final Interpolator defaultInterpolator;
     private boolean localScale = false;
@@ -85,7 +83,6 @@ public class AppearanceModelImpl implements AppearanceModel {
     public AppearanceModelImpl(Workspace workspace) {
         this.workspace = workspace;
         this.graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        this.attributeModel = Lookup.getDefault().lookup(GraphController.class).getAttributeModel(workspace);
         this.defaultInterpolator = Interpolator.LINEAR;
         this.functionLock = new Object();
 
@@ -171,7 +168,7 @@ public class AppearanceModelImpl implements AppearanceModel {
             for (Transformer transformer : Lookup.getDefault().lookupAll(Transformer.class)) {
                 if (transformer instanceof RankingTransformer || transformer instanceof PartitionTransformer) {
                     if (transformer.isNode()) {
-                        for (Column col : attributeModel.getNodeTable()) {
+                        for (Column col : graphModel.getNodeTable()) {
                             if (!col.isProperty()) {
                                 Index index = localScale ? graphModel.getNodeIndex(graphModel.getVisibleView()) : graphModel.getNodeIndex();
                                 if (transformer instanceof RankingTransformer && isRanking(col) && !attributeNodeFunctions.contains(col)) {
@@ -184,7 +181,7 @@ public class AppearanceModelImpl implements AppearanceModel {
                         }
                     }
                     if (transformer.isEdge()) {
-                        for (Column col : attributeModel.getEdgeTable()) {
+                        for (Column col : graphModel.getEdgeTable()) {
                             if (!col.isProperty() && col.isNumber()) {
                                 Index index = localScale ? graphModel.getEdgeIndex(graphModel.getVisibleView()) : graphModel.getEdgeIndex();
                                 if (transformer instanceof RankingTransformer && isRanking(col) && !attributeEdgeFunctions.contains(col)) {

@@ -43,8 +43,8 @@ package org.gephi.appearance;
 
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Index;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Index;
 
 /**
  *

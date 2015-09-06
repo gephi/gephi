@@ -43,8 +43,6 @@ package org.gephi.preview.plugin.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
 import org.gephi.graph.api.*;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.EdgeLabelItem;
@@ -61,7 +59,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class EdgeLabelBuilder implements ItemBuilder {
 
     @Override
-    public Item[] getItems(Graph graph, AttributeModel attributeModel) {
+    public Item[] getItems(Graph graph) {
 
         boolean useTextData = false;
         for (Edge e : graph.getEdges()) {

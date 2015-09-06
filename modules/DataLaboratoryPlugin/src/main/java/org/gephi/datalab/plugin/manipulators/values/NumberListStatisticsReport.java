@@ -42,8 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.values;
 
 import javax.swing.Icon;
-import org.gephi.attribute.api.AttributeUtils;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralNumberListStatisticsReportUI;
 import org.gephi.datalab.spi.ManipulatorUI;

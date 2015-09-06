@@ -46,8 +46,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.gephi.graph.store.GraphModelImpl;
-import org.gephi.graph.store.Serialization;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.impl.GraphModelImpl;
+import org.gephi.graph.impl.Serialization;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspaceBytesPersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
@@ -61,10 +62,10 @@ public class GraphPersistenceProvider implements WorkspaceBytesPersistenceProvid
 
     @Override
     public void writeBytes(DataOutputStream stream, Workspace workspace) {
-        GraphModelImpl model = workspace.getLookup().lookup(GraphModelImpl.class);
+        GraphModel model = workspace.getLookup().lookup(GraphModel.class);
         if (model != null) {
             try {
-                Serialization serialization = new Serialization(model.getStore());
+                Serialization serialization = new Serialization(((GraphModelImpl)model).getStore());
                 serialization.serializeGraphStore(stream);
             } catch (IOException ex) {
                 Logger.getLogger("").log(Level.SEVERE, "", ex.getCause());
@@ -74,10 +75,10 @@ public class GraphPersistenceProvider implements WorkspaceBytesPersistenceProvid
 
     @Override
     public void readBytes(DataInputStream stream, Workspace workspace) {
-        GraphModelImpl model = workspace.getLookup().lookup(GraphModelImpl.class);
+        GraphModel model = workspace.getLookup().lookup(GraphModel.class);
         if (model != null) {
             try {
-                Serialization serialization = new Serialization(model.getStore());
+                Serialization serialization = new Serialization(((GraphModelImpl)model).getStore());
                 serialization.deserializeGraphStore(stream);
             } catch (Exception ex) {
                 Logger.getLogger("").log(Level.SEVERE, "", ex.getCause());

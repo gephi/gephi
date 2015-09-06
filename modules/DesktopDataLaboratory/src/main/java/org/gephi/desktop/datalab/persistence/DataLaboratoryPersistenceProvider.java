@@ -45,11 +45,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
-import org.gephi.attribute.api.AttributeModel;
-import org.gephi.attribute.api.Column;
-import org.gephi.attribute.api.Table;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.desktop.datalab.AvailableColumnsModel;
 import org.gephi.desktop.datalab.DataTablesModel;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
@@ -111,9 +111,9 @@ public class DataLaboratoryPersistenceProvider implements WorkspacePersistencePr
     }
 
     private void readDataTablesModel(XMLStreamReader reader, Workspace workspace) throws XMLStreamException {
-        AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-        Table nodesTable = attributeModel.getNodeTable();
-        Table edgesTable = attributeModel.getEdgeTable();
+        GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
+        Table nodesTable = graphModel.getNodeTable();
+        Table edgesTable = graphModel.getEdgeTable();
         DataTablesModel dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
         if (dataTablesModel == null) {
             workspace.add(dataTablesModel = new DataTablesModel(workspace));

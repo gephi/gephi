@@ -43,7 +43,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.statistics.spi;
 
 
-import org.gephi.attribute.api.AttributeModel;
 import org.gephi.graph.api.GraphModel;
 
 /**
@@ -60,10 +59,9 @@ public interface Statistics {
      * <p>
      * It is preferable to work on <b>visible</b> graphs, to be synchronized with the
      * visualization.
-     * @param graphModel The graph topology
-     * @param attributeModel The elements attributes, and where to write table results
+     * @param graphModel The graph model
      */
-    public void execute(GraphModel graphModel, AttributeModel attributeModel);
+    public void execute(GraphModel graphModel);
 
     /**
      * Returns an HTML string that displays the statistics result. Can contains

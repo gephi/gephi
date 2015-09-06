@@ -42,8 +42,8 @@
 package org.gephi.desktop.datalab.tables.columns;
 
 import java.util.Arrays;
-import org.gephi.attribute.api.AttributeUtils;
-import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.graph.api.Element;
 
