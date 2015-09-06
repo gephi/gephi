@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.ColumnIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
@@ -321,6 +322,11 @@ public class QuadTree implements Node {
         throw new UnsupportedOperationException("Not supported.");
     }
 
+    @Override
+    public ColumnIterable getAttributeColumns() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
     @Override
     public Object removeAttribute(String key) {
         throw new UnsupportedOperationException("Not supported.");
