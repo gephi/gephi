@@ -6,8 +6,8 @@
     </formats>
     <fileSets>
         <fileSet>
-            <directory>.</directory>
-            <outputDirectory>/</outputDirectory>
+            <directory>${basedir}</directory>
+            <outputDirectory></outputDirectory>
             <useDefaultExcludes>true</useDefaultExcludes>
             <excludes>
                 <exclude>**/target/**</exclude>
