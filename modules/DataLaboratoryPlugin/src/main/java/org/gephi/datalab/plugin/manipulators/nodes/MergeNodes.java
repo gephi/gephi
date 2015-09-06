@@ -83,7 +83,7 @@ public class MergeNodes extends BasicNodesManipulator {
         selectedNode = clickedNode != null ? clickedNode : nodes[0];
         
         
-        columns = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable().getColumns();
+        columns = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable().toArray();
         mergeStrategies = new AttributeRowsMergeStrategy[columns.length];
         deleteMergedNodes = NbPreferences.forModule(MergeNodes.class).getBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, true);
     }

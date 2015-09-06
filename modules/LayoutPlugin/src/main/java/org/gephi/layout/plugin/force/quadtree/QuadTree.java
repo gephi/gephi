@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.ColumnIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
@@ -58,13 +59,13 @@ import org.gephi.graph.spi.LayoutData;
  */
 public class QuadTree implements Node {
 
-    private float posX;
-    private float posY;
-    private float size;
+    private final float posX;
+    private final float posY;
+    private final float size;
     private float centerMassX;  // X and Y position of the center of mass
     private float centerMassY;
     private int mass;  // Mass of this tree (the number of nodes it contains)
-    private int maxLevel;
+    private final int maxLevel;
     private AddBehaviour add;
     private List<QuadTree> children;
     private boolean isLeaf;
@@ -398,6 +399,11 @@ public class QuadTree implements Node {
 
     @Override
     public boolean hasTimestamp(double timestamp) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public ColumnIterable getAttributeColumns() {
         throw new UnsupportedOperationException("Not supported.");
     }
 
