@@ -258,10 +258,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization</artifactId>
         </dependency>
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>tools-plugin</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>welcome-screen</artifactId>

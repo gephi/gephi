@@ -125,9 +125,7 @@ public class EditEdges extends AbstractNode {
 
             Edge row =edges[0];
             AttributeValueWrapper wrap;
-            for (String key : row.getAttributeKeys()) {
-                Column column = null;//TODO somehow get this from graphstore API
-                
+            for (Column column : row.getAttributeColumns()) {
                 if (multipleEdges) {
                     wrap = new MultipleRowsAttributeValueWrapper(edges, column,currentTimeFormat);
                 } else {

@@ -1175,6 +1175,7 @@
         <module>modules/StatisticsPlugin</module>
         <module>modules/StatisticsPluginUI</module>
         <module>modules/ToolsAPI</module>
+		<module>modules/ToolsPlugin</module>
         <module>modules/UIComponents</module>
         <module>modules/UIUtils</module>
         <module>modules/Utils</module>

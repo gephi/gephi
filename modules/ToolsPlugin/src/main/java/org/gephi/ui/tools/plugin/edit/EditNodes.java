@@ -125,9 +125,7 @@ public class EditNodes extends AbstractNode {
 
             Node row =  nodes[0];
             AttributeValueWrapper wrap;
-            for (String key : row.getAttributeKeys()) {
-                Column column = null;//TODO somehow get this from graphstore API
-                
+            for (Column column : row.getAttributeColumns()) {
                 if (multipleNodes) {
                     wrap = new MultipleRowsAttributeValueWrapper(nodes, column,currentTimeFormat);
                 } else {

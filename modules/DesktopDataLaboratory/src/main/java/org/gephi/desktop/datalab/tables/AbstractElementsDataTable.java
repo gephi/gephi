@@ -56,8 +56,6 @@ import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.graph.api.Element;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.table.TableColumnExt;
-import org.jdesktop.swingx.table.TableColumnModelExt;
 import org.openide.util.Lookup;
 
 /**
