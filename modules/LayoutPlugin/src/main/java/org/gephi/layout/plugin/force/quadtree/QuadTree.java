@@ -323,6 +323,11 @@ public class QuadTree implements Node {
     }
 
     @Override
+    public ColumnIterable getAttributeColumns() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    @Override
     public Object removeAttribute(String key) {
         throw new UnsupportedOperationException("Not supported.");
     }
