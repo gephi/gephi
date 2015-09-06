@@ -1,0 +1,10 @@
+language: java
+jdk:
+  - oraclejdk8
+branches:
+  only:
+    - master
+
+after_success:
+  - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server></servers></settings>" > ~/settings.xml
+  - mvn clean install -P deployment,create-dmg --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true
