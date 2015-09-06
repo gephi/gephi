@@ -407,11 +407,6 @@ public class QuadTree implements Node {
         throw new UnsupportedOperationException("Not supported.");
     }
 
-    @Override
-    public ColumnIterable getAttributeColumns() {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
     class FirstAdd implements AddBehaviour {
 
         @Override
