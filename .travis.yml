@@ -32,4 +32,4 @@ install:
   - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server><server><id>netbeans</id><configuration><httpConfiguration><get><readTimeout>300000</readTimeout><connectionTimeout>300000</connectionTimeout></get></httpConfiguration></configuration></server></servers></settings>" > ~/settings.xml
 
 script:
-  - mvn --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true clean install -P deployment,create-dmg,release-windows --settings ~/settings.xml
+  - travis_retry mvn --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true clean install -P deployment,create-dmg,release-windows
