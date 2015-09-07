@@ -12,8 +12,24 @@ before_install:
   # Install genisoimage (dmg creation tool)
   - sudo apt-get install genisoimage
 
+  # Prepare environemnt for Inno Setup
+  - sudo add-apt-repository --yes ppa:arx/release
+  - sudo apt-get update -d
+  - sudo apt-get install -y -q innoextract wine
+  - wine --version
+  - innoextract --version
+
 install:
+  # Install InnoSetup
+  - printf "#!/bin/bash\nrm -rf /tmp/inno\nmkdir /tmp/inno\ncd /tmp/inno\nwget -O is.exe http://files.jrsoftware.org/is/5/isetup-5.5.5.exe\ninnoextract is.exe\nmkdir -p ~/\".wine/drive_c/inno\"\ncp -a app/* ~/\".wine/drive_c/inno\"" > innoinstall.sh
+  - chmod +x ./innoinstall.sh
+  - ./innoinstall.sh
+  - printf "#!/bin/sh\nunset DISPLAY\nscriptname=$1\n[ -f \"$scriptname\" ] && scriptname=$(winepath -w \"$scriptname\")\nwine \"C:\inno\ISCC.exe\" \"$scriptname\" \"/q\"" > iscc
+  - chmod +x ./iscc
+  - sudo cp ./iscc /usr/local/bin/iscc
+
+  # Setup Maven's settings.xml
   - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server></servers></settings>" > ~/settings.xml
 
 script:
-  - mvn clean install -P deployment,create-dmg --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true
+  - mvn clean install -P deployment,create-dmg,release-windows --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true
