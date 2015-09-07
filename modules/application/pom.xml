@@ -646,7 +646,7 @@
                         <executions>
                             <execution>
                                 <id>create-app-bundle</id>
-                                <phase>pre-integration-test</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
@@ -716,15 +716,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                </plugins>
-            </build>
-        </profile>
-        
-        <!-- Profile used along with deployment to attach the dmg archive -->
-        <profile>
-            <id>deploy-dmg</id>
-            <build>
-                <plugins>
+                    
                     <!-- Attach the final DMG for deployment -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -732,7 +724,7 @@
                         <executions>
                             <execution>
                                 <id>attach-dmg</id>
-                                <phase>pre-integration-test</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>attach-artifact</goal>
                                 </goals>
@@ -746,30 +738,6 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>   
-                </plugins>
-            </build>
-        </profile>
-        
-        <!-- Profile activated for windows/macos release only. Should be called alone so it only creates the windows installer/compressed dmg -->
-        <profile>
-            <id>release-extra</id>
-            <build>
-                <plugins>
-                    <!-- Avoid updatesite.xml.gz attach -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>nbm-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>default-standalone-zip</id>
-                                <phase>none</phase>       
-                            </execution>
-                            <execution>
-                                <id>autoupdate</id>
-                                <phase>none</phase>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
@@ -777,7 +745,7 @@
         
         <!-- Profile activated for windows release in addition of deployement. Create the installer. -->
         <profile>
-            <id>release-windows</id>
+            <id>create-exe</id>
             <build>
                 <plugins>
                     
@@ -848,7 +816,7 @@
                             </execution>
                             <execution>
                                 <id>create-windows-installer</id>
-                                <phase>pre-integration-test</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
@@ -869,57 +837,24 @@
                         </executions>
                     </plugin>
                     
-                    <!-- Deploy exe artifact -->
+                    <!-- Attach the final DMG for deployment -->
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <phase>deploy</phase>
+                                <id>attach-exe</id>
+                                <phase>package</phase>
                                 <goals>
-                                    <goal>deploy-file</goal>
+                                    <goal>attach-artifact</goal>
                                 </goals>
                                 <configuration>
-                                    <packaging>exe</packaging>
-                                    <generatePom>false</generatePom>
-                                    <repositoryId>${gephi.release.repository.id}</repositoryId>
-                                    <url>${gephi.release.repository.url}</url>
-                                    <artifactId>${project.artifactId}</artifactId>
-                                    <groupId>${project.groupId}</groupId>
-                                    <version>${project.version}</version>
-                                    <file>${project.build.directory}/${project.artifactId}-${project.version}.setup.exe</file>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        
-        <!-- Profile activated for macos release. Need to be called with profile deploy-dmg. -->
-        <profile>
-            <id>release-macos</id>
-            <build>
-                <plugins>
-                    <!-- Deploy dmg artifact -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>deploy-file</goal>
-                                </goals>
-                                <configuration>
-                                    <packaging>dmg</packaging>
-                                    <generatePom>false</generatePom>
-                                    <repositoryId>${gephi.release.repository.id}</repositoryId>
-                                    <url>${gephi.release.repository.url}</url>
-                                    <artifactId>${project.artifactId}</artifactId>
-                                    <groupId>${project.groupId}</groupId>
-                                    <version>${project.version}</version>
-                                    <file>${project.build.directory}/${project.artifactId}-${project.version}.dmg</file>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${project.build.directory}/${project.artifactId}-${project.version}.setup.exe</file>
+                                            <type>exe</type>
+                                        </artifact>
+                                    </artifacts>
                                 </configuration>
                             </execution>
                         </executions>
