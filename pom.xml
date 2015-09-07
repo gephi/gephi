@@ -189,7 +189,7 @@
     <!-- Locations of the artifacts published -->
     <distributionManagement>
         <snapshotRepository>
-            <id>${ossrh.repository.id}</id>
+            <id>${gephi.ossrh.repository.id}</id>
             <url>${gephi.ossrh.repository.url}</url>
         </snapshotRepository>
     </distributionManagement>
