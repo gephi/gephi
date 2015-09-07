@@ -1,5 +1,7 @@
 # Gephi - The Open Graph Viz Platform
 
+[![Build Status](https://travis-ci.org/gephi/gephi.svg?branch=master)](https://travis-ci.org/gephi/gephi)
+
 [Gephi](http://gephi.org) is an award-winning open-source platform for visualizing and manipulating large graphs. It runs on Windows, Mac OS X and Linux. Localization is available in French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese and Czech.
 
 - **Fast** Powered by a built-in OpenGL engine, Gephi is able to push the envelope with very large networks. Visualize networks up to a million elements. All actions (e.g. layout, filter, drag) run in real-time.
