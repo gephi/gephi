@@ -29,7 +29,7 @@ install:
   - sudo cp ./iscc /usr/local/bin/iscc
 
   # Setup Maven's settings.xml
-  - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server><server><id>netbeans</id><configuration><httpConfiguration><all><connectionTimeout>300000</connectionTimeout></all></httpConfiguration></configuration></server></servers></settings>" > ~/settings.xml
+  - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server></servers></settings>" > ~/settings.xml
 
 script:
-  - mvn clean install -e -P deployment,create-dmg,release-windows --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true
+  - mvn clean install -Dmaven.wagon.httpconnectionManager.maxPerRoute=10 -e -P deployment,create-dmg,release-windows --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true
