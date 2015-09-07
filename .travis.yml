@@ -5,6 +5,15 @@ branches:
   only:
     - master
 
-after_success:
+before_install:
+  # Update APT
+  - sudo apt-get update
+ 
+  # Install genisoimage (dmg creation tool)
+  - sudo apt-get install genisoimage
+
+install:
   - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server></servers></settings>" > ~/settings.xml
+
+script:
   - mvn clean install -P deployment,create-dmg --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true

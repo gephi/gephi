@@ -694,7 +694,7 @@
                                             <arg value="${project.artifactId}-${project.version}.dmg"/>
                                         </exec>
 
-                                        <exec dir="${project.build.directory}" os="Linux" executable="mkisofs">
+                                        <exec dir="${project.build.directory}" os="Linux" executable="genisoimage">
                                             <arg value="-V"/> 
                                             <arg value="${gephi.appbundle.name}"/>
                                             <arg value="-U"/>
