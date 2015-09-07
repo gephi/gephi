@@ -47,6 +47,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -70,8 +71,8 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     private Character separator;
     private File file;
     private ImportCSVUIWizardAction.Mode mode;
-    private ArrayList<JCheckBox> columnsCheckBoxes = new ArrayList<JCheckBox>();
-    private ArrayList<JComboBox> columnsComboBoxes = new ArrayList<JComboBox>();
+    private final ArrayList<JCheckBox> columnsCheckBoxes = new ArrayList<JCheckBox>();
+    private final ArrayList<JComboBox> columnsComboBoxes = new ArrayList<JComboBox>();
     private Table table;
     private Charset charset;
     //Nodes table settings:
@@ -231,7 +232,8 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
         ArrayList<Class> types = new ArrayList<Class>();
         for (int i = 0; i < columnsCheckBoxes.size(); i++) {
             if (columnsCheckBoxes.get(i).isSelected()) {
-                types.add((Class) columnsComboBoxes.get(i).getSelectedItem());
+                SupportedColumnTypeWrapper selected = (SupportedColumnTypeWrapper)columnsComboBoxes.get(i).getSelectedItem();
+                types.add(selected.getType());
             }
         }
         return types.toArray(new Class[0]);

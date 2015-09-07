@@ -444,13 +444,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     
     @Override
     public boolean isTableColumn(Table table, Column column){
-        for (Column c : table) {
-            if(c == column){
-                return true;
-            }
-        }
-        
-        return false;
+        return column.getTable() == table;
     }
     
     @Override

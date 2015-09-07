@@ -52,7 +52,7 @@ import org.gephi.graph.api.AttributeUtils;
  * @author Eduardo Ramos
  */
 public class SupportedColumnTypeWrapper implements Comparable<SupportedColumnTypeWrapper> {
-    private final Class type;
+    private final Class<?> type;
 
     public SupportedColumnTypeWrapper(Class type) {
         this.type = type;
@@ -65,7 +65,7 @@ public class SupportedColumnTypeWrapper implements Comparable<SupportedColumnTyp
         return name;
     }
 
-    public Class getType() {
+    public Class<?> getType() {
         return type;
     }
 
@@ -131,7 +131,7 @@ public class SupportedColumnTypeWrapper implements Comparable<SupportedColumnTyp
     public static List<SupportedColumnTypeWrapper> buildOrderedSupportedTypesList(){
          List<SupportedColumnTypeWrapper> supportedTypesWrappers = new ArrayList<SupportedColumnTypeWrapper>();
         
-        for (Class type : AttributeUtils.getSupportedTypes()) {
+        for (Class<?> type : AttributeUtils.getSupportedTypes()) {
             if(AttributeUtils.isStandardizedType(type)){
                 supportedTypesWrappers.add(new SupportedColumnTypeWrapper(type));
             }
