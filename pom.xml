@@ -982,6 +982,14 @@
         <!-- Profile for nighly builds and releases -->
         <profile>
             <id>deployment</id>
+            
+            <!-- Override compile properties to be less verbose -->
+            <properties>
+                <gephi.javac.showDeprecation>false</gephi.javac.showDeprecation>
+                <gephi.javac.showWarnings>false</gephi.javac.showWarnings>
+                <gephi.javac.xlint>-Xlint:none</gephi.javac.xlint>
+            </properties>
+            
             <build>
                 <plugins>
                     <!-- Javadoc settings -->
@@ -992,7 +1000,8 @@
                             <show>private</show>
                             <nohelp>true</nohelp>
                             <detectLinks>true</detectLinks>
-                            <detectOfflineLinks>true</detectOfflineLinks>      
+                            <detectOfflineLinks>true</detectOfflineLinks>   
+                            <quiet>true</quiet>   
                         </configuration>
                         <executions>
                             <execution> 
