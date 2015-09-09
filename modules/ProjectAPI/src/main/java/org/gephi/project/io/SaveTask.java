@@ -151,17 +151,14 @@ public class SaveTask implements LongTask, Runnable {
 
             //Rename file
             if (!cancel && writeFile.exists()) {
-                FileObject fileObject = FileUtil.toFileObject(file);
-                String name = fileObject.getName();
-                String ext = fileObject.getExt();
-
                 //Delete original file
-                fileObject.delete();
+                if (file.exists()) {
+                    file.delete();
+                }
 
-                //Rename
                 FileObject tempFileObject = FileUtil.toFileObject(writeFile);
                 FileLock lock = tempFileObject.lock();
-                tempFileObject.rename(lock, name, ext);
+                tempFileObject.rename(lock, getFileNameWithoutExt(file), getFileExtension(file));
                 lock.releaseLock();
             }
 
@@ -237,7 +234,22 @@ public class SaveTask implements LongTask, Runnable {
 
             //Close Project file
             zipOut.closeEntry();
+    private static String getFileExtension(File file) {
+        String name = file.getName();
+        try {
+            return name.substring(name.lastIndexOf(".") + 1);
+        } catch (Exception e) {
+            return "";
         }
+    }
+
+    private static String getFileNameWithoutExt(File file) {
+        String fileName = file.getName();
+        int pos = fileName.lastIndexOf(".");
+        if (pos > 0) {
+            fileName = fileName.substring(0, pos);
+        }
+        return fileName;
     }
 
     @Override
