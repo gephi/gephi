@@ -41,28 +41,36 @@
  */
 package org.gephi.project.spi;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
 
 /**
- * Binary Workspace persistence provider.
+ * XML Workspace persistence provider.
  */
-public interface WorkspaceBytesPersistenceProvider extends WorkspacePersistenceProvider {
+public interface WorkspaceXMLPersistenceProvider extends WorkspacePersistenceProvider {
 
     /**
      * This is automatically called when saving a project file.
+     * <p>
+     * Your implementation must enclose all your data xml in a tag with the name
+     * provided in your <code>getIdentifier</code> method.
      *
-     * @param stream DataOutputStream stream to write to
-     * @param workspace current workspace being serialized
+     * @param writer XMLStreamWriter for xml serialization of this persistence
+     * provider data
+     * @param workspace Current workspace being serialized
      */
-    public void writeBytes(DataOutputStream stream, Workspace workspace);
+    public void writeXML(XMLStreamWriter writer, Workspace workspace);
 
     /**
-     * This is automatically called when loading a project file.
+     * This is automatically called when a start element with the tag name
+     * provided in your <code>getIdentifier</code> method.
+     * <p>
+     * Your implementation must detect the tag end element to stop reading.
      *
-     * @param stream DataInputStream stream to read from
-     * @param workspace current workspace being deserialized
+     * @param reader XMLStreamReader for deserialization of this persistence
+     * provider data previously serialized
+     * @param workspace Current workspace being deserialized
      */
-    public void readBytes(DataInputStream stream, Workspace workspace);
+    public void readXML(XMLStreamReader reader, Workspace workspace);
 }

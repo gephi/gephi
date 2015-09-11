@@ -256,8 +256,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         enableTableControls();
 
         graphModel = gc.getGraphModel(workspace);
-        nodesTableObserver = gc.getGraphModel(workspace).getNodeTable().createTableObserver();
-        edgesTableObserver = gc.getGraphModel(workspace).getEdgeTable().createTableObserver();
+        nodesTableObserver = gc.getGraphModel(workspace).getNodeTable().createTableObserver(false);
+        edgesTableObserver = gc.getGraphModel(workspace).getEdgeTable().createTableObserver(false);
         graphObserver = graphModel.createGraphObserver(graphModel.getGraph(), false);
 
         refreshAllOnce();

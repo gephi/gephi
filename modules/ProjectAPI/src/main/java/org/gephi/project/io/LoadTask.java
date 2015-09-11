@@ -45,9 +45,10 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.xml.stream.Location;
@@ -62,9 +63,13 @@ import org.gephi.project.impl.ProjectInformationImpl;
 import org.gephi.project.impl.ProjectsImpl;
 import org.gephi.project.impl.WorkspaceProviderImpl;
 import org.gephi.project.spi.WorkspaceBytesPersistenceProvider;
+import org.gephi.project.spi.WorkspacePersistenceProvider;
+import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.gephi.workspace.impl.WorkspaceImpl;
+import org.gephi.workspace.impl.WorkspaceInformationImpl;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -89,78 +94,70 @@ public class LoadTask implements LongTask, Runnable {
         Progress.setDisplayName(progressTicket, NbBundle.getMessage(LoadTask.class, "LoadTask.name"));
 
         try {
-            ProjectImpl project = null;
             ZipFile zip = null;
             try {
                 zip = new ZipFile(file);
 
-                //Reader
-                gephiReader = new GephiReader();
+                ProjectImpl project = readProject(zip);
 
-                //Project
-                ZipEntry entry = zip.getEntry("Project_xml");
-                if (entry != null) {
-                    InputStream is = null;
-                    try {
-                        is = zip.getInputStream(entry);
-                        project = readProject(is);
-                    } finally {
-                        if (is != null) {
-                            is.close();
+                if (project != null) {
+                    // Enumerate workspaces
+                    List<String> workspaceEntries = new ArrayList<String>();
+                    for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements();) {
+                        ZipEntry entry = e.nextElement();
+                        if (entry.getName().matches("Workspace_[0-9]*_xml")) {
+                            workspaceEntries.add(entry.getName());
                         }
                     }
-                }
 
-                //Workspace Xml
-                if (project != null) {
-                    for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements();) {
-                        entry = e.nextElement();
-                        InputStream is = null;
-                        String name = entry.getName();
-                        if (name.matches("Workspace_[0-9]*_xml")) {
-                            try {
-                                is = zip.getInputStream(entry);
-                                readWorkspace(is, project);
-                            } finally {
-                                if (is != null) {
-                                    is.close();
+                    // Get providers
+                    Collection<WorkspacePersistenceProvider> providers = PersistenceProviderUtils.getPersistenceProviders();
+
+                    //Setup progress
+                    Progress.switchToDeterminate(progressTicket, (1 + providers.size()) * workspaceEntries.size());
+
+                    // Read workspaces
+                    for (String workspaceEntry : workspaceEntries) {
+                        WorkspaceImpl workspace = readWorkspace(project, workspaceEntry, zip);
+
+                        Progress.progress(progressTicket);
+
+                        if (workspace != null) {
+                            for (WorkspacePersistenceProvider provider : providers) {
+                                if (provider instanceof WorkspaceXMLPersistenceProvider) {
+                                    readWorkspaceChildrenXML((WorkspaceXMLPersistenceProvider) provider, workspace, zip);
+                                } else if (provider instanceof WorkspaceBytesPersistenceProvider) {
+                                    readWorkspaceChildrenBytes((WorkspaceBytesPersistenceProvider) provider, workspace, zip);
+                                }
+                                Progress.progress(progressTicket);
+                                if (cancel) {
+                                    break;
                                 }
                             }
                         }
-                    }
-                }
-
-                //Other Workspace data
-                if (project != null) {
-                    for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements();) {
-                        entry = e.nextElement();
-                        InputStream is = null;
-                        String name = entry.getName();
-                        if (name.matches("Workspace_[0-9]*_.*_bytes")) {
-                            try {
-                                is = zip.getInputStream(entry);
-                                Matcher matcher = Pattern.compile("Workspace_([0-9]*)_(.*)_bytes").matcher(name);
-                                matcher.find();
-                                String workspaceId = matcher.group(1);
-                                String providerId = matcher.group(2);
-                                WorkspaceProviderImpl workspaceProvider = project.getLookup().lookup(WorkspaceProviderImpl.class);
-                                Workspace workspace = workspaceProvider.getWorkspace(Integer.parseInt(workspaceId));
-                                if (workspace != null) {
-                                    readWorkspaceBytes(is, workspace, providerId);
-                                }
-                            } finally {
-                                if (is != null) {
-                                    is.close();
-                                }
-                            }
+                        if (cancel) {
+                            break;
                         }
                     }
                 }
+                Progress.switchToIndeterminate(progressTicket);
 
                 //Add project
                 ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-                if (project != null) {
+                if (project != null && !cancel) {
                     if (!cancel) {
+
+                        //Set current workspace
+                        WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
+                        for (Workspace workspace : workspaces.getWorkspaces()) {
+                            WorkspaceInformationImpl info = workspace.getLookup().lookup(WorkspaceInformationImpl.class);
+                            if (info.isOpen()) {
+                                workspaces.setCurrentWorkspace(workspace);
+                                break;
+                            }
+                        }
+
+                        // Open project
                         projectController.openProject(project);
                     }
                 }
@@ -178,84 +175,161 @@ public class LoadTask implements LongTask, Runnable {
         Progress.finish(progressTicket);
     }
 
-    private ProjectImpl readProject(InputStream inputStream) throws Exception {
-        InputStreamReader isReader = null;
-        Xml10FilterReader filterReader = null;
-        XMLStreamReader reader = null;
-        try {
-            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
-                inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
-            }
-            inputFactory.setXMLReporter(new XMLReporter() {
-                @Override
-                public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
-                    System.out.println("Error:" + errorType + ", message : " + message);
-                }
-            });
-            isReader = new InputStreamReader(inputStream, "UTF-8");
-            filterReader = new Xml10FilterReader(isReader);
-            reader = inputFactory.createXMLStreamReader(filterReader);
+    private ProjectImpl readProject(ZipFile zipFile) throws Exception {
+        ZipEntry entry = zipFile.getEntry("Project_xml");
+        if (entry != null) {
+            InputStream is = null;
+            try {
+                is = zipFile.getInputStream(entry);
+                InputStreamReader isReader = null;
+                Xml10FilterReader filterReader = null;
+                XMLStreamReader reader = null;
+                try {
+                    XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+                    if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+                        inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+                    }
+                    inputFactory.setXMLReporter(new XMLReporter() {
+                        @Override
+                        public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                            System.out.println("Error:" + errorType + ", message : " + message);
+                        }
+                    });
+                    isReader = new InputStreamReader(is, "UTF-8");
+                    filterReader = new Xml10FilterReader(isReader);
+                    reader = inputFactory.createXMLStreamReader(filterReader);
 
-            ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-            ProjectsImpl projects = projectController.getProjects();
-            ProjectImpl project = gephiReader.readProject(reader, projects);
-            project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
-            return project;
-        } finally {
-            if (reader != null) {
-                reader.close();
+                    ProjectControllerImpl projectController = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+                    ProjectsImpl projects = projectController.getProjects();
+                    ProjectImpl project = GephiReader.readProject(reader, projects);
+                    project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
+                    return project;
+                } finally {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                    if (filterReader != null) {
+                        filterReader.close();
+                    }
+                }
+
+            } finally {
+                if (is != null) {
+                    is.close();
+                }
             }
-            if (filterReader != null) {
-                filterReader.close();
+        }
+        return null;
+    }
+
+    private WorkspaceImpl readWorkspace(ProjectImpl project, String entryName, ZipFile zipFile) throws Exception {
+        ZipEntry entry = zipFile.getEntry(entryName);
+        if (entry != null) {
+            InputStream is = null;
+            try {
+                is = zipFile.getInputStream(entry);
+
+                InputStreamReader isReader = null;
+                Xml10FilterReader filterReader = null;
+                XMLStreamReader reader = null;
+                try {
+                    XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+                    if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+                        inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+                    }
+                    inputFactory.setXMLReporter(new XMLReporter() {
+                        @Override
+                        public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                            System.out.println("Error:" + errorType + ", message : " + message);
+                        }
+                    });
+                    isReader = new InputStreamReader(is, "UTF-8");
+                    filterReader = new Xml10FilterReader(isReader);
+                    reader = inputFactory.createXMLStreamReader(filterReader);
+
+                    return GephiReader.readWorkspace(reader, project);
+                } finally {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                    if (filterReader != null) {
+                        filterReader.close();
+                    }
+                    if (isReader != null) {
+                        isReader.close();
+                    }
+                }
+            } finally {
+                if (is != null) {
+                    is.close();
+                }
+            }
+        }
+        return null;
+    }
+
+    private void readWorkspaceChildrenXML(WorkspaceXMLPersistenceProvider persistenceProvider, Workspace workspace, ZipFile zipFile) throws Exception {
+        String identifier = persistenceProvider.getIdentifier();
+        ZipEntry entry = zipFile.getEntry("Workspace_" + workspace.getId() + "_" + identifier + "_xml");
+        if (entry != null) {
+            InputStream is = null;
+            try {
+                is = zipFile.getInputStream(entry);
+
+                InputStreamReader isReader = null;
+                Xml10FilterReader filterReader = null;
+                XMLStreamReader reader = null;
+                try {
+                    XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+                    if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+                        inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+                    }
+                    inputFactory.setXMLReporter(new XMLReporter() {
+                        @Override
+                        public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                            System.out.println("Error:" + errorType + ", message : " + message);
+                        }
+                    });
+                    isReader = new InputStreamReader(is, "UTF-8");
+                    filterReader = new Xml10FilterReader(isReader);
+                    reader = inputFactory.createXMLStreamReader(filterReader);
+
+                    persistenceProvider.readXML(reader, workspace);
+                } finally {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                    if (filterReader != null) {
+                        filterReader.close();
+                    }
+                    if (isReader != null) {
+                        isReader.close();
+                    }
+                }
+            } finally {
+                if (is != null) {
+                    is.close();
+                }
             }
         }
     }
 
-    private void readWorkspace(InputStream inputStream, ProjectImpl project) throws Exception {
-        InputStreamReader isReader = null;
-        Xml10FilterReader filterReader = null;
-        XMLStreamReader reader = null;
-        try {
-            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
-                inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
-            }
-            inputFactory.setXMLReporter(new XMLReporter() {
-                @Override
-                public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
-                    System.out.println("Error:" + errorType + ", message : " + message);
-                }
-            });
-            isReader = new InputStreamReader(inputStream, "UTF-8");
-            filterReader = new Xml10FilterReader(isReader);
-            reader = inputFactory.createXMLStreamReader(filterReader);
-
-            gephiReader.readWorkspace(reader, project);
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-            if (filterReader != null) {
-                filterReader.close();
-            }
-            if (isReader != null) {
-                isReader.close();
-            }
-        }
-    }
-
-    private void readWorkspaceBytes(InputStream inputstream, Workspace workspace, String providerId) throws Exception {
-        WorkspaceBytesPersistenceProvider provider = PersistenceProviderUtils.getBytesPersistenceProviders().get(providerId);
-
-        if (provider != null) {
+    private void readWorkspaceChildrenBytes(WorkspaceBytesPersistenceProvider persistenceProvider, Workspace workspace, ZipFile zipFile) throws Exception {
+        String identifier = persistenceProvider.getIdentifier();
+        ZipEntry entry = zipFile.getEntry("Workspace_" + workspace.getId() + "_" + identifier + "_bytes");
+        if (entry != null) {
+            InputStream is = null;
             DataInputStream stream = null;
             try {
-                stream = new DataInputStream(inputstream);
-                provider.readBytes(stream, workspace);
+                is = zipFile.getInputStream(entry);
+                stream = new DataInputStream(is);
+                persistenceProvider.readBytes(stream, workspace);
             } finally {
                 if (stream != null) {
                     stream.close();
+                }
+                if (is != null) {
+                    is.close();
                 }
             }
         }
@@ -264,9 +338,6 @@ public class LoadTask implements LongTask, Runnable {
     @Override
     public boolean cancel() {
         cancel = true;
-        if (gephiReader != null) {
-            gephiReader.cancel();
-        }
         return true;
     }
 

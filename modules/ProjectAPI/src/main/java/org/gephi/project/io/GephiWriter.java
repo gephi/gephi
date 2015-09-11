@@ -44,7 +44,6 @@ package org.gephi.project.io;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Map;
 import java.util.TimeZone;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Project;
@@ -53,23 +52,27 @@ import org.gephi.project.api.ProjectMetaData;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
 import org.gephi.project.impl.ProjectImpl;
-import org.gephi.project.spi.WorkspacePersistenceProvider;
-import org.openide.util.Cancellable;
+import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Mathieu
- */
-public class GephiWriter implements Cancellable {
+public class GephiWriter {
 
-    private static final String VERSION = "0.9";
+    static final String VERSION = "0.9";
 
-    public void writeProject(XMLStreamWriter writer, Project project) throws Exception {
+    public static void writeProject(XMLStreamWriter writer, Project project) throws Exception {
         writer.writeStartDocument("UTF-8", "1.0");
         writer.writeStartElement("projectFile");
 
-        writeHeader(writer);
+        // Header
+        writer.writeAttribute("version", VERSION);
+        writer.writeStartElement("lastModifiedDate");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        writer.writeCharacters(sdf.format(cal.getTime()));
+        writer.writeComment("yyyy-MM-dd HH:mm:ss");
+        writer.writeEndElement();
+        writer.writeComment("File saved with " + getVersion());
 
         ProjectInformation info = project.getLookup().lookup(ProjectInformation.class);
         ProjectMetaData metaData = project.getLookup().lookup(ProjectMetaData.class);
@@ -108,15 +111,12 @@ public class GephiWriter implements Cancellable {
         writer.writeEndDocument();
     }
 
-    public void writeWorkspace(XMLStreamWriter writer, Workspace workspace) throws Exception {
+    public static void writeWorkspace(XMLStreamWriter writer, Workspace workspace) throws Exception {
         writer.writeStartDocument("UTF-8", "1.0");
-        writer.writeStartElement("workspaceFile");
-
-        writeHeader(writer);
+        writer.writeStartElement("workspace");
 
         WorkspaceInformation info = workspace.getLookup().lookup(WorkspaceInformation.class);
 
-        writer.writeStartElement("workspace");
         writer.writeAttribute("name", info.getName());
         writer.writeAttribute("id", String.valueOf(workspace.getId()));
         if (info.isOpen()) {
@@ -127,54 +127,31 @@ public class GephiWriter implements Cancellable {
             writer.writeAttribute("status", "invalid");
         }
 
-        writeWorkspaceChildren(writer, workspace);
-
-        writer.writeEndElement();
-
         writer.writeEndElement();
         writer.writeEndDocument();
     }
 
-    public void writeWorkspaceChildren(XMLStreamWriter writer, Workspace workspace) throws Exception {
-        for (Map.Entry<String, WorkspacePersistenceProvider> entry : PersistenceProviderUtils.getXMLPersistenceProviders().entrySet()) {
-            try {
-                String identifier = entry.getKey();
-                WorkspacePersistenceProvider pp = entry.getValue();
-                writer.writeComment("Persistence from '" + identifier + "' (" + pp.getClass().getName() + ")");
-                pp.writeXML(writer, workspace);
-            } catch (UnsupportedOperationException e) {
-            }
+    public static void writeWorkspaceChildren(XMLStreamWriter writer, Workspace workspace, WorkspaceXMLPersistenceProvider persistenceProvider) throws Exception {
+        String identifier = persistenceProvider.getIdentifier();
+        writer.writeStartDocument("UTF-8", "1.0");
+        writer.writeStartElement(identifier);
+        writer.writeComment("Persistence from '" + identifier + "' (" + persistenceProvider.getClass().getName() + ")");
+        try {
+            persistenceProvider.writeXML(writer, workspace);
+        } catch (UnsupportedOperationException e) {
         }
-    }
-
-    private void writeHeader(XMLStreamWriter writer) throws Exception {
-        writer.writeAttribute("version", VERSION);
-
-        //LastModifiedDate
-        writer.writeStartElement("lastModifiedDate");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        writer.writeCharacters(sdf.format(cal.getTime()));
-        writer.writeComment("yyyy-MM-dd HH:mm:ss");
         writer.writeEndElement();
-
-        writer.writeComment("File saved with " + getVersion());
+        writer.writeEndDocument();
     }
 
-    private String getVersion() {
+    private static String getVersion() {
         try {
             return MessageFormat.format(
                     NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion"), // NOI18N
                     new Object[]{System.getProperty("netbeans.buildnumber")} // NOI18N
-                    );
+            );
         } catch (Exception e) {
             return "?";
         }
-    }
-
-    @Override
-    public boolean cancel() {
-        return true;
     }
 }

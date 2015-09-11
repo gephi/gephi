@@ -52,6 +52,7 @@ import org.gephi.desktop.datalab.DataTablesModel;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
+import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -59,7 +60,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Eduardo
  */
 @ServiceProvider(service = WorkspacePersistenceProvider.class, position = 16000)
-public class DataLaboratoryPersistenceProvider implements WorkspacePersistenceProvider {
+public class DataLaboratoryPersistenceProvider implements WorkspaceXMLPersistenceProvider {
 
     private static final String AVAILABLE_COLUMNS = "availablecolumns";
     private static final String NODE_COLUMN = "nodecolumn";

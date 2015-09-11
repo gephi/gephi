@@ -315,8 +315,8 @@ public class AppearanceUIController {
 
         public ColumnObserver(Workspace workspace) {
             timer = new Timer("RankingColumnObserver", true);
-            nodeObserver = gc.getGraphModel(workspace).getNodeTable().createTableObserver();
-            edgeObserver = gc.getGraphModel(workspace).getEdgeTable().createTableObserver();
+            nodeObserver = gc.getGraphModel(workspace).getNodeTable().createTableObserver(false);
+            edgeObserver = gc.getGraphModel(workspace).getEdgeTable().createTableObserver(false);
         }
 
         @Override

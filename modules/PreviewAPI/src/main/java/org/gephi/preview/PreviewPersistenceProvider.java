@@ -47,6 +47,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
+import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -55,7 +56,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = WorkspacePersistenceProvider.class)
-public class PreviewPersistenceProvider implements WorkspacePersistenceProvider {
+public class PreviewPersistenceProvider implements WorkspaceXMLPersistenceProvider {
 
     @Override
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {

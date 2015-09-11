@@ -47,17 +47,12 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.impl.GraphModelImpl;
-import org.gephi.graph.impl.Serialization;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspaceBytesPersistenceProvider;
+import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
 
-/**
- *
- * @author mbastian
- */
-@ServiceProvider(service = WorkspaceBytesPersistenceProvider.class)
+@ServiceProvider(service = WorkspacePersistenceProvider.class, position = 100)
 public class GraphPersistenceProvider implements WorkspaceBytesPersistenceProvider {
 
     @Override
@@ -65,8 +60,7 @@ public class GraphPersistenceProvider implements WorkspaceBytesPersistenceProvid
         GraphModel model = workspace.getLookup().lookup(GraphModel.class);
         if (model != null) {
             try {
-                Serialization serialization = new Serialization(((GraphModelImpl)model).getStore());
-                serialization.serializeGraphStore(stream);
+                GraphModel.Serialization.write(stream, model);
             } catch (IOException ex) {
                 Logger.getLogger("").log(Level.SEVERE, "", ex.getCause());
             }
@@ -77,12 +71,13 @@ public class GraphPersistenceProvider implements WorkspaceBytesPersistenceProvid
     public void readBytes(DataInputStream stream, Workspace workspace) {
         GraphModel model = workspace.getLookup().lookup(GraphModel.class);
         if (model != null) {
-            try {
-                Serialization serialization = new Serialization(((GraphModelImpl)model).getStore());
-                serialization.deserializeGraphStore(stream);
-            } catch (Exception ex) {
-                Logger.getLogger("").log(Level.SEVERE, "", ex.getCause());
-            }
+            throw new IllegalStateException("The graphModel wasn't null");
+        }
+        try {
+            model = GraphModel.Serialization.read(stream);
+            workspace.add(model);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 

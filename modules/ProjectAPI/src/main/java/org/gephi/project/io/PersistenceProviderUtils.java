@@ -41,43 +41,29 @@
  */
 package org.gephi.project.io;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.gephi.project.spi.WorkspaceBytesPersistenceProvider;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.Lookup;
 
-/**
- *
- * @author mbastian
- */
 public class PersistenceProviderUtils {
 
-    public static Map<String, WorkspacePersistenceProvider> getXMLPersistenceProviders() {
+    public static Collection<WorkspacePersistenceProvider> getPersistenceProviders() {
         Map<String, WorkspacePersistenceProvider> providers = new LinkedHashMap<String, WorkspacePersistenceProvider>();
+
         for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
             try {
                 String id = w.getIdentifier();
                 if (id != null && !id.isEmpty()) {
+                    if (providers.containsKey(w.getIdentifier())) {
+                        throw new RuntimeException("Found a duplicate workspace persistence provider with the idenfier '" + id + "'");
+                    }
                     providers.put(w.getIdentifier(), w);
                 }
             } catch (Exception e) {
             }
         }
-        return providers;
-    }
-
-    public static Map<String, WorkspaceBytesPersistenceProvider> getBytesPersistenceProviders() {
-        Map<String, WorkspaceBytesPersistenceProvider> providers = new LinkedHashMap<String, WorkspaceBytesPersistenceProvider>();
-        for (WorkspaceBytesPersistenceProvider w : Lookup.getDefault().lookupAll(WorkspaceBytesPersistenceProvider.class)) {
-            try {
-                String id = w.getIdentifier();
-                if (id != null && !id.isEmpty()) {
-                    providers.put(w.getIdentifier(), w);
-                }
-            } catch (Exception e) {
-            }
-        }
-        return providers;
+        return providers.values();
     }
 }

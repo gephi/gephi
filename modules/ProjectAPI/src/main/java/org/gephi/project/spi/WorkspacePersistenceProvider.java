@@ -50,30 +50,27 @@ import org.gephi.project.api.Workspace;
  * the .gephi project file to serialize states and data.
  * <h3>How saving a project works</h3>
  * <ol><li>The saving task is looking for all implementations of this interface
- * and asks to return an XML element that represents data for each
- * workspace.</li>
- * <li>All of these elements are written in the .gephi project file.</li></ol>
+ * and ask each of them to write data either in XML or binary. Each
+ * implementation is identified by its identifier, which is provided through
+ * <code>getIdentifier()</code>.
+ * <li>All of these elements are written in the .gephi project file.
+ * </ol>
  * <h3>How loading a project works</h3>
  * <ol><li>The loading task is looking for all implementations of this interface
- * and asks for the identifier returned by <code>getIdentifier()</code>.</li>
- * <li>When traversing the gephi project XML document it tries to match markups
- * with identifiers. When match, call this provider <code>readXML()</code>
- * method with the XML element.</li></ol>
- *
+ * and asks for the identifier returned by <code>getIdentifier()</code>.
+ * <li>When traversing the gephi project document it call the provider read
+ * method.
+ * </ol>
  * <p>
  * Thus this interface allows any module to serialize and deserialize its data
- * to gephi project files.</p>
- *
+ * to gephi project files.
  * <p>
  * In order to have your <code>WorkspacePersistenceProvider</code> called, you
  * must annotate it with
- * <code>@ServiceProvider(service = WorkspacePersistenceProvider.class, position = xy)</code>
- * </p>
- * <p>
+ * <pre>@ServiceProvider(service = WorkspacePersistenceProvider.class, position = xy)</pre>
  * The <code>position</code> parameter is optional but often useful when when
  * you need other <code>WorkspacePersistenceProvider</code> data deserialized
  * before yours.
- * </p>
  *
  * @author Mathieu Bastian
  * @see Workspace
@@ -81,32 +78,7 @@ import org.gephi.project.api.Workspace;
 public interface WorkspacePersistenceProvider {
 
     /**
-     * This is automatically called when saving a project file.
-     * <p>
-     * Your implementation must enclose all your data xml in a tag with the name
-     * provided in your <code>getIdentifier</code> method.
-     *
-     * @param writer XMLStreamWriter for xml serialization of this persistence
-     * provider data
-     * @param workspace Current workspace being serialized
-     */
-    public void writeXML(XMLStreamWriter writer, Workspace workspace);
-
-    /**
-     * This is automatically called when a start element with the tag name
-     * provided in your <code>getIdentifier</code> method.
-     * <p>
-     * Your implementation must detect the tag end element to stop reading.
-     *
-     * @param reader XMLStreamReader for deserialization of this persistence
-     * provider data previously serialized
-     * @param workspace Current workspace being deserialized
-     */
-    public void readXML(XMLStreamReader reader, Workspace workspace);
-
-    /**
-     * Unique XML tag identifier for your
-     * <code>WorkspacePersistenceProvider</code>.
+     * Unique identifier for your <code>WorkspacePersistenceProvider</code>.
      *
      * @return Unique identifier describing your data
      */
