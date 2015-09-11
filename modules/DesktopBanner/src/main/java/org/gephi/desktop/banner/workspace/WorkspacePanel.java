@@ -68,10 +68,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
-/**
- *
- * @author mbastian
- */
 public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListener, PropertyChangeListener {
 
     private transient final DefaultTabDataModel tabDataModel;

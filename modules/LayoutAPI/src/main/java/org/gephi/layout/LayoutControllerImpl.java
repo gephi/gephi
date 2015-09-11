@@ -70,7 +70,9 @@ public class LayoutControllerImpl implements LayoutController {
 
             @Override
             public void initialize(Workspace workspace) {
-                workspace.add(new LayoutModelImpl());
+                if(workspace.getLookup().lookup(LayoutModelImpl.class) == null) {
+                    workspace.add(new LayoutModelImpl());
+                }
             }
 
             @Override

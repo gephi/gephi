@@ -140,7 +140,9 @@ public class VizController implements VisualizationController {
         pc.addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
-                workspace.add(new VizModel());
+                if(workspace.getLookup().lookup(VizModel.class) == null) {
+                  workspace.add(new VizModel());  
+                }
             }
 
             @Override

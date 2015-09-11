@@ -85,7 +85,9 @@ public class StatisticsControllerImpl implements StatisticsController {
 
             @Override
             public void initialize(Workspace workspace) {
-                workspace.add(new StatisticsModelImpl());
+                if(workspace.getLookup().lookup(StatisticsModelImpl.class) == null) {
+                    workspace.add(new StatisticsModelImpl());
+                }
             }
 
             @Override

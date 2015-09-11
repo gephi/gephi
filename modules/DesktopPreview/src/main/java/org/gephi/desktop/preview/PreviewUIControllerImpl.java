@@ -102,7 +102,9 @@ public class PreviewUIControllerImpl implements PreviewUIController {
         pc.addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
-                workspace.add(new PreviewUIModelImpl());
+                if (workspace.getLookup().lookup(PreviewUIModelImpl.class) == null) {
+                    workspace.add(new PreviewUIModelImpl());
+                }
                 enableRefresh();
             }
 

@@ -74,7 +74,6 @@ public class ProjectControllerImpl implements ProjectController {
     //Data
     private final ProjectsImpl projects = new ProjectsImpl();
     private final List<WorkspaceListener> listeners;
-    private WorkspaceImpl temporaryOpeningWorkspace;
 
     public ProjectControllerImpl() {
 
@@ -221,6 +220,10 @@ public class ProjectControllerImpl implements ProjectController {
         projects.setCurrentProject(projectImpl);
         projectInformationImpl.open();
 
+        for (Workspace ws : project.getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces()) {
+            fireWorkspaceEvent(EventType.INITIALIZE, ws);
+        }
+
         if (!workspaceProviderImpl.hasCurrentWorkspace()) {
             if (workspaceProviderImpl.getWorkspaces().length == 0) {
                 Workspace workspace = newWorkspace(project);
@@ -242,10 +245,7 @@ public class ProjectControllerImpl implements ProjectController {
     @Override
     public WorkspaceImpl getCurrentWorkspace() {
         if (projects.hasCurrentProject()) {
-            temporaryOpeningWorkspace = null;
             return getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).getCurrentWorkspace();
-        } else if (temporaryOpeningWorkspace != null) {
-            return temporaryOpeningWorkspace;
         }
         return null;
     }
@@ -297,19 +297,6 @@ public class ProjectControllerImpl implements ProjectController {
     @Override
     public void setSource(Workspace workspace, String source) {
         workspace.getLookup().lookup(WorkspaceInformationImpl.class).setSource(source);
-    }
-
-    /**
-     * Hack to have a current workpace when opening workspace
-     *
-     * @param temporaryOpeningWorkspace the opening workspace or null
-     */
-    public void setTemporaryOpeningWorkspace(WorkspaceImpl temporaryOpeningWorkspace) {
-        this.temporaryOpeningWorkspace = temporaryOpeningWorkspace;
-        if (temporaryOpeningWorkspace != null) {
-            //Init controllers with empty models
-            fireWorkspaceEvent(EventType.INITIALIZE, temporaryOpeningWorkspace);
-        }
     }
 
     @Override
