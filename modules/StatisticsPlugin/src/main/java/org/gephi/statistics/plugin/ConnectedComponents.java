@@ -100,7 +100,7 @@ public class ConnectedComponents implements Statistics, LongTask {
 
         undirectedGraph.readLock();
 
-        weaklyConnected(undirectedGraph, graphModel);
+        weaklyConnected(undirectedGraph);
         if (isDirected) {
             DirectedGraph directedGraph = graphModel.getDirectedGraphVisible();
             stronglyConnected(directedGraph, graphModel);
@@ -109,10 +109,10 @@ public class ConnectedComponents implements Statistics, LongTask {
         undirectedGraph.readUnlock();
     }
 
-    public void weaklyConnected(UndirectedGraph graph, GraphModel graphModel) {
+    public void weaklyConnected(UndirectedGraph graph) {
         isCanceled = false;
 
-        Column componentCol = initializeWeeklyConnectedColumn(graphModel);
+        Column componentCol = initializeWeeklyConnectedColumn(graph.getModel());
 
         HashMap<Node, Integer> indicies = createIndiciesMap(graph);
 

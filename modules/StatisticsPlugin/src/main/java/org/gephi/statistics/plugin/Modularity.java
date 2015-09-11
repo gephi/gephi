@@ -450,10 +450,10 @@ public class Modularity implements Statistics, LongTask {
     @Override
     public void execute(GraphModel graphModel) {
         Graph hgraph = graphModel.getUndirectedGraphVisible();
-        execute(hgraph, graphModel);
+        execute(hgraph);
     }
 
-    public void execute(Graph hgraph, GraphModel graphModel) {
+    public void execute(Graph hgraph) {
         isCanceled = false;
 
         hgraph.readLock();
@@ -466,7 +466,7 @@ public class Modularity implements Statistics, LongTask {
         modularity = computedModularityMetrics.get("modularity");
         modularityResolution = computedModularityMetrics.get("modularityResolution");
 
-        saveValues(comStructure, hgraph, graphModel, structure);
+        saveValues(comStructure, hgraph, structure);
 
         hgraph.readUnlock();
     }
@@ -606,8 +606,8 @@ public class Modularity implements Statistics, LongTask {
         return res;
     }
 
-    private void saveValues(int[] struct, Graph hgraph, GraphModel graphModel, CommunityStructure theStructure) {
-        Table nodeTable = graphModel.getNodeTable();
+    private void saveValues(int[] struct, Graph hgraph, CommunityStructure theStructure) {
+        Table nodeTable = hgraph.getModel().getNodeTable();
         Column modCol = nodeTable.getColumn(MODULARITY_CLASS);
         if (modCol == null) {
             modCol = nodeTable.addColumn(MODULARITY_CLASS, "Modularity Class", Integer.class, new Integer(0));

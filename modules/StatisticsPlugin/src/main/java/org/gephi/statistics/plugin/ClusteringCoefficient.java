@@ -249,16 +249,16 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             hgraph = graphModel.getUndirectedGraphVisible();
         }
 
-        execute(hgraph, graphModel);
+        execute(hgraph);
     }
 
-    public void execute(Graph hgraph, GraphModel graphModel) {
+    public void execute(Graph hgraph) {
         isCanceled = false;
 
         HashMap<String, Double> resultValues = new HashMap<String, Double>();
 
         if (isDirected) {
-            avgClusteringCoeff = bruteForce(hgraph, graphModel);
+            avgClusteringCoeff = bruteForce(hgraph);
         } else {
             initStartValues(hgraph);
             resultValues = computeTriangles(hgraph, network, triangles, nodeClustering, isDirected);
@@ -268,7 +268,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
 
         //Set results in columns
-        Table nodeTable = graphModel.getNodeTable();
+        Table nodeTable = hgraph.getModel().getNodeTable();
         Column clusteringCol = nodeTable.getColumn(CLUSTERING_COEFF);
         if (clusteringCol == null) {
             clusteringCol = nodeTable.addColumn(CLUSTERING_COEFF, "Clustering Coefficient", Double.class, new Double(0));
@@ -305,7 +305,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         HashMap<String, Double> resultValues = new HashMap<String, Double>();
 
         if (isDirected) {
-            double avClusteringCoefficient = bruteForce(hgraph, null);
+            double avClusteringCoefficient = bruteForce(hgraph);
             resultValues.put("clusteringCoefficient", avClusteringCoefficient);
             return resultValues;
         } else {
@@ -576,9 +576,9 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         return resultValues;
     }
 
-    private double bruteForce(Graph hgraph, GraphModel graphModel) {
+    private double bruteForce(Graph hgraph) {
         //The atrributes computed by the statistics
-        Column clusteringColumn = initializeAttributeColunms(graphModel);
+        Column clusteringColumn = initializeAttributeColunms(hgraph.getModel());
 
         float totalCC = 0;
 

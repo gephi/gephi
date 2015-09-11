@@ -49,7 +49,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Stack;
-import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Table;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
@@ -63,7 +62,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 /**
  * Ref: Ulrik Brandes, A Faster Algorithm for Betweenness Centrality, in Journal
@@ -133,7 +131,6 @@ public class GraphDistance implements Statistics, LongTask {
     /**
      *
      * @param graphModel
-     * @param attributeModel
      */
     @Override
     public void execute(GraphModel graphModel) {
@@ -145,13 +142,13 @@ public class GraphDistance implements Statistics, LongTask {
         } else {
             graph = graphModel.getUndirectedGraphVisible();
         }
-        execute(graph, graphModel);
+        execute(graph);
     }
 
-    public void execute(Graph hgraph, GraphModel graphModel) {
+    public void execute(Graph hgraph) {
         isCanceled = false;
         
-        initializeAttributeColunms(graphModel); 
+        initializeAttributeColunms(hgraph.getModel()); 
 
         hgraph.readLock();
 

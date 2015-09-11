@@ -86,15 +86,15 @@ public class WeightedDegree implements Statistics, LongTask {
     @Override
     public void execute(GraphModel graphModel) {
         Graph graph = graphModel.getGraphVisible();
-        execute(graph, graphModel);
+        execute(graph);
     }
 
-    public void execute(Graph graph, GraphModel graphModel) {
+    public void execute(Graph graph) {
         isDirected = graph.isDirected();
         isCanceled = false;
 
         initializeDegreeDists();
-        initializeAttributeColunms(graphModel);
+        initializeAttributeColunms(graph.getModel());
 
         graph.readLock();
 

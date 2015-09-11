@@ -109,12 +109,12 @@ public class Hits implements Statistics, LongTask {
         } else {
             graph = graphModel.getDirectedGraphVisible();
         }
-        execute(graph, graphModel);
+        execute(graph);
     }
 
-    public void execute(Graph hgraph, GraphModel graphModel) {
+    public void execute(Graph hgraph) {
 
-        initializeAttributeColunms(graphModel);
+        initializeAttributeColunms(hgraph.getModel());
 
         hgraph.readLock();
 

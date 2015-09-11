@@ -131,12 +131,12 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         } else {
             graph = graphModel.getUndirectedGraphVisible();
         }
-        execute(graph, graphModel);
+        execute(graph);
     }
 
-    public void execute(Graph hgraph, GraphModel graphModel) {
+    public void execute(Graph hgraph) {
 
-        Column column = initializeAttributeColunms(graphModel);
+        Column column = initializeAttributeColunms(hgraph.getModel());
 
         int N = hgraph.getNodeCount();
         hgraph.readLock();
