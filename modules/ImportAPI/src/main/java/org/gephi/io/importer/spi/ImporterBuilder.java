@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.io.importer.spi;
 
 import org.gephi.io.importer.api.ImportController;
@@ -48,7 +48,8 @@ import org.gephi.io.importer.api.ImportController;
  * services (i.e. singleton), the role of builders is simply the create new
  * instances of particular importer on demand.
  * <p>
- * To be recognized by the system, implementations must just add the following annotation:
+ * To be recognized by the system, implementations must just add the following
+ * annotation:
  * <pre>@ServiceProvider(service=ImporterBuilder.class)</pre>
  *
  * @author Mathieu Bastian
@@ -58,13 +59,15 @@ public interface ImporterBuilder {
 
     /**
      * Builds a new importer instance, ready to be used.
-     * @return  a new importer
+     *
+     * @return a new importer
      */
     public Importer buildImporter();
 
     /**
      * Returns the name of this builder
-     * @return  the name of this importer
+     *
+     * @return the name of this importer
      */
     public String getName();
 }

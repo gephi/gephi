@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.io.importer.spi;
 
 import java.io.Reader;
@@ -52,7 +52,8 @@ public interface FileImporter extends Importer {
 
     /**
      * Sets the reader where characters can be retrieved.
-     * @param reader    the reader on data
+     *
+     * @param reader the reader on data
      */
     public void setReader(Reader reader);
 }

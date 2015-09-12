@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.io.importer.spi;
 
 /**
@@ -50,7 +50,8 @@ public interface SpigotImporterBuilder extends ImporterBuilder {
 
     /**
      * Builds a new spigot importer instance, ready to be used.
-     * @return  a new spigot importer
+     *
+     * @return a new spigot importer
      */
     @Override
     public SpigotImporter buildImporter();
