@@ -90,8 +90,8 @@ public class DataBridge implements VizArchitecture {
 
     public synchronized boolean updateWorld() {
         if (observer != null && observer.hasGraphChanged()) {
-            NodeModeler nodeModeler = (NodeModeler) engine.getNodeClass().getCurrentModeler();
-            EdgeModeler edgeModeler = (EdgeModeler) engine.getEdgeClass().getCurrentModeler();
+            NodeModeler nodeModeler = engine.getNodeModeler();
+            EdgeModeler edgeModeler = engine.getEdgeModeler();
             Octree octree = engine.getOctree();
 
             //Stats

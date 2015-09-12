@@ -42,7 +42,6 @@
 package org.gephi.visualization.swing;
 
 import com.jogamp.common.nio.Buffers;
-import com.jogamp.newt.awt.NewtCanvasAWT;
 import java.awt.Color;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -53,7 +52,6 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.glu.GLU;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.DoubleBuffer;
@@ -63,9 +61,8 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.Scheduler;
-import org.gephi.visualization.config.GraphicalConfiguration;
+import org.gephi.visualization.opengl.GraphicalConfiguration;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.opengl.Lighting;
 import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.openide.util.Exceptions;
 
@@ -94,7 +91,6 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     protected FloatBuffer modelMatrix = Buffers.newDirectFloatBuffer(16);
     protected IntBuffer viewport = Buffers.newDirectIntBuffer(4);
     protected GraphicalConfiguration graphicalConfiguration;
-    protected Lighting lighting = new Lighting();
     protected ScreenshotMaker screenshotMaker;
     public Component graphComponent;
     protected AbstractEngine engine;
@@ -223,40 +219,10 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         //Disable Vertical synchro
         gl.setSwapInterval(0);
 
-        //Depth
-        if (vizController.getVizModel().isUse3d()) {
-            gl.glEnable(GL2.GL_DEPTH_TEST);      //Enable Z-Ordering
-            gl.glDepthFunc(GL2.GL_LEQUAL);
-            gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);	//Correct texture & colors perspective calculations
-        } else {
-            gl.glDisable(GL2.GL_DEPTH_TEST);     //Z is set by the order of drawing
-        }
-
-        //Cull face
-        if (vizController.getVizModel().isCulling()) {        //When enabled, increases performance but polygons must be drawn counterclockwise
-            gl.glEnable(GL2.GL_CULL_FACE);
-            gl.glCullFace(GL2.GL_BACK);      //Hide back face of polygons
-        }
-
-        //Point Smooth
-        if (vizController.getVizConfig().isPointSmooth()) {        //Only for GL_POINTS
-            gl.glEnable(GL2.GL_POINT_SMOOTH);
-            gl.glHint(GL2.GL_POINT_SMOOTH_HINT, GL2.GL_NICEST); //Point smoothing
-        } else {
-            gl.glDisable(GL2.GL_POINT_SMOOTH);
-        }
-
-        //Light Smooth
-        if (vizController.getVizConfig().isLineSmooth()) {         //Only for GL_LINES
-            gl.glEnable(GL2.GL_LINE_SMOOTH);
-            if (vizController.getVizConfig().isLineSmoothNicest()) {
-                gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
-            } else {
-                gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_FASTEST);
-            }
-        } else {
-            gl.glDisable(GL2.GL_LINE_SMOOTH);
-        }
+        //Config
+        gl.glDisable(GL2.GL_DEPTH_TEST);     //Z is set by the order of drawing
+        gl.glDisable(GL2.GL_POINT_SMOOTH);
+        gl.glDisable(GL2.GL_LINE_SMOOTH);
 
         gl.glClearDepth(1.0f);
 
@@ -265,43 +231,16 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         gl.glClearColor(backgroundColor.getRed() / 255f, backgroundColor.getGreen() / 255f, backgroundColor.getBlue() / 255f, 1f);
 
         //Lighting
-        if (vizController.getVizModel().isLighting()) {
-            gl.glEnable(GL2.GL_LIGHTING);
-            setLighting(gl);
-            gl.glEnable(GL2.GL_NORMALIZE);       //Normalise colors when glScale used
-            gl.glShadeModel(GL2.GL_SMOOTH);
-        } else {
-            gl.glDisable(GL2.GL_LIGHTING);
-            gl.glShadeModel(GL2.GL_FLAT);
-        }
+        gl.glDisable(GL2.GL_LIGHTING);
+        gl.glShadeModel(GL2.GL_FLAT);
 
-        //Blending
-        if (vizController.getVizConfig().isBlending()) {
-            gl.glEnable(GL2.GL_BLEND);
-            if (vizController.getVizConfig().isBlendCinema()) {
-                gl.glBlendFunc(GL2.GL_CONSTANT_COLOR, GL2.GL_ONE_MINUS_SRC_ALPHA);        //Black display
-            } else {
-                gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);             //Use alpha values correctly
-            }
-        }
-
-        //Material
-        if (vizController.getVizModel().isMaterial()) {
-            gl.glColorMaterial(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE);
-            gl.glEnable(GL2.GL_COLOR_MATERIAL);                                      //Use color and avoid using glMaterial
-        }
         //Mesh view
         if (vizController.getVizConfig().isWireFrame()) {
             gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
         }
 
-         // Bug: Black faces when enabled
+        // Bug: Black faces when enabled
 //        gl.glEnable(GL2.GL_TEXTURE_2D);
-    }
-
-    protected void setLighting(GL2 gl) {
-        lighting = new Lighting();
-        lighting.glInit(gl);
     }
 
     @Override
@@ -373,11 +312,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
 
         GL2 gl = drawable.getGL().getGL2();
 
-        if (vizController.getVizModel().isUse3d()) {
-            gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-        } else {
-            gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
-        }
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
 
         render3DScene(gl, glu);
         scheduler.display(gl, glu);
@@ -552,10 +487,6 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
 
     public GLAutoDrawable getGLAutoDrawable() {
         return drawable;
-    }
-
-    public Lighting getLighting() {
-        return lighting;
     }
 
     @Override

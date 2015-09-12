@@ -47,7 +47,7 @@ import java.awt.Component;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import org.gephi.lib.gleem.linalg.Vec3f;
-import org.gephi.visualization.config.GraphicalConfiguration;
+import org.gephi.visualization.opengl.GraphicalConfiguration;
 
 /**
  *

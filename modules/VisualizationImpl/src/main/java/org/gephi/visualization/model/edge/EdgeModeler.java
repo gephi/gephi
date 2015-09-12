@@ -45,7 +45,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUquadric;
 import org.gephi.graph.api.Edge;
-import org.gephi.visualization.api.initializer.Modeler;
+import org.gephi.visualization.model.Modeler;
 import org.gephi.visualization.model.Model;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.opengl.CompatibilityEngine;
@@ -63,18 +63,10 @@ public class EdgeModeler extends Modeler {
     public EdgeModel initModel(Edge edge, NodeModel sourceModel, NodeModel targetModelImpl) {
 
         EdgeModel edgeModel;
-        if (controller.getVizModel().isUse3d()) {
-            if (edge.isSelfLoop()) {
-                edgeModel = new SelfLoop3dModel(edge, sourceModel);
-            } else {
-                edgeModel = new Edge3dModel(edge, sourceModel, targetModelImpl);
-            }
+        if (edge.isSelfLoop()) {
+            edgeModel = new SelfLoopModel(edge, sourceModel);
         } else {
-            if (edge.isSelfLoop()) {
-                edgeModel = new SelfLoop2dModel(edge, sourceModel);
-            } else {
-                edgeModel = new Edge2dModel(edge, sourceModel, targetModelImpl);
-            }
+            edgeModel = new Edge2dModel(edge, sourceModel, targetModelImpl);
         }
 
         return edgeModel;
@@ -98,5 +90,21 @@ public class EdgeModeler extends Modeler {
     @Override
     public int initDisplayLists(GL2 gl, GLU glu, GLUquadric quadric, int ptr) {
         return ptr;
+    }
+
+    public boolean isLod() {
+        return false;
+    }
+
+    public boolean isSelectable() {
+        return true;
+    }
+
+    public boolean isClickable() {
+        return false;
+    }
+
+    public boolean isOnlyAutoSelect() {
+        return true;
     }
 }

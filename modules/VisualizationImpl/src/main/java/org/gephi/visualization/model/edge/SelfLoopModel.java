@@ -56,16 +56,16 @@ import org.gephi.visualization.model.node.NodeModel;
  *
  * @author Mathieu Bastian
  */
-public class SelfLoop2dModel extends EdgeModel {
+public class SelfLoopModel extends EdgeModel {
 
-    private static Vec3f upVector = new Vec3f(0f, 1f, 0f);
-    private static Vec3f sideVector = new Vec3f(1f, 0f, 0f);
+    private static final Vec3f UPVECTOR = new Vec3f(0f, 1f, 0f);
+    private static final Vec3f SIDEVECTOR = new Vec3f(1f, 0f, 0f);
     protected static FloatBuffer buffer = Buffers.newDirectFloatBuffer(24);
     protected static int segments = 20;
     //
     protected final NodeModel nodeModel;
 
-    public SelfLoop2dModel(Edge edge, NodeModel nodeModel) {
+    public SelfLoopModel(Edge edge, NodeModel nodeModel) {
         super(edge);
         this.nodeModel = nodeModel;
     }
@@ -95,34 +95,34 @@ public class SelfLoop2dModel extends EdgeModel {
         float z = node.z();
 
         //Get thickness points
-        float baseRightX = x + sideVector.x() * w / 2;
-        float baseRightY = y + sideVector.y() * w / 2;
-        float baseRightZ = z + sideVector.z() * w / 2;
-        float baseLeftX = x - sideVector.x() * w / 2;
-        float baseLeftY = y - sideVector.y() * w / 2;
-        float baseLeftZ = z - sideVector.z() * w / 2;
-        float baseTopX = x + upVector.x() * w / 2;
-        float baseTopY = y + upVector.y() * w / 2;
-        float baseTopZ = z + upVector.z() * w / 2;
-        float baseBottomX = x - upVector.x() * w / 2;
-        float baseBottomY = y - upVector.y() * w / 2;
-        float baseBottomZ = z - upVector.z() * w / 2;
+        float baseRightX = x + SIDEVECTOR.x() * w / 2;
+        float baseRightY = y + SIDEVECTOR.y() * w / 2;
+        float baseRightZ = z + SIDEVECTOR.z() * w / 2;
+        float baseLeftX = x - SIDEVECTOR.x() * w / 2;
+        float baseLeftY = y - SIDEVECTOR.y() * w / 2;
+        float baseLeftZ = z - SIDEVECTOR.z() * w / 2;
+        float baseTopX = x + UPVECTOR.x() * w / 2;
+        float baseTopY = y + UPVECTOR.y() * w / 2;
+        float baseTopZ = z + UPVECTOR.z() * w / 2;
+        float baseBottomX = x - UPVECTOR.x() * w / 2;
+        float baseBottomY = y - UPVECTOR.y() * w / 2;
+        float baseBottomZ = z - UPVECTOR.z() * w / 2;
 
         //Calculate control points
         float height = node.size() * 3;
-        float controlExterior1X = baseLeftX + upVector.x() * height;
-        float controlExterior1Y = baseLeftY + upVector.y() * height;
-        float controlExterior1Z = baseLeftZ + upVector.z() * height;
-        float controlExterior2X = baseBottomX + sideVector.x() * height;
-        float controlExterior2Y = baseBottomY + sideVector.y() * height;
-        float controlExterior2Z = baseBottomZ + sideVector.z() * height;
+        float controlExterior1X = baseLeftX + UPVECTOR.x() * height;
+        float controlExterior1Y = baseLeftY + UPVECTOR.y() * height;
+        float controlExterior1Z = baseLeftZ + UPVECTOR.z() * height;
+        float controlExterior2X = baseBottomX + SIDEVECTOR.x() * height;
+        float controlExterior2Y = baseBottomY + SIDEVECTOR.y() * height;
+        float controlExterior2Z = baseBottomZ + SIDEVECTOR.z() * height;
         height /= 1.15f;
-        float controlInterior1X = baseRightX + upVector.x() * height;
-        float controlInterior1Y = baseRightY + upVector.y() * height;
-        float controlInterior1Z = baseRightZ + upVector.z() * height;
-        float controlInterior2X = baseTopX + sideVector.x() * height;
-        float controlInterior2Y = baseTopY + sideVector.y() * height;
-        float controlInterior2Z = baseTopZ + sideVector.z() * height;
+        float controlInterior1X = baseRightX + UPVECTOR.x() * height;
+        float controlInterior1Y = baseRightY + UPVECTOR.y() * height;
+        float controlInterior1Z = baseRightZ + UPVECTOR.z() * height;
+        float controlInterior2X = baseTopX + SIDEVECTOR.x() * height;
+        float controlInterior2Y = baseTopY + SIDEVECTOR.y() * height;
+        float controlInterior2Z = baseTopZ + SIDEVECTOR.z() * height;
 
         //Fill buffer with interior curve
         buffer.rewind();

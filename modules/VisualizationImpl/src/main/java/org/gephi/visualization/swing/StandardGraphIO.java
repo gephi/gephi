@@ -129,11 +129,6 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             rightButtonMoving[1] = y;
             graphDrawable.graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
             vizEventManager.mouseRightPress();
-        } else if (vizController.getVizModel().isRotatingEnable() && SwingUtilities.isMiddleMouseButton(e)) {
-            middleButtonMoving[0] = x;
-            middleButtonMoving[1] = y;
-            graphDrawable.graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-            vizEventManager.mouseMiddlePress();
         } else if (SwingUtilities.isLeftMouseButton(e)) {
             leftButtonMoving[0] = x;
             leftButtonMoving[1] = y;

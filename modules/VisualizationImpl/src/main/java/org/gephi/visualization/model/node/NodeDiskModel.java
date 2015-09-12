@@ -47,10 +47,6 @@ import org.gephi.graph.api.Node;
 import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.VizModel;
 
-/**
- *
- * @author Mathieu Bastian
- */
 public class NodeDiskModel extends NodeModel {
 
     public int modelType;

@@ -353,10 +353,6 @@ public class Octree {
             }
             visibleLeaves = 0;
             int nbRecords = gl.glRenderMode(GL2.GL_RENDER);
-            if (vizController.getVizModel().isCulling()) {
-                gl.glEnable(GL2.GL_CULL_FACE);
-                gl.glCullFace(GL2.GL_BACK);
-            }
 
             //Get the hits and add the nodes' objects to the array
             int depth = Integer.MAX_VALUE;
@@ -422,10 +418,6 @@ public class Octree {
 
             //Returning to normal rendering mode
             int nbRecords = gl.glRenderMode(GL2.GL_RENDER);
-            if (vizController.getVizModel().isCulling()) {
-                gl.glEnable(GL2.GL_CULL_FACE);
-                gl.glCullFace(GL2.GL_BACK);
-            }
 
             //Clean previous selection
             selectedLeaves.clear();
@@ -452,11 +444,6 @@ public class Octree {
         }
         if (!vizController.getVizConfig().isWireFrame()) {
             gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-        }
-
-        if (vizController.getVizModel().isCulling()) {
-            gl.glEnable(GL2.GL_CULL_FACE);
-            gl.glCullFace(GL2.GL_BACK);
         }
     }
 

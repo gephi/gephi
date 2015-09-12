@@ -39,15 +39,13 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.visualization.api.initializer;
+package org.gephi.visualization.model;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUquadric;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.model.Model;
-import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.opengl.CompatibilityEngine;
 
 /**
@@ -59,6 +57,7 @@ public abstract class Modeler {
     protected final CompatibilityEngine engine;
     protected final VizController controller;
     protected final VizConfig config;
+    protected boolean enabled = true;
 
     public Modeler(CompatibilityEngine engine) {
         this.engine = engine;
@@ -73,4 +72,12 @@ public abstract class Modeler {
     public abstract void beforeDisplay(GL2 gl, GLU glu);
 
     public abstract void afterDisplay(GL2 gl, GLU glu);
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 }

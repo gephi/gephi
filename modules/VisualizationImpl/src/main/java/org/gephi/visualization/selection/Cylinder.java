@@ -64,8 +64,8 @@ public class Cylinder implements SelectionArea {
     private final SelectionManager selectionManager;
     private final VizModel vizModel;
     //Variables
-    private static final float[] rectPoint = {1, 1};
-    private float[] rectangle = new float[2];
+    private static final float[] RECT_POINT = {1, 1};
+    private final float[] rectangle = new float[2];
 
     public Cylinder() {
         graphIO = VizController.getInstance().getGraphIO();
@@ -79,7 +79,7 @@ public class Cylinder implements SelectionArea {
         float diameter = selectionManager.getMouseSelectionDiameter();
         if (diameter == 1) {
             //Point
-            return rectPoint;
+            return RECT_POINT;
         } else {
             float size;
             if (selectionManager.isMouseSelectionZoomProportionnal()) {
@@ -104,12 +104,10 @@ public class Cylinder implements SelectionArea {
         if (diameter == 1) {
             //Point
             return nodeModel.selectionTest(distanceFromMouse, 0);
+        } else if (selectionManager.isMouseSelectionZoomProportionnal()) {
+            return nodeModel.selectionTest(distanceFromMouse, diameter * (float) Math.abs(drawable.getDraggingMarkerX()));
         } else {
-            if (selectionManager.isMouseSelectionZoomProportionnal()) {
-                return nodeModel.selectionTest(distanceFromMouse, diameter * (float) Math.abs(drawable.getDraggingMarkerX()));
-            } else {
-                return nodeModel.selectionTest(distanceFromMouse, diameter);
-            }
+            return nodeModel.selectionTest(distanceFromMouse, diameter);
         }
     }
 
@@ -121,7 +119,6 @@ public class Cylinder implements SelectionArea {
         } else {
             //Cylinder
             float radius;
-            boolean lighting = vizModel.isLighting();
             if (selectionManager.isMouseSelectionZoomProportionnal()) {
                 radius = (float) (diameter * Math.abs(drawable.getDraggingMarkerX()));      //Proportionnal
             } else {
@@ -131,9 +128,6 @@ public class Cylinder implements SelectionArea {
             float vectorX, vectorY, vectorX1 = mousePosition[0], vectorY1 = mousePosition[1];
             double angle;
 
-            if (lighting) {
-                gl.glDisable(GL2.GL_LIGHTING);
-            }
             gl.glColor4f(0f, 0f, 0f, 0.2f);
             gl.glBegin(GL2.GL_TRIANGLES);
             for (int i = 0; i <= 360; i++) {
@@ -147,9 +141,6 @@ public class Cylinder implements SelectionArea {
                 vectorX1 = vectorX;
             }
             gl.glEnd();
-            if (lighting) {
-                gl.glEnable(GL2.GL_LIGHTING);
-            }
         }
     }
 

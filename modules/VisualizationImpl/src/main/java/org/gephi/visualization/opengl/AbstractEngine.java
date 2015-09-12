@@ -56,9 +56,9 @@ import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.visualization.bridge.DataBridge;
-import org.gephi.visualization.model.ModelClass;
-import org.gephi.visualization.model.ModelClassLibrary;
+import org.gephi.visualization.model.edge.EdgeModeler;
 import org.gephi.visualization.model.node.NodeModel;
+import org.gephi.visualization.model.node.NodeModeler;
 import org.gephi.visualization.octree.Octree;
 import org.gephi.visualization.text.TextManager;
 
@@ -80,7 +80,6 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected GraphIO graphIO;
     protected VizEventManager vizEventManager;
     protected SelectionArea currentSelectionArea;
-    protected ModelClassLibrary modelClassLibrary;
     protected DataBridge dataBridge;
     protected VizController vizController;
     protected VizConfig vizConfig;
@@ -96,14 +95,13 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     //Octree
     protected Octree octree;
     //User config
-    protected ModelClass nodeClass;
-    protected ModelClass edgeClass;
+    protected NodeModeler nodeModeler;
+    protected EdgeModeler edgeModeler;
 
     @Override
     public void initArchitecture() {
         this.graphDrawable = VizController.getInstance().getDrawable();
         this.graphIO = VizController.getInstance().getGraphIO();
-        this.modelClassLibrary = VizController.getInstance().getModelClassLibrary();
         this.dataBridge = VizController.getInstance().getDataBridge();
         this.vizController = VizController.getInstance();
         this.vizConfig = VizController.getInstance().getVizConfig();
@@ -122,7 +120,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
                     reinit = true;
                 }
 
-                edgeClass.setEnabled(vizController.getVizModel().isShowEdges());
+                edgeModeler.setEnabled(vizController.getVizModel().isShowEdges());
             }
         });
     }
@@ -171,11 +169,6 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 //    public abstract void selectNodes(NodeModel obj);
 //    public abstract void selectObject(NodeModel[] objs);
     public abstract void resetSelection();
-
-    /**
-     * Reset contents of octree for the given class
-     */
-    public abstract void resetObjectClass(ModelClass object3dClass);
 
     public void reinit() {
         reinit = true;
@@ -235,12 +228,12 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         return octree;
     }
 
-    public ModelClass getNodeClass() {
-        return nodeClass;
+    public NodeModeler getNodeModeler() {
+        return nodeModeler;
     }
 
-    public ModelClass getEdgeClass() {
-        return edgeClass;
+    public EdgeModeler getEdgeModeler() {
+        return edgeModeler;
     }
 
     protected class EngineLifeCycle {

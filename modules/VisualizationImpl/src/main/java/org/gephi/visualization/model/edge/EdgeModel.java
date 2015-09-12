@@ -51,10 +51,6 @@ import org.gephi.visualization.model.Model;
 import org.gephi.visualization.model.TextModel;
 import org.gephi.visualization.model.node.NodeModel;
 
-/**
- *
- * @author mbastian
- */
 public abstract class EdgeModel implements Model, TextModel {
 
     protected final Edge edge;
