@@ -110,10 +110,10 @@ public class EditNodes extends AbstractNode {
      */
     private Sheet.Set prepareNodesAttributes() {
         try {
-            DynamicModel dm=Lookup.getDefault().lookup(DynamicController.class).getModel();
-            if(dm!=null){
-                currentTimeFormat=dm.getTimeFormat();
-            }
+//            DynamicModel dm=Lookup.getDefault().lookup(DynamicController.class).getModel();
+//            if(dm!=null){
+//                currentTimeFormat=dm.getTimeFormat();
+//            }
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
             Sheet.Set set = new Sheet.Set();
             set.setName("attributes");
