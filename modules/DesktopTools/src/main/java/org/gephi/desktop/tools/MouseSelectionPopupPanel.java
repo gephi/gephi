@@ -61,6 +61,7 @@ public class MouseSelectionPopupPanel extends javax.swing.JPanel {
 
         diameterSlider.addChangeListener(new ChangeListener() {
 
+            @Override
             public void stateChanged(ChangeEvent e) {
                 JSlider source = (JSlider) e.getSource();
                 if (!source.getValueIsAdjusting()) {
@@ -71,6 +72,7 @@ public class MouseSelectionPopupPanel extends javax.swing.JPanel {
 
         proportionnalZoomCheckbox.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 fireChangeEvent(proportionnalZoomCheckbox);
             }

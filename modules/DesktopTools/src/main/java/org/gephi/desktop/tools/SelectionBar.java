@@ -67,6 +67,7 @@ public class SelectionBar extends javax.swing.JPanel {
         initComponents();
         VizController.getInstance().getSelectionManager().addChangeListener(new ChangeListener() {
 
+            @Override
             public void stateChanged(ChangeEvent e) {
                 refresh();
             }
@@ -97,6 +98,7 @@ public class SelectionBar extends javax.swing.JPanel {
         popupPanel.setProportionnalToZoom(manager.isMouseSelectionZoomProportionnal());
         popupPanel.setChangeListener(new ChangeListener() {
 
+            @Override
             public void stateChanged(ChangeEvent e) {
                 SelectionManager manager = VizController.getInstance().getSelectionManager();
                 manager.setMouseSelectionDiameter(popupPanel.getDiameter());
@@ -174,6 +176,7 @@ public class SelectionBar extends javax.swing.JPanel {
     public void setEnabled(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 for (Component c : getComponents()) {
                     c.setEnabled(enabled);

@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.tools.spi;
 
 import org.gephi.graph.api.Node;
@@ -46,14 +46,16 @@ import org.gephi.graph.api.Node;
 /**
  * Tool node click listener. Listen to node click on the visualization window.
  * <p>
- * A tool whih declares this listener is notified when user click on nodes.
+ * A tool which declares this listener is notified when user click on nodes.
  *
  * @author Mathieu Bastian
  */
 public interface NodeClickEventListener extends ToolEventListener {
 
     /**
-     * Notify <code>nodes</code> have been clicked by user on the visualization window.
+     * Notify <code>nodes</code> have been clicked by user on the visualization
+     * window.
+     *
      * @param nodes the clicked nodes
      */
     public void clickNodes(Node[] nodes);

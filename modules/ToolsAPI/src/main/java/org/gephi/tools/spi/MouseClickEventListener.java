@@ -38,15 +38,14 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
-
+ */
 package org.gephi.tools.spi;
 
 /**
  * Tool mouse click listener. Listen to mouse click on visualization window.
  * <p>
  * A tool which declares this listener is notified when user click on the
- * visualizaion window.
+ * visualization window.
  *
  * @author Mathieu Bastian
  * @see Tool
@@ -55,10 +54,11 @@ public interface MouseClickEventListener extends ToolEventListener {
 
     /**
      * Notify a mouse click on the visualization window.
-     * @param positionViewport Position in the 2D coordinate system, (0,0) is located
-     * top-left.
-     * @param position3d Position in the 3D coordinate system, (0,0) is located at the
-     * center.
+     *
+     * @param positionViewport Position in the 2D coordinate system, (0,0) is
+     * located top-left.
+     * @param position3d Position in the 3D coordinate system, (0,0) is located
+     * at the center.
      */
     public void mouseClick(int[] positionViewport, float[] position3d);
 }

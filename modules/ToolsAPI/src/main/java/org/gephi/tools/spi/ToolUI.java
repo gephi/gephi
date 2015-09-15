@@ -38,22 +38,25 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.tools.spi;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
 
 /**
- * Tool's user interface attributes: name, description, icon and a properties bar.
+ * Tool's user interface attributes: name, description, icon and a properties
+ * bar.
  *
  * @author Mathieu Bastian
  */
 public interface ToolUI {
 
     /**
-     * Returns the tool's properties bar. The properties bar is used for tool's
-     * settings.
+     * Returns the tools properties bar.
+     * <p>
+     * The properties bar is used for tools settings.
+     *
      * @param tool the tool instance
      * @return a <code>JPanel</code> for the the tool's properties bar
      */
@@ -61,22 +64,30 @@ public interface ToolUI {
 
     /**
      * Returns the tool icon, for the toobar.
+     *
+     * @return tool's icon
      */
     public Icon getIcon();
 
     /**
      * Returns the tool's name.
+     *
+     * @return tool's name
      */
     public String getName();
 
     /**
      * Returns the tool's description.
+     *
+     * @return tool's description
      */
     public String getDescription();
 
     /**
-     * Returns the tool relative position. Smaller is the position, higher is
-     * the position in the toolbar.
+     * Returns the tool's relative position.
+     * <p>
+     * Smaller is the position, higher is the position in the toolbar.
+     *
      * @return A number between 0 and 200
      */
     public int getPosition();

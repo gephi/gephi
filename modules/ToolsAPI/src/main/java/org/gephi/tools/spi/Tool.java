@@ -38,23 +38,27 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.tools.spi;
 
 /**
- * Tools are functions for interacting with user inputs on the visualization window.
+ * Tools are functions for interacting with user inputs on the visualization
+ * window.
  * <p>
- * A tool receive events from visualization window when it is currently the selected
- * tool. The visualization window toolbar presents all available tools implementations.
- * <p><b>Example:</b> A <i>Brush</i> tool colors clicked nodes.
+ * A tool receive events from visualization window when it is currently the
+ * selected tool. The visualization window toolbar presents all available tools
+ * implementations.
+ * <p>
+ * <b>Example:</b> A <i>Brush</i> tool colors clicked nodes.
  * <h3>How-to create a tool implementation</h3>
  * <ol><li>Create a class which implement <code>Tool</code> interface</li>
  * <li>Add the following annotation to your class to be declared as a new
  * implementation <code>@ServiceProvider(service=Tool.class)</code></li>
- * <li>Declare {@link ToolEventListener} instances for specifying how the
- * tool is interacting with user input like node click or mouse drag.</li>
+ * <li>Declare {@link ToolEventListener} instances for specifying how the tool
+ * is interacting with user input like node click or mouse drag.</li>
  * <li>Provide a {@link ToolUI} instance for giving a name and an icon to your
  * tool.</li></ol>
+ *
  * @author Mathieu Bastian
  */
 public interface Tool {
@@ -70,20 +74,23 @@ public interface Tool {
     public void unselect();
 
     /**
-     * Returns the declared tool listeners for this tool. Tool listeners says how
-     * the tool is interacting with user input on the visualization window.
+     * Returns the declared tool listeners for this tool. Tool listeners says
+     * how the tool is interacting with user input on the visualization window.
+     *
      * @return tool listeners declared for this tool implementation
      */
     public ToolEventListener[] getListeners();
 
     /**
      * Returns <code>ToolUI</code> instance for this tool.
+     *
      * @return the user interface attributes for this tool
      */
     public ToolUI getUI();
 
     /**
      * Returns the tool type of selection interaction.
+     *
      * @return the tool type of selection interaction
      */
     public ToolSelectionType getSelectionType();

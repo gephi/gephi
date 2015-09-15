@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.desktop.tools;
 
 import java.awt.BorderLayout;
@@ -68,7 +68,7 @@ import org.openide.util.lookup.Lookups;
 public class PropertiesBar extends JPanel {
 
     private JPanel propertiesBar;
-    private SelectionBar selectionBar;
+    private final SelectionBar selectionBar;
 
     public PropertiesBar() {
         super(new BorderLayout());
@@ -122,6 +122,7 @@ public class PropertiesBar extends JPanel {
         fullScreenButton.setPreferredSize(new Dimension(logoWidth, logoHeight));
         fullScreenButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 Lookup lookup = Lookups.forPath("org-gephi-desktop-tools/Actions/ToggleFullScreenAction");
                 for (Action a : lookup.lookupAll(Action.class)) {
@@ -137,6 +138,7 @@ public class PropertiesBar extends JPanel {
     public void setEnabled(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 for (Component c : getComponents()) {
                     c.setEnabled(enabled);
