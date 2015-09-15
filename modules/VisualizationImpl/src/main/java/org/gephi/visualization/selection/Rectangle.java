@@ -107,28 +107,26 @@ public class Rectangle implements SelectionArea {
         if (stop) {
             return nodeModel.selectionTest(distanceFromMouse, 0);
         }
-        float x = nodeModel.getViewportX();
-        float y = nodeModel.getViewportY();
-        float rad = nodeModel.getViewportRadius();
+//        float x = nodeModel.getViewportX();
+//        float y = nodeModel.getViewportY();
+//        float rad = nodeModel.getViewportRadius();
+
+        float x = 0, y = 0, rad = 0;
 
         boolean res = true;
         if (startPosition[0] > rectangle[0]) {
             if (x - rad > startPosition[0] || x + rad < rectangle[0]) {
                 res = false;
             }
-        } else {
-            if (x + rad < startPosition[0] || x - rad > rectangle[0]) {
-                res = false;
-            }
+        } else if (x + rad < startPosition[0] || x - rad > rectangle[0]) {
+            res = false;
         }
         if (startPosition[1] < rectangle[1]) {
             if (y + rad < startPosition[1] || y - rad > rectangle[1]) {
                 res = false;
             }
-        } else {
-            if (y - rad > startPosition[1] || y + rad < rectangle[1]) {
-                res = false;
-            }
+        } else if (y - rad > startPosition[1] || y + rad < rectangle[1]) {
+            res = false;
         }
         return res;
     }

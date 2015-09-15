@@ -45,6 +45,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUquadric;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.CompatibilityEngine;
 
@@ -57,12 +58,14 @@ public abstract class Modeler {
     protected final CompatibilityEngine engine;
     protected final VizController controller;
     protected final VizConfig config;
+    protected final GraphDrawable drawable;
     protected boolean enabled = true;
 
     public Modeler(CompatibilityEngine engine) {
         this.engine = engine;
         this.controller = VizController.getInstance();
         this.config = VizController.getInstance().getVizConfig();
+        this.drawable = controller.getDrawable();
     }
 
     public abstract int initDisplayLists(GL2 gl, GLU glu, GLUquadric quadric, int ptr);

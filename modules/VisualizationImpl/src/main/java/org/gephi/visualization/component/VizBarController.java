@@ -333,7 +333,6 @@ public class VizBarController {
             });
             components[1] = edgeHasNodeColorButton;
 
-
             //Show labels buttons
             final JToggleButton showLabelsButton = new JToggleButton();
             showLabelsButton.setSelected(vizModel.getTextModel().isShowEdgeLabels());

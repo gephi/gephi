@@ -101,6 +101,7 @@ public class VizConfig {
     public static final String VIZBAR = "VizConfig.showVizVar";
     public static final String CONTEXT_MENU = "VizConfig.contextMenu";
     public static final String TOOLBAR = "VizConfig.toolbar";
+    public static final String PROPERTIESBAR = "VizConfig.propertiesbar";
     public static final String MOUSE_SELECTION_DIAMETER = "VizConfig.mouseSelectionDiameter";
     public static final String MOUSE_SELECTION_ZOOM_PROPORTIONAL = "VizConfig.mouseSelectionZoomProportionnal";
     public static final String MOUSE_SELECTION_WHILE_DRAGGING = "VizConfig.mouseSelectionUpdateWhileDragging";
@@ -151,6 +152,7 @@ public class VizConfig {
     public static final boolean DEFAULT_VIZBAR = true;
     public static final boolean DEFAULT_CONTEXT_MENU = true;
     public static final boolean DEFAULT_TOOLBAR = true;
+    public static final boolean DEFAULT_PROPERTIESBAR = true;
     public static final int DEFAULT_MOUSE_SELECTION_DIAMETER = 1;
     public static final boolean DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL = false;
     public static final boolean DEFAULT_MOUSE_SELECTION_WHILE_DRAGGING = false;
@@ -212,7 +214,7 @@ public class VizConfig {
     protected boolean showVizVar = NbPreferences.forModule(VizConfig.class).getBoolean(VIZBAR, DEFAULT_VIZBAR);
     protected boolean contextMenu = NbPreferences.forModule(VizConfig.class).getBoolean(CONTEXT_MENU, DEFAULT_CONTEXT_MENU);
     protected boolean toolbar = NbPreferences.forModule(VizConfig.class).getBoolean(TOOLBAR, DEFAULT_TOOLBAR);
-    protected boolean propertiesbar = NbPreferences.forModule(VizConfig.class).getBoolean(HIGHTLIGHT_ANIMATION, DEFAULT_HIGHTLIGHT_ANIMATION);
+    protected boolean propertiesbar = NbPreferences.forModule(VizConfig.class).getBoolean(PROPERTIESBAR, DEFAULT_PROPERTIESBAR);
     protected int mouseSelectionDiameter = NbPreferences.forModule(VizConfig.class).getInt(MOUSE_SELECTION_DIAMETER, DEFAULT_MOUSE_SELECTION_DIAMETER);
     protected boolean mouseSelectionZoomProportionnal = NbPreferences.forModule(VizConfig.class).getBoolean(MOUSE_SELECTION_ZOOM_PROPORTIONAL, DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL);
     protected boolean mouseSelectionUpdateWhileDragging = NbPreferences.forModule(VizConfig.class).getBoolean(MOUSE_SELECTION_WHILE_DRAGGING, DEFAULT_MOUSE_SELECTION_WHILE_DRAGGING);

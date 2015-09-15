@@ -96,14 +96,12 @@ public class UniqueColorMode implements ColorMode {
             } else {
                 renderer.setColor(text.getTextR(), text.getTextG(), text.getTextB(), text.getTextAlpha());
             }
-        } else {
-            if (vizConfig.isLightenNonSelected()) {
-                if (!selected) {
-                    float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
-                    renderer.setColor(color[0], color[1], color[2], lightColorFactor);
-                } else {
-                    renderer.setColor(color[0], color[1], color[2], 1);
-                }
+        } else if (vizConfig.isLightenNonSelected()) {
+            if (!selected) {
+                float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
+                renderer.setColor(color[0], color[1], color[2], lightColorFactor);
+            } else {
+                renderer.setColor(color[0], color[1], color[2], 1);
             }
         }
     }

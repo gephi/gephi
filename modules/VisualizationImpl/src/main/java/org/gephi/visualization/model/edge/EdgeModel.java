@@ -125,6 +125,11 @@ public abstract class EdgeModel implements Model, TextModel {
     }
 
     @Override
+    public Rectangle2D getTextBounds() {
+        return bounds;
+    }
+
+    @Override
     public String getText() {
         String t = edge.getTextProperties().getText();
         if (t == null) {

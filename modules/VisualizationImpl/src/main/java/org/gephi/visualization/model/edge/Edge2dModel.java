@@ -168,17 +168,15 @@ public class Edge2dModel extends EdgeModel {
                     g = in[1];
                     b = in[2];
                 }
+            } else if (edge.alpha() == 0f) {
+                Node source = edge.getSource();
+                r = source.r();
+                g = source.g();
+                b = source.b();
             } else {
-                if (edge.alpha() == 0f) {
-                    Node source = edge.getSource();
-                    r = source.r();
-                    g = source.g();
-                    b = source.b();
-                } else {
-                    r = edge.r();
-                    g = edge.g();
-                    b = edge.b();
-                }
+                r = edge.r();
+                g = edge.g();
+                b = edge.b();
             }
             gl.glColor4f(r, g, b, 1f);
         }
@@ -215,7 +213,6 @@ public class Edge2dModel extends EdgeModel {
         w = ((w - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
 
         //
-
         //Edge size
         float arrowWidth = ARROW_WIDTH * w * 2f;
         float arrowHeight = ARROW_HEIGHT * w * 2f;
@@ -302,17 +299,15 @@ public class Edge2dModel extends EdgeModel {
                     g = in[1];
                     b = in[2];
                 }
+            } else if (edge.alpha() == 0f) {
+                Node source = edge.getSource();
+                r = source.r();
+                g = source.g();
+                b = source.b();
             } else {
-                if (edge.alpha() == 0f) {
-                    Node source = edge.getSource();
-                    r = source.r();
-                    g = source.g();
-                    b = source.b();
-                } else {
-                    r = edge.r();
-                    g = edge.g();
-                    b = edge.b();
-                }
+                r = edge.r();
+                g = edge.g();
+                b = edge.b();
             }
             gl.glColor4f(r, g, b, 1f);
         }

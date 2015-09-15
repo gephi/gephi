@@ -125,10 +125,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
     @Override
     public boolean isAnimating() {
-        if (displayAnimator != null && displayAnimator.isAnimating()) {
-            return true;
-        }
-        return false;
+        return displayAnimator != null && displayAnimator.isAnimating();
     }
 
     @Override
@@ -156,8 +153,9 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
         //Task SELECTED
         if (execMouseMove) {
-            engine.updateSelection(gl, glu);
             engine.mouseMove();
+            engine.updateSelection(gl, glu);
+
         } else if (execDrag) {
             //Drag
             if (stopDrag.getAndSet(false)) {

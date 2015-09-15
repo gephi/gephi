@@ -17,10 +17,6 @@ import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.node.NodeModel;
 
-/**
- *
- * @author mbastian
- */
 public class Octree {
 
     //Const
@@ -400,11 +396,11 @@ public class Octree {
             gl.glMatrixMode(GL2.GL_MODELVIEW);
 
             //Draw the nodes' cube int the select buffer
-            List<Octant> visibleLeaves = new ArrayList<Octant>();
+            List<Octant> visibleLeavesList = new ArrayList<Octant>();
             for (Octant n : leaves) {
                 if (n != null && n.visible) {
-                    int i = visibleLeaves.size() + 1;
-                    visibleLeaves.add(n);
+                    int i = visibleLeavesList.size() + 1;
+                    visibleLeavesList.add(n);
                     gl.glLoadName(i);
                     n.displayOctant(gl);
                 }
@@ -426,7 +422,7 @@ public class Octree {
             for (int i = 0; i < nbRecords; i++) {
                 int hit = hitsBuffer.get(i * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
 
-                Octant nodeHit = visibleLeaves.get(hit);
+                Octant nodeHit = visibleLeavesList.get(hit);
                 selectedLeaves.add(nodeHit);
             }
         }

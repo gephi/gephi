@@ -59,13 +59,11 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
 
     public void setup() {
         VizModel vizModel = VizController.getInstance().getVizModel();
-        
+
     }
 
-    
-
     public void setEnable(boolean enable) {
-        
+
     }
 
     /**

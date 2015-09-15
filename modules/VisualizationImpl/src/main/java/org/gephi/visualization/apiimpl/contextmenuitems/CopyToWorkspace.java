@@ -38,8 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
-
+ */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import org.gephi.visualization.spi.GraphContextMenuItem;
@@ -51,7 +50,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Eduardo
  */
 @ServiceProvider(service = GraphContextMenuItem.class)
-public class CopyToWorkspace extends CopyOrMoveToWorkspace{
+public class CopyToWorkspace extends CopyOrMoveToWorkspace {
 
     @Override
     protected boolean isCopy() {

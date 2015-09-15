@@ -166,19 +166,17 @@ public class SelfLoopModel extends EdgeModel {
                 g = uni[1];
                 b = uni[2];
                 a = uni[3];
+            } else if (a == 0f) {
+                Node source = edge.getSource();
+                r = 0.498f * source.r();
+                g = 0.498f * source.g();
+                b = 0.498f * source.b();
+                a = source.alpha();
             } else {
-                if (a == 0f) {
-                    Node source = edge.getSource();
-                    r = 0.498f * source.r();
-                    g = 0.498f * source.g();
-                    b = 0.498f * source.b();
-                    a = source.alpha();
-                } else {
-                    g = 0.498f * edge.g();
-                    b = 0.498f * edge.b();
-                    r = 0.498f * edge.r();
-                    a = edge.alpha();
-                }
+                g = 0.498f * edge.g();
+                b = 0.498f * edge.b();
+                r = 0.498f * edge.r();
+                a = edge.alpha();
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
@@ -198,17 +196,15 @@ public class SelfLoopModel extends EdgeModel {
                     g = both[1];
                     b = both[2];
                 }
+            } else if (edge.alpha() == 0f) {
+                Node source = edge.getSource();
+                r = source.r();
+                g = source.g();
+                b = source.b();
             } else {
-                if (edge.alpha() == 0f) {
-                    Node source = edge.getSource();
-                    r = source.r();
-                    g = source.g();
-                    b = source.b();
-                } else {
-                    r = edge.r();
-                    g = edge.g();
-                    b = edge.b();
-                }
+                r = edge.r();
+                g = edge.g();
+                b = edge.b();
             }
             gl.glColor4f(r, g, b, 1f);
         }
