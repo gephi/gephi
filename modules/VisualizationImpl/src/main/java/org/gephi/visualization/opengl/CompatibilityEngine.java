@@ -166,12 +166,6 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void display(GL2 gl, GLU glu) {
-        //Update viewport
-        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {       //TODO Move this
-            NodeModel obj = itr.next();
-            nodeModeler.setViewportPosition(obj);
-        }
-
         markTime++;
 
         VizModel vizModel = VizController.getInstance().getVizModel();
@@ -248,6 +242,24 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
                 textManager.getNodeRenderer().endRendering();
             }
+
+            //Draw rectangles around text for debug
+//            for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+//                NodeModel obj = itr.next();
+//
+//                float textW = obj.getTextWidth();
+//                float textH = obj.getTextHeight();
+//                float textX = obj.getX();
+//                float textY = obj.getY();
+//
+//                gl.glColor4f(0.3f, 0.3f, 0.3f, 0.3f);
+//                gl.glBegin(GL2.GL_QUADS);
+//                gl.glVertex3f(textX-textW/2f, textY+textH/2, 0);
+//                gl.glVertex3f(textX+textW/2f, textY+textH/2, 0);
+//                gl.glVertex3f(textX+textW/2f, textY-textH/2, 0);
+//                gl.glVertex3f(textX-textW/2f, textY-textH/2, 0);
+//                gl.glEnd();
+//            }
 //            if (edgeClass.isEnabled() && vizModel.getTextModel().isShowEdgeLabels()) {
 //                textManager.getEdgeRenderer().beginRendering();
 //                textManager.defaultEdgeColor();
@@ -275,7 +287,6 @@ public class CompatibilityEngine extends AbstractEngine {
 //                textManager.getEdgeRenderer().endRendering();
 //            }
         }
-
 
 //        octree.displayOctree(gl, glu);
     }
@@ -647,7 +658,7 @@ public class CompatibilityEngine extends AbstractEngine {
         int ptr = gl.glGenLists(4);
 
         nodeModeler.initDisplayLists(gl, glu, quadric, ptr);
- 
+
         glu.gluDeleteQuadric(quadric);
     }
 

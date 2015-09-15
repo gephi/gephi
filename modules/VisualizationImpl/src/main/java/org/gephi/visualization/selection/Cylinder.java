@@ -105,9 +105,9 @@ public class Cylinder implements SelectionArea {
             //Point
             return nodeModel.selectionTest(distanceFromMouse, 0);
         } else if (selectionManager.isMouseSelectionZoomProportionnal()) {
-            return nodeModel.selectionTest(distanceFromMouse, diameter * (float) Math.abs(drawable.getDraggingMarkerX()));
-        } else {
             return nodeModel.selectionTest(distanceFromMouse, diameter);
+        } else {
+            return nodeModel.selectionTest(distanceFromMouse, (float) (diameter / -drawable.getDraggingMarkerX()));
         }
     }
 

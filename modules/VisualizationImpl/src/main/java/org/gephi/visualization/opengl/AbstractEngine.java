@@ -178,18 +178,12 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         if (!currentSelectionArea.isEnabled()) {
             return false;
         }
-        float x1 = graphIO.getMousePosition()[0];
-        float y1 = graphIO.getMousePosition()[1];
-
-        float x2 = obj.getViewportX();
-        float y2 = obj.getViewportY();
-
-        float xDist = Math.abs(x2 - x1);
-        float yDist = Math.abs(y2 - y1);
-
+        float[] mousePosition = graphIO.getMousePosition3d();
+        float xDist = Math.abs(obj.getX() - mousePosition[0]);
+        float yDist = Math.abs(obj.getY() - mousePosition[1]);
         float distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
 
-        Vecf d = new Vecf(5);
+        Vecf d = new Vecf(3);
         d.set(0, xDist);
         d.set(1, yDist);
         d.set(2, distance);

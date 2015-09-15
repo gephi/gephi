@@ -48,7 +48,6 @@ import org.gephi.graph.api.Node;
 import org.gephi.visualization.model.Model;
 import org.gephi.visualization.model.Modeler;
 import org.gephi.visualization.opengl.CompatibilityEngine;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -86,7 +85,7 @@ public class NodeModeler extends Modeler {
             return;
         }
 
-        float distance = cameraDistance(obj) / obj.getNode().size();
+        float distance = cameraDistance(obj) / (obj.getNode().size() * drawable.getGlobalScale());
         if (distance > 600) {
             obj.modelType = SHAPE_DIAMOND;
             obj.modelBorderType = -1;
@@ -127,7 +126,6 @@ public class NodeModeler extends Modeler {
         glu.gluDisk(quadric, 0, 0.5, 32, 4);
         gl.glEndList();
 
-
         //Border16
         BORDER16 = SHAPE_DISK64 + 1;
         gl.glNewList(BORDER16, GL2.GL_COMPILE);
@@ -156,28 +154,17 @@ public class NodeModeler extends Modeler {
     @Override
     public void afterDisplay(GL2 gl, GLU glu) {
     }
-    
-   
-    public void setViewportPosition(NodeModel object) {
-        float[] res = controller.getDrawable().myGluProject(object.getNode().x(), object.getNode().y(), object.getNode().z());
-        object.setViewportX(res[0]);
-        object.setViewportY(res[1]);
-
-        res = controller.getDrawable().myGluProject(object.getNode().x() + object.getNode().size(), object.getNode().y(), object.getNode().z());
-        float rad = Math.abs((float) res[0] - object.getViewportX());
-        object.setViewportRadius(rad);
-    }
 
     protected float cameraDistance(NodeModel object) {
-        float[] cameraLocation = controller.getDrawable().getCameraLocation();
+        float[] cameraLocation = drawable.getCameraLocation();
         double distance = Math.sqrt(Math.pow((double) object.getNode().x() - cameraLocation[0], 2d)
                 + Math.pow((double) object.getNode().y() - cameraLocation[1], 2d)
                 + Math.pow((double) object.getNode().z() - cameraLocation[2], 2d));
         object.setCameraDistance((float) distance);
 
-        return (float) distance - object.getNode().size();
+        return (float) distance;
     }
-    
+
     public boolean isLod() {
         return true;
     }
