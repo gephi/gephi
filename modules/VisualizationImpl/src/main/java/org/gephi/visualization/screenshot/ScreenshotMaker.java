@@ -41,27 +41,35 @@
  */
 package org.gephi.visualization.screenshot;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import java.awt.Cursor;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import javax.imageio.ImageIO;
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.GLRunnable;
+import com.jogamp.opengl.util.GLPixelBuffer;
+import com.jogamp.opengl.util.GLPixelBuffer.GLPixelAttributes;
+import com.jogamp.opengl.util.TileRenderer;
+import com.jogamp.opengl.util.texture.TextureData;
+import com.jogamp.opengl.util.texture.TextureIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.DialogFileFilter;
+import org.gephi.utils.longtask.api.LongTaskExecutor;
+import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.*;
 import org.gephi.visualization.text.TextManager;
 import org.netbeans.validation.api.ui.ValidationPanel;
+import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
@@ -70,7 +78,7 @@ import org.openide.windows.WindowManager;
  *
  * @author Mathieu Bastian
  */
-public class ScreenshotMaker implements VizArchitecture {
+public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
 
     //Const
     private final String LAST_PATH = "ScreenshotMaker_Last_Path";
@@ -82,25 +90,27 @@ public class ScreenshotMaker implements VizArchitecture {
     private final String AUTOSAVE_DEFAULT = "ScreenshotMaker_Autosave_Default";
     private final String SHOW_MESSAGE = "ScreenshotMaker_Show_Message";
     //Architecture
-    private GraphDrawable drawable;
     private AbstractEngine engine;
-    private TextManager textManager;
     private VizConfig vizConfig;
+    private TextManager textManager;
+    //Executor
+    private LongTaskExecutor executor;
+    private ProgressTicket progressTicket;
+    private boolean cancel;
     //Settings
     private int antiAliasing = 2;
     private int width = 1024;
     private int height = 768;
+    private int tileWidth = width / 16;
+    private int tileHeight = height / 12;
     private boolean transparentBackground = false;
     private boolean finishedMessage = true;
     private boolean autoSave = false;
     private String defaultDirectory;
     //Running
     private File file;
-    //State
-    private boolean takeTicket = false;
 
     public ScreenshotMaker() {
-
         //Preferences
         String lastPathDefault = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH_DEFAULT, null);
         defaultDirectory = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH, lastPathDefault);
@@ -110,214 +120,191 @@ public class ScreenshotMaker implements VizArchitecture {
         transparentBackground = NbPreferences.forModule(ScreenshotMaker.class).getBoolean(TRANSPARENT_BACKGROUND_DEFAULT, transparentBackground);
         autoSave = NbPreferences.forModule(ScreenshotMaker.class).getBoolean(AUTOSAVE_DEFAULT, autoSave);
         finishedMessage = NbPreferences.forModule(ScreenshotMaker.class).getBoolean(SHOW_MESSAGE, finishedMessage);
+
+        executor = new LongTaskExecutor(true, "Screenshot Maker");
+
+        tileWidth = width / 16;
+        tileHeight = height / 12;
     }
 
     @Override
     public void initArchitecture() {
-        drawable = VizController.getInstance().getDrawable();
         engine = VizController.getInstance().getEngine();
-        textManager = VizController.getInstance().getTextManager();
         vizConfig = VizController.getInstance().getVizConfig();
+        textManager = VizController.getInstance().getTextManager();
     }
 
     public void takeScreenshot() {
-        takeTicket = true;
+        executor.execute(this, this, "Take screenshot", null);
     }
 
-    private static String getExtension(File f) {
-        String ext = null;
-        String s = f.getName();
-        int i = s.lastIndexOf('.');
+    @Override
+    public void run() {
+        beforeTaking();
 
-        if (i > 0 && i < s.length() - 1) {
-            ext = s.substring(i + 1).toLowerCase();
-        }
+        try {
+            // Stop display
+            engine.stopDisplay();
 
-        if (ext == null) {
-            return "";
-        }
-        return ext;
-    }
+            Thread.sleep(100);
 
-    private void take(File file) throws Exception {
-//
-//        //System.out.println("Take Screenshot to " + file.getName());
-//
-//        // Fix the image size for now
-//        int tileWidth = width / 16;
-//        int tileHeight = height / 12;
-//        int imageWidth = width;
-//        int imageHeight = height;
-//
-//        GLProfile profile = GLProfile.get(GLProfile.GL2);
-//        GLCapabilities caps = new GLCapabilities(profile);
-//        AbstractGraphicsDevice device = GLDrawableFactory.getFactory(profile).getDefaultDevice();
-//        //Caps
-//
-//        caps.setAlphaBits(8);
-//        caps.setDoubleBuffered(false);
-//        caps.setHardwareAccelerated(true);
-//        caps.setSampleBuffers(true);
-//        caps.setNumSamples(antiAliasing);
-//        caps.setPBuffer(true);
-//
-//        //Buffer
-//
-//        GLPbuffer pbuffer = GLDrawableFactory.getFactory(profile).createGLPbuffer(device, caps, null, tileWidth, tileHeight, null);
-//        BufferedImage image = null;
-//        if (transparentBackground) {
-//            image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
-//        } else {
-//            image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_3BYTE_BGR);
-//        }
-//        ByteBuffer imageBuffer = ByteBuffer.wrap(((DataBufferByte) image.getRaster().getDataBuffer()).getData());
-//
-//        //Tile rendering
-//        TileRenderer tileRenderer = new TileRenderer();
-//        tileRenderer.setTileSize(tileWidth, tileHeight, 0);
-//        tileRenderer.setImageSize(imageWidth, imageHeight);
-//        if (transparentBackground) {
-//            tileRenderer.setImageBuffer(GL2.GL_BGRA, GL2.GL_UNSIGNED_BYTE, imageBuffer);
-//        } else {
-//            tileRenderer.setImageBuffer(GL2.GL_BGR, GL2.GL_UNSIGNED_BYTE, imageBuffer);
-//        }
-//        tileRenderer.trPerspective(drawable.viewField, (float) imageWidth / (float) imageHeight, drawable.nearDistance, drawable.farDistance);
-//
-//        //Get gl
-//        //GLContext oldContext = GLContext.getCurrent();
-//        GLContext context = pbuffer.getContext();
-//        if (context.makeCurrent() == GLContext.CONTEXT_NOT_CURRENT) {
-//            throw new RuntimeException("Error making pbuffer's context current");
-//        }
-//
-//        System.out.println("Disabling snapshot");
-//
-//        GL2 gl = pbuffer.getGL().getGL2();
-//        gl.glMatrixMode(GL2.GL_MODELVIEW);
-//        gl.glLoadIdentity();
-//
-//        //Init
-//        drawable.initConfig(gl);
-//        vizConfig.setDisableLOD(true);
-//        engine.initScreenshot(gl, GLAbstractListener.glu);
-//
-//
-//        //Textrender - swap to 3D
-//        textManager.setRenderer3d(true);
-//
-//        //Render in buffer
-//        do {
-//            tileRenderer.beginTile(gl);
-//            drawable.renderScreenshot(pbuffer);
-//        } while (tileRenderer.endTile(gl));
-//
-//        //Clean
-//        context.release();
-//        pbuffer.destroy();
-//
-//
-//        //Textrender - back to 2D
-//        textManager.setRenderer3d(false);
-//        vizConfig.setDisableLOD(false);
-//        //Write image
-//        ImageUtil.flipImageVertically(image);
-//        writeImage(image);
-//
-//        /*Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("png");
-//         if (iter.hasNext()) {
-//         ImageWriter writer = iter.next();
-//         ImageWriteParam iwp = writer.getDefaultWriteParam();
-//         //iwp.setCompressionType("DEFAULT");
-//         //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
-//         //iwp.setCompressionQuality((int)(9*pngCompresssion));
-//         FileImageOutputStream output = new FileImageOutputStream(file);
-//         writer.setOutput(output);
-//         IIOImage img = new IIOImage(image, null, null);
-//         writer.write(null, img, iwp);
-//         writer.dispose();
-//         }*/
-//
-//        //oldContext.makeCurrent();
-    }
+            final OffscreenCanvas drawable = new OffscreenCanvas(tileWidth, tileHeight, transparentBackground, antiAliasing);
+            GLAutoDrawable autoDrawable = drawable.getGLAutoDrawable();
 
-    private void writeImage(BufferedImage image) throws Exception {
-        if (!autoSave) {
-            //Get last directory
-            String lastPathDefault = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH_DEFAULT, null);
-            String lastPath = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH, lastPathDefault);
-            final JFileChooser chooser = new JFileChooser(lastPath);
-            chooser.setAcceptAllFileFilterUsed(false);
-            chooser.setDialogTitle(NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.filechooser.title"));
-            DialogFileFilter dialogFileFilter = new DialogFileFilter(NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.filechooser.pngDescription"));
-            dialogFileFilter.addExtension("png");
-            chooser.addChoosableFileFilter(dialogFileFilter);
-            File selectedFile = new File(chooser.getCurrentDirectory(), getDefaultFileName() + ".png");
-            chooser.setSelectedFile(selectedFile);
-            int returnFile = chooser.showSaveDialog(null);
-            if (returnFile != JFileChooser.APPROVE_OPTION) {
-                return;
-            }
-            file = chooser.getSelectedFile();
+            //Tile rendering
+            final TileRenderer renderer = new TileRenderer();
+            renderer.setImageSize(width, height);
+            renderer.setTileSize(tileWidth, tileHeight, 0);
+            renderer.attachAutoDrawable(autoDrawable);
 
-            if (!file.getPath().endsWith(".png")) {
-                file = new File(file.getPath() + ".png");
+            final GLPixelBuffer.GLPixelBufferProvider pixelBufferProvider = GLPixelBuffer.defaultProviderWithRowStride;
+            final boolean[] flipVertically = {false};
+
+            final GLEventListener preTileGLEL = new GLEventListener() {
+                @Override
+                public void init(final GLAutoDrawable drawable) {
+                    final GL2 gl = drawable.getGL().getGL2();
+                    final GLPixelAttributes pixelAttribs = pixelBufferProvider.getAttributes(gl, transparentBackground ? 4 : 3, true);
+
+                    final GLPixelBuffer imageBuffer = pixelBufferProvider.allocate(gl, null, pixelAttribs, true, width, height, 1, 0);
+                    renderer.setImageBuffer(imageBuffer);
+
+                    flipVertically[0] = !drawable.isGLOriented();
+                }
+
+                @Override
+                public void dispose(final GLAutoDrawable drawable) {
+                }
+
+                @Override
+                public void display(final GLAutoDrawable drawable) {
+                }
+
+                @Override
+                public void reshape(final GLAutoDrawable drawable, final int x, final int y, final int width, final int height) {
+                }
+            };
+            renderer.setGLEventListener(preTileGLEL, null);
+
+            vizConfig.setDisableLOD(true);
+
+            // Render tiles
+            while (!renderer.eot() && !cancel) {
+                renderer.display();
             }
 
-            //Save last path
-            defaultDirectory = file.getParentFile().getAbsolutePath();
-            NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, defaultDirectory);
+            renderer.detachAutoDrawable();
 
-        } else {
-            file = new File(defaultDirectory, getDefaultFileName() + ".png");
-        }
-        String format = "png";
-        if (file != null) {
-            format = getExtension(file);
-        }
-        if (!ImageIO.write(image, format, file)) {
-            throw new IOException("Unsupported file format");
-        }
-    }
+            autoDrawable.invoke(true, new GLRunnable() {
+                @Override
+                public boolean run(final GLAutoDrawable drawable) {
+                    drawable.getGL().glViewport(0, 0, drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
+//                drawable.reshape(drawable, 0, 0, drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
+                    return false;
+                }
+            });
 
-    public void openglSignal(GLAutoDrawable drawable) {
-        if (takeTicket) {
-            takeTicket = false;
-            try {
-                beforeTaking();
-                take(file);
-                drawable.getContext().makeCurrent();
-                afterTaking();
-                file = null;
-            } catch (Exception e) {
-                e.printStackTrace();
+            vizConfig.setDisableLOD(false);
+
+            if (!cancel) {
+                final GLPixelBuffer imageBuffer = renderer.getImageBuffer();
+
+                final TextureData textureData = new TextureData(
+                        autoDrawable.getChosenGLCapabilities().getGLProfile(),
+                        transparentBackground ? GL.GL_RGBA : GL.GL_RGB,
+                        width, height,
+                        0,
+                        imageBuffer.pixelAttributes,
+                        false, false,
+                        flipVertically[0],
+                        imageBuffer.buffer,
+                        null /* Flusher */);
+
+                // Get File
+                SwingUtilities.invokeAndWait(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (!autoSave) {
+                            //Get last directory
+                            String lastPathDefault = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH_DEFAULT, null);
+                            String lastPath = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH, lastPathDefault);
+                            final JFileChooser chooser = new JFileChooser(lastPath);
+                            chooser.setAcceptAllFileFilterUsed(false);
+                            chooser.setDialogTitle(NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.filechooser.title"));
+                            DialogFileFilter dialogFileFilter = new DialogFileFilter(NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.filechooser.pngDescription"));
+                            dialogFileFilter.addExtension("png");
+                            chooser.addChoosableFileFilter(dialogFileFilter);
+                            File selectedFile = new File(chooser.getCurrentDirectory(), getDefaultFileName() + ".png");
+                            chooser.setSelectedFile(selectedFile);
+                            int returnFile = chooser.showSaveDialog(null);
+                            if (returnFile != JFileChooser.APPROVE_OPTION) {
+                                return;
+                            }
+                            ScreenshotMaker.this.file = chooser.getSelectedFile();
+
+                            if (!ScreenshotMaker.this.file.getPath().endsWith(".png")) {
+                                ScreenshotMaker.this.file = new File(ScreenshotMaker.this.file.getPath() + ".png");
+                            }
+
+                            //Save last path
+                            defaultDirectory = ScreenshotMaker.this.file.getParentFile().getAbsolutePath();
+                            NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, defaultDirectory);
+
+                        } else {
+                            ScreenshotMaker.this.file = new File(defaultDirectory, getDefaultFileName() + ".png");
+                        }
+                    }
+                });
+
+                // Write file
+                if (file != null) {
+                    TextureIO.write(textureData, file);
+                }
             }
 
+            autoDrawable.destroy();
+
+            //Reinit text renderer
+            textManager.reinitRenderers();
+
+            engine.startDisplay();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
+
+        // After taking
+        afterTaking();
     }
 
-    private void beforeTaking() throws InterruptedException, InvocationTargetException {
-		SwingUtilities.invokeLater(new Runnable() {
+    private void beforeTaking() {
+        SwingUtilities.invokeLater(new Runnable() {
 
-			@Override
-			public void run() {
-				WindowManager.getDefault().getMainWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			}
-		});
+            @Override
+            public void run() {
+                WindowManager.getDefault().getMainWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            }
+        });
     }
 
-	private void afterTaking() {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				WindowManager.getDefault().getMainWindow().setCursor(Cursor.getDefaultCursor());
-				if (finishedMessage && file != null) {
-					final String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getName());
-					JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"), JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
-	}
-	
+    private void afterTaking() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                WindowManager.getDefault().getMainWindow().setCursor(Cursor.getDefaultCursor());
+                if (finishedMessage && file != null) {
+                    if (autoSave) {
+                        final String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getAbsolutePath());
+                        StatusDisplayer.getDefault().setStatusText(msg);
+                    } else {
+                        final String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getName());
+                        JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"), JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        });
+    }
+
     private static final String DATE_FORMAT_NOW = "HHmmss";
 
     private String getDefaultFileName() {
@@ -335,7 +322,6 @@ public class ScreenshotMaker implements VizArchitecture {
         ValidationPanel validationPanel = ScreenshotSettingsPanel.createValidationPanel(panel);
         if (validationPanel.showOkCancelDialog(NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.configure.title"))) {
             panel.unsetup(this);
-            return;
         }
 //        DialogDescriptor dd = new DialogDescriptor(validationPanel, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.configure.title"));
 //        Object result = DialogDisplayer.getDefault().notify(dd);
@@ -393,5 +379,16 @@ public class ScreenshotMaker implements VizArchitecture {
             defaultDirectory = directory.getAbsolutePath();
             NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, defaultDirectory);
         }
+    }
+
+    @Override
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        this.progressTicket = progressTicket;
+    }
+
+    @Override
+    public boolean cancel() {
+        cancel = true;
+        return true;
     }
 }

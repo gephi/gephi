@@ -82,7 +82,6 @@ public class TextManager implements VizArchitecture {
     private boolean edgeRefresh = true;
     private float cachedCameraLocationZ;
     //Preferences
-    private boolean renderer3d;
     private boolean mipmap;
     private boolean fractionalMetrics;
     private boolean antialised;
@@ -110,7 +109,6 @@ public class TextManager implements VizArchitecture {
         antialised = vizConfig.isLabelAntialiased();
         mipmap = vizConfig.isLabelMipMap();
         fractionalMetrics = vizConfig.isLabelFractionalMetrics();
-        renderer3d = true;
 
         //Init
         initRenderer();
@@ -152,14 +150,16 @@ public class TextManager implements VizArchitecture {
 
     }
 
+    public void reinitRenderers() {
+        nodeRenderer.reinitRenderer();
+        edgeRenderer.reinitRenderer();
+        nodeRefresh = true;
+        edgeRefresh = true;
+    }
+
     private void initRenderer() {
-        if (renderer3d) {
-            nodeRenderer = new Renderer3D();
-            edgeRenderer = new Renderer3D();
-        } else {
-//            nodeRenderer = new Renderer2D();
-//            edgeRenderer = new Renderer2D();
-        }
+        nodeRenderer = new Renderer3D();
+        edgeRenderer = new Renderer3D();
         nodeRenderer.initRenderer(model.getNodeFont());
         edgeRenderer.initRenderer(model.getEdgeFont());
     }
@@ -198,11 +198,6 @@ public class TextManager implements VizArchitecture {
 
     public Renderer getEdgeRenderer() {
         return edgeRenderer;
-    }
-
-    public void setRenderer3d(boolean renderer3d) {
-        this.renderer3d = renderer3d;
-        initRenderer();
     }
 
     public String buildText(Element element, TextModel textModel, Column[] selectedColumns) {
@@ -313,7 +308,7 @@ public class TextManager implements VizArchitecture {
                 }
 
                 float sizeFactor = drawable.getGlobalScale() * textData.getSize() * model.sizeMode.getSizeFactor3d(model.nodeSizeFactor, objectModel);
-                if (nodeRefresh) {
+                if (nodeRefresh || objectModel.getTextBounds() == null) {
                     r = renderer.getBounds(txt);
 
                     float width = (float) (sizeFactor * r.getWidth());
@@ -380,119 +375,4 @@ public class TextManager implements VizArchitecture {
             return renderer;
         }
     }
-
-//    private class Renderer2D implements Renderer {
-//
-//        private TextRenderer renderer;
-//        private static final float PIXEL_LIMIT = 3.5f;
-//
-//        @Override
-//        public void initRenderer(Font font) {
-//            renderer = new TextRenderer(font, antialised, fractionalMetrics, null, mipmap);
-//        }
-//
-//        @Override
-//        public void reinitRenderer() {
-//            renderer = new TextRenderer(renderer.getFont(), antialised, fractionalMetrics, null, mipmap);
-//        }
-//
-//        @Override
-//        public void disposeRenderer() {
-//            renderer.flush();
-//            renderer.dispose();
-//        }
-//
-//        @Override
-//        public Font getFont() {
-//            return renderer.getFont();
-//        }
-//
-//        @Override
-//        public void setFont(Font font) {
-//            initRenderer(font);
-//        }
-//
-//        @Override
-//        public void beginRendering() {
-//            renderer.beginRendering(drawable.getViewportWidth(), drawable.getViewportHeight());
-//        }
-//
-//        @Override
-//        public void endRendering() {
-//            renderer.endRendering();
-//            nodeRefresh = false;
-//            edgeRefresh = false;
-//        }
-//
-//        @Override
-//        public void drawTextNode(NodeModel objectModel) {
-//            Node node = objectModel.getNode();
-//            TextProperties textData = (TextProperties) node.getTextProperties();
-//            if (textData != null) {
-//                String txt = textData.getText();
-//                if (nodeRefresh) {
-//                    txt = buildText(node, objectModel, model.getNodeTextColumns());
-//                    Rectangle2D r = renderer.getBounds(txt);
-//                    objectModel.setTextBounds(r);
-//                }
-//                if (txt == null || txt.isEmpty()) {
-//                    return;
-//                }
-//                model.colorMode.textNodeColor(this, objectModel);
-//                float sizeFactor = drawable.getGlobalScale() * textData.getSize() * model.sizeMode.getSizeFactor2d(model.nodeSizeFactor, objectModel);
-//                if (sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
-//                    return;
-//                }
-//                Rectangle2D r = renderer.getBounds(txt);
-//                float posX = objectModel.getViewportX() + (float) r.getWidth() / -2 * sizeFactor;
-//                float posY = objectModel.getViewportY() + (float) r.getHeight() / -2 * sizeFactor;
-//                r.setRect(0, 0, r.getWidth() / Math.abs(drawable.getDraggingMarkerX()), r.getHeight() / Math.abs(drawable.getDraggingMarkerY()));
-//                objectModel.setTextBounds(r);
-//
-//                renderer.draw3D(txt, posX, posY, 0, sizeFactor);
-//            }
-//        }
-//
-//        @Override
-//        public void drawTextEdge(EdgeModel objectModel) {
-//            Edge edge = objectModel.getEdge();
-//            TextProperties textData = (TextProperties) edge.getTextProperties();
-//            if (textData != null) {
-//                String txt = textData.getText();
-//                if (edgeRefresh) {
-//                    txt = buildText(edge, objectModel, model.getEdgeTextColumns());
-//                    Rectangle2D r = renderer.getBounds(txt);
-//                    objectModel.setTextBounds(r);
-//                }
-//                if (txt == null || txt.isEmpty()) {
-//                    return;
-//                }
-//                model.colorMode.textEdgeColor(this, objectModel);
-////                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor2d(model.nodeSizeFactor, objectModel);
-//                float sizeFactor = 1f;
-//                if (sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
-//                    return;
-//                }
-//                Rectangle2D r = renderer.getBounds(txt);
-//                float viewportX = (objectModel.getSourceModel().getViewportX() + 2 * objectModel.getTargetModel().getViewportX()) / 3f;
-//                float viewportY = (objectModel.getSourceModel().getViewportY() + 2 * objectModel.getTargetModel().getViewportY()) / 3f;
-//                float posX = viewportX + (float) r.getWidth() / -2 * sizeFactor;
-//                float posY = viewportY + (float) r.getHeight() / -2 * sizeFactor;
-//                r.setRect(0, 0, r.getWidth() / drawable.getDraggingMarkerX(), r.getHeight() / drawable.getDraggingMarkerY());
-//                objectModel.setTextBounds(r);
-//
-//                renderer.draw3D(txt, posX, posY, 0, sizeFactor);
-//            }
-//        }
-//
-//        @Override
-//        public void setColor(float r, float g, float b, float a) {
-//            renderer.setColor(r, g, b, a);
-//        }
-//
-//        @Override
-//        public TextRenderer getJOGLRenderer() {
-//            return renderer;
-//        }
-//    }
 }

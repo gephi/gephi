@@ -65,7 +65,6 @@ import org.gephi.visualization.apiimpl.GraphIO;
 import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.opengl.GraphicalConfiguration;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.openide.util.Exceptions;
 
 /**
@@ -97,7 +96,6 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     protected FloatBuffer modelMatrix = Buffers.newDirectFloatBuffer(16);
     protected IntBuffer viewport = Buffers.newDirectIntBuffer(4);
     protected GraphicalConfiguration graphicalConfiguration;
-    protected ScreenshotMaker screenshotMaker;
     public Component graphComponent;
     protected AbstractEngine engine;
     protected Scheduler scheduler;
@@ -120,14 +118,13 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     public void initArchitecture() {
         this.engine = VizController.getInstance().getEngine();
         this.scheduler = VizController.getInstance().getScheduler();
-        this.screenshotMaker = VizController.getInstance().getScreenshotMaker();
         this.graphIO = VizController.getInstance().getGraphIO();
 
         cameraLocation = vizController.getVizConfig().getDefaultCameraPosition();
         cameraTarget = vizController.getVizConfig().getDefaultCameraTarget();
 
         //Mouse events
-        if (vizController.getVizConfig().isReduceFpsWhenMouseOut()) {
+        if (graphComponent != null && vizController.getVizConfig().isReduceFpsWhenMouseOut()) {
             final int minVal = vizController.getVizConfig().getReduceFpsWhenMouseOutValue();
             final int maxVal = 30;
             graphMouseAdapter = new MouseAdapter() {
@@ -136,7 +133,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     if (!scheduler.isAnimating()) {
-                        engine.startDisplay();
+                        engine.resumeDisplay();
                     }
                     scheduler.setFps(maxVal);
                     resetFpsAverage();
@@ -150,7 +147,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
                         target = lastTarget;
                     }
                     if (target <= 0.005f) {
-                        engine.stopDisplay();
+                        engine.pauseDisplay();
                     } else if (target > minVal) {
                         target = minVal;
                     }
@@ -159,16 +156,16 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
                 }
             };
             graphComponent.addMouseListener(graphMouseAdapter);
-        } else if (vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
+        } else if (graphComponent != null && vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
             graphMouseAdapter = new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    engine.startDisplay();
+                    engine.resumeDisplay();
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    engine.stopDisplay();
+                    engine.pauseDisplay();
                 }
             };
             graphComponent.addMouseListener(graphMouseAdapter);
@@ -307,10 +304,6 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
 
     @Override
     public void display(GLAutoDrawable drawable) {
-
-        //Screenshot
-        screenshotMaker.openglSignal(drawable);
-
         //FPS
         if (startTime == 0) {
             startTime = System.currentTimeMillis() - 1;
@@ -403,7 +396,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     // TEST CUBE CODE BEGIN
     private static float rotateFactor = 15f;
 
-    private void renderTestCube(GL2 gl) {
+    public void renderTestCube(GL2 gl) {
         float cubeSize = 1f;
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);

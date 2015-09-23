@@ -133,8 +133,6 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract void initEngine(GL2 gl, GLU glu);
 
-    public abstract void initScreenshot(GL2 gl, GLU glu);
-
     public abstract void cameraHasBeenMoved(GL2 gl, GLU glu);
 
     public abstract void mouseMove();
@@ -148,6 +146,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     public abstract void mouseClick();
 
     public abstract Scheduler getScheduler();
+
+    public abstract void initDisplayLists(GL2 gl, GLU glu);
 
 //    public abstract void addObject(int classID, Model obj);
 //    public abstract void removeObject(int classID, Model obj);
@@ -218,6 +218,14 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         lifeCycle.requestStopAnimating();
     }
 
+    public void pauseDisplay() {
+        lifeCycle.requestPauseAnimating();
+    }
+
+    public void resumeDisplay() {
+        lifeCycle.requestResumeAnimating();
+    }
+
     public Octree getOctree() {
         return octree;
     }
@@ -232,10 +240,20 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     protected class EngineLifeCycle {
 
+        private boolean started;
         private boolean inited;
         private boolean requestAnimation;
 
-        public void requestStartAnimating() {
+        public void requestPauseAnimating() {
+            if (inited) {
+                stopAnimating();
+            }
+        }
+
+        public void requestResumeAnimating() {
+            if (!started) {
+                return;
+            }
             if (inited) {
                 startAnimating();
             } else {
@@ -243,10 +261,14 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
             }
         }
 
+        public void requestStartAnimating() {
+            started = true;
+            requestResumeAnimating();
+        }
+
         public void requestStopAnimating() {
-            if (inited) {
-                stopAnimating();
-            }
+            requestPauseAnimating();
+            started = false;
         }
 
         public void initEngine() {

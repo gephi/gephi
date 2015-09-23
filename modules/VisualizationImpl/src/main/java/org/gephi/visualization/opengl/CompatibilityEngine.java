@@ -323,14 +323,6 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     @Override
-    public void initScreenshot(GL2 gl, GLU glu) {
-        initDisplayLists(gl, glu);
-        textManager.getNodeRenderer().reinitRenderer();
-        textManager.getEdgeRenderer().reinitRenderer();
-//        scheduler.cameraMoved.set(true);
-    }
-
-    @Override
     public void mouseClick() {
         if (vizConfig.isSelectionEnable() && rectangleSelection && !customSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
@@ -651,7 +643,7 @@ public class CompatibilityEngine extends AbstractEngine {
 //        }
     }
 
-    private void initDisplayLists(GL2 gl, GLU glu) {
+    public void initDisplayLists(GL2 gl, GLU glu) {
 
         //Quadric for all the glu models
         GLUquadric quadric = glu.gluNewQuadric();
