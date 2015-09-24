@@ -62,6 +62,7 @@ import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -94,7 +95,7 @@ public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
     private VizConfig vizConfig;
     private TextManager textManager;
     //Executor
-    private LongTaskExecutor executor;
+    private final LongTaskExecutor executor;
     private ProgressTicket progressTicket;
     private boolean cancel;
     //Settings
@@ -135,7 +136,7 @@ public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
     }
 
     public void takeScreenshot() {
-        executor.execute(this, this, "Take screenshot", null);
+        executor.execute(this, this, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.progress.message"), null);
     }
 
     @Override
@@ -145,6 +146,9 @@ public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
         try {
             // Stop display
             engine.stopDisplay();
+
+            // Start progress
+            Progress.start(progressTicket);
 
             Thread.sleep(100);
 
@@ -190,9 +194,13 @@ public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
             engine.updateLOD();
 
             // Render tiles
+            int tiles = renderer.getParam(TileRenderer.TR_COLUMNS) * renderer.getParam(TileRenderer.TR_ROWS);
+            Progress.switchToDeterminate(progressTicket, tiles);
             while (!renderer.eot() && !cancel) {
                 renderer.display();
+                Progress.progress(progressTicket);
             }
+            Progress.switchToIndeterminate(progressTicket);
 
             renderer.detachAutoDrawable();
 
@@ -271,6 +279,9 @@ public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
             textManager.reinitRenderers();
 
             engine.startDisplay();
+
+            //Progress finish
+            Progress.finish(progressTicket);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
