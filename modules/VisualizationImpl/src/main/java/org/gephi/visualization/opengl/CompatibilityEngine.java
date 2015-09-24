@@ -509,7 +509,6 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void stopDrag() {
-
         //Selection
         if (vizConfig.isSelectionEnable() && rectangleSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
@@ -519,12 +518,12 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     @Override
-    public void updateObjectsPosition() {
-//        for (ModelClass objClass : modelClasses) {
-//            if (objClass.isEnabled()) {
-//                octree.updateObjectsPosition(objClass.getClassId());
-//            }
-//        }
+    public void updateLOD() {
+        Iterator<NodeModel> iterator = octree.getNodeIterator();
+        for (; iterator.hasNext();) {
+            NodeModel obj = iterator.next();
+            nodeModeler.chooseModel(obj);
+        }
     }
 
 //    @Override

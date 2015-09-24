@@ -187,6 +187,7 @@ public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
             renderer.setGLEventListener(preTileGLEL, null);
 
             vizConfig.setDisableLOD(true);
+            engine.updateLOD();
 
             // Render tiles
             while (!renderer.eot() && !cancel) {
@@ -205,6 +206,7 @@ public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
             });
 
             vizConfig.setDisableLOD(false);
+            engine.updateLOD();
 
             if (!cancel) {
                 final GLPixelBuffer imageBuffer = renderer.getImageBuffer();

@@ -149,9 +149,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract void initDisplayLists(GL2 gl, GLU glu);
 
-//    public abstract void addObject(int classID, Model obj);
-//    public abstract void removeObject(int classID, Model obj);
-    public abstract void updateObjectsPosition();
+    public abstract void updateLOD();
 
     public abstract boolean updateWorld();
 
