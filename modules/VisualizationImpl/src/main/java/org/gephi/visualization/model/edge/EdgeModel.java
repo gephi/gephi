@@ -54,6 +54,7 @@ import org.gephi.visualization.model.node.NodeModel;
 public abstract class EdgeModel implements Model, TextModel {
 
     protected final Edge edge;
+    protected float weight;
     //Flags
     protected boolean selected;
     //Text
@@ -89,6 +90,14 @@ public abstract class EdgeModel implements Model, TextModel {
 
     public boolean isSelected() {
         return selected;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
     }
 
     @Override

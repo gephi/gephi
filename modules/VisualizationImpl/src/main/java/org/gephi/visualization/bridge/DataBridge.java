@@ -139,17 +139,21 @@ public class DataBridge implements VizArchitecture {
             float maxWeight = Float.MIN_VALUE;
             for (Edge edge : graph.getEdges()) {
                 int id = edge.getStoreId();
+                EdgeModel model;
                 if (id >= edges.length || edges[id] == null) {
                     growEdges(id);
                     NodeModel sourceModel = nodes[edge.getSource().getStoreId()];
                     NodeModel targetModel = nodes[edge.getTarget().getStoreId()];
-                    EdgeModel model = edgeModeler.initModel(edge, sourceModel, targetModel);
+                    model = edgeModeler.initModel(edge, sourceModel, targetModel);
                     sourceModel.addEdge(model);
                     targetModel.addEdge(model);
                     edges[id] = model;
                     addedEdges++;
+                } else {
+                    model = edges[id];
                 }
                 float w = (float) edge.getWeight();
+                model.setWeight(w);
                 minWeight = Math.min(w, minWeight);
                 maxWeight = Math.max(w, maxWeight);
             }

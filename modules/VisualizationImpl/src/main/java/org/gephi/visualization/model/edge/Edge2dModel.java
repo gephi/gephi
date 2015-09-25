@@ -94,7 +94,7 @@ public class Edge2dModel extends EdgeModel {
             weightRatio = Math.abs((WEIGHT_MAXIMUM - WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
         }
         float edgeScale = vizModel.getEdgeScale();
-        w = (float) edge.getWeight();
+        w = getWeight();
         w = ((w - limits.getMinWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
         //
 
@@ -209,7 +209,7 @@ public class Edge2dModel extends EdgeModel {
             weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
         }
         float edgeScale = vizModel.getEdgeScale();
-        w = (float) edge.getWeight();
+        w = getWeight();
         w = ((w - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
 
         //

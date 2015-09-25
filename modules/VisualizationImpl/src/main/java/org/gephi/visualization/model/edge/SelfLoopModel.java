@@ -83,7 +83,7 @@ public class SelfLoopModel extends EdgeModel {
         } else {
             weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
         }
-        float w = (float) edge.getWeight();
+        float w = weight;
         float edgeScale = vizModel.getEdgeScale();
         w = ((w - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
         //
