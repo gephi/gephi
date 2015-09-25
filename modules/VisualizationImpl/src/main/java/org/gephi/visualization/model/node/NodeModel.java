@@ -205,11 +205,7 @@ public abstract class NodeModel implements Model, TextModel {
 
     @Override
     public String getText() {
-        String t = node.getTextProperties().getText();
-        if (t == null) {
-            return node.getLabel();
-        }
-        return t;
+        return node.getTextProperties().getText();
     }
 
     @Override

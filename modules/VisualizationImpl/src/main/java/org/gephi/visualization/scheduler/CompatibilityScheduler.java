@@ -44,13 +44,11 @@ package org.gephi.visualization.scheduler;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
-import java.util.Iterator;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.opengl.CompatibilityEngine;
 
 /**
@@ -75,8 +73,8 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     private BasicFPSAnimator displayAnimator;
     private BasicFPSAnimator updateAnimator;
     private float displayFpsLimit = 30f;
-    private float updateFpsLimit = 5f;
-    private Object worldLock = new Object();
+    private final float updateFpsLimit = 5f;
+    private final Object worldLock = new Object();
 
     @Override
     public void initArchitecture() {
@@ -130,8 +128,6 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
     @Override
     public void display(GL2 gl, GLU glu) {
-//        if (simpleFPSAnimator.isDisplayCall()) {
-
         //Boolean vals
         boolean execMouseClick = mouseClick.getAndSet(false);
         boolean execMouseMove = mouseMoved.getAndSet(false);
@@ -174,7 +170,6 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         engine.beforeDisplay(gl, glu);
         engine.display(gl, glu);
         engine.afterDisplay(gl, glu);
-//        }
     }
 
     @Override

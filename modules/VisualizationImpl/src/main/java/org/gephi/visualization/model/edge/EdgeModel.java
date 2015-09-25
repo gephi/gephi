@@ -140,11 +140,7 @@ public abstract class EdgeModel implements Model, TextModel {
 
     @Override
     public String getText() {
-        String t = edge.getTextProperties().getText();
-        if (t == null) {
-            return edge.getLabel();
-        }
-        return t;
+        return edge.getTextProperties().getText();
     }
 
     @Override

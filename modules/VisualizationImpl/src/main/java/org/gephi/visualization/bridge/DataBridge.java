@@ -57,6 +57,7 @@ import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.model.node.NodeModeler;
 import org.gephi.visualization.octree.Octree;
 import org.gephi.visualization.opengl.AbstractEngine;
+import org.gephi.visualization.text.TextManager;
 import org.openide.util.Lookup;
 
 /**
@@ -70,6 +71,7 @@ public class DataBridge implements VizArchitecture {
     //Architecture
     protected AbstractEngine engine;
     protected GraphController controller;
+    protected TextManager textManager;
     private VizConfig vizConfig;
     protected GraphLimits limits;
     //Graph
@@ -86,6 +88,7 @@ public class DataBridge implements VizArchitecture {
         this.controller = Lookup.getDefault().lookup(GraphController.class);
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.limits = VizController.getInstance().getLimits();
+        this.textManager = VizController.getInstance().getTextManager();
     }
 
     public synchronized boolean updateWorld() {
@@ -112,13 +115,17 @@ public class DataBridge implements VizArchitecture {
             }
             for (Node node : graph.getNodes()) {
                 int id = node.getStoreId();
+                NodeModel model;
                 if (id >= nodes.length || nodes[id] == null) {
                     growNodes(id);
-                    NodeModel model = nodeModeler.initModel(node);
+                    model = nodeModeler.initModel(node);
                     octree.addNode(model);
                     nodes[id] = model;
                     addedNodes++;
+                } else {
+                    model = nodes[id];
                 }
+                textManager.refreshNode(model);
             }
             for (int i = 0; i < edges.length; i++) {
                 EdgeModel edge = edges[i];
@@ -159,11 +166,14 @@ public class DataBridge implements VizArchitecture {
                 model.setWeight(w);
                 minWeight = Math.min(w, minWeight);
                 maxWeight = Math.max(w, maxWeight);
+
+                textManager.refreshEdge(model);
             }
             limits.setMaxWeight(maxWeight);
             limits.setMinWeight(minWeight);
 
             graph.readUnlock();
+
             System.out.println("DATABRIDGE:");
             System.out.println(" Removed Edges: " + removedEdges);
             System.out.println(" Added Edges: " + addedEdges);
