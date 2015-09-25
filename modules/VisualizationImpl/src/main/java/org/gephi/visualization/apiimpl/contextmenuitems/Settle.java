@@ -43,9 +43,11 @@ package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import java.awt.event.KeyEvent;
 import javax.swing.Icon;
+import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -57,8 +59,8 @@ public class Settle extends BasicItem {
 
     @Override
     public void execute() {
-//        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-//        gec.setNodesFixed(nodes, true);
+        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
+        gec.setNodesFixed(nodes, true);
     }
 
     @Override
@@ -68,10 +70,11 @@ public class Settle extends BasicItem {
 
     @Override
     public boolean canExecute() {
+        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         for (Node n : nodes) {
-//            if (!Lookup.getDefault().lookup(GraphElementsController.class).isNodeFixed(n)) {
-//                return true;
-//            }
+            if (!gec.isNodeFixed(n)) {
+                return true;
+            }
         }
         return false;
     }

@@ -48,10 +48,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.Arrays;
 import javax.swing.SwingUtilities;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.Node;
 import org.gephi.lib.gleem.linalg.MathUtil;
 import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.GraphLimits;
@@ -63,7 +60,6 @@ import org.gephi.visualization.apiimpl.GraphIO;
 import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.selection.Rectangle;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -241,7 +237,10 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         } else if (SwingUtilities.isRightMouseButton(e)) {
             if (vizController.getVizConfig().isContextMenu()) {
                 GraphContextMenu popupMenu = new GraphContextMenu();
-//                popupMenu.getMenu().show(graphDrawable.getGraphComponent(), (int) mousePosition[0], (int) (graphDrawable.viewport.get(3) - mousePosition[1]));
+                float globalScale = graphDrawable.getGlobalScale();
+                int x = (int) (mousePosition[0] / globalScale);
+                int y = (int) ((graphDrawable.viewport.get(3) - mousePosition[1]) / globalScale);
+                popupMenu.getMenu().show(graphDrawable.getGraphComponent(), x, y);
             }
             vizEventManager.mouseRightClick();
         } else if (SwingUtilities.isMiddleMouseButton(e)) {

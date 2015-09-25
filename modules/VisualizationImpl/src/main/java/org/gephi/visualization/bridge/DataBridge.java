@@ -192,6 +192,10 @@ public class DataBridge implements VizArchitecture {
         return graphModel != null && !graphModel.isUndirected();
     }
 
+    public Graph getGraph() {
+        return graph;
+    }
+
     private void growNodes(final int index) {
         if (nodes == null) {
             nodes = new NodeModel[10];

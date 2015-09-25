@@ -47,6 +47,8 @@ import java.util.Iterator;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUquadric;
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.apiimpl.Scheduler;
@@ -67,8 +69,6 @@ public class CompatibilityEngine extends AbstractEngine {
 
     private CompatibilityScheduler scheduler;
     private int markTime = 0;
-    //Selection
-//    private ConcurrentLinkedQueue<ModelImpl>[] selectedObjects;
     private boolean anySelected = false;
 
     public CompatibilityEngine() {
@@ -104,32 +104,6 @@ public class CompatibilityEngine extends AbstractEngine {
         boolean updated = dataBridge.updateWorld();
 
         return repositioned || updated;
-//        boolean res = false;
-//        boolean newConfig = configChanged;
-//        if (newConfig) {
-//            dataBridge.reset();
-//            if (!vizConfig.isCustomSelection()) {
-//                //Reset model classes
-////                for (ModelClass objClass : getModelClasses()) {
-////                    if (objClass.isEnabled()) {
-////                        objClass.swapModelers();
-////                        resetObjectClass(objClass);
-////                    }
-////                }
-//            }
-//
-//            initSelection();
-//
-//        }
-//        if (dataBridge.requireUpdate() || newConfig) {
-//            dataBridge.updateWorld();
-//            res = true;
-//        }
-//        if (newConfig) {
-//
-//            configChanged = false;
-//        }
-//        return res;
     }
 
     @Override
@@ -317,8 +291,6 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void initEngine(final GL2 gl, final GLU glu) {
         initDisplayLists(gl, glu);
-//        scheduler.cameraMoved.set(true);
-//        scheduler.mouseMoved.set(true);
         lifeCycle.setInited();
     }
 
@@ -435,6 +407,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 obj.setSelected(false);
             }
         }
+
 //
 //        for (ModelClass objClass : selectableClasses) {
 //            forceUnselect = objClass.isAloneSelection() && someSelection;
@@ -524,6 +497,18 @@ public class CompatibilityEngine extends AbstractEngine {
             NodeModel obj = iterator.next();
             nodeModeler.chooseModel(obj);
         }
+    }
+
+    @Override
+    public List<NodeModel> getSelectedNodes() {
+        List<NodeModel> selected = new ArrayList<NodeModel>();
+        for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext();) {
+            NodeModel nodeModel = itr.next();
+            if (nodeModel.isSelected()) {
+                selected.add(nodeModel);
+            }
+        }
+        return selected;
     }
 
 //    @Override
@@ -642,6 +627,7 @@ public class CompatibilityEngine extends AbstractEngine {
 //        }
     }
 
+    @Override
     public void initDisplayLists(GL2 gl, GLU glu) {
 
         //Quadric for all the glu models

@@ -45,6 +45,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -116,8 +117,6 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
                 configChanged = true;
                 if (evt.getPropertyName().equals("backgroundColor")) {
                     backgroundChanged = true;
-                } else if (evt.getPropertyName().equals("use3d")) {
-                    reinit = true;
                 }
 
                 edgeModeler.setEnabled(vizController.getVizModel().isShowEdges());
@@ -162,6 +161,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected abstract void startAnimating();
 
     protected abstract void stopAnimating();
+
+    public abstract List<NodeModel> getSelectedNodes();
 
 //    public abstract Model[] getSelectedObjects(int modelClass);
 //    public abstract void selectNodes(NodeModel obj);

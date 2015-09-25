@@ -43,11 +43,13 @@ package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import java.awt.event.KeyEvent;
 import javax.swing.Icon;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.graph.api.Graph;
 //import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -57,20 +59,21 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = GraphContextMenuItem.class)
 public class SelectInDataLaboratory extends BasicItem {
 
-//    private DataTablesController dtc;
+    private DataTablesController dtc;
+
     @Override
     public void setup(Graph graph, Node[] nodes) {
         this.nodes = nodes;
-//        dtc = Lookup.getDefault().lookup(DataTablesController.class);
-//        if(!dtc.isDataTablesReady()){
-//            dtc.prepareDataTables();
-//        }
+        dtc = Lookup.getDefault().lookup(DataTablesController.class);
+        if (!dtc.isDataTablesReady()) {
+            dtc.prepareDataTables();
+        }
     }
 
     @Override
     public void execute() {
-//        dtc.setNodeTableSelection(nodes);
-//        dtc.selectNodesTable();
+        dtc.setNodeTableSelection(nodes);
+        dtc.selectNodesTable();
     }
 
     @Override
@@ -85,8 +88,7 @@ public class SelectInDataLaboratory extends BasicItem {
 
     @Override
     public boolean canExecute() {
-//        return nodes.length >= 1 && dtc.isDataTablesReady();
-        return false;
+        return nodes.length >= 1 && dtc.isDataTablesReady();
     }
 
     @Override

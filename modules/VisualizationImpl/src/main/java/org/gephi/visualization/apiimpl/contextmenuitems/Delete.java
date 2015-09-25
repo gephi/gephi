@@ -43,10 +43,12 @@ package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import java.awt.event.KeyEvent;
 import javax.swing.Icon;
+import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -62,8 +64,8 @@ public class Delete extends BasicItem {
                 NbBundle.getMessage(Delete.class, "GraphContextMenu.Delete.message"),
                 NbBundle.getMessage(Delete.class, "GraphContextMenu.Delete.message.title"), NotifyDescriptor.YES_NO_OPTION);
         if (DialogDisplayer.getDefault().notify(notifyDescriptor).equals(NotifyDescriptor.YES_OPTION)) {
-//            GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-//            gec.deleteNodes(nodes);
+            GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
+            gec.deleteNodes(nodes);
         }
     }
 
