@@ -100,6 +100,7 @@ public class DataBridge implements VizArchitecture {
             int removedEdges = 0;
             int addedEdges = 0;
 
+            graph.readLock();
             for (int i = 0; i < nodes.length; i++) {
                 NodeModel node = nodes[i];
                 if (node != null && node.getNode().getStoreId() == -1) {
@@ -123,8 +124,10 @@ public class DataBridge implements VizArchitecture {
                 EdgeModel edge = edges[i];
                 if (edge != null && edge.getEdge().getStoreId() == -1) {
                     //Removed
-                    NodeModel sourceModel = nodes[edge.getEdge().getSource().getStoreId()];
-                    NodeModel targetModel = nodes[edge.getEdge().getTarget().getStoreId()];
+                    int sourceId = edge.getEdge().getSource().getStoreId();
+                    int targetId = edge.getEdge().getTarget().getStoreId();
+                    NodeModel sourceModel = sourceId == -1 ? null : nodes[sourceId];
+                    NodeModel targetModel = targetId == -1 ? null : nodes[targetId];
                     if (sourceModel != null) {
                         sourceModel.removeEdge(edge);
                     }
@@ -160,6 +163,7 @@ public class DataBridge implements VizArchitecture {
             limits.setMaxWeight(maxWeight);
             limits.setMinWeight(minWeight);
 
+            graph.readUnlock();
             System.out.println("DATABRIDGE:");
             System.out.println(" Removed Edges: " + removedEdges);
             System.out.println(" Added Edges: " + addedEdges);
