@@ -274,10 +274,12 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         if (leftButtonMoving[0] != -1) {
 
             //Remet à jour aussi la mousePosition pendant le drag, notamment pour coller quand drag released
-//            mousePosition[0] = (int) x;
-//            mousePosition[1] = graphDrawable.viewport.get(3) - (int) y - 1;
+            mousePosition[0] = (int) x;
+            mousePosition[1] = graphDrawable.viewport.get(3) - (int) y - 1;
             mouseDrag3d[0] = (float) ((graphDrawable.viewport.get(2) / 2 - x) / graphDrawable.draggingMarker[0] + graphDrawable.cameraTarget[0]);
             mouseDrag3d[1] = (float) ((y - graphDrawable.viewport.get(3) / 2) / graphDrawable.draggingMarker[1] + graphDrawable.cameraTarget[1]);
+            mousePosition3d[0] = mouseDrag3d[0];
+            mousePosition3d[1] = mouseDrag3d[1];
 
             if (vizController.getVizConfig().isSelectionEnable() && engine.isRectangleSelection()) {
                 if (!dragging) {
@@ -488,5 +490,10 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         graphDrawable.cameraLocation[0] = x;
         graphDrawable.cameraLocation[1] = y;
         graphDrawable.cameraLocation[2] = z + 100;
+    }
+
+    @Override
+    public boolean isDragging() {
+        return dragging;
     }
 }

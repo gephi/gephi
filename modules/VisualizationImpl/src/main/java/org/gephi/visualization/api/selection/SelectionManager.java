@@ -60,7 +60,7 @@ public class SelectionManager implements VizArchitecture {
 
     private VizConfig vizConfig;
     private AbstractEngine engine;
-    private List<ChangeListener> listeners;
+    private final List<ChangeListener> listeners;
     //Settings
     private int mouseSelectionDiameter;
     private boolean mouseSelectionZoomProportionnal;

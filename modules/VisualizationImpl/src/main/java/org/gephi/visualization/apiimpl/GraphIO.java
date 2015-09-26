@@ -73,4 +73,6 @@ public interface GraphIO extends MouseListener, MouseWheelListener, MouseMotionL
     public void centerOnGraph();
 
     public void centerOnCoordinate(float x, float y, float z);
+
+    public boolean isDragging();
 }

@@ -70,6 +70,7 @@ public class CompatibilityEngine extends AbstractEngine {
     private CompatibilityScheduler scheduler;
     private int markTime = 0;
     private boolean anySelected = false;
+    private List<NodeModel> dragSelected;
 
     public CompatibilityEngine() {
         super();
@@ -361,17 +362,20 @@ public class CompatibilityEngine extends AbstractEngine {
         if (vizConfig.isMouseSelectionUpdateWhileDragging()) {
             mouseMove();
         } else {
-//            float[] drag = graphIO.getMouseDrag3d();
-//            for (ModelImpl obj : selectedObjects[0]) {
-//                float[] mouseDistance = obj.getDragDistanceFromMouse();
-//                obj.getObj().setX(drag[0] + mouseDistance[0]);
-//                obj.getObj().setY(drag[1] + mouseDistance[1]);
-//            }
+            float[] drag = graphIO.getMouseDrag3d();
+            if (dragSelected != null) {
+                for (NodeModel obj : dragSelected) {
+                    float[] mouseDistance = obj.getDragDistanceFromMouse();
+                    obj.getNode().setX(drag[0] + mouseDistance[0]);
+                    obj.getNode().setY(drag[1] + mouseDistance[1]);
+                }
+            }
         }
     }
 
     @Override
     public void mouseMove() {
+
         //Selection
         if (vizConfig.isSelectionEnable() && rectangleSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
@@ -382,6 +386,10 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         if (customSelection || currentSelectionArea.blockSelection()) {
+            return;
+        }
+
+        if (graphIO.isDragging()) {
             return;
         }
 //
@@ -471,13 +479,13 @@ public class CompatibilityEngine extends AbstractEngine {
     public void startDrag() {
         float x = graphIO.getMouseDrag3d()[0];
         float y = graphIO.getMouseDrag3d()[1];
+        dragSelected = getSelectedNodes();
 
-//        for (Iterator<ModelImpl> itr = selectedObjects[0].iterator(); itr.hasNext();) {
-//            ModelImpl o = itr.next();
-//            float[] tab = o.getDragDistanceFromMouse();
-//            tab[0] = o.getObj().x() - x;
-//            tab[1] = o.getObj().y() - y;
-//        }
+        for (NodeModel selected : dragSelected) {
+            float[] tab = selected.getDragDistanceFromMouse();
+            tab[0] = selected.getNode().x() - x;
+            tab[1] = selected.getNode().y() - y;
+        }
     }
 
     @Override
@@ -488,6 +496,7 @@ public class CompatibilityEngine extends AbstractEngine {
             rectangle.stop();
             scheduler.requireUpdateSelection();
         }
+        dragSelected = null;
     }
 
     @Override

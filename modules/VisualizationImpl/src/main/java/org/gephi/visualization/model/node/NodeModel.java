@@ -243,6 +243,10 @@ public abstract class NodeModel implements Model, TextModel {
         return node;
     }
 
+    public float[] getDragDistanceFromMouse() {
+        return dragDistance;
+    }
+
     public void addEdge(EdgeModel model) {
         int id = edgeLength++;
         growEdges(id);

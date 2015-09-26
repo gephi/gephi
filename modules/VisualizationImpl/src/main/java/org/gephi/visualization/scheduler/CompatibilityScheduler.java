@@ -147,7 +147,6 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         if (execMouseMove) {
             engine.mouseMove();
             engine.updateSelection(gl, glu);
-
         } else if (execDrag) {
             //Drag
             if (stopDrag.getAndSet(false)) {
