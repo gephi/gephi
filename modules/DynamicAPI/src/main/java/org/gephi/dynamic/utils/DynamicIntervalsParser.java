@@ -268,7 +268,7 @@ public final class DynamicIntervalsParser {
         high = DynamicUtilities.parseTime(values.get(1));
 
         if (type == null) {
-            return new IntervalWithValue(low, high, lopen, ropen, null);
+            return new IntervalWithValue(low, high, null);
         } else {
             Object value = null;
             if (values.size() == 3) {
@@ -291,7 +291,7 @@ public final class DynamicIntervalsParser {
                 value = AttributeUtils.parse(valString, type);
             }
             
-            return new IntervalWithValue(low, high, lopen, ropen, value);
+            return new IntervalWithValue(low, high, value);
         }
     }
 }

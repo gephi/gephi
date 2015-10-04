@@ -136,7 +136,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     private Column convertColumnToDynamic(Table table, Column column, double low, double high, String newColumnTitle) {
         Class oldType = column.getTypeClass();
-        Class<? extends TimestampMap> newType = AttributeUtils.getDynamicType(oldType);
+        Class<? extends TimestampMap> newType = AttributeUtils.getTimestampMapType(oldType);
 
         if (newColumnTitle != null) {
             if (newColumnTitle.equals(column.getTitle())) {
@@ -939,7 +939,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             return numbers;
         }
         Number[] dynamicNumbers;
-        dynamicNumbers = (Number[]) dynamicList.toArray();
+        dynamicNumbers = (Number[]) dynamicList.toValuesArray();
         Number n;
         return Arrays.asList(dynamicNumbers);
     }

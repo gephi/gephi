@@ -439,7 +439,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
     /*************Private methods:*************/
     private Column getTimeIntervalColumn(Table table) {
-        Column column = table.getColumn(GraphStoreConfiguration.ELEMENT_TIMESTAMP_INDEX);
+        Column column = table.getColumn(GraphStoreConfiguration.ELEMENT_TIMESET_INDEX);
         if (column == null) {
             column = table.addColumn("timestamp", TimestampSet.class, Origin.PROPERTY);
         }

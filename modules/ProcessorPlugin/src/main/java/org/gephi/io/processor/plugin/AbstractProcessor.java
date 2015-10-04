@@ -70,7 +70,7 @@ public abstract class AbstractProcessor {
             if (!nodeTable.hasColumn(col.getId())) {
                 Class typeClass = col.getTypeClass();
                 if (col.isDynamic()) {
-                    typeClass = AttributeUtils.getDynamicType(typeClass);
+                    typeClass = AttributeUtils.getTimestampMapType(typeClass);
                 }
                 nodeTable.addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, col.getDefaultValue(), true);
             }
@@ -80,7 +80,7 @@ public abstract class AbstractProcessor {
             if (!edgeTable.hasColumn(col.getId())) {
                 Class typeClass = col.getTypeClass();
                 if (col.isDynamic()) {
-                    typeClass = AttributeUtils.getDynamicType(typeClass);
+                    typeClass = AttributeUtils.getTimestampMapType(typeClass);
                 }
                 edgeTable.addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, col.getDefaultValue(), true);
             }
