@@ -138,7 +138,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
 
             flushToEdge(draftEdge, edge);
         }
-        System.out.println("# Nodes loaded: " + nodeCount + "\n# Edges loaded: " + edgeCount);
+
         workspace = null;
     }
 }
