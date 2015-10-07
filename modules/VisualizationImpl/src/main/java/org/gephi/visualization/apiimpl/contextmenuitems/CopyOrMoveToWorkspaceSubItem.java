@@ -41,8 +41,11 @@
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
+import java.util.Arrays;
 import javax.swing.Icon;
 import org.gephi.desktop.project.api.ProjectControllerUI;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
@@ -148,9 +151,7 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem {
     }
 
     public void delete() {
-//        HierarchicalGraph hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
-//        for (Node n : nodes) {
-//            hg.removeNode(n);
-//        }
+        Graph g = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
+        g.removeAllNodes(Arrays.asList(nodes));
     }
 }

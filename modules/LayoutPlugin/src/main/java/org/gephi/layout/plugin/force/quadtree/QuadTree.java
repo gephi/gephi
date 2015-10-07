@@ -44,11 +44,13 @@ package org.gephi.layout.plugin.force.quadtree;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.ColumnIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeProperties;
 import org.gephi.graph.api.TextProperties;
@@ -324,9 +326,9 @@ public class QuadTree implements Node {
 
     @Override
     public ColumnIterable getAttributeColumns() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported.");
     }
-    
+
     @Override
     public Object removeAttribute(String key) {
         throw new UnsupportedOperationException("Not supported.");
@@ -404,6 +406,71 @@ public class QuadTree implements Node {
 
     @Override
     public boolean hasTimestamp(double timestamp) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public Object getAttribute(String key, Interval interval) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public Object getAttribute(Column column, Interval interval) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public Iterable<Map.Entry> getAttributes(Column column) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public Object removeAttribute(String key, double timestamp) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public Object removeAttribute(Column column, double timestamp) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public Object removeAttribute(String key, Interval interval) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object removeAttribute(Column column, Interval interval) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public void setAttribute(String key, Object value, Interval interval) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public void setAttribute(Column column, Object value, Interval interval) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public boolean addInterval(Interval interval) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public boolean removeInterval(Interval interval) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public boolean hasInterval(Interval interval) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public Interval[] getIntervals() {
         throw new UnsupportedOperationException("Not supported.");
     }
 

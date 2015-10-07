@@ -41,18 +41,8 @@
  */
 package org.gephi.visualization.component;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import javax.swing.DefaultComboBoxModel;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
-import org.gephi.visualization.api.initializer.Modeler;
-import org.gephi.visualization.model.ModelClass;
-import org.gephi.visualization.model.node.NodeModeler;
 
 /**
  *
@@ -69,85 +59,11 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
 
     public void setup() {
         VizModel vizModel = VizController.getInstance().getVizModel();
-        adjustTextCheckbox.setSelected(vizModel.isAdjustByText());
-        adjustTextCheckbox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                vizModel.setAdjustByText(adjustTextCheckbox.isSelected());
-            }
-        });
 
-        final DefaultComboBoxModel comboModel = new DefaultComboBoxModel();
-        final ModelClass nodeClass = VizController.getInstance().getModelClassLibrary().getNodeClass();
-        for (Modeler modeler : nodeClass.getModelers()) {
-            comboModel.addElement(modeler);
-        }
-        comboModel.setSelectedItem(nodeClass.getCurrentModeler());
-        shapeCombo.setModel(comboModel);
-        shapeCombo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (nodeClass.getCurrentModeler() == comboModel.getSelectedItem()) {
-                    return;
-                }
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                NodeModeler modeler = (NodeModeler) comboModel.getSelectedItem();
-                if (modeler.is3d() && !vizModel.isUse3d()) {
-//                    String msg = NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message3d");
-//                    if (JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    //enable 3d
-                    vizModel.setUse3d(true);
-                    nodeClass.setCurrentModeler(modeler);
-//                    }
-
-                } else if (!modeler.is3d() && vizModel.isUse3d()) {
-//                    String msg = NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message2d");
-//                    if (JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    //disable 3d
-                    vizModel.setUse3d(false);
-                    nodeClass.setCurrentModeler(modeler);
-//                    }
-                } else {
-                    nodeClass.setCurrentModeler(modeler);
-                }
-            }
-        });
-
-        vizModel.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("nodeModeler")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("init")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("adjustByText")) {
-                    refreshSharedConfig();
-                }
-            }
-        });
-        refreshSharedConfig();
-    }
-
-    private void refreshSharedConfig() {
-        VizModel vizModel = VizController.getInstance().getVizModel();
-        setEnable(!vizModel.isDefaultModel());
-        if (vizModel.isDefaultModel()) {
-            return;
-        }
-        final ModelClass nodeClass = VizController.getInstance().getModelClassLibrary().getNodeClass();
-        if (shapeCombo.getSelectedItem() != nodeClass.getCurrentModeler()) {
-            shapeCombo.setSelectedItem(nodeClass.getCurrentModeler());
-        }
-        if (adjustTextCheckbox.isSelected() != vizModel.isAdjustByText()) {
-            adjustTextCheckbox.setSelected(vizModel.isAdjustByText());
-        }
     }
 
     public void setEnable(boolean enable) {
-        labelShape.setEnabled(enable);
-        adjustTextCheckbox.setEnabled(enable);
-        shapeCombo.setEnabled(enable);
+
     }
 
     /**
@@ -159,45 +75,17 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        labelShape = new javax.swing.JLabel();
-        adjustTextCheckbox = new javax.swing.JCheckBox();
-        shapeCombo = new javax.swing.JComboBox();
-
-        labelShape.setText(org.openide.util.NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.labelShape.text")); // NOI18N
-
-        adjustTextCheckbox.setText(org.openide.util.NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.adjustTextCheckbox.text")); // NOI18N
-
-        shapeCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelShape)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(shapeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(adjustTextCheckbox))
-                .addContainerGap(358, Short.MAX_VALUE))
+            .addGap(0, 581, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelShape)
-                    .addComponent(shapeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(adjustTextCheckbox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(0, 74, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox adjustTextCheckbox;
-    private javax.swing.JLabel labelShape;
-    private javax.swing.JComboBox shapeCombo;
     // End of variables declaration//GEN-END:variables
 }

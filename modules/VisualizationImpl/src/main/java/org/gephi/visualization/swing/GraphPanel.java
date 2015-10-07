@@ -78,7 +78,6 @@ public class GraphPanel extends GLAbstractListener {
 //            }
 //        };
         //gljPanel.setOpaque(false);
-
         graphComponent = gljPanel;
         gljPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 

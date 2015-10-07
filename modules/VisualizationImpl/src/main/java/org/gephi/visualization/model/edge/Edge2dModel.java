@@ -94,7 +94,7 @@ public class Edge2dModel extends EdgeModel {
             weightRatio = Math.abs((WEIGHT_MAXIMUM - WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
         }
         float edgeScale = vizModel.getEdgeScale();
-        w = (float) edge.getWeight();
+        w = getWeight();
         w = ((w - limits.getMinWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
         //
 
@@ -168,17 +168,15 @@ public class Edge2dModel extends EdgeModel {
                     g = in[1];
                     b = in[2];
                 }
+            } else if (edge.alpha() == 0f) {
+                Node source = edge.getSource();
+                r = source.r();
+                g = source.g();
+                b = source.b();
             } else {
-                if (edge.alpha() == 0f) {
-                    Node source = edge.getSource();
-                    r = source.r();
-                    g = source.g();
-                    b = source.b();
-                } else {
-                    r = edge.r();
-                    g = edge.g();
-                    b = edge.b();
-                }
+                r = edge.r();
+                g = edge.g();
+                b = edge.b();
             }
             gl.glColor4f(r, g, b, 1f);
         }
@@ -211,11 +209,10 @@ public class Edge2dModel extends EdgeModel {
             weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
         }
         float edgeScale = vizModel.getEdgeScale();
-        w = (float) edge.getWeight();
+        w = getWeight();
         w = ((w - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
 
         //
-
         //Edge size
         float arrowWidth = ARROW_WIDTH * w * 2f;
         float arrowHeight = ARROW_HEIGHT * w * 2f;
@@ -302,17 +299,15 @@ public class Edge2dModel extends EdgeModel {
                     g = in[1];
                     b = in[2];
                 }
+            } else if (edge.alpha() == 0f) {
+                Node source = edge.getSource();
+                r = source.r();
+                g = source.g();
+                b = source.b();
             } else {
-                if (edge.alpha() == 0f) {
-                    Node source = edge.getSource();
-                    r = source.r();
-                    g = source.g();
-                    b = source.b();
-                } else {
-                    r = edge.r();
-                    g = edge.g();
-                    b = edge.b();
-                }
+                r = edge.r();
+                g = edge.g();
+                b = edge.b();
             }
             gl.glColor4f(r, g, b, 1f);
         }

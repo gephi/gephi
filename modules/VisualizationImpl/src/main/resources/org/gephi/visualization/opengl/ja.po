@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the Gephi package.
 # 
 # Translators:
-# Siro Kida <kida.siro@gmail.com>, 2012.
+# Siro Kida <kida.siro@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2012-10-12 10:01+0000\n"
+"PO-Revision-Date: 2011-08-25 08:32+0000\n"
 "Last-Translator: Siro Kida <kida.siro@gmail.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/gephi/language/ja/)\n"
 "MIME-Version: 1.0\n"
@@ -18,14 +18,8 @@ msgstr ""
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgid "JOGLNativesInstaller_error1"
-msgstr "初期化失敗: %sのネイティヴの配置が出来ません"
+msgid "graphicalConfiguration_currentConfig"
+msgstr "\"\n現在のハードウェア:\n%s\n%s\nバージョン:%s;"
 
-msgid "JOGLNativesInstaller_error2"
-msgstr ""
-
-msgid "JOGLNativesInstaller_error3"
-msgstr "JAWTを読み込み出来ません"
-
-msgid "JOGLNativesInstaller_error4"
-msgstr "%sが読み込み出来ません"
+msgid "graphicalConfiguration_exception"
+msgstr "\"あなたのOpenGLのバージョン (%s) は、グラフを表示には古すぎます。グラフィカルドライバか設定を更新して下さい。%s"

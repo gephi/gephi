@@ -45,6 +45,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -56,9 +57,9 @@ import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.visualization.bridge.DataBridge;
-import org.gephi.visualization.model.ModelClass;
-import org.gephi.visualization.model.ModelClassLibrary;
+import org.gephi.visualization.model.edge.EdgeModeler;
 import org.gephi.visualization.model.node.NodeModel;
+import org.gephi.visualization.model.node.NodeModeler;
 import org.gephi.visualization.octree.Octree;
 import org.gephi.visualization.text.TextManager;
 
@@ -80,7 +81,6 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected GraphIO graphIO;
     protected VizEventManager vizEventManager;
     protected SelectionArea currentSelectionArea;
-    protected ModelClassLibrary modelClassLibrary;
     protected DataBridge dataBridge;
     protected VizController vizController;
     protected VizConfig vizConfig;
@@ -96,14 +96,13 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     //Octree
     protected Octree octree;
     //User config
-    protected ModelClass nodeClass;
-    protected ModelClass edgeClass;
+    protected NodeModeler nodeModeler;
+    protected EdgeModeler edgeModeler;
 
     @Override
     public void initArchitecture() {
         this.graphDrawable = VizController.getInstance().getDrawable();
         this.graphIO = VizController.getInstance().getGraphIO();
-        this.modelClassLibrary = VizController.getInstance().getModelClassLibrary();
         this.dataBridge = VizController.getInstance().getDataBridge();
         this.vizController = VizController.getInstance();
         this.vizConfig = VizController.getInstance().getVizConfig();
@@ -118,11 +117,9 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
                 configChanged = true;
                 if (evt.getPropertyName().equals("backgroundColor")) {
                     backgroundChanged = true;
-                } else if (evt.getPropertyName().equals("use3d")) {
-                    reinit = true;
                 }
 
-                edgeClass.setEnabled(vizController.getVizModel().isShowEdges());
+                edgeModeler.setEnabled(vizController.getVizModel().isShowEdges());
             }
         });
     }
@@ -134,8 +131,6 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     public abstract void afterDisplay(GL2 gl, GLU glu);
 
     public abstract void initEngine(GL2 gl, GLU glu);
-
-    public abstract void initScreenshot(GL2 gl, GLU glu);
 
     public abstract void cameraHasBeenMoved(GL2 gl, GLU glu);
 
@@ -151,9 +146,9 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract Scheduler getScheduler();
 
-//    public abstract void addObject(int classID, Model obj);
-//    public abstract void removeObject(int classID, Model obj);
-    public abstract void updateObjectsPosition();
+    public abstract void initDisplayLists(GL2 gl, GLU glu);
+
+    public abstract void updateLOD();
 
     public abstract boolean updateWorld();
 
@@ -167,15 +162,12 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     protected abstract void stopAnimating();
 
+    public abstract List<NodeModel> getSelectedNodes();
+
 //    public abstract Model[] getSelectedObjects(int modelClass);
 //    public abstract void selectNodes(NodeModel obj);
 //    public abstract void selectObject(NodeModel[] objs);
     public abstract void resetSelection();
-
-    /**
-     * Reset contents of octree for the given class
-     */
-    public abstract void resetObjectClass(ModelClass object3dClass);
 
     public void reinit() {
         reinit = true;
@@ -185,18 +177,12 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         if (!currentSelectionArea.isEnabled()) {
             return false;
         }
-        float x1 = graphIO.getMousePosition()[0];
-        float y1 = graphIO.getMousePosition()[1];
-
-        float x2 = obj.getViewportX();
-        float y2 = obj.getViewportY();
-
-        float xDist = Math.abs(x2 - x1);
-        float yDist = Math.abs(y2 - y1);
-
+        float[] mousePosition = graphIO.getMousePosition3d();
+        float xDist = Math.abs(obj.getX() - mousePosition[0]);
+        float yDist = Math.abs(obj.getY() - mousePosition[1]);
         float distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
 
-        Vecf d = new Vecf(5);
+        Vecf d = new Vecf(3);
         d.set(0, xDist);
         d.set(1, yDist);
         d.set(2, distance);
@@ -231,24 +217,42 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         lifeCycle.requestStopAnimating();
     }
 
+    public void pauseDisplay() {
+        lifeCycle.requestPauseAnimating();
+    }
+
+    public void resumeDisplay() {
+        lifeCycle.requestResumeAnimating();
+    }
+
     public Octree getOctree() {
         return octree;
     }
 
-    public ModelClass getNodeClass() {
-        return nodeClass;
+    public NodeModeler getNodeModeler() {
+        return nodeModeler;
     }
 
-    public ModelClass getEdgeClass() {
-        return edgeClass;
+    public EdgeModeler getEdgeModeler() {
+        return edgeModeler;
     }
 
     protected class EngineLifeCycle {
 
+        private boolean started;
         private boolean inited;
         private boolean requestAnimation;
 
-        public void requestStartAnimating() {
+        public void requestPauseAnimating() {
+            if (inited) {
+                stopAnimating();
+            }
+        }
+
+        public void requestResumeAnimating() {
+            if (!started) {
+                return;
+            }
             if (inited) {
                 startAnimating();
             } else {
@@ -256,10 +260,14 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
             }
         }
 
+        public void requestStartAnimating() {
+            started = true;
+            requestResumeAnimating();
+        }
+
         public void requestStopAnimating() {
-            if (inited) {
-                stopAnimating();
-            }
+            requestPauseAnimating();
+            started = false;
         }
 
         public void initEngine() {

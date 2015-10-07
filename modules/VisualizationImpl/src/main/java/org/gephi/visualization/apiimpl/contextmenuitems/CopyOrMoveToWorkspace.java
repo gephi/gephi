@@ -41,13 +41,21 @@
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
+import java.util.ArrayList;
 import javax.swing.Icon;
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
+import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceProvider;
+import org.gephi.visualization.spi.GraphContextMenuItem;
+import org.openide.util.Lookup;
 
 /**
  *
  */
-public abstract class CopyOrMoveToWorkspace extends BasicItem {
+public abstract class CopyOrMoveToWorkspace extends BasicItem implements NodesManipulator {
 
     @Override
     public void execute() {
@@ -58,27 +66,28 @@ public abstract class CopyOrMoveToWorkspace extends BasicItem {
         this.nodes = nodes;
     }
 
-//    @Override
-//    public ContextMenuItemManipulator[] getSubItems() {
-//        if (nodes != null) {
-//            int i = 0;
-//            ArrayList<GraphContextMenuItem> subItems = new ArrayList<GraphContextMenuItem>();
-//            if (canExecute()) {
-//                subItems.add(new CopyOrMoveToWorkspaceSubItem(null, true, 0, 0, isCopy()));//New workspace
-//                ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-//                for (final Workspace w : projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
-//                    GraphContextMenuItem item = new CopyOrMoveToWorkspaceSubItem(w, w != projectController.getCurrentWorkspace(), 1, i, isCopy());
-//                    subItems.add(item);
-//                    i++;
-//                }
-//                return subItems.toArray(new ContextMenuItemManipulator[0]);
-//            } else {
-//                return null;
-//            }
-//        } else {
-//            return null;
-//        }
-//    }
+    @Override
+    public ContextMenuItemManipulator[] getSubItems() {
+        if (nodes != null) {
+            int i = 0;
+            ArrayList<GraphContextMenuItem> subItems = new ArrayList<GraphContextMenuItem>();
+            if (canExecute()) {
+                subItems.add(new CopyOrMoveToWorkspaceSubItem(null, true, 0, 0, isCopy()));//New workspace
+                ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+                for (final Workspace w : projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
+                    GraphContextMenuItem item = new CopyOrMoveToWorkspaceSubItem(w, w != projectController.getCurrentWorkspace(), 1, i, isCopy());
+                    subItems.add(item);
+                    i++;
+                }
+                return subItems.toArray(new ContextMenuItemManipulator[0]);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public boolean canExecute() {
         return nodes.length > 0;

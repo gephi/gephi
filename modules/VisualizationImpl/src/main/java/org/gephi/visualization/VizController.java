@@ -55,14 +55,15 @@ import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.visualization.bridge.DataBridge;
-import org.gephi.visualization.config.VizCommander;
 import org.gephi.visualization.events.StandardVizEventManager;
-import org.gephi.visualization.model.ModelClassLibrary;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.CompatibilityEngine;
 import org.gephi.visualization.scheduler.CompatibilityScheduler;
 import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.gephi.visualization.swing.GLAbstractListener;
+import org.gephi.visualization.swing.GraphCanvas;
+import org.gephi.visualization.swing.GraphPanel;
+import org.gephi.visualization.swing.NewtGraphCanvas;
 import org.gephi.visualization.swing.StandardGraphIO;
 import org.gephi.visualization.text.TextManager;
 import org.openide.util.Lookup;
@@ -95,7 +96,6 @@ public class VizController implements VisualizationController {
     private VizConfig vizConfig;
     private GraphIO graphIO;
     private VizEventManager vizEventManager;
-    private ModelClassLibrary modelClassLibrary;
     private GraphLimits limits;
     private DataBridge dataBridge;
     private TextManager textManager;
@@ -105,14 +105,11 @@ public class VizController implements VisualizationController {
     private VizModel currentModel;
 
     public void initInstances() {
-        VizCommander commander = new VizCommander();
-
         vizConfig = new VizConfig();
         graphIO = new StandardGraphIO();
         engine = new CompatibilityEngine();
         vizEventManager = new StandardVizEventManager();
         scheduler = new CompatibilityScheduler();
-        modelClassLibrary = new ModelClassLibrary();
         limits = new GraphLimits();
         dataBridge = new DataBridge();
         textManager = new TextManager();
@@ -121,10 +118,9 @@ public class VizController implements VisualizationController {
         selectionManager = new SelectionManager();
 
         if (vizConfig.isUseGLJPanel()) {
-            drawable = commander.createPanel();
+            drawable = createPanel();
         } else {
-            drawable = commander.createNewtCanvas();
-//              drawable = commander.createCanvas();
+            drawable = createNewtCanvas();
         }
         drawable.initArchitecture();
         engine.initArchitecture();
@@ -140,8 +136,8 @@ public class VizController implements VisualizationController {
         pc.addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
-                if(workspace.getLookup().lookup(VizModel.class) == null) {
-                  workspace.add(new VizModel());  
+                if (workspace.getLookup().lookup(VizModel.class) == null) {
+                    workspace.add(new VizModel());
                 }
             }
 
@@ -187,7 +183,6 @@ public class VizController implements VisualizationController {
             currentModel.setListeners(null);
             currentModel.getTextModel().setListeners(null);
             currentModel = model;
-            VizController.getInstance().getModelClassLibrary().getNodeClass().setCurrentModeler(currentModel.getNodeModeler());
             currentModel.init();
         }
     }
@@ -199,7 +194,6 @@ public class VizController implements VisualizationController {
         scheduler = null;
         graphIO = null;
         vizEventManager = null;
-        modelClassLibrary = null;
         dataBridge = null;
         textManager = null;
         screenshotMaker = null;
@@ -272,10 +266,6 @@ public class VizController implements VisualizationController {
         return vizConfig;
     }
 
-    public ModelClassLibrary getModelClassLibrary() {
-        return modelClassLibrary;
-    }
-
     public VizEventManager getVizEventManager() {
         return vizEventManager;
     }
@@ -299,6 +289,22 @@ public class VizController implements VisualizationController {
     public SelectionManager getSelectionManager() {
         return selectionManager;
     }
+
+    public GraphCanvas createCanvas() {
+        GraphCanvas canvas = new GraphCanvas();
+        return canvas;
+    }
+
+    public GraphPanel createPanel() {
+        GraphPanel panel = new GraphPanel();
+        return panel;
+    }
+
+    public NewtGraphCanvas createNewtCanvas() {
+        NewtGraphCanvas canvas = new NewtGraphCanvas();
+        return canvas;
+    }
+
 //
 //    @Override
 //    public AttributeColumn[] getNodeTextColumns() {

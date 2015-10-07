@@ -67,7 +67,7 @@ public class FixedSizeMode implements SizeMode {
 
     @Override
     public float getSizeFactor3d(float sizeFactor, NodeModel model) {
-        return sizeFactor / drawable.getViewportWidth() * model.getCameraDistance();
+        return sizeFactor / drawable.getViewportWidth() * drawable.getCameraLocation()[2];
     }
 
     @Override

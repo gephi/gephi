@@ -91,17 +91,15 @@ public class ObjectColorMode implements ColorMode {
             } else {
                 renderer.setColor(text.getTextR(), text.getTextG(), text.getTextB(), text.getTextAlpha());
             }
-        } else {
-            if (vizConfig.isLightenNonSelected()) {
-                if (!selected) {
-                    float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
-                    renderer.setColor(text.getElementProperties().r(), text.getElementProperties().g(), text.getElementProperties().b(), lightColorFactor);
-                } else {
-                    renderer.setColor(text.getElementProperties().r(), text.getElementProperties().g(), text.getElementProperties().b(), 1);
-                }
+        } else if (vizConfig.isLightenNonSelected()) {
+            if (!selected) {
+                float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
+                renderer.setColor(text.getElementProperties().r(), text.getElementProperties().g(), text.getElementProperties().b(), lightColorFactor);
             } else {
-                renderer.setColor(text.getElementProperties().r(), text.getElementProperties().g(), text.getElementProperties().b(), text.getElementProperties().alpha());
+                renderer.setColor(text.getElementProperties().r(), text.getElementProperties().g(), text.getElementProperties().b(), 1);
             }
+        } else {
+            renderer.setColor(text.getElementProperties().r(), text.getElementProperties().g(), text.getElementProperties().b(), text.getElementProperties().alpha());
         }
     }
 

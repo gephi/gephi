@@ -42,7 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.statistics;
 
-import org.gephi.graph.api.TimestampIndex;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.statistics.spi.StatisticsBuilder;
@@ -53,6 +52,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.TimeIndex;
 import org.gephi.project.api.ProjectController;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
@@ -85,7 +85,7 @@ public class StatisticsControllerImpl implements StatisticsController {
 
             @Override
             public void initialize(Workspace workspace) {
-                if(workspace.getLookup().lookup(StatisticsModelImpl.class) == null) {
+                if (workspace.getLookup().lookup(StatisticsModelImpl.class) == null) {
                     workspace.add(new StatisticsModelImpl());
                 }
             }
@@ -189,23 +189,20 @@ public class StatisticsControllerImpl implements StatisticsController {
             double high = low + window;
 
 //            Graph g = dynamicGraph.getSnapshotGraph(low, high);
-            
-            
             GraphView currentView = graphModel.getVisibleView();
             Graph graph = graphModel.getGraphVisible();
             GraphView view = graphModel.createView();
             Graph g = graphModel.getGraph(view);
-            
-            TimestampIndex<Node> nodeIndex = graphModel.getNodeTimestampIndex(currentView);
-            for(Node node : nodeIndex.get(low, high)) {
+
+            TimeIndex<Node> nodeIndex = graphModel.getNodeTimeIndex(currentView);
+            for (Node node : nodeIndex.get(new Interval(low, high))) {
                 g.addNode(node);
             }
-            
-            TimestampIndex<Edge> edgeIndex = graphModel.getEdgeTimestampIndex(currentView);
-            for(Edge edge : edgeIndex.get(low, high)) {
+
+            TimeIndex<Edge> edgeIndex = graphModel.getEdgeTimeIndex(currentView);
+            for (Edge edge : edgeIndex.get(new Interval(low, high))) {
                 g.addEdge(edge);
             }
-            
 
             statistics.loop(g.getView(), new Interval(low, high));
 

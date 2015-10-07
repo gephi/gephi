@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the Gephi package.
 # 
 # Translators:
-# Zbyněk Schwarz <zbynek.schwarz@gmail.com>, 2012.
+# Zbyněk Schwarz <zbynek.schwarz@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2012-10-17 07:07+0000\n"
+"PO-Revision-Date: 2011-12-25 21:58+0000\n"
 "Last-Translator: Zbyněk Schwarz <zbynek.schwarz@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/gephi/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -18,14 +18,8 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-msgid "JOGLNativesInstaller_error1"
-msgstr "Zavedení selhalo: Nelze najít místní nativy pro %s."
+msgid "graphicalConfiguration_currentConfig"
+msgstr "\"\nSoučasný hardware:\n%s\n%s\nVerze:%s;"
 
-msgid "JOGLNativesInstaller_error2"
-msgstr "Zavedení selhalo: Nepodporované os / arch ( %s / %s ). Prosím zkontrolujte, že používáte 32-bitové JVM."
-
-msgid "JOGLNativesInstaller_error3"
-msgstr "Nelze načíst JAWT"
-
-msgid "JOGLNativesInstaller_error4"
-msgstr "Nelze načíst %s"
+msgid "graphicalConfiguration_exception"
+msgstr "\"Vaše verze OpenGL2 (%s) je příliš nízká pro zobrazení grafu.\nAktualizujte Vaše grafické ovladače nebo nastavení.%s"

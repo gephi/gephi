@@ -40,13 +40,19 @@
  Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
-//public class MoveToWorkspaceForDataLaboratory implements NodesManipulatorBuilder{
-//
-//    @Override
-//    public NodesManipulator getNodesManipulator() {
-//        return new MoveToWorkspaceForDataLaboratoryManipulator();
-//    }
-//}
+
+import org.gephi.datalab.spi.nodes.NodesManipulator;
+import org.gephi.datalab.spi.nodes.NodesManipulatorBuilder;
+import org.openide.util.lookup.ServiceProvider;
+
+@ServiceProvider(service = NodesManipulatorBuilder.class)
+public class MoveToWorkspaceForDataLaboratory implements NodesManipulatorBuilder {
+
+    @Override
+    public NodesManipulator getNodesManipulator() {
+        return new MoveToWorkspaceForDataLaboratoryManipulator();
+    }
+}
 
 /**
  * Same action as MoveToWorkspace, with different position for data laboratory.

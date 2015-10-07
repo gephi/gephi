@@ -410,11 +410,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>appearance-plugin-ui</artifactId>
-        </dependency><!--
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-tools</artifactId>
-        </dependency>
+        </dependency><!--
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-timeline</artifactId>

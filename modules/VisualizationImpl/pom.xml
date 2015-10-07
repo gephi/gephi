@@ -49,6 +49,10 @@
             <artifactId>visualization-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>datalab-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-options-api</artifactId>
         </dependency>
@@ -101,6 +105,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-project</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>utils-longtask</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>

@@ -51,13 +51,10 @@ import org.gephi.visualization.model.Model;
 import org.gephi.visualization.model.TextModel;
 import org.gephi.visualization.model.node.NodeModel;
 
-/**
- *
- * @author mbastian
- */
 public abstract class EdgeModel implements Model, TextModel {
 
     protected final Edge edge;
+    protected float weight;
     //Flags
     protected boolean selected;
     //Text
@@ -95,6 +92,14 @@ public abstract class EdgeModel implements Model, TextModel {
         return selected;
     }
 
+    public float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
     @Override
     public boolean hasCustomTextColor() {
         return edge.getTextProperties().getR() > 0;
@@ -129,12 +134,13 @@ public abstract class EdgeModel implements Model, TextModel {
     }
 
     @Override
+    public Rectangle2D getTextBounds() {
+        return bounds;
+    }
+
+    @Override
     public String getText() {
-        String t = edge.getTextProperties().getText();
-        if (t == null) {
-            return edge.getLabel();
-        }
-        return t;
+        return edge.getTextProperties().getText();
     }
 
     @Override

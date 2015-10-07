@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.io.importer.spi;
 
 import javax.swing.JPanel;
@@ -50,7 +50,8 @@ import javax.swing.JPanel;
  * is to provide user interface to configure importers and remember last used
  * settings if needed.
  * <p>
- * To be recognized by the system, implementations must just add the following annotation:
+ * To be recognized by the system, implementations must just add the following
+ * annotation:
  * <pre>@ServiceProvider(service=ImporterUI.class)</pre>
  *
  * @author Mathieu Bastian
@@ -62,7 +63,7 @@ public interface ImporterUI {
      * Link the UI to the importer and therefore to settings values. This method
      * is called after <code>getPanel()</code> to push settings.
      *
-     * @param importer  the importer that settings is to be set
+     * @param importer the importer that settings is to be set
      */
     public void setup(Importer importer);
 
@@ -78,22 +79,23 @@ public interface ImporterUI {
      * written.
      *
      * @param update    <code>true</code> if user clicked OK or <code>false</code>
-     *                  if CANCEL.
+     * if CANCEL.
      */
     public void unsetup(boolean update);
 
     /**
      * Returns the importer display name
-     * @return          the importer display name
+     *
+     * @return the importer display name
      */
     public String getDisplayName();
 
     /**
      * Returns <code>true</code> if this UI belongs to the given importer.
      *
-     * @param importer  the importer that has to be tested
-     * @return          <code>true</code> if the UI is matching with <code>importer</code>,
-     *                  <code>false</code> otherwise.
+     * @param importer the importer that has to be tested
+     * @return          <code>true</code> if the UI is matching with
+     * <code>importer</code>, <code>false</code> otherwise.
      */
     public boolean isUIForImporter(Importer importer);
 }

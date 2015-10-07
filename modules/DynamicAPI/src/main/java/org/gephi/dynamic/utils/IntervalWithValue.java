@@ -12,11 +12,6 @@ public class IntervalWithValue<T> implements Comparable<IntervalWithValue<T>> {
     private final Interval interval;
     private final T value;
     
-    public IntervalWithValue(double low, double high, boolean lopen, boolean ropen, T value) {
-        this.interval = new Interval(low, high, lopen, ropen);
-        this.value = value;
-    }
-    
     public IntervalWithValue(double low, double high, T value) {
         this.interval = new Interval(low, high);
         this.value = value;
@@ -46,14 +41,6 @@ public class IntervalWithValue<T> implements Comparable<IntervalWithValue<T>> {
 
     public double getHigh() {
         return interval.getHigh();
-    }
-
-    public boolean isLowExcluded() {
-        return interval.isLowExcluded();
-    }
-
-    public boolean isHighExcluded() {
-        return interval.isHighExcluded();
     }
 
     @Override
@@ -86,7 +73,7 @@ public class IntervalWithValue<T> implements Comparable<IntervalWithValue<T>> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(interval.isLowExcluded() ? '(' : '[');
+        sb.append('[');
         sb.append(interval.getLow());
         sb.append(", ");
         sb.append(interval.getHigh());
@@ -103,7 +90,7 @@ public class IntervalWithValue<T> implements Comparable<IntervalWithValue<T>> {
             }
         }
 
-        sb.append(interval.isHighExcluded() ? ')' : ']');
+        sb.append(']');
 
         return sb.toString();
     }

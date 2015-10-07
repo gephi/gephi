@@ -42,68 +42,52 @@
  */
 package org.gephi.visualization.spi;
 
-import javax.swing.Icon;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
 
 /**
- * <p><b>Please note that the methods offered in this service are the same as
- * Data Laboratory nodes manipulators. It is possible to reuse actions
- * implementations by adding both
- * <code>ServiceProvider</code> annotations.</b></p>
- * <p>Interface from providing graph context menu items as services.</p>
- * <p>All context menu items are able to:</p>
+ * <b>Please note that the methods offered in this service are the same as Data
+ * Laboratory nodes manipulators. It is possible to reuse actions
+ * implementations by adding both <code>ServiceProvider</code> annotations.</b>
+ * <p>
+ * Interface from providing graph context menu items as services.
+ * <p>
+ * All context menu items are able to:
  * <ul>
  * <li>Execute an action</li>
  * <li>Provide a name, type and order of appearance (position in group of its
  * type)</li>
- * <li>Indicate wether they have to be available (appear in the context menu) or
- * not</li>
- * <li>Indicate wether they have to be executable (enabled in the context menu)
+ * <li>Indicate whether they have to be available (appear in the context menu)
+ * or not</li>
+ * <li>Indicate whether they have to be executable (enabled in the context menu)
  * or not</li>
  * <li>Provide and icon or not</li>
  * </ul>
- * <p>Used for different manipulators such as NodesManipulator, EdgesManipulator
- * and GeneralActionsManipulator.</p>
- * <p>The only methods that are called before setting up an item with the data
- * are <b>getSubItems, getType and getPosition.</b>
+ * <p>
+ * Used for different manipulators such as NodesManipulator, EdgesManipulator
+ * and GeneralActionsManipulator.
+ * <p>
+ * The only methods that are called before setting up an item with the data are
+ * <b>getSubItems, getType and getPosition.</b>
  * This way, the other methods behaviour can depend on the data that has been
- * setup before</p>
- * <p><b>getSubItems will be called before and after setup. Take care when the
- * nodes are null!</b></p>
+ * setup before
+ * <p>
+ * <b>getSubItems will be called before and after setup. Take care when the
+ * nodes are null!</b>
  *
  * To provide a context menu item, a class has to implement this interface and
- * have a
- * <code>@ServiceProvider</code> annotation
+ * have a <code>@ServiceProvider</code> annotation
+ *
  * @author Eduardo Ramos
  */
-public interface GraphContextMenuItem {
+public interface GraphContextMenuItem extends ContextMenuItemManipulator {
 
     /**
      * Prepare nodes for this item. Note that nodes could contain 0 nodes.
      *
-     * @param graph Hierarchical graph
+     * @param graph graph
      * @param nodes All selected nodes
      */
     public void setup(Graph graph, Node[] nodes);
-
-    public String getDescription();
-
-//    public ManipulatorUI getUI();
-    public boolean isAvailable();
-
-//    public ContextMenuItemManipulator[] getSubItems();
-    public Integer getMnemonicKey();
-
-    public void execute();
-
-    public String getName();
-
-    public boolean canExecute();
-
-    public int getType();
-
-    public int getPosition();
-
-    public Icon getIcon();
 }

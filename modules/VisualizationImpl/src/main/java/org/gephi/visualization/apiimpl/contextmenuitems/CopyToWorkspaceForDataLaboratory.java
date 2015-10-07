@@ -41,15 +41,19 @@
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
-//import org.gephi.datalab.spi.nodes.NodesManipulator;
-//import org.gephi.datalab.spi.nodes.NodesManipulatorBuilder;
-//public class CopyToWorkspaceForDataLaboratory implements NodesManipulatorBuilder{
-//
-//    @Override
-//    public NodesManipulator getNodesManipulator() {
-//        return new CopyToWorkspaceForDataLaboratoryManipulator();
-//    }
-//}
+import org.gephi.datalab.spi.nodes.NodesManipulator;
+import org.gephi.datalab.spi.nodes.NodesManipulatorBuilder;
+import org.openide.util.lookup.ServiceProvider;
+
+@ServiceProvider(service = NodesManipulatorBuilder.class)
+public class CopyToWorkspaceForDataLaboratory implements NodesManipulatorBuilder {
+
+    @Override
+    public NodesManipulator getNodesManipulator() {
+        return new CopyToWorkspaceForDataLaboratoryManipulator();
+    }
+}
+
 /**
  * Same action as CopyToWorkspace, with different position for data laboratory.
  *

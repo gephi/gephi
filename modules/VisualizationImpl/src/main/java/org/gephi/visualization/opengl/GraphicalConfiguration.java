@@ -39,7 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.visualization.config;
+package org.gephi.visualization.opengl;
 
 import com.jogamp.nativewindow.AbstractGraphicsDevice;
 import com.jogamp.opengl.GL2;
@@ -65,9 +65,9 @@ public class GraphicalConfiguration {
     private String vendor = "";
     private String renderer = "";
     private String versionStr = "";
-    private GLProfile profile = GLProfile.get(GLProfile.GL2);
-    private GLCapabilities caps = new GLCapabilities(profile);
-    AbstractGraphicsDevice device = GLDrawableFactory.getFactory(profile).getDefaultDevice();
+    private final GLProfile profile = GLProfile.get(GLProfile.GL2);
+    private final GLCapabilities caps = new GLCapabilities(profile);
+    private final AbstractGraphicsDevice device = GLDrawableFactory.getFactory(profile).getDefaultDevice();
 
     public void checkGeneralCompatibility(GL2 gl) {
         if (messageDelivered) {
@@ -87,7 +87,6 @@ public class GraphicalConfiguration {
                 throw new GraphicalConfigurationException(err);
             }
 
-
             //VBO
             boolean vboExtension = gl.isExtensionAvailable("GL_ARB_vertex_buffer_object");
             boolean vboFunctions = gl.isFunctionAvailable("glGenBuffersARB")
@@ -97,7 +96,6 @@ public class GraphicalConfiguration {
             vboSupport = vboExtension && vboFunctions;
 
             //Pbuffer
-
             pBufferSupport = GLDrawableFactory.getDesktopFactory().canCreateGLPbuffer(device, profile);
 
         } catch (final GraphicalConfigurationException exc) {

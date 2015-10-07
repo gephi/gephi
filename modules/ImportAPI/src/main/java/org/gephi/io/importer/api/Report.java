@@ -49,8 +49,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.gephi.io.importer.api.Issue.Level;
 
 /**
- * Report is a log and issue container. Filled with information, details, minor or major issues, it is stored in an issue list
- * and can be retrieved to present issues to end-users. Behavior is the same as a simple logging library.
+ * Report is a log and issue container. Filled with information, details, minor
+ * or major issues, it is stored in an issue list and can be retrieved to
+ * present issues to end-users. Behavior is the same as a simple logging
+ * library.
  *
  * @author Mathieu Bastian
  */
@@ -61,6 +63,7 @@ public final class Report {
 
     /**
      * Log an information message in the report.
+     *
      * @param message the message to write in the report
      * @throws NullPointerException if <code>message</code> is <code>null</code>
      */
@@ -68,12 +71,17 @@ public final class Report {
         entries.add(new ReportEntry(message));
     }
 
+    /**
+     * Appends all entries in <code>report</code> to this report.
+     * @param report report to read entries from
+     */
     public void append(Report report) {
         entries.addAll(report.entries);
     }
 
     /**
      * Log an issue in the report.
+     *
      * @param issue the issue to write in the report
      * @throws NullPointerException if <code>issue</code> is <code>null</code>
      */
@@ -90,6 +98,7 @@ public final class Report {
 
     /**
      * Returns all issues written in the report.
+     *
      * @return a collection of all issues written in the report
      */
     public List<Issue> getIssues() {
@@ -104,6 +113,7 @@ public final class Report {
 
     /**
      * Returns the report logs and issues, presented as <b>HTML</b> code.
+     *
      * @return a string of HTML code where all messages and issues are written
      */
     public String getHtml() {
@@ -122,7 +132,9 @@ public final class Report {
 
     /**
      * Returns the report logs and issues, presented as basic multi-line text.
-     * @return a string of all messages and issues written in the report, one per line
+     *
+     * @return a string of all messages and issues written in the report, one
+     * per line
      */
     public String getText() {
         StringBuilder builder = new StringBuilder();
@@ -139,7 +151,9 @@ public final class Report {
     }
 
     /**
-     * Get the current exception level for the report. Default is <code>Level.CRITICAL</code>.
+     * Get the current exception level for the report. Default is
+     * <code>Level.CRITICAL</code>.
+     *
      * @return the current exception level
      */
     public Level getExceptionLevel() {
@@ -147,15 +161,21 @@ public final class Report {
     }
 
     /**
-     * Set the level of exception for the report. If a reported issue has his level greater or equal
-     * as <code>exceptionLevel</code>, an exception is thrown. Default is <code>Level.CRITICAL</code>
-     * @param exceptionLevel the exception level where exceptions are to be thrown
+     * Set the level of exception for the report. If a reported issue has his
+     * level greater or equal as <code>exceptionLevel</code>, an exception is
+     * thrown. Default is <code>Level.CRITICAL</code>
+     *
+     * @param exceptionLevel the exception level where exceptions are to be
+     * thrown
      */
     public void setExceptionLevel(Level exceptionLevel) {
         this.exceptionLevel = exceptionLevel;
     }
 
-    private class ReportEntry {
+    /**
+     * Inner report entry class.
+     */
+    private static class ReportEntry {
 
         private final Issue issue;
         private final String message;
@@ -171,66 +191,77 @@ public final class Report {
         }
     }
 
+    /**
+     * Prune report so it doesn't exceed <code>limit</code>.
+     * 
+     * @param limit limit not to exceed.
+     */
     public void pruneReport(int limit) {
         if (entries.size() > limit) {
             int step = 0;
             while (entries.size() > limit && step < 3) {
-                if (step == 0) {
-                    ReportEntry lastIssue = null;
-                    for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
-                        ReportEntry issue = itr.next();
-                        if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.INFO)) {
-                            lastIssue = issue;
-                            itr.remove();
+                switch (step) {
+                    case 0:
+                        {
+                            ReportEntry lastIssue = null;
+                            for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
+                                ReportEntry issue = itr.next();
+                                if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.INFO)) {
+                                    lastIssue = issue;
+                                    itr.remove();
+                                }
+                            }       if (lastIssue != null) {
+                                entries.add(lastIssue);
+                                entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.INFO)));
+                            }       step = 1;
+                            break;
                         }
-                    }
-                    if (lastIssue != null) {
-                        entries.add(lastIssue);
-                        entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.INFO)));
-                    }
-                    step = 1;
-                } else if (step == 1) {
-                    ReportEntry lastIssue = null;
-                    for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
-                        ReportEntry issue = itr.next();
-                        if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.WARNING)) {
-                            lastIssue = issue;
-                            itr.remove();
+                    case 1:
+                        {
+                            ReportEntry lastIssue = null;
+                            for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
+                                ReportEntry issue = itr.next();
+                                if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.WARNING)) {
+                                    lastIssue = issue;
+                                    itr.remove();
+                                }
+                            }       if (lastIssue != null) {
+                                entries.add(lastIssue);
+                                entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.WARNING)));
+                            }       step = 2;
+                            break;
                         }
-                    }
-                    if (lastIssue != null) {
-                        entries.add(lastIssue);
-                        entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.WARNING)));
-                    }
-                    step = 2;
-                } else if (step == 2) {
-                    ReportEntry lastIssue = null;
-                    for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
-                        ReportEntry issue = itr.next();
-                        if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.INFO)) {
-                            lastIssue = issue;
-                            itr.remove();
+                    case 2:
+                        {
+                            ReportEntry lastIssue = null;
+                            for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
+                                ReportEntry issue = itr.next();
+                                if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.INFO)) {
+                                    lastIssue = issue;
+                                    itr.remove();
+                                }
+                            }       if (lastIssue != null) {
+                                entries.add(lastIssue);
+                                entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.INFO)));
+                            }       step = 3;
+                            break;
                         }
-                    }
-                    if (lastIssue != null) {
-                        entries.add(lastIssue);
-                        entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.INFO)));
-                    }
-                    step = 3;
-                } else if (step == 3) {
-                    ReportEntry lastIssue = null;
-                    for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
-                        ReportEntry issue = itr.next();
-                        if (issue.issue == null) {
-                            lastIssue = issue;
-                            itr.remove();
+                    case 3:
+                        {
+                            ReportEntry lastIssue = null;
+                            for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
+                                ReportEntry issue = itr.next();
+                                if (issue.issue == null) {
+                                    lastIssue = issue;
+                                    itr.remove();
+                                }
+                            }       if (lastIssue != null) {
+                                entries.add(lastIssue);
+                                entries.add(new ReportEntry("More messages not listed..."));
+                            }       step = 4;
+                            break;
                         }
-                    }
-                    if (lastIssue != null) {
-                        entries.add(lastIssue);
-                        entries.add(new ReportEntry("More messages not listed..."));
-                    }
-                    step = 4;
+                    default:
                 }
             }
         }

@@ -42,18 +42,18 @@
 package org.gephi.visualization.opengl;
 
 import java.awt.Color;
-import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.Iterator;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUquadric;
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
-import org.gephi.visualization.api.initializer.Modeler;
 import org.gephi.visualization.apiimpl.Scheduler;
-import org.gephi.visualization.model.ModelClass;
 import org.gephi.visualization.model.edge.EdgeModel;
+import org.gephi.visualization.model.edge.EdgeModeler;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.model.node.NodeModeler;
 import org.gephi.visualization.octree.Octree;
@@ -69,9 +69,8 @@ public class CompatibilityEngine extends AbstractEngine {
 
     private CompatibilityScheduler scheduler;
     private int markTime = 0;
-    //Selection
-//    private ConcurrentLinkedQueue<ModelImpl>[] selectedObjects;
     private boolean anySelected = false;
+    private List<NodeModel> dragSelected;
 
     public CompatibilityEngine() {
         super();
@@ -106,32 +105,6 @@ public class CompatibilityEngine extends AbstractEngine {
         boolean updated = dataBridge.updateWorld();
 
         return repositioned || updated;
-//        boolean res = false;
-//        boolean newConfig = configChanged;
-//        if (newConfig) {
-//            dataBridge.reset();
-//            if (!vizConfig.isCustomSelection()) {
-//                //Reset model classes
-////                for (ModelClass objClass : getModelClasses()) {
-////                    if (objClass.isEnabled()) {
-////                        objClass.swapModelers();
-////                        resetObjectClass(objClass);
-////                    }
-////                }
-//            }
-//
-//            initSelection();
-//
-//        }
-//        if (dataBridge.requireUpdate() || newConfig) {
-//            dataBridge.updateWorld();
-//            res = true;
-//        }
-//        if (newConfig) {
-//
-//            configChanged = false;
-//        }
-//        return res;
     }
 
     @Override
@@ -168,20 +141,13 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void display(GL2 gl, GLU glu) {
-        //Update viewport
-        NodeModeler nodeModeler = (NodeModeler) nodeClass.getCurrentModeler();
-        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {       //TODO Move this
-            NodeModel obj = itr.next();
-            nodeModeler.setViewportPosition(obj);
-        }
-
         markTime++;
 
         VizModel vizModel = VizController.getInstance().getVizModel();
 
         //Edges
-        if (edgeClass.isEnabled()) {
-            edgeClass.beforeDisplay(gl, glu);
+        if (edgeModeler.isEnabled()) {
+            edgeModeler.beforeDisplay(gl, glu);
 
             for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
                 EdgeModel obj = itr.next();
@@ -191,13 +157,13 @@ public class CompatibilityEngine extends AbstractEngine {
                     obj.markTime = markTime;
                 }
             }
-            edgeClass.afterDisplay(gl, glu);
+            edgeModeler.afterDisplay(gl, glu);
         }
 
         markTime++;
 
         //Arrows
-        if (edgeClass.isEnabled() && vizConfig.isShowArrows() && dataBridge.isDirected()) {
+        if (edgeModeler.isEnabled() && vizConfig.isShowArrows() && dataBridge.isDirected()) {
             gl.glBegin(GL2.GL_TRIANGLES);
             for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
                 EdgeModel obj = itr.next();
@@ -210,8 +176,8 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         //Nodes
-        if (nodeClass.isEnabled()) {
-            nodeClass.beforeDisplay(gl, glu);
+        if (nodeModeler.isEnabled()) {
+            nodeModeler.beforeDisplay(gl, glu);
             for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
                 NodeModel obj = itr.next();
                 if (obj.markTime != markTime) {
@@ -219,13 +185,13 @@ public class CompatibilityEngine extends AbstractEngine {
                     obj.markTime = markTime;
                 }
             }
-            nodeClass.afterDisplay(gl, glu);
+            nodeModeler.afterDisplay(gl, glu);
         }
 
         //Labels
         if (vizModel.getTextModel().isShowNodeLabels() || vizModel.getTextModel().isShowEdgeLabels()) {
             markTime++;
-            if (nodeClass.isEnabled() && vizModel.getTextModel().isShowNodeLabels()) {
+            if (nodeModeler.isEnabled() && vizModel.getTextModel().isShowNodeLabels()) {
                 textManager.getNodeRenderer().beginRendering();
                 textManager.defaultNodeColor();
                 if (textManager.isSelectedOnly()) {
@@ -251,6 +217,24 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
                 textManager.getNodeRenderer().endRendering();
             }
+
+            //Draw rectangles around text for debug
+//            for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+//                NodeModel obj = itr.next();
+//
+//                float textW = obj.getTextWidth();
+//                float textH = obj.getTextHeight();
+//                float textX = obj.getX();
+//                float textY = obj.getY();
+//
+//                gl.glColor4f(0.3f, 0.3f, 0.3f, 0.3f);
+//                gl.glBegin(GL2.GL_QUADS);
+//                gl.glVertex3f(textX-textW/2f, textY+textH/2, 0);
+//                gl.glVertex3f(textX+textW/2f, textY+textH/2, 0);
+//                gl.glVertex3f(textX+textW/2f, textY-textH/2, 0);
+//                gl.glVertex3f(textX-textW/2f, textY-textH/2, 0);
+//                gl.glEnd();
+//            }
 //            if (edgeClass.isEnabled() && vizModel.getTextModel().isShowEdgeLabels()) {
 //                textManager.getEdgeRenderer().beginRendering();
 //                textManager.defaultEdgeColor();
@@ -278,7 +262,6 @@ public class CompatibilityEngine extends AbstractEngine {
 //                textManager.getEdgeRenderer().endRendering();
 //            }
         }
-
 
 //        octree.displayOctree(gl, glu);
     }
@@ -309,22 +292,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void initEngine(final GL2 gl, final GLU glu) {
         initDisplayLists(gl, glu);
-//        scheduler.cameraMoved.set(true);
-//        scheduler.mouseMoved.set(true);
         lifeCycle.setInited();
-    }
-
-    @Override
-    public void initScreenshot(GL2 gl, GLU glu) {
-        initDisplayLists(gl, glu);
-        textManager.getNodeRenderer().reinitRenderer();
-        textManager.getEdgeRenderer().reinitRenderer();
-//        scheduler.cameraMoved.set(true);
-    }
-
-    @Override
-    public void resetObjectClass(ModelClass object3dClass) {
-//        octree.resetObjectClass(object3dClass.getClassId());
     }
 
     @Override
@@ -394,17 +362,20 @@ public class CompatibilityEngine extends AbstractEngine {
         if (vizConfig.isMouseSelectionUpdateWhileDragging()) {
             mouseMove();
         } else {
-//            float[] drag = graphIO.getMouseDrag3d();
-//            for (ModelImpl obj : selectedObjects[0]) {
-//                float[] mouseDistance = obj.getDragDistanceFromMouse();
-//                obj.getObj().setX(drag[0] + mouseDistance[0]);
-//                obj.getObj().setY(drag[1] + mouseDistance[1]);
-//            }
+            float[] drag = graphIO.getMouseDrag3d();
+            if (dragSelected != null) {
+                for (NodeModel obj : dragSelected) {
+                    float[] mouseDistance = obj.getDragDistanceFromMouse();
+                    obj.getNode().setX(drag[0] + mouseDistance[0]);
+                    obj.getNode().setY(drag[1] + mouseDistance[1]);
+                }
+            }
         }
     }
 
     @Override
     public void mouseMove() {
+
         //Selection
         if (vizConfig.isSelectionEnable() && rectangleSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
@@ -415,6 +386,10 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         if (customSelection || currentSelectionArea.blockSelection()) {
+            return;
+        }
+
+        if (graphIO.isDragging()) {
             return;
         }
 //
@@ -440,6 +415,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 obj.setSelected(false);
             }
         }
+
 //
 //        for (ModelClass objClass : selectableClasses) {
 //            forceUnselect = objClass.isAloneSelection() && someSelection;
@@ -503,33 +479,45 @@ public class CompatibilityEngine extends AbstractEngine {
     public void startDrag() {
         float x = graphIO.getMouseDrag3d()[0];
         float y = graphIO.getMouseDrag3d()[1];
+        dragSelected = getSelectedNodes();
 
-//        for (Iterator<ModelImpl> itr = selectedObjects[0].iterator(); itr.hasNext();) {
-//            ModelImpl o = itr.next();
-//            float[] tab = o.getDragDistanceFromMouse();
-//            tab[0] = o.getObj().x() - x;
-//            tab[1] = o.getObj().y() - y;
-//        }
+        for (NodeModel selected : dragSelected) {
+            float[] tab = selected.getDragDistanceFromMouse();
+            tab[0] = selected.getNode().x() - x;
+            tab[1] = selected.getNode().y() - y;
+        }
     }
 
     @Override
     public void stopDrag() {
-
         //Selection
         if (vizConfig.isSelectionEnable() && rectangleSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.stop();
             scheduler.requireUpdateSelection();
         }
+        dragSelected = null;
     }
 
     @Override
-    public void updateObjectsPosition() {
-//        for (ModelClass objClass : modelClasses) {
-//            if (objClass.isEnabled()) {
-//                octree.updateObjectsPosition(objClass.getClassId());
-//            }
-//        }
+    public void updateLOD() {
+        Iterator<NodeModel> iterator = octree.getNodeIterator();
+        for (; iterator.hasNext();) {
+            NodeModel obj = iterator.next();
+            nodeModeler.chooseModel(obj);
+        }
+    }
+
+    @Override
+    public List<NodeModel> getSelectedNodes() {
+        List<NodeModel> selected = new ArrayList<NodeModel>();
+        for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext();) {
+            NodeModel nodeModel = itr.next();
+            if (nodeModel.isSelected()) {
+                selected.add(nodeModel);
+            }
+        }
+        return selected;
     }
 
 //    @Override
@@ -648,70 +636,24 @@ public class CompatibilityEngine extends AbstractEngine {
 //        }
     }
 
-    private void initDisplayLists(GL2 gl, GLU glu) {
-        //Constants
-        float blancCasse[] = {(float) 213 / 255, (float) 208 / 255, (float) 188 / 255, 1.0f};
-        float noirCasse[] = {(float) 39 / 255, (float) 25 / 255, (float) 99 / 255, 1.0f};
-        float noir[] = {(float) 0 / 255, (float) 0 / 255, (float) 0 / 255, 0.0f};
-        float[] shine_low = {10.0f, 0.0f, 0.0f, 0.0f};
-        FloatBuffer ambient_metal = FloatBuffer.wrap(noir);
-        FloatBuffer diffuse_metal = FloatBuffer.wrap(noirCasse);
-        FloatBuffer specular_metal = FloatBuffer.wrap(blancCasse);
-        FloatBuffer shininess_metal = FloatBuffer.wrap(shine_low);
-        //End
+    @Override
+    public void initDisplayLists(GL2 gl, GLU glu) {
 
         //Quadric for all the glu models
         GLUquadric quadric = glu.gluNewQuadric();
         int ptr = gl.glGenLists(4);
 
-        // Metal material display list
-        int MATTER_METAL = ptr;
-        gl.glNewList(MATTER_METAL, GL2.GL_COMPILE);
-        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, ambient_metal);
-        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, diffuse_metal);
-        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, specular_metal);
-        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, shininess_metal);
-        gl.glEndList();
-        //Fin
-
-        //Display lists
-        for (Modeler cis : nodeClass.getModelers()) {
-            int newPtr = cis.initDisplayLists(gl, glu, quadric, ptr);
-            ptr = newPtr;
-        }
-        //Fin
-
-        // Sphere with a texture
-        //SHAPE_BILLBOARD = SHAPE_SPHERE32 + 1;
-		/*gl.glNewList(SHAPE_BILLBOARD,GL2.GL_COMPILE);
-         textures[0].bind();
-         gl.glBegin(GL2.GL_TRIANGLE_STRIP);
-         // Map the texture and create the vertices for the particle.
-         gl.glTexCoord2d(1, 1);
-         gl.glVertex3f(0.5f, 0.5f, 0);
-         gl.glTexCoord2d(0, 1);
-         gl.glVertex3f(-0.5f, 0.5f,0);
-         gl.glTexCoord2d(1, 0);
-         gl.glVertex3f(0.5f, -0.5f, 0);
-         gl.glTexCoord2d(0, 0);
-         gl.glVertex3f(-0.5f,-0.5f, 0);
-         gl.glEnd();
-
-         gl.glBindTexture(GL2.GL_TEXTURE_2D,0);
-         gl.glEndList();*/
-        //Fin
+        nodeModeler.initDisplayLists(gl, glu, quadric, ptr);
 
         glu.gluDeleteQuadric(quadric);
     }
 
     @Override
     public void initObject3dClass() {
-        modelClassLibrary.createModelClassesCompatibility(this);
-        nodeClass = modelClassLibrary.getNodeClass();
-        edgeClass = modelClassLibrary.getEdgeClass();
-
-        nodeClass.setEnabled(true);
-        edgeClass.setEnabled(vizController.getVizModel().isShowEdges());
+        nodeModeler = new NodeModeler(this);
+        edgeModeler = new EdgeModeler(this);
+        nodeModeler.setEnabled(true);
+        edgeModeler.setEnabled(vizController.getVizModel().isShowEdges());
     }
 
     @Override

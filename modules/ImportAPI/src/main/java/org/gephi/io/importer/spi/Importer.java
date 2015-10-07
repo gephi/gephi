@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.io.importer.spi;
 
 import org.gephi.io.importer.api.ContainerLoader;
@@ -46,10 +46,11 @@ import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.api.Report;
 
 /**
- * Interface for classes which imports data from files, databases, streams or other sources.
+ * Interface for classes which imports data from files, databases, streams or
+ * other sources.
  * <p>
- * Importers are built from {@link ImporterBuilder} services and can be configured
- * by {@link ImporterUI} classes.
+ * Importers are built from {@link ImporterBuilder} services and can be
+ * configured by {@link ImporterUI} classes.
  *
  * @author Mathieu Bastian
  * @see ImportController
@@ -57,23 +58,26 @@ import org.gephi.io.importer.api.Report;
 public interface Importer {
 
     /**
-     * Run the import processus.
-     * @param loader    the container where imported data will be pushed
-     * @return          <code>true</code> if the import is successfull or
-     *                  <code>false</code> if it has been cancelled
+     * Run the import process.
+     *
+     * @param loader the container where imported data will be pushed
+     * @return          <code>true</code> if the import is successful or
+     * <code>false</code> if it has been cancelled
      */
     public boolean execute(ContainerLoader loader);
 
     /**
      * Returns the import container. The container is the import "result", all
      * data found during import are being pushed to the container.
-     * @return          the import container
+     *
+     * @return the import container
      */
     public ContainerLoader getContainer();
 
     /**
      * Returns the import report, filled with logs and potential issues.
-     * @return          the import report
+     *
+     * @return the import report
      */
     public Report getReport();
 }

@@ -38,8 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
-
+ */
 package org.gephi.tools.spi;
 
 import org.gephi.graph.api.Node;
@@ -58,6 +57,7 @@ public interface NodePressingEventListener extends ToolEventListener {
 
     /**
      * Notify <code>nodes</code> are currently pressed.
+     *
      * @param nodes the pressed nodes array
      */
     public void pressingNodes(Node[] nodes);

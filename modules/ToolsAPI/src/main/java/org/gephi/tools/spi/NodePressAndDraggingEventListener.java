@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.tools.spi;
 
 import org.gephi.graph.api.Node;
@@ -60,13 +60,18 @@ import org.gephi.graph.api.Node;
 public interface NodePressAndDraggingEventListener extends ToolEventListener {
 
     /**
-     * Notify <code>nodes</code> have been pressed by user on the visualization window.
+     * Notify <code>nodes</code> have been pressed by user on the visualization
+     * window.
+     *
      * @param nodes the clicked nodes
      */
     public void pressNodes(Node[] nodes);
 
     /**
      * Notify mouse is dragging
+     *
+     * @param displacementX distance x
+     * @param displacementY distance y
      */
     public void drag(float displacementX, float displacementY);
 

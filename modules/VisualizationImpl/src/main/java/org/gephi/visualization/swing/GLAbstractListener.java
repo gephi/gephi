@@ -42,7 +42,6 @@
 package org.gephi.visualization.swing;
 
 import com.jogamp.common.nio.Buffers;
-import com.jogamp.newt.awt.NewtCanvasAWT;
 import java.awt.Color;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -53,7 +52,7 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.glu.GLU;
 import java.awt.Component;
-import java.awt.Cursor;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.DoubleBuffer;
@@ -62,11 +61,10 @@ import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.apiimpl.GraphDrawable;
+import org.gephi.visualization.apiimpl.GraphIO;
 import org.gephi.visualization.apiimpl.Scheduler;
-import org.gephi.visualization.config.GraphicalConfiguration;
+import org.gephi.visualization.opengl.GraphicalConfiguration;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.opengl.Lighting;
-import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.openide.util.Exceptions;
 
 /**
@@ -75,15 +73,19 @@ import org.openide.util.Exceptions;
  */
 public abstract class GLAbstractListener implements GLEventListener, VizArchitecture, GraphDrawable {
 
+    //GLU
+    protected static final GLU GLU = new GLU();
+    //Architecture
     protected GLAutoDrawable drawable;
     protected VizController vizController;
     protected VizModel vizModel;
-    public static final GLU glu = new GLU();
-    private static boolean DEBUG = true;
+    protected GraphIO graphIO;
+
     private long startTime = 0;
     protected float fps;
     protected float fpsAvg = 0;
     protected float fpsCount = 0;
+    private boolean showGLLog = true;
     private volatile boolean resizing = false;
     public final float viewField = 30.0f;
     public final float nearDistance = 1.0f;
@@ -94,8 +96,6 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     protected FloatBuffer modelMatrix = Buffers.newDirectFloatBuffer(16);
     protected IntBuffer viewport = Buffers.newDirectIntBuffer(4);
     protected GraphicalConfiguration graphicalConfiguration;
-    protected Lighting lighting = new Lighting();
-    protected ScreenshotMaker screenshotMaker;
     public Component graphComponent;
     protected AbstractEngine engine;
     protected Scheduler scheduler;
@@ -118,13 +118,13 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     public void initArchitecture() {
         this.engine = VizController.getInstance().getEngine();
         this.scheduler = VizController.getInstance().getScheduler();
-        this.screenshotMaker = VizController.getInstance().getScreenshotMaker();
+        this.graphIO = VizController.getInstance().getGraphIO();
 
         cameraLocation = vizController.getVizConfig().getDefaultCameraPosition();
         cameraTarget = vizController.getVizConfig().getDefaultCameraTarget();
 
         //Mouse events
-        if (vizController.getVizConfig().isReduceFpsWhenMouseOut()) {
+        if (graphComponent != null && vizController.getVizConfig().isReduceFpsWhenMouseOut()) {
             final int minVal = vizController.getVizConfig().getReduceFpsWhenMouseOutValue();
             final int maxVal = 30;
             graphMouseAdapter = new MouseAdapter() {
@@ -133,7 +133,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     if (!scheduler.isAnimating()) {
-                        engine.startDisplay();
+                        engine.resumeDisplay();
                     }
                     scheduler.setFps(maxVal);
                     resetFpsAverage();
@@ -147,7 +147,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
                         target = lastTarget;
                     }
                     if (target <= 0.005f) {
-                        engine.stopDisplay();
+                        engine.pauseDisplay();
                     } else if (target > minVal) {
                         target = minVal;
                     }
@@ -156,16 +156,16 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
                 }
             };
             graphComponent.addMouseListener(graphMouseAdapter);
-        } else if (vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
+        } else if (graphComponent != null && vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
             graphMouseAdapter = new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    engine.startDisplay();
+                    engine.resumeDisplay();
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    engine.stopDisplay();
+                    engine.pauseDisplay();
                 }
             };
             graphComponent.addMouseListener(graphMouseAdapter);
@@ -223,40 +223,10 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         //Disable Vertical synchro
         gl.setSwapInterval(0);
 
-        //Depth
-        if (vizController.getVizModel().isUse3d()) {
-            gl.glEnable(GL2.GL_DEPTH_TEST);      //Enable Z-Ordering
-            gl.glDepthFunc(GL2.GL_LEQUAL);
-            gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);	//Correct texture & colors perspective calculations
-        } else {
-            gl.glDisable(GL2.GL_DEPTH_TEST);     //Z is set by the order of drawing
-        }
-
-        //Cull face
-        if (vizController.getVizModel().isCulling()) {        //When enabled, increases performance but polygons must be drawn counterclockwise
-            gl.glEnable(GL2.GL_CULL_FACE);
-            gl.glCullFace(GL2.GL_BACK);      //Hide back face of polygons
-        }
-
-        //Point Smooth
-        if (vizController.getVizConfig().isPointSmooth()) {        //Only for GL_POINTS
-            gl.glEnable(GL2.GL_POINT_SMOOTH);
-            gl.glHint(GL2.GL_POINT_SMOOTH_HINT, GL2.GL_NICEST); //Point smoothing
-        } else {
-            gl.glDisable(GL2.GL_POINT_SMOOTH);
-        }
-
-        //Light Smooth
-        if (vizController.getVizConfig().isLineSmooth()) {         //Only for GL_LINES
-            gl.glEnable(GL2.GL_LINE_SMOOTH);
-            if (vizController.getVizConfig().isLineSmoothNicest()) {
-                gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
-            } else {
-                gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_FASTEST);
-            }
-        } else {
-            gl.glDisable(GL2.GL_LINE_SMOOTH);
-        }
+        //Config
+        gl.glDisable(GL2.GL_DEPTH_TEST);     //Z is set by the order of drawing
+        gl.glDisable(GL2.GL_POINT_SMOOTH);
+        gl.glDisable(GL2.GL_LINE_SMOOTH);
 
         gl.glClearDepth(1.0f);
 
@@ -264,44 +234,23 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         Color backgroundColor = vizController.getVizModel().getBackgroundColor();
         gl.glClearColor(backgroundColor.getRed() / 255f, backgroundColor.getGreen() / 255f, backgroundColor.getBlue() / 255f, 1f);
 
-        //Lighting
-        if (vizController.getVizModel().isLighting()) {
-            gl.glEnable(GL2.GL_LIGHTING);
-            setLighting(gl);
-            gl.glEnable(GL2.GL_NORMALIZE);       //Normalise colors when glScale used
-            gl.glShadeModel(GL2.GL_SMOOTH);
-        } else {
-            gl.glDisable(GL2.GL_LIGHTING);
-            gl.glShadeModel(GL2.GL_FLAT);
-        }
-
         //Blending
         if (vizController.getVizConfig().isBlending()) {
             gl.glEnable(GL2.GL_BLEND);
-            if (vizController.getVizConfig().isBlendCinema()) {
-                gl.glBlendFunc(GL2.GL_CONSTANT_COLOR, GL2.GL_ONE_MINUS_SRC_ALPHA);        //Black display
-            } else {
-                gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);             //Use alpha values correctly
-            }
+            gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);             //Use alpha values correctly
         }
 
-        //Material
-        if (vizController.getVizModel().isMaterial()) {
-            gl.glColorMaterial(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE);
-            gl.glEnable(GL2.GL_COLOR_MATERIAL);                                      //Use color and avoid using glMaterial
-        }
+        //Lighting
+        gl.glDisable(GL2.GL_LIGHTING);
+        gl.glShadeModel(GL2.GL_FLAT);
+
         //Mesh view
         if (vizController.getVizConfig().isWireFrame()) {
             gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
         }
 
-         // Bug: Black faces when enabled
+        // Bug: Black faces when enabled
 //        gl.glEnable(GL2.GL_TEXTURE_2D);
-    }
-
-    protected void setLighting(GL2 gl) {
-        lighting = new Lighting();
-        lighting.glInit(gl);
     }
 
     @Override
@@ -318,7 +267,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         initConfig(gl);
 
 //        graphComponent.setCursor(Cursor.getDefaultCursor());
-        engine.initEngine(gl, glu);
+        engine.initEngine(gl, GLU);
 
         init(gl);
     }
@@ -347,7 +296,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         //Refresh rotation angle
         gl.glLoadIdentity();
         glu.gluLookAt(cameraLocation[0], cameraLocation[1], cameraLocation[2], cameraTarget[0], cameraTarget[1], cameraTarget[2], 0, 1, 0);
-        gl.glScalef(globalScale, globalScale, 0f);
+        gl.glScalef(globalScale, globalScale, 1f);
         gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelMatrix);
         cameraVector.set(cameraTarget[0] - cameraLocation[0], cameraTarget[1] - cameraLocation[1], cameraTarget[2] - cameraLocation[2]);
         refreshDraggingMarker();
@@ -355,10 +304,6 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
 
     @Override
     public void display(GLAutoDrawable drawable) {
-
-        //Screenshot
-        screenshotMaker.openglSignal(drawable);
-
         //FPS
         if (startTime == 0) {
             startTime = System.currentTimeMillis() - 1;
@@ -373,14 +318,10 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
 
         GL2 gl = drawable.getGL().getGL2();
 
-        if (vizController.getVizModel().isUse3d()) {
-            gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-        } else {
-            gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
-        }
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
 
-        render3DScene(gl, glu);
-        scheduler.display(gl, glu);
+        render3DScene(gl, GLU);
+        scheduler.display(gl, GLU);
 //        renderTestCube(gl);
     }
 
@@ -392,8 +333,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         if (!resizing) {
-            if (viewport.get(2) == width && viewport.get(3) == height)//NO need
-            {
+            if (viewport.get(2) == width && viewport.get(3) == height) {
                 return;
             }
             resizing = true;
@@ -405,7 +345,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
                 width = 1;
             }
 
-            int viewportW = 0, viewportH = 0, viewportX = width, viewportY = height;
+            int viewportW, viewportH, viewportX, viewportY;
 
             aspectRatio = (double) width / (double) height;
             viewportH = height;
@@ -424,17 +364,17 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
 
             gl.glMatrixMode(GL2.GL_PROJECTION);
             gl.glLoadIdentity();
-            glu.gluPerspective(viewField, aspectRatio, nearDistance, farDistance);
+            GLU.gluPerspective(viewField, aspectRatio, nearDistance, farDistance);
             gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projMatrix);//Update projection buffer
 
             gl.glMatrixMode(GL2.GL_MODELVIEW);
             gl.glLoadIdentity();
 
-            setCameraPosition(gl, glu);
+            setCameraPosition(gl, GLU);
             reshape3DScene(drawable.getGL().getGL2());
 
-            if (DEBUG) {
-                DEBUG = false;
+            if (showGLLog) {
+                showGLLog = false;
                 System.err.println("GL_VENDOR: " + gl.glGetString(GL2.GL_VENDOR));
                 System.err.println("GL_RENDERER: " + gl.glGetString(GL2.GL_RENDERER));
                 System.err.println("GL_VERSION: " + gl.glGetString(GL2.GL_VERSION));
@@ -453,15 +393,16 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         drawable.destroy();
     }
 
+    // TEST CUBE CODE BEGIN
     private static float rotateFactor = 15f;
 
-    private void renderTestCube(GL2 gl) {
+    public void renderTestCube(GL2 gl) {
         float cubeSize = 1f;
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
-        glu.gluLookAt(cameraLocation[0], cameraLocation[1], cameraLocation[2], cameraTarget[0], cameraTarget[1], cameraTarget[2], 0, 1, 0);
+        GLU.gluLookAt(cameraLocation[0], cameraLocation[1], cameraLocation[2], cameraTarget[0], cameraTarget[1], cameraTarget[2], 0, 1, 0);
 
         gl.glColor3f(0f, 0f, 0f);
 
@@ -502,6 +443,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         gl.glEnd();			// End Drawing The Cube
     }
 
+    // TEST CUBE CODE END
     //Utils
     @Override
     public double[] myGluProject(float x, float y) {
@@ -552,10 +494,6 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
 
     public GLAutoDrawable getGLAutoDrawable() {
         return drawable;
-    }
-
-    public Lighting getLighting() {
-        return lighting;
     }
 
     @Override
@@ -645,5 +583,10 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     public void dispose(GLAutoDrawable glad) {
         engine.stopDisplay();
         VizController.getInstance().getDataBridge().reset();
+    }
+
+    @Override
+    public Point getLocationOnScreen() {
+        return graphComponent.getLocationOnScreen();
     }
 }

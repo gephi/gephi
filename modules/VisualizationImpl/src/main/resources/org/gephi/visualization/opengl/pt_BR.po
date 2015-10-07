@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the Gephi package.
 # 
 # Translators:
-# Célio Faria Jr. <celiofariajr@gmail.com>, 2012.
+# Célio CJr <celiofariajr@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2012-12-18 11:30+0000\n"
+"PO-Revision-Date: 2011-08-05 16:45+0000\n"
 "Last-Translator: Célio Faria Jr. <celiofariajr@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/gephi/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -18,14 +18,8 @@ msgstr ""
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-msgid "JOGLNativesInstaller_error1"
-msgstr "Falha na inicialização: não foi possível localizar arquivos nativos para %s."
+msgid "graphicalConfiguration_currentConfig"
+msgstr "\"\nHardware atual:\n%s\n%s\nVersão:%s;"
 
-msgid "JOGLNativesInstaller_error2"
-msgstr "Falha na inicialização: SO/arch (%s / %s) não suportados. Por favor verifique se sua JVM é de 32 bits."
-
-msgid "JOGLNativesInstaller_error3"
-msgstr "Impossível carregar JAWT"
-
-msgid "JOGLNativesInstaller_error4"
-msgstr "Impossível carregar %s"
+msgid "graphicalConfiguration_exception"
+msgstr "\"Sua versão de OpenGL2 (%s) não é suficiente para exibir o grafo. Atualize seus drivers gráficos ou de configuração.%s"

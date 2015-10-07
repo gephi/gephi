@@ -50,7 +50,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Eduardo
  */
 @ServiceProvider(service = GraphContextMenuItem.class)
-public class MoveToWorkspace extends CopyOrMoveToWorkspace{
+public class MoveToWorkspace extends CopyOrMoveToWorkspace {
 
     @Override
     protected boolean isCopy() {

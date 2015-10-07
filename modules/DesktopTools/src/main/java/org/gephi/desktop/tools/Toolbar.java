@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.desktop.tools;
 
 import java.awt.Component;
@@ -56,7 +56,7 @@ import org.gephi.ui.utils.UIUtils;
  */
 public class Toolbar extends JToolBar {
 
-    private ButtonGroup buttonGroup;
+    private final ButtonGroup buttonGroup;
 
     public Toolbar() {
         initDesign();
@@ -75,6 +75,7 @@ public class Toolbar extends JToolBar {
     public void setEnabled(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 for (Component c : getComponents()) {
                     c.setEnabled(enabled);

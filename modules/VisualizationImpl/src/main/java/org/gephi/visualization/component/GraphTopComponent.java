@@ -76,23 +76,16 @@ import org.openide.windows.WindowManager;
         preferredID = "GraphTopComponent")
 public class GraphTopComponent extends TopComponent implements AWTEventListener {
 
-    private AbstractEngine engine;
-    private VizBarController vizBarController;
+    private transient AbstractEngine engine;
+    private transient VizBarController vizBarController;
 //    private Map<Integer, ContextMenuItemManipulator> keyActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();
-    private final transient GraphDrawable drawable;
+    private transient GraphDrawable drawable;
 
     public GraphTopComponent() {
         initComponents();
 
         setName(NbBundle.getMessage(GraphTopComponent.class, "CTL_GraphTopComponent"));
 //        setToolTipText(NbBundle.getMessage(GraphTopComponent.class, "HINT_GraphTopComponent"));
-
-        engine = VizController.getInstance().getEngine();
-
-        //Init
-        initCollapsePanel();
-        initToolPanels();
-        drawable = VizController.getInstance().getDrawable();
 
         //Request component activation and therefore initialize JOGL2 component
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
@@ -102,9 +95,17 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
+                        //Init
+                        initCollapsePanel();
+                        initToolPanels();
+                        drawable = VizController.getInstance().getDrawable();
+                        engine = VizController.getInstance().getEngine();
+
                         requestActive();
                         add(drawable.getGraphComponent(), BorderLayout.CENTER);
                         remove(waitingLabel);
+
+                        engine.startDisplay();
                     }
                 });
             }

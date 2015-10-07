@@ -57,10 +57,7 @@ import org.gephi.visualization.octree.Octant;
 public abstract class NodeModel implements Model, TextModel {
 
     protected final Node node;
-    protected float viewportX;
-    protected float viewportY;
     protected float cameraDistance;
-    protected float viewportRadius;
     protected float[] dragDistance;
     //Octant
     protected Octant octant;
@@ -132,28 +129,12 @@ public abstract class NodeModel implements Model, TextModel {
         return cameraDistance;
     }
 
-    public float getViewportRadius() {
-        return viewportRadius;
+    public float getX() {
+        return node.x();
     }
 
-    public void setViewportRadius(float viewportRadius) {
-        this.viewportRadius = viewportRadius;
-    }
-
-    public float getViewportX() {
-        return viewportX;
-    }
-
-    public void setViewportX(float viewportX) {
-        this.viewportX = viewportX;
-    }
-
-    public float getViewportY() {
-        return viewportY;
-    }
-
-    public void setViewportY(float viewportY) {
-        this.viewportY = viewportY;
+    public float getY() {
+        return node.y();
     }
 
     public void setSelected(boolean selected) {
@@ -218,12 +199,13 @@ public abstract class NodeModel implements Model, TextModel {
     }
 
     @Override
+    public Rectangle2D getTextBounds() {
+        return bounds;
+    }
+
+    @Override
     public String getText() {
-        String t = node.getTextProperties().getText();
-        if (t == null) {
-            return node.getLabel();
-        }
-        return t;
+        return node.getTextProperties().getText();
     }
 
     @Override
@@ -259,6 +241,10 @@ public abstract class NodeModel implements Model, TextModel {
     @Override
     public ElementProperties getElementProperties() {
         return node;
+    }
+
+    public float[] getDragDistanceFromMouse() {
+        return dragDistance;
     }
 
     public void addEdge(EdgeModel model) {

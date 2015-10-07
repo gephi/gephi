@@ -68,7 +68,7 @@ public class StandardVizEventManager implements VizEventManager {
     private AbstractEngine engine;
     private GraphIO graphIO;
     //
-    private ThreadPoolExecutor pool;
+    private final ThreadPoolExecutor pool;
     private VizEventTypeHandler[] handlers;
 
     public StandardVizEventManager() {

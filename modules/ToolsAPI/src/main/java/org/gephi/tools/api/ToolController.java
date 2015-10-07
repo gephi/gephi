@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.tools.api;
 
 import javax.swing.JComponent;
@@ -49,6 +49,7 @@ import org.gephi.tools.spi.Tool;
  * <p>
  * This controller is a service and can therefore be found in Lookup:
  * <pre>ToolController tc = Lookup.getDefault().lookup(ToolController.class);</pre>
+ *
  * @author Mathieu Bastian
  */
 public interface ToolController {
@@ -56,19 +57,23 @@ public interface ToolController {
     /**
      * Selects <code>tool</code> as the active tool and therefore unselect the
      * current tool, if exists.
-     * @param tool  the tool that is to be selected or null to only unselect the current tool
+     *
+     * @param tool the tool that is to be selected or null to only unselect the
+     * current tool
      */
     public void select(Tool tool);
 
     /**
      * Returns the toolbar component, build from tools implementations.
-     * @return      the toolbar component
+     *
+     * @return the toolbar component
      */
     public JComponent getToolbar();
 
     /**
      * Returns the properties bar component, that display tools settings.
-     * @return      the properties bar component
+     *
+     * @return the properties bar component
      */
     public JComponent getPropertiesBar();
 }

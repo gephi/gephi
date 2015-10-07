@@ -38,19 +38,20 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.io.importer.spi;
 
 /**
  * Importer builder specific for {@link DatabaseImporter}.
- * 
+ *
  * @author Mathieu Bastian
  */
 public interface DatabaseImporterBuilder extends ImporterBuilder {
 
     /**
      * Builds a new database importer instance, ready to be used.
-     * @return  a new database importer
+     *
+     * @return a new database importer
      */
     @Override
     public DatabaseImporter buildImporter();

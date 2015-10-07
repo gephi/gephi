@@ -103,7 +103,6 @@ public class ActionsToolbar extends JToolBar {
          }
          });
          add(centerOnZeroButton);*/
-
         //Reset colors
         final JColorButton resetColorButton = new JColorButton(color, true, false);
         resetColorButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetColors"));

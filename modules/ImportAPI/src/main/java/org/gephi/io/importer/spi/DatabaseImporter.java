@@ -53,13 +53,13 @@ import org.gephi.io.importer.api.ImportController;
 public interface DatabaseImporter extends Importer {
 
     /**
-     * Sets the database description, connexion details and queries
+     * Sets the database description, connection details and queries
      * @param database  the database that is to be used to import
      */
     public void setDatabase(Database database);
 
     /**
-     * Returns the current database description, connexion details and queries
+     * Returns the current database description, connection details and queries
      * @return         the database that is to be used to import
      */
     public Database getDatabase();

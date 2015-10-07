@@ -73,8 +73,8 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     private BasicFPSAnimator displayAnimator;
     private BasicFPSAnimator updateAnimator;
     private float displayFpsLimit = 30f;
-    private float updateFpsLimit = 5f;
-    private Object worldLock = new Object();
+    private final float updateFpsLimit = 5f;
+    private final Object worldLock = new Object();
 
     @Override
     public void initArchitecture() {
@@ -98,7 +98,6 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
             }
         }, worldLock, "DisplayAnimator", displayFpsLimit);
         displayAnimator.start();
-
 
         updateAnimator = new BasicFPSAnimator(new Runnable() {
             @Override
@@ -124,16 +123,11 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
     @Override
     public boolean isAnimating() {
-        if (displayAnimator != null && displayAnimator.isAnimating()) {
-            return true;
-        }
-        return false;
+        return displayAnimator != null && displayAnimator.isAnimating();
     }
 
     @Override
     public void display(GL2 gl, GLU glu) {
-//        if (simpleFPSAnimator.isDisplayCall()) {
-
         //Boolean vals
         boolean execMouseClick = mouseClick.getAndSet(false);
         boolean execMouseMove = mouseMoved.getAndSet(false);
@@ -146,13 +140,13 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
             //Objects iterators in octree are ready
 
             //Task MODEL - LOD
-            engine.getNodeClass().lod(engine.getOctree().getNodeIterator());
+            engine.updateLOD();
         }
 
         //Task SELECTED
         if (execMouseMove) {
-            engine.updateSelection(gl, glu);
             engine.mouseMove();
+            engine.updateSelection(gl, glu);
         } else if (execDrag) {
             //Drag
             if (stopDrag.getAndSet(false)) {
@@ -175,7 +169,6 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         engine.beforeDisplay(gl, glu);
         engine.display(gl, glu);
         engine.afterDisplay(gl, glu);
-//        }
     }
 
     @Override

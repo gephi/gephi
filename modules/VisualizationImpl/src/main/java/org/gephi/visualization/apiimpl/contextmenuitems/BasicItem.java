@@ -42,6 +42,8 @@
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
+import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.spi.GraphContextMenuItem;
@@ -69,19 +71,21 @@ public abstract class BasicItem implements GraphContextMenuItem {
         return null;
     }
 
-//    @Override
-//    public ManipulatorUI getUI() {
-//        return null;
-//    }
+    @Override
+    public ManipulatorUI getUI() {
+        return null;
+    }
+
     @Override
     public boolean isAvailable() {
         return true;
     }
 
-//    @Override
-//    public ContextMenuItemManipulator[] getSubItems() {
-//        return null;
-//    }
+    @Override
+    public ContextMenuItemManipulator[] getSubItems() {
+        return null;
+    }
+
     @Override
     public Integer getMnemonicKey() {
         return null;

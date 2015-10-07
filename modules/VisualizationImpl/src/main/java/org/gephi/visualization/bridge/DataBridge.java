@@ -57,6 +57,7 @@ import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.model.node.NodeModeler;
 import org.gephi.visualization.octree.Octree;
 import org.gephi.visualization.opengl.AbstractEngine;
+import org.gephi.visualization.text.TextManager;
 import org.openide.util.Lookup;
 
 /**
@@ -70,6 +71,7 @@ public class DataBridge implements VizArchitecture {
     //Architecture
     protected AbstractEngine engine;
     protected GraphController controller;
+    protected TextManager textManager;
     private VizConfig vizConfig;
     protected GraphLimits limits;
     //Graph
@@ -86,12 +88,13 @@ public class DataBridge implements VizArchitecture {
         this.controller = Lookup.getDefault().lookup(GraphController.class);
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.limits = VizController.getInstance().getLimits();
+        this.textManager = VizController.getInstance().getTextManager();
     }
 
     public synchronized boolean updateWorld() {
         if (observer != null && observer.hasGraphChanged()) {
-            NodeModeler nodeModeler = (NodeModeler) engine.getNodeClass().getCurrentModeler();
-            EdgeModeler edgeModeler = (EdgeModeler) engine.getEdgeClass().getCurrentModeler();
+            NodeModeler nodeModeler = engine.getNodeModeler();
+            EdgeModeler edgeModeler = engine.getEdgeModeler();
             Octree octree = engine.getOctree();
 
             //Stats
@@ -100,6 +103,7 @@ public class DataBridge implements VizArchitecture {
             int removedEdges = 0;
             int addedEdges = 0;
 
+            graph.readLock();
             for (int i = 0; i < nodes.length; i++) {
                 NodeModel node = nodes[i];
                 if (node != null && node.getNode().getStoreId() == -1) {
@@ -111,20 +115,26 @@ public class DataBridge implements VizArchitecture {
             }
             for (Node node : graph.getNodes()) {
                 int id = node.getStoreId();
+                NodeModel model;
                 if (id >= nodes.length || nodes[id] == null) {
                     growNodes(id);
-                    NodeModel model = nodeModeler.initModel(node);
+                    model = nodeModeler.initModel(node);
                     octree.addNode(model);
                     nodes[id] = model;
                     addedNodes++;
+                } else {
+                    model = nodes[id];
                 }
+                textManager.refreshNode(model);
             }
             for (int i = 0; i < edges.length; i++) {
                 EdgeModel edge = edges[i];
                 if (edge != null && edge.getEdge().getStoreId() == -1) {
                     //Removed
-                    NodeModel sourceModel = nodes[edge.getEdge().getSource().getStoreId()];
-                    NodeModel targetModel = nodes[edge.getEdge().getTarget().getStoreId()];
+                    int sourceId = edge.getEdge().getSource().getStoreId();
+                    int targetId = edge.getEdge().getTarget().getStoreId();
+                    NodeModel sourceModel = sourceId == -1 ? null : nodes[sourceId];
+                    NodeModel targetModel = targetId == -1 ? null : nodes[targetId];
                     if (sourceModel != null) {
                         sourceModel.removeEdge(edge);
                     }
@@ -139,22 +149,30 @@ public class DataBridge implements VizArchitecture {
             float maxWeight = Float.MIN_VALUE;
             for (Edge edge : graph.getEdges()) {
                 int id = edge.getStoreId();
+                EdgeModel model;
                 if (id >= edges.length || edges[id] == null) {
                     growEdges(id);
                     NodeModel sourceModel = nodes[edge.getSource().getStoreId()];
                     NodeModel targetModel = nodes[edge.getTarget().getStoreId()];
-                    EdgeModel model = edgeModeler.initModel(edge, sourceModel, targetModel);
+                    model = edgeModeler.initModel(edge, sourceModel, targetModel);
                     sourceModel.addEdge(model);
                     targetModel.addEdge(model);
                     edges[id] = model;
                     addedEdges++;
+                } else {
+                    model = edges[id];
                 }
                 float w = (float) edge.getWeight();
+                model.setWeight(w);
                 minWeight = Math.min(w, minWeight);
                 maxWeight = Math.max(w, maxWeight);
+
+                textManager.refreshEdge(model);
             }
             limits.setMaxWeight(maxWeight);
             limits.setMinWeight(minWeight);
+
+            graph.readUnlock();
 
             System.out.println("DATABRIDGE:");
             System.out.println(" Removed Edges: " + removedEdges);
@@ -190,6 +208,10 @@ public class DataBridge implements VizArchitecture {
 
     public boolean isDirected() {
         return graphModel != null && !graphModel.isUndirected();
+    }
+
+    public Graph getGraph() {
+        return graph;
     }
 
     private void growNodes(final int index) {

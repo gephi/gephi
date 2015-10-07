@@ -44,10 +44,11 @@ package org.gephi.visualization.apiimpl;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import java.awt.Component;
+import java.awt.Point;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import org.gephi.lib.gleem.linalg.Vec3f;
-import org.gephi.visualization.config.GraphicalConfiguration;
+import org.gephi.visualization.opengl.GraphicalConfiguration;
 
 /**
  *
@@ -94,4 +95,6 @@ public interface GraphDrawable {
     public GraphicalConfiguration getGraphicalConfiguration();
 
     public void destroy();
+
+    public Point getLocationOnScreen();
 }

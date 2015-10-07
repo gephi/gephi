@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.io.importer.api;
 
 import java.io.File;
@@ -76,11 +76,12 @@ import org.xml.sax.SAXException;
 public final class ImportUtils {
 
     /**
-     * Returns a <code>LineNumberReader</code> for <code>fileObject</code>. The file must
-     * be a text file. The charset is detected automatically.
-     * @param fileObject    the file object that is to be read
-     * @return              a reader for the text file
-     * @throws IOException  if the file can't be found or read
+     * Returns a <code>LineNumberReader</code> for <code>fileObject</code>. The
+     * file must be a text file. The charset is detected automatically.
+     *
+     * @param fileObject the file object that is to be read
+     * @return a reader for the text file
+     * @throws IOException if the file can't be found or read
      */
     public static LineNumberReader getTextReader(FileObject fileObject) throws IOException {
         try {
@@ -91,10 +92,11 @@ public final class ImportUtils {
     }
 
     /**
-     * Returns a <code>LineNumberReader</code> for <code>inputStream</code>. The stream must
-     * be a character stream. The charset is detected automatically.
-     * @param stream    the stream that is to be read
-     * @return          a reader for the character stream
+     * Returns a <code>LineNumberReader</code> for <code>inputStream</code>. The
+     * stream must be a character stream. The charset is detected automatically.
+     *
+     * @param stream the stream that is to be read
+     * @return a reader for the character stream
      * @throws IOException if the stream can't be read
      */
     public static LineNumberReader getTextReader(InputStream stream) throws IOException {
