@@ -48,11 +48,13 @@ import org.gephi.graph.api.Table;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.progress.ProgressTicket;
 
 /**
  *
@@ -60,19 +62,25 @@ import org.gephi.project.api.Workspace;
  */
 public abstract class AbstractProcessor {
 
+    protected ProgressTicket progressTicket;
     protected Workspace workspace;
     protected ContainerUnloader container;
     protected GraphModel graphModel;
 
     protected void flushColumns() {
+        TimeRepresentation timeRepresentation = container.getTimeRepresentation();
         Table nodeTable = graphModel.getNodeTable();
         for (ColumnDraft col : container.getNodeColumns()) {
             if (!nodeTable.hasColumn(col.getId())) {
                 Class typeClass = col.getTypeClass();
                 if (col.isDynamic()) {
-                    typeClass = AttributeUtils.getTimestampMapType(typeClass);
+                    if (timeRepresentation.equals(TimeRepresentation.TIMESTAMP)) {
+                        typeClass = AttributeUtils.getTimestampMapType(typeClass);
+                    } else {
+                        typeClass = AttributeUtils.getIntervalMapType(typeClass);
+                    }
                 }
-                nodeTable.addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, col.getDefaultValue(), true);
+                nodeTable.addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, col.getDefaultValue(), !col.isDynamic());
             }
         }
         Table edgeTable = graphModel.getEdgeTable();
@@ -80,9 +88,13 @@ public abstract class AbstractProcessor {
             if (!edgeTable.hasColumn(col.getId())) {
                 Class typeClass = col.getTypeClass();
                 if (col.isDynamic()) {
-                    typeClass = AttributeUtils.getTimestampMapType(typeClass);
+                    if (timeRepresentation.equals(TimeRepresentation.TIMESTAMP)) {
+                        typeClass = AttributeUtils.getTimestampMapType(typeClass);
+                    } else {
+                        typeClass = AttributeUtils.getIntervalMapType(typeClass);
+                    }
                 }
-                edgeTable.addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, col.getDefaultValue(), true);
+                edgeTable.addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, col.getDefaultValue(), !col.isDynamic());
             }
         }
     }
@@ -119,27 +131,20 @@ public abstract class AbstractProcessor {
             node.setSize(10f);
         }
 
+        //Timeset
+        if (nodeDraft.getTimeSet() != null) {
+            node.setAttribute("timeset", nodeDraft.getTimeSet());
+        }
+
         //Attributes
         flushToNodeAttributes(nodeDraft, node);
     }
 
     protected void flushToNodeAttributes(NodeDraft nodeDraft, Node node) {
         for (ColumnDraft col : container.getNodeColumns()) {
-            if (col.isDynamic()) {
-                double[] timestamps = nodeDraft.getTimestamps(col.getId());
-                if (timestamps != null) {
-                    for (double d : timestamps) {
-                        Object val = nodeDraft.getValue(col.getId(), d);
-                        if (val != null) {
-                            node.setAttribute(col.getId(), val, d);
-                        }
-                    }
-                }
-            } else {
-                Object val = nodeDraft.getValue(col.getId());
-                if (val != null) {
-                    node.setAttribute(col.getId(), val);
-                }
+            Object val = nodeDraft.getValue(col.getId());
+            if (val != null) {
+                node.setAttribute(col.getId(), val);
             }
         }
     }
@@ -171,27 +176,20 @@ public abstract class AbstractProcessor {
             edge.getTextProperties().setColor(labelColor);
         }
 
+        //Timeset
+        if (edgeDraft.getTimeSet() != null) {
+            edge.setAttribute("timeset", edgeDraft.getTimeSet());
+        }
+
         //Attributes
         flushToEdgeAttributes(edgeDraft, edge);
     }
 
     protected void flushToEdgeAttributes(EdgeDraft edgeDraft, Edge edge) {
         for (ColumnDraft col : container.getEdgeColumns()) {
-            if (col.isDynamic()) {
-                double[] timestamps = edgeDraft.getTimestamps(col.getId());
-                if (timestamps != null) {
-                    for (double d : timestamps) {
-                        Object val = edgeDraft.getValue(col.getId(), d);
-                        if (val != null) {
-                            edge.setAttribute(col.getId(), val, d);
-                        }
-                    }
-                }
-            } else {
-                Object val = edgeDraft.getValue(col.getId());
-                if (val != null) {
-                    edge.setAttribute(col.getId(), val);
-                }
+            Object val = edgeDraft.getValue(col.getId());
+            if (val != null) {
+                edge.setAttribute(col.getId(), val);
             }
         }
     }
@@ -202,5 +200,9 @@ public abstract class AbstractProcessor {
 
     public void setContainer(ContainerUnloader container) {
         this.container = container;
+    }
+
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        this.progressTicket = progressTicket;
     }
 }
