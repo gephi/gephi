@@ -42,8 +42,14 @@
 package org.gephi.io.importer.api;
 
 /**
+ * Edge direction setting.
+ * <p>
+ * An edge can either be directed or undirected. Each edge is configured with
+ * this enum through {@link EdgeDraft#setDirection(org.gephi.io.importer.api.EdgeDirection)
+ * }.
  *
  * @author Mathieu Bastian
+ * @see EdgeDraft
  */
 public enum EdgeDirection {
 

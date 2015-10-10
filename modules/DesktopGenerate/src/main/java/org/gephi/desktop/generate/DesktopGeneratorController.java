@@ -51,7 +51,6 @@ import org.gephi.io.generator.api.GeneratorController;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
 import org.gephi.io.importer.api.Container;
-import org.gephi.io.importer.api.ContainerFactory;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.project.api.ProjectController;
@@ -107,7 +106,7 @@ public class DesktopGeneratorController implements GeneratorController {
             ui.unsetup();
         }
 
-        final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
+        final Container container = Lookup.getDefault().lookup(Container.Factory.class).newContainer();
         container.setSource("" + generator.getName());
         container.setReport(new Report());
         String taskname = NbBundle.getMessage(DesktopGeneratorController.class, "DesktopGeneratorController.taskname", generator.getName());

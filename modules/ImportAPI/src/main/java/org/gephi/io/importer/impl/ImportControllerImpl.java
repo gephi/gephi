@@ -48,7 +48,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import org.gephi.io.importer.api.Container;
-import org.gephi.io.importer.api.ContainerFactory;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.api.ImportController;
@@ -152,7 +151,7 @@ public class ImportControllerImpl implements ImportController {
     @Override
     public Container importFile(Reader reader, FileImporter importer) {
         //Create Container
-        final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
+        final Container container = Lookup.getDefault().lookup(Container.Factory.class).newContainer();
 
         //Report
         Report report = new Report();
@@ -188,7 +187,7 @@ public class ImportControllerImpl implements ImportController {
     @Override
     public Container importDatabase(Database database, DatabaseImporter importer) {
         //Create Container
-        final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
+        final Container container = Lookup.getDefault().lookup(Container.Factory.class).newContainer();
 
         //Report
         Report report = new Report();
@@ -214,7 +213,7 @@ public class ImportControllerImpl implements ImportController {
     @Override
     public Container importSpigot(SpigotImporter importer) {
         //Create Container
-        final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
+        final Container container = Lookup.getDefault().lookup(Container.Factory.class).newContainer();
 
         //Report
         Report report = new Report();

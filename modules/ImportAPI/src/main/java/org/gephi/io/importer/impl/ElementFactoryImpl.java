@@ -42,13 +42,11 @@
 package org.gephi.io.importer.impl;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import org.gephi.io.importer.api.ElementDraftFactory;
+import org.gephi.io.importer.api.ElementDraft;
+import org.gephi.io.importer.api.Issue;
+import org.openide.util.NbBundle;
 
-/**
- *
- * @author mbastian
- */
-public class ElementFactoryImpl implements ElementDraftFactory {
+public class ElementFactoryImpl implements ElementDraft.Factory {
 
     protected final ImportContainerImpl container;
     protected final static AtomicInteger NODE_IDS = new AtomicInteger();
@@ -67,7 +65,8 @@ public class ElementFactoryImpl implements ElementDraftFactory {
     @Override
     public NodeDraftImpl newNodeDraft(String id) {
         if (id == null) {
-            throw new NullPointerException("Node id can't be null");
+            String message = NbBundle.getMessage(ElementFactoryImpl.class, "ElementFactoryException_NullNodeId");
+            container.getReport().logIssue(new Issue(message, Issue.Level.CRITICAL));
         }
         NodeDraftImpl node = new NodeDraftImpl(container, id);
         return node;
@@ -82,7 +81,8 @@ public class ElementFactoryImpl implements ElementDraftFactory {
     @Override
     public EdgeDraftImpl newEdgeDraft(String id) {
         if (id == null) {
-            throw new NullPointerException("Node id can't be null");
+            String message = NbBundle.getMessage(ElementFactoryImpl.class, "ElementFactoryException_NullEdgeId");
+            container.getReport().logIssue(new Issue(message, Issue.Level.CRITICAL));
         }
         EdgeDraftImpl edge = new EdgeDraftImpl(container, id);
         return edge;

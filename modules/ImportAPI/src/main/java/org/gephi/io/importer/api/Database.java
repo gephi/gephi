@@ -46,7 +46,7 @@ import java.io.Serializable;
 import org.gephi.io.database.drivers.SQLDriver;
 
 /**
- * Database description and connexion details.
+ * Database description and connection details.
  *
  * @author Mathieu Bastian
  */

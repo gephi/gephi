@@ -117,10 +117,7 @@ public class EdgeDraftImpl extends ElementDraftImpl implements EdgeDraft {
 
     @Override
     public boolean isSelfLoop() {
-        if (source != null && source == target) {
-            return true;
-        }
-        return false;
+        return source != null && source == target;
     }
 
     @Override

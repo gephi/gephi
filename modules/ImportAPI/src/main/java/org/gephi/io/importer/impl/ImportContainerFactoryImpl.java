@@ -38,19 +38,14 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.io.importer.impl;
 
 import org.gephi.io.importer.api.Container;
-import org.gephi.io.importer.api.ContainerFactory;
 import org.openide.util.lookup.ServiceProvider;
 
-/**
- *
- * @author Mathieu Bastian
- */
-@ServiceProvider(service = ContainerFactory.class)
-public class ImportContainerFactoryImpl implements ContainerFactory {
+@ServiceProvider(service = Container.Factory.class)
+public class ImportContainerFactoryImpl implements Container.Factory {
 
     @Override
     public Container newContainer() {

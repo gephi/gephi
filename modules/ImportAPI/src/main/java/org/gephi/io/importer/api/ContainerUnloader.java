@@ -41,16 +41,18 @@
  */
 package org.gephi.io.importer.api;
 
-
 import org.gephi.graph.api.TimeFormat;
+import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.io.processor.spi.Processor;
 
 /**
- * Interface for unloading a container. Gets graph draft elements and
- * attributes. Get also basic params and properties which defined the content.
- * Unloaders are used by
- * <code>Processor</code> to load data from the container to the main data
- * structure.
+ * Interface for unloading a container.
+ * <p>
+ * Gives access to the draft graph elements, columns attributes. Also gives
+ * access to basic settings and properties about the container's content.
+ * <p>
+ * Unloaders are used by <code>Processor</code> to load data from the container
+ * to the main data structure.
  *
  * @author Mathieu Bastian
  * @see Processor
@@ -73,10 +75,11 @@ public interface ContainerUnloader {
 
     public Iterable<ColumnDraft> getEdgeColumns();
 
-//    public EdgeDraft getEdge(NodeDraft source, NodeDraft target);
     public EdgeDirectionDefault getEdgeDefault();
 
     public TimeFormat getTimeFormat();
+
+    public TimeRepresentation getTimeRepresentation();
 
     public String getSource();
 

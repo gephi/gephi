@@ -43,34 +43,100 @@ package org.gephi.io.importer.api;
 
 /**
  * Draft edge, hosted by import containers to represent edges found when
- * importing.
- * <code>Processors</code> decide if this edge will finally be appended to the
- * graph or not.
+ * importing. <code>Processors</code> decide if this edge will finally be
+ * appended to the graph or not.
  *
  * @author Mathieu Bastian
  * @see ContainerLoader
  */
 public interface EdgeDraft extends ElementDraft {
 
+    /**
+     * Sets this edge's weight.
+     * <p>
+     * Default is 1.0.
+     *
+     * @param weight edge's weight
+     */
     public void setWeight(double weight);
 
+    /**
+     * Returns this edge's weight.
+     *
+     * @return edge's weight
+     */
     public double getWeight();
 
+    /**
+     * Sets this edge's type.
+     * <p>
+     * Edges can have different types but by default all edges have a default,
+     * null type. In other words, setting a type is optional.
+     *
+     * @param type edge type
+     */
     public void setType(Object type);
 
+    /**
+     * Gets this edge's type.
+     * <p>
+     * Edges can have different types but by default all edges have a default,
+     * null type. In other words, setting a type is optional.
+     *
+     * @return edge's type or null if unset
+     */
     public Object getType();
 
+    /**
+     * Sets this edge's direction setting.
+     *
+     * @param direction edge's direction
+     */
     public void setDirection(EdgeDirection direction);
 
+    /**
+     * Returns this edge's direction setting.
+     *
+     * @return edge's direction or null if unset
+     */
     public EdgeDirection getDirection();
 
+    /**
+     * Sets this edge's source.
+     *
+     * @param nodeSource node source
+     */
     public void setSource(NodeDraft nodeSource);
 
+    /**
+     * Sets this edge's target.
+     * <p>
+     * Self-loops should simply set both source and target with the same node.
+     *
+     * @param nodeTarget node target
+     */
     public void setTarget(NodeDraft nodeTarget);
 
+    /**
+     * Get edge's source.
+     *
+     * @return edge's source or null if unset
+     */
     public NodeDraft getSource();
 
+    /**
+     * Get edge's target.
+     *
+     * @return edge's target or null if unset
+     */
     public NodeDraft getTarget();
 
+    /**
+     * Returns true if this edge is a self-loop.
+     * <p>
+     * It returns false if the source or target is null.
+     *
+     * @return true if self-loop, false otherwise
+     */
     public boolean isSelfLoop();
 }
