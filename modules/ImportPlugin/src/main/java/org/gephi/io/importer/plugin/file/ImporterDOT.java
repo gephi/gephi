@@ -209,9 +209,10 @@ public class ImporterDOT implements FileImporter, LongTask {
         } else if (colorTable.containsKey(streamTokenizer.sval)) {
             return colorTable.get(streamTokenizer.sval);
         } else {
-            String[] colors = streamTokenizer.sval.split(" ");
+            String toParse = streamTokenizer.sval.replace(", ", ",");
+            String[] colors = toParse.split(" ");
             if (colors.length != 3) {
-                colors = streamTokenizer.sval.split(",");
+                colors = toParse.split(",");
             }
             if (colors.length != 3) {
                 throw new ParseException();
