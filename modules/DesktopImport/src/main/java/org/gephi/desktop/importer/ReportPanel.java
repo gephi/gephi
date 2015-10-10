@@ -49,7 +49,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -194,7 +196,6 @@ public class ReportPanel extends javax.swing.JPanel {
         this.container = container;
         initGraphTypeCombo(container);
 
-        report.pruneReport(ISSUES_LIMIT);
         fillIssues(report);
         fillReport(report);
 
@@ -283,7 +284,11 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     private void fillIssues(Report report) {
-        final List<Issue> issues = report.getIssues();
+        final List<Issue> issues = new ArrayList<Issue>();
+        Iterator<Issue> itr = report.getIssues(ISSUES_LIMIT);
+        while(itr.hasNext()) {
+            issues.add(itr.next());
+        }
         if (issues.isEmpty()) {
             JLabel label = new JLabel(NbBundle.getMessage(getClass(), "ReportPanel.noIssues"));
             label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -750,7 +755,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
     private class IssueTreeModel implements TreeModel {
 
-        private List<Issue> issues;
+        private final List<Issue> issues;
 
         public IssueTreeModel(List<Issue> issues) {
             this.issues = issues;
@@ -773,10 +778,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
         @Override
         public boolean isLeaf(Object node) {
-            if (node instanceof Issue) {
-                return true;
-            }
-            return false;
+            return node instanceof Issue;
         }
 
         @Override

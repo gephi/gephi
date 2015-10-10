@@ -164,6 +164,7 @@ public class ImportControllerImpl implements ImportController {
                 if (importer.getReport() != null) {
                     report.append(importer.getReport());
                 }
+                report.close();
                 return container;
             }
         } catch (RuntimeException ex) {
@@ -200,6 +201,7 @@ public class ImportControllerImpl implements ImportController {
                 if (importer.getReport() != null) {
                     report.append(importer.getReport());
                 }
+                report.close();
                 return container;
             }
         } catch (RuntimeException ex) {
@@ -224,6 +226,7 @@ public class ImportControllerImpl implements ImportController {
                 if (importer.getReport() != null) {
                     report.append(importer.getReport());
                 }
+                report.close();
                 return container;
             }
         } catch (RuntimeException ex) {

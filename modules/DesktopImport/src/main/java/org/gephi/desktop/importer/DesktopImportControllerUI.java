@@ -449,6 +449,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     private void finishImport(Container container) {
         if (container.verify()) {
             Report report = container.getReport();
+            report.close();
 
             //Report panel
             ReportPanel reportPanel = new ReportPanel();
@@ -456,9 +457,11 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             DialogDescriptor dd = new DialogDescriptor(reportPanel, NbBundle.getMessage(DesktopImportControllerUI.class, "ReportPanel.title"));
             if (!DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                 reportPanel.destroy();
+                report.clean();
                 return;
             }
             reportPanel.destroy();
+            report.clean();
             final Processor processor = reportPanel.getProcessor();
 
             //Project
