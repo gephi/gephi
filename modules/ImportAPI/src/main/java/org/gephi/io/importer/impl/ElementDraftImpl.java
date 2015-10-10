@@ -371,6 +371,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
     //UTILITY
     protected void setAttributeValue(ColumnDraft column, Object value) throws Exception {
         int index = ((ColumnDraftImpl) column).getIndex();
+        value = AttributeUtils.standardizeValue(value);
         Class typeClass = column.getTypeClass();
         if (!value.getClass().equals(typeClass)) {
             throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");
@@ -386,11 +387,12 @@ public abstract class ElementDraftImpl implements ElementDraft {
     protected void setAttributeValue(ColumnDraft column, Object value, double timestamp) throws Exception {
         int index = ((ColumnDraftImpl) column).getIndex();
         Class typeClass = column.getTypeClass();
+        value = AttributeUtils.standardizeValue(value);
         if (!value.getClass().equals(typeClass)) {
             throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");
         }
         if (!column.isDynamic()) {
-
+            //TODO
         }
         if (index >= attributes.length) {
             Object[] newArray = new Object[index + 1];
@@ -407,6 +409,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     protected void setAttributeValue(ColumnDraft column, Object value, double start, double end) throws Exception {
         int index = ((ColumnDraftImpl) column).getIndex();
+        value = AttributeUtils.standardizeValue(value);
         Class typeClass = column.getTypeClass();
         if (!value.getClass().equals(typeClass)) {
             throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");
