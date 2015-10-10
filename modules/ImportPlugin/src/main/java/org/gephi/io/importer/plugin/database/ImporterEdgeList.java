@@ -285,9 +285,11 @@ public class ImporterEdgeList implements DatabaseImporter {
             case COLOR:
                 String color = rs.getString(column);
                 if (color != null) {
-                    String[] rgb = color.split(",");
+                    String[] rgb = color.replace(" ", "").split(",");
                     if (rgb.length == 3) {
                         nodeDraft.setColor(rgb[0], rgb[1], rgb[2]);
+                    } else {
+                        nodeDraft.setColor(color);
                     }
                 }
                 break;
@@ -427,6 +429,8 @@ public class ImporterEdgeList implements DatabaseImporter {
                     String[] rgb = color.split(",");
                     if (rgb.length == 3) {
                         edgeDraft.setColor(rgb[0], rgb[1], rgb[2]);
+                    } else {
+                        edgeDraft.setColor(color);
                     }
                 }
                 break;
