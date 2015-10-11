@@ -73,7 +73,7 @@ public final class Report {
         try {
             f = File.createTempFile("tempreport", Long.toString(System.nanoTime()));
             f.deleteOnExit();
-            System.out.println( "Report created at "+f.getAbsolutePath());
+            System.out.println("Report created at " + f.getAbsolutePath());
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
@@ -127,8 +127,11 @@ public final class Report {
      * @param report report to read entries from
      */
     public synchronized void append(Report report) {
+        if (report.writer != null) {
+            report.close();
+        }
         Iterator<Issue> issues = report.getIssues(Integer.MAX_VALUE);
-        for(;issues.hasNext();) {
+        for (; issues.hasNext();) {
             Issue issue = issues.next();
             logIssue(issue);
         }
@@ -167,6 +170,9 @@ public final class Report {
      * @return a collection of all issues written in the report
      */
     public synchronized Iterator<Issue> getIssues(int limit) {
+        if (writer != null) {
+            close();
+        }
         Reader reader = null;
         try {
             reader = new Reader(file);
@@ -186,6 +192,9 @@ public final class Report {
      * per line
      */
     public synchronized String getText() {
+        if (writer != null) {
+            close();
+        }
         StringBuilder builder = new StringBuilder();
         Reader r = null;
         try {
