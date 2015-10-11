@@ -171,6 +171,12 @@ public class ImportControllerImpl implements ImportController {
             throw ex;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return null;
     }
@@ -182,6 +188,12 @@ public class ImportControllerImpl implements ImportController {
             return importFile(reader, importer);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
