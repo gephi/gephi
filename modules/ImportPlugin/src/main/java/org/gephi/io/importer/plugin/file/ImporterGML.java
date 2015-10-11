@@ -233,16 +233,10 @@ public class ImporterGML implements FileImporter, LongTask {
             } else if ("h".equalsIgnoreCase(key)) {
             } else if ("d".equalsIgnoreCase(key)) {
             } else if ("fill".equalsIgnoreCase(key)) {
-                int colorHex = -1;
                 if (value instanceof String) {
-                    String str = ((String) value).trim().replace("#", "");
-                    try {
-                        colorHex = Integer.valueOf(str, 16).intValue();
-                    } catch (Exception e) {
-                    }
-                }
-                if (colorHex != -1) {
-                    node.setColor(new Color(colorHex));
+                    node.setColor((String) value);
+                } else if (value instanceof Integer) {
+                    node.setColor(new Color((Integer) value));
                 }
             } else {
                 node.setValue(key, value.toString());

@@ -292,9 +292,7 @@ public class ImporterVNA implements FileImporter, LongTask {
                         node.setY(Float.parseFloat(nodeProperties[i]));
                         break;
                     case NODE_COLOR:
-                        // Add just shades of red as NetDraw VNA is not specific
-                        // about color.
-                        node.setColor(Integer.parseInt(nodeProperties[i]), 0, 0);
+                        node.setColor(nodeProperties[i]);
                         break;
                     case NODE_SIZE:
                         node.setSize(Float.parseFloat(nodeProperties[i]));

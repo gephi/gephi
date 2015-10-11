@@ -41,12 +41,16 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.importer.api;
 
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import org.gephi.io.importer.api.Issue.Level;
+import org.openide.util.Exceptions;
 
 /**
  * Report is a log and issue container. Filled with information, details, minor
@@ -58,8 +62,47 @@ import org.gephi.io.importer.api.Issue.Level;
  */
 public final class Report {
 
-    private final Queue<ReportEntry> entries = new ConcurrentLinkedQueue<ReportEntry>();
     private Issue.Level exceptionLevel = Issue.Level.CRITICAL;
+
+    //File
+    private final File file;
+    private Writer writer;
+
+    public Report() {
+        File f = null;
+        try {
+            f = File.createTempFile("tempreport", Long.toString(System.nanoTime()));
+            f.deleteOnExit();
+            System.out.println("Report created at " + f.getAbsolutePath());
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            file = f;
+        }
+    }
+
+    /**
+     * Free resources.
+     */
+    public void clean() {
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    /**
+     * Closes writing.
+     */
+    public void close() {
+        if (writer != null) {
+            try {
+                writer.close();
+                writer = null;
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
 
     /**
      * Log an information message in the report.
@@ -67,16 +110,31 @@ public final class Report {
      * @param message the message to write in the report
      * @throws NullPointerException if <code>message</code> is <code>null</code>
      */
-    public void log(String message) {
-        entries.add(new ReportEntry(message));
+    public synchronized void log(String message) {
+        try {
+            if (writer == null) {
+                writer = new Writer(file);
+            }
+            writer.append(new ReportEntry(message));
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**
      * Appends all entries in <code>report</code> to this report.
+     *
      * @param report report to read entries from
      */
-    public void append(Report report) {
-        entries.addAll(report.entries);
+    public synchronized void append(Report report) {
+        if (report.writer != null) {
+            report.close();
+        }
+        Iterator<Issue> issues = report.getIssues(Integer.MAX_VALUE);
+        for (; issues.hasNext();) {
+            Issue issue = issues.next();
+            logIssue(issue);
+        }
     }
 
     /**
@@ -85,49 +143,46 @@ public final class Report {
      * @param issue the issue to write in the report
      * @throws NullPointerException if <code>issue</code> is <code>null</code>
      */
-    public void logIssue(Issue issue) {
-        entries.add(new ReportEntry(issue));
-        if (issue.getLevel().toInteger() >= exceptionLevel.toInteger()) {
-            if (issue.getThrowable() != null) {
-                throw new RuntimeException(issue.getMessage(), issue.getThrowable());
-            } else {
-                throw new RuntimeException(issue.getMessage());
+    public synchronized void logIssue(Issue issue) {
+        try {
+            if (writer == null) {
+                writer = new Writer(file);
             }
+            writer.append(new ReportEntry(issue));
+
+            if (issue.getLevel().toInteger() >= exceptionLevel.toInteger()) {
+                writer.close();
+                if (issue.getThrowable() != null) {
+                    throw new RuntimeException(issue.getMessage(), issue.getThrowable());
+                } else {
+                    throw new RuntimeException(issue.getMessage());
+                }
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
     /**
      * Returns all issues written in the report.
      *
+     * @param limit maximum number of issuers
      * @return a collection of all issues written in the report
      */
-    public List<Issue> getIssues() {
-        List<Issue> res = new ArrayList<Issue>();
-        for (ReportEntry re : entries) {
-            if (re.issue != null) {
-                res.add(re.issue);
-            }
+    public synchronized Iterator<Issue> getIssues(int limit) {
+        if (writer != null) {
+            close();
         }
-        return res;
-    }
-
-    /**
-     * Returns the report logs and issues, presented as <b>HTML</b> code.
-     *
-     * @return a string of HTML code where all messages and issues are written
-     */
-    public String getHtml() {
-        StringBuilder builder = new StringBuilder();
-        for (ReportEntry re : entries) {
-            if (re.issue != null) {
-                builder.append(re.issue.getMessage());
-                builder.append("<br>");
-            } else {
-                builder.append(re.message);
-                builder.append("<br>");
+        Reader reader = null;
+        try {
+            reader = new Reader(file);
+            return new IssueIterator(reader, limit);
+        } catch (IOException ex) {
+            if (reader != null) {
+                reader.close();
             }
+            throw new RuntimeException(ex);
         }
-        return builder.toString();
     }
 
     /**
@@ -136,16 +191,26 @@ public final class Report {
      * @return a string of all messages and issues written in the report, one
      * per line
      */
-    public String getText() {
+    public synchronized String getText() {
+        if (writer != null) {
+            close();
+        }
         StringBuilder builder = new StringBuilder();
-        for (ReportEntry re : entries) {
-            if (re.issue != null) {
-                builder.append(re.issue.getMessage());
-                builder.append("\n");
-            } else {
-                builder.append(re.message);
-                builder.append("\n");
+        Reader r = null;
+        try {
+            r = new Reader(file);
+            for (; r.hasNext();) {
+                ReportEntry re = r.next();
+                if (re.level == null) {
+                    builder.append(re.message);
+                    builder.append("\n");
+                }
             }
+        } catch (IOException ex) {
+            if (r != null) {
+                r.close();
+            }
+            throw new RuntimeException(ex);
         }
         return builder.toString();
     }
@@ -170,6 +235,7 @@ public final class Report {
      */
     public void setExceptionLevel(Level exceptionLevel) {
         this.exceptionLevel = exceptionLevel;
+
     }
 
     /**
@@ -177,93 +243,137 @@ public final class Report {
      */
     private static class ReportEntry {
 
-        private final Issue issue;
+        private final Level level;
         private final String message;
 
         public ReportEntry(Issue issue) {
-            this.issue = issue;
-            this.message = null;
+            this.level = issue.getLevel();
+            this.message = issue.getMessage();
         }
 
         public ReportEntry(String message) {
             this.message = message;
-            this.issue = null;
+            this.level = null;
         }
     }
 
     /**
-     * Prune report so it doesn't exceed <code>limit</code>.
-     * 
-     * @param limit limit not to exceed.
+     * Writer sub-class.
      */
-    public void pruneReport(int limit) {
-        if (entries.size() > limit) {
-            int step = 0;
-            while (entries.size() > limit && step < 3) {
-                switch (step) {
-                    case 0:
-                        {
-                            ReportEntry lastIssue = null;
-                            for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
-                                ReportEntry issue = itr.next();
-                                if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.INFO)) {
-                                    lastIssue = issue;
-                                    itr.remove();
-                                }
-                            }       if (lastIssue != null) {
-                                entries.add(lastIssue);
-                                entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.INFO)));
-                            }       step = 1;
-                            break;
-                        }
-                    case 1:
-                        {
-                            ReportEntry lastIssue = null;
-                            for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
-                                ReportEntry issue = itr.next();
-                                if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.WARNING)) {
-                                    lastIssue = issue;
-                                    itr.remove();
-                                }
-                            }       if (lastIssue != null) {
-                                entries.add(lastIssue);
-                                entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.WARNING)));
-                            }       step = 2;
-                            break;
-                        }
-                    case 2:
-                        {
-                            ReportEntry lastIssue = null;
-                            for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
-                                ReportEntry issue = itr.next();
-                                if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.INFO)) {
-                                    lastIssue = issue;
-                                    itr.remove();
-                                }
-                            }       if (lastIssue != null) {
-                                entries.add(lastIssue);
-                                entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.INFO)));
-                            }       step = 3;
-                            break;
-                        }
-                    case 3:
-                        {
-                            ReportEntry lastIssue = null;
-                            for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
-                                ReportEntry issue = itr.next();
-                                if (issue.issue == null) {
-                                    lastIssue = issue;
-                                    itr.remove();
-                                }
-                            }       if (lastIssue != null) {
-                                entries.add(lastIssue);
-                                entries.add(new ReportEntry("More messages not listed..."));
-                            }       step = 4;
-                            break;
-                        }
-                    default:
+    private static class Writer {
+
+        private final BufferedWriter writer;
+
+        public Writer(File file) throws IOException {
+            FileWriter fileWriter = new FileWriter(file, true);
+            writer = new BufferedWriter(fileWriter);
+        }
+
+        public void append(ReportEntry entry) throws IOException {
+            Level level = entry.level;
+            if (level != null) {
+                writer.append(level.toString());
+            }
+            writer.append(";");
+            writer.append(entry.message);
+            writer.append("\n");
+        }
+
+        public void close() throws IOException {
+            writer.flush();
+            writer.close();
+        }
+    }
+
+    /**
+     * Reader sub-class.
+     */
+    private static class Reader implements Iterator<ReportEntry> {
+
+        private final BufferedReader reader;
+        private String pointer;
+        private boolean closed;
+
+        public Reader(File file) throws IOException {
+            FileReader fileReader = new FileReader(file);
+            reader = new LineNumberReader(fileReader);
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (closed) {
+                return false;
+            }
+            try {
+                pointer = reader.readLine();
+                if (pointer != null) {
+                    return true;
                 }
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            try {
+                reader.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            return false;
+        }
+
+        @Override
+        public ReportEntry next() {
+            if (pointer.startsWith(";")) {
+                return new ReportEntry(pointer.substring(1, pointer.length()));
+            } else {
+                int index = pointer.indexOf(";");
+                String levelStr = pointer.substring(0, index);
+                String message = pointer.substring(index + 1);
+                return new ReportEntry(new Issue(message, Level.valueOf(levelStr)));
             }
         }
+
+        public void close() {
+            try {
+                reader.close();
+            } catch (IOException ex2) {
+                throw new RuntimeException(ex2);
+            }
+            pointer = null;
+            closed = true;
+        }
+    }
+
+    private static class IssueIterator implements Iterator<Issue> {
+
+        private final Reader itr;
+        private ReportEntry next;
+        private final int limit;
+        private int count;
+
+        public IssueIterator(Reader itr, int limit) {
+            this.itr = itr;
+            this.limit = limit;
+        }
+
+        @Override
+        public boolean hasNext() {
+            while (itr.hasNext()) {
+                next = itr.next();
+                if (next.level != null) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public Issue next() {
+            Issue res = new Issue(next.message, next.level);
+            if (++count == limit) {
+                itr.close();
+            }
+            return res;
+        }
+
     }
 }

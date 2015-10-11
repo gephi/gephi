@@ -38,14 +38,20 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.io.importer.api;
 
 /**
- * Issue are logged and classified by <code>Report</code> to describe a problem encoutered during
- * import process. Fill issues as <code>Exceptions</code>.
+ * Issue are logged and classified by <code>Report</code> to describe a problem
+ * encountered during import process.
+ * <p>
+ * Issues have a level of severity based on {@link Level}. The
+ * <code>CRITICAL</code> level is by default configured in {@link Report} to
+ * throw an exception and stop the import process. Other levels are logged and
+ * presented to the user.
  *
  * @author Mathieu Bastian
+ * @see Report
  */
 public final class Issue {
 
@@ -69,32 +75,68 @@ public final class Issue {
     private final String message;
     private final Level level;
 
+    /**
+     * Constructs a new issue with a throwable and a level.
+     * <p>
+     * The message is set based on throwable.
+     *
+     * @param throwable throwable
+     * @param level level
+     */
     public Issue(Throwable throwable, Level level) {
         this.throwable = throwable;
         this.level = level;
         this.message = throwable.getMessage();
     }
 
+    /**
+     * Constructs a new issue with a message, level and throwable.
+     *
+     * @param message message
+     * @param level level
+     * @param throwable throwable
+     */
     public Issue(String message, Level level, Throwable throwable) {
         this.throwable = throwable;
         this.level = level;
         this.message = message;
     }
 
+    /**
+     * Constructs a new issue with a message and a level.
+     *
+     * @param message message
+     * @param level level
+     */
     public Issue(String message, Level level) {
         this.message = message;
         this.level = level;
         this.throwable = null;
     }
 
+    /**
+     * Returns this issue's message.
+     *
+     * @return message
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Returns this issue's level.
+     *
+     * @return level
+     */
     public Level getLevel() {
         return level;
     }
 
+    /**
+     * Returns this issue's throwable.
+     *
+     * @return throwable or null if unset
+     */
     public Throwable getThrowable() {
         return throwable;
     }

@@ -44,10 +44,6 @@ package org.gephi.io.importer.impl;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.io.importer.api.ColumnDraft;
 
-/**
- *
- * @author mbastian
- */
 public class ColumnDraftImpl implements ColumnDraft {
 
     protected final int index;

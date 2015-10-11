@@ -41,17 +41,19 @@
  */
 package org.gephi.io.processor.plugin;
 
+import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
+import org.gephi.utils.progress.Progress;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -81,37 +83,59 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         if (container.getSource() != null) {
             pc.setSource(workspace, container.getSource());
         }
-
+        
+        //Configuration
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        Configuration configuration = new Configuration();
+        configuration.setTimeRepresentation(container.getTimeRepresentation());
+//      graphController.getGraphModel(workspace).setConfiguration(configuration);
+        
+        process(workspace);
+        
+        //Clean
+        workspace = null;
+        graphModel = null;
+        container = null;
+        progressTicket = null;
+    }
+    
+    protected void process(Workspace workspace) {
         //Architecture
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        graphModel = graphController.getGraphModel();
+        graphModel = graphController.getGraphModel(workspace);
 
-        Graph graph = graphModel.getGraph();;
+        //Get graph
+        Graph graph = graphModel.getGraph();
         GraphFactory factory = graphModel.factory();
+
+        //Time Format
+        graphModel.setTimeFormat(container.getTimeFormat());
+
+        //Progress
+        Progress.start(progressTicket, container.getNodeCount() + container.getEdgeCount());
 
         //Attributes - Creates columns for properties
         flushColumns();
 
-        //Dynamic
-//        if (container.getTimeFormat() != null) {
-//            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-//            if (dynamicController != null) {
-//                dynamicController.setTimeFormat(container.getTimeFormat());
-//            }
-//        }
+        //Counters
+        int addedNodes = 0, addedEdges = 0;
 
-        int nodeCount = 0;
         //Create all nodes
         for (NodeDraft draftNode : container.getNodes()) {
             String id = draftNode.getId();
-            Node node = factory.newNode(id);
-            graph.addNode(node);
-            nodeCount++;
+            Node node = graph.getNode(id);
+            if (node == null) {
+                node = factory.newNode(id);
+                addedNodes++;
+            }
             flushToNode(draftNode, node);
+
+            graph.addNode(node);
+
+            Progress.progress(progressTicket);
         }
 
         //Create all edges and push to data structure
-        int edgeCount = 0;
         for (EdgeDraft draftEdge : container.getEdges()) {
             String id = draftEdge.getId();
             String sourceId = draftEdge.getSource().getId();
@@ -122,23 +146,38 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
             int edgeType = graphModel.addEdgeType(type);
 
             Edge edge = graph.getEdge(source, target, edgeType);
-            switch (container.getEdgeDefault()) {
-                case DIRECTED:
-                    edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), true);
-                    break;
-                case UNDIRECTED:
-                    edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), false);
-                    break;
-                case MIXED:
-                    boolean directed = draftEdge.getDirection() != null && draftEdge.getDirection().equals(EdgeDirection.UNDIRECTED) ? false : true;
-                    edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), directed);
+            if (edge == null) {
+                switch (container.getEdgeDefault()) {
+                    case DIRECTED:
+                        edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), true);
+                        break;
+                    case UNDIRECTED:
+                        edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), false);
+                        break;
+                    case MIXED:
+                        boolean directed = draftEdge.getDirection() == null || !draftEdge.getDirection().equals(EdgeDirection.UNDIRECTED);
+                        edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), directed);
+                        break;
+                }
+                addedEdges++;
             }
-            edgeCount++;
+            flushToEdge(draftEdge, edge);
+
             graph.addEdge(edge);
 
-            flushToEdge(draftEdge, edge);
+            Progress.progress(progressTicket);
         }
-        System.out.println("# Nodes loaded: " + nodeCount + "\n# Edges loaded: " + edgeCount);
-        workspace = null;
+
+        //Report
+        int touchedNodes = container.getNodeCount();
+        int touchedEdges = container.getEdgeCount();
+        if (touchedNodes != addedNodes || touchedEdges != addedEdges) {
+            System.out.println("# Nodes loaded: " + touchedNodes + " (" + addedNodes + " added)\n"
+                    + "# Edges loaded: " + touchedEdges + " (" + addedEdges + " added)");
+        } else {
+            System.out.println("# Nodes loaded: " + touchedNodes + "\n# Edges loaded: " + touchedEdges);
+        }
+
+        Progress.finish(progressTicket);
     }
 }

@@ -49,7 +49,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -156,19 +158,21 @@ public class ReportPanel extends javax.swing.JPanel {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 int g = edgesMergeStrategyCombo.getSelectedIndex();
-                switch (g) {
-                    case 0:
-                        container.getLoader().setEdgesMergeStrategy(EdgeWeightMergeStrategy.SUM);
-                        break;
-                    case 1:
-                        container.getLoader().setEdgesMergeStrategy(EdgeWeightMergeStrategy.AVG);
-                        break;
-                    case 2:
-                        container.getLoader().setEdgesMergeStrategy(EdgeWeightMergeStrategy.MIN);
-                        break;
-                    case 3:
-                        container.getLoader().setEdgesMergeStrategy(EdgeWeightMergeStrategy.MAX);
-                        break;
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    switch (g) {
+                        case 0:
+                            container.getLoader().setEdgesMergeStrategy(EdgeWeightMergeStrategy.SUM);
+                            break;
+                        case 1:
+                            container.getLoader().setEdgesMergeStrategy(EdgeWeightMergeStrategy.AVG);
+                            break;
+                        case 2:
+                            container.getLoader().setEdgesMergeStrategy(EdgeWeightMergeStrategy.MIN);
+                            break;
+                        case 3:
+                            container.getLoader().setEdgesMergeStrategy(EdgeWeightMergeStrategy.MAX);
+                            break;
+                    }
                 }
             }
         });
@@ -194,7 +198,6 @@ public class ReportPanel extends javax.swing.JPanel {
         this.container = container;
         initGraphTypeCombo(container);
 
-        report.pruneReport(ISSUES_LIMIT);
         fillIssues(report);
         fillReport(report);
 
@@ -220,30 +223,34 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     private void initGraphTypeCombo(final Container container) {
+        final String directedStr = NbBundle.getMessage(ReportPanel.class, "ReportPanel.graphType.directed");
+        final String undirectedStr = NbBundle.getMessage(ReportPanel.class, "ReportPanel.graphType.undirected");
+        final String mixedStr = NbBundle.getMessage(ReportPanel.class, "ReportPanel.graphType.mixed");
+        final EdgeDirectionDefault dir = container.getUnloader().getEdgeDefault();
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                String directedStr = NbBundle.getMessage(ReportPanel.class, "ReportPanel.graphType.directed");
-                String undirectedStr = NbBundle.getMessage(ReportPanel.class, "ReportPanel.graphType.undirected");
-                String mixedStr = NbBundle.getMessage(ReportPanel.class, "ReportPanel.graphType.mixed");
 
                 DefaultComboBoxModel comboModel = new DefaultComboBoxModel();
 
-                EdgeDirectionDefault dir = container.getUnloader().getEdgeDefault();
                 switch (dir) {
                     case DIRECTED:
                         comboModel.addElement(directedStr);
                         comboModel.addElement(undirectedStr);
                         comboModel.addElement(mixedStr);
+                        comboModel.setSelectedItem(directedStr);
                         break;
                     case UNDIRECTED:
                         comboModel.addElement(undirectedStr);
                         comboModel.addElement(mixedStr);
+                        comboModel.setSelectedItem(undirectedStr);
                         break;
                     case MIXED:
                         comboModel.addElement(directedStr);
                         comboModel.addElement(undirectedStr);
                         comboModel.addElement(mixedStr);
+                        comboModel.setSelectedItem(mixedStr);
                         break;
                 }
 
@@ -253,37 +260,26 @@ public class ReportPanel extends javax.swing.JPanel {
         graphTypeCombo.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                int g = graphTypeCombo.getSelectedIndex();
-                EdgeDirectionDefault dir = container.getUnloader().getEdgeDefault();
-                if (dir.equals(EdgeDirectionDefault.UNDIRECTED)) {
-                    switch (g) {
-                        case 0:
-                            container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
-                            break;
-                        case 1:
-                            container.getLoader().setEdgeDefault(EdgeDirectionDefault.MIXED);
-                            break;
-                    }
-                } else {
-                    switch (g) {
-                        case 0:
-                            container.getLoader().setEdgeDefault(EdgeDirectionDefault.DIRECTED);
-                            break;
-                        case 1:
-                            container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
-                            break;
-                        case 2:
-                            container.getLoader().setEdgeDefault(EdgeDirectionDefault.MIXED);
-                            break;
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    Object g = e.getItem();
+                    if (g.equals(directedStr)) {
+                        container.getLoader().setEdgeDefault(EdgeDirectionDefault.DIRECTED);
+                    } else if (g.equals(undirectedStr)) {
+                        container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
+                    } else if (g.equals(mixedStr)) {
+                        container.getLoader().setEdgeDefault(EdgeDirectionDefault.MIXED);
                     }
                 }
-
             }
         });
     }
 
     private void fillIssues(Report report) {
-        final List<Issue> issues = report.getIssues();
+        final List<Issue> issues = new ArrayList<Issue>();
+        Iterator<Issue> itr = report.getIssues(ISSUES_LIMIT);
+        while (itr.hasNext()) {
+            issues.add(itr.next());
+        }
         if (issues.isEmpty()) {
             JLabel label = new JLabel(NbBundle.getMessage(getClass(), "ReportPanel.noIssues"));
             label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -343,18 +339,6 @@ public class ReportPanel extends javax.swing.JPanel {
                 autoscaleCheckbox.setSelected(container.getUnloader().isAutoScale());
                 selfLoopCheckBox.setSelected(container.getUnloader().allowSelfLoop());
                 createMissingNodesCheckbox.setSelected(container.getUnloader().allowAutoNode());
-
-                switch (container.getUnloader().getEdgeDefault()) {
-                    case DIRECTED:
-                        graphTypeCombo.setSelectedIndex(0);
-                        break;
-                    case UNDIRECTED:
-                        graphTypeCombo.setSelectedIndex(1);
-                        break;
-                    case MIXED:
-                        graphTypeCombo.setSelectedIndex(2);
-                        break;
-                }
 
                 switch (container.getUnloader().getEdgesMergeStrategy()) {
                     case SUM:
@@ -750,7 +734,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
     private class IssueTreeModel implements TreeModel {
 
-        private List<Issue> issues;
+        private final List<Issue> issues;
 
         public IssueTreeModel(List<Issue> issues) {
             this.issues = issues;
@@ -773,10 +757,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
         @Override
         public boolean isLeaf(Object node) {
-            if (node instanceof Issue) {
-                return true;
-            }
-            return false;
+            return node instanceof Issue;
         }
 
         @Override

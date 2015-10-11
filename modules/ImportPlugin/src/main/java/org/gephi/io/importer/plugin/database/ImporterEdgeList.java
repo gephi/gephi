@@ -57,7 +57,6 @@ import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.ElementDraft;
-import org.gephi.io.importer.api.ElementDraftFactory;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.PropertiesAssociations;
@@ -78,9 +77,7 @@ public class ImporterEdgeList implements DatabaseImporter {
     private Connection connection;
     //TempData
     private String timeIntervalStart;
-    private String timeIntervalStartOpen;
     private String timeIntervalEnd;
-    private String timeIntervalEndOpen;
 
     @Override
     public boolean execute(ContainerLoader container) {
@@ -136,7 +133,7 @@ public class ImporterEdgeList implements DatabaseImporter {
     private void getNodes(Connection connection) throws SQLException {
 
         //Factory
-        ElementDraftFactory factory = container.factory();
+        ElementDraft.Factory factory = container.factory();
 
         //Properties
         PropertiesAssociations properties = database.getPropertiesAssociations();
@@ -184,19 +181,18 @@ public class ImporterEdgeList implements DatabaseImporter {
                     injectElementAttribute(rs, i + 1, col, node);
                 }
             }
-//            injectTimeIntervalProperty(node);
+            injectTimeIntervalProperty(node);
             container.addNode(node);
             ++count;
         }
         rs.close();
         s.close();
-
     }
 
     private void getEdges(Connection connection) throws SQLException {
 
         //Factory
-        ElementDraftFactory factory = container.factory();
+        ElementDraft.Factory factory = container.factory();
 
         //Properties
         PropertiesAssociations properties = database.getPropertiesAssociations();
@@ -242,7 +238,7 @@ public class ImporterEdgeList implements DatabaseImporter {
                     injectElementAttribute(rs, i + 1, col, edge);
                 }
             }
-//            injectTimeIntervalProperty(edge);
+            injectTimeIntervalProperty(edge);
             container.addEdge(edge);
             ++count;
         }
@@ -285,9 +281,11 @@ public class ImporterEdgeList implements DatabaseImporter {
             case COLOR:
                 String color = rs.getString(column);
                 if (color != null) {
-                    String[] rgb = color.split(",");
+                    String[] rgb = color.replace(" ", "").split(",");
                     if (rgb.length == 3) {
                         nodeDraft.setColor(rgb[0], rgb[1], rgb[2]);
+                    } else {
+                        nodeDraft.setColor(color);
                     }
                 }
                 break;
@@ -308,7 +306,7 @@ public class ImporterEdgeList implements DatabaseImporter {
                 container.setTimeFormat(getTimeFormat(rs, column));
                 String startOpen = rs.getString(column);
                 if (startOpen != null) {
-                    timeIntervalStartOpen = startOpen;
+                    timeIntervalStart = startOpen;
                 }
                 break;
             case END:
@@ -322,10 +320,9 @@ public class ImporterEdgeList implements DatabaseImporter {
                 container.setTimeFormat(getTimeFormat(rs, column));
                 String endOpen = rs.getString(column);
                 if (endOpen != null) {
-                    timeIntervalEndOpen = endOpen;
+                    timeIntervalEnd = endOpen;
                 }
                 break;
-
         }
     }
 
@@ -368,31 +365,16 @@ public class ImporterEdgeList implements DatabaseImporter {
         return res;
     }
 
-//    private void injectTimeIntervalProperty(NodeDraft nodeDraft) {
-//        if (timeIntervalStart != null && timeIntervalEnd != null) {
-//            nodeDraft.addTimeInterval(timeIntervalStart, timeIntervalEnd, false, false);
-//        } else if (timeIntervalStart != null && timeIntervalEndOpen != null) {
-//            nodeDraft.addTimeInterval(timeIntervalStart, timeIntervalEndOpen, false, true);
-//        } else if (timeIntervalStartOpen != null && timeIntervalEnd != null) {
-//            nodeDraft.addTimeInterval(timeIntervalStartOpen, timeIntervalEnd, true, false);
-//        } else if (timeIntervalStartOpen != null && timeIntervalEndOpen != null) {
-//            nodeDraft.addTimeInterval(timeIntervalStartOpen, timeIntervalEndOpen, true, true);
-//        } else if (timeIntervalStart != null) {
-//            nodeDraft.addTimeInterval(timeIntervalStart, null);
-//        } else if (timeIntervalStartOpen != null) {
-//            nodeDraft.addTimeInterval(timeIntervalStartOpen, null, true, false);
-//        } else if (timeIntervalEnd != null) {
-//            nodeDraft.addTimeInterval(null, timeIntervalEnd);
-//        } else if (timeIntervalEndOpen != null) {
-//            nodeDraft.addTimeInterval(null, timeIntervalEndOpen, false, true);
-//        }
-//
-//        //Reset temp data
-//        timeIntervalStart = null;
-//        timeIntervalStartOpen = null;
-//        timeIntervalEnd = null;
-//        timeIntervalEndOpen = null;
-//    }
+    private void injectTimeIntervalProperty(NodeDraft nodeDraft) {
+        if (timeIntervalStart != null || timeIntervalEnd != null) {
+            nodeDraft.addInterval(timeIntervalStart, timeIntervalEnd);
+        }
+
+        //Reset temp data
+        timeIntervalStart = null;
+        timeIntervalEnd = null;
+    }
+
     private void injectEdgeProperty(EdgeProperties p, ResultSet rs, int column, EdgeDraft edgeDraft) throws SQLException {
         switch (p) {
             case LABEL:
@@ -427,6 +409,8 @@ public class ImporterEdgeList implements DatabaseImporter {
                     String[] rgb = color.split(",");
                     if (rgb.length == 3) {
                         edgeDraft.setColor(rgb[0], rgb[1], rgb[2]);
+                    } else {
+                        edgeDraft.setColor(color);
                     }
                 }
                 break;
@@ -441,7 +425,7 @@ public class ImporterEdgeList implements DatabaseImporter {
                 container.setTimeFormat(getTimeFormat(rs, column));
                 String startOpen = rs.getString(column);
                 if (startOpen != null) {
-                    timeIntervalStartOpen = startOpen;
+                    timeIntervalStart = startOpen;
                 }
                 break;
             case END:
@@ -455,37 +439,22 @@ public class ImporterEdgeList implements DatabaseImporter {
                 container.setTimeFormat(getTimeFormat(rs, column));
                 String endOpen = rs.getString(column);
                 if (endOpen != null) {
-                    timeIntervalEndOpen = endOpen;
+                    timeIntervalEnd = endOpen;
                 }
                 break;
         }
     }
 
-//    private void injectTimeIntervalProperty(EdgeDraft edgeDraft) {
-//        if (timeIntervalStart != null && timeIntervalEnd != null) {
-//            edgeDraft.addTimeInterval(timeIntervalStart, timeIntervalEnd, false, false);
-//        } else if (timeIntervalStart != null && timeIntervalEndOpen != null) {
-//            edgeDraft.addTimeInterval(timeIntervalStart, timeIntervalEndOpen, false, true);
-//        } else if (timeIntervalStartOpen != null && timeIntervalEnd != null) {
-//            edgeDraft.addTimeInterval(timeIntervalStartOpen, timeIntervalEnd, true, false);
-//        } else if (timeIntervalStartOpen != null && timeIntervalEndOpen != null) {
-//            edgeDraft.addTimeInterval(timeIntervalStartOpen, timeIntervalEndOpen, true, true);
-//        } else if (timeIntervalStart != null) {
-//            edgeDraft.addTimeInterval(timeIntervalStart, null);
-//        } else if (timeIntervalStartOpen != null) {
-//            edgeDraft.addTimeInterval(timeIntervalStartOpen, null, true, false);
-//        } else if (timeIntervalEnd != null) {
-//            edgeDraft.addTimeInterval(null, timeIntervalEnd);
-//        } else if (timeIntervalEndOpen != null) {
-//            edgeDraft.addTimeInterval(null, timeIntervalEndOpen, false, true);
-//        }
-//
-//        //Reset temp data
-//        timeIntervalStart = null;
-//        timeIntervalStartOpen = null;
-//        timeIntervalEnd = null;
-//        timeIntervalEndOpen = null;
-//    }
+    private void injectTimeIntervalProperty(EdgeDraft edgeDraft) {
+        if (timeIntervalStart != null || timeIntervalEnd != null) {
+            edgeDraft.addInterval(timeIntervalStart, timeIntervalEnd);
+        }
+
+        //Reset temp data
+        timeIntervalStart = null;
+        timeIntervalEnd = null;
+    }
+
     private void injectElementAttribute(ResultSet rs, int columnIndex, ColumnDraft column, ElementDraft draft) {
         String elementName;
         if (draft instanceof NodeDraft) {

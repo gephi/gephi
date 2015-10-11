@@ -211,14 +211,12 @@ public class ImporterGDF implements FileImporter, LongTask {
                     if (isEdgeFirstLine(line)) {
                         edgesWalking = true;
                         findEdgeColumns(line);
+                    } else if (!edgesWalking) {
+                        //Nodes
+                        nodeLines.add(line);
                     } else {
-                        if (!edgesWalking) {
-                            //Nodes
-                            nodeLines.add(line);
-                        } else {
-                            //Edges
-                            edgeLines.add(line);
-                        }
+                        //Edges
+                        edgeLines.add(line);
                     }
                 }
             } else {
@@ -444,9 +442,11 @@ public class ImporterGDF implements FileImporter, LongTask {
                         node.setY(Float.parseFloat(data));
                         break;
                     case COLOR:
-                        String[] rgb = data.split(",");
+                        String[] rgb = data.replace(" ", "").split(",");
                         if (rgb.length == 3) {
                             node.setColor(rgb[0], rgb[1], rgb[2]);
+                        } else {
+                            node.setColor(data);
                         }
                         break;
                     case FIXED:
@@ -483,9 +483,11 @@ public class ImporterGDF implements FileImporter, LongTask {
             try {
                 switch (column.getEdgeColumn()) {
                     case COLOR:
-                        String[] rgb = data.split(",");
+                        String[] rgb = data.replace(" ", "").split(",");
                         if (rgb.length == 3) {
                             edge.setColor(rgb[0], rgb[1], rgb[2]);
+                        } else {
+                            edge.setColor(data);
                         }
                         break;
                     case WEIGHT:

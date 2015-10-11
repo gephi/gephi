@@ -41,15 +41,6 @@
  */
 package org.gephi.io.processor.plugin;
 
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphFactory;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.Node;
-import org.gephi.io.importer.api.EdgeDirection;
-import org.gephi.io.importer.api.EdgeDraft;
-import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
 import org.openide.util.Lookup;
@@ -59,14 +50,12 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Processor 'Append graph' that tries to find in the current workspace nodes
  * and edges in the container to only append new elements. It uses elements' id
- * and label to do the matching.
- * <p>
- * The attibutes are not merged and values are from the latest element imported.
+ * to do the matching.
  *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Processor.class)
-public class AppendProcessor extends AbstractProcessor implements Processor {
+public class AppendProcessor extends DefaultProcessor implements Processor {
 
     @Override
     public String getDisplayName() {
@@ -89,66 +78,12 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
             pc.setSource(workspace, container.getSource());
         }
 
-        //Architecture
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        graphModel = graphController.getGraphModel();
+        process(workspace);
 
-        Graph graph = graphModel.getGraph();
-        GraphFactory factory = graphModel.factory();
-
-        //Attributes - Creates columns for properties
-        flushColumns();
-
-        //Dynamic
-//        if (container.getTimeFormat() != null) {
-//            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-//            dynamicController.setTimeFormat(container.getTimeFormat());
-//        }
-
-        int nodeCount = 0;
-        //Create all nodes
-        for (NodeDraft draftNode : container.getNodes()) {
-            String id = draftNode.getId();
-            Node node = graph.getNode(id);
-            if (node == null) {
-                node = factory.newNode(id);
-                graph.addNode(node);
-                nodeCount++;
-            }
-            flushToNode(draftNode, node);
-        }
-
-        //Create all edges and push to data structure
-        int edgeCount = 0;
-        for (EdgeDraft draftEdge : container.getEdges()) {
-            String id = draftEdge.getId();
-            String sourceId = draftEdge.getSource().getId();
-            String targetId = draftEdge.getTarget().getId();
-            Node source = graph.getNode(sourceId);
-            Node target = graph.getNode(targetId);
-            Object type = draftEdge.getType();
-            int edgeType = graphModel.addEdgeType(type);
-
-            Edge edge = graph.getEdge(source, target, edgeType);
-            if (edge == null) {
-                switch (container.getEdgeDefault()) {
-                    case DIRECTED:
-                        edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), true);
-                        break;
-                    case UNDIRECTED:
-                        edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), true);
-                        break;
-                    case MIXED:
-                        boolean directed = draftEdge.getDirection().equals(EdgeDirection.UNDIRECTED) ? false : true;
-                        edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), directed);
-                }
-                edgeCount++;
-                graph.addEdge(edge);
-            }
-            flushToEdge(draftEdge, edge);
-        }
-
-        System.out.println("# New Nodes appended: " + nodeCount + "\n# New Edges appended: " + edgeCount);
+        //Clean
         workspace = null;
+        graphModel = null;
+        container = null;
+        progressTicket = null;
     }
 }

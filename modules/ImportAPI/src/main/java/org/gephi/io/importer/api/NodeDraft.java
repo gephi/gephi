@@ -43,32 +43,86 @@ package org.gephi.io.importer.api;
 
 /**
  * Draft node, hosted by import containers to represent nodes found when
- * importing.
- * <code>Processors</code> decide if this node will finally be appended to the
- * graph or not.
+ * importing. <code>Processors</code> decide if this node will finally be
+ * appended to the graph or not.
  *
  * @author Mathieu Bastian
  * @see ContainerLoader
  */
 public interface NodeDraft extends ElementDraft {
 
+    /**
+     * Returns this node's X position.
+     *
+     * @return x position
+     */
     public float getX();
 
+    /**
+     * Returns this node's Y position.
+     *
+     * @return y position
+     */
     public float getY();
 
+    /**
+     * Returns this node's Z position.
+     *
+     * @return z position
+     */
     public float getZ();
 
+    /**
+     * Returns this node's size.
+     *
+     * @return size
+     */
     public float getSize();
 
+    /**
+     * Returns whether this node's position is fixed.
+     * <p>
+     * Default is false.
+     *
+     * @return true if fixed, false otherwise
+     */
     public boolean isFixed();
 
+    /**
+     * Sets this node's X position.
+     *
+     * @param x x position
+     */
     public void setX(float x);
 
+    /**
+     * Sets this node's Y position.
+     *
+     * @param y y position
+     */
     public void setY(float y);
 
+    /**
+     * Sets this node's Z position.
+     *
+     * @param z z position
+     */
     public void setZ(float z);
 
+    /**
+     * Sets this node's size.
+     *
+     * @param size size
+     */
     public void setSize(float size);
 
+    /**
+     * Sets whether this node's position is fixed.
+     * <p>
+     * This flag is used during layout to settle some specific nodes. If set at
+     * true, the layout algorithms won't modify the node's position.
+     *
+     * @param fixed true if fixed, false otherwise
+     */
     public void setFixed(boolean fixed);
 }

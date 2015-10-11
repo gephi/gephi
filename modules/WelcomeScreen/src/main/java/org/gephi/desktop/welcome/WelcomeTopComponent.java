@@ -183,20 +183,16 @@ public final class WelcomeTopComponent extends JPanel {
 
         try {
             for (int i = 0; i < samplePath.length; i++) {
-                String s = samplePath[i];
+                final String s = samplePath[i];
                 String tooltip = sampleTooltip[i];
-                final InputStream stream = WelcomeTopComponent.class.getResourceAsStream(s);
+
                 String fileName = s.substring(s.lastIndexOf('/') + 1, s.length());
                 final String importer = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
                 JXHyperlink fileLink = new JXHyperlink(new AbstractAction() {
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        try {
-                            stream.reset();
-                        } catch (IOException ex) {
-                            //Exceptions.printStackTrace(ex);
-                        }
+                        final InputStream stream = WelcomeTopComponent.class.getResourceAsStream(s);
                         ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
                         importController.importStream(stream, importer);
                         closeDialog();

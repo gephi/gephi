@@ -47,8 +47,8 @@ import org.gephi.io.processor.spi.Processor;
 /**
  * A container is created each time data are imported by <b>importers</b>. Its
  * role is to host all data collected by importers during import process. After
- * pushing data in the container, its content can be analyzed to verify its
- * validity and then be processed by <b>processors</b>. Thus containers are
+ * pushing data into the container, its content can be analyzed to verify its
+ * validity and then be processed by <b>processors</b>. Thus, containers are
  * <b>loaded</b> by importers and <b>unloaded</b> by processors.
  * <p>
  * See {@link ContainerLoader} for how to push graph and attributes data in the
@@ -62,9 +62,22 @@ import org.gephi.io.processor.spi.Processor;
 public interface Container {
 
     /**
-     * Set the source of the data put in the container. Could be a file name.
+     * Container factory.
+     */
+    public interface Factory {
+
+        /**
+         * Returns a newly created container instance.
+         *
+         * @return new container
+         */
+        public Container newContainer();
+    }
+
+    /**
+     * Sets the source of the data put in the container. Could be a file name.
      *
-     * @param source the original source of data.
+     * @param source original source of data.
      * @throws NullPointerException if <code>source</code> is <code>null</code>
      */
     public void setSource(String source);
@@ -72,33 +85,39 @@ public interface Container {
     /**
      * If exists, returns the source of the data.
      *
-     * @return the source of the data, or <code>null</code> if source is not
+     * @return source of the data, or <code>null</code> if source is not
      * defined.
      */
     public String getSource();
 
     /**
-     * Get containers loading interface. The <b>loader</b> is used by modules
-     * which put data in the container, whereas the <b>unloader</b> interface is
-     * used by modules which read containers content.
+     * Gets the container loading interface.
+     * <p>
+     * The <b>loader</b> is used by modules which put data in the container,
+     * whereas the <b>unloader</b> interface is used by modules which read
+     * containers content.
      *
-     * @return the containers loading interface
+     * @return containers loading interface
      */
     public ContainerLoader getLoader();
 
     /**
-     * Get containers unloading interface. The <b>unloader</b> interface is used
-     * by modules which read containers content, whereas the <b>loader</b> is
-     * used for pushing data in the container.
+     * Get the container unloading interface.
+     * <p>
+     * The <b>unloader</b> interface is used by modules which read containers
+     * content, whereas the <b>loader</b> is used for pushing data in the
+     * container.
      *
-     * @return the container unloading interface
+     * @return container unloading interface
      */
     public ContainerUnloader getUnloader();
 
     /**
-     * Set a report this container can use to report issues detected when
-     * loading the container. Report are used to log info and issues during
-     * import process. Only one report can be associated to a container.
+     * Sets a report this container can use to report issues detected when
+     * loading the container.
+     * <p>
+     * Report are used to log info and issues during import process. Only one
+     * report can be associated to a container.
      *
      * @param report set <code>report</code> as the default report for this
      * container
@@ -107,19 +126,21 @@ public interface Container {
     public void setReport(Report report);
 
     /**
-     * Returns the report associated to this container, if exists.
+     * Returns the report associated to this container, if it exists.
      *
-     * @return the report set for this container or <code>null</code> if no
-     * report is defined
+     * @return report set for this container or <code>null</code> if no report
+     * is defined
      */
     public Report getReport();
 
     /**
      * This method must be called after the loading is complete and before
-     * unloading. Its aim is to verify data consistency as a whole.
+     * unloading.
+     * <p>
+     * It aims to verify data consistency as a whole.
      *
-     * @return <code>true</code> if container data is * * *
-     * consistent, <code>false</code> otherwise
+     * @return <code>true</code> if container data is consistent,
+     * <code>false</code> otherwise
      */
     public boolean verify();
 
@@ -128,11 +149,39 @@ public interface Container {
      */
     public void closeLoader();
 
+    /**
+     * Returns true if this container contains a dynamic graph.
+     * <p>
+     * A dynamic graph has elements that appear or disappear over time.
+     *
+     * @return true if dynamic, false otherwise
+     */
     public boolean isDynamicGraph();
 
+    /**
+     * Returns true if this container contains elements that have dynamic
+     * attributes.
+     * <p>
+     * Dynamic attributes are attributes with different values over time.
+     *
+     * @return true if dynamic attributes, false otherwise
+     */
     public boolean hasDynamicAttributes();
 
+    /**
+     * Returns true if edges in this container are self-loops.
+     *
+     * @return true if presence of self-loops, false otherwise
+     */
     public boolean hasSelfLoops();
 
+    /**
+     * Returns true if this container contains a multigraph.
+     * <p>
+     * A multi-graph is a graph that has several types of edges (i.e. edges with
+     * different labels).
+     *
+     * @return true if multigraph, false otherwise
+     */
     public boolean isMultiGraph();
 }

@@ -56,7 +56,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.TimeFormat;
+import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerLoader;
@@ -105,8 +107,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private int selfLoops = 0;
     //Dynamic
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
-    private double timeIntervalMin;
-    private double timeIntervalMax;
+    private TimeRepresentation timeRepresentation = TimeRepresentation.INTERVAL;
+    //Report flag
+    private boolean reportedUnknownNode;
+    private boolean reportedParallelEdges;
 
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
@@ -176,7 +180,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 node = factory.newNodeDraft(id);
                 addNode(node);
                 node.setCreatedAuto(true);
-                report.logIssue(new Issue("Unknown node id, creates node from id='" + id + "'", Level.INFO));
+                if (!reportedUnknownNode) {
+                    String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_AutoNodeCreated");
+                    report.logIssue(new Issue(message, Level.INFO));
+                    reportedUnknownNode = true;
+                }
             } else {
                 String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_UnknowNodeId", id);
                 report.logIssue(new Issue(message, Level.SEVERE));
@@ -282,7 +290,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 System.arraycopy(edges, 0, newEdges, 0, edges.length);
                 edgeTypeSet.put(sourceTargetLong, newEdges);
 
-                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge", edgeDraftImpl.getId()), Level.INFO));
+                if (!reportedParallelEdges) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge", edgeDraftImpl.getId()), Level.INFO));
+                    reportedParallelEdges = true;
+                }
             }
         } else {
             edgeTypeSet.put(sourceTargetLong, new int[]{index});
@@ -413,6 +424,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
+    public TimeRepresentation getTimeRepresentation() {
+        return timeRepresentation;
+    }
+
+    @Override
+    public void setTimeRepresentation(TimeRepresentation timeRepresentation) {
+        this.timeRepresentation = timeRepresentation;
+    }
+
+    @Override
     public ColumnDraft addNodeColumn(String key, Class typeClass) {
         return addNodeColumn(key, typeClass, false);
     }
@@ -420,6 +441,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     @Override
     public ColumnDraft addNodeColumn(String key, Class typeClass, boolean dynamic) {
         ColumnDraft column = nodeColumns.get(key);
+        typeClass = AttributeUtils.getStandardizedType(typeClass);
         if (column == null) {
             int index = nodeColumns.size();
             column = new ColumnDraftImpl(key, index, dynamic, typeClass);
@@ -429,10 +451,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             } else {
                 report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.AddNodeColumn", key, typeClass.getSimpleName()));
             }
-        } else {
-            if (!column.getTypeClass().equals(typeClass)) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Column_Type_Mismatch", key, column.getTypeClass()), Level.SEVERE));
-            }
+        } else if (!column.getTypeClass().equals(typeClass)) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Column_Type_Mismatch", key, column.getTypeClass()), Level.SEVERE));
         }
         return column;
     }
@@ -445,6 +465,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     @Override
     public ColumnDraft addEdgeColumn(String key, Class typeClass, boolean dynamic) {
         ColumnDraft column = edgeColumns.get(key);
+        typeClass = AttributeUtils.getStandardizedType(typeClass);
         if (column == null) {
             int index = edgeColumns.size();
             column = new ColumnDraftImpl(key, index, dynamic, typeClass);
@@ -454,10 +475,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             } else {
                 report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.AddEdgeColumn", key, typeClass.getSimpleName()));
             }
-        } else {
-            if (!column.getTypeClass().equals(typeClass)) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Column_Type_Mismatch", key, column.getTypeClass()), Level.SEVERE));
-            }
+        } else if (!column.getTypeClass().equals(typeClass)) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Column_Type_Mismatch", key, column.getTypeClass()), Level.SEVERE));
         }
         return column;
     }
@@ -554,7 +573,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 //
         //Print TimeFormat
         if (dynamicGraph) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeFormat", timeFormat.toString()), Level.INFO));
+            report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeFormat", timeFormat.toString()));
+            report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeRepresentation", timeRepresentation.toString()));
         }
 
         return true;
@@ -652,7 +672,6 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 }
             }
         }
-
 
         //Set random position
         boolean customPosition = false;
@@ -799,7 +818,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     @Override
     public void setEdgeDefault(EdgeDirectionDefault edgeDefault) {
         this.edgeDefault = edgeDefault;
-        report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Set_EdgeDefault", edgeDefault.toString()), Level.INFO));
+        report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Set_EdgeDefault", edgeDefault.toString()));
     }
 
     @Override

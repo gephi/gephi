@@ -47,7 +47,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import javax.xml.stream.*;
 import javax.xml.stream.events.XMLEvent;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.TimeFormat;
+import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.io.importer.api.*;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -67,6 +69,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
     private static final String GRAPH = "graph";
     private static final String GRAPH_DEFAULT_EDGETYPE = "defaultedgetype";
     private static final String GRAPH_TIMEFORMAT = "timeformat";
+    private static final String GRAPH_TIMEREPRESENTATION = "timerepresentation";
     private static final String GRAPH_TIMEFORMAT2 = "timetype"; // GEXF 1.1
     private static final String START = "start";
     private static final String END = "end";
@@ -192,9 +195,8 @@ public class ImporterGEXF implements FileImporter, LongTask {
     private void readGraph(XMLStreamReader reader) throws Exception {
         String mode = "";
         String defaultEdgeType = "";
-        String start = "";
-        String end = "";
         String timeFormat = "";
+        String timeRepresentation = "";
 
         //Attributes
         for (int i = 0; i < reader.getAttributeCount(); i++) {
@@ -203,12 +205,10 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 defaultEdgeType = reader.getAttributeValue(i);
             } else if (ATTRIBUTES_TYPE2.equalsIgnoreCase(attName)) {
                 mode = reader.getAttributeValue(i);
-            } else if (START.equalsIgnoreCase(attName)) {
-                start = reader.getAttributeValue(i);
-            } else if (END.equalsIgnoreCase(attName)) {
-                end = reader.getAttributeValue(i);
             } else if (GRAPH_TIMEFORMAT.equalsIgnoreCase(attName) || GRAPH_TIMEFORMAT2.equalsIgnoreCase(attName)) {
                 timeFormat = reader.getAttributeValue(i);
+            } else if (GRAPH_TIMEREPRESENTATION.equalsIgnoreCase(attName)) {
+                timeRepresentation = reader.getAttributeValue(i);
             }
         }
 
@@ -224,6 +224,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_defaultedgetype", defaultEdgeType), Issue.Level.SEVERE));
             }
         }
+
         //TimeFormat
         if (!timeFormat.isEmpty()) {
             if ("double".equalsIgnoreCase(timeFormat) || "float".equalsIgnoreCase(timeFormat)) {
@@ -239,12 +240,13 @@ public class ImporterGEXF implements FileImporter, LongTask {
             container.setTimeFormat(TimeFormat.DOUBLE);
         }
 
-        //Start & End
-        if (!start.isEmpty()) {
-//            container.setTimeIntervalMin(start);
-        }
-        if (!end.isEmpty()) {
-//            container.setTimeIntervalMax(end);
+        //TimeRepresentation
+        if (!timeRepresentation.isEmpty()) {
+            if ("timestamp".equalsIgnoreCase(timeRepresentation)) {
+                container.setTimeRepresentation(TimeRepresentation.TIMESTAMP);
+            } else if ("interval".equalsIgnoreCase(timeRepresentation)) {
+                container.setTimeRepresentation(TimeRepresentation.INTERVAL);
+            }
         }
     }
 
@@ -293,6 +295,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
         node.setLabel(label);
 
         //Parent
+        //TODO Deprecate message?
 //        if (parent != null) {
 //            node.setParent(parent);
 //        } else if (!pid.isEmpty()) {
@@ -303,7 +306,6 @@ public class ImporterGEXF implements FileImporter, LongTask {
 //                node.setParent(parentNode);
 //            }
 //        }
-
         if (!container.nodeExists(id)) {
             container.addNode(node);
         }
@@ -340,15 +342,17 @@ public class ImporterGEXF implements FileImporter, LongTask {
             }
         }
 
-
         //Dynamic
-//        if (!slices && (!startDate.isEmpty() || !endDate.isEmpty())) {
-//            try {
-//                node.addTimeInterval(startDate, endDate, startOpen, endOpen);
-//            } catch (IllegalArgumentException e) {
-//                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_node_timeinterval_parseerror", id), Issue.Level.SEVERE));
-//            }
-//        }
+        if (!slices && (!startDate.isEmpty() || !endDate.isEmpty())) {
+            if (startOpen || endOpen) {
+                //TODO Deprecated open intervals message
+            }
+            try {
+                node.addInterval(startDate, endDate);
+            } catch (IllegalArgumentException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_node_timeinterval_parseerror", id), Issue.Level.SEVERE));
+            }
+        }
     }
 
     private void readNodeAttValue(XMLStreamReader reader, NodeDraft node) {
@@ -387,28 +391,41 @@ public class ImporterGEXF implements FileImporter, LongTask {
             //Data attribute value
             ColumnDraft column = container.getNodeColumn(fore);
             if (column != null) {
-                node.parseAndSetValue(column.getId(), value);
-//                if (!startDate.isEmpty() || !endDate.isEmpty()) {
-//                    //Dynamic
-//                    try {
-//                        node.setValue(column, value, startDate, endDate, startOpen, endOpen);
-//                    } catch (IllegalArgumentException e) {
-//                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeattribute_timeinterval_parseerror", node), Issue.Level.SEVERE));
-//                    } catch (Exception e) {
-//                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
-//                    }
-//                } else {
-//                    if (column.getType().isDynamicType()) {
-//                        node.addAttributeValue(column, value);
-//                    } else {
-//                        try {
-//                            Object val = column.getType().parse(value);
-//                            node.addAttributeValue(column, val);
-//                        } catch (Exception e) {
-//                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
-//                        }
-//                    }
-//                }
+                if (column.isDynamic()) {
+                    double start, end;
+                    if (!startDate.isEmpty()) {
+                        try {
+                            start = AttributeUtils.parseDateTime(startDate);
+                        } catch (Exception e) {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeattribute_timeinterval_parseerror", node), Issue.Level.SEVERE));
+                            return;
+                        }
+                    } else {
+                        start = Double.NEGATIVE_INFINITY;
+                    }
+                    if (!endDate.isEmpty()) {
+                        try {
+                            end = AttributeUtils.parseDateTime(endDate);
+                        } catch (Exception e) {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeattribute_timeinterval_parseerror", node), Issue.Level.SEVERE));
+                            return;
+                        }
+                    } else {
+                        end = Double.POSITIVE_INFINITY;
+                    }
+                    node.setValue(column.getId(), value, start, end);
+                } else {
+
+                    Object valueObj = null;
+                    try {
+                        valueObj = AttributeUtils.parse(value, column.getTypeClass());
+                    } catch (Exception e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
+                        return;
+                    }
+                    node.setValue(column.getId(), valueObj);
+                }
+
             }
         }
     }
@@ -530,13 +547,16 @@ public class ImporterGEXF implements FileImporter, LongTask {
             }
         }
 
-//        if (!start.isEmpty() || !end.isEmpty()) {
-//            try {
-//                node.addTimeInterval(start, end, startOpen, endOpen);
-//            } catch (IllegalArgumentException e) {
-//                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_node_timeinterval_parseerror", node), Issue.Level.SEVERE));
-//            }
-//        }
+        if (!start.isEmpty() || !end.isEmpty()) {
+            if (startOpen || endOpen) {
+                //TODO Deprecated open intervals message
+            }
+            try {
+                node.addInterval(start, end);
+            } catch (IllegalArgumentException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_node_timeinterval_parseerror", node), Issue.Level.SEVERE));
+            }
+        }
     }
 
     private void readEdge(XMLStreamReader reader) throws Exception {
@@ -658,13 +678,16 @@ public class ImporterGEXF implements FileImporter, LongTask {
         }
 
         //Dynamic
-//        if (!spells && (!startDate.isEmpty() || !endDate.isEmpty())) {
-//            try {
-//                edge.addTimeInterval(startDate, endDate, startOpen, endOpen);
-//            } catch (IllegalArgumentException e) {
-//                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timeinterval_parseerror", edge), Issue.Level.SEVERE));
-//            }
-//        }
+        if (!spells && (!startDate.isEmpty() || !endDate.isEmpty())) {
+            if (startOpen || endOpen) {
+                //TODO Deprecated open intervals message
+            }
+            try {
+                edge.addInterval(startDate, endDate);
+            } catch (IllegalArgumentException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timeinterval_parseerror", edge), Issue.Level.SEVERE));
+            }
+        }
     }
 
     private void readEdgeAttValue(XMLStreamReader reader, EdgeDraft edge) {
@@ -702,33 +725,41 @@ public class ImporterGEXF implements FileImporter, LongTask {
         if (!value.isEmpty()) {
             ColumnDraft column = container.getEdgeColumn(fore);
             if (column != null) {
-                edge.parseAndSetValue(column.getId(), value);
+                if (column.isDynamic()) {
+                    double start, end;
+                    if (!startDate.isEmpty()) {
+                        try {
+                            start = AttributeUtils.parseDateTime(startDate);
+                        } catch (Exception e) {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeattribute_timeinterval_parseerror", edge), Issue.Level.SEVERE));
+                            return;
+                        }
+                    } else {
+                        start = Double.NEGATIVE_INFINITY;
+                    }
+                    if (!endDate.isEmpty()) {
+                        try {
+                            end = AttributeUtils.parseDateTime(endDate);
+                        } catch (Exception e) {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeattribute_timeinterval_parseerror", edge), Issue.Level.SEVERE));
+                            return;
+                        }
+                    } else {
+                        end = Double.POSITIVE_INFINITY;
+                    }
+                    edge.setValue(column.getId(), value, start, end);
+                } else {
+
+                    Object valueObj = null;
+                    try {
+                        valueObj = AttributeUtils.parse(value, column.getTypeClass());
+                    } catch (Exception e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
+                        return;
+                    }
+                    edge.setValue(column.getId(), valueObj);
+                }
             }
-//            //Data attribute value
-//            AttributeColumn column = container.getGraphModel().getEdgeTable().getColumn(fore);
-//            if (column != null) {
-//                if (!startDate.isEmpty() || !endDate.isEmpty()) {
-//                    //Dynamic
-//                    try {
-//                        edge.addAttributeValue(column, value, startDate, endDate, startOpen, endOpen);
-//                    } catch (IllegalArgumentException e) {
-//                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeattribute_timeinterval_parseerror", edge), Issue.Level.SEVERE));
-//                    } catch (Exception e) {
-//                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
-//                    }
-//                } else {
-//                    if (column.getType().isDynamicType()) {
-//                        edge.addAttributeValue(column, value);
-//                    } else {
-//                        try {
-//                            Object val = column.getType().parse(value);
-//                            edge.addAttributeValue(column, val);
-//                        } catch (Exception e) {
-//                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
-//                        }
-//                    }
-//                }
-//            }
         }
     }
 
@@ -792,13 +823,16 @@ public class ImporterGEXF implements FileImporter, LongTask {
             }
         }
 
-//        if (!start.isEmpty() || !end.isEmpty()) {
-//            try {
-//                edge.addTimeInterval(start, end, startOpen, endOpen);
-//            } catch (IllegalArgumentException e) {
-//                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timeinterval_parseerror", edge), Issue.Level.SEVERE));
-//            }
-//        }
+        if (!start.isEmpty() || !end.isEmpty()) {
+            if (startOpen || endOpen) {
+                //TODO Deprecated open intervals message
+            }
+            try {
+                edge.addInterval(start, end);
+            } catch (IllegalArgumentException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timeinterval_parseerror", edge), Issue.Level.SEVERE));
+            }
+        }
     }
 
     private void readAttributes(XMLStreamReader reader) throws Exception {
@@ -944,7 +978,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
                     report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributecolumn_exist", id));
                     return;
                 }
-                column = container.addNodeColumn(id, attributeType);
+                column = container.addNodeColumn(id, attributeType, dynamic);
                 column.setTitle(title);
                 report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_nodeattribute", title, attributeType.getCanonicalName()));
             } else if ("edge".equalsIgnoreCase(classAtt) || classAtt.isEmpty()) {
@@ -952,7 +986,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
                     report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributecolumn_exist", id));
                     return;
                 }
-                column = container.addEdgeColumn(id, attributeType);
+                column = container.addEdgeColumn(id, attributeType, dynamic);
                 column.setTitle(title);
                 report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_edgeattribute", title, attributeType.getCanonicalName()));
             }

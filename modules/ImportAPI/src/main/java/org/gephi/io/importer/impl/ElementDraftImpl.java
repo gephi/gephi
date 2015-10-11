@@ -43,16 +43,22 @@
 package org.gephi.io.importer.impl;
 
 import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
-import it.unimi.dsi.fastutil.doubles.Double2ObjectOpenHashMap;
 import java.awt.Color;
 import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Interval;
+import org.gephi.graph.api.TimeRepresentation;
+import org.gephi.graph.api.types.IntervalMap;
+import org.gephi.graph.api.types.IntervalSet;
+import org.gephi.graph.api.types.TimeMap;
+import org.gephi.graph.api.types.TimeSet;
+import org.gephi.graph.api.types.TimestampMap;
+import org.gephi.graph.api.types.TimestampSet;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ElementDraft;
+import org.gephi.io.importer.api.ImportUtils;
+import org.gephi.io.importer.api.Issue;
+import org.openide.util.NbBundle;
 
-/**
- *
- * @author mbastian
- */
 public abstract class ElementDraftImpl implements ElementDraft {
 
     protected final ImportContainerImpl container;
@@ -68,16 +74,12 @@ public abstract class ElementDraftImpl implements ElementDraft {
     //Attributes
     protected Object[] attributes;
     //Timestamps
-    protected double[] timeStamps;
-    //Dynamic values
-    protected Double2ObjectMap[] dynamicAttributes;
+    protected TimeSet timeSet;
 
     public ElementDraftImpl(ImportContainerImpl container, String id) {
         this.container = container;
         this.id = id;
         this.attributes = new Object[0];
-        this.timeStamps = new double[0];
-        this.dynamicAttributes = new Double2ObjectMap[0];
     }
 
     abstract ColumnDraft getColumn(String key);
@@ -153,7 +155,13 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void setColor(String color) {
-        setColor(Color.getColor(color));
+        Color cl = ImportUtils.parseColor(color);
+        if (cl != null) {
+            setColor(cl);
+        } else {
+            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_ColorParse", color, id);
+            container.getReport().logIssue(new Issue(message, Issue.Level.WARNING));
+        }
     }
 
     @Override
@@ -191,13 +199,24 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void setLabelColor(String color) {
-        setLabelColor(Color.getColor(color));
+        Color cl = ImportUtils.parseColor(color);
+        if (cl != null) {
+            setLabelColor(cl);
+        } else {
+            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_LabelColorParse", color, id);
+            container.getReport().logIssue(new Issue(message, Issue.Level.WARNING));
+        }
     }
 
     @Override
     public void setValue(String key, Object value) {
         ColumnDraft column = getColumn(key, value.getClass());
-        setAttributeValue(((ColumnDraftImpl) column).getIndex(), value);
+        try {
+            setAttributeValue(column, value);
+        } catch (Exception ex) {
+            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_SetValueError", value.toString(), id, ex.getMessage());
+            container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
+        }
     }
 
     @Override
@@ -208,14 +227,36 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void setValue(String key, Object value, double timestamp) {
         ColumnDraft column = getColumn(key, value.getClass());
-        setAttributeValue(((ColumnDraftImpl) column).getIndex(), value, timestamp);
+        try {
+            setAttributeValue(column, value, timestamp);
+        } catch (Exception ex) {
+            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_SetValueTimestampError", value.toString(), id, timestamp, ex.getMessage());
+            container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
+        }
+    }
+
+    @Override
+    public void setValue(String key, Object value, String startDateTime, String endDateTime) {
+        setValue(key, value, AttributeUtils.parseDateTime(startDateTime), AttributeUtils.parseDateTime(endDateTime));
+    }
+
+    @Override
+    public void setValue(String key, Object value, double start, double end) {
+        ColumnDraft column = getColumn(key, value.getClass());
+        try {
+            setAttributeValue(column, value, start, end);
+        } catch (Exception ex) {
+            String interval = "[" + start + "," + end + "]";
+            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_SetValueIntervalError", value.toString(), id, interval, ex.getMessage());
+            container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
+        }
     }
 
     @Override
     public void parseAndSetValue(String key, String value) {
         ColumnDraft column = getColumn(key);
         Object val = AttributeUtils.parse(value, column.getTypeClass());
-        setAttributeValue(((ColumnDraftImpl) column).getIndex(), val);
+        setValue(key, val);
     }
 
     @Override
@@ -227,7 +268,30 @@ public abstract class ElementDraftImpl implements ElementDraft {
     public void parseAndSetValue(String key, String value, double timestamp) {
         ColumnDraft column = getColumn(key);
         Object val = AttributeUtils.parse(value, column.getTypeClass());
-        setAttributeValue(((ColumnDraftImpl) column).getIndex(), val, timestamp);
+        setValue(key, val, timestamp);
+    }
+
+    @Override
+    public void parseAndSetValue(String key, String value, String startDateTime, String endDateTime) {
+        double start, end;
+        if (startDateTime == null || "-inf".equalsIgnoreCase(startDateTime)) {
+            start = Double.NEGATIVE_INFINITY;
+        } else {
+            start = AttributeUtils.parseDateTime(startDateTime);
+        }
+        if (endDateTime == null || "inf".equalsIgnoreCase(endDateTime)) {
+            end = Double.POSITIVE_INFINITY;
+        } else {
+            end = AttributeUtils.parseDateTime(endDateTime);
+        }
+        parseAndSetValue(key, value, start, end);
+    }
+
+    @Override
+    public void parseAndSetValue(String key, String value, double start, double end) {
+        ColumnDraft column = getColumn(key);
+        Object val = AttributeUtils.parse(value, column.getTypeClass());
+        setValue(key, val, start, end);
     }
 
     @Override
@@ -237,50 +301,81 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void addTimestamp(double timestamp) {
-        int index = timeStamps.length;
-        ensureTimestampArraySize(index);
-        timeStamps[index] = timestamp;
-    }
-
-    @Override
-    public double[] getTimestamps() {
-        return timeStamps;
-    }
-
-    @Override
-    public double[] getTimestamps(String key) {
-        ColumnDraft col = getColumn(key);
-        if (col != null) {
-            Double2ObjectMap m = getDynamicAttributeValue(((ColumnDraftImpl) col).getIndex());
-            if (m != null) {
-                return m.keySet().toDoubleArray();
-            }
+        if (!container.getTimeRepresentation().equals(TimeRepresentation.TIMESTAMP)) {
+            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_NotTimestampRepresentation", id);
+            container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
+            return;
         }
-        return null;
+        if (timeSet == null) {
+            timeSet = new TimestampSet();
+        }
+        timeSet.add(timestamp);
     }
 
     @Override
-    public Object getValue(String key, double timestamp) {
-        ColumnDraft col = getColumn(key);
-        if (col != null) {
-            Double2ObjectMap m = getDynamicAttributeValue(((ColumnDraftImpl) col).getIndex());
-            if (m != null) {
-                return m.get(timestamp);
-            }
+    public TimeSet getTimeSet() {
+        return timeSet;
+    }
+
+    @Override
+    public void addInterval(String intervalStartDateTime, String intervalEndDateTime) {
+        double start, end;
+        if (intervalStartDateTime == null || "-inf".equalsIgnoreCase(intervalStartDateTime)) {
+            start = Double.NEGATIVE_INFINITY;
+        } else {
+            start = AttributeUtils.parseDateTime(intervalStartDateTime);
         }
-        return null;
+        if (intervalEndDateTime == null || "inf".equalsIgnoreCase(intervalEndDateTime)) {
+            end = Double.POSITIVE_INFINITY;
+        } else {
+            end = AttributeUtils.parseDateTime(intervalStartDateTime);
+        }
+        addInterval(start, end);
+    }
+
+    @Override
+    public void addInterval(double intervalStart, double intervalEnd) {
+        if (!container.getTimeRepresentation().equals(TimeRepresentation.INTERVAL)) {
+            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_NotIntervalRepresentation", id);
+            container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
+            return;
+        }
+        try {
+            Interval interval = new Interval(intervalStart, intervalEnd);
+            if (timeSet == null) {
+                timeSet = new IntervalSet();
+            }
+            timeSet.add(interval);
+        } catch (Exception e) {
+            String interval = "[" + intervalStart + "," + intervalEnd + "]";
+            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_IntervalSetError", interval, id, e.getMessage());
+            container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
+        }
     }
 
     public boolean isDynamic() {
-        return timeStamps.length > 0;
+        return timeSet != null && !timeSet.isEmpty();
     }
 
     public boolean hasDynamicAttributes() {
-        return dynamicAttributes.length > 0;
+        for (Object att : attributes) {
+            if (att != null && att instanceof TimeMap) {
+                if (!((TimeMap) att).isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     //UTILITY
-    protected void setAttributeValue(int index, Object value) {
+    protected void setAttributeValue(ColumnDraft column, Object value) throws Exception {
+        int index = ((ColumnDraftImpl) column).getIndex();
+        value = AttributeUtils.standardizeValue(value);
+        Class typeClass = column.getTypeClass();
+        if (!value.getClass().equals(typeClass)) {
+            throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");
+        }
         if (index >= attributes.length) {
             Object[] newArray = new Object[index + 1];
             System.arraycopy(attributes, 0, newArray, 0, attributes.length);
@@ -289,18 +384,48 @@ public abstract class ElementDraftImpl implements ElementDraft {
         attributes[index] = value;
     }
 
-    protected void setAttributeValue(int index, Object value, double timestamp) {
-        if (index >= dynamicAttributes.length) {
-            Double2ObjectMap[] newArray = new Double2ObjectMap[index + 1];
-            System.arraycopy(dynamicAttributes, 0, newArray, 0, dynamicAttributes.length);
-            dynamicAttributes = newArray;
+    protected void setAttributeValue(ColumnDraft column, Object value, double timestamp) throws Exception {
+        int index = ((ColumnDraftImpl) column).getIndex();
+        Class typeClass = column.getTypeClass();
+        value = AttributeUtils.standardizeValue(value);
+        if (!value.getClass().equals(typeClass)) {
+            throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");
         }
-        Double2ObjectMap m = dynamicAttributes[index];
+        if (!column.isDynamic()) {
+            //TODO
+        }
+        if (index >= attributes.length) {
+            Object[] newArray = new Object[index + 1];
+            System.arraycopy(attributes, 0, newArray, 0, attributes.length);
+            attributes = newArray;
+        }
+        TimestampMap m = (TimestampMap) attributes[index];
         if (m == null) {
-            m = new Double2ObjectOpenHashMap();
-            dynamicAttributes[index] = m;
+            m = AttributeUtils.getTimestampMapType(column.getTypeClass()).newInstance();
+            attributes[index] = m;
         }
         m.put(timestamp, value);
+    }
+
+    protected void setAttributeValue(ColumnDraft column, Object value, double start, double end) throws Exception {
+        int index = ((ColumnDraftImpl) column).getIndex();
+        value = AttributeUtils.standardizeValue(value);
+        Class typeClass = column.getTypeClass();
+        if (!value.getClass().equals(typeClass)) {
+            throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");
+        }
+        Interval interval = new Interval(start, end);
+        if (index >= attributes.length) {
+            Object[] newArray = new Object[index + 1];
+            System.arraycopy(attributes, 0, newArray, 0, attributes.length);
+            attributes = newArray;
+        }
+        IntervalMap m = (IntervalMap) attributes[index];
+        if (m == null) {
+            m = AttributeUtils.getIntervalMapType(column.getTypeClass()).newInstance();
+            attributes[index] = m;
+        }
+        m.put(interval, value);
     }
 
     protected Object getAttributeValue(int index) {
@@ -308,20 +433,5 @@ public abstract class ElementDraftImpl implements ElementDraft {
             return attributes[index];
         }
         return null;
-    }
-
-    protected Double2ObjectMap getDynamicAttributeValue(int index) {
-        if (index < dynamicAttributes.length) {
-            return dynamicAttributes[index];
-        }
-        return null;
-    }
-
-    protected void ensureTimestampArraySize(int index) {
-        if (index >= timeStamps.length) {
-            double[] newArray = new double[index + 1];
-            System.arraycopy(timeStamps, 0, newArray, 0, timeStamps.length);
-            timeStamps = newArray;
-        }
     }
 }

@@ -48,7 +48,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import org.gephi.io.importer.api.Container;
-import org.gephi.io.importer.api.ContainerFactory;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.api.ImportController;
@@ -152,7 +151,7 @@ public class ImportControllerImpl implements ImportController {
     @Override
     public Container importFile(Reader reader, FileImporter importer) {
         //Create Container
-        final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
+        final Container container = Lookup.getDefault().lookup(Container.Factory.class).newContainer();
 
         //Report
         Report report = new Report();
@@ -165,12 +164,19 @@ public class ImportControllerImpl implements ImportController {
                 if (importer.getReport() != null) {
                     report.append(importer.getReport());
                 }
+                report.close();
                 return container;
             }
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return null;
     }
@@ -182,13 +188,19 @@ public class ImportControllerImpl implements ImportController {
             return importFile(reader, importer);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
     @Override
     public Container importDatabase(Database database, DatabaseImporter importer) {
         //Create Container
-        final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
+        final Container container = Lookup.getDefault().lookup(Container.Factory.class).newContainer();
 
         //Report
         Report report = new Report();
@@ -201,6 +213,7 @@ public class ImportControllerImpl implements ImportController {
                 if (importer.getReport() != null) {
                     report.append(importer.getReport());
                 }
+                report.close();
                 return container;
             }
         } catch (RuntimeException ex) {
@@ -214,7 +227,7 @@ public class ImportControllerImpl implements ImportController {
     @Override
     public Container importSpigot(SpigotImporter importer) {
         //Create Container
-        final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
+        final Container container = Lookup.getDefault().lookup(Container.Factory.class).newContainer();
 
         //Report
         Report report = new Report();
@@ -225,6 +238,7 @@ public class ImportControllerImpl implements ImportController {
                 if (importer.getReport() != null) {
                     report.append(importer.getReport());
                 }
+                report.close();
                 return container;
             }
         } catch (RuntimeException ex) {
