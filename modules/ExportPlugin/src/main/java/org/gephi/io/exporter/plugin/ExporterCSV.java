@@ -49,6 +49,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
@@ -56,10 +57,6 @@ import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 
-/**
- *
- * @author Mathieu Bastian
- */
 public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
 
     private static final String SEPARATOR = ";";
@@ -79,16 +76,16 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
     @Override
     public boolean execute() {
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
-        Graph graph = null;
-        if (exportVisible) {
-            graph = graphModel.getGraphVisible();
-        } else {
-            graph = graphModel.getGraph();
-        }
+        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
+        graph.readLock();
         try {
             exportData(graph);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            graph.readUnlock();
+            Progress.finish(progressTicket);
         }
 
         return !cancel;
@@ -102,26 +99,23 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
         if (!list) {
             if (header) {
                 writer.append(SEPARATOR);
-                Node[] nodes = graph.getNodes().toArray();
-                for (int i = 0; i < nodes.length; i++) {
-                    writeMatrixNode(nodes[i], i < nodes.length - 1);
+                int i = 0;
+                NodeIterable itr = graph.getNodes();
+                for (Node node : itr) {
+                    writeMatrixNode(node, i++ < max - 1);
+                    if (cancel) {
+                        itr.doBreak();
+                        return;
+                    }
                 }
                 writer.append(EOL);
             }
         }
 
         if (list) {
-            Node[] nodes = graph.getNodes().toArray();
-            for (int i = 0; i < nodes.length; i++) {
-                Node n = nodes[i];
+            NodeIterable itr = graph.getNodes();
+            for (Node n : itr) {
                 List<Node> neighbours = new ArrayList<Node>();
-                for (Edge e : graph.getEdges(n)) {
-                    if (!e.isDirected() || (e.isDirected() && n == e.getSource())) {
-                        Node m = graph.getOpposite(n, e);
-                        neighbours.add(m);
-                    }
-                }
-
                 for (Edge e : graph.getEdges(n)) {
                     if (!e.isDirected() || (e.isDirected() && n == e.getSource())) {
                         Node m = graph.getOpposite(n, e);
@@ -135,12 +129,17 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
 
                 }
                 writer.append(EOL);
+
+                if (cancel) {
+                    itr.doBreak();
+                    return;
+                }
             }
         } else {
             Node[] nodes = graph.getNodes().toArray();
             for (Node n : nodes) {
                 if (cancel) {
-                    break;
+                    return;
                 }
                 writeMatrixNode(n, true);
                 for (int j = 0; j < nodes.length; j++) {
@@ -152,8 +151,6 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
                 writer.append(EOL);
             }
         }
-
-        graph.readUnlockAll();
 
         Progress.finish(progressTicket);
     }

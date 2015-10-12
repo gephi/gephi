@@ -43,18 +43,22 @@ package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -108,27 +112,24 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     public boolean execute() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         graphModel = graphController.getGraphModel(workspace);
-        Graph graph = null;
-        if (exportVisible) {
-            graph = graphModel.getGraphVisible();
-        } else {
-            graph = graphModel.getGraph();
-        }
-        progressTicket.start(graph.getNodeCount() + graph.getEdgeCount());
+        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
+        Progress.start(progressTicket, graph.getNodeCount() + graph.getEdgeCount());
 
         graph.readLock();
 
-        if (normalize) {
-            computeNormalizeValues(graph);
+        try {
+            if (normalize) {
+                computeNormalizeValues(graph);
+            }
+            exportData(graph);
+        } catch (IOException e) {
+            Logger.getLogger(ExporterGML.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            graph.readUnlock();
+            Progress.finish(progressTicket);
         }
 
-        try {
-            exportData(graph);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        progressTicket.finish();
-        graph.readUnlock();
         return !cancel;
     }
 
@@ -170,15 +171,19 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         } else if (graph.isUndirected()) {
             printTag("directed 0");
         }
-        for (Node node : graph.getNodes()) {
+        NodeIterable nodeIterable = graph.getNodes();
+        for (Node node : nodeIterable) {
             if (cancel) {
-                break;
+                nodeIterable.doBreak();
+                return;
             }
             printNode(node, graph);
         }
-        for (Edge edge : graph.getEdges()) {
+        EdgeIterable edgeIterable = graph.getEdges();
+        for (Edge edge : edgeIterable) {
             if (cancel) {
-                break;
+                edgeIterable.doBreak();
+                return;
             }
             printEdge(edge, graph);
         }
@@ -203,7 +208,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         if (graph.isMixed()) { //if graph not mixed, then all edges have the same direction, described earlier
             if (edge.isDirected()) {
                 printTag("directed 1");
-            } else if (!edge.isDirected()) {
+            } else {
                 printTag("directed 0");
             }
         }
@@ -220,7 +225,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         }
 
         printClose();
-        progressTicket.progress();
+        Progress.progress(progressTicket);
     }
 
     private void printNode(Node node, Graph graph) throws IOException {
@@ -270,7 +275,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
             }
         }
         printClose();
-        progressTicket.progress();
+        Progress.progress(progressTicket);
     }
 
     @Override
@@ -366,8 +371,10 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
 
         minSize = Double.MAX_VALUE;
         maxSize = Double.MIN_VALUE;
-        for (Node node : graph.getNodes()) {
+        NodeIterable nodeIterable = graph.getNodes();
+        for (Node node : nodeIterable) {
             if (cancel) {
+                nodeIterable.doBreak();
                 break;
             }
             minX = Math.min(minX, node.x());
@@ -383,9 +390,16 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         }
     }
 
-    //returns string that can be normally readed by import gml tokenizer. removes '"[]# and space, adds "column" to beginning of string if starts with digit
+    /**
+     * Returns string that can be normally read by import GML tokenizer. removes
+     * '"[]# and space, adds "column" to beginning of string if starts with
+     * digit.
+     *
+     * @param s input
+     * @return formated title
+     */
     private String formatTitle(String s) {
-        System.err.println("Title " + s.toString());
+        System.err.println("Title " + s);
         String res = s.replace("\"", "").replace("\'", "").replace("[", "").replace("]", "").replace(" ", "").replace("#", "");
         if (s.charAt(0) >= '0' && s.charAt(0) <= '9') {
             return ("column" + res);

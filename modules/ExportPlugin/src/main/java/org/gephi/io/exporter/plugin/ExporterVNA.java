@@ -43,15 +43,20 @@ package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 
 /**
@@ -64,7 +69,6 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     private Workspace workspace;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
-    private GraphModel graphModel;
     //settings
     private boolean exportEdgeWeight = true;
     private boolean exportCoords = true;
@@ -75,7 +79,6 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportAttributes = true;
     private boolean normalize = false;
     private Writer writer;
-    private StringBuilder stringBuilder;
     //normalization
     private double minX;
     private double maxX;
@@ -98,28 +101,23 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
 
     @Override
     public boolean execute() {
-        graphModel = workspace.getLookup().lookup(GraphModel.class);
-        Graph graph;
-        if (exportVisible) {
-            graph = graphModel.getGraphVisible();
-        } else {
-            graph = graphModel.getGraph();
-        }
+        GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
+        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
 
         graph.readLock();
 
-
         //nodes are counted twice, because they are printed in exportNodeData and exportNodeProperties
-        progressTicket.start(graph.getNodeCount() * 2 + graph.getEdgeCount());
+        Progress.start(progressTicket, graph.getNodeCount() * 2 + graph.getEdgeCount());
 
-        stringBuilder = new StringBuilder();
         try {
             exportData(graph);
         } catch (Exception e) {
-            graph.readUnlockAll();
-            throw new RuntimeException(e);
+            Logger.getLogger(ExporterVNA.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            graph.readUnlock();
+            Progress.finish(progressTicket);
         }
-        graph.readUnlockAll();
+
         return !cancel;
     }
 
@@ -127,14 +125,13 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         if (normalize) {
             calculateMinMaxForNormalization(graph);
         }
-        if (exportAttributes && atLeastOneNonStandartAttribute()) {
+        if (exportAttributes && atLeastOneNonStandartAttribute(graph.getModel())) {
             exportNodeData(graph);
         }
         exportNodeProperties(graph);
         exportEdgeData(graph);
-        writer.write(stringBuilder.toString());
-        writer.flush();
-        progressTicket.finish();
+
+        Progress.finish(progressTicket);
     }
 
     /*
@@ -152,7 +149,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         }
     }
 
-    private boolean atLeastOneNonStandartAttribute() {
+    private boolean atLeastOneNonStandartAttribute(GraphModel graphModel) {
         for (Column col : graphModel.getNodeTable()) {
             if (!col.isProperty()) {
                 return true;
@@ -166,34 +163,37 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
 
     private void exportNodeData(Graph graph) throws IOException {
         //header
-        stringBuilder.append("*Node data\n");
-        stringBuilder.append("ID");
-        for (Column column : graphModel.getNodeTable()) {
+        writer.append("*Node data\n");
+        writer.append("ID");
+        for (Column column : graph.getModel().getNodeTable()) {
             if (!column.isProperty()) {
-                stringBuilder.append(" ").append(column.getTitle().replace(' ', '_').toString());
+                writer.append(" ").append(column.getTitle().replace(' ', '_'));
                 //replace spaces because importer can't read attributes titles in quotes
             }
         }
-        stringBuilder.append("\n");
+        writer.append("\n");
 
         //body
-        for (Node node : graph.getNodes()) {
-            progressTicket.progress();
-            if (cancel) {
-                break;
-            }
-            stringBuilder.append(printParameter(node.getId()));
-            for (Column column : graphModel.getNodeTable()) {
+        NodeIterable nodeIterable = graph.getNodes();
+        for (Node node : nodeIterable) {
+            writer.append(printParameter(node.getId()));
+            for (Column column : node.getAttributeColumns()) {
                 if (!column.isProperty()) {
                     Object value = node.getAttribute(column, graph.getView());
                     if (value != null) {
-                        stringBuilder.append(" ").append(printParameter(value));
+                        writer.append(" ").append(printParameter(value));
                     } else {
-                        stringBuilder.append(" ").append(valueForEmptyAttributes);
+                        writer.append(" ").append(valueForEmptyAttributes);
                     }
                 }
             }
-            stringBuilder.append("\n");
+            writer.append("\n");
+
+            Progress.progress(progressTicket);
+            if (cancel) {
+                nodeIterable.doBreak();
+                return;
+            }
         }
     }
     static final String valueForEmptyAttributes = "\"\"";
@@ -208,8 +208,10 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         minSize = Double.POSITIVE_INFINITY;
         maxSize = Double.NEGATIVE_INFINITY;
 
-        for (Node node : graph.getNodes()) {
+        NodeIterable nodeIterable = graph.getNodes();
+        for (Node node : nodeIterable) {
             if (cancel) {
+                nodeIterable.doBreak();
                 break;
             }
             minX = Math.min(minX, node.x());
@@ -228,60 +230,62 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
      */
     private void exportNodeProperties(Graph graph) throws IOException {
         //header
-        stringBuilder.append("*Node properties\n");
-        stringBuilder.append("ID");
+        writer.append("*Node properties\n");
+        writer.append("ID");
         if (exportCoords) {
-            stringBuilder.append(" x y");
+            writer.append(" x y");
         }
         if (exportSize) {
-            stringBuilder.append(" size");
+            writer.append(" size");
         }
         if (exportColor) {
-            stringBuilder.append(" color");
+            writer.append(" color");
         }
         if (exportShortLabel) {
-            stringBuilder.append(" shortlabel");
+            writer.append(" shortlabel");
         }
-        stringBuilder.append("\n");
+        writer.append("\n");
 
         //body
-        for (Node node : graph.getNodes()) {
-            progressTicket.progress();
+        NodeIterable nodeIterable = graph.getNodes();
+        for (Node node : nodeIterable) {
+            Progress.progress(progressTicket);
             if (cancel) {
-                break;
+                nodeIterable.doBreak();
+                return;
             }
-            stringBuilder.append(node.getId());
+            writer.append(node.getId().toString());
             if (exportCoords) {
                 if (!normalize) {
-                    stringBuilder.append(" ").append(node.x()).append(" ").append(node.y());
+                    writer.append(" ").append(Float.toString(node.x())).append(" ").append(Float.toString(node.y()));
                 } else {
-                    stringBuilder.append(" ").append((node.x() - minX) / (maxX - minX)).append(" ").append((node.y() - minY) / (maxY - minY));
+                    writer.append(" ").append(Double.toString((node.x() - minX) / (maxX - minX))).append(" ").append(Double.toString((node.y() - minY) / (maxY - minY)));
                 }
             }
             if (exportSize) {
                 if (!normalize) {
-                    stringBuilder.append(" ").append(node.size());
+                    writer.append(" ").append(Float.toString(node.size()));
                 } else {
-                    stringBuilder.append(" ").append((node.size() - minSize) / (maxSize - minSize));
+                    writer.append(" ").append(Double.toString((node.size() - minSize) / (maxSize - minSize)));
                 }
             }
             if (exportColor) {
-                stringBuilder.append(" ").append((int) (node.r() * 255f));//[0..1] to [0..255]
+                writer.append(" ").append(Integer.toString((int) (node.r() * 255f)));//[0..1] to [0..255]
             }
             if (exportShortLabel) {
                 if (node.getLabel() != null) {
-                    stringBuilder.append(" ").append(printParameter(node.getLabel()));
+                    writer.append(" ").append(printParameter(node.getLabel()));
                 } else {
-                    stringBuilder.append(" ").append(printParameter(node.getId()));
+                    writer.append(" ").append(printParameter(node.getId()));
                 }
             }
-            stringBuilder.append("\n");
+            writer.append("\n");
         }
     }
 
-    void printEdgeData(Edge edge, Node source, Node target, Graph graph) {
-        stringBuilder.append(printParameter(source.getId()));//from
-        stringBuilder.append(" ").append(printParameter(target.getId()));//to
+    void printEdgeData(Edge edge, Node source, Node target, Graph graph) throws IOException {
+        writer.append(printParameter(source.getId()));//from
+        writer.append(" ").append(printParameter(target.getId()));//to
         if (exportEdgeWeight) {
             Double weight;
             if (exportDynamicWeight) {
@@ -289,51 +293,53 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             } else {
                 weight = edge.getWeight();
             }
-            stringBuilder.append(" ").append(weight.toString());
+            writer.append(" ").append(weight.toString());
         }
 
         if (exportAttributes) {
-            for (Column column : graphModel.getEdgeTable()) {
+            for (Column column : edge.getAttributeColumns()) {
                 if (!column.isProperty()) {
                     Object value = edge.getAttribute(column, graph.getView());
                     if (value != null) {
-                        stringBuilder.append(" ").append(printParameter(value));
+                        writer.append(" ").append(printParameter(value));
                     } else {
-                        stringBuilder.append(" " + valueForEmptyAttributes);
+                        writer.append(" " + valueForEmptyAttributes);
                     }
                 }
             }
         }
-        stringBuilder.append("\n");
+        writer.append("\n");
     }
     /*
      * prints edge data as "from to (strength)? (attributes)*"
      */
 
     private void exportEdgeData(Graph graph) throws IOException {
-        stringBuilder.append("*Tie data\n");
-        stringBuilder.append("from to");
+        writer.append("*Tie data\n");
+        writer.append("from to");
         if (exportEdgeWeight) {
-            stringBuilder.append(" strength");
+            writer.append(" strength");
         }
         if (exportAttributes) {
-            for (Column col : graphModel.getEdgeTable()) {
+            for (Column col : graph.getModel().getEdgeTable()) {
                 if (!col.isProperty()) {
-                    stringBuilder.append(" ").append(printParameter(col.getTitle()).replace(' ', '_'));
+                    writer.append(" ").append(printParameter(col.getTitle()).replace(' ', '_'));
                     //replace spaces because importer can't read attributes titles in quotes
                 }
             }
         }
-        stringBuilder.append("\n");
+        writer.append("\n");
 
-        for (Edge edge : graph.getEdges()) {
-            if (cancel) {
-                break;
-            }
-            progressTicket.progress();
+        EdgeIterable edgeIterable = graph.getEdges();
+        for (Edge edge : edgeIterable) {
             printEdgeData(edge, edge.getSource(), edge.getTarget(), graph);//all edges in vna are directed, so make clone
             if (!edge.isDirected() && !edge.isSelfLoop()) {
                 printEdgeData(edge, edge.getTarget(), edge.getSource(), graph);
+            }
+            Progress.progress(progressTicket);
+            if (cancel) {
+                edgeIterable.doBreak();
+                return;
             }
         }
     }
