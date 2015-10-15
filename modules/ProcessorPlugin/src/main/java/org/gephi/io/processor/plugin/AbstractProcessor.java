@@ -46,28 +46,28 @@ import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Origin;
 import org.gephi.graph.api.Table;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Element;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TimeRepresentation;
+import org.gephi.graph.api.types.TimeMap;
+import org.gephi.graph.api.types.TimeSet;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.ElementDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.progress.ProgressTicket;
 
-/**
- *
- * @author Mathieu Bastian
- */
 public abstract class AbstractProcessor {
 
     protected ProgressTicket progressTicket;
     protected Workspace workspace;
-    protected ContainerUnloader container;
+    protected ContainerUnloader[] containers;
     protected GraphModel graphModel;
 
-    protected void flushColumns() {
+    protected void flushColumns(ContainerUnloader container) {
         TimeRepresentation timeRepresentation = container.getTimeRepresentation();
         Table nodeTable = graphModel.getNodeTable();
         for (ColumnDraft col : container.getNodeColumns()) {
@@ -133,18 +133,27 @@ public abstract class AbstractProcessor {
 
         //Timeset
         if (nodeDraft.getTimeSet() != null) {
-            node.setAttribute("timeset", nodeDraft.getTimeSet());
+            flushTimeSet(nodeDraft.getTimeSet(), node);
         }
 
         //Attributes
-        flushToNodeAttributes(nodeDraft, node);
+        flushToElementAttributes(nodeDraft, node);
     }
 
-    protected void flushToNodeAttributes(NodeDraft nodeDraft, Node node) {
-        for (ColumnDraft col : container.getNodeColumns()) {
-            Object val = nodeDraft.getValue(col.getId());
+    protected void flushToElementAttributes(ElementDraft elementDraft, Element element) {
+        for (ColumnDraft col : elementDraft.getColumns()) {
+            Object val = elementDraft.getValue(col.getId());
             if (val != null) {
-                node.setAttribute(col.getId(), val);
+                TimeMap existingMap;
+                if (col.isDynamic() && (existingMap = (TimeMap) element.getAttribute(col.getId())) != null && !existingMap.isEmpty()) {
+                    Object[] keys = ((TimeMap) val).toKeysArray();
+                    Object[] vals = ((TimeMap) val).toValuesArray();
+                    for (int i = 0; i < keys.length; i++) {
+                        existingMap.put(keys[i], vals[i]);
+                    }
+                } else {
+                    element.setAttribute(col.getId(), val);
+                }
             }
         }
     }
@@ -178,19 +187,21 @@ public abstract class AbstractProcessor {
 
         //Timeset
         if (edgeDraft.getTimeSet() != null) {
-            edge.setAttribute("timeset", edgeDraft.getTimeSet());
+            flushTimeSet(edgeDraft.getTimeSet(), edge);
         }
 
         //Attributes
-        flushToEdgeAttributes(edgeDraft, edge);
+        flushToElementAttributes(edgeDraft, edge);
     }
 
-    protected void flushToEdgeAttributes(EdgeDraft edgeDraft, Edge edge) {
-        for (ColumnDraft col : container.getEdgeColumns()) {
-            Object val = edgeDraft.getValue(col.getId());
-            if (val != null) {
-                edge.setAttribute(col.getId(), val);
+    protected void flushTimeSet(TimeSet timeSet, Element element) {
+        TimeSet existingTimeSet = (TimeSet) element.getAttribute("timeset");
+        if (existingTimeSet != null && !existingTimeSet.isEmpty()) {
+            for (Object o : timeSet.toArray()) {
+                existingTimeSet.add(o);
             }
+        } else {
+            element.setAttribute("timeset", timeSet);
         }
     }
 
@@ -198,8 +209,8 @@ public abstract class AbstractProcessor {
         this.workspace = workspace;
     }
 
-    public void setContainer(ContainerUnloader container) {
-        this.container = container;
+    public void setContainers(ContainerUnloader[] containers) {
+        this.containers = containers;
     }
 
     public void setProgressTicket(ProgressTicket progressTicket) {

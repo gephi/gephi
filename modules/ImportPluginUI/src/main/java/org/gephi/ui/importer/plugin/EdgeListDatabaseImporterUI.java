@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.ui.importer.plugin;
 
 import javax.swing.JPanel;
@@ -61,20 +61,20 @@ import org.openide.util.lookup.ServiceProvider;
 public class EdgeListDatabaseImporterUI implements ImporterUI {
 
     private EdgeListPanel panel;
-    private DatabaseImporter importer;
+    private DatabaseImporter[] importers;
 
     @Override
-    public void setup(Importer importer) {
-        this.importer = (DatabaseImporter) importer;
+    public void setup(Importer[] importers) {
+        this.importers = (DatabaseImporter[]) importers;
         if (panel == null) {
             panel = new EdgeListPanel();
-        }    
+        }
 
         //Driver Combo
         SQLDriver[] driverArray = new SQLDriver[0];
         driverArray = Lookup.getDefault().lookupAll(SQLDriver.class).toArray(driverArray);
         panel.setSQLDrivers(driverArray);
-        
+
         panel.setup();
     }
 
@@ -90,10 +90,12 @@ public class EdgeListDatabaseImporterUI implements ImporterUI {
     public void unsetup(boolean update) {
         if (update) {
             Database database = panel.getSelectedDatabase();
-            importer.setDatabase(database);
+            for (DatabaseImporter importer : importers) {
+                importer.setDatabase(database);
+            }
         }
         panel = null;
-        importer = null;
+        importers = null;
     }
 
     @Override

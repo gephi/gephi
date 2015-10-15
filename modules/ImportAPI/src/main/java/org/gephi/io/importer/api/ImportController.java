@@ -83,6 +83,8 @@ public interface ImportController {
 
     public void process(Container container, Processor processor, Workspace workspace);
 
+    public void process(Container[] containers, Processor processor, Workspace workspace);
+
     public FileType[] getFileTypes();
 
     public boolean isFileSupported(File file);

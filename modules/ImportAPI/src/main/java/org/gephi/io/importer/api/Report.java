@@ -130,10 +130,25 @@ public final class Report {
         if (report.writer != null) {
             report.close();
         }
-        Iterator<Issue> issues = report.getIssues(Integer.MAX_VALUE);
-        for (; issues.hasNext();) {
-            Issue issue = issues.next();
-            logIssue(issue);
+        Reader r = null;
+        try {
+            if (writer == null) {
+                writer = new Writer(file);
+            }
+            r = new Reader(report.file);
+            for (; r.hasNext();) {
+                ReportEntry re = r.next();
+                writer.append(re);
+            }
+        } catch (IOException ex) {
+            if (r != null) {
+                r.close();
+            }
+            throw new RuntimeException(ex);
+        } finally {
+            if (r != null) {
+                r.close();
+            }
         }
     }
 

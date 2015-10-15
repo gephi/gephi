@@ -48,13 +48,13 @@ import org.gephi.project.api.Workspace;
 import org.gephi.utils.progress.ProgressTicket;
 
 /**
- * Interface that define the way data are <b>unloaded</b> from container and
- * appened to the workspace.
+ * Interface that define the way data are <b>unloaded</b> from containers and
+ * appended to the workspace.
  * <p>
- * The purpose of processors is to unload data from the import container and
- * push it to the workspace, with various strategy. For instance a processor
+ * The purpose of processors is to unload data from the import containers and
+ * push it to the workspace, with various strategies. For instance, a processor
  * could either create a new workspace or append data to the current workspace,
- * managing doubles.
+ * managing duplicates.
  *
  * @author Mathieu Bastian
  * @see ImportController
@@ -70,15 +70,15 @@ public interface Processor {
     public void process();
 
     /**
-     * Sets the data container. The processor's job is to get data from the
-     * container and append it to the workspace.
+     * Sets the data containers. The processor's job is to get data from the
+     * containers and append it to the workspace.
      *
-     * @param container the container where data are
+     * @param containers the containers where data are
      */
-    public void setContainer(ContainerUnloader container);
+    public void setContainers(ContainerUnloader[] containers);
 
     /**
-     * Sets the destination workspace for the data in the container. If no
+     * Sets the destination workspace for the data in the containers. If no
      * workspace is provided, the current workspace will be used.
      *
      * @param workspace the workspace where data are to be pushed
@@ -86,7 +86,7 @@ public interface Processor {
     public void setWorkspace(Workspace workspace);
 
     /**
-     * Returns the processor name.
+     * Returns the processor's name.
      *
      * @return the processor display name
      */

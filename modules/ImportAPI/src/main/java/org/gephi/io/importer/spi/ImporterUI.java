@@ -60,12 +60,12 @@ import javax.swing.JPanel;
 public interface ImporterUI {
 
     /**
-     * Link the UI to the importer and therefore to settings values. This method
-     * is called after <code>getPanel()</code> to push settings.
+     * Link the UI to the importers and therefore to settings values. This
+     * method is called after <code>getPanel()</code> to push settings.
      *
-     * @param importer the importer that settings is to be set
+     * @param importers the importers that settings is to be set
      */
-    public void setup(Importer importer);
+    public void setup(Importer[] importers);
 
     /**
      * Returns the importer settings panel.
