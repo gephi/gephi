@@ -110,7 +110,6 @@ public interface ElementDraft {
      */
     public Object getValue(String key);
 
-
     /**
      * Returns the element's label.
      *
@@ -376,4 +375,6 @@ public interface ElementDraft {
     public void addInterval(String startDateTime, String endDateTime);
 
     public TimeSet getTimeSet();
+
+    public Iterable<ColumnDraft> getColumns();
 }
