@@ -341,6 +341,9 @@ public class ImportControllerImpl implements ImportController {
         for (FileImporterBuilder im : fileImporterBuilders) {
             for (FileType ft : im.getFileTypes()) {
                 for (String ext : ft.getExtensions()) {
+                    if (ext.startsWith(".")) {
+                        ext = ext.substring(1);
+                    }
                     if (ext.equalsIgnoreCase(extension)) {
                         return im;
                     }
