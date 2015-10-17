@@ -358,6 +358,9 @@ public class ImportControllerImpl implements ImportController {
     }
 
     private FileImporterBuilder getMatchingImporter(String extension) {
+        if (extension.startsWith(".")) {
+            extension = extension.substring(1);
+        }
         for (FileImporterBuilder im : fileImporterBuilders) {
             for (FileType ft : im.getFileTypes()) {
                 for (String ext : ft.getExtensions()) {
