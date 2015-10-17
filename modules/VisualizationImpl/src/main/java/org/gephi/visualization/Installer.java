@@ -41,7 +41,6 @@
  */
 package org.gephi.visualization;
 
-import com.jogamp.newt.NewtFactory;
 import com.jogamp.opengl.GLProfile;
 import org.openide.modules.ModuleInstall;
 
@@ -49,8 +48,8 @@ public class Installer extends ModuleInstall {
 
     @Override
     public void restored() {
-        // Workaround for bug jogl 1163
-        NewtFactory.setWindowIcons(null);
+        // Disable JOGL's default icons
+        System.setProperty("newt.window.icons", "null,null");
 
         //Init JOGL, recommended
         GLProfile.initSingleton();
