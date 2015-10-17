@@ -51,6 +51,7 @@ import org.gephi.io.generator.api.GeneratorController;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
 import org.gephi.io.importer.api.Container;
+import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.project.api.ProjectController;
@@ -152,7 +153,7 @@ public class DesktopGeneratorController implements GeneratorController {
         container.closeLoader();
 
         DefaultProcessor defaultProcessor = new DefaultProcessor();
-        defaultProcessor.setContainer(container.getUnloader());
+        defaultProcessor.setContainers(new ContainerUnloader[] {container.getUnloader()});
         defaultProcessor.setWorkspace(workspace);
         defaultProcessor.process();
     }
