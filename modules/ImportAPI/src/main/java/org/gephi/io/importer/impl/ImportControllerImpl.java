@@ -48,6 +48,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import org.gephi.io.importer.api.Container;
+import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.api.ImportController;
@@ -161,7 +162,7 @@ public class ImportControllerImpl implements ImportController {
 
         try {
             if (importer.execute(container.getLoader())) {
-                if (importer.getReport() != null) {
+                if (importer.getReport() != null && importer.getReport() != report) {
                     report.append(importer.getReport());
                 }
                 report.close();
@@ -267,7 +268,26 @@ public class ImportControllerImpl implements ImportController {
                 scaler.doScale(container);
             }
         }
-        processor.setContainer(container.getUnloader());
+        processor.setContainers(new ContainerUnloader[]{container.getUnloader()});
+        processor.setWorkspace(workspace);
+        processor.process();
+    }
+
+    @Override
+    public void process(Container[] containers, Processor processor, Workspace workspace) {
+        ContainerUnloader[] unloaders = new ContainerUnloader[containers.length];
+        int i = 0;
+        for (Container container : containers) {
+            container.closeLoader();
+            if (container.getUnloader().isAutoScale()) {
+                Scaler scaler = Lookup.getDefault().lookup(Scaler.class);
+                if (scaler != null) {
+                    scaler.doScale(container);
+                }
+            }
+            unloaders[i++] = container.getUnloader();
+        }
+        processor.setContainers(unloaders);
         processor.setWorkspace(workspace);
         processor.process();
     }
@@ -341,6 +361,9 @@ public class ImportControllerImpl implements ImportController {
         for (FileImporterBuilder im : fileImporterBuilders) {
             for (FileType ft : im.getFileTypes()) {
                 for (String ext : ft.getExtensions()) {
+                    if (ext.startsWith(".")) {
+                        ext = ext.substring(1);
+                    }
                     if (ext.equalsIgnoreCase(extension)) {
                         return im;
                     }

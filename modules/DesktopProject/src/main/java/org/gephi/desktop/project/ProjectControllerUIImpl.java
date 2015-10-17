@@ -418,6 +418,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
         //Init dialog
         final JFileChooser chooser = new JFileChooser(lastPath);
+        chooser.setMultiSelectionEnabled(true);
         DialogFileFilter gephiFilter = new DialogFileFilter(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject_filechooser_filter"));
         gephiFilter.addExtension(".gephi");
 
@@ -442,14 +443,31 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         int returnFile = chooser.showOpenDialog(null);
 
         if (returnFile == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-            file = FileUtil.normalizeFile(file);
-            FileObject fileObject = FileUtil.toFileObject(file);
+            File[] files = chooser.getSelectedFiles();
+            FileObject[] fileObjects = new FileObject[files.length];
 
-            //Save last path
-            NbPreferences.forModule(ProjectControllerUIImpl.class).put(LAST_PATH, file.getAbsolutePath());
+            int i = 0;
+            File gephiFile = null;
+            for (File file : files) {
+                file = FileUtil.normalizeFile(file);
+                FileObject fileObject = FileUtil.toFileObject(file);
+                fileObjects[i++] = fileObject;
 
-            if (fileObject.getExt().equalsIgnoreCase("gephi")) {
+                if (fileObject.getExt().equalsIgnoreCase("gephi")) {
+                    if (gephiFile != null) {
+                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.error.multipleGephi"), NotifyDescriptor.ERROR_MESSAGE);
+                        DialogDisplayer.getDefault().notify(msg);
+                        return;
+                    } else {
+                        gephiFile = file;
+                    }
+                }
+
+                //Save last path
+                NbPreferences.forModule(ProjectControllerUIImpl.class).put(LAST_PATH, file.getAbsolutePath());
+            }
+
+            if (gephiFile != null) {
                 //Project
                 if (controller.getCurrentProject() != null) {
                     if (!closeCurrentProject()) {
@@ -458,7 +476,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 }
 
                 try {
-                    loadProject(file);
+                    loadProject(gephiFile);
                 } catch (Exception ew) {
                     ew.printStackTrace();
                     NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject.defaulterror"), NotifyDescriptor.WARNING_MESSAGE);
@@ -466,7 +484,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 }
             } else {
                 //Import
-                importController.importFile(fileObject);
+                importController.importFiles(fileObjects);
             }
         }
     }

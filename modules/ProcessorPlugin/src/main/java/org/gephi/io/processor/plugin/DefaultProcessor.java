@@ -47,6 +47,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
+import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
@@ -74,32 +75,41 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
 
     @Override
     public void process() {
+        if (containers.length > 1) {
+            throw new RuntimeException("This processor can only handle single containers");
+        }
+        ContainerUnloader container = containers[0];
+
         //Workspace
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         if (workspace == null) {
             workspace = pc.newWorkspace(pc.getCurrentProject());
             pc.openWorkspace(workspace);
         }
+        processConfiguration(container, workspace);
+
         if (container.getSource() != null) {
             pc.setSource(workspace, container.getSource());
         }
-        
+
+        process(container, workspace);
+
+        //Clean
+        workspace = null;
+        graphModel = null;
+        containers = null;
+        progressTicket = null;
+    }
+
+    protected void processConfiguration(ContainerUnloader container, Workspace workspace) {
         //Configuration
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         Configuration configuration = new Configuration();
         configuration.setTimeRepresentation(container.getTimeRepresentation());
 //      graphController.getGraphModel(workspace).setConfiguration(configuration);
-        
-        process(workspace);
-        
-        //Clean
-        workspace = null;
-        graphModel = null;
-        container = null;
-        progressTicket = null;
     }
-    
-    protected void process(Workspace workspace) {
+
+    protected void process(ContainerUnloader container, Workspace workspace) {
         //Architecture
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         graphModel = graphController.getGraphModel(workspace);
@@ -115,7 +125,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         Progress.start(progressTicket, container.getNodeCount() + container.getEdgeCount());
 
         //Attributes - Creates columns for properties
-        flushColumns();
+        flushColumns(container);
 
         //Counters
         int addedNodes = 0, addedEdges = 0;

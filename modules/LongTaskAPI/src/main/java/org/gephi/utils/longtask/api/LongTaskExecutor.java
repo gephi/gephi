@@ -43,8 +43,8 @@ package org.gephi.utils.longtask.api;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -72,11 +72,10 @@ public final class LongTaskExecutor {
     private boolean interruptCancel;
     private final long interruptDelay;
     private final String name;
-    private RunningLongTask runningTask;
-    private ExecutorService executor;
+    private ThreadPoolExecutor executor;
+    private RunningLongTask currentTask;
     private Timer cancelTimer;
     private LongTaskListener listener;
-    private LongTaskErrorHandler errorHandler;
     private LongTaskErrorHandler defaultErrorHandler;
 
     /**
@@ -85,8 +84,8 @@ public final class LongTaskExecutor {
      * @param doInBackground when <code>true</code>, the task will be executed
      * in a separate thread
      * @param name the name of the executor, used to recognize threads by names
-     * @param interruptDelay number of seconds to wait before *
-     * calling <code>Thread.interrupt()</code> after a cancel request
+     * @param interruptDelay number of seconds to wait before * calling
+     * <code>Thread.interrupt()</code> after a cancel request
      */
     public LongTaskExecutor(boolean doInBackground, String name, int interruptDelay) {
         this.inBackground = doInBackground;
@@ -119,9 +118,8 @@ public final class LongTaskExecutor {
 
     /**
      * Execute a long task with cancel and progress support. Task can be
-     * <code>null</code>. In this case
-     * <code>runnable</code> will be executed normally, but without cancel and
-     * progress support.
+     * <code>null</code>. In this case <code>runnable</code> will be executed
+     * normally, but without cancel and progress support.
      *
      * @param task the task to be executed, can be <code>null</code>.
      * @param runnable the runnable to be executed
@@ -129,78 +127,80 @@ public final class LongTaskExecutor {
      * available
      * @param errorHandler error handler for exception retrieval during
      * execution
-     * @throws NullPointerException if <code>runnable</code> *
-     * or <code>taskName</code> is null
+     * @throws NullPointerException if <code>runnable</code> * or
+     * <code>taskName</code> is null
      * @throws IllegalStateException if a task is still executing at this time
      */
-    public void execute(LongTask task, final Runnable runnable, String taskName, LongTaskErrorHandler errorHandler) {
+    public synchronized void execute(LongTask task, final Runnable runnable, String taskName, LongTaskErrorHandler errorHandler) {
         if (runnable == null || taskName == null) {
             throw new NullPointerException();
-        }
-        if (runningTask != null) {
-            throw new IllegalStateException("A task is still executing");
         }
         if (executor == null) {
             this.executor = new ThreadPoolExecutor(0, 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new NamedThreadFactory());
         }
-        if (errorHandler != null) {
-            this.errorHandler = errorHandler;
-        }
-        runningTask = new RunningLongTask(task, runnable, taskName);
+
+        RunningLongTask runningLongtask = new RunningLongTask(task, runnable, taskName, errorHandler);
         if (inBackground) {
-            runningTask.future = executor.submit(runningTask);
+            runningLongtask.future = executor.submit(runningLongtask);
         } else {
-            runningTask.run();
+            currentTask = runningLongtask;
+            runningLongtask.run();
         }
     }
 
     /**
      * Execute a long task with cancel and progress support. Task can be
-     * <code>null</code>. In this case
-     * <code>runnable</code> will be executed normally, but without cancel and
-     * progress support.
+     * <code>null</code>. In this case <code>runnable</code> will be executed
+     * normally, but without cancel and progress support.
      *
      * @param task the task to be executed, can be <code>null</code>.
      * @param runnable the runnable to be executed
      * @throws NullPointerException if <code>runnable</code> is null
      * @throws IllegalStateException if a task is still executing at this time
      */
-    public void execute(LongTask task, Runnable runnable) {
+    public synchronized void execute(LongTask task, Runnable runnable) {
         execute(task, runnable, "", null);
     }
 
     /**
      * Cancel the current task. If the task fails to cancel itself and if an
      * <code>interruptDelay</code> has been specified, the task will be
-     * <b>interrupted</b> after
-     * <code>interruptDelay</code>. Using
-     * <code>Thread.interrupt()</code> may cause hazardous behaviours and should
-     * be avoided. Therefore any task should be cancellable.
+     * <b>interrupted</b> after <code>interruptDelay</code>. Using
+     * <code>Thread.interrupt()</code> may cause hazardous behaviors and should
+     * be avoided. Therefore any task should be cancelable.
      */
     public synchronized void cancel() {
-        if (runningTask != null) {
-            if (runningTask.isCancellable()) {
-                if (interruptCancel) {
-                    if (!runningTask.cancel()) {
+        if (inBackground) {
+            if (executor != null) {
+                RunningLongTask rlt = (RunningLongTask) currentTask;
+                if (rlt != null) {
+                    boolean res = rlt.cancel();
+                    if (interruptCancel && !res) {
                         cancelTimer = new Timer(name + "_cancelTimer");
-                        cancelTimer.schedule(new InterruptTimerTask(), interruptDelay);
+                        cancelTimer.schedule(new InterruptTimerTask(rlt), interruptDelay);
                     }
-                } else {
-                    runningTask.cancel();
+                }
+            }
+        } else {
+            RunningLongTask rlt = (RunningLongTask) currentTask;
+            if (rlt != null) {
+                boolean res = rlt.cancel();
+                if (interruptCancel && !res) {
+                    cancelTimer = new Timer(name + "_cancelTimer");
+                    cancelTimer.schedule(new InterruptTimerTask(rlt), interruptDelay);
                 }
             }
         }
     }
 
     /**
-     * Returns
-     * <code>true</code> if the executor is executing a task.
+     * Returns <code>true</code> if the executor is executing a task.
      *
      * @return <code>true</code> if a task is running, <code>false</code>
      * otherwise
      */
     public boolean isRunning() {
-        return runningTask != null;
+        return currentTask != null;
     }
 
     /**
@@ -225,13 +225,12 @@ public final class LongTaskExecutor {
         }
     }
 
-    private synchronized void finished() {
+    private synchronized void finished(RunningLongTask runningLongTask) {
         if (cancelTimer != null) {
             cancelTimer.cancel();
         }
-        LongTask task = runningTask.task;
-        runningTask = null;
-        errorHandler = null;
+        LongTask task = runningLongTask.task;
+        currentTask = null;
         if (listener != null) {
             listener.taskFinished(task);
         }
@@ -246,10 +245,12 @@ public final class LongTaskExecutor {
         private final Runnable runnable;
         private Future<?> future;
         private ProgressTicket progress;
+        private LongTaskErrorHandler errorHandler;
 
-        public RunningLongTask(LongTask task, Runnable runnable, String taskName) {
+        public RunningLongTask(LongTask task, Runnable runnable, String taskName, LongTaskErrorHandler errorHandler) {
             this.task = task;
             this.runnable = runnable;
+            this.errorHandler = errorHandler;
             ProgressTicketProvider progressProvider = Lookup.getDefault().lookup(ProgressTicketProvider.class);
             if (progressProvider != null) {
                 this.progress = progressProvider.createTicket(taskName, new Cancellable() {
@@ -269,11 +270,12 @@ public final class LongTaskExecutor {
 
         @Override
         public void run() {
+            currentTask = this;
             try {
                 runnable.run();
             } catch (Exception e) {
                 LongTaskErrorHandler err = errorHandler;
-                finished();
+                finished(this);
                 if (progress != null) {
                     progress.finish();
                 }
@@ -285,33 +287,19 @@ public final class LongTaskExecutor {
                     Logger.getLogger("").log(Level.SEVERE, "", e);
                 }
             }
+            currentTask = null;
 
-            finished();
+            finished(this);
             if (progress != null) {
                 progress.finish();
             }
         }
 
         public boolean cancel() {
-            /*if (inBackground) {
-             if (future != null && future.cancel(false)) {
-             return true;
-             }
-             }*/
             if (task != null) {
                 return task.cancel();
             }
             return false;
-        }
-
-        public boolean isCancellable() {
-            if (inBackground) {
-                if (!future.isCancelled()) {
-                    return true;
-                }
-                return false;
-            }
-            return true;
         }
     }
 
@@ -328,17 +316,23 @@ public final class LongTaskExecutor {
 
     private class InterruptTimerTask extends TimerTask {
 
+        private final RunningLongTask task;
+
+        public InterruptTimerTask(RunningLongTask runningLongTask) {
+            this.task = runningLongTask;
+        }
+
         @Override
         public void run() {
-            if (runningTask != null) {
-                System.out.println("Interrupt task");
-                cancelTimer = null;
-                if (runningTask.progress != null) {
-                    runningTask.progress.finish();
+            if (task != null) {
+                if (task.future != null) {
+                    task.future.cancel(interruptCancel);
                 }
-                finished();
-                executor.shutdownNow();
-                executor = null;
+                cancelTimer = null;
+                if (task.progress != null) {
+                    task.progress.finish();
+                }
+                finished(task);
             }
         }
     }

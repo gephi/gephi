@@ -41,6 +41,7 @@
  */
 package org.gephi.io.processor.plugin;
 
+import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
 import org.openide.util.Lookup;
@@ -54,7 +55,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = Processor.class)
+@ServiceProvider(service = Processor.class, position = 20)
 public class AppendProcessor extends DefaultProcessor implements Processor {
 
     @Override
@@ -65,6 +66,11 @@ public class AppendProcessor extends DefaultProcessor implements Processor {
     @Override
     public void process() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        if (containers.length > 1) {
+            throw new RuntimeException("This processor can only handle single containers");
+        }
+        ContainerUnloader container = containers[0];
+
         //Workspace
         if (workspace == null) {
             workspace = pc.getCurrentWorkspace();
@@ -72,18 +78,19 @@ public class AppendProcessor extends DefaultProcessor implements Processor {
                 //Append mode but no workspace
                 workspace = pc.newWorkspace(pc.getCurrentProject());
                 pc.openWorkspace(workspace);
+                processConfiguration(container, workspace);
             }
         }
         if (container.getSource() != null) {
             pc.setSource(workspace, container.getSource());
         }
 
-        process(workspace);
+        process(container, workspace);
 
         //Clean
         workspace = null;
         graphModel = null;
-        container = null;
+        containers = null;
         progressTicket = null;
     }
 }

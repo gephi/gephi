@@ -138,4 +138,9 @@ public class EdgeDraftImpl extends ElementDraftImpl implements EdgeDraft {
     ColumnDraft getColumn(String key) {
         return container.getEdgeColumn(key);
     }
+
+    @Override
+    public Iterable<ColumnDraft> getColumns() {
+        return container.getEdgeColumns();
+    }
 }

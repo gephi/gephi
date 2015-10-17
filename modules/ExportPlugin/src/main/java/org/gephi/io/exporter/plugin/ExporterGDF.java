@@ -44,13 +44,17 @@ package org.gephi.io.exporter.plugin;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.CharacterExporter;
@@ -93,8 +97,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
     //Columns
     private NodeColumnsGDF[] defaultNodeColumnsGDFs;
     private EdgeColumnsGDF[] defaultEdgeColumnsGDFs;
-    private Column[] nodeColumns;
-    private Column[] edgeColumns;
     //Buffer
     private Writer writer;
 
@@ -102,16 +104,17 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
     public boolean execute() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         GraphModel graphModel = graphController.getGraphModel(workspace);
-        Graph graph = null;
-        if (exportVisible) {
-            graph = graphModel.getGraphVisible();
-        } else {
-            graph = graphModel.getGraph();
-        }
+        Graph graph = exportVisible ? graphModel.getGraphVisible() : graphModel.getGraph();
+
+        graph.readLock();
+
         try {
             exportData(graph, graphModel);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Logger.getLogger(ExporterGDF.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            graph.readUnlock();
+            Progress.finish(progressTicket);
         }
 
         return !cancel;
@@ -123,8 +126,8 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
         defaultNodeColumns(graph);
         defaultEdgeColumns(graph);
-        attributesNodeColumns(graphModel);
-        attributesEdgeColumns(graphModel);
+        Column[] nodeColumns = attributesNodeColumns(graphModel);
+        Column[] edgeColumns = attributesEdgeColumns(graphModel);
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -164,9 +167,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         stringBuilder.setLength(stringBuilder.length() - 1);
         stringBuilder.append("\n");
 
-        //Lock
-        graph.readLock();
-
         //Options
         if (normalize) {
             calculateMinMax(graph);
@@ -177,9 +177,11 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         Progress.switchToDeterminate(progressTicket, max);
 
         //Node lines
-        for (Node node : graph.getNodes()) {
+        NodeIterable itr = graph.getNodes();
+        for (Node node : itr) {
             if (cancel) {
-                break;
+                itr.doBreak();
+                return;
             }
 
             //Id
@@ -262,9 +264,11 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         stringBuilder.append("\n");
 
         //Edge lines
-        for (Edge edge : graph.getEdges()) {
+        EdgeIterable itrEdges = graph.getEdges();
+        for (Edge edge : itrEdges) {
             if (cancel) {
-                break;
+                itrEdges.doBreak();
+                return;
             }
             //Source & Target
             stringBuilder.append(edge.getSource().getId());
@@ -305,9 +309,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             Progress.progress(progressTicket);
         }
 
-        //Unlock
-        graph.readUnlockAll();
-
         //Write StringBuilder
         if (!cancel) {
             writer.append(stringBuilder);
@@ -315,7 +316,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         Progress.finish(progressTicket);
     }
 
-    private void attributesNodeColumns(GraphModel graphModel) {
+    private Column[] attributesNodeColumns(GraphModel graphModel) {
         List<Column> cols = new ArrayList<Column>();
         if (exportAttributes && graphModel != null) {
             for (Column column : graphModel.getNodeTable()) {
@@ -324,10 +325,10 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
                 }
             }
         }
-        nodeColumns = cols.toArray(new Column[0]);
+        return cols.toArray(new Column[0]);
     }
 
-    private void attributesEdgeColumns(GraphModel graphModel) {
+    private Column[] attributesEdgeColumns(GraphModel graphModel) {
         List<Column> cols = new ArrayList<Column>();
         if (exportAttributes && graphModel != null) {
             for (Column column : graphModel.getEdgeTable()) {
@@ -336,7 +337,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
                 }
             }
         }
-        edgeColumns = cols.toArray(new Column[0]);
+        return cols.toArray(new Column[0]);
     }
 
     private boolean isNodeDefaultColumn(String id) {

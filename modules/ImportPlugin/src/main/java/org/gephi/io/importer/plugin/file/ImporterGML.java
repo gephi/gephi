@@ -161,7 +161,7 @@ public class ImporterGML implements FileImporter, LongTask {
                 ret = parseEdge((ArrayList) value);
             } else if ("directed".equals(key)) {
                 if (value instanceof Double) {
-                    EdgeDirectionDefault edgeDefault = ((Double) value) == 1 ? EdgeDirectionDefault.DIRECTED : EdgeDirectionDefault.UNDIRECTED;
+                    EdgeDirectionDefault edgeDefault = ((Double) value) == 1.0 ? EdgeDirectionDefault.DIRECTED : EdgeDirectionDefault.UNDIRECTED;
                     container.setEdgeDefault(edgeDefault);
                 } else {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_directedgraphparse"), Issue.Level.WARNING));
@@ -235,11 +235,11 @@ public class ImporterGML implements FileImporter, LongTask {
             } else if ("fill".equalsIgnoreCase(key)) {
                 if (value instanceof String) {
                     node.setColor((String) value);
-                } else if (value instanceof Integer) {
-                    node.setColor(new Color((Integer) value));
+                } else if (value instanceof Number) {
+                    node.setColor(new Color(((Number) value).intValue()));
                 }
             } else {
-                node.setValue(key, value.toString());
+                node.setValue(key, value);
             }
         }
         return ret;
@@ -258,7 +258,7 @@ public class ImporterGML implements FileImporter, LongTask {
                 edgeDraft.setTarget(target);
             } else if ("value".equals(key) || "weight".equals(key)) {
                 if (value instanceof Double) {
-                    edgeDraft.setWeight(((Double) value).floatValue());
+                    edgeDraft.setWeight(((Double) value));
                 }
             } else if ("label".equals(key)) {
                 edgeDraft.setLabel(value.toString());
@@ -291,7 +291,7 @@ public class ImporterGML implements FileImporter, LongTask {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_directedparse", edge.toString()), Issue.Level.WARNING));
                 }
             } else {
-                edge.setValue(key, value.toString());
+                edge.setValue(key, value);
             }
         }
         return ret;

@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.ui.importer.plugin;
 
 import java.awt.Dimension;
@@ -60,12 +60,13 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * VNA importer UI.
+ *
  * @author Vojtech Bardiovsky
  */
 @ServiceProvider(service = ImporterUI.class)
 public class ImporterVnaUI implements ImporterUI {
 
-    private ImporterVNA importer;
+    private ImporterVNA[] importers;
     private JComboBox comboBox;
     private JTextField textField;
     private JLabel messageLabel;
@@ -76,8 +77,8 @@ public class ImporterVnaUI implements ImporterUI {
     private final String MESSAGE_LOGARITHMIC = NbBundle.getMessage(getClass(), "ImporterVnaUI.message.logarithmic");
 
     @Override
-    public void setup(Importer importer) {
-        this.importer = (ImporterVNA) importer;
+    public void setup(Importer[] importers) {
+        this.importers = (ImporterVNA[]) importers;
     }
 
     @Override
@@ -147,12 +148,15 @@ public class ImporterVnaUI implements ImporterUI {
             if (((EdgeWidthFunction.Function) comboBox.getSelectedItem()).equals(EdgeWidthFunction.Function.LINEAR)) {
                 try {
                     coefficient = Float.parseFloat(textField.getText());
-                } catch (NumberFormatException e) {}
+                } catch (NumberFormatException e) {
+                }
             }
-            importer.setEdgeWidthFunction(new EdgeWidthFunction((EdgeWidthFunction.Function) comboBox.getSelectedItem(), coefficient));
+            for (ImporterVNA importer : importers) {
+                importer.setEdgeWidthFunction(new EdgeWidthFunction((EdgeWidthFunction.Function) comboBox.getSelectedItem(), coefficient));
+            }
         }
         panel = null;
-        importer = null;
+        importers = null;
         textField = null;
         messageLabel = null;
         comboBox = null;

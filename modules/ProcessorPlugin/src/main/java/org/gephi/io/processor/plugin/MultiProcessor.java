@@ -39,102 +39,46 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.io.importer.impl;
+package org.gephi.io.processor.plugin;
 
-import org.gephi.io.importer.api.ColumnDraft;
-import org.gephi.io.importer.api.NodeDraft;
+import org.gephi.io.importer.api.ContainerUnloader;
+import org.gephi.io.processor.spi.Processor;
+import org.gephi.project.api.ProjectController;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Processor 'Multi graphs' that creates a workspace for every container.
  *
  * @author Mathieu Bastian
  */
-public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
+@ServiceProvider(service = Processor.class, position = 30)
+public class MultiProcessor extends DefaultProcessor implements Processor {
 
-    //Flag
-    protected boolean createdAuto = false;
-    //Viz attributes
-    protected float x;
-    protected float y;
-    protected float z;
-    protected float size;
-    protected boolean fixed;
-
-    public NodeDraftImpl(ImportContainerImpl container, String id) {
-        super(container, id);
-    }
-
-    //SETTERS
-    public void setCreatedAuto(boolean createdAuto) {
-        this.createdAuto = createdAuto;
+    @Override
+    public String getDisplayName() {
+        return NbBundle.getMessage(MergeProcessor.class, "MultiProcessor.displayName");
     }
 
     @Override
-    public void setSize(float size) {
-        this.size = size;
-    }
+    public void process() {
+        if (containers.length <= 1) {
+            throw new RuntimeException("This processor can only handle multiple containers");
+        }
 
-    @Override
-    public void setX(float x) {
-        this.x = x;
-    }
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        for (ContainerUnloader container : containers) {
+            workspace = pc.newWorkspace(pc.getCurrentProject());
+            pc.openWorkspace(workspace);
+            processConfiguration(container, workspace);
+            process(container, workspace);
+        }
 
-    @Override
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    @Override
-    public void setZ(float z) {
-        this.z = z;
-    }
-
-    @Override
-    public void setFixed(boolean fixed) {
-        this.fixed = fixed;
-    }
-
-    //GETTERS
-    @Override
-    public float getSize() {
-        return size;
-    }
-
-    @Override
-    public float getX() {
-        return x;
-    }
-
-    @Override
-    public float getY() {
-        return y;
-    }
-
-    @Override
-    public float getZ() {
-        return z;
-    }
-
-    @Override
-    public boolean isFixed() {
-        return fixed;
-    }
-
-    public boolean isCreatedAuto() {
-        return createdAuto;
-    }
-
-    @Override
-    ColumnDraft getColumn(String key, Class type) {
-        return container.addNodeColumn(key, type);
-    }
-
-    @Override
-    ColumnDraft getColumn(String key) {
-        return container.getNodeColumn(key);
-    }
-
-    @Override
-    public Iterable<ColumnDraft> getColumns() {
-        return container.getNodeColumns();
+        //Clean
+        workspace = null;
+        graphModel = null;
+        containers = null;
+        progressTicket = null;
     }
 }

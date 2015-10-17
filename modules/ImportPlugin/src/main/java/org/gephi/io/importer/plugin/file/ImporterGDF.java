@@ -165,6 +165,9 @@ public class ImporterGDF implements FileImporter, LongTask {
             //Create Edge
             EdgeDraft edge = container.factory().newEdgeDraft();
 
+            //Default to undirected unless stated
+            edge.setDirection(EdgeDirection.UNDIRECTED);
+
             Matcher m = pattern.matcher(edgeLine);
             int count = 0;
             String id = "";

@@ -42,7 +42,6 @@
  */
 package org.gephi.io.importer.impl;
 
-import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
 import java.awt.Color;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Interval;

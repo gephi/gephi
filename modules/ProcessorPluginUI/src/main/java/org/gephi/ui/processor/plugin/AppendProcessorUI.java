@@ -39,102 +39,40 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.io.importer.impl;
+package org.gephi.ui.processor.plugin;
 
-import org.gephi.io.importer.api.ColumnDraft;
-import org.gephi.io.importer.api.NodeDraft;
+import javax.swing.JPanel;
+import org.gephi.io.importer.api.Container;
+import org.gephi.io.processor.plugin.AppendProcessor;
+import org.gephi.io.processor.spi.Processor;
+import org.gephi.io.processor.spi.ProcessorUI;
+import org.openide.util.lookup.ServiceProvider;
 
-/**
- *
- * @author Mathieu Bastian
- */
-public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
+@ServiceProvider(service = ProcessorUI.class, position = 2000)
+public class AppendProcessorUI implements ProcessorUI {
 
-    //Flag
-    protected boolean createdAuto = false;
-    //Viz attributes
-    protected float x;
-    protected float y;
-    protected float z;
-    protected float size;
-    protected boolean fixed;
+    @Override
+    public void setup(Processor processor) {
 
-    public NodeDraftImpl(ImportContainerImpl container, String id) {
-        super(container, id);
-    }
-
-    //SETTERS
-    public void setCreatedAuto(boolean createdAuto) {
-        this.createdAuto = createdAuto;
     }
 
     @Override
-    public void setSize(float size) {
-        this.size = size;
+    public JPanel getPanel() {
+        return null;
     }
 
     @Override
-    public void setX(float x) {
-        this.x = x;
+    public void unsetup() {
+
     }
 
     @Override
-    public void setY(float y) {
-        this.y = y;
+    public boolean isUIFoProcessor(Processor processor) {
+        return processor.getClass().equals(AppendProcessor.class);
     }
 
     @Override
-    public void setZ(float z) {
-        this.z = z;
-    }
-
-    @Override
-    public void setFixed(boolean fixed) {
-        this.fixed = fixed;
-    }
-
-    //GETTERS
-    @Override
-    public float getSize() {
-        return size;
-    }
-
-    @Override
-    public float getX() {
-        return x;
-    }
-
-    @Override
-    public float getY() {
-        return y;
-    }
-
-    @Override
-    public float getZ() {
-        return z;
-    }
-
-    @Override
-    public boolean isFixed() {
-        return fixed;
-    }
-
-    public boolean isCreatedAuto() {
-        return createdAuto;
-    }
-
-    @Override
-    ColumnDraft getColumn(String key, Class type) {
-        return container.addNodeColumn(key, type);
-    }
-
-    @Override
-    ColumnDraft getColumn(String key) {
-        return container.getNodeColumn(key);
-    }
-
-    @Override
-    public Iterable<ColumnDraft> getColumns() {
-        return container.getNodeColumns();
+    public boolean isValid(Container[] containers) {
+        return containers.length == 1;
     }
 }
