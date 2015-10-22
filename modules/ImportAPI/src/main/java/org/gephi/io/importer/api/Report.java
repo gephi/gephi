@@ -356,6 +356,11 @@ public final class Report {
             pointer = null;
             closed = true;
         }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     private static class IssueIterator implements Iterator<Issue> {
@@ -390,5 +395,9 @@ public final class Report {
             return res;
         }
 
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 }
