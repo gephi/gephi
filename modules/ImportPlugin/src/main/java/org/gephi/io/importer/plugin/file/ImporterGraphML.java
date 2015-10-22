@@ -174,13 +174,16 @@ public class ImporterGraphML implements FileImporter, LongTask {
                     }
                 }
             }
-            xmlReader.close();
-
         } catch (Exception e) {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
             }
             throw new RuntimeException(e);
+        } finally {
+            try {
+                xmlReader.close();
+            } catch (XMLStreamException e) {
+            }
         }
         Progress.finish(progress);
         return !cancel;

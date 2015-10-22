@@ -42,6 +42,7 @@
 package org.gephi.io.importer.plugin.file;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import org.gephi.io.importer.api.ContainerLoader;
@@ -78,6 +79,11 @@ public class ImporterTLP implements FileImporter, LongTask {
             importData(lineReader);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                lineReader.close();
+            } catch (IOException ex) {
+            }
         }
         return !cancel;
     }

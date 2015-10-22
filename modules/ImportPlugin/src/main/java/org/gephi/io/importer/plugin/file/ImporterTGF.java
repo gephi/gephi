@@ -41,6 +41,7 @@
  */
 package org.gephi.io.importer.plugin.file;
 
+import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import org.openide.util.NbBundle;
 
 /**
  * Trivial Graph Format importer.
- * 
+ *
  * @author rlfnb
  */
 public class ImporterTGF implements FileImporter, LongTask {
@@ -80,6 +81,11 @@ public class ImporterTGF implements FileImporter, LongTask {
             importData(lineReader);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                lineReader.close();
+            } catch (IOException ex) {
+            }
         }
         return !cancel;
     }
@@ -94,13 +100,11 @@ public class ImporterTGF implements FileImporter, LongTask {
             String line = reader.readLine().trim();
             if ("#".equalsIgnoreCase(line)) {
                 isNode = false;
-            } else {
-                if (line != null && !line.isEmpty()) {
-                    if (isNode) {
-                        nodes.add(line);
-                    } else {
-                        edges.add(line);
-                    }
+            } else if (line != null && !line.isEmpty()) {
+                if (isNode) {
+                    nodes.add(line);
+                } else {
+                    edges.add(line);
                 }
             }
         }

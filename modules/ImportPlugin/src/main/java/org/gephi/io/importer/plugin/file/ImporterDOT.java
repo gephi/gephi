@@ -42,11 +42,10 @@
 package org.gephi.io.importer.plugin.file;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StreamTokenizer;
-import java.util.HashMap;
-import java.util.Map;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDirectionDefault;
 import org.gephi.io.importer.api.EdgeDraft;
@@ -87,6 +86,11 @@ public class ImporterDOT implements FileImporter, LongTask {
             importData(lineReader);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                lineReader.close();
+            } catch (IOException ex) {
+            }
         }
         return !cancel;
     }

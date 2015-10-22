@@ -41,11 +41,10 @@
  */
 package org.gephi.io.importer.plugin.file;
 
-import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.StringTokenizer;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDraft;
@@ -84,6 +83,11 @@ public class ImporterPajek implements FileImporter, LongTask {
             importData(lineReader);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                lineReader.close();
+            } catch (IOException ex) {
+            }
         }
         return !cancel;
     }

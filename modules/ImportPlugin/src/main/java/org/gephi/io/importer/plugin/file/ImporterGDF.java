@@ -43,6 +43,7 @@
 package org.gephi.io.importer.plugin.file;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -80,8 +81,8 @@ public class ImporterGDF implements FileImporter, LongTask {
     private List<String> nodeLines = new ArrayList<String>();
     private List<String> edgeLines = new ArrayList<String>();
     //Matcher
-    private String[] nodeLineStart;
-    private String[] edgeLineStart;
+    private final String[] nodeLineStart;
+    private final String[] edgeLineStart;
     //Columns
     private GDFColumn[] nodeColumns;
     private GDFColumn[] edgeColumns;
@@ -100,6 +101,11 @@ public class ImporterGDF implements FileImporter, LongTask {
             importData(lineReader);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                lineReader.close();
+            } catch (IOException ex) {
+            }
         }
         return !cancel;
     }

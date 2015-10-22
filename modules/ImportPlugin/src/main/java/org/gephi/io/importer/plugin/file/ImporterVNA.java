@@ -41,6 +41,7 @@
  */
 package org.gephi.io.importer.plugin.file;
 
+import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -118,6 +119,11 @@ public class ImporterVNA implements FileImporter, LongTask {
             importData(lineReader);
         } catch (Exception e) {
             report.logIssue(new Issue(e, Issue.Level.SEVERE));
+        } finally {
+            try {
+                lineReader.close();
+            } catch (IOException ex) {
+            }
         }
         return !cancel;
     }
