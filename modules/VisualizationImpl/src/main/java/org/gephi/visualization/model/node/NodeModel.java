@@ -67,8 +67,6 @@ public abstract class NodeModel implements Model, TextModel {
     protected boolean highlight;
     public int markTime;
     public boolean mark;
-    //Text
-    protected Rectangle2D bounds;
     //Edges
     protected EdgeModel[] edges;
     protected int edgeLength;
@@ -177,30 +175,12 @@ public abstract class NodeModel implements Model, TextModel {
 
     @Override
     public float getTextWidth() {
-        Rectangle2D rec = bounds;
-        if (rec != null) {
-            return (float) rec.getWidth();
-        }
-        return 0f;
+        return node.getTextProperties().getWidth();
     }
 
     @Override
     public float getTextHeight() {
-        Rectangle2D rec = bounds;
-        if (rec != null) {
-            return (float) rec.getHeight();
-        }
-        return 0f;
-    }
-
-    @Override
-    public void setTextBounds(Rectangle2D bounds) {
-        this.bounds = bounds;
-    }
-
-    @Override
-    public Rectangle2D getTextBounds() {
-        return bounds;
+        return node.getTextProperties().getWidth();
     }
 
     @Override

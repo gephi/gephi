@@ -57,8 +57,6 @@ public abstract class EdgeModel implements Model, TextModel {
     protected float weight;
     //Flags
     protected boolean selected;
-    //Text
-    protected Rectangle2D bounds;
     //Mark
     public int markTime;
     //Id
@@ -112,30 +110,12 @@ public abstract class EdgeModel implements Model, TextModel {
 
     @Override
     public float getTextWidth() {
-        Rectangle2D rec = bounds;
-        if (rec != null) {
-            return (float) rec.getWidth();
-        }
-        return 0f;
+        return edge.getTextProperties().getWidth();
     }
 
     @Override
     public float getTextHeight() {
-        Rectangle2D rec = bounds;
-        if (rec != null) {
-            return (float) rec.getHeight();
-        }
-        return 0f;
-    }
-
-    @Override
-    public void setTextBounds(Rectangle2D bounds) {
-        this.bounds = bounds;
-    }
-
-    @Override
-    public Rectangle2D getTextBounds() {
-        return bounds;
+        return edge.getTextProperties().getHeight();
     }
 
     @Override

@@ -57,7 +57,6 @@ import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.model.TextModel;
 import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.node.NodeModel;
 
@@ -330,25 +329,27 @@ public class TextManager implements VizArchitecture {
             TextProperties textData = (TextProperties) node.getTextProperties();
             if (textData != null) {
                 String txt = textData.getText();
-                Rectangle2D r;
+                float width, height, posX, posY;
 
                 if (txt == null || txt.isEmpty()) {
                     return;
                 }
 
                 float sizeFactor = drawable.getGlobalScale() * textData.getSize() * model.sizeMode.getSizeFactor3d(model.nodeSizeFactor, objectModel);
-                if (nodeRefresh || objectModel.getTextBounds() == null) {
-                    r = renderer.getBounds(txt);
+                if (nodeRefresh || (objectModel.getTextWidth() == 0f && objectModel.getTextHeight() == 0f)) {
+                    Rectangle2D r = renderer.getBounds(txt);
 
-                    float width = (float) (sizeFactor * r.getWidth());
-                    float height = (float) (sizeFactor * r.getHeight());
-                    float posX = node.x() + (float) width / -2f;
-                    float posY = node.y() + (float) height / -2f;
-                    r.setRect(posX, posY, width, height);
+                    width = (float) (sizeFactor * r.getWidth());
+                    height = (float) (sizeFactor * r.getHeight());
+                    posX = node.x() + (float) width / -2f;
+                    posY = node.y() + (float) height / -2f;
 
-                    objectModel.setTextBounds(r);
+                    textData.setDimensions(width, height);
                 } else {
-                    r = objectModel.getTextBounds();
+                    width = textData.getWidth();
+                    height = textData.getHeight();
+                    posX = node.x() + (float) width / -2f;
+                    posY = node.y() + (float) height / -2f;
                 }
                 model.colorMode.textNodeColor(this, objectModel);
 
@@ -359,7 +360,7 @@ public class TextManager implements VizArchitecture {
 //                float posX = node.x() + (float) width / -2;
 //                float posY = node.y() + (float) height / -2;
 //                float posZ = node.z();
-                renderer.draw3D(txt, (float) r.getX(), (float) r.getY(), (float) node.z(), sizeFactor);
+                renderer.draw3D(txt, posX, posY, (float) node.z(), sizeFactor);
             }
         }
 
@@ -376,12 +377,12 @@ public class TextManager implements VizArchitecture {
                 }
 
                 float sizeFactor = 1f;
-                if (edgeRefresh || objectModel.getTextBounds() == null) {
-                    r = renderer.getBounds(txt);
-                    objectModel.setTextBounds(r);
-                } else {
-                    r = objectModel.getTextBounds();
-                }
+//                if (edgeRefresh || objectModel.getTextBounds() == null) {
+//                    r = renderer.getBounds(txt);
+//                    objectModel.setTextBounds(r);
+//                } else {
+//                    r = objectModel.getTextBounds();
+//                }
 
                 model.colorMode.textEdgeColor(this, objectModel);
 //                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor3d(model.edgeSizeFactor, objectModel);

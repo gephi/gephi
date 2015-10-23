@@ -21,10 +21,6 @@ public interface TextModel {
 
     public float getTextHeight();
 
-    public void setTextBounds(Rectangle2D bounds);
-
-    public Rectangle2D getTextBounds();
-
     public String getText();
 
     public float getTextSize();
