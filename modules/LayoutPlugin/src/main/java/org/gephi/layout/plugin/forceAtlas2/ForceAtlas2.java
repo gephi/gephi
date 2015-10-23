@@ -74,6 +74,7 @@ public class ForceAtlas2 implements Layout {
     private double scalingRatio;
     private double gravity;
     private double speed;
+    private double speedEfficiency;
     private boolean outboundAttractionDistribution;
     private boolean adjustSizes;
     private boolean barnesHutOptimize;
@@ -94,6 +95,7 @@ public class ForceAtlas2 implements Layout {
     @Override
     public void initAlgo() {
         speed = 1.;
+        speedEfficiency = 1.;
 
         graph = graphModel.getGraphVisible();
 
@@ -211,7 +213,35 @@ public class ForceAtlas2 implements Layout {
             }
         }
         // We want that swingingMovement < tolerance * convergenceMovement
-        double targetSpeed = getJitterTolerance() * getJitterTolerance() * totalEffectiveTraction / totalSwinging;
+
+        // Optimize jitter tolerance
+        // The 'right' jitter tolerance for this network. Bigger networks need more tolerance. Denser networks need less tolerance. Totally empiric.
+        double estimatedOptimalJitterTolerance = 0.05 * Math.sqrt(nodes.length);
+        double minJT = Math.sqrt(estimatedOptimalJitterTolerance);
+        double maxJT = 10;
+        double jt = jitterTolerance * Math.max(minJT, Math.min(maxJT, estimatedOptimalJitterTolerance * totalEffectiveTraction / Math.pow(nodes.length, 2)));
+
+        double minSpeedEfficiency = 0.05;
+
+        // Protection against erratic behavior
+        if (totalSwinging / totalEffectiveTraction > 2.0) {
+            if (speedEfficiency > minSpeedEfficiency) {
+                speedEfficiency *= 0.5;
+            }
+            jt = Math.max(jt, jitterTolerance);
+        }
+
+        double targetSpeed = jt * speedEfficiency * totalEffectiveTraction / totalSwinging;
+
+        // Speed efficiency is how the speed really corresponds to the swinging vs. convergence tradeoff
+        // We adjust it slowly and carefully
+        if (totalSwinging > jt * totalEffectiveTraction) {
+            if (speedEfficiency > minSpeedEfficiency) {
+                speedEfficiency *= 0.7;
+            }
+        } else if (speed < 1000) {
+            speedEfficiency *= 1.3;
+        }
 
         // But the speed shoudn't rise too much too quickly, since it would make the convergence drop dramatically.
         double maxRise = 0.5;   // Max rise: 50%
@@ -226,8 +256,8 @@ public class ForceAtlas2 implements Layout {
 
                     // Adaptive auto-speed: the speed of each node is lowered
                     // when the node swings.
-                    double swinging = Math.sqrt((nLayout.old_dx - nLayout.dx) * (nLayout.old_dx - nLayout.dx) + (nLayout.old_dy - nLayout.dy) * (nLayout.old_dy - nLayout.dy));
-                    double factor = 0.1 * speed / (1f + speed * Math.sqrt(swinging));
+                    double swinging = nLayout.mass * Math.sqrt((nLayout.old_dx - nLayout.dx) * (nLayout.old_dx - nLayout.dx) + (nLayout.old_dy - nLayout.dy) * (nLayout.old_dy - nLayout.dy));
+                    double factor = 0.1 * speed / (1f + Math.sqrt(speed * swinging));
 
                     double df = Math.sqrt(Math.pow(nLayout.dx, 2) + Math.pow(nLayout.dy, 2));
                     factor = Math.min(factor * df, 10.) / df;
@@ -246,9 +276,9 @@ public class ForceAtlas2 implements Layout {
 
                     // Adaptive auto-speed: the speed of each node is lowered
                     // when the node swings.
-                    double swinging = Math.sqrt((nLayout.old_dx - nLayout.dx) * (nLayout.old_dx - nLayout.dx) + (nLayout.old_dy - nLayout.dy) * (nLayout.old_dy - nLayout.dy));
+                    double swinging = nLayout.mass * Math.sqrt((nLayout.old_dx - nLayout.dx) * (nLayout.old_dx - nLayout.dx) + (nLayout.old_dy - nLayout.dy) * (nLayout.old_dy - nLayout.dy));
                     //double factor = speed / (1f + Math.sqrt(speed * swinging));
-                    double factor = speed / (1f + speed * Math.sqrt(swinging));
+                    double factor = speed / (1f + Math.sqrt(speed * swinging));
 
                     double x = n.x() + nLayout.dx * factor;
                     double y = n.y() + nLayout.dy * factor;
@@ -403,20 +433,14 @@ public class ForceAtlas2 implements Layout {
         setEdgeWeightInfluence(1.);
 
         // Performance
-        if (nodesCount >= 50000) {
-            setJitterTolerance(10d);
-        } else if (nodesCount >= 5000) {
-            setJitterTolerance(1d);
-        } else {
-            setJitterTolerance(0.1d);
-        }
+        setJitterTolerance(1d);
         if (nodesCount >= 1000) {
             setBarnesHutOptimize(true);
         } else {
             setBarnesHutOptimize(false);
         }
         setBarnesHutTheta(1.2);
-        setThreadsCount(2);
+        setThreadsCount(Math.max(1, Runtime.getRuntime().availableProcessors() - 1));
     }
 
     @Override
@@ -492,11 +516,7 @@ public class ForceAtlas2 implements Layout {
     }
 
     public void setThreadsCount(Integer threadCount) {
-        if (threadCount < 1) {
-            setThreadsCount(1);
-        } else {
-            this.threadCount = threadCount;
-        }
+        this.threadCount = Math.max(1, threadCount);
     }
 
     public Boolean isOutboundAttractionDistribution() {
