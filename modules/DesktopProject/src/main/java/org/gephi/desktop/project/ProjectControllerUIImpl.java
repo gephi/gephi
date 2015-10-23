@@ -213,7 +213,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                     public void run() {
                         JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
                         String title = frame.getTitle();
-                        title = title.substring(0, title.indexOf('-') - 1) + " - " + SaveAsFileName;
+                        title = title.substring(0, title.indexOf(" - ")) + " - " + SaveAsFileName;
                         frame.setTitle(title);
                     }
                 });
@@ -261,7 +261,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 public void run() {
                     JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
                     String title = frame.getTitle();
-                    title = title.substring(0, title.indexOf('-') - 1);
+                    title = title.substring(0, title.indexOf(" - "));
                     frame.setTitle(title);
                 }
             });
@@ -316,7 +316,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             public void run() {
                 JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
                 String title = frame.getTitle();
-                title = title.substring(0, title.indexOf('-') - 1);
+                title = title.substring(0, title.indexOf(" - "));
                 title += " - " + name;
                 frame.setTitle(title);
             }
@@ -536,7 +536,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 public void run() {
                     JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
                     String title = frame.getTitle();
-                    title = title.substring(0, title.indexOf('-') - 1);
+                    title = title.substring(0, title.indexOf(" - "));
                     frame.setTitle(title);
                 }
             });
