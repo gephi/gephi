@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.TextProperties;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
@@ -112,9 +113,9 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         for (Node n : nodes) {
             float x = n.x();
             float y = n.y();
-//            float w = n.getTextData().getWidth();
-//            float h = n.getTextData().getHeight();
-            float w = 0f, h = 0f;
+            TextProperties t = n.getTextProperties();
+            float w = t.getWidth();
+            float h = t.getHeight();
             float radius = n.size() / 2f;
 
             if (w > 0 && h > 0) {
@@ -192,11 +193,12 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         float n1y = n1.y();
         float n2x = n2.x();
         float n2y = n2.y();
-//        float n1w = n1.getTextData().getWidth();
-//        float n2w = n2.getTextData().getWidth();
-//        float n1h = n1.getTextData().getHeight();
-//        float n2h = n2.getTextData().getHeight();
-        float n1w = 0f, n2w = 0f, n1h = 0f, n2h = 0;
+        TextProperties t1 = n1.getTextProperties();
+        TextProperties t2 = n2.getTextProperties();
+        float n1w = t1.getWidth();
+        float n2w = t2.getWidth();
+        float n1h = t1.getHeight();
+        float n2h = t2.getHeight();
         LabelAdjustLayoutData n2Data = n2.getLayoutData();
 
         double n1xmin = n1x - 0.5 * n1w;
@@ -354,9 +356,9 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         public void add(Node node) {
             float x = node.x();
             float y = node.y();
-//            float w = node.getTextData().getWidth();
-//            float h = node.getTextData().getHeight();
-            float w = 0f, h = 0f;
+            TextProperties t = node.getTextProperties();
+            float w = t.getWidth();
+            float h = t.getHeight();
             float radius = node.size();
 
             // Get the rectangle occupied by the node (size + label)

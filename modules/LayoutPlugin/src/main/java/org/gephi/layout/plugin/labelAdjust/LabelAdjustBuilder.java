@@ -56,7 +56,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = LayoutBuilder.class)
 public class LabelAdjustBuilder implements LayoutBuilder {
 
-    private LabelAdjustLayoutUI ui = new LabelAdjustLayoutUI();
+    private final LabelAdjustLayoutUI ui = new LabelAdjustLayoutUI();
 
     @Override
     public String getName() {

@@ -56,7 +56,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = LayoutBuilder.class)
 public class ForceAtlas implements LayoutBuilder {
 
-    private ForceAtlasLayoutUI ui = new ForceAtlasLayoutUI();
+    private final ForceAtlasLayoutUI ui = new ForceAtlasLayoutUI();
 
     @Override
     public String getName() {
