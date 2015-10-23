@@ -157,6 +157,9 @@ public class ProjectControllerImpl implements ProjectController {
             projects.closeCurrentProject();
 
             fireWorkspaceEvent(EventType.DISABLE, null);
+
+            //Remove
+            projects.removeProject(currentProject);
         }
     }
 
