@@ -49,10 +49,6 @@ import org.gephi.lib.gleem.linalg.Vec3f;
  */
 public class GraphLimits {
 
-    private int minXviewport;
-    private int maxXviewport;
-    private int minYviewport;
-    private int maxYviewport;
     private float minXoctree;
     private float maxXoctree;
     private float minYoctree;
@@ -71,28 +67,12 @@ public class GraphLimits {
         this.maxXoctree = maxXoctree;
     }
 
-    public synchronized int getMaxXviewport() {
-        return maxXviewport;
-    }
-
-    public synchronized void setMaxXviewport(int maxXviewport) {
-        this.maxXviewport = maxXviewport;
-    }
-
     public synchronized float getMaxYoctree() {
         return maxYoctree;
     }
 
     public synchronized void setMaxYoctree(float maxYoctree) {
         this.maxYoctree = maxYoctree;
-    }
-
-    public synchronized int getMaxYviewport() {
-        return maxYviewport;
-    }
-
-    public synchronized void setMaxYviewport(int maxYviewport) {
-        this.maxYviewport = maxYviewport;
     }
 
     public synchronized float getMaxZoctree() {
@@ -111,28 +91,12 @@ public class GraphLimits {
         this.minXoctree = minXoctree;
     }
 
-    public synchronized int getMinXviewport() {
-        return minXviewport;
-    }
-
-    public synchronized void setMinXviewport(int minXviewport) {
-        this.minXviewport = minXviewport;
-    }
-
     public synchronized float getMinYoctree() {
         return minYoctree;
     }
 
     public synchronized void setMinYoctree(float minYoctree) {
         this.minYoctree = minYoctree;
-    }
-
-    public synchronized int getMinYviewport() {
-        return minYviewport;
-    }
-
-    public synchronized void setMinYviewport(int minYviewport) {
-        this.minYviewport = minYviewport;
     }
 
     public synchronized float getMinZoctree() {

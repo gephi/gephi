@@ -259,71 +259,12 @@ public class Octree {
             }
         }
 
-        int viewportMinX = Integer.MAX_VALUE;
-        int viewportMaxX = Integer.MIN_VALUE;
-        int viewportMinY = Integer.MAX_VALUE;
-        int viewportMaxY = Integer.MIN_VALUE;
-        float[] point;
-
-        point = drawable.myGluProject(minX, minY, minZ);        //bottom far left
-        viewportMinX = Math.min(viewportMinX, (int) point[0]);
-        viewportMinY = Math.min(viewportMinY, (int) point[1]);
-        viewportMaxX = Math.max(viewportMaxX, (int) point[0]);
-        viewportMaxY = Math.max(viewportMaxY, (int) point[1]);
-
-        point = drawable.myGluProject(minX, minY, maxZ);        //bottom near left
-        viewportMinX = Math.min(viewportMinX, (int) point[0]);
-        viewportMinY = Math.min(viewportMinY, (int) point[1]);
-        viewportMaxX = Math.max(viewportMaxX, (int) point[0]);
-        viewportMaxY = Math.max(viewportMaxY, (int) point[1]);
-
-        point = drawable.myGluProject(minX, maxY, maxZ);        //up near left
-        viewportMinX = Math.min(viewportMinX, (int) point[0]);
-        viewportMinY = Math.min(viewportMinY, (int) point[1]);
-        viewportMaxX = Math.max(viewportMaxX, (int) point[0]);
-        viewportMaxY = Math.max(viewportMaxY, (int) point[1]);
-
-        point = drawable.myGluProject(maxX, minY, maxZ);        //bottom near right
-        viewportMinX = Math.min(viewportMinX, (int) point[0]);
-        viewportMinY = Math.min(viewportMinY, (int) point[1]);
-        viewportMaxX = Math.max(viewportMaxX, (int) point[0]);
-        viewportMaxY = Math.max(viewportMaxY, (int) point[1]);
-
-        point = drawable.myGluProject(maxX, minY, minZ);        //bottom far right
-        viewportMinX = Math.min(viewportMinX, (int) point[0]);
-        viewportMinY = Math.min(viewportMinY, (int) point[1]);
-        viewportMaxX = Math.max(viewportMaxX, (int) point[0]);
-        viewportMaxY = Math.max(viewportMaxY, (int) point[1]);
-
-        point = drawable.myGluProject(maxX, maxY, minZ);        //up far right
-        viewportMinX = Math.min(viewportMinX, (int) point[0]);
-        viewportMinY = Math.min(viewportMinY, (int) point[1]);
-        viewportMaxX = Math.max(viewportMaxX, (int) point[0]);
-        viewportMaxY = Math.max(viewportMaxY, (int) point[1]);
-
-        point = drawable.myGluProject(maxX, maxY, maxZ);        //up near right
-        viewportMinX = Math.min(viewportMinX, (int) point[0]);
-        viewportMinY = Math.min(viewportMinY, (int) point[1]);
-        viewportMaxX = Math.max(viewportMaxX, (int) point[0]);
-        viewportMaxY = Math.max(viewportMaxY, (int) point[1]);
-
-        point = drawable.myGluProject(minX, maxY, minZ);        //up far left
-        viewportMinX = Math.min(viewportMinX, (int) point[0]);
-        viewportMinY = Math.min(viewportMinY, (int) point[1]);
-        viewportMaxX = Math.max(viewportMaxX, (int) point[0]);
-        viewportMaxY = Math.max(viewportMaxY, (int) point[1]);
-
         limits.setMinXoctree(minX);
         limits.setMaxXoctree(maxX);
         limits.setMinYoctree(minY);
         limits.setMaxYoctree(maxY);
         limits.setMinZoctree(minZ);
         limits.setMaxZoctree(maxZ);
-
-        limits.setMinXviewport(viewportMinX);
-        limits.setMaxXviewport(viewportMaxX);
-        limits.setMinYviewport(viewportMinY);
-        limits.setMaxYviewport(viewportMaxY);
     }
 
     public void updateVisibleOctant(GL2 gl) {
