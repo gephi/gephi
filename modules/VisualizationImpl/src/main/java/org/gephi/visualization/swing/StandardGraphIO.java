@@ -345,15 +345,15 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         float markerX = (float) graphDrawable.getDraggingMarkerX();
         float markerY = (float) graphDrawable.getDraggingMarkerY();
 
-        //Get mouse position within the clipping plane
-        float mouseX = MathUtil.clamp(mousePosition[0], limits.getMinXviewport(), limits.getMaxXviewport());
-        float mouseY = MathUtil.clamp(mousePosition[1], limits.getMinYviewport(), limits.getMaxYviewport());
-
         //Transform in 3d coordinates
-        mouseX = (float) ((mouseX - graphDrawable.viewport.get(2) / 2.0) / -markerX) + cameraTarget[0] / globalScale;       //Set to centric coordinates
-        mouseY = (float) ((mouseY - graphDrawable.viewport.get(3) / 2.0) / -markerY) + cameraTarget[1] / globalScale;
+        float mouseX = (float) ((mousePosition[0] - graphDrawable.viewport.get(2) / 2.0) / -markerX) + cameraTarget[0] / globalScale;       //Set to centric coordinates
+        float mouseY = (float) ((mousePosition[0] - graphDrawable.viewport.get(3) / 2.0) / -markerY) + cameraTarget[1] / globalScale;
         mouseX *= globalScale;
         mouseY *= globalScale;
+
+        //Get mouse position within the clipping plane
+        mouseX = MathUtil.clamp(mouseX, limits.getMinXoctree(), limits.getMaxXoctree());
+        mouseY = MathUtil.clamp(mouseY, limits.getMinYoctree(), limits.getMaxYoctree());
 
         //Camera location and target vectors
         Vec3f targetVector = new Vec3f(mouseX - cameraTarget[0], mouseY - cameraTarget[1], 0f);
@@ -374,7 +374,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         targetVector.scale(stepRatio);
         locationVector.scale(stepRatio);
 
-        if (cameraLocation[2] + locationVector.z() >= 1f) {
+        if (cameraLocation[2] + locationVector.z() >= 1f && 
+                cameraLocation[2] + locationVector.z() <= (graphDrawable.farDistance - graphDrawable.nearDistance)) {
             cameraLocation[0] += locationVector.x();
             cameraLocation[1] += locationVector.y();
             cameraLocation[2] += locationVector.z();

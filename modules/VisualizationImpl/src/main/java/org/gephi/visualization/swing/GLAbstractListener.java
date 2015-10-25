@@ -89,7 +89,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     private volatile boolean resizing = false;
     public final float viewField = 30.0f;
     public final float nearDistance = 1.0f;
-    public final float farDistance = 100000f;
+    public final float farDistance = 150000f;
     private double aspectRatio = 0;
     protected float globalScale = 1f;
     protected FloatBuffer projMatrix = Buffers.newDirectFloatBuffer(16);
