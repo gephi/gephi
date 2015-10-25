@@ -347,13 +347,14 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
         //Transform in 3d coordinates
         float mouseX = (float) ((mousePosition[0] - graphDrawable.viewport.get(2) / 2.0) / -markerX) + cameraTarget[0] / globalScale;       //Set to centric coordinates
-        float mouseY = (float) ((mousePosition[0] - graphDrawable.viewport.get(3) / 2.0) / -markerY) + cameraTarget[1] / globalScale;
-        mouseX *= globalScale;
-        mouseY *= globalScale;
+        float mouseY = (float) ((mousePosition[1] - graphDrawable.viewport.get(3) / 2.0) / -markerY) + cameraTarget[1] / globalScale;
 
         //Get mouse position within the clipping plane
         mouseX = MathUtil.clamp(mouseX, limits.getMinXoctree(), limits.getMaxXoctree());
         mouseY = MathUtil.clamp(mouseY, limits.getMinYoctree(), limits.getMaxYoctree());
+
+        mouseX *= globalScale;
+        mouseY *= globalScale;
 
         //Camera location and target vectors
         Vec3f targetVector = new Vec3f(mouseX - cameraTarget[0], mouseY - cameraTarget[1], 0f);
@@ -374,8 +375,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         targetVector.scale(stepRatio);
         locationVector.scale(stepRatio);
 
-        if (cameraLocation[2] + locationVector.z() >= 1f && 
-                cameraLocation[2] + locationVector.z() <= (graphDrawable.farDistance - graphDrawable.nearDistance)) {
+        if (cameraLocation[2] + locationVector.z() >= 1f
+                && cameraLocation[2] + locationVector.z() <= (graphDrawable.farDistance - graphDrawable.nearDistance)) {
             cameraLocation[0] += locationVector.x();
             cameraLocation[1] += locationVector.y();
             cameraLocation[2] += locationVector.z();
