@@ -62,7 +62,6 @@ import org.gephi.visualization.scheduler.CompatibilityScheduler;
 import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.gephi.visualization.swing.GLAbstractListener;
 import org.gephi.visualization.swing.GraphCanvas;
-import org.gephi.visualization.swing.GraphPanel;
 import org.gephi.visualization.swing.NewtGraphCanvas;
 import org.gephi.visualization.swing.StandardGraphIO;
 import org.gephi.visualization.text.TextManager;
@@ -118,7 +117,7 @@ public class VizController implements VisualizationController {
         selectionManager = new SelectionManager();
 
         if (vizConfig.isUseGLJPanel()) {
-            drawable = createPanel();
+            //No more supported
         } else {
             drawable = createNewtCanvas();
         }
@@ -293,11 +292,6 @@ public class VizController implements VisualizationController {
     public GraphCanvas createCanvas() {
         GraphCanvas canvas = new GraphCanvas();
         return canvas;
-    }
-
-    public GraphPanel createPanel() {
-        GraphPanel panel = new GraphPanel();
-        return panel;
     }
 
     public NewtGraphCanvas createNewtCanvas() {

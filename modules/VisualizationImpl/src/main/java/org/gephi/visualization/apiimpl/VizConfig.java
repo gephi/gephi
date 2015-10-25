@@ -129,7 +129,7 @@ public class VizConfig {
     public static final int DEFAULT_ANTIALIASING = 4;
     public static final boolean DEFAULT_BLENDING = true;
     public static final boolean DEFAULT_WIREFRAME = false;
-    public static final boolean DEFAULT_GLJPANEL = false;
+    public static final boolean DEFAULT_GLJPANEL = false;//Deprecated
     public static final boolean DEFAULT_SELECTION = true;
     public static final boolean DEFAULT_RECTANGLE_SELECTION = false;
     public static final Color DEFAULT_RECTANGLE_SELECTION_COLOR = new Color(0.16f, 0.48f, 0.81f, 0.2f);
