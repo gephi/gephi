@@ -72,6 +72,7 @@ import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Issue.Level;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
+import org.joda.time.DateTimeZone;
 import org.openide.util.NbBundle;
 
 /**
@@ -108,6 +109,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     //Dynamic
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
     private TimeRepresentation timeRepresentation = TimeRepresentation.INTERVAL;
+    private DateTimeZone timeZone = DateTimeZone.getDefault();
     //Report flag
     private boolean reportedUnknownNode;
     private boolean reportedParallelEdges;
@@ -431,6 +433,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     @Override
     public void setTimeRepresentation(TimeRepresentation timeRepresentation) {
         this.timeRepresentation = timeRepresentation;
+    }
+
+    @Override
+    public DateTimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    @Override
+    public void setTimeZone(DateTimeZone timeZone) {
+        this.timeZone = timeZone;
     }
 
     @Override

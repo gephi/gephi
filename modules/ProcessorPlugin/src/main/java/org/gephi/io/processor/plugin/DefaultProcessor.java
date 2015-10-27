@@ -118,8 +118,9 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         Graph graph = graphModel.getGraph();
         GraphFactory factory = graphModel.factory();
 
-        //Time Format
+        //Time Format & Time zone
         graphModel.setTimeFormat(container.getTimeFormat());
+        graphModel.setTimeZone(container.getTimeZone());
 
         //Progress
         Progress.start(progressTicket, container.getNodeCount() + container.getEdgeCount());

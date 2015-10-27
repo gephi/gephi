@@ -44,6 +44,7 @@ package org.gephi.io.importer.api;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.io.processor.spi.Processor;
+import org.joda.time.DateTimeZone;
 
 /**
  * Interface for unloading a container.
@@ -80,6 +81,8 @@ public interface ContainerUnloader {
     public TimeFormat getTimeFormat();
 
     public TimeRepresentation getTimeRepresentation();
+
+    public DateTimeZone getTimeZone();
 
     public String getSource();
 

@@ -44,6 +44,7 @@ package org.gephi.io.importer.api;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.io.importer.spi.Importer;
+import org.joda.time.DateTimeZone;
 
 /**
  * Interface for loading a {@link Container} with graph and attributes data from
@@ -238,6 +239,15 @@ public interface ContainerLoader {
      * @param timeRepresentation time representation
      */
     public void setTimeRepresentation(TimeRepresentation timeRepresentation);
+
+    /**
+     * Sets the time zone that is used to parse date and time.
+     * <p>
+     * If not set, the local time zone is used.
+     *
+     * @param timeZone time zone
+     */
+    public void setTimeZone(DateTimeZone timeZone);
 
     //PARAMETERS SETTERS
     public void setAllowSelfLoop(boolean value);
