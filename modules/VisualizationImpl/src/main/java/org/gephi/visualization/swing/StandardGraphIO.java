@@ -127,6 +127,9 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         float x = globalScale * (location.x - componentLocation.x);
         float y = globalScale * (location.y - componentLocation.y);
 
+        x = (int) x;
+        y = graphDrawable.viewport.get(3) - (int) y - 1;
+
         if (SwingUtilities.isRightMouseButton(e)) {
             //Save the coordinate of the start
             rightButtonMoving[0] = x;
@@ -153,8 +156,12 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         float globalScale = graphDrawable.getGlobalScale();
         Point componentLocation = graphDrawable.getLocationOnScreen();
         Point location = e.getLocationOnScreen();
+
         float x = globalScale * (location.x - componentLocation.x);
         float y = globalScale * (location.y - componentLocation.y);
+
+        x = (int) x;
+        y = graphDrawable.viewport.get(3) - (int) y - 1;
 
         //Disable the right button moving
         rightButtonMoving[0] = -1;
@@ -162,8 +169,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         middleButtonMoving[0] = -1;
 
         //Update mouse position
-        mousePosition[0] = (int) x;
-        mousePosition[1] = graphDrawable.viewport.get(3) - (int) y - 1;
+        mousePosition[0] = x;
+        mousePosition[1] = y;
 
         //Update 3d position
         double[] marker = graphDrawable.draggingMarker;
@@ -256,15 +263,18 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         float x = globalScale * (location.x - componentLocation.x);
         float y = globalScale * (location.y - componentLocation.y);
 
+        x = (int) x;
+        y = graphDrawable.viewport.get(3) - (int) y - 1;
+
         if (rightButtonMoving[0] != -1) {
             //The right button is pressed
             float proche = graphDrawable.cameraTarget[2] - graphDrawable.cameraLocation[2];
             proche = proche / 300;
 
             graphDrawable.cameraTarget[0] += (x - rightButtonMoving[0]) * proche;
-            graphDrawable.cameraTarget[1] += (rightButtonMoving[1] - y) * proche;
+            graphDrawable.cameraTarget[1] += (y - rightButtonMoving[1]) * proche;
             graphDrawable.cameraLocation[0] += (x - rightButtonMoving[0]) * proche;
-            graphDrawable.cameraLocation[1] += (rightButtonMoving[1] - y) * proche;
+            graphDrawable.cameraLocation[1] += (y - rightButtonMoving[1]) * proche;
 
             rightButtonMoving[0] = x;
             rightButtonMoving[1] = y;
@@ -275,9 +285,9 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
             //Remet à jour aussi la mousePosition pendant le drag, notamment pour coller quand drag released
             mousePosition[0] = (int) x;
-            mousePosition[1] = graphDrawable.viewport.get(3) - (int) y - 1;
+            mousePosition[1] = (int) y;
             mouseDrag3d[0] = (float) ((graphDrawable.viewport.get(2) / 2 - x) / graphDrawable.draggingMarker[0] + graphDrawable.cameraTarget[0]);
-            mouseDrag3d[1] = (float) ((y - graphDrawable.viewport.get(3) / 2) / graphDrawable.draggingMarker[1] + graphDrawable.cameraTarget[1]);
+            mouseDrag3d[1] = (float) ((graphDrawable.viewport.get(3) / 2 - y) / graphDrawable.draggingMarker[1] + graphDrawable.cameraTarget[1]);
             mousePosition3d[0] = mouseDrag3d[0];
             mousePosition3d[1] = mouseDrag3d[1];
 
@@ -309,7 +319,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
                     vizEventManager.startDrag();
                 }
                 mouseDrag[0] = x - startDrag2d[0];
-                mouseDrag[1] = startDrag2d[1] - y;
+                mouseDrag[1] = y - startDrag2d[1];
                 vizEventManager.drag();
             }
 
