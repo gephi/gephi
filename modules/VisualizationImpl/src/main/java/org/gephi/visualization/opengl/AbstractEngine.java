@@ -200,6 +200,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public void setRectangleSelection(boolean rectangleSelection) {
         vizConfig.setRectangleSelection(rectangleSelection);
+        initSelection();
         configChanged = true;
         lightenAnimationDelta = 0;
         vizConfig.setLightenNonSelected(false);

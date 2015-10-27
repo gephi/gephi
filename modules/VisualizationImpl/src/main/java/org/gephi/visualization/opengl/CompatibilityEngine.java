@@ -302,36 +302,26 @@ public class CompatibilityEngine extends AbstractEngine {
             //rectangle.setBlocking(false);
 
             //Select with click
-            int i = 0;
             boolean someSelection = false;
 
-//            for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(objClass.getClassId()); itr.hasNext();) {
-//                NodeModel obj = (NodeModel) itr.next();
-//                if (isUnderMouse(obj)) {
-//                    if (!obj.isSelected()) {
-//                        //New selected
-//                        obj.setSelected(true);
-//                        /*if (vizEventManager.hasSelectionListeners()) {
-//                         newSelectedObjects.add(obj);
-//                         }*/
-//                        selectedObjects[i].add(obj);
-//                    }
-//                    someSelection = true;
-//                    obj.selectionMark = markTime2;
-//                }
-//            }
-//            if (!(rectangle.isCtrl() && someSelection)) {
-//                for (Iterator<ModelImpl> itr = selectedObjects[i].iterator(); itr.hasNext();) {
-//                    ModelImpl o = itr.next();
-//                    if (o.selectionMark != markTime2) {
-//                        itr.remove();
-//                        o.setSelected(false);
-//                    }
-//                }
-//
-//
-//                i++;
-//            }
+            for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext();) {
+                NodeModel obj = (NodeModel) itr.next();
+                if (isUnderMouse(obj)) {
+                    if (!obj.isSelected()) {
+                        //New selected
+                        obj.setSelected(true);
+                    }
+                    someSelection = true;
+                } else if (obj.isSelected()) {
+                    someSelection = true;
+                }
+            }
+            if (!(rectangle.isCtrl() && someSelection)) {
+                for (NodeModel nm : getSelectedNodes()) {
+                    nm.setSelected(false);
+                }
+                someSelection = false;
+            }
             rectangle.setBlocking(someSelection);
 
             if (vizController.getVizModel().isLightenNonSelectedAuto()) {
@@ -379,7 +369,7 @@ public class CompatibilityEngine extends AbstractEngine {
         //Selection
         if (vizConfig.isSelectionEnable() && rectangleSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
-            rectangle.setMousePosition(graphIO.getMousePosition());
+            rectangle.setMousePosition(graphIO.getMousePosition(), graphIO.getMousePosition3d());
             if (rectangle.isStop()) {
                 return;
             }
@@ -389,7 +379,7 @@ public class CompatibilityEngine extends AbstractEngine {
             return;
         }
 
-        if (graphIO.isDragging()) {
+        if (!rectangleSelection && graphIO.isDragging()) {
             return;
         }
 

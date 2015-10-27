@@ -57,15 +57,17 @@ import org.gephi.visualization.model.node.NodeModel;
  */
 public class Rectangle implements SelectionArea {
 
-    private static float[] pointRect = {1, 1};
+    private static final float[] POINT_RECT = {1, 1};
     private final GraphDrawable drawable;
     private final VizConfig config;
     private final float[] color;
     //Variables
     private float[] startPosition;
-    private float[] rectangle = new float[2];
-    private float[] center = new float[2];
-    private float[] rectangleSize = new float[2];
+    private float[] startPosition3d;
+    private final float[] rectangle = new float[2];
+    private final float[] rectangle3d = new float[2];
+    private final float[] center = new float[2];
+    private final float[] rectangleSize = new float[2];
     private boolean stop = true;
     private boolean blocking = true;
     private boolean ctrl = false;
@@ -79,7 +81,7 @@ public class Rectangle implements SelectionArea {
     @Override
     public float[] getSelectionAreaRectancle() {
         if (stop) {
-            return pointRect;
+            return POINT_RECT;
         }
         rectangleSize[0] = Math.abs(rectangle[0] - startPosition[0]);
         rectangleSize[1] = Math.abs(rectangle[1] - startPosition[1]);
@@ -107,34 +109,36 @@ public class Rectangle implements SelectionArea {
         if (stop) {
             return nodeModel.selectionTest(distanceFromMouse, 0);
         }
-//        float x = nodeModel.getViewportX();
-//        float y = nodeModel.getViewportY();
-//        float rad = nodeModel.getViewportRadius();
-
-        float x = 0, y = 0, rad = 0;
+        
+        float x = nodeModel.getX();
+        float y = nodeModel.getY();
+        float rad = nodeModel.getNode().size();
 
         boolean res = true;
-        if (startPosition[0] > rectangle[0]) {
-            if (x - rad > startPosition[0] || x + rad < rectangle[0]) {
+        if (startPosition3d[0] > rectangle3d[0]) {
+            if (x - rad > startPosition3d[0] || x + rad < rectangle3d[0]) {
                 res = false;
             }
-        } else if (x + rad < startPosition[0] || x - rad > rectangle[0]) {
+        } else if (x + rad < startPosition3d[0] || x - rad > rectangle3d[0]) {
             res = false;
         }
-        if (startPosition[1] < rectangle[1]) {
-            if (y + rad < startPosition[1] || y - rad > rectangle[1]) {
+        if (startPosition3d[1] < rectangle3d[1]) {
+            if (y + rad < startPosition3d[1] || y - rad > rectangle3d[1]) {
                 res = false;
             }
-        } else if (y - rad > startPosition[1] || y + rad < rectangle[1]) {
+        } else if (y - rad > startPosition3d[1] || y + rad < rectangle3d[1]) {
             res = false;
         }
         return res;
     }
 
-    public void start(float[] mousePosition) {
+    public void start(float[] mousePosition, float[] mousePosition3d) {
         this.startPosition = Arrays.copyOf(mousePosition, 2);
+        this.startPosition3d = Arrays.copyOf(mousePosition3d, 2);
         this.rectangle[0] = startPosition[0];
         this.rectangle[1] = startPosition[1];
+        this.rectangle3d[0] = startPosition3d[0];
+        this.rectangle3d[1] = startPosition3d[1];
         stop = false;
         blocking = false;
     }
@@ -144,10 +148,12 @@ public class Rectangle implements SelectionArea {
         blocking = true;
     }
 
-    public void setMousePosition(float[] mousePosition) {
+    public void setMousePosition(float[] mousePosition, float[] mousePosition3d) {
         if (!stop) {
             rectangle[0] = mousePosition[0];
             rectangle[1] = mousePosition[1];
+            rectangle3d[0] = mousePosition3d[0];
+            rectangle3d[1] = mousePosition3d[1];
         }
     }
 
@@ -172,7 +178,6 @@ public class Rectangle implements SelectionArea {
             float y = startPosition[1];
             float w = rectangle[0] - startPosition[0];
             float h = rectangle[1] - startPosition[1];
-            //System.out.println("x:"+x+"  y:"+y+"   w:"+w+"   h:"+h);
 
             gl.glMatrixMode(GL2.GL_PROJECTION);
             gl.glPushMatrix();

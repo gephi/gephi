@@ -236,7 +236,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         if (SwingUtilities.isLeftMouseButton(e)) {
             if (vizController.getVizConfig().isSelectionEnable() && engine.isRectangleSelection()) {
                 Rectangle r = (Rectangle) engine.getCurrentSelectionArea();
-                boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0;
+                boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0 || (e.getModifiers() & InputEvent.META_MASK) != 0;
                 r.setCtrl(ctrl);
             }
             engine.getScheduler().requireMouseClick();
@@ -286,18 +286,19 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             //Remet à jour aussi la mousePosition pendant le drag, notamment pour coller quand drag released
             mousePosition[0] = (int) x;
             mousePosition[1] = (int) y;
-            mouseDrag3d[0] = (float) ((graphDrawable.viewport.get(2) / 2 - x) / graphDrawable.draggingMarker[0] + graphDrawable.cameraTarget[0]);
-            mouseDrag3d[1] = (float) ((graphDrawable.viewport.get(3) / 2 - y) / graphDrawable.draggingMarker[1] + graphDrawable.cameraTarget[1]);
-            mousePosition3d[0] = mouseDrag3d[0];
-            mousePosition3d[1] = mouseDrag3d[1];
+
+            double[] marker = graphDrawable.draggingMarker;
+            mousePosition3d[0] = (float) ((x - graphDrawable.viewport.get(2) / 2.0) / -marker[0]) + graphDrawable.cameraTarget[0] / globalScale;       //Set to centric coordinates
+            mousePosition3d[1] = (float) ((y - graphDrawable.viewport.get(3) / 2.0) / -marker[1]) + graphDrawable.cameraTarget[1] / globalScale;
+            mouseDrag3d[0] = mousePosition3d[0];
+            mouseDrag3d[1] = mousePosition3d[1];
 
             if (vizController.getVizConfig().isSelectionEnable() && engine.isRectangleSelection()) {
                 if (!dragging) {
                     //Start drag
                     dragging = true;
                     Rectangle rectangle = (Rectangle) engine.getCurrentSelectionArea();
-                    //TODO fix that
-                    rectangle.start(mousePosition);
+                    rectangle.start(mousePosition, mousePosition3d);
                 }
                 engine.getScheduler().requireUpdateSelection();
             } else if (vizController.getVizConfig().isDraggingEnable()) {
