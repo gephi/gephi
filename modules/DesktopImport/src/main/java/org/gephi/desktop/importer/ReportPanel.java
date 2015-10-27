@@ -50,6 +50,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -443,12 +444,12 @@ public class ReportPanel extends javax.swing.JPanel {
 
     private void initProcessors() {
         int i = 0;
-        for (Processor processor : Lookup.getDefault().lookupAll(Processor.class)) {
+        Collection<? extends Processor> processors = Lookup.getDefault().lookupAll(Processor.class);
+        for (Processor processor : processors) {
             JRadioButton radio = new JRadioButton(processor.getDisplayName());
-            radio.setSelected(i == 0);
             radio.putClientProperty(PROCESSOR_KEY, processor);
             processorGroup.add(radio);
-            GridBagConstraints constraints = new GridBagConstraints(0, i++, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
+            GridBagConstraints constraints = new GridBagConstraints(0, i++, 1, 1, 0, (i == processors.size() ? 1.0 : 0.0), GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
             processorPanel.add(radio, constraints);
         }
     }
@@ -458,13 +459,19 @@ public class ReportPanel extends javax.swing.JPanel {
 
             @Override
             public void run() {
+                boolean first = true;
                 for (Enumeration<AbstractButton> enumeration = processorGroup.getElements(); enumeration.hasMoreElements();) {
                     AbstractButton radioButton = enumeration.nextElement();
                     Processor p = (Processor) radioButton.getClientProperty(PROCESSOR_KEY);
                     //Enabled
                     ProcessorUI pui = getProcessorUI(p);
                     if (pui != null) {
-                        radioButton.setVisible(pui.isValid(containers));
+                        boolean isValid = pui.isValid(containers);
+                        radioButton.setVisible(isValid);
+                        if (isValid) {
+                            radioButton.setSelected(first);
+                            first = false;
+                        }
                     }
                 }
             }
