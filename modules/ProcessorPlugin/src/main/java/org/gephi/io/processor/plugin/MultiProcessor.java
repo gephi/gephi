@@ -69,10 +69,14 @@ public class MultiProcessor extends DefaultProcessor implements Processor {
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         for (ContainerUnloader container : containers) {
-            workspace = pc.newWorkspace(pc.getCurrentProject());
-            pc.openWorkspace(workspace);
+            if(workspace != null) {
+                pc.openWorkspace(workspace);
+            } else {
+                workspace = pc.newWorkspace(pc.getCurrentProject());
+            }
             processConfiguration(container, workspace);
             process(container, workspace);
+            workspace = null;
         }
 
         //Clean
