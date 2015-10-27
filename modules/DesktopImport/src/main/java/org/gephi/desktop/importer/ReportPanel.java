@@ -444,13 +444,10 @@ public class ReportPanel extends javax.swing.JPanel {
 
     private void initProcessors() {
         int i = 0;
-        Collection<? extends Processor> processors = Lookup.getDefault().lookupAll(Processor.class);
-        for (Processor processor : processors) {
+        for (Processor processor : Lookup.getDefault().lookupAll(Processor.class)) {
             JRadioButton radio = new JRadioButton(processor.getDisplayName());
             radio.putClientProperty(PROCESSOR_KEY, processor);
             processorGroup.add(radio);
-            GridBagConstraints constraints = new GridBagConstraints(0, i++, 1, 1, 0, (i == processors.size() ? 1.0 : 0.0), GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
-            processorPanel.add(radio, constraints);
         }
     }
 
@@ -459,7 +456,8 @@ public class ReportPanel extends javax.swing.JPanel {
 
             @Override
             public void run() {
-                boolean first = true;
+
+                List<AbstractButton> validButtons = new ArrayList<AbstractButton>();
                 for (Enumeration<AbstractButton> enumeration = processorGroup.getElements(); enumeration.hasMoreElements();) {
                     AbstractButton radioButton = enumeration.nextElement();
                     Processor p = (Processor) radioButton.getClientProperty(PROCESSOR_KEY);
@@ -467,12 +465,17 @@ public class ReportPanel extends javax.swing.JPanel {
                     ProcessorUI pui = getProcessorUI(p);
                     if (pui != null) {
                         boolean isValid = pui.isValid(containers);
-                        radioButton.setVisible(isValid);
                         if (isValid) {
-                            radioButton.setSelected(first);
-                            first = false;
+                            validButtons.add(radioButton);
                         }
                     }
+                }
+
+                int i = 0;
+                for (AbstractButton radio : validButtons) {
+                    radio.setSelected(i == 0);
+                    GridBagConstraints constraints = new GridBagConstraints(0, i++, 1, 1, 0, (i == validButtons.size() ? 1.0 : 0.0), GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
+                    processorPanel.add(radio, constraints);
                 }
             }
         });
