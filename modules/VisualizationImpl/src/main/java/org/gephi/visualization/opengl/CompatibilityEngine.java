@@ -392,16 +392,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (graphIO.isDragging()) {
             return;
         }
-//
-//
-//        /*List<ModelImpl> newSelectedObjects = null;
-//         List<ModelImpl> unSelectedObjects = null;
-//
-//         if (vizEventManager.hasSelectionListeners()) {
-//         newSelectedObjects = new ArrayList<ModelImpl>();
-//         unSelectedObjects = new ArrayList<ModelImpl>();
-//         }*/
-//
+
         boolean someSelection = false;
         for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext();) {
             NodeModel obj = itr.next();
@@ -416,42 +407,6 @@ public class CompatibilityEngine extends AbstractEngine {
             }
         }
 
-//
-//        for (ModelClass objClass : selectableClasses) {
-//            forceUnselect = objClass.isAloneSelection() && someSelection;
-//            for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(objClass.getClassId()); itr.hasNext();) {
-//                ModelImpl obj = itr.next();
-//                if (!forceUnselect && isUnderMouse(obj) && currentSelectionArea.select(obj.getObj())) {
-//                    if (!objClass.isAloneSelection()) {  //avoid potatoes to select
-//                        someSelection = true;
-//                    }
-//                    if (!obj.isSelected()) {
-//                        //New selected
-//                        obj.setSelected(true);
-//                        /*if (vizEventManager.hasSelectionListeners()) {
-//                         newSelectedObjects.add(obj);
-//                         }*/
-//                        selectedObjects[i].add(obj);
-//                    }
-//                    obj.selectionMark = markTime2;
-//                } else if (currentSelectionArea.unselect(obj.getObj())) {
-//                    if (forceUnselect) {
-//                        obj.setAutoSelect(false);
-//                    } /*else if (vizEventManager.hasSelectionListeners() && obj.isSelected()) {
-//                     unSelectedObjects.add(obj);
-//                     }*/
-//                }
-//            }
-//
-//            for (Iterator<ModelImpl> itr = selectedObjects[i].iterator(); itr.hasNext();) {
-//                ModelImpl o = itr.next();
-//                if (o.selectionMark != markTime2) {
-//                    itr.remove();
-//                    o.setSelected(false);
-//                }
-//            }
-//        }
-//
         if (vizController.getVizModel().isLightenNonSelectedAuto()) {
 
             if (vizConfig.isLightenNonSelectedAnimation()) {
