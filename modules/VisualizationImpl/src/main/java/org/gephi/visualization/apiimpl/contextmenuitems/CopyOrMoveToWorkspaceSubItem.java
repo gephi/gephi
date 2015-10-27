@@ -46,7 +46,9 @@ import javax.swing.Icon;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
 import org.openide.util.Lookup;
@@ -54,10 +56,10 @@ import org.openide.util.NbBundle;
 
 public class CopyOrMoveToWorkspaceSubItem extends BasicItem {
 
-    private Workspace workspace;
-    private boolean canExecute;
-    private int type;
-    private int position;
+    private final Workspace workspace;
+    private final boolean canExecute;
+    private final int type;
+    private final int position;
     private final boolean copy;
 
     @Override
@@ -84,9 +86,6 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem {
 
     @Override
     public void execute() {
-        if (workspace == null) {
-            workspace = Lookup.getDefault().lookup(ProjectControllerUI.class).newWorkspace();
-        }
         if (copy) {
             copyToWorkspace(workspace);
         } else {
@@ -124,25 +123,24 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem {
     }
 
     public void copyToWorkspace(Workspace workspace) {
-//        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-//        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
-//        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-//
-//        Workspace currentWorkspace = projectController.getCurrentWorkspace();
-//        AttributeModel sourceAttributeModel = attributeController.getModel(currentWorkspace);
-//        AttributeModel destAttributeModel = attributeController.getModel(workspace);
-//        destAttributeModel.mergeModel(sourceAttributeModel);
-//
-//        //Copy the TImeFormat
-//        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-//        dynamicController.setTimeFormat(dynamicController.getModel(currentWorkspace).getTimeFormat(), workspace);
-//
-//        GraphModel sourceModel = graphController.getModel(currentWorkspace);
-//        GraphModel destModel = graphController.getModel(workspace);
-//        Graph destGraph = destModel.getHierarchicalGraphVisible();
-//        Graph sourceGraph = sourceModel.getHierarchicalGraphVisible();
-//
-//        destModel.pushNodes(sourceGraph, nodes);
+        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+        Workspace currentWorkspace = projectController.getCurrentWorkspace();
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        
+        GraphModel graphModel;
+        if (workspace == null) {
+            workspace = Lookup.getDefault().lookup(ProjectControllerUI.class).newWorkspace();
+            graphModel = graphController.getGraphModel(workspace);
+            
+            GraphModel currentGraphModel = graphController.getGraphModel(currentWorkspace);
+            graphModel.setConfiguration(currentGraphModel.getConfiguration());
+            graphModel.setTimeFormat(currentGraphModel.getTimeFormat());
+            graphModel.setTimeZone(currentGraphModel.getTimeZone());
+        } else {
+            graphModel = graphController.getGraphModel(workspace);
+        }
+        
+        graphModel.bridge().copyNodes(nodes);
     }
 
     public void moveToWorkspace(Workspace workspace) {
