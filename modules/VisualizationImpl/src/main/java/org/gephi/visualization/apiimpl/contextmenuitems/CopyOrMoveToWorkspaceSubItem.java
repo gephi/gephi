@@ -43,6 +43,7 @@ package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import java.util.Arrays;
 import javax.swing.Icon;
+import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -54,7 +55,7 @@ import org.gephi.project.api.WorkspaceInformation;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-public class CopyOrMoveToWorkspaceSubItem extends BasicItem {
+public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesManipulator {
 
     private final Workspace workspace;
     private final boolean canExecute;

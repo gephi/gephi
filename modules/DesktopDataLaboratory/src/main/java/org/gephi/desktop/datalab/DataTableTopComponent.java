@@ -250,6 +250,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(DataTableTopComponent.this);
 
         dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
+        if (dataTablesModel == null) {
+            workspace.add(dataTablesModel = new DataTablesModel(workspace));
+        }
         nodeAvailableColumnsModel = dataTablesModel.getNodeAvailableColumnsModel();
         edgeAvailableColumnsModel = dataTablesModel.getEdgeAvailableColumnsModel();
         hideTable();
