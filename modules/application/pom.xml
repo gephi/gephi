@@ -444,7 +444,7 @@
     <build>
         <plugins>
             
-            <!-- Disable the ZIP goal in the non-deployment or release mode. Also set up the location of the gephi.conf -->
+            <!-- Disable the ZIP goal. Also set up the location of the gephi.conf -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
@@ -513,10 +513,6 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>nbm-maven-plugin</artifactId>
                         <executions>
-                            <execution>
-                                <id>default-standalone-zip</id>
-                                <phase>package</phase>       
-                            </execution>
                             <execution>
                                 <id>autoupdate</id>
                                 <goals>
@@ -606,6 +602,28 @@
                         </executions>
                     </plugin>
 
+                    <!-- Assembler to produce linux's tar.gz -->
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>linux-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <tarLongFileMode>gnu</tarLongFileMode>
+                                    <finalName>${brandingToken}-${project.version}</finalName>
+                                    <descriptors>
+                                        <descriptor>src/assemble/linux.xml</descriptor>
+                                    </descriptors>
+                                    <attach>false</attach>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                     <!-- Attach parent's sources artifact -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -623,6 +641,22 @@
                                             <file>${basedir}/../../target/${brandingToken}-${project.version}-sources.tar.gz</file>
                                             <type>tar.gz</type>
                                             <classifier>sources</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>attach-linux</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${basedir}/target/${brandingToken}-${project.version}-linux.tar.gz</file>
+                                            <type>tar.gz</type>
+                                            <classifier>linux</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
@@ -733,6 +767,7 @@
                                         <artifact>
                                             <file>${project.build.directory}/${project.artifactId}-${project.version}.dmg</file>
                                             <type>dmg</type>
+                                            <classifier>macos</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
@@ -871,6 +906,7 @@
                                         <artifact>
                                             <file>${project.build.directory}/${project.artifactId}-${project.version}.setup.exe</file>
                                             <type>exe</type>
+                                            <classifier>windows</classifier>
                                         </artifact>
                                     </artifacts>
                                 </configuration>
