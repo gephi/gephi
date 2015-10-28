@@ -42,6 +42,9 @@
 package org.gephi.visualization.swing;
 
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.newt.event.MouseAdapter;
+import com.jogamp.newt.event.MouseEvent;
+import com.jogamp.newt.opengl.GLWindow;
 import java.awt.Color;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -53,8 +56,6 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.glu.GLU;
 import java.awt.Component;
 import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.nio.DoubleBuffer;
 import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.VizArchitecture;
@@ -96,6 +97,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     protected FloatBuffer modelMatrix = Buffers.newDirectFloatBuffer(16);
     protected IntBuffer viewport = Buffers.newDirectIntBuffer(4);
     protected GraphicalConfiguration graphicalConfiguration;
+    protected GLWindow window;
     public Component graphComponent;
     protected AbstractEngine engine;
     protected Scheduler scheduler;
@@ -124,7 +126,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         cameraTarget = vizController.getVizConfig().getDefaultCameraTarget();
 
         //Mouse events
-        if (graphComponent != null && vizController.getVizConfig().isReduceFpsWhenMouseOut()) {
+        if (window != null && vizController.getVizConfig().isReduceFpsWhenMouseOut()) {
             final int minVal = vizController.getVizConfig().getReduceFpsWhenMouseOutValue();
             final int maxVal = 30;
             graphMouseAdapter = new MouseAdapter() {
@@ -155,8 +157,8 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
                     scheduler.setFps(target);
                 }
             };
-            graphComponent.addMouseListener(graphMouseAdapter);
-        } else if (graphComponent != null && vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
+            window.addMouseListener(graphMouseAdapter);
+        } else if (window != null && vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
             graphMouseAdapter = new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
@@ -168,7 +170,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
                     engine.pauseDisplay();
                 }
             };
-            graphComponent.addMouseListener(graphMouseAdapter);
+            window.addMouseListener(graphMouseAdapter);
         }
     }
 
@@ -388,7 +390,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     @Override
     public void destroy() {
         if (graphMouseAdapter != null) {
-            graphComponent.removeMouseListener(graphMouseAdapter);
+            window.removeMouseListener(graphMouseAdapter);
         }
         drawable.destroy();
     }

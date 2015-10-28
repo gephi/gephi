@@ -41,14 +41,11 @@
  */
 package org.gephi.visualization.swing;
 
+import com.jogamp.newt.event.MouseEvent;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import javax.swing.SwingUtilities;
 import org.gephi.lib.gleem.linalg.MathUtil;
 import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.GraphLimits;
@@ -102,45 +99,32 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     public void startMouseListening() {
         stopMouseListening();
 
-        if (vizController.getVizConfig().isCameraControlEnable()) {
-            graphComponent.addMouseListener(this);
-            graphComponent.addMouseWheelListener(this);
-        }
-
-        if (vizController.getVizConfig().isSelectionEnable()) {
-            graphComponent.addMouseMotionListener(this);
-        }
+        graphDrawable.window.addMouseListener(this);
     }
 
     @Override
     public void stopMouseListening() {
-        graphComponent.removeMouseListener(this);
-        graphComponent.removeMouseMotionListener(this);
-        graphComponent.removeMouseWheelListener(this);
+        graphDrawable.window.removeMouseListener(this);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        float globalScale = graphDrawable.getGlobalScale();
-        Point componentLocation = graphDrawable.getLocationOnScreen();
-        Point location = e.getLocationOnScreen();
-        float x = globalScale * (location.x - componentLocation.x);
-        float y = globalScale * (location.y - componentLocation.y);
+        float x = e.getX();
+        float y = graphDrawable.viewport.get(3) - e.getY() - 1;
 
-        x = (int) x;
-        y = graphDrawable.viewport.get(3) - (int) y - 1;
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            if (vizController.getVizConfig().isCameraControlEnable()) {
+                //Save the coordinate of the start
+                rightButtonMoving[0] = x;
+                rightButtonMoving[1] = y;
 
-        if (SwingUtilities.isRightMouseButton(e)) {
-            //Save the coordinate of the start
-            rightButtonMoving[0] = x;
-            rightButtonMoving[1] = y;
-
-            //Change cursor
-            graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                //Change cursor
+                graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+            }
 
             //Dispatch event
             vizEventManager.mouseRightPress();
-        } else if (SwingUtilities.isLeftMouseButton(e)) {
+        } else if (e.getButton() == MouseEvent.BUTTON1) {
             //Save the coordinate of the start
             leftButtonMoving[0] = x;
             leftButtonMoving[1] = y;
@@ -154,14 +138,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     @Override
     public void mouseReleased(MouseEvent e) {
         float globalScale = graphDrawable.getGlobalScale();
-        Point componentLocation = graphDrawable.getLocationOnScreen();
-        Point location = e.getLocationOnScreen();
-
-        float x = globalScale * (location.x - componentLocation.x);
-        float y = globalScale * (location.y - componentLocation.y);
-
-        x = (int) x;
-        y = graphDrawable.viewport.get(3) - (int) y - 1;
+        float x = e.getX();
+        float y = graphDrawable.viewport.get(3) - e.getY() - 1;
 
         //Disable the right button moving
         rightButtonMoving[0] = -1;
@@ -205,13 +183,9 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     @Override
     public void mouseMoved(MouseEvent e) {
         float globalScale = graphDrawable.getGlobalScale();
-        Point componentLocation = graphDrawable.getLocationOnScreen();
-        Point location = e.getLocationOnScreen();
-        float x = globalScale * (location.x - componentLocation.x);
-        float y = globalScale * (location.y - componentLocation.y);
 
-        x = (int) x;
-        y = graphDrawable.viewport.get(3) - (int) y - 1;
+        float x = e.getX();
+        float y = graphDrawable.viewport.get(3) - e.getY() - 1;
 
         // Only update if position has changed
         if (mousePosition[0] != x || mousePosition[1] != y) {
@@ -223,7 +197,9 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             mousePosition3d[0] = (float) ((x - graphDrawable.viewport.get(2) / 2.0) / -marker[0]) + graphDrawable.cameraTarget[0] / globalScale;       //Set to centric coordinates
             mousePosition3d[1] = (float) ((y - graphDrawable.viewport.get(3) / 2.0) / -marker[1]) + graphDrawable.cameraTarget[1] / globalScale;
 
-            engine.getScheduler().requireUpdateSelection();
+            if (vizController.getVizConfig().isSelectionEnable()) {
+                engine.getScheduler().requireUpdateSelection();
+            }
             vizEventManager.mouseMove();
         }
     }
@@ -233,38 +209,39 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (SwingUtilities.isLeftMouseButton(e)) {
-            if (vizController.getVizConfig().isSelectionEnable() && engine.isRectangleSelection()) {
-                Rectangle r = (Rectangle) engine.getCurrentSelectionArea();
-                boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0 || (e.getModifiers() & InputEvent.META_MASK) != 0;
-                r.setCtrl(ctrl);
-            }
-            engine.getScheduler().requireMouseClick();
-            vizEventManager.mouseLeftClick();
-        } else if (SwingUtilities.isRightMouseButton(e)) {
-            if (vizController.getVizConfig().isContextMenu()) {
-                GraphContextMenu popupMenu = new GraphContextMenu();
-                float globalScale = graphDrawable.getGlobalScale();
-                int x = (int) (mousePosition[0] / globalScale);
-                int y = (int) ((graphDrawable.viewport.get(3) - mousePosition[1]) / globalScale);
-                popupMenu.getMenu().show(graphDrawable.getGraphComponent(), x, y);
-            }
-            vizEventManager.mouseRightClick();
-        } else if (SwingUtilities.isMiddleMouseButton(e)) {
-            vizEventManager.mouseMiddleClick();
+        switch (e.getButton()) {
+            case MouseEvent.BUTTON1:
+                if (vizController.getVizConfig().isSelectionEnable() && engine.isRectangleSelection()) {
+                    Rectangle r = (Rectangle) engine.getCurrentSelectionArea();
+                    boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0 || (e.getModifiers() & InputEvent.META_MASK) != 0;
+                    r.setCtrl(ctrl);
+                }
+                engine.getScheduler().requireMouseClick();
+                vizEventManager.mouseLeftClick();
+                break;
+            case MouseEvent.BUTTON3:
+                if (vizController.getVizConfig().isContextMenu()) {
+                    GraphContextMenu popupMenu = new GraphContextMenu();
+                    float globalScale = graphDrawable.getGlobalScale();
+                    int x = (int) (mousePosition[0] / globalScale);
+                    int y = (int) ((graphDrawable.viewport.get(3) - mousePosition[1]) / globalScale);
+                    popupMenu.getMenu().show(graphDrawable.getGraphComponent(), x, y);
+                }
+                vizEventManager.mouseRightClick();
+                break;
+            case MouseEvent.BUTTON2:
+                vizEventManager.mouseMiddleClick();
+                break;
+            default:
         }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
         float globalScale = graphDrawable.getGlobalScale();
-        Point componentLocation = graphDrawable.getLocationOnScreen();
-        Point location = e.getLocationOnScreen();
-        float x = globalScale * (location.x - componentLocation.x);
-        float y = globalScale * (location.y - componentLocation.y);
 
-        x = (int) x;
-        y = graphDrawable.viewport.get(3) - (int) y - 1;
+        float x = e.getX();
+        float y = graphDrawable.viewport.get(3) - e.getY() - 1;
 
         if (rightButtonMoving[0] != -1) {
             //The right button is pressed
@@ -330,17 +307,18 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     }
 
     @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
-        if (e.getUnitsToScroll() == 0) {
+    public void mouseWheelMoved(MouseEvent e) {
+        float scroll = e.getRotation()[1];
+        if (scroll == 0f || !vizController.getVizConfig().isCameraControlEnable()) {
             return;
         }
 
-        boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0;
+        boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0 || (e.getModifiers() & InputEvent.META_MASK) != 0;
         if (ctrl) {
             SelectionManager manager = VizController.getInstance().getSelectionManager();
             if (!manager.isRectangleSelection()) {
                 int s = manager.getMouseSelectionDiameter();
-                s += -e.getUnitsToScroll() * 2;
+                s += scroll * 2;
                 s = Math.min(1000, s);
                 s = Math.max(1, s);
                 manager.setMouseSelectionDiameter(s);
@@ -350,7 +328,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
         //Attributes
         float globalScale = graphDrawable.getGlobalScale();
-        float way = -e.getUnitsToScroll() / Math.abs(e.getUnitsToScroll());
+        float way = scroll / Math.abs(scroll);
         float cameraLocation[] = graphDrawable.getCameraLocation();
         float cameraTarget[] = graphDrawable.getCameraTarget();
         float markerX = (float) graphDrawable.getDraggingMarkerX();

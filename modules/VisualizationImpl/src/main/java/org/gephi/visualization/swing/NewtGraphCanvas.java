@@ -75,6 +75,7 @@ public class NewtGraphCanvas extends GLAbstractListener {
 //        glCanvas.setMinimumSize(new Dimension(0, 0));   //Fix Canvas resize Issue
         //Basic init
         graphComponent = (Component) glCanvas;
+        window = glWindow;
 //        graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         //False lets the components appear on top of the canvas
