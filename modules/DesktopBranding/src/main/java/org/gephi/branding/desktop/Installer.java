@@ -41,11 +41,16 @@
  */
 package org.gephi.branding.desktop;
 
+import java.awt.Color;
 import java.awt.Desktop;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -57,9 +62,14 @@ import org.openide.LifecycleManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.modules.ModuleInstall;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
+import org.openide.windows.IOColorLines;
+import org.openide.windows.IOProvider;
+import org.openide.windows.InputOutput;
+import org.openide.windows.OutputWriter;
 import org.openide.windows.WindowManager;
 
 /**
@@ -107,6 +117,9 @@ public class Installer extends ModuleInstall {
                 }.start();
             }
         });
+
+        //Output logger
+        installOutputLogger();
     }
 
     private void initGephi() {
@@ -195,6 +208,78 @@ public class Installer extends ModuleInstall {
                 }
             } catch (Exception ex) {
                 System.out.println("Error while checking latest Gephi version");
+            }
+        }
+    }
+
+    private void installOutputLogger() {
+        Logger.getLogger("").addHandler(new OutputHandler());
+    }
+
+    private static class OutputHandler extends Handler {
+
+        private final InputOutput io;
+        private final OutputWriter outputWriter;
+        private final MsgFormatter formatter;
+
+        public OutputHandler() {
+            io = IOProvider.getDefault().getIO("Log", true);
+            outputWriter = io.getOut();
+            formatter = new MsgFormatter();
+        }
+
+        @Override
+        public void publish(LogRecord record) {
+            if ((record.getMessage() == null || record.getMessage().isEmpty()) && record.getThrown() == null) {
+                //Nothing to log
+                return;
+            }
+
+            Color color = Color.BLACK;
+            if (record.getLevel().equals(Level.WARNING)) {
+                color = Color.ORANGE;
+            } else if (record.getLevel().equals(Level.SEVERE)) {
+                color = Color.RED;
+            }
+
+            String msg = formatter.format(record);
+            if (IOColorLines.isSupported(io)) {
+                try {
+                    IOColorLines.println(io, msg, color);
+                } catch (IOException ex) {
+                    outputWriter.println(msg);
+                }
+            } else {
+                outputWriter.println(msg);
+            }
+        }
+
+        @Override
+        public void flush() {
+            outputWriter.flush();
+        }
+
+        @Override
+        public void close() throws SecurityException {
+            outputWriter.close();
+        }
+
+        public class MsgFormatter extends Formatter {
+
+            @Override
+            public synchronized String format(LogRecord record) {
+                String formattedMessage = formatMessage(record);
+                String throwable = "";
+                String outputFormat = "[%1$s] %2$s %3$s"; //Also adding for logging exceptions
+                if (record.getThrown() != null) {
+                    StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw);
+                    pw.println();
+                    record.getThrown().printStackTrace(pw);
+                    pw.close();
+                    throwable = sw.toString();
+                }
+                return String.format(outputFormat, record.getLevel().getName(), formattedMessage, throwable);
             }
         }
     }
