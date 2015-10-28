@@ -1,21 +1,34 @@
+sudo: false
 language: java
 jdk:
   - oraclejdk8
+
 branches:
   only:
     - master
 
+addons:
+  apt:
+    packages:
+    - wine
+    - build-essential
+    - cmake
+    - libboost-all-dev
+    - liblzma-dev
+    - genisoimage
+
+cache:
+  directories:
+    - $HOME/.m2
+
 before_install:
-  # Update APT
-  - sudo apt-get update
- 
-  # Install genisoimage (dmg creation tool)
-  - sudo apt-get install genisoimage
+  # Build & install innoextract
+  - git clone --branch 1.5 https://github.com/dscharrer/innoextract.git
+  - cd innoextract && mkdir -p build && cd build && cmake ..
+  - make && export PATH=$PATH:$PWD
+  - cd ../..
 
   # Prepare environemnt for Inno Setup
-  - sudo add-apt-repository --yes ppa:arx/release
-  - sudo apt-get update -d
-  - sudo apt-get install -y -q innoextract wine
   - wine --version
   - innoextract --version
 
@@ -26,16 +39,15 @@ install:
   - ./innoinstall.sh
   - printf '#!/bin/sh\nunset DISPLAY\nscriptname=$1\n[ -f \"$scriptname\" ] && scriptname=$(winepath -w \"$scriptname\")\nwine \"C:\inno\ISCC.exe\" \"$scriptname\" \"/q\"' > iscc
   - chmod +x ./iscc
-  - sudo cp ./iscc /usr/local/bin/iscc
+  - export PATH=$PATH:$PWD
 
-  # Install ReplaceVistaIcon.exe
+  # Install replacevistaicon
   - cp modules/application/src/main/app-resources/ReplaceVistaIcon.exe ~/".wine/drive_c/ReplaceVistaIcon.exe"
   - printf '#!/bin/sh\nunset DISPLAY\nexecutable=$1\niconfile=$2\niconid=$3\nwine "C:\ReplaceVistaIcon.exe" "$executable" "$iconfile" "$iconid"' > replacevistaicon
   - chmod +x ./replacevistaicon
-  - sudo cp ./replacevistaicon /usr/local/bin/replacevistaicon
 
   # Setup Maven's settings.xml
-  - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server><server><id>netbeans</id><configuration><httpConfiguration><get><readTimeout>300000</readTimeout><connectionTimeout>300000</connectionTimeout></get></httpConfiguration></configuration></server></servers></settings>" > ~/settings.xml
+  - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server><server><id>netbeans</id></server></servers></settings>" > ~/settings.xml
 
 script:
   - travis_retry mvn -q --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true clean deploy -P deployment,create-dmg,create-exe
