@@ -530,9 +530,10 @@
             
             <build>
                 <plugins>
-                    <!-- Enable the standard deploy phase -->
+                    <!-- Enable the standard install phase -->
                     <plugin>
-                        <artifactId>maven-deploy-plugin</artifactId>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-install-plugin</artifactId>
                         <configuration>
                             <skip>false</skip>
                         </configuration>
