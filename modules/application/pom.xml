@@ -460,6 +460,29 @@
                 </executions>
             </plugin>
             
+            <!-- Avoid jar goal -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Do not generate a source jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <skipSource>true</skipSource>
+                </configuration>
+            </plugin>
+
             <!-- Copy ressources gephi.conf and Info.plist with filtering (replacing 'project.version' by the actual version -->
             <plugin> 
                 <artifactId>maven-resources-plugin</artifactId> 
@@ -507,22 +530,12 @@
             
             <build>
                 <plugins>
-                    
-                    <!-- NBM Plugin settings. Enable the zip and autoupdate generation -->
+                    <!-- Enable the standard deploy phase -->
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>nbm-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>autoupdate</id>
-                                <goals>
-                                    <goal>autoupdate</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/site</outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
                     </plugin>
                     
                     <!-- Permits NbModuleSuite to be run in integration-test phase: -->
@@ -534,29 +547,6 @@
                                 <all.clusters>${all.clusters}</all.clusters>
                                 <branding.token>${brandingToken}</branding.token>
                             </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                    
-                    <!-- Avoid jar goal -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>none</phase>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <!-- Do not generate a source jar -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <configuration>
-                            <skipSource>true</skipSource>
                         </configuration>
                     </plugin>
 
@@ -581,27 +571,72 @@
                             </execution>
                         </executions>
                     </plugin>
-                    
-                    <!-- Copy parent's site into target/site -->
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile used along with deployment to create the autoupdate site -->
+        <profile>
+            <id>create-autoupdate</id>
+            <build>
+                <plugins>
+                    <!-- NBM Plugin settings. Enable the autoupdate generation -->
                     <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>nbm-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <phase>site</phase>
-                                <configuration>
-                                    <target>
-                                        <copy todir="${project.build.directory}/site">
-                                            <fileset dir="${basedir}/../../target/site"/>
-                                        </copy>
-                                    </target>
-                                </configuration>
+                                <id>autoupdate</id>
                                 <goals>
-                                    <goal>run</goal>
+                                    <goal>autoupdate</goal>
                                 </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/site</outputDirectory>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
 
+        <!-- Profile used along with deployment to create the sources artifact -->
+        <profile>
+            <id>create-sources</id>
+            <build>
+                <plugins>
+                    <!-- Attach parent's sources artifact -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${basedir}/../../target/${brandingToken}-${project.version}-sources.tar.gz</file>
+                                            <type>tar.gz</type>
+                                            <classifier>sources</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile used along with deployment to create the tar.gz artifact -->
+        <profile>
+            <id>create-targz</id>
+            <build>
+                <plugins>
                     <!-- Assembler to produce linux's tar.gz -->
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>
@@ -624,27 +659,11 @@
                         </executions>
                     </plugin>
 
-                    <!-- Attach parent's sources artifact -->
+                    <!-- Attach tar.gz artifact -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>build-helper-maven-plugin</artifactId>
                         <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>attach-artifact</goal>
-                                </goals>
-                                <configuration>
-                                    <artifacts>
-                                        <artifact>
-                                            <file>${basedir}/../../target/${brandingToken}-${project.version}-sources.tar.gz</file>
-                                            <type>tar.gz</type>
-                                            <classifier>sources</classifier>
-                                        </artifact>
-                                    </artifacts>
-                                </configuration>
-                            </execution>
                             <execution>
                                 <id>attach-linux</id>
                                 <phase>package</phase>
@@ -922,6 +941,26 @@
             <id>push-site</id>
             <build>
                 <plugins>
+                    <!-- Copy parent's site into target/site -->
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>site</phase>
+                                <configuration>
+                                    <target>
+                                        <copy todir="${project.build.directory}/site">
+                                            <fileset dir="${basedir}/../../target/site"/>
+                                        </copy>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                      <!-- Publish site folder to GitHub's gh-pages branch -->
                     <plugin>
                         <groupId>com.github.github</groupId>

@@ -1,7 +1,8 @@
 sudo: false
 language: java
-jdk:
-  - oraclejdk8
+os:
+  - linux
+  - osx
 
 branches:
   only:
@@ -15,7 +16,6 @@ addons:
     - cmake
     - libboost-all-dev
     - liblzma-dev
-    - genisoimage
 
 cache:
   directories:
@@ -23,31 +23,21 @@ cache:
 
 before_install:
   # Build & install innoextract
-  - git clone --branch 1.5 https://github.com/dscharrer/innoextract.git
-  - cd innoextract && mkdir -p build && cd build && cmake ..
-  - make && export PATH=$PATH:$PWD
-  - cd ../..
-
-  # Prepare environemnt for Inno Setup
-  - wine --version
-  - innoextract --version
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then git clone --branch 1.5 https://github.com/dscharrer/innoextract.git;fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd innoextract && mkdir -p build && cd build && cmake .. && make && export PATH=$PATH:$PWD && cd ../..;fi
 
 install:
   # Install InnoSetup
-  - printf '#!/bin/bash\nrm -rf /tmp/inno\nmkdir /tmp/inno\ncd /tmp/inno\nwget -O is.exe http://files.jrsoftware.org/is/5/isetup-5.5.5.exe\ninnoextract is.exe\nmkdir -p ~/\".wine/drive_c/inno\"\ncp -a app/* ~/\".wine/drive_c/inno\"' > innoinstall.sh
-  - chmod +x ./innoinstall.sh
-  - ./innoinstall.sh
-  - printf '#!/bin/sh\nunset DISPLAY\nscriptname=$1\n[ -f \"$scriptname\" ] && scriptname=$(winepath -w \"$scriptname\")\nwine \"C:\inno\ISCC.exe\" \"$scriptname\" \"/q\"' > iscc
-  - chmod +x ./iscc
-  - export PATH=$PATH:$PWD
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then printf '#!/bin/bash\nrm -rf /tmp/inno\nmkdir /tmp/inno\ncd /tmp/inno\nwget -O is.exe http://files.jrsoftware.org/is/5/isetup-5.5.5.exe\ninnoextract is.exe\nmkdir -p ~/\".wine/drive_c/inno\"\ncp -a app/* ~/\".wine/drive_c/inno\"' > innoinstall.sh && chmod +x ./innoinstall.sh && ./innoinstall.sh;fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then printf '#!/bin/sh\nexport DISPLAY=\":0.0\"\nscriptname=$1\n[ -f \"$scriptname\" ] && scriptname=$(winepath -w \"$scriptname\")\nwine \"C:\inno\ISCC.exe\" \"$scriptname\" \"/q\"' > iscc && chmod +x ./iscc && export PATH=$PATH:$PWD;fi
 
-  # Install replacevistaicon
-  - cp modules/application/src/main/app-resources/ReplaceVistaIcon.exe ~/".wine/drive_c/ReplaceVistaIcon.exe"
-  - printf '#!/bin/sh\nunset DISPLAY\nexecutable=$1\niconfile=$2\niconid=$3\nwine "C:\ReplaceVistaIcon.exe" "$executable" "$iconfile" "$iconid"' > replacevistaicon
-  - chmod +x ./replacevistaicon
+  # Replace icon
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cp modules/application/src/main/app-resources/ReplaceVistaIcon.exe ~/".wine/drive_c/ReplaceVistaIcon.exe" && printf '#!/bin/sh\nunset DISPLAY\nexecutable=$1\niconfile=$2\niconid=$3\nwine "C:\ReplaceVistaIcon.exe" "$executable" "$iconfile" "$iconid"' > replacevistaicon && chmod +x ./replacevistaicon;fi
 
+after_install:
   # Setup Maven's settings.xml
   - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server><server><id>netbeans</id></server></servers></settings>" > ~/settings.xml
 
 script:
-  - travis_retry mvn --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true clean deploy -P deployment,create-dmg,create-exe
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then travis_retry mvn --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,create-exe,create-targz;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then travis_retry mvn --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true clean deploy -P deployment,create-dmg;fi

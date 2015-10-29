@@ -983,6 +983,14 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Skip the standard deploy phase -->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     
@@ -999,7 +1007,11 @@
                 <gephi.javac.showWarnings>false</gephi.javac.showWarnings>
                 <gephi.javac.xlint>-Xlint:none</gephi.javac.xlint>
             </properties>
-            
+        </profile>
+        
+        <!-- Profile to create Javadoc -->
+        <profile>
+            <id>create-javadoc</id>
             <build>
                 <plugins>
                     <!-- Javadoc settings -->
@@ -1039,7 +1051,40 @@
                             </execution>
                         </executions>
                     </plugin>
-            
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile activated to create modules' artifacts (jar, nbm) -->
+        <profile>
+            <id>create-modules</id>
+            <build>
+                <plugins>
+                    <!-- Enable the standard deploy phase -->
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </plugin>
+
+                    <!-- Enable the standard install phase -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-install-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile activated to create sources artifact -->
+        <profile>
+            <id>create-sources</id>
+            <build>
+                <plugins>
                     <!-- Sources plugin -->
                     <plugin>
                         <artifactId>maven-source-plugin</artifactId>
@@ -1091,25 +1136,7 @@
             <id>release-extra</id>
             <build>
                 <plugins>
-                    <!-- Skip the standard deploy phase -->
-                    <plugin>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
                     
-                    <!-- Skip the standard install phase -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-install-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>default-install</id>
-                                <phase>none</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
                     
                     <!-- Skip Javadoc creation -->
                     <plugin>
