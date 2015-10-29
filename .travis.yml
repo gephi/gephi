@@ -22,6 +22,9 @@ cache:
     - $HOME/.m2
 
 before_install:
+  # Fix java home path issue on osx (issue #2839)
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export JAVA_HOME=$(/usr/libexec/java_home);fi
+
   # Build & install innoextract
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then git clone --branch 1.5 https://github.com/dscharrer/innoextract.git;fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd innoextract && mkdir -p build && cd build && cmake .. && make && export PATH=$PATH:$PWD && cd ../..;fi
@@ -34,7 +37,7 @@ install:
   # Replace icon
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cp modules/application/src/main/app-resources/ReplaceVistaIcon.exe ~/".wine/drive_c/ReplaceVistaIcon.exe" && printf '#!/bin/sh\nunset DISPLAY\nexecutable=$1\niconfile=$2\niconid=$3\nwine "C:\ReplaceVistaIcon.exe" "$executable" "$iconfile" "$iconid"' > replacevistaicon && chmod +x ./replacevistaicon;fi
 
-after_install:
+before_script:
   # Setup Maven's settings.xml
   - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server><server><id>netbeans</id></server></servers></settings>" > ~/settings.xml
 
