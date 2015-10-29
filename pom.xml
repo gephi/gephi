@@ -987,15 +987,6 @@
 
             <build>
                 <plugins>
-                    <!-- Skip the standard install phase -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-install-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-
                     <!-- Nexus staging, https://oss.sonatype.org/ -->
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
@@ -1005,6 +996,8 @@
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <!-- The create-modules profile overrides this -->
+                            <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -1062,12 +1055,12 @@
             <id>create-modules</id>
             <build>
                 <plugins>
-                    <!-- Enable the standard install phase -->
+                    <!-- Enable artifact deploy -->
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-install-plugin</artifactId>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
                         <configuration>
-                            <skip>false</skip>
+                            <skipNexusStagingDeployMojo>false</skipNexusStagingDeployMojo>
                         </configuration>
                     </plugin>
                 </plugins>
