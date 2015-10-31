@@ -29,6 +29,11 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then git clone --branch 1.5 https://github.com/dscharrer/innoextract.git;fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd innoextract && mkdir -p build && cd build && cmake .. && make && export PATH=$PATH:$PWD && cd ../..;fi
 
+  # OS X keychain init
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in src/travis/certs/dev_id.cer.enc -d -a -out src/travis/certs/dev_id.cer;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in src/travis/certs/dev_id.p12.enc -d -a -out src/travis/certs/dev_id.p12;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./src/travis/add-key.sh;fi
+
 install:
   # Install InnoSetup
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then printf '#!/bin/bash\nrm -rf /tmp/inno\nmkdir /tmp/inno\ncd /tmp/inno\nwget -O is.exe http://files.jrsoftware.org/is/5/isetup-5.5.5.exe\ninnoextract is.exe\nmkdir -p ~/\".wine/drive_c/inno\"\ncp -a app/* ~/\".wine/drive_c/inno\"' > innoinstall.sh && chmod +x ./innoinstall.sh && ./innoinstall.sh;fi
@@ -44,3 +49,7 @@ before_script:
 script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then travis_retry mvn --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,create-exe,create-targz;fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then travis_retry mvn --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.skip=true clean deploy -P deployment,create-dmg;fi
+
+after_script:
+  # Clean OS X keychain
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./src/travis/remove-key.sh;fi
