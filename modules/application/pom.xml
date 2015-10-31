@@ -723,9 +723,9 @@
                                         <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}.icns" file="src/main/app-resources/${brandingToken}.icns" />
                                         <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Info.plist" file="${project.build.directory}/Info.plist"/>
                                 
-                                        <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/bin/${brandingToken}" perm="ugo+rx"/>
-                                
-                                        <symlink link="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/Gephi" resource="../Resources/${brandingToken}/bin/${brandingToken}" failonerror="false" />
+                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/bin/${brandingToken}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS"/>
+                                        <replace file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" token="`dirname &quot;$PRG&quot;`" value="`dirname &quot;$PRG&quot;`&quot;/../Resources/gephi/bin&quot;"/>
+                                        <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" perm="ugo+rx"/>
 
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
                                             <arg value="-fs"/> 
