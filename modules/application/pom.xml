@@ -855,16 +855,16 @@
                                     <target name="replaceWindowsLauncherIcon" description="Replace the icon for the Windows launcher exe">
                                         <!-- Windows -->
                                         <echo message="Replacing icon of Windows launcher executable."/>
-                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true" os="Windows">
+                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true" osfamily="windows">
                                             <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe gephi.ico 0"/>
                                         </exec>
-                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true" os="Windows">
+                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true" osfamily="windows">
                                             <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe gephifile.ico 1"/>
                                         </exec>
-                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true" os="Windows">
+                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true" osfamily="windows">
                                             <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephi.ico 0"/>
                                         </exec>
-                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true" os="Windows">
+                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true" osfamily="windows">
                                             <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephifile.ico 1"/>
                                         </exec>
 
@@ -892,12 +892,13 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
+                                    <target name="createInstaller" description="Create Windows installer with InnoSetup">
+										<echo message="Creating windows installer with InnoSetup"/>
                                         <delete file="${project.artifactId}-${project.version}.setup.exe" failonerror="false"/>
                                         
                                         <!-- Windows -->
-                                        <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe" os="Windows">
-                                            <arg line="/cc '${brandingToken}.iss'" /> 
+                                        <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe" osfamily="windows">
+                                            <arg line="/cc &quot;${brandingToken}.iss&quot;" /> 
                                         </exec>
 
                                         <!-- Linux (assuming the right wine configuration) -->
@@ -910,7 +911,7 @@
                         </executions>
                     </plugin>
                     
-                    <!-- Attach the final DMG for deployment -->
+                    <!-- Attach the final exe installer for deployment -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>build-helper-maven-plugin</artifactId>
