@@ -13,6 +13,7 @@
                 <exclude>**/target/**</exclude>
                 <exclude>.git/**</exclude>
                 <exclude>**/*.log</exclude>
+                <exclude>src/travis/**</exclude>
             </excludes>
         </fileSet>
     </fileSets>
