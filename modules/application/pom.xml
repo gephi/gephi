@@ -459,20 +459,6 @@
                     </execution>
                 </executions>
             </plugin>
-            
-            <!-- Avoid jar goal -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>none</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
 
             <!-- Do not generate a source jar -->
             <plugin>
@@ -525,11 +511,25 @@
                     <groupId>nl.cloudfarming.client</groupId>
                     <artifactId>lib-platform-l10n</artifactId>
                     <version>${gephi.platform.localization.version}</version>
-               </dependency>
+                </dependency>
             </dependencies>
             
             <build>
                 <plugins>
+                    <!-- Avoid jar goal -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>none</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
                     <!-- Enable artifact deploy -->
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
@@ -928,7 +928,7 @@
                                 </goals>
                                 <configuration>
                                     <target name="createInstaller" description="Create Windows installer with InnoSetup">
-										<echo message="Creating windows installer with InnoSetup"/>
+                                        <echo message="Creating windows installer with InnoSetup"/>
                                         <delete file="${project.artifactId}-${project.version}.setup.exe" failonerror="false"/>
                                         
                                         <!-- Windows -->
@@ -998,7 +998,7 @@
                         </executions>
                     </plugin>
 
-                     <!-- Publish site folder to GitHub's gh-pages branch -->
+                    <!-- Publish site folder to GitHub's gh-pages branch -->
                     <plugin>
                         <groupId>com.github.github</groupId>
                         <artifactId>site-maven-plugin</artifactId>
