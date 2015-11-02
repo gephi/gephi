@@ -53,6 +53,8 @@ import java.util.regex.PatternSyntaxException;
 import javax.swing.RowFilter;
 import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.desktop.datalab.tables.celleditors.CellEditorWithAttributeTypeParseValidator;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Element;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
@@ -83,6 +85,7 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         table = new JXTable();
+        prepareCellEditors();
         prepareRenderers();
         table.setHighlighters(HighlighterFactory.createAlternateStriping());
         table.setColumnControlVisible(false);
@@ -93,6 +96,14 @@ public abstract class AbstractElementsDataTable<T extends Element> {
     
     public abstract List<? extends ElementDataColumn<T>> getFakeDataColumns();
 
+    private void prepareCellEditors() {
+        for (Class<?> typeClass : AttributeUtils.getSupportedTypes()) {
+            if(AttributeUtils.isDynamicType(typeClass)){
+                table.setDefaultEditor(typeClass, new CellEditorWithAttributeTypeParseValidator(typeClass));
+            }
+        }
+    }
+    
     private void prepareRenderers() {
         //TODO: adapt dynamics
 //        DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
@@ -114,9 +125,6 @@ public abstract class AbstractElementsDataTable<T extends Element> {
 //            max = Double.POSITIVE_INFINITY;
 //        }
 //        table.setDefaultRenderer(TimeInterval.class, timeIntervalsRenderer = new TimeIntervalsRenderer(min, max, timeIntervalGraphics));
-//
-//        //Use default string editor for them:
-//        table.setDefaultEditor(TimeInterval.class, timeIntervalCellEditor = new TimeIntervalCellEditor(new JTextField()));
     }
 
     public JXTable getTable() {

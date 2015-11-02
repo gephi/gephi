@@ -53,6 +53,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.gephi.graph.api.AttributeUtils;
@@ -93,14 +95,20 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 return false;//Could not parse
             }
         }
-
+        
         if (value == null && !canClearColumnData(column)) {
-            return false;//Do not set a null value when the column can't have a null value.
+            return false;//Do not set a null value when the column can't have a null value
         } else {
             try {
-                row.setAttribute(column, value);
+                if(value == null){
+                    row.removeAttribute(column);
+                }else{
+                    row.setAttribute(column, value);
+                }
+                
                 return true;
             } catch (Exception e) {
+                Logger.getLogger("").log(Level.SEVERE, null, e);
                 return false;
             }
         }

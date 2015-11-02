@@ -54,72 +54,72 @@ import org.gephi.graph.api.Element;
  */
 public class ElementsDataTableModel<T extends Element> extends AbstractTableModel {
     private T[] elements;
-        private ElementDataColumn<T>[] columns;
+    private ElementDataColumn<T>[] columns;
 
-        public ElementsDataTableModel(T[] elements, ElementDataColumn<T>[] cols) {
-            this.elements = elements;
-            this.columns = cols;
-        }
+    public ElementsDataTableModel(T[] elements, ElementDataColumn<T>[] cols) {
+        this.elements = elements;
+        this.columns = cols;
+    }
 
-        @Override
-        public int getRowCount() {
-            return elements.length;
-        }
+    @Override
+    public int getRowCount() {
+        return elements.length;
+    }
 
-        @Override
-        public int getColumnCount() {
-            return columns.length;
-        }
+    @Override
+    public int getColumnCount() {
+        return columns.length;
+    }
 
-        @Override
-        public String getColumnName(int columnIndex) {
-            return columns[columnIndex].getColumnName();
-        }
+    @Override
+    public String getColumnName(int columnIndex) {
+        return columns[columnIndex].getColumnName();
+    }
 
-        @Override
-        public Class<?> getColumnClass(int columnIndex) {
-            return columns[columnIndex].getColumnClass();
-        }
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return columns[columnIndex].getColumnClass();
+    }
 
-        @Override
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return columns[columnIndex].isEditable();
-        }
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columns[columnIndex].isEditable();
+    }
 
-        @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            return columns[columnIndex].getValueFor(elements[rowIndex]);
-        }
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        return columns[columnIndex].getValueFor(elements[rowIndex]);
+    }
 
-        @Override
-        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            columns[columnIndex].setValueFor(elements[rowIndex], aValue);
-        }
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        columns[columnIndex].setValueFor(elements[rowIndex], aValue);
+    }
 
-        public T getElementAtRow(int row) {
-            return elements[row];
-        }
+    public T getElementAtRow(int row) {
+        return elements[row];
+    }
 
-        public ElementDataColumn<T>[] getColumns() {
-            return columns;
-        }
+    public ElementDataColumn<T>[] getColumns() {
+        return columns;
+    }
 
-        public T[] getElements() {
-            return elements;
-        }
-        
-        public void configure(T[] elements, ElementDataColumn<T>[] columns){
-            Set<ElementDataColumn> oldColumns = new HashSet<ElementDataColumn>(Arrays.asList(this.columns));
-            Set<ElementDataColumn> newColumns = new HashSet<ElementDataColumn>(Arrays.asList(columns));
+    public T[] getElements() {
+        return elements;
+    }
+    
+    public void configure(T[] elements, ElementDataColumn<T>[] columns) {
+        Set<ElementDataColumn> oldColumns = new HashSet<ElementDataColumn>(Arrays.asList(this.columns));
+        Set<ElementDataColumn> newColumns = new HashSet<ElementDataColumn>(Arrays.asList(columns));
 
-            boolean columnsChanged = !oldColumns.equals(newColumns);
-            this.columns = columns;
-            this.elements = elements;
-            
-            if (columnsChanged) {
-                fireTableStructureChanged();//Only firing this event if columns change is useful because JXTable will not reset columns width if there is no change
-            }else{
-                fireTableDataChanged();
-            }
+        boolean columnsChanged = !oldColumns.equals(newColumns);
+        this.columns = columns;
+        this.elements = elements;
+
+        if (columnsChanged) {
+            fireTableStructureChanged();//Only firing this event if columns change is useful because JXTable will not reset columns width if there is no change
+        } else {
+            fireTableDataChanged();
         }
+    }
 }

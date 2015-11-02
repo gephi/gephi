@@ -162,10 +162,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private Map<Integer, ContextMenuItemManipulator> nodesActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();//For key bindings
     private Map<Integer, ContextMenuItemManipulator> edgesActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();//For key bindings
     //Data
-    private GraphModel graphModel;
-    private DataTablesModel dataTablesModel;
-    private AvailableColumnsModel nodeAvailableColumnsModel;
-    private AvailableColumnsModel edgeAvailableColumnsModel;
+    private volatile GraphModel graphModel;
+    private volatile DataTablesModel dataTablesModel;
+    private volatile AvailableColumnsModel nodeAvailableColumnsModel;
+    private volatile AvailableColumnsModel edgeAvailableColumnsModel;
     
     //Observers for auto-refreshing:
     private GraphObserver graphObserver;
