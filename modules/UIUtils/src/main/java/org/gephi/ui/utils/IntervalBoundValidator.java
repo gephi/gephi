@@ -43,7 +43,7 @@ package org.gephi.ui.utils;
 
 import java.text.ParseException;
 import javax.swing.text.JTextComponent;
-import org.gephi.dynamic.utils.DynamicUtilities;
+import org.gephi.graph.api.AttributeUtils;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.openide.util.NbBundle;
@@ -69,24 +69,24 @@ public class IntervalBoundValidator implements Validator<String> {
     @Override
     public boolean validate(Problems prblms, String componentName, String value) {
         try {
-            double time = DynamicUtilities.parseTime(value);
+            double time = AttributeUtils.parseDateTime(value);
             if (intervalStartTextField != null) {
                 //Also validate that this (end time) is greater or equal than start time.
                 try {
-                    double startTime = DynamicUtilities.parseTime(intervalStartTextField.getText());
+                    double startTime = AttributeUtils.parseDateTime(intervalStartTextField.getText());
                     if (time < startTime) {
                         prblms.add(NbBundle.getMessage(IntervalBoundValidator.class, "IntervalBoundValidator.invalid.interval.message"));
                         return false;
                     } else {
                         return true;
                     }
-                } catch (ParseException parseException) {
+                } catch (Exception parseException) {
                     return true;
                 }
             } else {
                 return true;
             }
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
             prblms.add(NbBundle.getMessage(IntervalBoundValidator.class, "IntervalBoundValidator.invalid.bound.message"));
             return false;
         }

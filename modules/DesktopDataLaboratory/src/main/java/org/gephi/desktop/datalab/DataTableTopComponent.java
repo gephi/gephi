@@ -219,10 +219,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         nodeTable = new NodesDataTable();
         edgeTable = new EdgesDataTable();
 
-        nodeTable.setUseSparklines(useSparklines);
-        nodeTable.setTimeIntervalGraphics(timeIntervalGraphics);
-        edgeTable.setUseSparklines(useSparklines);
-        edgeTable.setTimeIntervalGraphics(timeIntervalGraphics);
+        nodeTable.setDrawSparklines(useSparklines);
+        nodeTable.setDrawTimeIntervalGraphics(timeIntervalGraphics);
+        edgeTable.setDrawSparklines(useSparklines);
+        edgeTable.setDrawTimeIntervalGraphics(timeIntervalGraphics);
         edgeTable.setShowEdgesNodesLabels(showEdgesNodesLabels);
 
         //Init
@@ -531,7 +531,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                     }
 
                     //Model
-                    nodeTable.refreshModel(graph.getNodes().toArray(), cols, dataTablesModel);
+                    nodeTable.refreshModel(graph.getNodes().toArray(), cols, graphModel, dataTablesModel);
                     refreshFilterColumns();
 
                     busylabel.setBusy(false);
@@ -579,7 +579,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                     }
 
                     //Model
-                    edgeTable.refreshModel(graph.getEdges().toArray(), cols, dataTablesModel);
+                    edgeTable.refreshModel(graph.getEdges().toArray(), cols, graphModel, dataTablesModel);
                     refreshFilterColumns();
 
                     busylabel.setBusy(false);
@@ -789,8 +789,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     @Override
     public void setUseSparklines(boolean useSparklines) {
         this.useSparklines = useSparklines;
-        nodeTable.setUseSparklines(useSparklines);
-        edgeTable.setUseSparklines(useSparklines);
+        nodeTable.setDrawSparklines(useSparklines);
+        edgeTable.setDrawSparklines(useSparklines);
         refreshCurrentTable();
     }
 
@@ -802,8 +802,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     @Override
     public void setTimeIntervalGraphics(boolean timeIntervalGraphics) {
         this.timeIntervalGraphics = timeIntervalGraphics;
-        nodeTable.setTimeIntervalGraphics(timeIntervalGraphics);
-        edgeTable.setTimeIntervalGraphics(timeIntervalGraphics);
+        nodeTable.setDrawTimeIntervalGraphics(timeIntervalGraphics);
+        edgeTable.setDrawTimeIntervalGraphics(timeIntervalGraphics);
         refreshCurrentTable();
     }
 
@@ -1469,7 +1469,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 }//GEN-LAST:event_nodesButtonActionPerformed
 
     private void configurationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_configurationButtonActionPerformed
-        DialogDescriptor dd = new DialogDescriptor(new ConfigurationPanel(this), NbBundle.getMessage(DataTableTopComponent.class, "ConfigurationPanel.title"));
+        DialogDescriptor dd = new DialogDescriptor(new ConfigurationPanel(this, graphModel), NbBundle.getMessage(DataTableTopComponent.class, "ConfigurationPanel.title"));
         dd.setOptions(new Object[]{DialogDescriptor.OK_OPTION});
         DialogDisplayer.getDefault().notify(dd);
 

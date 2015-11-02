@@ -43,8 +43,8 @@ package org.gephi.ui.tools.plugin.edit;
 
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.TimeFormat;
 
 /**
  *

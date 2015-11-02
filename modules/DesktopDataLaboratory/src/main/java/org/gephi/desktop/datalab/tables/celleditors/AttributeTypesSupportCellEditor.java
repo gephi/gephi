@@ -49,25 +49,41 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.TimeFormat;
+import org.gephi.graph.api.types.IntervalMap;
+import org.gephi.graph.api.types.IntervalSet;
+import org.gephi.graph.api.types.TimestampMap;
+import org.gephi.graph.api.types.TimestampSet;
 
 /**
  *
  * @author Eduardo Ramos<eduramiba@gmail.com>
  */
-public class CellEditorWithAttributeTypeParseValidator extends DefaultCellEditor {
+public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
 
     private static final Border RED_BORDER = new LineBorder(Color.red);
     
     private final JTextField textField;
     private final Border originalBorder;
     private final Class<?> typeClass;
+    private final boolean isTimestampSetType;
+    private final boolean isTimestampMapType;
+    private final boolean isIntervalSetType;
+    private final boolean isIntervalMapType;
+    
+    private TimeFormat timeFormat = TimeFormat.DOUBLE;
 
-    public CellEditorWithAttributeTypeParseValidator(Class<?> typeClass) {
+    public AttributeTypesSupportCellEditor(Class<?> typeClass) {
         super(new JTextField());
         this.typeClass = typeClass;
         
         textField = new JTextField();
         originalBorder = textField.getBorder();
+        
+        isTimestampSetType = TimestampSet.class.isAssignableFrom(typeClass);
+        isTimestampMapType = TimestampMap.class.isAssignableFrom(typeClass);
+        isIntervalSetType = IntervalSet.class.isAssignableFrom(typeClass);
+        isIntervalMapType = IntervalMap.class.isAssignableFrom(typeClass);
     }
 
     @Override
@@ -75,7 +91,6 @@ public class CellEditorWithAttributeTypeParseValidator extends DefaultCellEditor
         String value = getCellEditorValue().toString();
         if(!value.trim().isEmpty()){
             try {
-                System.out.println(value);
                 AttributeUtils.parse(value, typeClass);
             } catch (Exception e) {
                 textField.setBorder(RED_BORDER);
@@ -95,14 +110,35 @@ public class CellEditorWithAttributeTypeParseValidator extends DefaultCellEditor
     public Component getTableCellEditorComponent(JTable table,
             Object value, boolean isSelected, int row, int column) {
 
-        Object fieldValue = value;
-        if (null == fieldValue) {
-            fieldValue = "";
+        String valueStr;
+        if (value == null) {
+            valueStr = "";
+        }else{
+            if(isTimestampSetType){
+                valueStr = ((TimestampSet) value).toString(timeFormat);
+            }else if(isTimestampMapType){
+                valueStr = ((TimestampMap) value).toString(timeFormat);
+            }else if(isIntervalSetType){
+                valueStr = ((IntervalSet) value).toString(timeFormat);
+            }else if(isIntervalMapType){
+                valueStr = ((IntervalMap) value).toString(timeFormat);
+            }else{
+                valueStr = value.toString();
+            }
         }
+        
 
         textField.setBorder(originalBorder);
         textField.setEditable(true);
-        textField.setText(fieldValue.toString());
+        textField.setText(valueStr);
         return textField;
+    }
+
+    public TimeFormat getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(TimeFormat timeFormat) {
+        this.timeFormat = timeFormat;
     }
 }
