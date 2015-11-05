@@ -757,9 +757,16 @@
                                         <!-- Fix JRE by replacing libjli.dylib symlink with real file -->
                                         <copy file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/Home/lib/jli/libjli.dylib" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/MacOS" overwrite="true"/>
 
-                                        <!-- Codesign -->
+                                        <!-- Codesign JRE -->
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
-                                            <arg value="--deep"/>
+                                            <arg value="-fs"/> 
+                                            <arg value="${gephi.codesign.identity}"/> 
+                                            <arg value="-v"/> 
+                                            <arg value="${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/"/> 
+                                        </exec>
+            
+                                        <!-- Codesign app -->
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
                                             <arg value="-fs"/> 
                                             <arg value="${gephi.codesign.identity}"/> 
                                             <arg value="-v"/> 
