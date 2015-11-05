@@ -43,8 +43,8 @@ package org.gephi.ui.tools.plugin.edit;
 
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.TimeFormat;
 import org.gephi.ui.tools.plugin.edit.EditWindowUtils.AttributeValueWrapper;
 
 /**
@@ -56,7 +56,7 @@ public class MultipleRowsAttributeValueWrapper implements AttributeValueWrapper 
     private final Element[] rows;
     private final Column column;
     private Object value;
-    private TimeFormat currentTimeFormat;
+    private final TimeFormat currentTimeFormat;
 
     public MultipleRowsAttributeValueWrapper(Element [] rows, Column column, TimeFormat currentTimeFormat) {
         this.rows = rows;

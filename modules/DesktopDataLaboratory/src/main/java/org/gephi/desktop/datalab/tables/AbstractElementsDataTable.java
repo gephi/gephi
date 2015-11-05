@@ -53,7 +53,15 @@ import java.util.regex.PatternSyntaxException;
 import javax.swing.RowFilter;
 import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.desktop.datalab.tables.celleditors.AttributeTypesSupportCellEditor;
+import org.gephi.desktop.datalab.utils.SparkLinesRenderer;
+import org.gephi.desktop.datalab.utils.TimeIntervalsRenderer;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Interval;
+import org.gephi.graph.api.TimeFormat;
+import org.gephi.graph.api.types.IntervalSet;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.openide.util.Lookup;
@@ -65,58 +73,55 @@ import org.openide.util.Lookup;
  */
 public abstract class AbstractElementsDataTable<T extends Element> {
 
-   protected boolean useSparklines = false;
-   protected boolean timeIntervalGraphics = false;
-   protected  final JXTable table;
-   protected RowFilter rowFilter;
-   protected List<T> selectedElements;
-   protected final AttributeColumnsController attributeColumnsController;
-   protected boolean refreshingTable = false;
-   protected Column[] showingColumns = null;
-   protected ElementsDataTableModel<T> model;
-//    private TimeIntervalsRenderer timeIntervalsRenderer;
-//    private TimeIntervalCellEditor timeIntervalCellEditor;
-//    private TimeFormat currentTimeFormat;
-//    private SparkLinesRenderer sparkLinesRenderer;
+    protected final JXTable table;
+    protected RowFilter rowFilter;
+    protected List<T> selectedElements;
+    protected final AttributeColumnsController attributeColumnsController;
+    protected boolean refreshingTable = false;
+    protected Column[] showingColumns = null;
+    protected ElementsDataTableModel<T> model;
+    private final TimeIntervalsRenderer timeIntervalsRenderer;
+    private final List<AttributeTypesSupportCellEditor> cellEditors = new ArrayList<AttributeTypesSupportCellEditor>();
+    private final SparkLinesRenderer sparkLinesRenderer;
 
     public AbstractElementsDataTable() {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
-
         table = new JXTable();
-        prepareRenderers();
         table.setHighlighters(HighlighterFactory.createAlternateStriping());
         table.setColumnControlVisible(false);
         table.setSortable(true);
         table.setAutoCreateRowSorter(true);
         table.setRowFilter(rowFilter);
+        sparkLinesRenderer = new SparkLinesRenderer();
+        timeIntervalsRenderer = new TimeIntervalsRenderer();
+        
+        prepareCellEditors();
+        prepareRenderers();
     }
-    
+
     public abstract List<? extends ElementDataColumn<T>> getFakeDataColumns();
 
+    private void prepareCellEditors() {
+        for (Class<?> typeClass : AttributeUtils.getSupportedTypes()) {
+            if (AttributeUtils.isDynamicType(typeClass)) {
+                AttributeTypesSupportCellEditor cellEditor = new AttributeTypesSupportCellEditor(typeClass);
+                cellEditors.add(cellEditor);
+                table.setDefaultEditor(typeClass, cellEditor);
+            }
+        }
+    }
+
     private void prepareRenderers() {
-        //TODO: adapt dynamics
-//        DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
-//        table.setDefaultRenderer(NumberList.class, sparkLinesRenderer = new SparkLinesRenderer());
-//        table.setDefaultRenderer(DynamicBigDecimal.class, new SparkLinesRenderer());
-//        table.setDefaultRenderer(DynamicBigInteger.class, new SparkLinesRenderer());
-//        table.setDefaultRenderer(DynamicByte.class, new SparkLinesRenderer());
-//        table.setDefaultRenderer(DynamicDouble.class, new SparkLinesRenderer());
-//        table.setDefaultRenderer(DynamicFloat.class, new SparkLinesRenderer());
-//        table.setDefaultRenderer(DynamicInteger.class, new SparkLinesRenderer());
-//        table.setDefaultRenderer(DynamicLong.class, new SparkLinesRenderer());
-//        table.setDefaultRenderer(DynamicShort.class, new SparkLinesRenderer());
-//        double min, max;
-//        if (dm != null) {
-//            min = dm.getMin();
-//            max = dm.getMax();
-//        } else {
-//            min = Double.NEGATIVE_INFINITY;
-//            max = Double.POSITIVE_INFINITY;
-//        }
-//        table.setDefaultRenderer(TimeInterval.class, timeIntervalsRenderer = new TimeIntervalsRenderer(min, max, timeIntervalGraphics));
-//
-//        //Use default string editor for them:
-//        table.setDefaultEditor(TimeInterval.class, timeIntervalCellEditor = new TimeIntervalCellEditor(new JTextField()));
+        for (Class<?> typeClass : AttributeUtils.getSupportedTypes()) {
+            boolean isDynamicNumber = AttributeUtils.isDynamicType(typeClass) && AttributeUtils.isNumberType(typeClass);
+            boolean isArrayNumber = Number[].class.isAssignableFrom(typeClass);
+            
+            if (isDynamicNumber || isArrayNumber) {
+                table.setDefaultRenderer(typeClass, sparkLinesRenderer);
+            }
+        }
+
+        table.setDefaultRenderer(IntervalSet.class, timeIntervalsRenderer);
     }
 
     public JXTable getTable() {
@@ -136,18 +141,27 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         return true;
     }
 
-    public void refreshModel(T[] elements, Column[] cols, DataTablesModel dataTablesModel) {
+    public void refreshModel(T[] elements, Column[] cols, GraphModel graphModel, DataTablesModel dataTablesModel) {
         showingColumns = cols;
-        //TODO: adapt dynamics
-//        DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
-//        if (dm != null) {
-//            timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
-//            currentTimeFormat = dm.getTimeFormat();
-//            timeIntervalsRenderer.setTimeFormat(currentTimeFormat);
-//            timeIntervalCellEditor.setTimeFormat(currentTimeFormat);
-//            sparkLinesRenderer.setTimeFormat(currentTimeFormat);
-//        }
-//        timeIntervalsRenderer.setDrawGraphics(timeIntervalGraphics);
+        Interval timeBounds = null;
+        try {
+            timeBounds = graphModel.getTimeBounds();
+        } catch (Exception e) {
+            //Current graphstore does not implement this for intervals... (TODO)
+        }
+        double min = timeBounds != null ? timeBounds.getLow() : Double.NEGATIVE_INFINITY;
+        double max = timeBounds != null ? timeBounds.getHigh() : Double.POSITIVE_INFINITY;
+        TimeFormat currentTimeFormat = graphModel.getTimeFormat();
+        
+        sparkLinesRenderer.setTimeFormat(currentTimeFormat);
+        
+        timeIntervalsRenderer.setTimeFormat(currentTimeFormat);
+        timeIntervalsRenderer.setMinMax(min, max);
+        
+        for (AttributeTypesSupportCellEditor cellEditor : cellEditors) {
+            cellEditor.setTimeFormat(currentTimeFormat);
+        }
+        
         refreshingTable = true;
         if (selectedElements == null) {
             selectedElements = getElementsFromSelectedRows();
@@ -174,21 +188,21 @@ public abstract class AbstractElementsDataTable<T extends Element> {
     public boolean isRefreshingTable() {
         return refreshingTable;
     }
-    
+
     /**
-     * 
-     * @param columnIndex  View index, not model index
-     * @return 
+     *
+     * @param columnIndex View index, not model index
+     * @return
      */
-    public Column getColumnAtIndex(int columnIndex){
+    public Column getColumnAtIndex(int columnIndex) {
         int realColumnIndex = table.convertColumnIndexToModel(columnIndex) - getFakeDataColumns().size();//Get real attribute column index not counting fake columns.
         if (realColumnIndex >= 0 && realColumnIndex < showingColumns.length) {
             return showingColumns[realColumnIndex];
-        }else{
+        } else {
             return null;
         }
     }
-    
+
     public void setElementsSelection(List<T> elements) {
         this.selectedElements = elements;//Keep this selection request to be able to do it if the table is first refreshed later.
         HashSet<T> elementsSet = new HashSet<T>();
@@ -200,7 +214,7 @@ public abstract class AbstractElementsDataTable<T extends Element> {
             }
         }
     }
-    
+
     public void setElementsSelection(T[] elements) {
         setElementsSelection(Arrays.asList(elements));
     }
@@ -217,20 +231,20 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         return table.getRowCount() > 0;
     }
 
-    public boolean isUseSparklines() {
-        return useSparklines;
+    public boolean isDrawSparklines() {
+        return sparkLinesRenderer.isDrawGraphics();
     }
 
-    public void setUseSparklines(boolean useSparklines) {
-        this.useSparklines = useSparklines;
+    public void setDrawSparklines(boolean drawSparklines) {
+        sparkLinesRenderer.setDrawGraphics(drawSparklines);
     }
 
-    public boolean isTimeIntervalGraphics() {
-        return timeIntervalGraphics;
+    public boolean isDrawTimeIntervalGraphics() {
+        return timeIntervalsRenderer.isDrawGraphics();
     }
 
-    public void setTimeIntervalGraphics(boolean timeIntervalGraphics) {
-        this.timeIntervalGraphics = timeIntervalGraphics;
+    public void setDrawTimeIntervalGraphics(boolean drawTimeIntervalGraphics) {
+        timeIntervalsRenderer.setDrawGraphics(drawTimeIntervalGraphics);
     }
 
     public T getElementFromRow(int row) {
@@ -240,11 +254,11 @@ public abstract class AbstractElementsDataTable<T extends Element> {
     public List<T> getElementsFromSelectedRows() {
         int[] selectedRows = table.getSelectedRows();
         List<T> elements = new ArrayList<T>();
-        
+
         for (int i = 0; i < selectedRows.length; i++) {
             elements.add(getElementFromRow(selectedRows[i]));
         }
-        
+
         return elements;
     }
 }

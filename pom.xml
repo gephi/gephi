@@ -352,11 +352,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>dynamic-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>utils</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -658,11 +653,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-layout</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>dynamic-impl</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1193,7 +1183,6 @@
         <module>modules/DesktopStatistics</module>
         <module>modules/DesktopTools</module>
         <module>modules/DirectoryChooser</module>
-        <module>modules/DynamicAPI</module>
         <module>modules/ExportAPI</module>
         <module>modules/ExportPlugin</module>
         <module>modules/ExportPluginUI</module>

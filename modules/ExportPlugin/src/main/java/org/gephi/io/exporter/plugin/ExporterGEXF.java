@@ -42,7 +42,6 @@
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
-import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.*;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
@@ -115,7 +114,6 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private boolean exportVisible;
     private Writer writer;
     private GraphModel graphModel;
-    private DynamicModel dynamicModel;
     //Settings
     private boolean normalize = false;
     private boolean exportColors = true;

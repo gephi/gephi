@@ -41,6 +41,12 @@
  */
 package org.gephi.desktop.datalab;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.TimeFormat;
+import org.openide.util.NbBundle;
+
 /**
  * Configurations dialog for DataTableTopComponent
  *
@@ -49,19 +55,70 @@ package org.gephi.desktop.datalab;
 public class ConfigurationPanel extends javax.swing.JPanel {
 
     private final DataTableTopComponent dataTableTopComponent;
+    private final GraphModel graphModel;
 
     /**
      * Creates new form ConfigurationPanel
      */
-    public ConfigurationPanel(DataTableTopComponent dataTableTopComponent) {
+    public ConfigurationPanel(final DataTableTopComponent dataTableTopComponent, final GraphModel graphModel) {
         this.dataTableTopComponent = dataTableTopComponent;
+        this.graphModel = graphModel;
+        
         initComponents();
+        
+        for (TimeFormat tf : TimeFormat.values()) {
+            timeFormatComboBox.addItem(new TimeFormatWrapper(tf));
+        }
+        timeFormatComboBox.setSelectedItem(new TimeFormatWrapper(graphModel.getTimeFormat()));
+        
+        timeFormatComboBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                graphModel.setTimeFormat(((TimeFormatWrapper) timeFormatComboBox.getSelectedItem()).timeFormat);
+                dataTableTopComponent.refreshCurrentTable();
+            }
+        });
+        
         onlyVisibleCheckBox.setSelected(dataTableTopComponent.isShowOnlyVisible());
         useSparklinesCheckBox.setSelected(dataTableTopComponent.isUseSparklines());
-		//TODO: adapt dynamics
-//        timeIntervalsAsDates.setSelected(dynamicController.getModel().getTimeFormat() != TimeFormat.DOUBLE);
         timeIntervalsGraphicsCheckBox.setSelected(dataTableTopComponent.isTimeIntervalGraphics());
         showEdgesNodesLabelsCheckBox.setSelected(dataTableTopComponent.isShowEdgesNodesLabels());
+    }
+    
+    class TimeFormatWrapper {
+        private final TimeFormat timeFormat;
+
+        public TimeFormatWrapper(TimeFormat timeFormat) {
+            this.timeFormat = timeFormat;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 83 * hash + (this.timeFormat != null ? this.timeFormat.hashCode() : 0);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final TimeFormatWrapper other = (TimeFormatWrapper) obj;
+            if (this.timeFormat != other.timeFormat) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeFormat." + timeFormat.name());
+        }
     }
 
     /**
@@ -75,7 +132,8 @@ public class ConfigurationPanel extends javax.swing.JPanel {
         useSparklinesCheckBox = new javax.swing.JCheckBox();
         showEdgesNodesLabelsCheckBox = new javax.swing.JCheckBox();
         timeIntervalsGraphicsCheckBox = new javax.swing.JCheckBox();
-        timeIntervalsAsDates = new javax.swing.JCheckBox();
+        timeFormatComboBox = new javax.swing.JComboBox();
+        timeFormatLabel = new javax.swing.JLabel();
 
         onlyVisibleCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.onlyVisibleCheckBox.text")); // NOI18N
         onlyVisibleCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -105,12 +163,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
             }
         });
 
-        timeIntervalsAsDates.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeIntervalsAsDates.text")); // NOI18N
-        timeIntervalsAsDates.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                timeIntervalsAsDatesActionPerformed(evt);
-            }
-        });
+        timeFormatLabel.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeFormatLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -118,13 +171,15 @@ public class ConfigurationPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(onlyVisibleCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(useSparklinesCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(showEdgesNodesLabelsCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(timeIntervalsGraphicsCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(timeIntervalsAsDates))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(onlyVisibleCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(timeFormatLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(timeFormatComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(useSparklinesCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
+                    .addComponent(timeIntervalsGraphicsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(showEdgesNodesLabelsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -132,14 +187,16 @@ public class ConfigurationPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(onlyVisibleCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(useSparklinesCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(timeIntervalsAsDates)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(timeIntervalsGraphicsCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(showEdgesNodesLabelsCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(timeFormatLabel)
+                    .addComponent(timeFormatComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -160,15 +217,11 @@ public class ConfigurationPanel extends javax.swing.JPanel {
         dataTableTopComponent.setShowEdgesNodesLabels(showEdgesNodesLabelsCheckBox.isSelected());
     }//GEN-LAST:event_showEdgesNodesLabelsCheckBoxActionPerformed
 
-    private void timeIntervalsAsDatesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeIntervalsAsDatesActionPerformed
-//TODO: adapt dynamics
-//        dynamicController.setTimeFormat(timeIntervalsAsDates.isSelected() ? TimeFormat.DATE : TimeFormat.DOUBLE);
-        dataTableTopComponent.refreshCurrentTable();
-    }//GEN-LAST:event_timeIntervalsAsDatesActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox onlyVisibleCheckBox;
     private javax.swing.JCheckBox showEdgesNodesLabelsCheckBox;
-    private javax.swing.JCheckBox timeIntervalsAsDates;
+    private javax.swing.JComboBox timeFormatComboBox;
+    private javax.swing.JLabel timeFormatLabel;
     private javax.swing.JCheckBox timeIntervalsGraphicsCheckBox;
     private javax.swing.JCheckBox useSparklinesCheckBox;
     // End of variables declaration//GEN-END:variables

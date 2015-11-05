@@ -41,8 +41,6 @@
  */
 package org.gephi.desktop.datalab.tables.columns;
 
-import java.util.Arrays;
-import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.graph.api.Element;
@@ -55,34 +53,17 @@ public class AttributeDataColumn<T extends Element> implements ElementDataColumn
 
     private final AttributeColumnsController attributeColumnsController;
     private final Column column;
-    private final Class columnClassForTable;
-
-    private boolean useSparklines = false;
-    private boolean returnOriginalValue;
-    private boolean isArrayType;
+    private final Class<?> columnClassForTable;
 
     public AttributeDataColumn(AttributeColumnsController attributeColumnsController, Column column) {
         this.attributeColumnsController = attributeColumnsController;
         this.column = column;
 
-        this.columnClassForTable = prepareColumnClassForTable();
-        refreshValueGenerationFlags();
-    }
-
-    private Class<?> prepareColumnClassForTable() {
-        if (useSparklines && AttributeUtils.isDynamicType(column.getTypeClass())) {
-            return column.getTypeClass();//TODO update dynamics
-        } else if (Number.class.isAssignableFrom(column.getTypeClass())) {
-            return column.getTypeClass();//Number columns should not be treated as Strings because the sorting would be alphabetic instead of numeric
-        } else if (column.getTypeClass().equals(Boolean.class)) {
-            return Boolean.class;
-        } else {
-            return String.class;//Treat all other columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
-        }
+        this.columnClassForTable = column.getTypeClass();
     }
 
     @Override
-    public Class getColumnClass() {
+    public Class<?> getColumnClass() {
         return columnClassForTable;
     }
 
@@ -91,36 +72,9 @@ public class AttributeDataColumn<T extends Element> implements ElementDataColumn
         return column.getTitle();
     }
 
-    private void refreshValueGenerationFlags() {
-        isArrayType =column.getTypeClass().isArray();
-        returnOriginalValue = useSparklines && AttributeUtils.isDynamicType(column.getTypeClass())
-                || Number.class.isAssignableFrom(column.getTypeClass())
-                || column.getTypeClass().equals(Boolean.class)
-                || isArrayType;
-    }
-
     @Override
     public Object getValueFor(T element) {
-        Object value = element.getAttribute(column);
-        if (returnOriginalValue) {
-            return value;
-        } else {
-            if (value != null) {
-//TODO adapt this
-//                    if (value instanceof TimestampSet) {//When type is dynamic, take care to show proper time format
-//                        return ((TimestampSet) value).toString(currentTimeFormat == TimeFormat.DOUBLE);
-//                    } else {
-//                    }
-                
-                if(isArrayType){
-                    return Arrays.toString((Object[]) value);
-                }
-                
-                return value.toString();
-            } else {
-                return null;
-            }
-        }
+        return element.getAttribute(column);
     }
 
     @Override
@@ -150,14 +104,5 @@ public class AttributeDataColumn<T extends Element> implements ElementDataColumn
     @Override
     public boolean isEditable() {
         return attributeColumnsController.canChangeColumnData(column);
-    }
-
-    public boolean isUseSparklines() {
-        return useSparklines;
-    }
-
-    public void setUseSparklines(boolean useSparklines) {
-        this.useSparklines = useSparklines;
-        refreshValueGenerationFlags();
     }
 }
