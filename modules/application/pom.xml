@@ -739,6 +739,13 @@
                                         </exec>
                                         <untar src="${project.build.directory}/${gephi.bundle.jre.version}.tar.gz" dest="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" compression="gzip"/>
 
+                                        <!-- Remove quarantine bit set recursively on JRE -->
+                                        <exec dir="${project.build.directory}" executable="xattr">
+                                            <arg line="-rd"/>
+                                            <arg line="com.apple.quarantine"/>
+                                            <arg line="${gephi.appbundle.name}.app/Contents/PlugIns"/>
+                                        </exec>
+
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
                                             <dirset dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" includes="jre*" />
