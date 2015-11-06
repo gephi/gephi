@@ -41,6 +41,8 @@
  */
 package org.gephi.io.processor.plugin;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -186,10 +188,11 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         int touchedNodes = container.getNodeCount();
         int touchedEdges = container.getEdgeCount();
         if (touchedNodes != addedNodes || touchedEdges != addedEdges) {
-            System.out.println("# Nodes loaded: " + touchedNodes + " (" + addedNodes + " added)\n"
-                    + "# Edges loaded: " + touchedEdges + " (" + addedEdges + " added)");
+            Logger.getLogger(getClass().toString()).log(Level.INFO, "# Nodes loaded: {0} ({1} added)", new Object[]{touchedNodes, addedNodes});
+            Logger.getLogger(getClass().toString()).log(Level.INFO, "# Edges loaded: {0} ({1} added)", new Object[]{touchedEdges, addedEdges});
         } else {
-            System.out.println("# Nodes loaded: " + touchedNodes + "\n# Edges loaded: " + touchedEdges);
+            Logger.getLogger(getClass().toString()).log(Level.INFO, "# Nodes loaded: {0}", new Object[]{touchedNodes});
+            Logger.getLogger(getClass().toString()).log(Level.INFO, "# Edges loaded: {0}", new Object[]{touchedEdges});
         }
 
         Progress.finish(progressTicket);

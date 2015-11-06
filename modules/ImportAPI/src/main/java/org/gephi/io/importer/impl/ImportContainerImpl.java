@@ -588,6 +588,17 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (dynamicGraph) {
             report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeFormat", timeFormat.toString()));
             report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeRepresentation", timeRepresentation.toString()));
+            report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeZone", timeZone.toString()));
+        }
+
+        //Print edge label type
+        if (lastEdgeType != null) {
+            report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.EdgeLabelType", lastEdgeType.getSimpleName()));
+        }
+
+        //Print edge types
+        if (isMultiGraph()) {
+            report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.MultiGraphCount", edgeTypeMap.size() - 1));
         }
 
         return true;
