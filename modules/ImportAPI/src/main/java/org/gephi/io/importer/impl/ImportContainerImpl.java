@@ -94,6 +94,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private final Object2IntMap<String> nodeMap;
     private final Object2IntMap<String> edgeMap;
     private final Object2IntMap edgeTypeMap;
+    private Class lastEdgeType;
     private Long2ObjectMap<int[]>[] edgeTypeSets;
     private EdgeDirectionDefault edgeDefault = EdgeDirectionDefault.MIXED;
     private final Object2ObjectMap<String, ColumnDraft> nodeColumns;
@@ -848,6 +849,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         parameters.setEdgesMergeStrategy(edgesMergeStrategy);
     }
 
+    @Override
+    public Class getEdgeTypeLabelClass() {
+        return lastEdgeType;
+    }
+
     //Utility
     private int getEdgeType(Object type) {
         //Verify
@@ -862,9 +868,17 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     || cl.equals(Long.class)
                     || cl.equals(Character.class)
                     || cl.equals(Boolean.class))) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Unsupported_Edge_type", edgeDefault.toString()), Level.SEVERE));
+                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Unsupported_Edge_type"), Level.SEVERE));
                 type = null;
             }
+            if (type != null && lastEdgeType != null && !lastEdgeType.equals(type.getClass())) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Unsupported_Edge_type_Conflict", type.getClass().getSimpleName(), lastEdgeType.getSimpleName()), Level.SEVERE));
+                type = null;
+            }
+        }
+
+        if (type != null) {
+            lastEdgeType = type.getClass();
         }
 
         if (edgeTypeMap.containsKey(type)) {

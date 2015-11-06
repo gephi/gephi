@@ -86,6 +86,8 @@ public interface ContainerUnloader {
 
     public String getSource();
 
+    public Class getEdgeTypeLabelClass();
+
     //PARAMETERS GETTERS
     public boolean allowSelfLoop();
 

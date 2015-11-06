@@ -106,6 +106,9 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         Configuration configuration = new Configuration();
         configuration.setTimeRepresentation(container.getTimeRepresentation());
+        if (container.getEdgeTypeLabelClass() != null) {
+            configuration.setEdgeLabelType(container.getEdgeTypeLabelClass());
+        }
         graphController.getGraphModel(workspace).setConfiguration(configuration);
     }
 
