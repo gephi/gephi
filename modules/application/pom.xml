@@ -737,10 +737,17 @@
                                             <arg line="-O"/>
                                             <arg line="${gephi.bundle.jre.url}/${gephi.bundle.jre.version}.tar.gz"/>
                                         </exec>
-                                        <untar src="${project.build.directory}/${gephi.bundle.jre.version}.tar.gz" dest="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" compression="gzip"/>
+                                        
+                                        <!-- Unzip archive -->
+                                        <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns"/>
+                                        <exec dir="${project.build.directory}" executable="tar">
+                                            <arg line="-zxf"/>
+                                            <arg line="${gephi.bundle.jre.version}.tar.gz"/>
+                                            <arg line="-C ${gephi.appbundle.name}.app/Contents/PlugIns"/>
+                                        </exec>
 
                                         <!-- Remove quarantine bit set recursively on JRE -->
-                                        <exec dir="${project.build.directory}" executable="xattr">
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="xattr">
                                             <arg line="-rd"/>
                                             <arg line="com.apple.quarantine"/>
                                             <arg line="${gephi.appbundle.name}.app/Contents/PlugIns"/>
@@ -758,7 +765,8 @@
                                         <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/**" perm="+x" type="both"/>
 
                                         <!-- Fix JRE by replacing libjli.dylib symlink with real file -->
-                                        <copy file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/Home/lib/jli/libjli.dylib" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/MacOS" overwrite="true"/>
+                                        <delete file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/MacOS/libjli.dylib"/>
+                                        <copy file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/Home/lib/jli/libjli.dylib" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/MacOS"/>
 
                                         <!-- Codesign JRE -->
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
@@ -776,12 +784,12 @@
                                             <arg value="${gephi.appbundle.name}.app"/> 
                                         </exec>
                                         
-                                        <!-- Create application folder and add Applications dynamic link -->
+                                        <!-- Create application folder and add Applications dynamic link -->   
                                         <mkdir dir="${project.build.directory}/${gephi.app.title}"/>
                                         <move file="${project.build.directory}/${gephi.appbundle.name}.app" todir="${project.build.directory}/${gephi.app.title}/" />
                                         <symlink link="${project.build.directory}/${gephi.app.title}/Applications" resource="/Applications" failonerror="false" />
                                         
-                                        <!-- Create DMG (Mac OS X) -->
+                                        <!-- Create DMG (Mac OS X) --> 
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="hdiutil">
                                             <arg value="create"/> 
                                             <arg value="-noanyowners"/> 
@@ -792,7 +800,7 @@
                                             <arg value="${project.artifactId}-${project.version}.dmg"/>
                                         </exec>
 
-                                        <!-- Create DMG (Linux), only for testing -->
+                                        <!-- Create DMG (Linux), only for testing -->  
                                         <exec dir="${project.build.directory}" os="Linux" executable="genisoimage">
                                             <arg value="-V"/> 
                                             <arg value="${gephi.appbundle.name}"/>
