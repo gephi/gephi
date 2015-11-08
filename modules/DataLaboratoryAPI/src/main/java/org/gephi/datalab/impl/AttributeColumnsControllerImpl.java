@@ -69,6 +69,7 @@ import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.graph.impl.GraphStoreConfiguration;
 import org.gephi.utils.StatisticsUtils;
@@ -941,14 +942,23 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         if (!(AttributeUtils.isNumberType(type) && AttributeUtils.isDynamicType(type))) {
             throw new IllegalArgumentException("Column must be a dynamic number column");
         }
-        ArrayList<Number> numbers = new ArrayList<Number>();
-        TimestampMap dynamicList = (TimestampMap) row.getAttribute(column);
-        if (dynamicList == null) {
-            return numbers;
+        
+        if(TimestampMap.class.isAssignableFrom(type)){//Timestamp type:
+            TimestampMap timestampMap = (TimestampMap) row.getAttribute(column);
+            if (timestampMap == null) {
+                return new ArrayList<Number>();
+            }
+            Number[] dynamicNumbers = (Number[]) timestampMap.toValuesArray();
+            return Arrays.asList(dynamicNumbers);
+        }else if(IntervalMap.class.isAssignableFrom(type)){//Interval type:
+            IntervalMap intervalMap = (IntervalMap) row.getAttribute(column);
+            if (intervalMap == null) {
+                return new ArrayList<Number>();
+            }
+            Number[] dynamicNumbers = (Number[]) intervalMap.toValuesArray();
+            return Arrays.asList(dynamicNumbers);
+        }else{
+            throw new IllegalArgumentException("Unsupported dynamic type class " + type.getCanonicalName());
         }
-        Number[] dynamicNumbers;
-        dynamicNumbers = (Number[]) dynamicList.toValuesArray();
-        Number n;
-        return Arrays.asList(dynamicNumbers);
     }
 }
