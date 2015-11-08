@@ -68,7 +68,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class GraphElementsControllerImpl implements GraphElementsController {
 
     private static final float DEFAULT_NODE_SIZE = 10f;
-    private static final int DEFAULT_EDGE_TYPE = 1;
+    private static final int DEFAULT_EDGE_TYPE = 0;//0 is graphstore EdgeTypeStore.NULL_LABEL
     private static final float DEFAULT_EDGE_WEIGHT = 1f;
 
     @Override
