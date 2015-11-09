@@ -143,9 +143,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private final ProjectController pc;
     private final GraphController gc;
 
-    private enum ClassDisplayed {
-
-        NONE, NODE, EDGE
+    private enum DisplayTable {
+        NODE, EDGE
     };
     //Settings
     private static final String DATA_LABORATORY_DYNAMIC_FILTERING = "DataLaboratory_Dynamic_Filtering";
@@ -180,11 +179,12 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     //General actions buttons
     private ArrayList<JComponent> generalActionsButtons = new ArrayList<JComponent>();
     //States
-    private ClassDisplayed classDisplayed = ClassDisplayed.NODE;//Display nodes by default at first.
+    private DisplayTable displayTable = DisplayTable.NODE;//Display nodes by default at first.
     private ArrayList previousNodeFilterColumns = new ArrayList();
     private int previousNodeColumnsFilterIndex = 0;
     private ArrayList previousEdgeFilterColumns = new ArrayList();
     private int previousEdgeColumnsFilterIndex = 0;
+    private Map<DisplayTable, String> filterTextByDisplayTable = new HashMap<DisplayTable, String>();
     
     //Refresh executor
     private RefreshOnceHelperThread refreshOnceHelperThread;
@@ -377,6 +377,14 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         });
         initKeyEventContextMenuActionMappings();
     }
+    
+    private boolean isShowingNodesTable(){
+        return displayTable == DisplayTable.NODE;
+    }
+    
+    private boolean isShowingEdgesTable(){
+        return displayTable == DisplayTable.EDGE;
+    }
 
     private void initKeyEventContextMenuActionMappings() {
         mapItems(DataLaboratoryHelper.getDefault().getNodesManipulators(), nodesActionMappings);
@@ -473,14 +481,14 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         if (index < 0) {
             return;
         }
-        if (classDisplayed.equals(ClassDisplayed.NODE)) {
+        if (isShowingNodesTable()) {
             if (nodeTable.setPattern(filterTextField.getText(), index)) {
                 filterTextField.setBackground(Color.WHITE);
             } else {
                 filterTextField.setBackground(invalidFilterColor);
             }
             previousNodeColumnsFilterIndex = index;
-        } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+        } else if (isShowingEdgesTable()) {
             if (edgeTable.setPattern(filterTextField.getText(), index)) {
                 filterTextField.setBackground(Color.WHITE);
             } else {
@@ -600,7 +608,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             @Override
             public void run() {
                 ArrayList columns = new ArrayList();
-                if (classDisplayed.equals(ClassDisplayed.NODE)) {
+                if (isShowingNodesTable()) {
                     DefaultComboBoxModel model = new DefaultComboBoxModel();
                     for (int i = 0; i < nodeTable.getTable().getColumnCount(); i++) {
                         if (nodeTable.getTable().getColumnExt(i).isVisible()) {
@@ -616,7 +624,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                         previousNodeColumnsFilterIndex = 0;
                     }
                     previousNodeFilterColumns = columns;
-                } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+                } else if (isShowingEdgesTable()) {
                     DefaultComboBoxModel model = new DefaultComboBoxModel();
                     for (int i = 0; i < edgeTable.getTable().getColumnCount(); i++) {
                         if (edgeTable.getTable().getColumnExt(i).isVisible()) {
@@ -682,13 +690,23 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
     private void refreshTable() {
         bannerPanel.setVisible(false);
-        if (classDisplayed.equals(ClassDisplayed.NODE)) {
+        if (isShowingNodesTable()) {
             nodesButton.setSelected(true);
             initNodesView();
-        } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+        } else if (isShowingEdgesTable()) {
             edgesButton.setSelected(true);
             initEdgesView();
         }
+        refreshFilter();
+    }
+    
+    private void selectDisplayTable(DisplayTable newDisplayTable){
+        filterTextByDisplayTable.put(displayTable, filterTextField.getText());
+
+        this.displayTable = newDisplayTable;
+
+        filterTextField.setText(filterTextByDisplayTable.get(displayTable));
+        refreshAllOnce();
     }
 
     @Override
@@ -697,8 +715,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
             @Override
             public void run() {
-                classDisplayed = ClassDisplayed.NODE;
-                refreshAllOnce();
+                selectDisplayTable(DisplayTable.NODE);
             }
         });
     }
@@ -709,8 +726,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
             @Override
             public void run() {
-                classDisplayed = ClassDisplayed.EDGE;
-                refreshAllOnce();
+                selectDisplayTable(DisplayTable.EDGE);
             }
         });
     }
@@ -762,12 +778,12 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
     @Override
     public boolean isNodeTableMode() {
-        return classDisplayed == ClassDisplayed.NODE;
+        return isShowingNodesTable();
     }
 
     @Override
     public boolean isEdgeTableMode() {
-        return classDisplayed == ClassDisplayed.EDGE;
+        return isShowingEdgesTable();
     }
 
     @Override
@@ -825,7 +841,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         String fileName = prepareTableExportFileName();
         boolean edgesTable;
 
-        if (classDisplayed == ClassDisplayed.NODE) {
+        if (isShowingNodesTable()) {
             table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
             edgesTable = false;
             fileName += " [Nodes]";
@@ -913,7 +929,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         GraphModel attributeModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         Table table;
         Column[] columns;
-        if (classDisplayed == ClassDisplayed.NODE) {
+        if (isShowingNodesTable()) {
             table = attributeModel.getNodeTable();
         } else {
             table = attributeModel.getEdgeTable();
@@ -1009,7 +1025,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         JCommandButton button = new JCommandButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.addColumnButton.text"), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("org/gephi/desktop/datalab/resources/table-insert-column.png", true), new Dimension(16, 16)));
         button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
         button.setDisplayState(CommandButtonDisplayState.BIG);
-        if (classDisplayed == ClassDisplayed.NODE) {
+        if (isShowingNodesTable()) {
             button.addActionListener(new ActionListener() {
 
                 @Override
@@ -1039,7 +1055,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         JCommandButton button = new JCommandButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.mergeColumnsButton.text"), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("org/gephi/desktop/datalab/resources/merge.png", true), new Dimension(16, 16)));
         button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
         button.setDisplayState(CommandButtonDisplayState.BIG);
-        if (classDisplayed == ClassDisplayed.NODE) {
+        if (isShowingNodesTable()) {
             button.addActionListener(new ActionListener() {
 
                 @Override
@@ -1260,7 +1276,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                 }
                 evt.consume();
             } else {//Nodes/edges mappings:
-                if (classDisplayed == ClassDisplayed.NODE) {
+                if (isShowingNodesTable()) {
                     final ContextMenuItemManipulator item = nodesActionMappings.get(evt.getKeyCode());
                     if (item != null) {
                         Node[] nodes = nodeTable.getElementsFromSelectedRows().toArray(new Node[0]);
@@ -1272,7 +1288,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                         }
                         evt.consume();
                     }
-                } else if (classDisplayed == ClassDisplayed.EDGE) {
+                } else if (isShowingEdgesTable()) {
                     final ContextMenuItemManipulator item = edgesActionMappings.get(evt.getKeyCode());
                     if (item != null) {
                         Edge[] edges = edgeTable.getElementsFromSelectedRows().toArray(new Edge[0]);
@@ -1483,7 +1499,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private void availableColumnsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_availableColumnsButtonActionPerformed
         Table table;
         AvailableColumnsModel availableColumnsModel;
-        if (classDisplayed == ClassDisplayed.NODE) {
+        if (isShowingNodesTable()) {
             table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
         } else {
             table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
