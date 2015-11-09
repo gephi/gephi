@@ -79,10 +79,6 @@
                     <groupId>org.netbeans.api</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>org-openide-execution</artifactId>
-                    <groupId>org.netbeans.api</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>org-openide-options</artifactId>
                     <groupId>org.netbeans.api</groupId>
                 </exclusion>

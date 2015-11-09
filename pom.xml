@@ -47,13 +47,13 @@
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
         
         <!-- Netbeans Platfrom version -->
-        <netbeans.version>RELEASE802</netbeans.version>
+        <netbeans.version>RELEASE81</netbeans.version>
         
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
         
         <!-- Modules specification version, overrides project version -->
-        <gephi.modules.specification.version>0.8.2</gephi.modules.specification.version>
+        <gephi.modules.specification.version>0.9</gephi.modules.specification.version>
 
         <!-- Java compilation settings -->
         <gephi.javac.source>1.6</gephi.javac.source>
@@ -221,6 +221,11 @@
             </dependency>
             <dependency>
                 <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-util-ui</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
                 <artifactId>org-openide-util-lookup</artifactId>
                 <version>${netbeans.version}</version>
             </dependency>
@@ -242,6 +247,11 @@
             <dependency>
                 <groupId>org.netbeans.api</groupId>
                 <artifactId>org-netbeans-api-progress</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-api-progress-nb</artifactId>
                 <version>${netbeans.version}</version>
             </dependency>
             <dependency>
@@ -1168,6 +1178,7 @@
         <module>modules/DataLaboratoryAPI</module>
         <module>modules/DataLaboratoryPlugin</module>
         <module>modules/DBDrivers</module>
+        <module>modules/DesktopBanner</module>
         <module>modules/DesktopBranding</module>
         <module>modules/DesktopContext</module>
         <module>modules/DesktopDataLaboratory</module>
@@ -1221,6 +1232,5 @@
         <module>modules/WelcomeScreen</module>
         <module>modules/CoreLibraryWrapper</module>
         <module>modules/UILibraryWrapper</module>
-        <module>modules/DesktopBanner</module>
     </modules>
 </project>
