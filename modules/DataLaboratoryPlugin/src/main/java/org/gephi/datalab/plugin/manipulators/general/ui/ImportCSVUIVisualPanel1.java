@@ -50,6 +50,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -83,6 +84,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
     private boolean hasTargetNodeColumn = false;
     private boolean columnNamesRepeated = false;
     private ValidationPanel validationPanel;
+    private Set<Integer> rowsMissingSourcesOrTargets;
 
     /** Creates new form ImportCSVUIVisualPanel1 */
     public ImportCSVUIVisualPanel1(ImportCSVUIWizardPanel1 wizard1) {
@@ -151,6 +153,14 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                                 prblms.add(getMessage("ImportCSVUIVisualPanel1.validation.edges.no-source-target-columns"));
                                 return false;
                             }
+                            if (hasRowsMissingSourcesOrTargets()) {
+                                prblms.add(NbBundle.getMessage(ImportCSVUIVisualPanel1.class, 
+                                    "ImportCSVUIVisualPanel1.validation.edges.empty-sources-or-targets", 
+                                    rowsMissingSourcesOrTargets.toString().substring(1, 
+                                        rowsMissingSourcesOrTargets.toString().length() - 1)
+                                ));
+                                return false;
+                            }
                             return true;
                         }
                     });
@@ -185,29 +195,46 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                 columnNamesRepeated = false;
                 hasSourceNodeColumn = false;
                 hasTargetNodeColumn = false;
+                int sourceColumnIndex = 0, 
+                    targetColumnIndex = 0,
+                    currentColumn = 0;
                 for (String header : headers) {
                     if (header.equalsIgnoreCase("source")) {
                         hasSourceNodeColumn = true;
+                        sourceColumnIndex = currentColumn;
                     }
                     if (header.equalsIgnoreCase("target")) {
                         hasTargetNodeColumn = true;
+                        targetColumnIndex = currentColumn;
                     }
                     if (columnNamesSet.contains(header)) {
                         columnNamesRepeated = true;
                         break;
                     }
                     columnNamesSet.add(header);
+                    currentColumn++;
                 }
 
                 ArrayList<String[]> records = new ArrayList<String[]>();
+                rowsMissingSourcesOrTargets = new LinkedHashSet<Integer>();
                 if (columnCount > 0) {
                     String[] currentRecord;
-                    while (reader.readRecord() && records.size() < MAX_ROWS_PREVIEW) {
+                    
+                    // Search for missing source or target columns
+                    int rowIndex = 2; // First line is header row
+                    while (reader.readRecord()) {
                         currentRecord = new String[reader.getColumnCount()];
                         for (int i = 0; i < currentRecord.length; i++) {
                             currentRecord[i] = reader.get(i);
                         }
-                        records.add(currentRecord);
+                        if (currentRecord[sourceColumnIndex].isEmpty()
+                                || currentRecord[targetColumnIndex].isEmpty()) {
+                            rowsMissingSourcesOrTargets.add(rowIndex);
+                        }
+                        rowIndex++;
+                        if (records.size() < MAX_ROWS_PREVIEW) {
+                            records.add(currentRecord);
+                        }
                     }
                 }
                 reader.close();
@@ -265,7 +292,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                 Exceptions.printStackTrace(ex);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, getMessage("ImportCSVUIVisualPanel1.validation.error"), getMessage("ImportCSVUIVisualPanel1.validation.file-permissions-error"), JOptionPane.ERROR_MESSAGE);
-            }
+            } 
         }
         wizard1.fireChangeEvent();
         pathTextField.setText(pathTextField.getText());//To fire validation panel messages.
@@ -332,7 +359,11 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
     }
 
     public boolean isCSVValid() {
-        return isValidFile() && hasColumns() && !columnNamesRepeated && areValidColumnsForTable();
+        return isValidFile() && hasColumns() && !columnNamesRepeated && areValidColumnsForTable() &&!hasRowsMissingSourcesOrTargets();
+    }
+
+    public boolean hasRowsMissingSourcesOrTargets() {
+        return rowsMissingSourcesOrTargets.size() > 0;
     }
 
     class SeparatorWrapper {
