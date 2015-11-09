@@ -806,8 +806,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     @Override
-    public void mergeRowsValues(Table table, AttributeRowsMergeStrategy[] mergeStrategies, Element[] rows, Element selectedRow, Element resultRow) {
-        if (table.countColumns() != mergeStrategies.length) {
+    public void mergeRowsValues(Column[] columns, AttributeRowsMergeStrategy[] mergeStrategies, Element[] rows, Element selectedRow, Element resultRow) {
+        if (columns.length != mergeStrategies.length) {
             throw new IllegalArgumentException("The number of columns must be equal to the number of merge strategies provided");
         }
         if (selectedRow == null) {
@@ -818,7 +818,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         Object value;
         
         int i = 0;
-        for (Column column : table) {
+        for (Column column : columns) {
             mergeStrategy = mergeStrategies[i];
             if (mergeStrategy != null) {
                 mergeStrategy.setup(rows, selectedRow, column);

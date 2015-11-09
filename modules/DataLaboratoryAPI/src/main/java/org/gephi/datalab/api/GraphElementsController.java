@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.api;
 
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
@@ -202,11 +203,12 @@ public interface GraphElementsController {
      * An AttributeRowsMergeStrategy must be provided for each column of the nodes.
      * @param nodes Nodes to merge (at least 1)
      * @param selectedNode Main selected node of the nodes to merge (or null to use first node)
-     * @param mergeStrategies Strategies to merge rows of each column of the nodes
+     * @param columns Columns to apply a merge strategy in each row
+     * @param mergeStrategies Strategies to merge rows of each column in {@code columns}
      * @param deleteMergedNodes Indicates if merged nodes should be deleted
      * @return New resulting node
      */
-    Node mergeNodes(Node[] nodes, Node selectedNode, AttributeRowsMergeStrategy[] mergeStrategies, boolean deleteMergedNodes);
+    Node mergeNodes(Node[] nodes, Node selectedNode, Column[] columns, AttributeRowsMergeStrategy[] mergeStrategies, boolean deleteMergedNodes);
 
     /**
      * Sets the fixed state of a node to the indicated.

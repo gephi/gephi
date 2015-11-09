@@ -41,8 +41,10 @@
  */
 package org.gephi.datalab.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Table;
@@ -203,8 +205,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     @Override
-    public Node mergeNodes(Node[] nodes, Node selectedNode, AttributeRowsMergeStrategy[] mergeStrategies, boolean deleteMergedNodes) {
-        Table nodesTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
+    public Node mergeNodes(Node[] nodes, Node selectedNode, Column[] columns, AttributeRowsMergeStrategy[] mergeStrategies, boolean deleteMergedNodes) {
         Table edgesTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
         if (selectedNode == null) {
             selectedNode = nodes[0];//Use first node as selected node if null
@@ -224,10 +225,10 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         newNode.setG(selectedNode.g());
         newNode.setB(selectedNode.b());
         newNode.setAlpha(selectedNode.alpha());
-
+        
         //Merge attributes:        
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        ac.mergeRowsValues(nodesTable, mergeStrategies, nodes, selectedNode, newNode);
+        ac.mergeRowsValues(columns, mergeStrategies, nodes, selectedNode, newNode);
 
         Set<Node> nodesSet = new HashSet<Node>();
         nodesSet.addAll(Arrays.asList(nodes));
@@ -253,7 +254,14 @@ public class GraphElementsControllerImpl implements GraphElementsController {
                 if (newEdge != null) {//Edge may not be created if repeated
                     //Copy edge attributes:
                     for (Column column : edgesTable) {
-                        newEdge.setAttribute(column, edge.getAttribute(column));
+                        if (!column.isReadOnly()) {
+                            Object value = edge.getAttribute(column);
+                            if (value == null) {
+                                newEdge.removeAttribute(column);
+                            } else {
+                                newEdge.setAttribute(column, edge.getAttribute(column));
+                            }
+                        }
                     }
                 }
             }

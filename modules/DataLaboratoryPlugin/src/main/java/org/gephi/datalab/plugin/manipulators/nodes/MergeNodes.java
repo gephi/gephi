@@ -41,6 +41,8 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.plugin.manipulators.nodes;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Icon;
 import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.GraphElementsController;
@@ -50,6 +52,7 @@ import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -82,8 +85,16 @@ public class MergeNodes extends BasicNodesManipulator {
         this.nodes = nodes;
         selectedNode = clickedNode != null ? clickedNode : nodes[0];
         
+        Table nodeTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
+        List<Column> columnsList = new ArrayList<Column>();
+        for (Column column : nodeTable) {
+            if(!column.isReadOnly()){
+                columnsList.add(column);
+            }
+        }
         
-        columns = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable().toArray();
+        columns = columnsList.toArray(new Column[0]);
+        
         mergeStrategies = new AttributeRowsMergeStrategy[columns.length];
         deleteMergedNodes = NbPreferences.forModule(MergeNodes.class).getBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, true);
     }
@@ -91,7 +102,7 @@ public class MergeNodes extends BasicNodesManipulator {
     @Override
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        Node newNode=gec.mergeNodes(nodes, selectedNode, mergeStrategies, deleteMergedNodes);
+        Node newNode = gec.mergeNodes(nodes, selectedNode, columns, mergeStrategies, deleteMergedNodes);
         Lookup.getDefault().lookup(DataTablesController.class).setNodeTableSelection(new Node[]{newNode});
         NbPreferences.forModule(MergeNodes.class).putBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, deleteMergedNodes);
     }
