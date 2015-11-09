@@ -43,6 +43,7 @@ package org.gephi.datalab.api;
 
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 
 /**
@@ -54,20 +55,38 @@ import org.gephi.graph.api.Node;
 public interface GraphElementsController {
 
     /**
-     * Creates a node with default id and the given label.
+     * Creates a node with default id and the given label in the current graph.
      * @param label Label for the node
      * @return The new created node
      */
     Node createNode(String label);
+    
+    /**
+     * Creates a node with default id and the given label.
+     * @param label Label for the node
+     * @param graph Graph to insert the node into
+     * @return The new created node
+     */
+    Node createNode(String label, Graph graph);
 
     /**
-     * <p>Creates a node with the given id and label.</p>
+     * <p>Creates a node with the given id and label in the current graph.</p>
      * <p>If a node with that id already exists, no node will be created</p>
      * @param label Label for the node
      * @param id Id for the node
      * @return The new created node or null if a node with the given id already exists
      */
     Node createNode(String label, String id);
+    
+    /**
+     * <p>Creates a node with the given id and label.</p>
+     * <p>If a node with that id already exists, no node will be created</p>
+     * @param label Label for the node
+     * @param id Id for the node
+     * @param graph Graph to insert the node into
+     * @return The new created node or null if a node with the given id already exists
+     */
+    Node createNode(String label, String id, Graph graph);
 
     /**
      * <p>Duplicates a node if it is in the graph, and returns the new node.</p>
@@ -86,24 +105,47 @@ public interface GraphElementsController {
     void duplicateNodes(Node[] nodes);
 
     /**
-     * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
+     * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected, in the current graph.</p>
      * @param source Source node
      * @param target Target node
      * @param directed Indicates if the edge has to be directed
      * @return New edge if the edge was created succesfully, null otherwise
      */
     Edge createEdge(Node source, Node target, boolean directed);
+    
+    /**
+     * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
+     * @param source Source node
+     * @param target Target node
+     * @param directed Indicates if the edge has to be directed
+     * @param graph Graph to insert the node into
+     * @return New edge if the edge was created succesfully, null otherwise
+     */
+    Edge createEdge(Node source, Node target, boolean directed, Graph graph);
 
     /**
      * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
      * <p>If a edge with the given id already exists, no edge will be created.</p>
+     * @param id Id for the new edge
      * @param source Source node
      * @param target Target node
      * @param directed Indicates if the edge has to be directed
      * @return New edge if the edge was created succesfully, null otherwise
      */
     Edge createEdge(String id, Node source, Node target, boolean directed);
-
+    
+    /**
+     * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected, in the current graph.</p>
+     * <p>If a edge with the given id already exists, no edge will be created.</p>
+     * @param id Id for the new edge
+     * @param source Source node
+     * @param target Target node
+     * @param directed Indicates if the edge has to be directed
+     * @param graph Graph to insert the node into
+     * @return New edge if the edge was created succesfully, null otherwise
+     */
+    Edge createEdge(String id, Node source, Node target, boolean directed, Graph graph);
+    
     /**
      * <p>Tries to create edges between the source node and all other edges, directed or undirected.</p>
      * <p>An edge won't be created if it already exists or is a self-loop.</p>

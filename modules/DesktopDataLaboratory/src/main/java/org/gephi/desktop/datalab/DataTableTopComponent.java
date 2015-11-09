@@ -143,13 +143,11 @@ persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_DataTableTopComponent",
 preferredID = "DataTableTopComponent")
 public class DataTableTopComponent extends TopComponent implements AWTEventListener, DataTablesEventListener {
-    private final ProjectController pc;
-    private final GraphController gc;
-
     private enum DisplayTable {
         NODE, EDGE
     };
     //Settings
+    private static final long AUTO_REFRESH_RATE_MILLISECONDS = 100;
     private static final String DATA_LABORATORY_DYNAMIC_FILTERING = "DataLaboratory_Dynamic_Filtering";
     private static final String DATA_LABORATORY_ONLY_VISIBLE = "DataLaboratory_visibleOnly";
     private static final String DATA_LABORATORY_SPARKLINES = "DataLaboratory_useSparklines";
@@ -164,16 +162,19 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private Map<Integer, ContextMenuItemManipulator> nodesActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();//For key bindings
     private Map<Integer, ContextMenuItemManipulator> edgesActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();//For key bindings
     //Data
+    private final ProjectController pc;
+    private final GraphController gc;
     private volatile GraphModel graphModel;
     private volatile DataTablesModel dataTablesModel;
     private volatile AvailableColumnsModel nodeAvailableColumnsModel;
     private volatile AvailableColumnsModel edgeAvailableColumnsModel;
     
     //Observers for auto-refreshing:
+    private boolean autoRefreshEnabled = true;
     private GraphObserver graphObserver;
     private TableObserver nodesTableObserver;
     private TableObserver edgesTableObserver;
-    //Timer for the obsevers:
+    //Timer for the observers:
     private java.util.Timer observersTimer;
     
     //Table
@@ -331,6 +332,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
             @Override
             public void run() {
+                if(!autoRefreshEnabled){
+                    return;
+                }
+                
                 boolean hasChanges = 
                         (graphObserver != null && graphObserver.hasGraphChanged())
                         || (nodesTableObserver != null && nodesTableObserver.hasTableChanged())
@@ -341,7 +346,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                 }
             }
         }
-        , 0, 100);//Check graph and tables for changes every 100 ms
+        , 0, AUTO_REFRESH_RATE_MILLISECONDS);//Check graph and tables for changes every 100 ms
 
         //Filter
         if (dynamicFiltering) {
@@ -408,6 +413,16 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                 mapItems(subItems, map);
             }
         }
+    }
+
+    @Override
+    public void setAutoRefreshEnabled(boolean enabled) {
+        this.autoRefreshEnabled = enabled;
+    }
+
+    @Override
+    public boolean isAutoRefreshEnabled() {
+        return autoRefreshEnabled;
     }
 
     private synchronized void refreshAll() {

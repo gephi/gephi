@@ -560,7 +560,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
 
         if (columnTypes == null || columnNames.length != columnTypes.length) {
-            throw new IllegalArgumentException("Column names length must be the same as column types lenght");
+            throw new IllegalArgumentException("Column names length must be the same as column types length");
         }
 
         CsvReader reader = null;
@@ -602,17 +602,17 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (idColumn != null) {
                     id = reader.get(idColumn);
                     if (id == null || id.isEmpty()) {
-                        node = gec.createNode(null);//id null or empty, assign one
+                        node = gec.createNode(null, graph);//id null or empty, assign one
                     } else {
                         graph.readLock();
                         node = graph.getNode(id);
                         graph.readUnlock();
                         if (node != null) {//Node with that id already in graph
                             if (assignNewNodeIds) {
-                                node = gec.createNode(null);
+                                node = gec.createNode(null, graph);
                             }
                         } else {
-                            node = gec.createNode(null, id);//New id in the graph
+                            node = gec.createNode(null, id, graph);//New id in the graph
                         }
                     }
                 } else {
@@ -641,7 +641,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
 
         if (columnTypes == null || columnNames.length != columnTypes.length) {
-            throw new IllegalArgumentException("Column names length must be the same as column types lenght");
+            throw new IllegalArgumentException("Column names length must be the same as column types length");
         }
 
         CsvReader reader = null;
@@ -709,7 +709,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (source == null) {
                     if (createNewNodes) {//Create new nodes when they don't exist already and option is enabled
                         if (source == null) {
-                            source = gec.createNode(null, sourceId);
+                            source = gec.createNode(null, sourceId, graph);
                         }
                     } else {
                         continue;//Ignore this edge row, since no new nodes should be created.
@@ -723,7 +723,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (target == null) {
                     if (createNewNodes) {//Create new nodes when they don't exist already and option is enabled
                         if (target == null) {
-                            target = gec.createNode(null, targetId);
+                            target = gec.createNode(null, targetId, graph);
                         }
                     } else {
                         continue;//Ignore this edge row, since no new nodes should be created.
