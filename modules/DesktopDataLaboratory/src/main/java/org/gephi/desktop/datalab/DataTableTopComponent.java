@@ -51,9 +51,12 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -181,10 +184,9 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     //States
     private DisplayTable displayTable = DisplayTable.NODE;//Display nodes by default at first.
     private ArrayList previousNodeFilterColumns = new ArrayList();
-    private int previousNodeColumnsFilterIndex = 0;
     private ArrayList previousEdgeFilterColumns = new ArrayList();
-    private int previousEdgeColumnsFilterIndex = 0;
-    private Map<DisplayTable, String> filterTextByDisplayTable = new HashMap<DisplayTable, String>();
+    private Map<DisplayTable, String> filterTextByDisplayTable = new EnumMap<DisplayTable, String>(DisplayTable.class);
+    private Map<DisplayTable, Integer> filterColumnIndexByDisplayTable = new EnumMap<DisplayTable, Integer>(DisplayTable.class);
     
     //Refresh executor
     private RefreshOnceHelperThread refreshOnceHelperThread;
@@ -347,12 +349,12 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
                 @Override
                 public void insertUpdate(DocumentEvent e) {
-                    refreshFilter();
+                    refreshAppliedFilter();
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
-                    refreshFilter();
+                    refreshAppliedFilter();
                 }
 
                 @Override
@@ -364,7 +366,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    refreshFilter();
+                    refreshAppliedFilter();
                 }
             });
         }
@@ -372,7 +374,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                refreshFilter();
+                refreshAppliedFilter();
             }
         });
         initKeyEventContextMenuActionMappings();
@@ -476,7 +478,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     /**
      * **************Table related methods:****************
      */
-    private void refreshFilter() {
+    private void refreshAppliedFilter() {
         int index = columnComboBox.getSelectedIndex();
         if (index < 0) {
             return;
@@ -487,14 +489,12 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             } else {
                 filterTextField.setBackground(invalidFilterColor);
             }
-            previousNodeColumnsFilterIndex = index;
         } else if (isShowingEdgesTable()) {
             if (edgeTable.setPattern(filterTextField.getText(), index)) {
                 filterTextField.setBackground(Color.WHITE);
             } else {
                 filterTextField.setBackground(invalidFilterColor);
             }
-            previousEdgeColumnsFilterIndex = index;
         }
     }
     
@@ -540,7 +540,6 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
                     //Model
                     nodeTable.refreshModel(graph.getNodes().toArray(), cols, graphModel, dataTablesModel);
-                    refreshFilterColumns();
 
                     busylabel.setBusy(false);
                     nodeTable.scrollToFirstElementSelected();
@@ -588,7 +587,6 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
                     //Model
                     edgeTable.refreshModel(graph.getEdges().toArray(), cols, graphModel, dataTablesModel);
-                    refreshFilterColumns();
 
                     busylabel.setBusy(false);
                     edgeTable.scrollToFirstElementSelected();
@@ -618,10 +616,12 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                     }
 
                     columnComboBox.setModel(model);
-                    if (columns.equals(previousNodeFilterColumns) && previousNodeColumnsFilterIndex < columnComboBox.getItemCount()) {//Preserve user selected column when the columns list does not change
+                    
+                    Integer previousNodeColumnsFilterIndex = filterColumnIndexByDisplayTable.get(DisplayTable.NODE);
+                    if (columns.equals(previousNodeFilterColumns) 
+                            && previousNodeColumnsFilterIndex != null
+                            && previousNodeColumnsFilterIndex < columnComboBox.getItemCount()) {//Preserve user selected column when the columns list does not change
                         columnComboBox.setSelectedIndex(previousNodeColumnsFilterIndex);
-                    } else {
-                        previousNodeColumnsFilterIndex = 0;
                     }
                     previousNodeFilterColumns = columns;
                 } else if (isShowingEdgesTable()) {
@@ -633,13 +633,17 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                         }
                     }
                     columnComboBox.setModel(model);
-                    if (columns.equals(previousEdgeFilterColumns) && previousEdgeColumnsFilterIndex < columnComboBox.getItemCount()) {//Preserve user selected column when the columns list does not change
+                    
+                    Integer previousEdgeColumnsFilterIndex = filterColumnIndexByDisplayTable.get(DisplayTable.EDGE);
+                    if (columns.equals(previousEdgeFilterColumns)
+                            && previousEdgeColumnsFilterIndex != null
+                            && previousEdgeColumnsFilterIndex < columnComboBox.getItemCount()) {//Preserve user selected column when the columns list does not change
                         columnComboBox.setSelectedIndex(previousEdgeColumnsFilterIndex);
-                    } else {
-                        previousEdgeColumnsFilterIndex = 0;
                     }
                     previousEdgeFilterColumns = columns;
                 }
+                
+                
             }
         });
     }
@@ -697,11 +701,14 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             edgesButton.setSelected(true);
             initEdgesView();
         }
-        refreshFilter();
+        
+        refreshFilterColumns();
+        refreshAppliedFilter();
     }
     
     private void selectDisplayTable(DisplayTable newDisplayTable){
         filterTextByDisplayTable.put(displayTable, filterTextField.getText());
+        filterColumnIndexByDisplayTable.put(displayTable, columnComboBox.getSelectedIndex());
 
         this.displayTable = newDisplayTable;
 
@@ -1617,9 +1624,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                 rows = graph.getNodes().toArray();
             }
             
-            AttributeTableCSVExporter.writeCSVFile(table, file, separator, charset, columnsToExport, rows);
+            AttributeTableCSVExporter.writeCSVFile(graph, table, file, separator, charset, columnsToExport, rows);
             JOptionPane.showMessageDialog(parent, NbBundle.getMessage(DataTableTopComponent.class, "TableCSVExporter.dialog.success"));
         } catch (Exception ex) {
+            Logger.getLogger("").log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(parent, NbBundle.getMessage(DataTableTopComponent.class, "TableCSVExporter.dialog.error"), NbBundle.getMessage(DataTableTopComponent.class, "TableCSVExporter.dialog.error.title"), JOptionPane.ERROR_MESSAGE);
         }
     }

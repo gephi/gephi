@@ -436,14 +436,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     @Override
     public boolean isNodeTable(Table table) {
-        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        return table == gc.getGraphModel().getNodeTable();
+        return Node.class.equals(table.getElementClass());
     }
 
     @Override
     public boolean isEdgeTable(Table table) {
-        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        return table == gc.getGraphModel().getEdgeTable();
+        return Edge.class.equals(table.getElementClass());
     }
 
     @Override
@@ -458,12 +456,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     
     @Override
     public boolean isNodeColumn(Column column){
-        return isTableColumn(Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable(), column);
+        return Node.class.equals(column.getTypeClass());
     }
     
     @Override
     public boolean isEdgeColumn(Column column){
-        return isTableColumn(Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable(), column);
+        return Edge.class.equals(column.getTypeClass());
     }
 
     @Override
@@ -890,20 +888,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     /**
-     * Only checks that a column is not
-     * <code>COMPUTED</code> or
-     * <code>DELEGATE</code>
-     * @deprecated COMPUTED and DELEGATE no longer exist
-     */
-    private boolean canChangeGenericColumnData(Column column) {
-        return true;
-    }
-
-    /**
      * Used to negate the values of a single boolean column.
      */
     private void negateColumnBooleanType(Table table, Column column) {
-        final int columnIndex = column.getIndex();
         Object value;
         Boolean newValue;
         for (Element row : getTableAttributeRows(table)) {

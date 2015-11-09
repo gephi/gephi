@@ -306,12 +306,14 @@ public interface AttributeColumnsController {
 
     /**
      * <p>Checks if the given table is nodes table.</p>
+     * @param table Table to check
      * @return True if the table is nodes table, false otherwise
      */
     boolean isNodeTable(Table table);
 
     /**
      * <p>Checks if the given table is edges table.</p>
+     * @param table Table to check
      * @return True if the table is edges table, false otherwise
      */
     boolean isEdgeTable(Table table);
