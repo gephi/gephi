@@ -685,7 +685,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             //Create edges:
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
             Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
-            String id = null;
+            String id;
             Edge edge;
             String sourceId, targetId;
             Node source, target;
@@ -694,11 +694,15 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             reader = new CsvReader(new FileInputStream(file), separator, charset);
             reader.setTrimWhitespace(false);
             reader.readHeaders();
+            
+            int recordNumber = 0;
             while (reader.readRecord()) {
+                recordNumber++;
                 sourceId = reader.get(sourceColumn);
                 targetId = reader.get(targetColumn);
 
-                if (sourceId == null || sourceId.isEmpty() || targetId == null || targetId.isEmpty()) {
+                if (sourceId == null || sourceId.trim().isEmpty() || targetId == null || targetId.trim().isEmpty()) {
+                    Logger.getLogger("").log(Level.WARNING, "Ignoring record {0} due to empty source and/or target node ids", recordNumber);
                     continue;//No correct source and target ids were provided, ignore row
                 }
 
@@ -791,9 +795,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 }
             }
         } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
+            Logger.getLogger("").log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+            Logger.getLogger("").log(Level.SEVERE, null, ex);
         } finally {
             if(reader != null){
                 reader.close();
