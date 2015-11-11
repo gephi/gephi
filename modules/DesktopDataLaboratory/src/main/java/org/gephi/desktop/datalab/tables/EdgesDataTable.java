@@ -47,10 +47,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.edges.EdgesManipulator;
 import org.gephi.desktop.datalab.tables.popup.EdgesPopupAdapter;
 import org.gephi.graph.api.Edge;
+import org.gephi.tools.api.EditWindowController;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -63,22 +67,22 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
         super();
         
         //Add listener of table selection to refresh edit window when the selection changes (and if the table is not being refreshed):
-        //Temporaly disabled because the call to findInstance in EditWindowController seems to randomly and rarely create exceptions
-//        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-//
-//            public void valueChanged(ListSelectionEvent e) {
-//                if (!refreshingTable) {
-//                    EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
-//                    if (edc.isOpen()) {
-//                        if (table.getSelectedRow() != -1) {
-//                            edc.editEdges(getEdgesFromSelectedRows());
-//                        } else {
-//                            edc.disableEdit();
-//                        }
-//                    }
-//                }
-//            }
-//        });
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!isRefreshingTable()) {
+                    EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
+                    if (edc != null && edc.isOpen()) {
+                        if (table.getSelectedRow() != -1) {
+                            edc.editEdges(getElementsFromSelectedRows().toArray(new Edge[0]));
+                        } else {
+                            edc.disableEdit();
+                        }
+                    }
+                }
+            }
+        });
         
         
         

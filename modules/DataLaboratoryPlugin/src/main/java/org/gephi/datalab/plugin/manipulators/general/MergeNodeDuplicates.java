@@ -41,6 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.plugin.manipulators.general;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Icon;
 import org.gephi.graph.api.Column;
@@ -80,7 +81,7 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         for (List<Node> nodes : duplicateGroups) {
-            gec.mergeNodes(nodes.toArray(new Node[0]), nodes.get(0), mergeStrategies, deleteMergedNodes);
+            gec.mergeNodes(nodes.toArray(new Node[0]), nodes.get(0), columns, mergeStrategies, deleteMergedNodes);
         }
         NbPreferences.forModule(MergeNodeDuplicates.class).putBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, deleteMergedNodes);
         NbPreferences.forModule(MergeNodeDuplicates.class).putBoolean(CASE_SENSITIVE_SAVED_PREFERENCES, caseSensitive);
@@ -104,12 +105,14 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
     @Override
     public ManipulatorUI getUI() {
         Table nodeTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
-        int cols = nodeTable.countColumns();
-        
-        columns = new Column[cols];
-        for (int i = 0; i < cols; i++) {
-            columns[i] = nodeTable.getColumn(i);
+        List<Column> columnsList = new ArrayList<Column>();
+        for (Column column : nodeTable) {
+            if(!column.isReadOnly()){
+                columnsList.add(column);
+            }
         }
+        
+        columns = columnsList.toArray(new Column[0]);
         mergeStrategies = new AttributeRowsMergeStrategy[columns.length];
         deleteMergedNodes = NbPreferences.forModule(MergeNodeDuplicates.class).getBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, true);
         caseSensitive = NbPreferences.forModule(MergeNodeDuplicates.class).getBoolean(CASE_SENSITIVE_SAVED_PREFERENCES, true);

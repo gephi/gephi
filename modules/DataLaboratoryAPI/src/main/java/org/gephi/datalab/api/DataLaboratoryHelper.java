@@ -49,6 +49,8 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -312,6 +314,13 @@ public class DataLaboratoryHelper {
 
             @Override
             public void run() {
+                this.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+
+                    @Override
+                    public void uncaughtException(Thread t, Throwable e) {
+                        Logger.getLogger("").log(Level.SEVERE, null, e);
+                    }
+                });
                 m.execute();
             }
         }.start();

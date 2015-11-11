@@ -306,12 +306,14 @@ public interface AttributeColumnsController {
 
     /**
      * <p>Checks if the given table is nodes table.</p>
+     * @param table Table to check
      * @return True if the table is nodes table, false otherwise
      */
     boolean isNodeTable(Table table);
 
     /**
      * <p>Checks if the given table is edges table.</p>
+     * @param table Table to check
      * @return True if the table is edges table, false otherwise
      */
     boolean isEdgeTable(Table table);
@@ -450,13 +452,13 @@ public interface AttributeColumnsController {
      * <p>The number of columns must be equal to the number of merge strategies provided</p>
      * <p>No parameters can be null except selectedRow (first row will be used in case selectedRow is null)</p>
      * <p>If any strategy is null, the value of the selectedRow will be used</p>
-     * @param table Table of the rows
-     * @param mergeStrategies Strategies for each column of the table
+     * @param columns Columns to apply a merge strategy in each row
+     * @param mergeStrategies Strategies for each column in {@code columns}
      * @param rows Rows to merge (at least 1)
      * @param selectedRow Main selected row or null (first row will be used in case selectedRow is null)
      * @param resultRow Already existing row to put the values on
      */
-    void mergeRowsValues(Table table, AttributeRowsMergeStrategy[] mergeStrategies, Element[] rows, Element selectedRow, Element resultRow);
+    void mergeRowsValues(Column[] columns, AttributeRowsMergeStrategy[] mergeStrategies, Element[] rows, Element selectedRow, Element resultRow);
     
     /**
      * <p>Finds and returns nodes duplicates based on the values of a given column of nodes table</p>

@@ -47,7 +47,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -203,14 +202,16 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     private void loadNodesTableSettings(JPanel settingsPanel) {
         //Create assignNewNodeIds checkbox and set its selection with saved preferences or true by default:
         assignNewNodeIds = new JCheckBox(getMessage("ImportCSVUIVisualPanel2.nodes.assign-ids-checkbox"),
-                NbPreferences.forModule(ImportCSVUIVisualPanel1.class).getBoolean(ASSIGN_NEW_NODES_IDS_SAVED_PREFERENCES, true));
+                NbPreferences.forModule(ImportCSVUIVisualPanel1.class)
+                        .getBoolean(ASSIGN_NEW_NODES_IDS_SAVED_PREFERENCES, false));//False => by default update nodes instead of creating new ones
         settingsPanel.add(assignNewNodeIds, "wrap");
     }
 
     private void loadEdgesTableSettings(JPanel settingsPanel) {
         //Create createNewNodes checkbox and set its selection with saved preferences or true by default:
         createNewNodes = new JCheckBox(getMessage("ImportCSVUIVisualPanel2.edges.create-new-nodes-checkbox"),
-                NbPreferences.forModule(ImportCSVUIVisualPanel1.class).getBoolean(CREATE_NEW_NODES_SAVED_PREFERENCES, true));
+                NbPreferences.forModule(ImportCSVUIVisualPanel1.class)
+                        .getBoolean(CREATE_NEW_NODES_SAVED_PREFERENCES, true));//True => by default create missing nodes
         settingsPanel.add(createNewNodes, "wrap");
     }
 

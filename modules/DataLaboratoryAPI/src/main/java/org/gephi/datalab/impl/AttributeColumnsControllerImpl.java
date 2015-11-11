@@ -69,6 +69,7 @@ import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.graph.impl.GraphStoreConfiguration;
 import org.gephi.utils.StatisticsUtils;
@@ -435,14 +436,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     @Override
     public boolean isNodeTable(Table table) {
-        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        return table == gc.getGraphModel().getNodeTable();
+        return Node.class.equals(table.getElementClass());
     }
 
     @Override
     public boolean isEdgeTable(Table table) {
-        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        return table == gc.getGraphModel().getEdgeTable();
+        return Edge.class.equals(table.getElementClass());
     }
 
     @Override
@@ -457,12 +456,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     
     @Override
     public boolean isNodeColumn(Column column){
-        return isTableColumn(Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable(), column);
+        return Node.class.equals(column.getTypeClass());
     }
     
     @Override
     public boolean isEdgeColumn(Column column){
-        return isTableColumn(Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable(), column);
+        return Edge.class.equals(column.getTypeClass());
     }
 
     @Override
@@ -561,7 +560,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
 
         if (columnTypes == null || columnNames.length != columnTypes.length) {
-            throw new IllegalArgumentException("Column names length must be the same as column types lenght");
+            throw new IllegalArgumentException("Column names length must be the same as column types length");
         }
 
         CsvReader reader = null;
@@ -603,17 +602,17 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (idColumn != null) {
                     id = reader.get(idColumn);
                     if (id == null || id.isEmpty()) {
-                        node = gec.createNode(null);//id null or empty, assign one
+                        node = gec.createNode(null, graph);//id null or empty, assign one
                     } else {
                         graph.readLock();
                         node = graph.getNode(id);
                         graph.readUnlock();
                         if (node != null) {//Node with that id already in graph
                             if (assignNewNodeIds) {
-                                node = gec.createNode(null);
+                                node = gec.createNode(null, graph);
                             }
                         } else {
-                            node = gec.createNode(null, id);//New id in the graph
+                            node = gec.createNode(null, id, graph);//New id in the graph
                         }
                     }
                 } else {
@@ -642,7 +641,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
 
         if (columnTypes == null || columnNames.length != columnTypes.length) {
-            throw new IllegalArgumentException("Column names length must be the same as column types lenght");
+            throw new IllegalArgumentException("Column names length must be the same as column types length");
         }
 
         CsvReader reader = null;
@@ -686,7 +685,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             //Create edges:
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
             Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
-            String id = null;
+            String id;
             Edge edge;
             String sourceId, targetId;
             Node source, target;
@@ -695,11 +694,15 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             reader = new CsvReader(new FileInputStream(file), separator, charset);
             reader.setTrimWhitespace(false);
             reader.readHeaders();
+            
+            int recordNumber = 0;
             while (reader.readRecord()) {
+                recordNumber++;
                 sourceId = reader.get(sourceColumn);
                 targetId = reader.get(targetColumn);
 
-                if (sourceId == null || sourceId.isEmpty() || targetId == null || targetId.isEmpty()) {
+                if (sourceId == null || sourceId.trim().isEmpty() || targetId == null || targetId.trim().isEmpty()) {
+                    Logger.getLogger("").log(Level.WARNING, "Ignoring record {0} due to empty source and/or target node ids", recordNumber);
                     continue;//No correct source and target ids were provided, ignore row
                 }
 
@@ -710,7 +713,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (source == null) {
                     if (createNewNodes) {//Create new nodes when they don't exist already and option is enabled
                         if (source == null) {
-                            source = gec.createNode(null, sourceId);
+                            source = gec.createNode(null, sourceId, graph);
                         }
                     } else {
                         continue;//Ignore this edge row, since no new nodes should be created.
@@ -724,7 +727,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (target == null) {
                     if (createNewNodes) {//Create new nodes when they don't exist already and option is enabled
                         if (target == null) {
-                            target = gec.createNode(null, targetId);
+                            target = gec.createNode(null, targetId, graph);
                         }
                     } else {
                         continue;//Ignore this edge row, since no new nodes should be created.
@@ -792,9 +795,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 }
             }
         } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
+            Logger.getLogger("").log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+            Logger.getLogger("").log(Level.SEVERE, null, ex);
         } finally {
             if(reader != null){
                 reader.close();
@@ -803,8 +806,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     @Override
-    public void mergeRowsValues(Table table, AttributeRowsMergeStrategy[] mergeStrategies, Element[] rows, Element selectedRow, Element resultRow) {
-        if (table.countColumns() != mergeStrategies.length) {
+    public void mergeRowsValues(Column[] columns, AttributeRowsMergeStrategy[] mergeStrategies, Element[] rows, Element selectedRow, Element resultRow) {
+        if (columns.length != mergeStrategies.length) {
             throw new IllegalArgumentException("The number of columns must be equal to the number of merge strategies provided");
         }
         if (selectedRow == null) {
@@ -815,7 +818,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         Object value;
         
         int i = 0;
-        for (Column column : table) {
+        for (Column column : columns) {
             mergeStrategy = mergeStrategies[i];
             if (mergeStrategy != null) {
                 mergeStrategy.setup(rows, selectedRow, column);
@@ -889,20 +892,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     /**
-     * Only checks that a column is not
-     * <code>COMPUTED</code> or
-     * <code>DELEGATE</code>
-     * @deprecated COMPUTED and DELEGATE no longer exist
-     */
-    private boolean canChangeGenericColumnData(Column column) {
-        return true;
-    }
-
-    /**
      * Used to negate the values of a single boolean column.
      */
     private void negateColumnBooleanType(Table table, Column column) {
-        final int columnIndex = column.getIndex();
         Object value;
         Boolean newValue;
         for (Element row : getTableAttributeRows(table)) {
@@ -941,14 +933,23 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         if (!(AttributeUtils.isNumberType(type) && AttributeUtils.isDynamicType(type))) {
             throw new IllegalArgumentException("Column must be a dynamic number column");
         }
-        ArrayList<Number> numbers = new ArrayList<Number>();
-        TimestampMap dynamicList = (TimestampMap) row.getAttribute(column);
-        if (dynamicList == null) {
-            return numbers;
+        
+        if(TimestampMap.class.isAssignableFrom(type)){//Timestamp type:
+            TimestampMap timestampMap = (TimestampMap) row.getAttribute(column);
+            if (timestampMap == null) {
+                return new ArrayList<Number>();
+            }
+            Number[] dynamicNumbers = (Number[]) timestampMap.toValuesArray();
+            return Arrays.asList(dynamicNumbers);
+        }else if(IntervalMap.class.isAssignableFrom(type)){//Interval type:
+            IntervalMap intervalMap = (IntervalMap) row.getAttribute(column);
+            if (intervalMap == null) {
+                return new ArrayList<Number>();
+            }
+            Number[] dynamicNumbers = (Number[]) intervalMap.toValuesArray();
+            return Arrays.asList(dynamicNumbers);
+        }else{
+            throw new IllegalArgumentException("Unsupported dynamic type class " + type.getCanonicalName());
         }
-        Number[] dynamicNumbers;
-        dynamicNumbers = (Number[]) dynamicList.toValuesArray();
-        Number n;
-        return Arrays.asList(dynamicNumbers);
     }
 }

@@ -91,7 +91,7 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
     @Override
     public ManipulatorUI getUI() {
         GraphModel currentGraphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
-        if (graphModel != currentGraphModel) {//If graph model has changed since last execution, change default mode for edges to create in UI, else keep this parameter across calls
+        if (graphModel != null && graphModel != currentGraphModel) {//If graph model has changed since last execution, change default mode for edges to create in UI, else keep this parameter across calls
             directed = currentGraphModel.isDirected() || currentGraphModel.isMixed();//Get graph directed state. Set to true if graph is directed or mixed
             graphModel = currentGraphModel;
             source = null;

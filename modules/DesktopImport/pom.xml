@@ -58,6 +58,10 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-dialogs</artifactId>
         </dependency>
         <dependency>
