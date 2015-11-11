@@ -298,13 +298,9 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-statistics</artifactId>
         </dependency>
-        <!--        <dependency>
+<!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>clustering-api</artifactId>
         </dependency>-->
         <!--        <dependency>
             <groupId>${project.groupId}</groupId>
@@ -338,8 +334,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>io-importer-plugin</artifactId>
         </dependency>
-        <!--
-        <dependency>
+<!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-plugin</artifactId>
         </dependency>
@@ -363,10 +358,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>perspective-api</artifactId>
         </dependency>
-        <!--        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-clustering</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>import-plugin-ui</artifactId>
@@ -379,7 +370,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>datalab-plugin</artifactId>
         </dependency>
-        <!--        <dependency>
+<!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-plugin-ui</artifactId>
         </dependency>-->
@@ -419,13 +410,9 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>directory-chooser</artifactId>
         </dependency>
-        <!--        <dependency>
+<!--        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-filters</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>clustering-plugin</artifactId>
         </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>

@@ -537,11 +537,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>clustering-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>ui-propertyeditor</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -622,11 +617,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-clustering</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>import-plugin-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -693,11 +683,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-filters</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>clustering-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1030,7 +1015,7 @@
                                 <configuration>
                                     <show>public</show>
                                     <doctitle>Gephi ${project.version} API Index</doctitle>
-                                    <subpackages>org.gephi.clustering.api:org.gephi.clustering.spi:org.gephi.data.attributes.api:org.gephi.data.attributes.spi:org.gephi.data.attributes.type:org.gephi.data.properties:org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.dynamic.api:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.partition.api:org.gephi.partition.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.appearance.api:org.gephi.appearance.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress</subpackages>
+                                    <subpackages>org.gephi.data.attributes.api:org.gephi.data.attributes.spi:org.gephi.data.attributes.type:org.gephi.data.properties:org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.dynamic.api:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.partition.api:org.gephi.partition.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.appearance.api:org.gephi.appearance.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress</subpackages>
                                     <nohelp>true</nohelp>
                                     <detectLinks>true</detectLinks>
                                     <detectOfflineLinks>true</detectOfflineLinks>
@@ -1173,6 +1158,7 @@
         <module>modules/DesktopDataLaboratory</module>
         <module>modules/DesktopGenerate</module>
         <module>modules/DesktopExport</module>
+        <!--<module>modules/DesktopFilters</module>-->
         <module>modules/DesktopImport</module>
         <module>modules/DesktopLayout</module>
         <module>modules/DesktopAppearance</module>
@@ -1186,6 +1172,10 @@
         <module>modules/ExportAPI</module>
         <module>modules/ExportPlugin</module>
         <module>modules/ExportPluginUI</module>
+<!--    <module>modules/FiltersAPI</module>
+        <module>modules/FiltersImpl</module>
+        <module>modules/FiltersPlugin</module>
+        <module>modules/FiltersPluginUI</module>-->
         <module>modules/GeneratorAPI</module>
         <module>modules/GeneratorPlugin</module>
         <module>modules/GeneratorPluginUI</module>
