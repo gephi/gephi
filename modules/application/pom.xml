@@ -67,6 +67,10 @@
                     <groupId>org.netbeans.api</groupId>
                 </exclusion>
                 <exclusion>
+                    <artifactId>org-netbeans-libs-junit4</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
                     <artifactId>org-netbeans-modules-core-kit</artifactId>
                     <groupId>org.netbeans.modules</groupId>
                 </exclusion>
@@ -109,6 +113,50 @@
                 <exclusion>
                     <artifactId>org-netbeans-modules-spi-actions</artifactId>
                     <groupId>org.netbeans.modules</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-modules-junitlib</artifactId>
+                    <groupId>org.netbeans.modules</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-api-htmlui</artifactId>
+                    <groupId>org.netbeans.api</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org-netbeans-modules-templatesui</artifactId>
+                    <groupId>org.netbeans.modules</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.external</groupId>
+                    <artifactId>net-java-html</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.external</groupId>
+                    <artifactId>net-java-html-boot</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.external</groupId>
+                    <artifactId>net-java-html-boot-fx</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.external</groupId>
+                    <artifactId>net-java-html-boot-script</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.external</groupId>
+                    <artifactId>net-java-html-geo</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.external</groupId>
+                    <artifactId>net-java-html-json</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.external</groupId>
+                    <artifactId>net-java-html-sound</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.external</groupId>
+                    <artifactId>org-netbeans-html-ko4j</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
