@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+   
+    <folder name="Actions"/>
+    <folder name="Menu">
+        <folder name="File">
+            <file name="org-gephi-desktop-datalab-actions-ImportSpreadsheet.shadow">
+                <attr name="originalFile" stringvalue="Actions/File/org-gephi-desktop-datalab-actions-ImportSpreadsheet.instance"/>
+                <attr name="position" intvalue="585"/>
+            </file>
+        </folder>
+    </folder>
+</filesystem>
