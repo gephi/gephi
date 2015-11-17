@@ -1214,6 +1214,7 @@
         <module>modules/ToolsAPI</module>
         <module>modules/ToolsPlugin</module>
         <module>modules/UIComponents</module>
+        <module>modules/UIPropertyEditor</module>
         <module>modules/UIUtils</module>
         <module>modules/Utils</module>
         <module>modules/ValidationAPI</module>

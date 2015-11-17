@@ -44,11 +44,10 @@ package org.gephi.ui.propertyeditor;
 import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.openide.util.Lookup;
 
 /**
@@ -66,26 +65,22 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
 
         ALL, NUMBER, STRING, DYNAMIC_NUMBER, ALL_NUMBER
     };
-    private AttributeColumn[] columns;
-    private AttributeColumn selectedColumn;
-    private EditorClass editorClass = EditorClass.NODE;
-    private AttributeTypeClass attributeTypeClass = AttributeTypeClass.ALL;
-
-    protected AbstractAttributeColumnPropertyEditor(EditorClass editorClass) {
-        this.editorClass = editorClass;
-    }
+    private Column[] columns;
+    private Column selectedColumn;
+    private final EditorClass editorClass;
+    private final AttributeTypeClass attributeTypeClass;
 
     protected AbstractAttributeColumnPropertyEditor(EditorClass editorClass, AttributeTypeClass attributeClass) {
         this.editorClass = editorClass;
         this.attributeTypeClass = attributeClass;
     }
 
-    protected AttributeColumn[] getColumns() {
-        List<AttributeColumn> cols = new ArrayList<AttributeColumn>();
-        AttributeModel model = Lookup.getDefault().lookup(AttributeController.class).getModel();
+    protected Column[] getColumns() {
+        List<Column> cols = new ArrayList<Column>();
+        GraphModel model = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         if (model != null) {
             if (editorClass.equals(EditorClass.NODE) || editorClass.equals(EditorClass.NODEEDGE)) {
-                for (AttributeColumn column : model.getNodeTable().getColumns()) {
+                for (Column column : model.getNodeTable()) {
                     if (attributeTypeClass.equals(AttributeTypeClass.NUMBER) && isNumberColumn(column)) {
                         cols.add(column);
                     } else if (attributeTypeClass.equals(AttributeTypeClass.DYNAMIC_NUMBER) && isDynamicNumberColumn(column)) {
@@ -94,13 +89,13 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
                         cols.add(column);
                     } else if (attributeTypeClass.equals(AttributeTypeClass.ALL)) {
                         cols.add(column);
-                    } else if (attributeTypeClass.equals(attributeTypeClass.STRING) && isStringColumn(column)) {
+                    } else if (attributeTypeClass.equals(AttributeTypeClass.STRING) && isStringColumn(column)) {
                         cols.add(column);
                     }
                 }
             }
             if (editorClass.equals(EditorClass.EDGE) || editorClass.equals(EditorClass.NODEEDGE)) {
-                for (AttributeColumn column : model.getEdgeTable().getColumns()) {
+                for (Column column : model.getEdgeTable()) {
                     if (attributeTypeClass.equals(AttributeTypeClass.NUMBER) && isNumberColumn(column)) {
                         cols.add(column);
                     } else if (attributeTypeClass.equals(AttributeTypeClass.DYNAMIC_NUMBER) && isDynamicNumberColumn(column)) {
@@ -109,13 +104,13 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
                         cols.add(column);
                     } else if (attributeTypeClass.equals(AttributeTypeClass.ALL)) {
                         cols.add(column);
-                    } else if (attributeTypeClass.equals(attributeTypeClass.STRING) && isStringColumn(column)) {
+                    } else if (attributeTypeClass.equals(AttributeTypeClass.STRING) && isStringColumn(column)) {
                         cols.add(column);
                     }
                 }
             }
         }
-        return cols.toArray(new AttributeColumn[0]);
+        return cols.toArray(new Column[0]);
     }
 
     @Override
@@ -136,7 +131,7 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
 
     @Override
     public void setValue(Object value) {
-        AttributeColumn column = (AttributeColumn) value;
+        Column column = (Column) value;
         this.selectedColumn = column;
     }
 
@@ -150,26 +145,22 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
 
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
-        for (AttributeColumn c : columns) {
+        for (Column c : columns) {
             if (c.getTitle().equals(text)) {
                 this.selectedColumn = c;
             }
         }
     }
 
-    public boolean isDynamicNumberColumn(AttributeColumn column) {
-        return AttributeUtils.getDefault().isDynamicNumberColumn(column);
+    public boolean isDynamicNumberColumn(Column column) {
+        return AttributeUtils.isDynamicType(column.getTypeClass()) && AttributeUtils.isNumberType(column.getTypeClass());
     }
 
-    public boolean isNumberColumn(AttributeColumn column) {
-        return AttributeUtils.getDefault().isNumberColumn(column);
+    public boolean isNumberColumn(Column column) {
+        return AttributeUtils.isSimpleType(column.getTypeClass()) && AttributeUtils.isNumberType(column.getTypeClass());
     }
 
-    public boolean isStringColumn(AttributeColumn column) {
-        AttributeType type = column.getType();
-        if (type == AttributeType.STRING) {
-            return true;
-        }
-        return false;
+    public boolean isStringColumn(Column column) {
+        return column.getTypeClass().equals(String.class);
     }
 }

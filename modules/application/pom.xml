@@ -346,10 +346,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-api</artifactId>
         </dependency>-->
-        <!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-propertyeditor</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>layout-plugin</artifactId>
