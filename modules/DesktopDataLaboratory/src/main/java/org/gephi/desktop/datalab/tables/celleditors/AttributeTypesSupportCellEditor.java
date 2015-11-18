@@ -70,6 +70,7 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
     private final boolean isTimestampMapType;
     private final boolean isIntervalSetType;
     private final boolean isIntervalMapType;
+    private final boolean isArrayType;
     
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
 
@@ -84,6 +85,7 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
         isTimestampMapType = TimestampMap.class.isAssignableFrom(typeClass);
         isIntervalSetType = IntervalSet.class.isAssignableFrom(typeClass);
         isIntervalMapType = IntervalMap.class.isAssignableFrom(typeClass);
+        isArrayType = typeClass.isArray();
     }
 
     @Override
@@ -122,6 +124,8 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
                 valueStr = ((IntervalSet) value).toString(timeFormat);
             }else if(isIntervalMapType){
                 valueStr = ((IntervalMap) value).toString(timeFormat);
+            }else if(isArrayType){
+                valueStr = AttributeUtils.printArray(value);
             }else{
                 valueStr = value.toString();
             }

@@ -53,11 +53,11 @@ import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.utils.TimeIntervalGraphics;
 
 /**
- * TableCellRenderer for drawing time intervals graphics from cells that have a IntervalSet as their value.
+ * TableCellRenderer for drawing time intervals graphics from cells that have a {@link IntervalSet} as their value.
  *
  * @author Eduardo Ramos
  */
-public class TimeIntervalsRenderer extends DefaultTableCellRenderer {
+public class IntervalSetRenderer extends DefaultTableCellRenderer {
 
     private static final Color SELECTED_BACKGROUND = new Color(225, 255, 255);
     private static final Color UNSELECTED_BACKGROUND = Color.white;
@@ -67,15 +67,15 @@ public class TimeIntervalsRenderer extends DefaultTableCellRenderer {
     private final TimeIntervalGraphics timeIntervalGraphics;
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
 
-    public TimeIntervalsRenderer() {
+    public IntervalSetRenderer() {
         this(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
 
-    public TimeIntervalsRenderer(double min, double max) {
+    public IntervalSetRenderer(double min, double max) {
         timeIntervalGraphics = new TimeIntervalGraphics(min, max);
     }
     
-    public TimeIntervalsRenderer(double min, double max, boolean drawGraphics) {
+    public IntervalSetRenderer(double min, double max, boolean drawGraphics) {
         timeIntervalGraphics = new TimeIntervalGraphics(min, max);
         this.drawGraphics = drawGraphics;
     }

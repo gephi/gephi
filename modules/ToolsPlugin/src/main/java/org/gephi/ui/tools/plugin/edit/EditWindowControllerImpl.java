@@ -102,7 +102,7 @@ public class EditWindowControllerImpl implements EditWindowController {
         @Override
         public void run() {
             EditToolTopComponent topComponent = findInstance();
-            open = topComponent.isOpened();
+            open = topComponent != null && topComponent.isOpened();
         }
     }
 

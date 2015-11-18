@@ -44,12 +44,13 @@ package org.gephi.desktop.datalab.utils;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalMap;
@@ -68,6 +69,25 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
     private static final Color UNSELECTED_BACKGROUND = Color.white;
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
     private boolean drawGraphics = false;
+    
+    //Config:
+    private final boolean isTimestampMapType;
+    private final boolean isIntervalMapType;
+    private final boolean isArrayType;
+
+    public SparkLinesRenderer(Class<?> typeClass) {
+        if(!AttributeUtils.isNumberType(typeClass)){
+            throw new IllegalArgumentException("Unsupported type " + typeClass.getName());
+        }
+        
+        isTimestampMapType = TimestampMap.class.isAssignableFrom(typeClass);
+        isIntervalMapType = IntervalMap.class.isAssignableFrom(typeClass);
+        isArrayType = typeClass.isArray();
+        
+        if(!isTimestampMapType && !isIntervalMapType && !isArrayType){
+            throw new IllegalArgumentException("Unsupported type " + typeClass.getName());
+        }
+    }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -77,25 +97,25 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
         }
         
         String stringRepresentation = null;
-        if (value instanceof Number[]) {
-            stringRepresentation = Arrays.toString((Number[]) value);
-        } else if (value instanceof TimestampMap) {
+        if (isArrayType) {
+            stringRepresentation = AttributeUtils.printArray(value);
+        } else if (isTimestampMapType) {
             stringRepresentation = ((TimestampMap) value).toString(timeFormat);
-        } else if (value instanceof IntervalMap) {
+        } else if (isIntervalMapType) {
             stringRepresentation = ((IntervalMap) value).toString(timeFormat);
         }
         
         if (drawGraphics) {
             Number[] xValues = null;
             Number[] yValues = null;
-            if (value instanceof Number[]) {
-                yValues = (Number[]) value;
-            } else if (value instanceof TimestampMap) {
+            if (isArrayType) {
+                yValues = getArrayNumbers(value);
+            } else if (isTimestampMapType) {
                 //Use the intervals start time as X values
                 Number[][] values = getTimestampMapNumbers((TimestampMap) value);
                 xValues = values[0];
                 yValues = values[1];
-            } else if (value instanceof IntervalMap) {
+            } else if (isIntervalMapType) {
                 //Use the intervals start time as X values
                 Number[][] values = getIntervalMapNumbers((IntervalMap) value);
                 xValues = values[0];
@@ -178,5 +198,16 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
 
     public void setDrawGraphics(boolean drawGraphics) {
         this.drawGraphics = drawGraphics;
+    }
+
+    private Number[] getArrayNumbers(Object arr) {
+        int size = Array.getLength(arr);
+        
+        Number[] result = new Number[size];
+        for (int i = 0; i < size; i++) {
+            result[i] = (Number) Array.get(arr, i);//This will do the auto-boxing of primitives
+        }
+        
+        return result;
     }
 }
