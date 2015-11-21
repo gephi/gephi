@@ -58,7 +58,7 @@ public class FilterAutoRefreshor extends Thread {
     private boolean running = true;
 
     public FilterAutoRefreshor(FilterModelImpl filterModel, GraphModel graphModel) {
-        super("Filter Auto-Refresh");
+        super("Filter Auto-Refresh - " + filterModel.getWorkspace().toString());
         setDaemon(true);
         this.graphModel = graphModel;
         this.filterModel = filterModel;

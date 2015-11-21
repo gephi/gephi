@@ -84,6 +84,7 @@ public class FiltersExplorer extends BeanTreeView {
             this.filterLibrary = model.getLibrary();
             SwingUtilities.invokeLater(new Runnable() {
 
+                @Override
                 public void run() {
                     manager.setRootContext(new CategoryNode(new Utils(), null));
                 }
@@ -92,6 +93,7 @@ public class FiltersExplorer extends BeanTreeView {
             this.filterLibrary = null;
             SwingUtilities.invokeLater(new Runnable() {
 
+                @Override
                 public void run() {
                     manager.setRootContext(new AbstractNode(Children.LEAF) {
 
@@ -108,8 +110,8 @@ public class FiltersExplorer extends BeanTreeView {
 
     protected class Utils implements LookupListener {
 
-        private Lookup.Result<FilterBuilder> lookupResult;
-        private Lookup.Result<Query> lookupResult2;
+        private final Lookup.Result<FilterBuilder> lookupResult;
+        private final Lookup.Result<Query> lookupResult2;
 
         public Utils() {
             lookupResult = filterLibrary.getLookup().lookupResult(FilterBuilder.class);
@@ -118,6 +120,7 @@ public class FiltersExplorer extends BeanTreeView {
             lookupResult2.addLookupListener(this);
         }
 
+        @Override
         public void resultChanged(LookupEvent ev) {
             saveExpandStatus((CategoryNode) manager.getRootContext());
             manager.setRootContext(new CategoryNode(this, null));
