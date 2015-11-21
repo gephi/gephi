@@ -53,6 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = RangeUI.class)
 public class RangeUIImpl implements RangeUI {
 
+    @Override
     public JPanel getPanel(RangeFilter rangeFilter) {
         RangePanel rangePanel = new RangePanel();
         rangePanel.setup(rangeFilter);

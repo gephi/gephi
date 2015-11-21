@@ -38,10 +38,12 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.desktop.filters;
 
 import java.awt.BorderLayout;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -72,6 +74,7 @@ public class FilterPanelPanel extends JPanel implements ChangeListener {
         }
     }
 
+    @Override
     public void stateChanged(ChangeEvent e) {
         refreshModel();
     }
@@ -106,6 +109,7 @@ public class FilterPanelPanel extends JPanel implements ChangeListener {
     private void setQuery(final Query query) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 //UI update
                 removeAll();
@@ -121,7 +125,7 @@ public class FilterPanelPanel extends JPanel implements ChangeListener {
                             setBorder(javax.swing.BorderFactory.createTitledBorder(query.getFilter().getName() + " " + settingsString));
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Logger.getLogger("").log(Level.SEVERE, "Error while setting query", e);
                     }
                 }
 

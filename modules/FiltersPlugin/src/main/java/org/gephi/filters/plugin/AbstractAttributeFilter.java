@@ -41,38 +41,27 @@
  */
 package org.gephi.filters.plugin;
 
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeUtils;
-import org.gephi.filters.spi.AttributableFilter;
+import org.gephi.filters.spi.ElementFilter;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Element;
 
-/**
- *
- * @author mbastian
- */
-public abstract class AbstractAttributeFilter extends AbstractFilter implements AttributableFilter {
+public abstract class AbstractAttributeFilter<K extends Element> extends AbstractFilter implements ElementFilter<K> {
 
-    protected AttributeColumn column;
-    protected AbstractAttributeFilter.Type type;
+    protected Column column;
 
-    public AbstractAttributeFilter(String name, AttributeColumn column) {
+    public AbstractAttributeFilter(String name, Column column) {
         super(name + " (" + column.getTitle() + ")");
         this.column = column;
-        this.type = AttributeUtils.getDefault().isNodeColumn(column) ? Type.NODE : Type.EDGE;
 
         //Add column property
-        addProperty(AttributeColumn.class, "column");
+        addProperty(Column.class, "column");
     }
 
-    public Type getType() {
-        return type;
-    }
-
-    public AttributeColumn getColumn() {
+    public Column getColumn() {
         return column;
     }
 
-    public void setColumn(AttributeColumn column) {
+    public void setColumn(Column column) {
         this.column = column;
-        this.type = AttributeUtils.getDefault().isNodeColumn(column) ? Type.NODE : Type.EDGE;
     }
 }

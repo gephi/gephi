@@ -61,6 +61,7 @@ public class EgoPanel extends javax.swing.JPanel {
 
         okButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 egoFilter.getProperties()[0].setValue(nodeIdTextField.getText());
             }
@@ -68,6 +69,7 @@ public class EgoPanel extends javax.swing.JPanel {
 
         depthComboBox.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 int depth = -1;
                 int index = depthComboBox.getSelectedIndex();
@@ -84,6 +86,7 @@ public class EgoPanel extends javax.swing.JPanel {
 
         withSelfCheckbox.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 if (!egoFilter.isSelf() == withSelfCheckbox.isSelected()) {
                     egoFilter.getProperties()[2].setValue(withSelfCheckbox.isSelected());

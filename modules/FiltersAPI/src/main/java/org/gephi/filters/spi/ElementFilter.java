@@ -39,76 +39,28 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.filters.plugin.hierarchy;
+package org.gephi.filters.spi;
 
-import javax.swing.Icon;
-import javax.swing.JPanel;
-import org.gephi.filters.api.FilterLibrary;
-import org.gephi.filters.spi.Category;
-import org.gephi.filters.spi.ComplexFilter;
-import org.gephi.filters.spi.Filter;
-import org.gephi.filters.spi.FilterBuilder;
-import org.gephi.filters.spi.FilterProperty;
+import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.HierarchicalGraph;
-import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Basic filters for elements (nodes or edges). For a given object the filter's
+ * role is to return <code>true</code> if the element is kept or
+ * <code>false</code> if it is removed.
+ * <p>
+ * This filter is useful for dealing with attributes, which can either be in
+ * nodes or edges. As a filter can't be for nodes and edges at the same time the
+ * filter has to specify K.
  *
  * @author Mathieu Bastian
+ * @param <K> element class
  */
-@ServiceProvider(service = FilterBuilder.class)
-public class FlattenBuilder implements FilterBuilder {
+public interface ElementFilter<K extends Element> extends Filter {
 
-    public Category getCategory() {
-        return FilterLibrary.HIERARCHY;
-    }
+    public boolean init(Graph graph);
 
-    public String getName() {
-        return NbBundle.getMessage(FlattenBuilder.class, "FlattenBuilder.name");
-    }
+    public boolean evaluate(Graph graph, K element);
 
-    public Icon getIcon() {
-        return null;
-    }
-
-    public String getDescription() {
-        return NbBundle.getMessage(FlattenBuilder.class, "FlattenBuilder.description");
-    }
-
-    public FlattenFilter getFilter() {
-        return new FlattenFilter();
-    }
-
-    public JPanel getPanel(Filter filter) {
-        return null;
-    }
-
-    public void destroy(Filter filter) {
-    }
-
-    public static class FlattenFilter implements ComplexFilter {
-
-        public boolean init(Graph graph) {
-            return true;
-        }
-
-        public Graph filter(Graph graph) {
-            HierarchicalGraph hierarchicalGraph = (HierarchicalGraph) graph;
-            hierarchicalGraph.flatten();
-            return hierarchicalGraph;
-        }
-
-        public void finish() {
-        }
-
-        public String getName() {
-            return NbBundle.getMessage(FlattenBuilder.class, "FlattenBuilder.name");
-        }
-
-        public FilterProperty[] getProperties() {
-            return new FilterProperty[0];
-        }
-    }
+    public void finish();
 }

@@ -41,23 +41,21 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.filters;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import org.gephi.graph.api.GraphEvent;
-import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphObserver;
 import org.openide.util.Exceptions;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class FilterAutoRefreshor extends Thread implements GraphListener {
+public class FilterAutoRefreshor extends Thread {
 
     private static final int TIMER = 1000;
     private final GraphModel graphModel;
     private final FilterModelImpl filterModel;
+    private GraphObserver observer;
     private boolean running = true;
-    private AtomicBoolean refresh = new AtomicBoolean(false);
 
     public FilterAutoRefreshor(FilterModelImpl filterModel, GraphModel graphModel) {
         super("Filter Auto-Refresh");
@@ -70,7 +68,7 @@ public class FilterAutoRefreshor extends Thread implements GraphListener {
     public void run() {
         while (running) {
             try {
-                if (refresh.compareAndSet(true, false)) {
+                if (observer != null && observer.hasGraphChanged()) {
                     manualRefresh();
                 }
                 Thread.sleep(TIMER);
@@ -82,30 +80,25 @@ public class FilterAutoRefreshor extends Thread implements GraphListener {
 
     public void setEnable(boolean enable) {
         if (enable) {
-            graphModel.addGraphListener(this);
-        } else {
-            graphModel.removeGraphListener(this);
-            refresh.set(false);
+            if (observer == null) {
+                observer = graphModel.createGraphObserver(graphModel.getGraph(), false);
+            }
+        } else if (observer != null && !observer.isDestroyed()) {
+            observer.destroy();
+            observer = null;
         }
         if (!isAlive()) {
             start();
         }
     }
 
-    public void graphChanged(GraphEvent event) {
-        if (event.getSource().isMainView() && event.is(GraphEvent.EventType.ADD_NODES_AND_EDGES,
-                GraphEvent.EventType.REMOVE_NODES_AND_EDGES,
-                GraphEvent.EventType.MOVE_NODES)) {
-            refresh.set(true);
-            //System.out.println("set refresh true");
-        }
-    }
-
     public void setRunning(boolean running) {
         this.running = running;
         if (!running) {
-            graphModel.removeGraphListener(this);
-            refresh.set(false);
+            if (observer != null && !observer.isDestroyed()) {
+                observer.destroy();
+                observer = null;
+            }
         }
     }
 

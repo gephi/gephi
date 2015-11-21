@@ -342,10 +342,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-statistics</artifactId>
         </dependency>
-<!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-api</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-propertyeditor</artifactId>
@@ -378,14 +378,14 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>io-importer-plugin</artifactId>
         </dependency>
-<!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-impl</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>export-plugin-ui</artifactId>
@@ -414,10 +414,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>datalab-plugin</artifactId>
         </dependency>
-<!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-plugin-ui</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-layout</artifactId>
@@ -454,10 +454,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>directory-chooser</artifactId>
         </dependency>
-<!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-filters</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>core-library-wrapper</artifactId>

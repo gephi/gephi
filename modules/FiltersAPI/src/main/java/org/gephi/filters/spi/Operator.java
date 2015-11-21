@@ -38,10 +38,11 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.filters.spi;
 
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Subgraph;
 
 /**
  *
@@ -49,7 +50,7 @@ import org.gephi.graph.api.Graph;
  */
 public interface Operator extends Filter {
 
-    public Graph filter(Graph[] graphs);
+    public Graph filter(Subgraph[] graphs);
 
     public Graph filter(Graph graph, Filter[] filters);
 

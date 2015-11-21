@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.ui.filters.plugin;
 
 import java.awt.Color;
@@ -59,7 +59,7 @@ public class JQuickHistogram {
     private int constraintHeight = 0;
     private int constraintWidth = 0;
     private JPanel panel;
-    private boolean inclusive = true;
+    private final boolean inclusive = true;
     //Data
     private List<Double> data;
     private Double minValue;
@@ -184,9 +184,9 @@ public class JQuickHistogram {
 
     private static class JQuickHistogramPanel extends JPanel {
 
-        private Color fillColor = new Color(0xCFD2D3);
-        private Color fillInRangeColor = new Color(0x3B4042);
-        private JQuickHistogram histogram;
+        private final Color fillColor = new Color(0xCFD2D3);
+        private final Color fillInRangeColor = new Color(0x3B4042);
+        private final JQuickHistogram histogram;
         private int currentHeight = 0;
         private int currentWidth = 0;
 
@@ -244,7 +244,7 @@ public class JQuickHistogram {
                     double average = 0.0;
                     for (int j = 0; j < size; j++) {
                         Double d = histogram.data.get(numberOfElementsHandled++);
-                        average += d.doubleValue();
+                        average += d;
                     }
                     average /= size;
                     int rectangleHeight = (int) ((average - histogram.minValue) / (histogram.maxValue - histogram.minValue) * currentHeight);

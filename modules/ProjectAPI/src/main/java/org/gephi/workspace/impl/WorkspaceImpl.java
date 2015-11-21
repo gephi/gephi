@@ -99,4 +99,13 @@ public class WorkspaceImpl implements Workspace {
     public int getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        WorkspaceInformationImpl information = lookup.lookup(WorkspaceInformationImpl.class);
+        if (information != null) {
+            return information.getName();
+        }
+        return "null";
+    }
 }

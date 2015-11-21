@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.filters.spi;
 
 import org.gephi.filters.api.FilterLibrary;
@@ -46,8 +46,8 @@ import org.gephi.filters.api.FilterLibrary;
 /**
  * Classes that implements this interface can be registered to the filter
  * library to programmatically enable or disable categories, i.e. filters
- * container. That is useful for instance to disable filters working on undirected
- * graphs if the current graph is directed.
+ * container. That is useful for instance to disable filters working on
+ * undirected graphs if the current graph is directed.
  * <p>
  * When registered, masks are asked whether the category is valid.
  *
@@ -58,13 +58,15 @@ public interface FilterLibraryMask {
 
     /**
      * Returns the <code>Category</code> this masks is associated.
-     * @return      the <code>Category</code> this filter is describing
+     *
+     * @return the <code>Category</code> this filter is describing
      */
     public Category getCategory();
 
     /**
-     * Returns <code>true</code> if this masks's category is valid.
-     * @return      <code>true</code> if the category is valid, <code>false</code>
+     * Returns <code>true</code> if this masks' category is valid.
+     *
+     * @return <code>true</code> if the category is valid, <code>false</code>
      * otherwise
      */
     public boolean isValid();

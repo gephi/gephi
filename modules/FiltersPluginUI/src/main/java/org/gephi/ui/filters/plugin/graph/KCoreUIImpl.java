@@ -53,6 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = KCoreUI.class)
 public class KCoreUIImpl implements KCoreUI {
 
+    @Override
     public JPanel getPanel(KCoreFilter filter) {
         KCorePanel kCorePanel = new KCorePanel();
         kCorePanel.setup(filter);

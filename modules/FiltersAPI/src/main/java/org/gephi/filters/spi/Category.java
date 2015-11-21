@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.filters.spi;
 
 import javax.swing.Icon;
@@ -53,22 +53,22 @@ import org.gephi.filters.api.FilterLibrary;
  * <li><code>FilterLibrary.ATTRIBUTES</code></li>
  * <li><code>FilterLibrary.EDGE</code></li>
  * <li><code>FilterLibrary.HIERARCHY</code></li></ul>
+ *
  * @author Mathieu Bastian
  * @see FilterLibrary
  */
 public final class Category {
 
-    private String name;
-    private Icon icon;
-    private Category parent;
+    private final String name;
+    private final Icon icon;
+    private final Category parent;
 
     public Category(String name) {
-        this.name = name;
+        this(name, null, null);
     }
 
     public Category(String name, Icon icon) {
-        this.name = name;
-        this.icon = icon;
+        this(name, icon, null);
     }
 
     public Category(String name, Icon icon, Category parent) {
@@ -79,7 +79,8 @@ public final class Category {
 
     /**
      * Returns the category's name.
-     * @return          the name of this category
+     *
+     * @return the name of this category
      */
     public String getName() {
         return name;
@@ -87,7 +88,8 @@ public final class Category {
 
     /**
      * Returns the icon or <code>null</code> if the category has no icon.
-     * @return          the icon or <code>null</code>
+     *
+     * @return the icon or <code>null</code>
      */
     public Icon getIcon() {
         return icon;
@@ -96,7 +98,8 @@ public final class Category {
     /**
      * Returns this category parent category or <code>null</code> if this
      * category has no parent.
-     * @return          this category's parent or <code>null</code>
+     *
+     * @return this category's parent or <code>null</code>
      */
     public Category getParent() {
         return parent;
@@ -109,7 +112,7 @@ public final class Category {
         }
         if (obj instanceof Category) {
             Category cat = (Category) obj;
-            if (cat.icon == icon && (cat.name == name || cat.name.equals(name)) && (cat.parent == parent || cat.parent.equals(parent))) {
+            if (cat.icon == icon && cat.name.equals(name) && (cat.parent == parent || cat.parent.equals(parent))) {
                 return true;
             }
         }

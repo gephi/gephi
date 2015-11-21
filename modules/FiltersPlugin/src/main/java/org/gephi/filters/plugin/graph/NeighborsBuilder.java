@@ -41,9 +41,8 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.filters.plugin.graph;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.swing.Icon;
 import javax.swing.JPanel;
@@ -56,7 +55,6 @@ import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -69,26 +67,32 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = FilterBuilder.class)
 public class NeighborsBuilder implements FilterBuilder {
 
+    @Override
     public Category getCategory() {
         return FilterLibrary.TOPOLOGY;
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(NeighborsBuilder.class, "NeighborsBuilder.name");
     }
 
+    @Override
     public Icon getIcon() {
         return null;
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(NeighborsBuilder.class, "NeighborsBuilder.description");
     }
 
+    @Override
     public Filter getFilter() {
         return new NeighborsFilter();
     }
 
+    @Override
     public JPanel getPanel(Filter filter) {
         NeighborsUI ui = Lookup.getDefault().lookup(NeighborsUI.class);
         if (ui != null) {
@@ -97,6 +101,7 @@ public class NeighborsBuilder implements FilterBuilder {
         return null;
     }
 
+    @Override
     public void destroy(Filter filter) {
     }
 
@@ -105,15 +110,12 @@ public class NeighborsBuilder implements FilterBuilder {
         private boolean self = true;
         private int depth = 1;
 
+        @Override
         public Graph filter(Graph graph) {
 
             GraphView graphView = graph.getView();
-            HierarchicalGraph mainGraph = graphView.getGraphModel().getHierarchicalGraph();
 
-            List<Node> nodes = new ArrayList<Node>();
-            for (Node n : graph.getNodes()) {
-                nodes.add(n.getNodeData().getNode(mainGraph.getView().getViewId()));
-            }
+            Collection<Node> nodes = graph.getNodes().toCollection();
 
             Set<Node> result = new HashSet<Node>();
 
@@ -121,16 +123,15 @@ public class NeighborsBuilder implements FilterBuilder {
             neighbours.addAll(nodes);
 
             //Put all neighbors into result
+            Graph mainGraph = graph.getModel().getGraph();
             for (int i = 0; i < depth; i++) {
                 Node[] nei = neighbours.toArray(new Node[0]);
                 neighbours.clear();
                 for (Node n : nei) {
                     //Extract all neighbors of n
                     for (Node neighbor : mainGraph.getNeighbors(n)) {
-                        if (!result.contains(neighbor)) {
-                            neighbours.add(neighbor);
-                            result.add(neighbor);
-                        }
+                        neighbours.add(neighbor);
+                        result.add(neighbor);
                     }
                 }
                 if (neighbours.isEmpty()) {
@@ -145,38 +146,35 @@ public class NeighborsBuilder implements FilterBuilder {
             }
 
             //Update nodes
-            for (Node node : mainGraph.getNodes().toArray()) {
+            for (Node node : mainGraph.getNodes()) {
                 if (result.contains(node)) {
                     graph.addNode(node);
-                } else if(graph.contains(node)) {
+                } else if (graph.contains(node)) {
                     graph.removeNode(node);
                 }
             }
 
             //Update edges
-            for (Node n : graph.getNodes().toArray()) {
-                Node mainNode = n.getNodeData().getNode(mainGraph.getView().getViewId());
-                Edge[] edges = mainGraph.getEdges(mainNode).toArray();
-                for (Edge e : edges) {
-                    if (e.getSource().getNodeData().getNode(graphView.getViewId()) != null
-                            && e.getTarget().getNodeData().getNode(graphView.getViewId()) != null) {
-                        graph.addEdge(e);
-                    }
+            for (Edge edge : mainGraph.getEdges()) {
+                if (graph.contains(edge.getSource()) && graph.contains(edge.getTarget())) {
+                    graph.addEdge(edge);
                 }
             }
 
             return graph;
         }
 
+        @Override
         public String getName() {
             return NbBundle.getMessage(NeighborsBuilder.class, "NeighborsBuilder.name");
         }
 
+        @Override
         public FilterProperty[] getProperties() {
             try {
                 return new FilterProperty[]{
-                            FilterProperty.createProperty(this, Integer.class, "depth"),
-                            FilterProperty.createProperty(this, Boolean.class, "self")};
+                    FilterProperty.createProperty(this, Integer.class, "depth"),
+                    FilterProperty.createProperty(this, Boolean.class, "self")};
             } catch (NoSuchMethodException ex) {
                 ex.printStackTrace();
             }

@@ -64,22 +64,27 @@ public abstract class AbstractFilterBuilder implements FilterBuilder {
         this.icon = icon;
     }
 
+    @Override
     public Category getCategory() {
         return category;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public Icon getIcon() {
         return icon;
     }
 
+    @Override
     public String getDescription() {
         return descrption;
     }
 
+    @Override
     public void destroy(Filter filter) {
     }
 }

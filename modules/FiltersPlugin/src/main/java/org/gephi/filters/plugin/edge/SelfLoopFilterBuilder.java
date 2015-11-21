@@ -57,50 +57,62 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = FilterBuilder.class)
 public class SelfLoopFilterBuilder implements FilterBuilder {
 
+    @Override
     public Category getCategory() {
         return FilterLibrary.EDGE;
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(SelfLoopFilterBuilder.class, "SelfLoopFilterBuilder.name");
     }
 
+    @Override
     public Icon getIcon() {
         return null;
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(SelfLoopFilterBuilder.class, "SelfLoopFilterBuilder.description");
     }
 
+    @Override
     public Filter getFilter() {
         return new SelfLoopFilter();
     }
 
+    @Override
     public JPanel getPanel(Filter filter) {
         return null;
     }
 
+    @Override
     public void destroy(Filter filter) {
     }
 
     public static class SelfLoopFilter implements EdgeFilter {
 
+        @Override
         public boolean init(Graph graph) {
             return true;
         }
 
+        @Override
         public String getName() {
             return NbBundle.getMessage(SelfLoopFilterBuilder.class, "SelfLoopFilterBuilder.name");
         }
 
+        @Override
         public boolean evaluate(Graph graph, Edge edge) {
             return !edge.isSelfLoop();
         }
 
+        @Override
         public void finish() {
         }
 
+        @Override
         public FilterProperty[] getProperties() {
             return null;
         }

@@ -69,9 +69,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicListUI;
-import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
-import org.gephi.partition.api.Part;
-import org.gephi.partition.api.Partition;
+//import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
+//import org.gephi.partition.api.Part;
+//import org.gephi.partition.api.Partition;
 import org.openide.util.NbBundle;
 
 /**
@@ -80,233 +80,233 @@ import org.openide.util.NbBundle;
  */
 public class PartitionPanel extends javax.swing.JPanel {
 
-    private PartitionFilter filter;
-    private JPopupMenu popupMenu;
+//    private PartitionFilter filter;
+//    private JPopupMenu popupMenu;
 
-    public PartitionPanel() {
-        initComponents();
-        setMinimumSize(new Dimension(50, 90));
-
-        //List renderer
-        final ListCellRenderer renderer = new DefaultListCellRenderer() {
-
-            @Override
-            public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
-
-                final JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                PartWrapper pw = (PartWrapper) value;
-                if (pw.isEnabled()) {
-                    label.setEnabled(true);
-                    label.setIcon(pw.icon);
-                } else {
-                    label.setEnabled(false);
-                    label.setDisabledIcon(pw.disabledIcon);
-                }
-                label.setFont(label.getFont().deriveFont(10f));
-                label.setIconTextGap(6);
-                setOpaque(false);
-                setForeground(list.getForeground());
-                setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-                return label;
-            }
-        };
-        list.setCellRenderer(renderer);
-
-        //List click
-        MouseListener mouseListener = new MouseAdapter() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e)) {
-                    int index = list.locationToIndex(e.getPoint());
-                    if (index == -1) {
-                        return;
-                    }
-                    PartWrapper pw = (PartWrapper) list.getModel().getElementAt(index);
-                    boolean set = !pw.isEnabled();
-                    pw.setEnabled(set);
-                    if (set) {
-                        filter.addPart(pw.getPart());
-                    } else {
-                        filter.removePart(pw.getPart());
-                    }
-                    list.repaint();
-                }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (filter != null) {
-                    if (e.isPopupTrigger()) {
-                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                    }
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-        };
-        list.addMouseListener(mouseListener);
-
-        //Popup
-        createPopup();
-    }
-
-    public void setup(final PartitionFilter filter) {
-        this.filter = filter;
-        final Partition partition = filter.getCurrentPartition();
-        if (partition != null) {
-            refresh(partition, filter.getParts());
-        }
-    }
-
-    private void refresh(Partition partition, List<Part> currentParts) {
-        final DefaultListModel model = new DefaultListModel();
-
-        Set<Part> filterParts = new HashSet<Part>(currentParts);
-        Part[] parts = partition.getParts();
-        Arrays.sort(parts);
-        for (int i = 0; i < parts.length; i++) {
-            final Part p = parts[parts.length - 1 - i];
-            PartWrapper pw = new PartWrapper(p, p.getColor());
-            pw.setEnabled(filterParts.contains(p));
-            model.add(i, pw);
-        }
-        list.setModel(model);
-    }
-
-    private static class PartWrapper {
-
-        private final Part part;
-        private final PaletteIcon icon;
-        private final PaletteIcon disabledIcon;
-        private boolean enabled = false;
-        private static final NumberFormat formatter = NumberFormat.getPercentInstance();
-
-        public PartWrapper(Part part, Color color) {
-            this.part = part;
-            this.icon = new PaletteIcon(color);
-            this.disabledIcon = new PaletteIcon();
-            formatter.setMaximumFractionDigits(2);
-        }
-
-        public PaletteIcon getIcon() {
-            return icon;
-        }
-
-        public Part getPart() {
-            return part;
-        }
-
-        @Override
-        public String toString() {
-            String percentage = formatter.format(part.getPercentage());
-            return part.getDisplayName() + " (" + percentage + ")";
-        }
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-    }
-
-    private void createPopup() {
-        popupMenu = new JPopupMenu();
-        JMenuItem refreshItem = new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.refresh"));
-        refreshItem.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                setup(filter);
-            }
-        });
-        popupMenu.add(refreshItem);
-        JMenuItem selectItem = new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.selectall"));
-        selectItem.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                filter.selectAll();
-                refresh(filter.getCurrentPartition(), Arrays.asList(filter.getCurrentPartition().getParts()));
-            }
-        });
-        popupMenu.add(selectItem);
-        JMenuItem unselectItem = new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.unselectall"));
-        unselectItem.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                filter.unselectAll();
-                refresh(filter.getCurrentPartition(), new ArrayList<Part>());
-            }
-        });
-        popupMenu.add(unselectItem);
-    }
-
-    public static void computeListSize(final JList list) {
-        if (list.getUI() instanceof BasicListUI) {
-            final BasicListUI ui = (BasicListUI) list.getUI();
-
-            try {
-                final Method method = BasicListUI.class.getDeclaredMethod("updateLayoutState");
-                method.setAccessible(true);
-                method.invoke(ui);
-                list.revalidate();
-                list.repaint();
-            } catch (final SecurityException e) {
-                e.printStackTrace();
-            } catch (final NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (final IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (final IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (final InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static class PaletteIcon implements Icon {
-
-        private final int COLOR_WIDTH;
-        private final int COLOR_HEIGHT;
-        private final Color BORDER_COLOR;
-        private final Color color;
-
-        public PaletteIcon(Color color) {
-            this.color = color;
-            BORDER_COLOR = new Color(0x444444);
-            COLOR_WIDTH = 11;
-            COLOR_HEIGHT = 11;
-        }
-
-        public PaletteIcon() {
-            this.color = new Color(0xDDDDDD);
-            BORDER_COLOR = new Color(0x999999);
-            COLOR_WIDTH = 11;
-            COLOR_HEIGHT = 11;
-        }
-
-        public int getIconWidth() {
-            return COLOR_WIDTH;
-        }
-
-        public int getIconHeight() {
-            return COLOR_HEIGHT + 2;
-        }
-
-        public void paintIcon(Component c, Graphics g, int x, int y) {
-            g.setColor(BORDER_COLOR);
-            g.drawRect(x + 2, y, COLOR_WIDTH, COLOR_HEIGHT);
-            g.setColor(color);
-            g.fillRect(x + 2 + 1, y + 1, COLOR_WIDTH - 1, COLOR_HEIGHT - 1);
-        }
-    }
+//    public PartitionPanel() {
+//        initComponents();
+//        setMinimumSize(new Dimension(50, 90));
+//
+//        //List renderer
+//        final ListCellRenderer renderer = new DefaultListCellRenderer() {
+//
+//            @Override
+//            public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+//
+//                final JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+//                PartWrapper pw = (PartWrapper) value;
+//                if (pw.isEnabled()) {
+//                    label.setEnabled(true);
+//                    label.setIcon(pw.icon);
+//                } else {
+//                    label.setEnabled(false);
+//                    label.setDisabledIcon(pw.disabledIcon);
+//                }
+//                label.setFont(label.getFont().deriveFont(10f));
+//                label.setIconTextGap(6);
+//                setOpaque(false);
+//                setForeground(list.getForeground());
+//                setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+//                return label;
+//            }
+//        };
+//        list.setCellRenderer(renderer);
+//
+//        //List click
+//        MouseListener mouseListener = new MouseAdapter() {
+//
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                if (SwingUtilities.isLeftMouseButton(e)) {
+//                    int index = list.locationToIndex(e.getPoint());
+//                    if (index == -1) {
+//                        return;
+//                    }
+//                    PartWrapper pw = (PartWrapper) list.getModel().getElementAt(index);
+//                    boolean set = !pw.isEnabled();
+//                    pw.setEnabled(set);
+//                    if (set) {
+//                        filter.addPart(pw.getPart());
+//                    } else {
+//                        filter.removePart(pw.getPart());
+//                    }
+//                    list.repaint();
+//                }
+//            }
+//
+//            @Override
+//            public void mousePressed(MouseEvent e) {
+//                if (filter != null) {
+//                    if (e.isPopupTrigger()) {
+//                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void mouseReleased(MouseEvent e) {
+//                if (e.isPopupTrigger()) {
+//                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+//                }
+//            }
+//        };
+//        list.addMouseListener(mouseListener);
+//
+//        //Popup
+//        createPopup();
+//    }
+//
+//    public void setup(final PartitionFilter filter) {
+//        this.filter = filter;
+//        final Partition partition = filter.getCurrentPartition();
+//        if (partition != null) {
+//            refresh(partition, filter.getParts());
+//        }
+//    }
+//
+//    private void refresh(Partition partition, List<Part> currentParts) {
+//        final DefaultListModel model = new DefaultListModel();
+//
+//        Set<Part> filterParts = new HashSet<Part>(currentParts);
+//        Part[] parts = partition.getParts();
+//        Arrays.sort(parts);
+//        for (int i = 0; i < parts.length; i++) {
+//            final Part p = parts[parts.length - 1 - i];
+//            PartWrapper pw = new PartWrapper(p, p.getColor());
+//            pw.setEnabled(filterParts.contains(p));
+//            model.add(i, pw);
+//        }
+//        list.setModel(model);
+//    }
+//
+//    private static class PartWrapper {
+//
+//        private final Part part;
+//        private final PaletteIcon icon;
+//        private final PaletteIcon disabledIcon;
+//        private boolean enabled = false;
+//        private static final NumberFormat formatter = NumberFormat.getPercentInstance();
+//
+//        public PartWrapper(Part part, Color color) {
+//            this.part = part;
+//            this.icon = new PaletteIcon(color);
+//            this.disabledIcon = new PaletteIcon();
+//            formatter.setMaximumFractionDigits(2);
+//        }
+//
+//        public PaletteIcon getIcon() {
+//            return icon;
+//        }
+//
+//        public Part getPart() {
+//            return part;
+//        }
+//
+//        @Override
+//        public String toString() {
+//            String percentage = formatter.format(part.getPercentage());
+//            return part.getDisplayName() + " (" + percentage + ")";
+//        }
+//
+//        public boolean isEnabled() {
+//            return enabled;
+//        }
+//
+//        public void setEnabled(boolean enabled) {
+//            this.enabled = enabled;
+//        }
+//    }
+//
+//    private void createPopup() {
+//        popupMenu = new JPopupMenu();
+//        JMenuItem refreshItem = new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.refresh"));
+//        refreshItem.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                setup(filter);
+//            }
+//        });
+//        popupMenu.add(refreshItem);
+//        JMenuItem selectItem = new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.selectall"));
+//        selectItem.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                filter.selectAll();
+//                refresh(filter.getCurrentPartition(), Arrays.asList(filter.getCurrentPartition().getParts()));
+//            }
+//        });
+//        popupMenu.add(selectItem);
+//        JMenuItem unselectItem = new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.unselectall"));
+//        unselectItem.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                filter.unselectAll();
+//                refresh(filter.getCurrentPartition(), new ArrayList<Part>());
+//            }
+//        });
+//        popupMenu.add(unselectItem);
+//    }
+//
+//    public static void computeListSize(final JList list) {
+//        if (list.getUI() instanceof BasicListUI) {
+//            final BasicListUI ui = (BasicListUI) list.getUI();
+//
+//            try {
+//                final Method method = BasicListUI.class.getDeclaredMethod("updateLayoutState");
+//                method.setAccessible(true);
+//                method.invoke(ui);
+//                list.revalidate();
+//                list.repaint();
+//            } catch (final SecurityException e) {
+//                e.printStackTrace();
+//            } catch (final NoSuchMethodException e) {
+//                e.printStackTrace();
+//            } catch (final IllegalArgumentException e) {
+//                e.printStackTrace();
+//            } catch (final IllegalAccessException e) {
+//                e.printStackTrace();
+//            } catch (final InvocationTargetException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+//
+//    private static class PaletteIcon implements Icon {
+//
+//        private final int COLOR_WIDTH;
+//        private final int COLOR_HEIGHT;
+//        private final Color BORDER_COLOR;
+//        private final Color color;
+//
+//        public PaletteIcon(Color color) {
+//            this.color = color;
+//            BORDER_COLOR = new Color(0x444444);
+//            COLOR_WIDTH = 11;
+//            COLOR_HEIGHT = 11;
+//        }
+//
+//        public PaletteIcon() {
+//            this.color = new Color(0xDDDDDD);
+//            BORDER_COLOR = new Color(0x999999);
+//            COLOR_WIDTH = 11;
+//            COLOR_HEIGHT = 11;
+//        }
+//
+//        public int getIconWidth() {
+//            return COLOR_WIDTH;
+//        }
+//
+//        public int getIconHeight() {
+//            return COLOR_HEIGHT + 2;
+//        }
+//
+//        public void paintIcon(Component c, Graphics g, int x, int y) {
+//            g.setColor(BORDER_COLOR);
+//            g.drawRect(x + 2, y, COLOR_WIDTH, COLOR_HEIGHT);
+//            g.setColor(color);
+//            g.fillRect(x + 2 + 1, y + 1, COLOR_WIDTH - 1, COLOR_HEIGHT - 1);
+//        }
+//    }
 
     /** This method is called from within the constructor to
      * initialize the form.

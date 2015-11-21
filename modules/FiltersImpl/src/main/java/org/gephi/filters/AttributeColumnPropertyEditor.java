@@ -38,14 +38,13 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.filters;
 
 import java.beans.PropertyEditorSupport;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.openide.util.Lookup;
 
 /**
@@ -53,12 +52,12 @@ import org.openide.util.Lookup;
  * @author Mathieu Bastian
  */
 public class AttributeColumnPropertyEditor extends PropertyEditorSupport {
-    
-    private AttributeColumn column;
+
+    private Column column;
 
     @Override
     public void setValue(Object value) {
-        this.column = (AttributeColumn) value;
+        this.column = (Column) value;
     }
 
     @Override
@@ -69,11 +68,11 @@ public class AttributeColumnPropertyEditor extends PropertyEditorSupport {
     @Override
     public String getAsText() {
         if (column != null) {
-            AttributeModel model = Lookup.getDefault().lookup(AttributeController.class).getModel();
+            GraphModel model = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
             if (model.getNodeTable().hasColumn(column.getTitle())) {
-                return "NODE*-*" + column.getId() + "*-*" + column.getType().getTypeString();
+                return "NODE*-*" + column.getId() + "*-*" + column.getTypeClass().getName();
             } else if (model.getEdgeTable().hasColumn(column.getTitle())) {
-                return "EDGE*-*" + column.getId() + "*-*" + column.getType().getTypeString();
+                return "EDGE*-*" + column.getId() + "*-*" + column.getTypeClass().getName();
             }
         }
         return "null";
@@ -83,12 +82,12 @@ public class AttributeColumnPropertyEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         if (!text.equals("null")) {
-            AttributeModel model = Lookup.getDefault().lookup(AttributeController.class).getModel();
+            GraphModel model = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
             String[] arr = text.split("\\*-\\*");
             if (arr[0].equals("NODE")) {
-                column = model.getNodeTable().getColumn(arr[1], AttributeType.valueOf(arr[2]));
+                column = model.getNodeTable().getColumn(arr[1]);
             } else if (arr[0].equals("EDGE")) {
-                column = model.getEdgeTable().getColumn(arr[1], AttributeType.valueOf(arr[2]));
+                column = model.getEdgeTable().getColumn(arr[1]);
             }
         }
     }

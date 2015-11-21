@@ -1169,7 +1169,7 @@
         <module>modules/DesktopDataLaboratory</module>
         <module>modules/DesktopGenerate</module>
         <module>modules/DesktopExport</module>
-        <!--<module>modules/DesktopFilters</module>-->
+        <module>modules/DesktopFilters</module>
         <module>modules/DesktopImport</module>
         <module>modules/DesktopLayout</module>
         <module>modules/DesktopAppearance</module>
@@ -1183,10 +1183,10 @@
         <module>modules/ExportAPI</module>
         <module>modules/ExportPlugin</module>
         <module>modules/ExportPluginUI</module>
-<!--    <module>modules/FiltersAPI</module>
+        <module>modules/FiltersAPI</module>
         <module>modules/FiltersImpl</module>
         <module>modules/FiltersPlugin</module>
-        <module>modules/FiltersPluginUI</module>-->
+        <module>modules/FiltersPluginUI</module>
         <module>modules/GeneratorAPI</module>
         <module>modules/GeneratorPlugin</module>
         <module>modules/GeneratorPluginUI</module>

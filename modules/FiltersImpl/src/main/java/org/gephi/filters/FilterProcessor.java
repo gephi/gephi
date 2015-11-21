@@ -55,6 +55,7 @@ import org.gephi.graph.api.*;
 public class FilterProcessor {
 
     public Graph process(AbstractQueryImpl query, GraphModel graphModel) {
+        graphModel.getGraph().writeLock();
         List<GraphView> views = new ArrayList<GraphView>();
         query = simplifyQuery(query);
         AbstractQueryImpl[] tree = getTree(query, true);
@@ -68,7 +69,7 @@ public class FilterProcessor {
                 }
             } else {
                 //Leaves
-                GraphView newView = graphModel.newView();
+                GraphView newView = graphModel.copyView(graphModel.getGraph().getView());
                 views.add(newView);
                 input = new Graph[]{graphModel.getGraph(newView)};    //duplicate root
             }
@@ -76,11 +77,15 @@ public class FilterProcessor {
             if (q instanceof OperatorQueryImpl && !((OperatorQueryImpl) q).isSimple()) {
                 OperatorQueryImpl operatorQuery = (OperatorQueryImpl) q;
                 Operator op = (Operator) operatorQuery.getFilter();
-                q.setResult(op.filter(input));
+                Subgraph[] inputSG = new Subgraph[input.length];
+                for (int j = 0; j < inputSG.length; j++) {
+                    inputSG[j] = (Subgraph) input[j];
+                }
+                q.setResult(op.filter(inputSG));
             } else if (q instanceof OperatorQueryImpl && ((OperatorQueryImpl) q).isSimple()) {
                 OperatorQueryImpl operatorQuery = (OperatorQueryImpl) q;
                 Operator op = (Operator) operatorQuery.getFilter();
-                GraphView newView = graphModel.newView();
+                GraphView newView = graphModel.copyView(graphModel.getGraph().getView());
                 views.add(newView);
                 Graph newGraph = graphModel.getGraph(newView);
                 List<Filter> filters = new ArrayList<Filter>();
@@ -104,9 +109,6 @@ public class FilterProcessor {
                 } else if (filter instanceof EdgeFilter) {
                     processEdgeFilter((EdgeFilter) filter, input[0]);
                     q.setResult(input[0]);
-                } else if (filter instanceof AttributableFilter) {
-                    processAttributableFilter((AttributableFilter) filter, input[0]);
-                    q.setResult(input[0]);
                 } else if (filter instanceof ComplexFilter) {
                     ComplexFilter cf = (ComplexFilter) filter;
                     q.setResult(cf.filter(input[0]));
@@ -120,55 +122,12 @@ public class FilterProcessor {
         //Destroy intermediate views
         GraphView finalView = finalResult.getView();
         for (GraphView v : views) {
-            if (v != finalView) {
+            if (v != finalView && !v.isMainView()) {
                 graphModel.destroyView(v);
             }
         }
+        graphModel.getGraph().writeUnlock();
         return finalResult;
-    }
-
-    private void processAttributableFilter(AttributableFilter attributableFilter, Graph graph) {
-        if (((AttributableFilter) attributableFilter).getType().equals(AttributableFilter.Type.NODE)) {
-            if (init(attributableFilter, graph)) {
-                List<Node> nodesToRemove = new ArrayList<Node>();
-                for (Node n : graph.getNodes()) {
-                    if (!attributableFilter.evaluate(graph, n)) {
-                        nodesToRemove.add(n);
-                    }
-                }
-
-                for (Node n : nodesToRemove) {
-                    graph.removeNode(n);
-                }
-                attributableFilter.finish();
-            }
-        } else {
-            HierarchicalGraph hgraph = (HierarchicalGraph) graph;
-            if (init(attributableFilter, graph)) {
-                List<Edge> edgesToRemove = new ArrayList<Edge>();
-                for (Edge e : hgraph.getEdges()) {
-                    if (!attributableFilter.evaluate(hgraph, e)) {
-                        edgesToRemove.add(e);
-                    }
-                }
-
-                for (Edge e : edgesToRemove) {
-                    hgraph.removeEdge(e);
-                }
-                edgesToRemove.clear();
-
-                for (Edge e : hgraph.getMetaEdges()) {
-                    if (!attributableFilter.evaluate(hgraph, e)) {
-                        edgesToRemove.add(e);
-                    }
-                }
-                for (Edge e : edgesToRemove) {
-                    hgraph.removeMetaEdge(e);
-                }
-
-                attributableFilter.finish();
-            }
-        }
     }
 
     private void processNodeFilter(NodeFilter nodeFilter, Graph graph) {
@@ -180,37 +139,25 @@ public class FilterProcessor {
                 }
             }
 
-            for (Node n : nodesToRemove) {
-                graph.removeNode(n);
+            if (!nodesToRemove.isEmpty()) {
+                graph.removeAllNodes(nodesToRemove);
             }
             nodeFilter.finish();
         }
     }
 
     private void processEdgeFilter(EdgeFilter edgeFilter, Graph graph) {
-        HierarchicalGraph hgraph = (HierarchicalGraph) graph;
         if (init(edgeFilter, graph)) {
             List<Edge> edgesToRemove = new ArrayList<Edge>();
-            for (Edge e : hgraph.getEdges()) {
-                if (!edgeFilter.evaluate(hgraph, e)) {
+            for (Edge e : graph.getEdges()) {
+                if (!edgeFilter.evaluate(graph, e)) {
                     edgesToRemove.add(e);
                 }
             }
 
-            for (Edge e : edgesToRemove) {
-                hgraph.removeEdge(e);
+            if (!edgesToRemove.isEmpty()) {
+                graph.removeAllEdges(edgesToRemove);
             }
-            edgesToRemove.clear();
-
-            for (Edge e : hgraph.getMetaEdges()) {
-                if (!edgeFilter.evaluate(hgraph, e)) {
-                    edgesToRemove.add(e);
-                }
-            }
-            for (Edge e : edgesToRemove) {
-                hgraph.removeMetaEdge(e);
-            }
-
             edgeFilter.finish();
         }
     }
@@ -221,7 +168,7 @@ public class FilterProcessor {
             if (q instanceof OperatorQueryImpl && q.getChildrenCount() > 0) {
                 boolean canSimplify = true;
                 for (AbstractQueryImpl child : q.children) {
-                    if (child.getChildrenCount() > 0 || !(child.getFilter() instanceof NodeFilter || child.getFilter() instanceof EdgeFilter || child.getFilter() instanceof AttributableFilter)) {
+                    if (child.getChildrenCount() > 0 || !(child.getFilter() instanceof NodeFilter || child.getFilter() instanceof EdgeFilter || child.getFilter() instanceof ElementFilter)) {
                         canSimplify = false;
                     }
                 }
@@ -256,8 +203,6 @@ public class FilterProcessor {
             res = ((NodeFilter) filter).init(graph);
         } else if (filter instanceof EdgeFilter) {
             res = ((EdgeFilter) filter).init(graph);
-        } else if (filter instanceof NodeFilter) {
-            res = ((AttributableFilter) filter).init(graph);
         }
 
         //Range
@@ -279,45 +224,43 @@ public class FilterProcessor {
             if (min == null || max == null) {
                 newRange = null;
                 rangeFilter.getRangeProperty().setValue(newRange);
+            } else if (previousRange == null) {
+                newRange = new Range(min, max, min, max, values);
+                rangeFilter.getRangeProperty().setValue(newRange);
+            } else if (previousRange != null && (previousRange.getMinimum() == null || previousRange.getMaximum() == null)) {
+                //Opening projects
+                newRange = new Range(previousRange.getLowerBound(), previousRange.getUpperBound(), min, max, previousRange.isLeftInclusive(), previousRange.isRightInclusive(), values);
+                rangeFilter.getRangeProperty().setValue(newRange);
             } else {
-                if (previousRange == null) {
-                    newRange = new Range(min, max, min, max, values);
+                //Collect some info
+                boolean stickyLeft = previousRange.getMinimum().equals(previousRange.getLowerBound());
+                boolean stickyRight = previousRange.getMaximum().equals(previousRange.getUpperBound());
+                Number lowerBound = previousRange.getLowerBound();
+                Number upperBound = previousRange.getUpperBound();
+
+                //The inteval grows on the right
+                if (stickyRight && comparator.superior(max, upperBound)) {
+                    upperBound = max;
+                }
+
+                //The interval grows on the left
+                if (stickyLeft && comparator.inferior(min, lowerBound)) {
+                    lowerBound = min;
+                }
+
+                //The interval shrinks on the right
+                if (comparator.superior(upperBound, max)) {
+                    upperBound = max;
+                }
+
+                //The interval shrinks on the left
+                if (comparator.inferior(lowerBound, min)) {
+                    lowerBound = min;
+                }
+
+                newRange = new Range(lowerBound, upperBound, min, max, previousRange.isLeftInclusive(), previousRange.isRightInclusive(), values);
+                if (!newRange.equals(previousRange)) {
                     rangeFilter.getRangeProperty().setValue(newRange);
-                } else if(previousRange != null && (previousRange.getMinimum() == null || previousRange.getMaximum() == null)) {
-                    //Opening projects
-                    newRange = new Range(previousRange.getLowerBound(), previousRange.getUpperBound(), min, max, previousRange.isLeftInclusive(), previousRange.isRightInclusive(), values);
-                    rangeFilter.getRangeProperty().setValue(newRange);
-                } else {
-                    //Collect some info
-                    boolean stickyLeft = previousRange.getMinimum().equals(previousRange.getLowerBound());
-                    boolean stickyRight = previousRange.getMaximum().equals(previousRange.getUpperBound());
-                    Number lowerBound = previousRange.getLowerBound();
-                    Number upperBound = previousRange.getUpperBound();
-
-                    //The inteval grows on the right
-                    if (stickyRight && comparator.superior(max, upperBound)) {
-                        upperBound = max;
-                    }
-
-                    //The interval grows on the left
-                    if (stickyLeft && comparator.inferior(min, lowerBound)) {
-                        lowerBound = min;
-                    }
-
-                    //The interval shrinks on the right
-                    if (comparator.superior(upperBound, max)) {
-                        upperBound = max;
-                    }
-
-                    //The interval shrinks on the left
-                    if (comparator.inferior(lowerBound, min)) {
-                        lowerBound = min;
-                    }
-
-                    newRange = new Range(lowerBound, upperBound, min, max, previousRange.isLeftInclusive(), previousRange.isRightInclusive(), values);
-                    if (!newRange.equals(previousRange)) {
-                        rangeFilter.getRangeProperty().setValue(newRange);
-                    }
                 }
             }
         }
@@ -345,6 +288,7 @@ public class FilterProcessor {
             return c > 0 ? a : b;
         }
 
+        @Override
         public int compare(Number number1, Number number2) {
             if (((Object) number2).getClass().equals(((Object) number1).getClass())) {
                 if (number1 instanceof Comparable) {

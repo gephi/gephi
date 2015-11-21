@@ -53,6 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = EqualNumberUI.class)
 public class EqualNumberUIImpl implements EqualNumberUI {
 
+    @Override
     public JPanel getPanel(EqualNumberFilter filter) {
         EqualNumberPanel panel = new EqualNumberPanel();
         panel.setup(filter);

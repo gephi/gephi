@@ -54,7 +54,6 @@ import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -67,26 +66,32 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = FilterBuilder.class)
 public class EgoBuilder implements FilterBuilder {
 
+    @Override
     public Category getCategory() {
         return FilterLibrary.TOPOLOGY;
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(EgoBuilder.class, "EgoBuilder.name");
     }
 
+    @Override
     public Icon getIcon() {
         return null;
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(EgoBuilder.class, "EgoBuilder.description");
     }
 
+    @Override
     public Filter getFilter() {
         return new EgoFilter();
     }
 
+    @Override
     public JPanel getPanel(Filter filter) {
         EgoUI ui = Lookup.getDefault().lookup(EgoUI.class);
         if (ui != null) {
@@ -95,6 +100,7 @@ public class EgoBuilder implements FilterBuilder {
         return null;
     }
 
+    @Override
     public void destroy(Filter filter) {
     }
 
@@ -104,16 +110,15 @@ public class EgoBuilder implements FilterBuilder {
         private boolean self = true;
         private int depth = 1;
 
+        @Override
         public Graph filter(Graph graph) {
-            HierarchicalGraph hgraph = (HierarchicalGraph) graph;
-
             String str = pattern.toLowerCase();
 
             List<Node> nodes = new ArrayList<Node>();
-            for (Node n : hgraph.getNodes()) {
-                if (n.getNodeData().getId().toLowerCase().equals(str)) {
+            for (Node n : graph.getNodes()) {
+                if (n.getId().toString().toLowerCase().equals(str)) {
                     nodes.add(n);
-                } else if ((n.getNodeData().getLabel() != null) && n.getNodeData().getLabel().toLowerCase().equals(str)) {
+                } else if ((n.getLabel() != null) && n.getLabel().toLowerCase().equals(str)) {
                     nodes.add(n);
                 }
             }
@@ -127,7 +132,7 @@ public class EgoBuilder implements FilterBuilder {
                 Node[] nei = neighbours.toArray(new Node[0]);
                 neighbours.clear();
                 for (Node n : nei) {
-                    for (Node neighbor : hgraph.getNeighbors(n)) {
+                    for (Node neighbor : graph.getNeighbors(n)) {
                         if (!result.contains(neighbor)) {
                             neighbours.add(neighbor);
                             result.add(neighbor);
@@ -145,25 +150,27 @@ public class EgoBuilder implements FilterBuilder {
                 result.removeAll(nodes);
             }
 
-            for (Node node : hgraph.getNodes().toArray()) {
+            for (Node node : graph.getNodes().toArray()) {
                 if (!result.contains(node)) {
-                    hgraph.removeNode(node);
+                    graph.removeNode(node);
                 }
             }
 
-            return hgraph;
+            return graph;
         }
 
+        @Override
         public String getName() {
             return NbBundle.getMessage(EgoBuilder.class, "EgoBuilder.name");
         }
 
+        @Override
         public FilterProperty[] getProperties() {
             try {
                 return new FilterProperty[]{
-                            FilterProperty.createProperty(this, String.class, "pattern"),
-                            FilterProperty.createProperty(this, Integer.class, "depth"),
-                            FilterProperty.createProperty(this, Boolean.class, "self")};
+                    FilterProperty.createProperty(this, String.class, "pattern"),
+                    FilterProperty.createProperty(this, Integer.class, "depth"),
+                    FilterProperty.createProperty(this, Boolean.class, "self")};
             } catch (NoSuchMethodException ex) {
                 ex.printStackTrace();
             }

@@ -50,7 +50,6 @@ import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.AbstractFilter;
 import org.gephi.filters.spi.*;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -63,26 +62,32 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = FilterBuilder.class)
 public class DegreeRangeBuilder implements FilterBuilder {
 
+    @Override
     public Category getCategory() {
         return FilterLibrary.TOPOLOGY;
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(DegreeRangeBuilder.class, "DegreeRangeBuilder.name");
     }
 
+    @Override
     public Icon getIcon() {
         return null;
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(DegreeRangeBuilder.class, "DegreeRangeBuilder.description");
     }
 
+    @Override
     public DegreeRangeFilter getFilter() {
         return new DegreeRangeFilter();
     }
 
+    @Override
     public JPanel getPanel(Filter filter) {
         RangeUI ui = Lookup.getDefault().lookup(RangeUI.class);
         if (ui != null) {
@@ -91,6 +96,7 @@ public class DegreeRangeBuilder implements FilterBuilder {
         return null;
     }
 
+    @Override
     public void destroy(Filter filter) {
     }
 
@@ -104,31 +110,32 @@ public class DegreeRangeBuilder implements FilterBuilder {
             addProperty(Range.class, "range");
         }
 
+        @Override
         public boolean init(Graph graph) {
-            if (graph.getNodeCount() == 0) {
-                return false;
-            }
-            return true;
+            return graph.getNodeCount() != 0;
         }
 
+        @Override
         public boolean evaluate(Graph graph, Node node) {
-            int degree = ((HierarchicalGraph) graph).getTotalDegree(node);
+            int degree = graph.getDegree(node);
             return range.isInRange(degree);
         }
 
+        @Override
         public void finish() {
         }
 
+        @Override
         public Number[] getValues(Graph graph) {
-            HierarchicalGraph hgraph = (HierarchicalGraph) graph;
-            List<Integer> values = new ArrayList<Integer>(((HierarchicalGraph) graph).getNodeCount());
-            for (Node n : hgraph.getNodes()) {
-                int degree = hgraph.getTotalDegree(n);
+            List<Integer> values = new ArrayList<Integer>(graph.getNodeCount());
+            for (Node n : graph.getNodes()) {
+                int degree = graph.getDegree(n);
                 values.add(degree);
             }
             return values.toArray(new Number[0]);
         }
 
+        @Override
         public FilterProperty getRangeProperty() {
             return getProperties()[0];
         }

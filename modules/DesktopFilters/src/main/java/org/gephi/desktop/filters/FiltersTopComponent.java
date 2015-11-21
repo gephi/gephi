@@ -71,7 +71,7 @@ public final class FiltersTopComponent extends TopComponent {
     static final String ICON_PATH = "org/gephi/desktop/filters/resources/small.png";
     private static final String PREFERRED_ID = "FiltersTopComponent";
     //Panel
-    private FiltersPanel panel;
+    private final FiltersPanel panel;
     //Models
     private FilterModel filterModel;
     private FilterUIModel uiModel;
@@ -91,10 +91,12 @@ public final class FiltersTopComponent extends TopComponent {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
 
+            @Override
             public void initialize(Workspace workspace) {
                 workspace.add(new FilterUIModel());
             }
 
+            @Override
             public void select(Workspace workspace) {
                 filterModel = workspace.getLookup().lookup(FilterModel.class);
                 uiModel = workspace.getLookup().lookup(FilterUIModel.class);
@@ -105,12 +107,15 @@ public final class FiltersTopComponent extends TopComponent {
                 refreshModel();
             }
 
+            @Override
             public void unselect(Workspace workspace) {
             }
 
+            @Override
             public void close(Workspace workspace) {
             }
 
+            @Override
             public void disable() {
                 filterModel = null;
                 uiModel = null;

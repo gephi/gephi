@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.filters;
 
 import org.gephi.filters.spi.Filter;
@@ -51,7 +51,7 @@ import org.gephi.filters.spi.FilterProperty;
 public class FilterQueryImpl extends AbstractQueryImpl {
 
     private Parameters[] parameters;
-    private Filter filter;
+    private final Filter filter;
     private String name;
 
     public FilterQueryImpl(Filter filter) {
@@ -85,26 +85,30 @@ public class FilterQueryImpl extends AbstractQueryImpl {
         this.name = name;
     }
 
+    @Override
     public int getPropertiesCount() {
         return parameters.length;
     }
 
+    @Override
     public String getPropertyName(int index) {
         return parameters[index].getKey();
     }
 
+    @Override
     public Object getPropertyValue(int index) {
         return parameters[index].getValue();
     }
 
+    @Override
     public Filter getFilter() {
         return filter;
     }
 
     private class Parameters {
 
-        private int index;
-        private Object value;
+        private final int index;
+        private final Object value;
 
         public Parameters(int index, Object value) {
             this.index = index;

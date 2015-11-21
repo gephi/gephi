@@ -67,18 +67,24 @@ public abstract class AbstractQueryImpl implements Query {
         this.children = new ArrayList<AbstractQueryImpl>();
     }
 
+    @Override
     public abstract int getChildrenSlotsCount();
 
+    @Override
     public abstract int getPropertiesCount();
 
+    @Override
     public abstract String getPropertyName(int index);
 
+    @Override
     public abstract Object getPropertyValue(int index);
 
+    @Override
     public abstract String getName();
 
     public abstract void setName(String name);
 
+    @Override
     public Query[] getChildren() {
         return children.toArray(new Query[0]);
     }
@@ -100,6 +106,7 @@ public abstract class AbstractQueryImpl implements Query {
         children.remove((AbstractQueryImpl) subQuery);
     }
 
+    @Override
     public Query getParent() {
         return parent;
     }
@@ -158,6 +165,7 @@ public abstract class AbstractQueryImpl implements Query {
         return copy;
     }
 
+    @Override
     public Query[] getQueries(Class<? extends Filter> filterClass) {
         List<Query> r = new LinkedList<Query>();
         LinkedList<Query> stack = new LinkedList<Query>();
@@ -176,6 +184,7 @@ public abstract class AbstractQueryImpl implements Query {
         return r.toArray(new Query[0]);
     }
 
+    @Override
     public Query[] getDescendantsAndSelf() {
         List<Query> r = new LinkedList<Query>();
         LinkedList<Query> stack = new LinkedList<Query>();

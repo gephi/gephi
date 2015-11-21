@@ -48,12 +48,10 @@ import javax.swing.JPanel;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.AbstractFilter;
-import org.gephi.filters.plugin.DynamicAttributesHelper;
 import org.gephi.filters.plugin.graph.RangeUI;
 import org.gephi.filters.spi.*;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -65,26 +63,32 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = FilterBuilder.class)
 public class EdgeWeightBuilder implements FilterBuilder {
 
+    @Override
     public Category getCategory() {
         return FilterLibrary.EDGE;
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(EdgeWeightBuilder.class, "EdgeWeightBuilder.name");
     }
 
+    @Override
     public Icon getIcon() {
         return null;
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(EdgeWeightBuilder.class, "EdgeWeightBuilder.description");
     }
 
+    @Override
     public Filter getFilter() {
         return new EdgeWeightFilter();
     }
 
+    @Override
     public JPanel getPanel(Filter filter) {
         RangeUI ui = Lookup.getDefault().lookup(RangeUI.class);
         if (ui != null) {
@@ -93,13 +97,13 @@ public class EdgeWeightBuilder implements FilterBuilder {
         return null;
     }
 
+    @Override
     public void destroy(Filter filter) {
     }
 
     public static class EdgeWeightFilter extends AbstractFilter implements RangeFilter, EdgeFilter {
 
         private Range range;
-        private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
 
         public EdgeWeightFilter() {
             super(NbBundle.getMessage(EdgeWeightBuilder.class, "EdgeWeightBuilder.name"));
@@ -107,33 +111,32 @@ public class EdgeWeightBuilder implements FilterBuilder {
             addProperty(Range.class, "range");
         }
 
+        @Override
         public boolean init(Graph graph) {
-            HierarchicalGraph hgraph = (HierarchicalGraph) graph;
-            if (hgraph.getTotalEdgeCount() == 0) {
-                return false;
-            }
-            dynamicHelper = new DynamicAttributesHelper(this, hgraph);
-            return true;
+            return graph.getEdgeCount() != 0;
         }
 
+        @Override
         public boolean evaluate(Graph graph, Edge edge) {
-            float weight = dynamicHelper.getEdgeWeight(edge);
+            double weight = edge.getWeight(graph.getView());
             return range.isInRange(weight);
         }
 
+        @Override
         public void finish() {
         }
 
+        @Override
         public Number[] getValues(Graph graph) {
-            HierarchicalGraph hgraph = (HierarchicalGraph) graph;
             List<Number> values = new ArrayList<Number>();
-            for (Edge e : hgraph.getEdgesAndMetaEdges()) {
-                float weight = dynamicHelper.getEdgeWeight(e);
+            for (Edge e : graph.getEdges()) {
+                double weight = e.getWeight(graph.getView());
                 values.add(weight);
             }
             return values.toArray(new Number[0]);
         }
 
+        @Override
         public FilterProperty getRangeProperty() {
             return getProperties()[0];
         }

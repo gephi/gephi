@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.filters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
@@ -63,33 +64,37 @@ import org.openide.util.Lookup;
  */
 public class FilterModelImpl implements FilterModel {
 
-    private FilterLibraryImpl filterLibraryImpl;
-    private LinkedList<Query> queries;
+    private final FilterLibraryImpl filterLibraryImpl;
+    private final LinkedList<Query> queries;
     private FilterThread filterThread;
-    private GraphModel graphModel;
+    private final GraphModel graphModel;
+    private final Workspace workspace;
     private Query currentQuery;
     private boolean filtering;
     private boolean selecting;
     private GraphView currentResult;
     private boolean autoRefresh;
-    private FilterAutoRefreshor autoRefreshor;
+    private final FilterAutoRefreshor autoRefreshor;
     //Listeners
     private List<ChangeListener> listeners;
 
     public FilterModelImpl(Workspace workspace) {
+        this.workspace = workspace;
         filterLibraryImpl = new FilterLibraryImpl();
         queries = new LinkedList<Query>();
         listeners = new ArrayList<ChangeListener>();
         autoRefresh = true;
 
-        graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
+        graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         autoRefreshor = new FilterAutoRefreshor(this, graphModel);
     }
 
+    @Override
     public FilterLibrary getLibrary() {
         return filterLibraryImpl;
     }
 
+    @Override
     public Query[] getQueries() {
         return queries.toArray(new Query[0]);
     }
@@ -173,10 +178,12 @@ public class FilterModelImpl implements FilterModel {
         return -1;
     }
 
+    @Override
     public boolean isFiltering() {
         return currentQuery != null && filtering;
     }
 
+    @Override
     public boolean isSelecting() {
         return currentQuery != null && selecting;
     }
@@ -195,6 +202,7 @@ public class FilterModelImpl implements FilterModel {
         }
     }
 
+    @Override
     public boolean isAutoRefresh() {
         return autoRefresh;
     }
@@ -209,6 +217,7 @@ public class FilterModelImpl implements FilterModel {
         }
     }
 
+    @Override
     public Query getCurrentQuery() {
         return currentQuery;
     }
@@ -246,9 +255,7 @@ public class FilterModelImpl implements FilterModel {
         while (!stack.isEmpty()) {
             Query q = stack.pop();
             result.add(q);
-            for (Query child : q.getChildren()) {
-                stack.add(child);
-            }
+            stack.addAll(Arrays.asList(q.getChildren()));
         }
         return result.toArray(new Query[0]);
     }
@@ -282,6 +289,10 @@ public class FilterModelImpl implements FilterModel {
         return graphModel;
     }
 
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
     public void destroy() {
         if (filterThread != null) {
             filterThread.setRunning(false);
@@ -310,12 +321,14 @@ public class FilterModelImpl implements FilterModel {
     }
 
     //EVENTS
+    @Override
     public void addChangeListener(ChangeListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
 
+    @Override
     public void removeChangeListener(ChangeListener listener) {
         if (listeners != null) {
             listeners.remove(listener);

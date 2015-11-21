@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.ui.filters.plugin.attribute;
 
 import javax.swing.JPanel;
@@ -53,6 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = EqualBooleanUI.class)
 public class EqualBooleanUIImpl implements EqualBooleanUI {
 
+    @Override
     public JPanel getPanel(EqualBooleanFilter filter) {
         EqualBooleanPanel panel = new EqualBooleanPanel();
         panel.setup(filter);

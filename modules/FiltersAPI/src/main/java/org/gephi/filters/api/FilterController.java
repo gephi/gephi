@@ -53,20 +53,19 @@ import org.gephi.project.api.Workspace;
  * <pre>FilterController fc = Lookup.getDefault().lookup(FilterController.class);</pre>
  * <p>
  * The controller has two ways to execute filtering, a one-shot one that
- * immediately returns the <code>GraphView</code> and a more complex one suitable
- * for user interface interaction, with live parameter change.
+ * immediately returns the <code>GraphView</code> and a more complex one
+ * suitable for user interface interaction, with live parameter change.
  * <p>
  * The one-shot filtering can be executed like below:
  * <pre>
  * Filter filter = ...
  * Query query = controller.createQuery(filter);
  * GraphView view = controller.filter(query);
- * </pre>
- * The normal mode is to call {@link #filterVisible(org.gephi.filters.api.Query)}
- * which let this controller manage the execution. The benefit of this of this mode
- * is that properties change on filters are listened and filtering is automatically
- * reexecuted if values changes. See how to execute a filter with two different
- * values:
+ * </pre> The normal mode is to call
+ * {@link #filterVisible(org.gephi.filters.api.Query)} which let this controller
+ * manage the execution. The benefit of this of this mode is that properties
+ * change on filters are listened and filtering is automatically reexecuted if
+ * values changes. See how to execute a filter with two different values:
  * <pre>
  * Filter filter = ...
  * filter.getProperties()[0].setValue(1);       //Set value 1, for example a threshold
@@ -75,107 +74,124 @@ import org.gephi.project.api.Workspace;
  * controller.filterVisible(query);     //A background thread executes the query
  * filter.getProperties[0].setValue(2)      //The background thread reexecute the query
  * </pre>
+ *
  * @author Mathieu Bastian
  * @see GraphView
  */
 public interface FilterController {
 
     /**
-     * Creates a query from <code>filter</code>. The created query is a root query.
-     * @param filter        the filter that is to be wrapped in a new query
-     * @return              a query that is wrapping <code>filter</code>
+     * Creates a query from <code>filter</code>. The created query is a root
+     * query.
+     *
+     * @param filter the filter that is to be wrapped in a new query
+     * @return a query that is wrapping <code>filter</code>
      */
     public Query createQuery(Filter filter);
 
     /**
      * Adds <code>query</code> as a new query in the system. The query should be
      * a root query.
-     * @param query         the query that is to be added
+     *
+     * @param query the query that is to be added
      */
     public void add(Query query);
 
     /**
-     * Removes <code>query</code> from the systemn if exists.
-     * @param query         the query that is to be removed
+     * Removes <code>query</code> from the system if exists.
+     *
+     * @param query the query that is to be removed
      */
     public void remove(Query query);
 
     /**
      * Renames <code>query</code> with <code>name</code>.
-     * @param query         the query that is to be renamed
-     * @param name          the new query's name
+     *
+     * @param query the query that is to be renamed
+     * @param name the new query's name
      */
     public void rename(Query query, String name);
 
     /**
      * Sets <code>subQuery</code> as a child of <code>query</code>. If
-     * <code>subQuery</code> already has a parent query, it will be removed first.
-     * @param query         the query that <code>subQuery</code> is to be added
-     * as a new child
-     * @param subQuery      the query that is to be added as a child of <code>
+     * <code>subQuery</code> already has a parent query, it will be removed
+     * first.
+     *
+     * @param query the query that <code>subQuery</code> is to be added as a new
+     * child
+     * @param subQuery the query that is to be added as a child of <code>
      * query</code>
      */
     public void setSubQuery(Query query, Query subQuery);
 
     /**
      * Removes <code>query</code> from <code>parent</code> query.
-     * @param query         the query that is to be removed from <code>parent</code>
-     * @param parent        the query that <code>query</code> is to be removed as
-     * a child
+     *
+     * @param query the query that is to be removed from <code>parent</code>
+     * @param parent the query that <code>query</code> is to be removed as a
+     * child
      */
     public void removeSubQuery(Query query, Query parent);
 
     /**
      * Filters main graph with <code>query</code> and set result as the new
-     * visible graph. Note that the query will be executed in a background thread
-     * and results delivered as soon as ready. Then, <code>query</code> is defined
-     * as the currently active query and property's value changes are watched.
-     * If a query's property is changed the query is automatically reexecuted.
-     * @param query         the query that is to be executed
+     * visible graph. Note that the query will be executed in a background
+     * thread and results delivered as soon as ready. Then, <code>query</code>
+     * is defined as the currently active query and property's value changes are
+     * watched. If a query's property is changed the query is automatically
+     * reexecuted.
+     *
+     * @param query the query that is to be executed
      */
     public void filterVisible(Query query);
 
     /**
      * Selects <code>query</code> results on the main graph visualization
-     * window. Note that the query will be executed in a background thread
-     * and results delivered as soon as ready. Then, <code>query</code> is defined
+     * window. Note that the query will be executed in a background thread and
+     * results delivered as soon as ready. Then, <code>query</code> is defined
      * as the currently active query and property's value changes are watched.
      * If a query's property is changed the query is automatically reexecuted.
-     * @param query         the query that is to be executed
+     *
+     * @param query the query that is to be executed
      */
     public void selectVisible(Query query);
 
     /**
      * Filtering method for API users. The <code>query</code> is executed and
      * the <code>GraphView</code> result is returned.
-     * @param query         the query that is to be executed
-     * @return              a graph view that represents the query result
+     *
+     * @param query the query that is to be executed
+     * @return a graph view that represents the query result
      */
     public GraphView filter(Query query);
 
     /**
      * Exports <code>query</code> result in a new column <code>title</code>.
-     * Nodes and edges that pass the <code>query</code> have <b>true</b> value and
+     * Nodes and edges that pass the <code>query</code> have <b>true</b> value
+     * and
      * <b>false</b> for others.
-     * @param title         the column's title
-     * @param query         the query that is to be executed
+     *
+     * @param title the column's title
+     * @param query the query that is to be executed
      */
     public void exportToColumn(String title, Query query);
 
     /**
      * Exports <code>query</code> result in a new workspace. Note that query is
-     * executed in a separate thread and the workspace may not be ready immediately
-     * when this method returns.
-     * @param query         the query that is to be executed
+     * executed in a separate thread and the workspace may not be ready
+     * immediately when this method returns.
+     *
+     * @param query the query that is to be executed
      */
     public void exportToNewWorkspace(Query query);
 
     /**
      * Exports <code>query</code> result to visible/hidden labels. Each node and
      * edge not present in the query result has its label set hidden. Label
-     * visibility is controlled from <code>TextData</code> object, accessible from
-     * <code>NodeData</code> or <code>EdgeData</code>.
-     * @param query         the query that is to be used to hide labels
+     * visibility is controlled from <code>TextData</code> object, accessible
+     * from <code>NodeData</code> or <code>EdgeData</code>.
+     *
+     * @param query the query that is to be used to hide labels
      */
     public void exportToLabelVisible(Query query);
 
@@ -185,13 +201,16 @@ public interface FilterController {
 
     /**
      * Returns the filter's model.
-     * @return              the filter's model
+     *
+     * @return the filter's model
      */
     public FilterModel getModel();
 
     /**
      * Returns the filter's model for <code>workspace</code>.
-     * @return              the filter's model in the given workspace
+     *
+     * @param workspace workspace
+     * @return the filter's model in the given workspace
      */
     public FilterModel getModel(Workspace workspace);
 }

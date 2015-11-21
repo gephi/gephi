@@ -42,9 +42,9 @@
 package org.gephi.filters.plugin;
 
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.filters.spi.Category;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
 import org.openide.util.NbBundle;
 
 /**
@@ -53,12 +53,12 @@ import org.openide.util.NbBundle;
  */
 public abstract class AbstractAttributeFilterBuilder extends AbstractFilterBuilder {
 
-    protected final AttributeColumn column;
+    protected final Column column;
 
-    public AbstractAttributeFilterBuilder(AttributeColumn column, Category category, String description, Icon icon) {
+    public AbstractAttributeFilterBuilder(Column column, Category category, String description, Icon icon) {
         super(category, "<font color='#000000'>" + column.getTitle() + "</font> "
-                + "<font color='#999999'><i>" + column.getType().toString() + " "
-                + (AttributeUtils.getDefault().isNodeColumn(column)
+                + "<font color='#999999'><i>" + column.getTypeClass().getSimpleName() + " "
+                + (AttributeUtils.isNodeColumn(column)
                 ? "(" + NbBundle.getMessage(AbstractAttributeFilterBuilder.class, "AbstractAttributeFilterBuilder.Node") + ")"
                 : "(" + NbBundle.getMessage(AbstractAttributeFilterBuilder.class, "AbstractAttributeFilterBuilder.Edge") + ")")
                 + "</i></font>",

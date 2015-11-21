@@ -38,24 +38,18 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.filters.spi;
 
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
 
 /**
- * Basic filters for edges, that works as predicates. For a given edge the filter's
- * role is to return <code>true</code> if the edge is kept or <code>false</code>
- * if it is removed.
+ * Basic filters for edges, that works as predicates. For a given edge the
+ * filter's role is to return <code>true</code> if the edge is kept or
+ * <code>false</code> if it is removed.
  *
  * @author Mathieu Bastian
  */
-public interface EdgeFilter extends Filter {
+public interface EdgeFilter extends ElementFilter<Edge> {
 
-    public boolean init(Graph graph);
-
-    public boolean evaluate(Graph graph, Edge edge);
-
-    public void finish();
 }

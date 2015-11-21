@@ -38,10 +38,12 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.filters.spi;
 
 import java.beans.PropertyEditor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.filters.api.PropertyExecutor;
 import org.openide.nodes.PropertySupport;
 import org.openide.util.Lookup;
@@ -51,9 +53,9 @@ import org.openide.util.Lookup;
  * through this class, especially setting value should be done by using
  * {@link #setValue(java.lang.Object) }.
  * <p>
- * The role of this class is to define filter's properties in order value changes
- * can be tracked by the system, UI can be generated and values correctly saved
- * in projects file.
+ * The role of this class is to define filter's properties in order value
+ * changes can be tracked by the system, UI can be generated and values
+ * correctly saved in projects file.
  *
  * @author Mathieu Bastian
  */
@@ -70,7 +72,8 @@ public final class FilterProperty {
 
     /**
      * Returns property's name
-     * @return      property's name
+     *
+     * @return property's name
      */
     public String getName() {
         return property.getDisplayName();
@@ -78,13 +81,14 @@ public final class FilterProperty {
 
     /**
      * Returns property's value, can be <code>null</code>
-     * @return      property's value
+     *
+     * @return property's value
      */
     public Object getValue() {
         try {
             return property.getValue();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            Logger.getLogger("").log(Level.SEVERE, "Error while getting value for property '" + getName() + "'", e);
         }
         return null;
     }
@@ -92,17 +96,19 @@ public final class FilterProperty {
     /**
      * Set property's value. The type of <code>value</code> must match with this
      * property value type.
+     *
      * @param value the value that is to be set
      */
     public void setValue(Object value) {
         if (propertyExecutor != null) {
             propertyExecutor.setValue(this, value, new PropertyExecutor.Callback() {
 
+                @Override
                 public void setValue(Object value) {
                     try {
                         property.setValue(value);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Logger.getLogger("").log(Level.SEVERE, "Error while setting value for property '" + getName() + "'", e);
                     }
                 }
             });
@@ -110,14 +116,15 @@ public final class FilterProperty {
             try {
                 property.setValue(value);
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.getLogger("").log(Level.SEVERE, "Error while setting value for property '" + getName() + "'", e);
             }
         }
     }
 
     /**
      * Returns the <code>PropertyEditor</code> associated to the property value.
-     * @return      the property editor
+     *
+     * @return the property editor
      */
     public PropertyEditor getPropertyEditor() {
         return property.getPropertyEditor();
@@ -126,6 +133,7 @@ public final class FilterProperty {
     /**
      * Sets the property editor class. The class must implement
      * {@link PropertyEditor}.
+     *
      * @param clazz the property editor class
      */
     public void setPropertyEditorClass(Class<? extends PropertyEditor> clazz) {
@@ -134,7 +142,8 @@ public final class FilterProperty {
 
     /**
      * Returns the property's value type.
-     * @return      the value type
+     *
+     * @return the value type
      */
     public Class getValueType() {
         return property.getValueType();
@@ -142,23 +151,27 @@ public final class FilterProperty {
 
     /**
      * Returns the filter instance this property is associated to.
-     * @return      the filter this property belongs to
+     *
+     * @return the filter this property belongs to
      */
     public Filter getFilter() {
         return filter;
     }
 
     /**
-     * Create a property.
+     * Creates a property.
+     *
      * @param filter The filter instance
-     * @param valueType The type of the property value, ex: <code>Double.class</code>
+     * @param valueType The type of the property value, ex:
+     * <code>Double.class</code>
      * @param propertyName The display name of the property
      * @param getMethod The name of the get method for this property, must exist
      * to make Java reflexion working.
      * @param setMethod The name of the set method for this property, must exist
      * to make Java reflexion working.
      * @return the created property
-     * @throws NoSuchMethodException if the getter or setter methods cannot be found
+     * @throws NoSuchMethodException if the getter or setter methods cannot be
+     * found
      */
     public static FilterProperty createProperty(Filter filter, Class valueType, String propertyName, String getMethod, String setMethod) throws NoSuchMethodException {
         final FilterProperty filterProperty = new FilterProperty(filter);
@@ -170,11 +183,15 @@ public final class FilterProperty {
     }
 
     /**
-     * Create a property.
-     * @param filter The filter instance
-     * @param valueType The type of the property value, ex: <code>Double.class</code>
-     * @param fieldName The Java field name of the property
-     * @throws NoSuchMethodException if the getter or setter methods cannot be found
+     * Creates a property.
+     *
+     * @param filter filter instance
+     * @param valueType type of the property value, ex:
+     * <code>Double.class</code>
+     * @param fieldName java field name of the property
+     * @return the created property
+     * @throws NoSuchMethodException if the getter or setter methods cannot be
+     * found
      */
     public static FilterProperty createProperty(Filter filter, Class valueType, String fieldName) throws NoSuchMethodException {
         if (valueType == Boolean.class) {

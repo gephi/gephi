@@ -61,26 +61,32 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = FilterBuilder.class)
 public class InDegreeRangeBuilder implements FilterBuilder {
 
+    @Override
     public Category getCategory() {
         return FilterLibrary.TOPOLOGY;
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(InDegreeRangeBuilder.class, "InDegreeRangeBuilder.name");
     }
 
+    @Override
     public Icon getIcon() {
         return null;
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(InDegreeRangeBuilder.class, "InDegreeRangeBuilder.description");
     }
 
+    @Override
     public InDegreeRangeFilter getFilter() {
         return new InDegreeRangeFilter();
     }
 
+    @Override
     public JPanel getPanel(Filter filter) {
         RangeUI ui = Lookup.getDefault().lookup(RangeUI.class);
         if (ui != null) {
@@ -89,6 +95,7 @@ public class InDegreeRangeBuilder implements FilterBuilder {
         return null;
     }
 
+    @Override
     public void destroy(Filter filter) {
     }
 
@@ -103,31 +110,33 @@ public class InDegreeRangeBuilder implements FilterBuilder {
             addProperty(Range.class, "range");
         }
 
+        @Override
         public boolean init(Graph graph) {
-            if (graph.getNodeCount() == 0 || !(graph instanceof DirectedGraph)) {
-                return false;
-            }
-            return true;
+            return !(graph.getNodeCount() == 0 || !(graph.isDirected()));
         }
 
+        @Override
         public boolean evaluate(Graph graph, Node node) {
-            int degree = ((HierarchicalDirectedGraph) graph).getTotalInDegree(node);
+            int degree = ((DirectedGraph) graph).getInDegree(node);
             return range.isInRange(degree);
         }
 
+        @Override
         public void finish() {
         }
 
+        @Override
         public Number[] getValues(Graph graph) {
-            HierarchicalDirectedGraph hgraph = (HierarchicalDirectedGraph) graph;
-            List<Integer> values = new ArrayList<Integer>(((HierarchicalGraph) graph).getNodeCount());
-            for (Node n : hgraph.getNodes()) {
-                int degree = hgraph.getTotalInDegree(n);
+            DirectedGraph dgraph = (DirectedGraph) graph;
+            List<Integer> values = new ArrayList<Integer>(dgraph.getNodeCount());
+            for (Node n : dgraph.getNodes()) {
+                int degree = dgraph.getInDegree(n);
                 values.add(degree);
             }
             return values.toArray(new Number[0]);
         }
 
+        @Override
         public FilterProperty getRangeProperty() {
             return getProperties()[0];
         }

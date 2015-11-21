@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.filters.spi;
 
 import javax.swing.Icon;
@@ -46,8 +46,8 @@ import javax.swing.JPanel;
 import org.gephi.filters.api.FilterLibrary;
 
 /**
- * Filter builder, creating <code>Filter</code> instances for a <b>single</b> type
- * of filters. Provides also the settings panel for the type of filter.
+ * Filter builder, creating <code>Filter</code> instances for a <b>single</b>
+ * type of filters. Provides also the settings panel for the type of filter.
  * <p>
  * Implementors should add the <code>@ServiceProvider</code> annotation to be
  * registered by the system or call <code>FilterLibrary.addBuilder()</code>.
@@ -55,10 +55,11 @@ import org.gephi.filters.api.FilterLibrary;
  * The <code>JPanel</code> returned by the <code>getPanel()</code> method is the
  * settings panel that configures the filter parameters. These parameters can be
  * get and set by using {@link Filter#getProperties()}. Settings panel should
- * always set parameters values in that way. As a result the system will be aware
- * values changed and update the filter.
+ * always set parameters values in that way. As a result the system will be
+ * aware values changed and update the filter.
  * <p>
  * See {@link CategoryBuilder} for builders that host multiple types of filters.
+ *
  * @author Mathieu Bastian
  * @see FilterLibrary
  */
@@ -66,44 +67,51 @@ public interface FilterBuilder {
 
     /**
      * Returns the category this filter builder belongs to.
-     * @return          the category this builder belongs to
+     *
+     * @return the category this builder belongs to
      */
     public Category getCategory();
 
     /**
      * Returns the display name of this filter builder
-     * @return          the display name
+     *
+     * @return the display name
      */
     public String getName();
 
     /**
      * Returns the icon of this filter builder
-     * @return          the icon
+     *
+     * @return the icon
      */
     public Icon getIcon();
 
     /**
-     * Returns ths description text of this filter builder
-     * @return          the description
+     * Returns this description text of this filter builder
+     *
+     * @return the description
      */
     public String getDescription();
 
     /**
      * Builds a new <code>Filter</code> instance.
-     * @return          a new <code>Filter</code> object
+     *
+     * @return a new <code>Filter</code> object
      */
     public Filter getFilter();
 
     /**
      * Returns the settings panel for the filter this builder is building, the
      * <code>filter</code> object is passed as a parameter.
-     * @param filter    the filter that the panel is to be configuring
-     * @return          the filter's settings panel
+     *
+     * @param filter the filter that the panel is to be configuring
+     * @return the filter's settings panel
      */
     public JPanel getPanel(Filter filter);
 
     /**
      * Notification when the filter is destroyed, to perform clean-up tasks.
+     * @param filter filter to be destroyed
      */
     public void destroy(Filter filter);
 }

@@ -48,7 +48,6 @@ import org.gephi.filters.api.PropertyExecutor.Callback;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.utils.progress.Progress;
@@ -57,6 +56,7 @@ import org.gephi.utils.progress.ProgressTicketProvider;
 import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -64,15 +64,15 @@ import org.openide.util.Lookup;
  */
 public class FilterThread extends Thread {
 
-    private FilterModelImpl model;
-    private AtomicReference<AbstractQueryImpl> rootQuery;
+    private final FilterModelImpl model;
+    private final AtomicReference<AbstractQueryImpl> rootQuery;
     ConcurrentHashMap<String, PropertyModifier> modifiersMap;
     private boolean running = true;
     private final Object lock = new Object();
     private final boolean filtering;
 
     public FilterThread(FilterModelImpl model) {
-        super("Filter Thread");
+        super("Filter Thread - " + model.getWorkspace().toString());
         setDaemon(true);
         this.model = model;
         this.filtering = model.isFiltering();
@@ -112,7 +112,8 @@ public class FilterThread extends Thread {
             ProgressTicket progressTicket = null;
             ProgressTicketProvider progressTicketProvider = Lookup.getDefault().lookup(ProgressTicketProvider.class);
             if (progressTicketProvider != null) {
-                progressTicket = progressTicketProvider.createTicket("Filtering", null);
+                String msg = NbBundle.getMessage(FilterThread.class, "FilterThread.progress.taskName", q.getName());
+                progressTicket = progressTicketProvider.createTicket(msg, null);
                 Progress.start(progressTicket);
             }
 
@@ -132,8 +133,7 @@ public class FilterThread extends Thread {
         }
         //clear map
         Query q = null;
-        for (Iterator<PropertyModifier> itr = modifiersMap.values().iterator(); itr.hasNext();) {
-            PropertyModifier pm = itr.next();
+        for (PropertyModifier pm : modifiersMap.values()) {
             pm.callback.setValue(pm.value);
             q = pm.query;
         }
@@ -145,10 +145,8 @@ public class FilterThread extends Thread {
 
     private void filter(AbstractQueryImpl query) {
         FilterProcessor processor = new FilterProcessor();
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        GraphModel graphModel = model.getGraphModel();
         Graph result = processor.process((AbstractQueryImpl) query, graphModel);
-//        System.out.println("#Nodes: " + result.getNodeCount());
-//        System.out.println("#Edges: " + result.getEdgeCount());
         if (running) {
             GraphView view = result.getView();
             graphModel.setVisibleView(view);
@@ -164,10 +162,8 @@ public class FilterThread extends Thread {
 
     private void select(AbstractQueryImpl query) {
         FilterProcessor processor = new FilterProcessor();
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        GraphModel graphModel = model.getGraphModel();
         Graph result = processor.process((AbstractQueryImpl) query, graphModel);
-//        System.out.println("#Nodes: " + result.getNodeCount());
-//        System.out.println("#Edges: " + result.getEdgeCount());
         if (running) {
             VisualizationController visController = Lookup.getDefault().lookup(VisualizationController.class);
             if (visController != null) {

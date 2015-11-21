@@ -45,8 +45,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import org.gephi.desktop.perspective.spi.BottomComponent;
-import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder.DynamicRangeFilter;
+//import org.gephi.desktop.perspective.spi.BottomComponent;
+//import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder.DynamicRangeFilter;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -67,32 +67,32 @@ public class DynamicRangePanel extends javax.swing.JPanel {
         CLOSE = NbBundle.getMessage(DynamicRangePanel.class, "DynamicRangePanel.timelineButton.closetext");
     }
 
-    public void setup(final DynamicRangeFilter filter) {
-        final BottomComponent bottomComponent = Lookup.getDefault().lookup(BottomComponent.class);
-        timelineButton.setText(bottomComponent.isVisible() ? CLOSE : OPEN);
-        timelineButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-
-                if (!bottomComponent.isVisible()) {
-                    bottomComponent.setVisible(true);
-                    timelineButton.setText(CLOSE);
-                } else {
-                    bottomComponent.setVisible(false);
-                    timelineButton.setText(OPEN);
-                }
-            }
-        });
-        keepEmptyCheckbox.setSelected(filter.isKeepNull());
-        keepEmptyCheckbox.addItemListener(new ItemListener() {
-
-            public void itemStateChanged(ItemEvent e) {
-                if (!filter.isKeepNull() == keepEmptyCheckbox.isSelected()) {
-                    filter.getProperties()[1].setValue(keepEmptyCheckbox.isSelected());
-                }
-            }
-        });
-    }
+//    public void setup(final DynamicRangeFilter filter) {
+//        final BottomComponent bottomComponent = Lookup.getDefault().lookup(BottomComponent.class);
+//        timelineButton.setText(bottomComponent.isVisible() ? CLOSE : OPEN);
+//        timelineButton.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//
+//                if (!bottomComponent.isVisible()) {
+//                    bottomComponent.setVisible(true);
+//                    timelineButton.setText(CLOSE);
+//                } else {
+//                    bottomComponent.setVisible(false);
+//                    timelineButton.setText(OPEN);
+//                }
+//            }
+//        });
+//        keepEmptyCheckbox.setSelected(filter.isKeepNull());
+//        keepEmptyCheckbox.addItemListener(new ItemListener() {
+//
+//            public void itemStateChanged(ItemEvent e) {
+//                if (!filter.isKeepNull() == keepEmptyCheckbox.isSelected()) {
+//                    filter.getProperties()[1].setValue(keepEmptyCheckbox.isSelected());
+//                }
+//            }
+//        });
+//    }
 
     /** This method is called from within the constructor to
      * initialize the form.

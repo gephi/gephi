@@ -63,26 +63,32 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = FilterBuilder.class)
 public class KCoreBuilder implements FilterBuilder {
 
+    @Override
     public Category getCategory() {
         return FilterLibrary.TOPOLOGY;
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(KCoreBuilder.class, "KCoreBuilder.name");
     }
 
+    @Override
     public Icon getIcon() {
         return null;
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(KCoreBuilder.class, "KCoreBuilder.description");
     }
 
+    @Override
     public Filter getFilter() {
         return new KCoreFilter();
     }
 
+    @Override
     public JPanel getPanel(Filter filter) {
         KCoreUI ui = Lookup.getDefault().lookup(KCoreUI.class);
         if (ui != null) {
@@ -91,6 +97,7 @@ public class KCoreBuilder implements FilterBuilder {
         return null;
     }
 
+    @Override
     public void destroy(Filter filter) {
     }
 
@@ -99,6 +106,7 @@ public class KCoreBuilder implements FilterBuilder {
         private FilterProperty[] filterProperties;
         private Integer k = 1;
 
+        @Override
         public Graph filter(Graph graph) {
             int removed = 0;
             do {
@@ -113,10 +121,12 @@ public class KCoreBuilder implements FilterBuilder {
             return graph;
         }
 
+        @Override
         public String getName() {
             return NbBundle.getMessage(KCoreBuilder.class, "KCoreBuilder.name");
         }
 
+        @Override
         public FilterProperty[] getProperties() {
             if (filterProperties == null) {
                 filterProperties = new FilterProperty[0];

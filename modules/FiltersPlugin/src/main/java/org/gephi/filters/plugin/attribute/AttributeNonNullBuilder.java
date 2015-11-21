@@ -42,23 +42,23 @@
 package org.gephi.filters.plugin.attribute;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.JPanel;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.plugin.AbstractAttributeFilter;
 import org.gephi.filters.plugin.AbstractAttributeFilterBuilder;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
+import org.gephi.filters.spi.EdgeFilter;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
-import org.gephi.graph.api.Attributable;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -75,68 +75,92 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
             null,
             FilterLibrary.ATTRIBUTES);
 
+    @Override
     public Category getCategory() {
         return NONNULL;
     }
 
+    @Override
     public FilterBuilder[] getBuilders() {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
-        AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
-        List<AttributeColumn> columns = new ArrayList<AttributeColumn>();
-        columns.addAll(Arrays.asList(am.getNodeTable().getColumns()));
-        columns.addAll(Arrays.asList(am.getEdgeTable().getColumns()));
-        for (AttributeColumn c : columns) {
-            AttributeNonNullFilterBuilder b = new AttributeNonNullFilterBuilder(c);
-            builders.add(b);
+        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        for (Column col : am.getNodeTable()) {
+            if (!col.isProperty()) {
+                AttributeNonNullFilterBuilder b = new AttributeNonNullFilterBuilder(col);
+                builders.add(b);
+            }
+        }
+        for (Column col : am.getEdgeTable()) {
+            if (!col.isProperty()) {
+                AttributeNonNullFilterBuilder b = new AttributeNonNullFilterBuilder(col);
+                builders.add(b);
+            }
         }
         return builders.toArray(new FilterBuilder[0]);
     }
 
     private static class AttributeNonNullFilterBuilder extends AbstractAttributeFilterBuilder {
 
-        public AttributeNonNullFilterBuilder(AttributeColumn column) {
+        public AttributeNonNullFilterBuilder(Column column) {
             super(column,
                     NONNULL,
                     NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeNonNullBuilder.description"),
                     null);
         }
 
+        @Override
         public AttributeNonNullFilter getFilter() {
-            AttributeNonNullFilter f = new AttributeNonNullFilter(column);
-            return f;
+            return AttributeUtils.isNodeColumn(column) ? new AttributeNonNullFilter.Node(column) : new AttributeNonNullFilter.Edge(column);
         }
 
+        @Override
         public JPanel getPanel(Filter filter) {
             return null;
         }
     }
 
-    public static class AttributeNonNullFilter extends AbstractAttributeFilter {
+    public static abstract class AttributeNonNullFilter<K extends Element> extends AbstractAttributeFilter<K> {
 
-        public AttributeNonNullFilter(AttributeColumn column) {
+        public AttributeNonNullFilter(Column column) {
             super(NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeNonNullBuilder.name"),
                     column);
         }
 
+        @Override
         public boolean init(Graph graph) {
-            HierarchicalGraph hg = (HierarchicalGraph) graph;
-            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+            if (AttributeUtils.isNodeColumn(column)) {
                 if (graph.getNodeCount() == 0) {
                     return false;
                 }
-            } else if (AttributeUtils.getDefault().isEdgeColumn(column)) {
-                if (hg.getTotalEdgeCount() == 0) {
+            } else if (AttributeUtils.isEdgeColumn(column)) {
+                if (graph.getEdgeCount() == 0) {
                     return false;
                 }
             }
             return true;
         }
 
-        public boolean evaluate(Graph graph, Attributable attributable) {
-            return attributable.getAttributes().getValue(column.getIndex()) != null;
+        @Override
+        public boolean evaluate(Graph graph, Element element) {
+            return element.getAttribute(column) != null;
         }
 
+        @Override
         public void finish() {
+        }
+
+        public static class Node extends AttributeNonNullFilter<org.gephi.graph.api.Node> implements NodeFilter {
+
+            public Node(Column column) {
+                super(column);
+            }
+        }
+
+        public static class Edge extends AttributeNonNullFilter<org.gephi.graph.api.Edge> implements EdgeFilter {
+
+            public Edge(Column column) {
+                super(column);
+            }
         }
     }
 }

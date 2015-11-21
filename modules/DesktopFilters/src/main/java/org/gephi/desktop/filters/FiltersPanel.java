@@ -69,14 +69,14 @@ import org.openide.util.NbBundle;
  */
 public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.Provider, ChangeListener {
 
-    private ExplorerManager manager = new ExplorerManager();
+    private final ExplorerManager manager = new ExplorerManager();
     //Models
     private FilterModel filterModel;
     private FilterUIModel uiModel;
     //Components
-    private FilterPanelPanel filterPanelPanel;
+    private final FilterPanelPanel filterPanelPanel;
     private QueryExplorer queriesExplorer;
-    private QueriesPanel queriesPanel;
+    private final QueriesPanel queriesPanel;
 
     public FiltersPanel() {
         initComponents();
@@ -100,6 +100,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     private void initEvents() {
         resetButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 FilterController controller = Lookup.getDefault().lookup(FilterController.class);
                 for (Query query : filterModel.getQueries()) {
@@ -113,6 +114,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         });
         filterButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 //selectButton.setSelected(false);
                 if (uiModel.getSelectedQuery() != null && filterButton.isSelected()) {
@@ -126,6 +128,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         });
         selectButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 //filterButton.setSelected(false);
                 if (uiModel.getSelectedQuery() != null && selectButton.isSelected()) {
@@ -139,6 +142,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         });
         exportColumnButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (uiModel.getSelectedQuery() != null) {
                     FilterController controller = Lookup.getDefault().lookup(FilterController.class);
@@ -156,6 +160,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         });
         exportWorkspaceButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (uiModel.getSelectedQuery() != null) {
                     FilterController controller = Lookup.getDefault().lookup(FilterController.class);
@@ -165,6 +170,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         });
         exportLabelVisible.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (uiModel.getSelectedQuery() != null) {
                     FilterController controller = Lookup.getDefault().lookup(FilterController.class);
@@ -211,6 +217,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
             add(queriesExplorer, BorderLayout.CENTER);
         }
 
+        @Override
         public ExplorerManager getExplorerManager() {
             return manager;
         }
@@ -219,6 +226,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     private void updateEnabled(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 resetButton.setEnabled(enabled);
                 selectButton.setEnabled(enabled);
@@ -234,6 +242,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     private void updateControls() {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 if (filterModel != null) {
                     filterButton.setSelected(filterModel.isFiltering());
@@ -249,6 +258,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
 
     }
 
+    @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() instanceof FilterUIModel) {
             if (uiModel.getSelectedQuery() != null && filterButton.isSelected()) {
@@ -261,7 +271,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         } else if (e.getSource() instanceof FilterModel) {
             if (uiModel.getSelectedQuery() != null && filterModel.getCurrentQuery() == null) {
                 //Remove case
-                if(!Arrays.asList(filterModel.getQueries()).contains(uiModel.getSelectedRoot())) {
+                if (!Arrays.asList(filterModel.getQueries()).contains(uiModel.getSelectedRoot())) {
                     uiModel.setSelectedQuery(null);
                 }
             } else if (filterModel.getCurrentQuery() != null
@@ -292,10 +302,10 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         }
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -439,6 +449,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
 
+    @Override
     public ExplorerManager getExplorerManager() {
         return manager;
     }

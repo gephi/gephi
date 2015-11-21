@@ -53,9 +53,8 @@ import org.gephi.filters.spi.NodeFilter;
 import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphView;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Subgraph;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -68,26 +67,32 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = FilterBuilder.class)
 public class MASKBuilderEdge implements FilterBuilder {
 
+    @Override
     public Category getCategory() {
         return new Category(NbBundle.getMessage(MASKBuilderEdge.class, "Operator.category"));
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(MASKBuilderEdge.class, "MASKBuilderEdge.name");
     }
 
+    @Override
     public Icon getIcon() {
         return null;
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(MASKBuilderEdge.class, "MASKBuilderEdge.description");
     }
 
+    @Override
     public Filter getFilter() {
         return new MaskEdgeOperator();
     }
 
+    @Override
     public JPanel getPanel(Filter filter) {
         MASKEdgeUI ui = Lookup.getDefault().lookup(MASKEdgeUI.class);
         if (ui != null) {
@@ -96,6 +101,7 @@ public class MASKBuilderEdge implements FilterBuilder {
         return null;
     }
 
+    @Override
     public void destroy(Filter filter) {
     }
 
@@ -108,21 +114,24 @@ public class MASKBuilderEdge implements FilterBuilder {
         private EdgesOptions option = EdgesOptions.ANY;
         private FilterProperty[] filterProperties;
 
+        @Override
         public int getInputCount() {
             return 1;
         }
 
+        @Override
         public String getName() {
             return NbBundle.getMessage(MASKBuilderEdge.class, "MASKBuilderEdge.name");
         }
 
+        @Override
         public FilterProperty[] getProperties() {
             if (filterProperties == null) {
                 filterProperties = new FilterProperty[0];
                 try {
                     filterProperties = new FilterProperty[]{
-                                FilterProperty.createProperty(this, String.class, "option")
-                            };
+                        FilterProperty.createProperty(this, String.class, "option")
+                    };
                 } catch (Exception ex) {
                     Exceptions.printStackTrace(ex);
                 }
@@ -130,32 +139,32 @@ public class MASKBuilderEdge implements FilterBuilder {
             return filterProperties;
         }
 
-        public Graph filter(Graph[] graphs) {
+        @Override
+        public Graph filter(Subgraph[] graphs) {
             if (graphs.length > 1) {
                 throw new IllegalArgumentException("Filter accepts a single graph in parameter");
             }
 
-            HierarchicalGraph hgraph = (HierarchicalGraph) graphs[0];
-            GraphView hgraphView = hgraph.getView();
-            HierarchicalGraph mainHGraph = hgraph.getView().getGraphModel().getHierarchicalGraph();
+            Graph graph = (Graph) graphs[0];
+            Graph mainGraph = graph.getView().getGraphModel().getGraph();
 
             List<Edge> edgesToKeep = new ArrayList<Edge>();
-            for (Edge e : mainHGraph.getEdges().toArray()) {
-                Node source = e.getSource().getNodeData().getNode(hgraphView.getViewId());
-                Node target = e.getTarget().getNodeData().getNode(hgraphView.getViewId());
+            for (Edge e : mainGraph.getEdges()) {
+                boolean source = graph.contains(e.getSource());
+                boolean target = graph.contains(e.getTarget());
                 boolean keep = false;
                 switch (option) {
                     case SOURCE:
-                        keep = source != null;
+                        keep = source;
                         break;
                     case TARGET:
-                        keep = target != null;
+                        keep = target;
                         break;
                     case BOTH:
-                        keep = source != null && target != null;
+                        keep = source && target;
                         break;
                     case ANY:
-                        keep = source != null || target != null;
+                        keep = source || target;
                         break;
                 }
                 if (keep) {
@@ -163,54 +172,54 @@ public class MASKBuilderEdge implements FilterBuilder {
                 }
             }
 
-            hgraph.clearEdges();
+            graph.clearEdges();
 
-            for (Node n : mainHGraph.getNodes().toArray()) {
-                if (n.getNodeData().getNode(hgraphView.getViewId()) == null) {
-                    hgraph.addNode(n);
+            for (Node n : mainGraph.getNodes()) {
+                if (!graph.contains(n)) {
+                    graph.addNode(n);
                 }
             }
 
             for (Edge e : edgesToKeep) {
-                hgraph.addEdge(e);
+                graph.addEdge(e);
             }
 
-            return hgraph;
+            return graph;
         }
 
+        @Override
         public Graph filter(Graph graph, Filter[] filters) {
             if (filters.length > 1) {
                 throw new IllegalArgumentException("Filter accepts a single filter in parameter");
             }
-            HierarchicalGraph hgraph = (HierarchicalGraph) graph;
-            if (filters[0] instanceof NodeFilter && ((NodeFilter) filters[0]).init(hgraph)) {
+
+            if (filters[0] instanceof NodeFilter && ((NodeFilter) filters[0]).init(graph)) {
                 NodeFilter filter = (NodeFilter) filters[0];
-                GraphView hgraphView = hgraph.getView();
-                for (Edge e : hgraph.getEdges().toArray()) {
-                    Node source = e.getSource().getNodeData().getNode(hgraphView.getViewId());
-                    Node target = e.getTarget().getNodeData().getNode(hgraphView.getViewId());
+                for (Edge e : graph.getEdges()) {
+                    Node source = e.getSource();
+                    Node target = e.getTarget();
                     boolean remove = false;
                     switch (option) {
                         case SOURCE:
-                            remove = !filter.evaluate(hgraph, source);
+                            remove = !filter.evaluate(graph, source);
                             break;
                         case TARGET:
-                            remove = !filter.evaluate(hgraph, target);
+                            remove = !filter.evaluate(graph, target);
                             break;
                         case BOTH:
-                            remove = !filter.evaluate(hgraph, source) || !filter.evaluate(hgraph, target);
+                            remove = !filter.evaluate(graph, source) || !filter.evaluate(graph, target);
                             break;
                         case ANY:
-                            remove = !filter.evaluate(hgraph, source) && !filter.evaluate(hgraph, target);
+                            remove = !filter.evaluate(graph, source) && !filter.evaluate(graph, target);
                             break;
                     }
                     if (remove) {
-                        hgraph.removeEdge(e);
+                        graph.removeEdge(e);
                     }
                 }
                 filter.finish();
             }
-            return hgraph;
+            return graph;
         }
 
         public String getOption() {

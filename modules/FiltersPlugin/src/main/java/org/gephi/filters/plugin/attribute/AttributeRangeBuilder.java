@@ -42,18 +42,12 @@
 package org.gephi.filters.plugin.attribute;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.JPanel;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.AbstractAttributeFilter;
 import org.gephi.filters.plugin.AbstractAttributeFilterBuilder;
-import org.gephi.filters.plugin.DynamicAttributesHelper;
 import org.gephi.filters.plugin.graph.RangeUI;
 import org.gephi.filters.spi.*;
 import org.gephi.graph.api.*;
@@ -73,20 +67,24 @@ public class AttributeRangeBuilder implements CategoryBuilder {
             null,
             FilterLibrary.ATTRIBUTES);
 
+    @Override
     public Category getCategory() {
         return RANGE;
     }
 
+    @Override
     public FilterBuilder[] getBuilders() {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
-        AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
-        List<AttributeColumn> columns = new ArrayList<AttributeColumn>();
-        columns.addAll(Arrays.asList(am.getNodeTable().getColumns()));
-        columns.addAll(Arrays.asList(am.getEdgeTable().getColumns()));
-        for (AttributeColumn c : columns) {
-            if (AttributeUtils.getDefault().isNumberColumn(c) || AttributeUtils.getDefault().isDynamicNumberColumn(c)) {
-                AttributeRangeFilterBuilder b = new AttributeRangeFilterBuilder(c);
-                builders.add(b);
+        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        List<Column> columns = new ArrayList<Column>();
+        columns.addAll(am.getNodeTable().toList());
+        columns.addAll(am.getEdgeTable().toList());
+        for (Column c : columns) {
+            if (!c.isProperty() && !c.isArray()) {
+                if (AttributeUtils.isNumberType(c.getTypeClass())) {
+                    AttributeRangeFilterBuilder b = new AttributeRangeFilterBuilder(c);
+                    builders.add(b);
+                }
             }
         }
         return builders.toArray(new FilterBuilder[0]);
@@ -94,17 +92,19 @@ public class AttributeRangeBuilder implements CategoryBuilder {
 
     private static class AttributeRangeFilterBuilder extends AbstractAttributeFilterBuilder {
 
-        public AttributeRangeFilterBuilder(AttributeColumn column) {
+        public AttributeRangeFilterBuilder(Column column) {
             super(column,
                     RANGE,
                     NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeRangeBuilder.description"),
                     null);
         }
 
+        @Override
         public AttributeRangeFilter getFilter() {
-            return new AttributeRangeFilter(column);
+            return AttributeUtils.isNodeColumn(column) ? new AttributeRangeFilter.Node(column) : new AttributeRangeFilter.Edge(column);
         }
 
+        @Override
         public JPanel getPanel(Filter filter) {
             RangeUI ui = Lookup.getDefault().lookup(RangeUI.class);
             if (ui != null) {
@@ -114,12 +114,11 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
     }
 
-    public static class AttributeRangeFilter extends AbstractAttributeFilter implements RangeFilter {
+    public static abstract class AttributeRangeFilter<K extends Element> extends AbstractAttributeFilter<K> implements RangeFilter {
 
         private Range range;
-        private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
 
-        public AttributeRangeFilter(AttributeColumn column) {
+        public AttributeRangeFilter(Column column) {
             super(NbBundle.getMessage(AttributeRangeBuilder.class, "AttributeRangeBuilder.name"),
                     column);
 
@@ -127,24 +126,23 @@ public class AttributeRangeBuilder implements CategoryBuilder {
             addProperty(Range.class, "range");
         }
 
+        @Override
         public boolean init(Graph graph) {
-            HierarchicalGraph hg = (HierarchicalGraph) graph;
-            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+            if (AttributeUtils.isNodeColumn(column)) {
                 if (graph.getNodeCount() == 0) {
                     return false;
                 }
-            } else if (AttributeUtils.getDefault().isEdgeColumn(column)) {
-                if (hg.getTotalEdgeCount() == 0) {
+            } else if (AttributeUtils.isEdgeColumn(column)) {
+                if (graph.getEdgeCount() == 0) {
                     return false;
                 }
             }
-            dynamicHelper = new DynamicAttributesHelper(this, hg);
             return true;
         }
 
-        public boolean evaluate(Graph graph, Attributable attributable) {
-            Object val = attributable.getAttributes().getValue(column.getIndex());
-            val = dynamicHelper.getDynamicValue(val);
+        @Override
+        public boolean evaluate(Graph graph, Element element) {
+            Object val = element.getAttribute(column, graph.getView());
             if (val != null) {
                 return range.isInRange((Number) val);
             }
@@ -152,23 +150,23 @@ public class AttributeRangeBuilder implements CategoryBuilder {
 
         }
 
+        @Override
         public void finish() {
         }
 
+        @Override
         public Number[] getValues(Graph graph) {
             List<Number> vals = new ArrayList<Number>();
-            if (AttributeUtils.getDefault().isNodeColumn(column)) {
-                for (Node n : graph.getNodes()) {
-                    Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
-                    val = dynamicHelper.getDynamicValue(val);
+            if (AttributeUtils.isNodeColumn(column)) {
+                for (Element n : graph.getNodes()) {
+                    Object val = n.getAttribute(column, graph.getView());
                     if (val != null) {
                         vals.add((Number) val);
                     }
                 }
             } else {
-                for (Edge e : ((HierarchicalGraph) graph).getEdgesAndMetaEdges()) {
-                    Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
-                    val = dynamicHelper.getDynamicValue(val);
+                for (Element e : graph.getEdges()) {
+                    Object val = e.getAttribute(column, graph.getView());
                     if (val != null) {
                         vals.add((Number) val);
                     }
@@ -177,6 +175,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
             return vals.toArray(new Number[0]);
         }
 
+        @Override
         public FilterProperty getRangeProperty() {
             return getProperties()[1];
         }
@@ -187,6 +186,20 @@ public class AttributeRangeBuilder implements CategoryBuilder {
 
         public void setRange(Range range) {
             this.range = range;
+        }
+
+        public static class Node extends AttributeRangeFilter<org.gephi.graph.api.Node> implements NodeFilter {
+
+            public Node(Column column) {
+                super(column);
+            }
+        }
+
+        public static class Edge extends AttributeRangeFilter<org.gephi.graph.api.Edge> implements EdgeFilter {
+
+            public Edge(Column column) {
+                super(column);
+            }
         }
     }
 }

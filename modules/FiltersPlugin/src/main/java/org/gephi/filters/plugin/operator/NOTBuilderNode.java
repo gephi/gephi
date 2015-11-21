@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
-import org.gephi.filters.spi.AttributableFilter;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
@@ -54,9 +53,8 @@ import org.gephi.filters.spi.NodeFilter;
 import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphView;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Subgraph;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -67,113 +65,107 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = FilterBuilder.class)
 public class NOTBuilderNode implements FilterBuilder {
 
+    @Override
     public Category getCategory() {
         return new Category(NbBundle.getMessage(NOTBuilderNode.class, "Operator.category"));
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(NOTBuilderNode.class, "NOTBuilderNode.name");
     }
 
+    @Override
     public Icon getIcon() {
         return null;
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(NOTBuilderNode.class, "NOTBuilderNode.description");
     }
 
+    @Override
     public Filter getFilter() {
         return new NOTOperatorNode();
     }
 
+    @Override
     public JPanel getPanel(Filter filter) {
         return null;
     }
 
+    @Override
     public void destroy(Filter filter) {
     }
 
     public static class NOTOperatorNode implements Operator {
 
+        @Override
         public int getInputCount() {
             return 1;
         }
 
+        @Override
         public String getName() {
             return NbBundle.getMessage(NOTBuilderNode.class, "NOTBuilderNode.name");
         }
 
+        @Override
         public FilterProperty[] getProperties() {
             return null;
         }
 
-        public Graph filter(Graph[] graphs) {
+        @Override
+        public Graph filter(Subgraph[] graphs) {
             if (graphs.length > 1) {
                 throw new IllegalArgumentException("Not Filter accepts a single graph in parameter");
             }
-            HierarchicalGraph hgraph = (HierarchicalGraph) graphs[0];
-            GraphView hgraphView = hgraph.getView();
-            HierarchicalGraph mainHGraph = hgraph.getView().getGraphModel().getHierarchicalGraph();
-            for (Node n : mainHGraph.getNodes().toArray()) {
-                if (n.getNodeData().getNode(hgraphView.getViewId()) == null) {
+            Graph graph = graphs[0];
+            Graph mainGraph = graph.getView().getGraphModel().getGraph();
+            for (Node n : mainGraph.getNodes().toArray()) {
+                if (!graph.contains(n)) {
                     //The node n is not in graph
-                    hgraph.addNode(n);
+                    graph.addNode(n);
                 } else {
                     //The node n is in graph
-                    hgraph.removeNode(n);
+                    graph.removeNode(n);
                 }
             }
 
-            for (Node n : hgraph.getNodes().toArray()) {
-                Node mainNode = n.getNodeData().getNode(mainHGraph.getView().getViewId());
-                Edge[] edges = mainHGraph.getEdgesAndMetaEdges(mainNode).toArray();
-                for (Edge e : edges) {
-                    if (e.getSource().getNodeData().getNode(hgraphView.getViewId()) != null
-                            && e.getTarget().getNodeData().getNode(hgraphView.getViewId()) != null) {
-                        hgraph.addEdge(e);
+            for (Edge e : mainGraph.getEdges()) {
+                Node source = e.getSource();
+                Node target = e.getTarget();
+                if (graph.contains(source) && graph.contains(target)) {
+                    Edge edgeInGraph = graph.getEdge(source, target, e.getType());
+                    if(edgeInGraph == null) {
+                        graph.addEdge(e);
                     }
                 }
             }
 
-            return hgraph;
+            return graph;
         }
 
+        @Override
         public Graph filter(Graph graph, Filter[] filters) {
             if (filters.length > 1) {
                 throw new IllegalArgumentException("Not Filter accepts a single filter in parameter");
             }
-            HierarchicalGraph hgraph = (HierarchicalGraph) graph;
             Filter filter = filters[0];
-            if (filter instanceof NodeFilter && ((NodeFilter) filter).init(hgraph)) {
+            if (filter instanceof NodeFilter && ((NodeFilter) filter).init(graph)) {
                 List<Node> nodeToRemove = new ArrayList<Node>();
                 NodeFilter nodeFilter = (NodeFilter) filter;
-                for (Node n : hgraph.getNodes().toArray()) {
-                    if (nodeFilter.evaluate(hgraph, n)) {
+                for (Node n : graph.getNodes()) {
+                    if (nodeFilter.evaluate(graph, n)) {
                         nodeToRemove.add(n);
                     }
                 }
-                for (Node n : nodeToRemove) {
-                    hgraph.removeNode(n);
-                }
+                graph.removeAllNodes(nodeToRemove);
                 nodeFilter.finish();
             }
-            
-            if (filter instanceof AttributableFilter && ((AttributableFilter) filter).getType()==AttributableFilter.Type.NODE && ((AttributableFilter) filter).init(hgraph)) {
-                List<Node> nodeToRemove = new ArrayList<Node>();
-                AttributableFilter attributableFilter = (AttributableFilter) filter;
-                for (Node n : hgraph.getNodes().toArray()) {
-                    if (attributableFilter.evaluate(hgraph, n)) {
-                        nodeToRemove.add(n);
-                    }
-                }
-                for (Node n : nodeToRemove) {
-                    hgraph.removeNode(n);
-                }
-                attributableFilter.finish();
-            }
 
-            return hgraph;
+            return graph;
         }
     }
 }

@@ -70,15 +70,12 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {
         FilterModelImpl filterModel = workspace.getLookup().lookup(FilterModelImpl.class);
         if (filterModel != null) {
-            this.model = filterModel;
             try {
-                writeXML(writer);
+                writeXML(writer, filterModel);
             } catch (XMLStreamException ex) {
-                this.model = null;
                 throw new RuntimeException(ex);
             }
         }
-        this.model = null;
     }
 
     public void readXML(XMLStreamReader reader, Workspace workspace) {
@@ -87,24 +84,21 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
             filterModel = new FilterModelImpl(workspace);
             workspace.add(filterModel);
         }
-        this.model = filterModel;
         try {
-            readXML(reader);
+            readXML(reader, filterModel);
         } catch (XMLStreamException ex) {
-            this.model = null;
             throw new RuntimeException(ex);
         }
-        this.model = null;
     }
 
+    @Override
     public String getIdentifier() {
         return "filtermodel";
     }
     //PERSISTENCE
     private int queryId = 0;
-    private FilterModelImpl model;
 
-    public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
+    public void writeXML(XMLStreamWriter writer, FilterModelImpl model) throws XMLStreamException {
         writer.writeStartElement("filtermodel");
         writer.writeAttribute("autorefresh", String.valueOf(model.isAutoRefresh()));
 
@@ -112,14 +106,14 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
         writer.writeStartElement("queries");
         queryId = 0;
         for (Query query : model.getQueries()) {
-            writeQuery(writer, query, -1);
+            writeQuery(writer, model, query, -1);
         }
         writer.writeEndElement();
 
         writer.writeEndElement();
     }
 
-    private void writeQuery(XMLStreamWriter writer, Query query, int parentId) throws XMLStreamException {
+    private void writeQuery(XMLStreamWriter writer, FilterModelImpl model, Query query, int parentId) throws XMLStreamException {
         writer.writeStartElement("query");
         int id = queryId++;
         writer.writeAttribute("id", String.valueOf(id));
@@ -140,7 +134,7 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
         writer.writeEndElement();
 
         for (Query child : query.getChildren()) {
-            writeQuery(writer, child, id);
+            writeQuery(writer, model, child, id);
         }
     }
 
@@ -164,7 +158,7 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
         }
     }
 
-    public void readXML(XMLStreamReader reader) throws XMLStreamException {
+    public void readXML(XMLStreamReader reader, FilterModelImpl model) throws XMLStreamException {
         String autofresh = reader.getAttributeValue(null, "autorefresh");
         if (autofresh != null && !autofresh.isEmpty()) {
             model.setAutoRefresh(Boolean.parseBoolean(autofresh));
@@ -179,13 +173,13 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
                 if ("query".equalsIgnoreCase(name)) {
                     String id = reader.getAttributeValue(null, "id");
                     String parent = reader.getAttributeValue(null, "parent");
-                    Query query = readQuery(reader);
+                    Query query = readQuery(reader, model);
                     if (query != null) {
                         idMap.put(Integer.parseInt(id), query);
                         if (parent != null) {
                             int parentId = Integer.parseInt(parent);
                             Query parentQuery = idMap.get(parentId);
-                            
+
                             //A plugin filter may be missing, or the parent filter could not be deserialized.
                             //For example a partition filter, which depends on partitions, and partitions are not serialized
                             if (parentQuery != null) {
@@ -205,18 +199,18 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
         }
 
         //Init filters
-        Graph graph = null;
-        if (model != null && model.getGraphModel() != null) {
+        Graph graph;
+        if (model != null) {
             graph = model.getGraphModel().getGraph();
         } else {
-            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(model.getWorkspace());
             graph = graphModel.getGraph();
         }
 
         for (Query rootQuery : model.getQueries()) {
             for (Query q : rootQuery.getDescendantsAndSelf()) {
                 Filter filter = q.getFilter();
-                if (filter instanceof NodeFilter || filter instanceof EdgeFilter || filter instanceof AttributableFilter) {
+                if (filter instanceof NodeFilter || filter instanceof EdgeFilter || filter instanceof ElementFilter) {
                     FilterProcessor filterProcessor = new FilterProcessor();
                     filterProcessor.init(filter, graph);
                 }
@@ -224,7 +218,7 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
         }
     }
 
-    private Query readQuery(XMLStreamReader reader) throws XMLStreamException {
+    private Query readQuery(XMLStreamReader reader, FilterModelImpl model) throws XMLStreamException {
         String builderClassName = reader.getAttributeValue(null, "builder");
         String filterClassName = reader.getAttributeValue(null, "filter");
         FilterBuilder builder = null;

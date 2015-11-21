@@ -55,8 +55,8 @@ import org.gephi.filters.spi.NodeFilter;
 import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Subgraph;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -67,73 +67,69 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = FilterBuilder.class)
 public class UNIONBuilder implements FilterBuilder {
 
+    @Override
     public Category getCategory() {
         return new Category(NbBundle.getMessage(UNIONBuilder.class, "Operator.category"));
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(UNIONBuilder.class, "UNIONBuilder.name");
     }
 
+    @Override
     public Icon getIcon() {
         return null;
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(UNIONBuilder.class, "UNIONBuilder.description");
     }
 
+    @Override
     public Filter getFilter() {
         return new UnionOperator();
     }
 
+    @Override
     public JPanel getPanel(Filter filter) {
         return null;
     }
 
+    @Override
     public void destroy(Filter filter) {
     }
 
     public static class UnionOperator implements Operator {
 
+        @Override
         public int getInputCount() {
             return Integer.MAX_VALUE;
         }
 
+        @Override
         public String getName() {
             return NbBundle.getMessage(UNIONBuilder.class, "UNIONBuilder.name");
         }
 
+        @Override
         public FilterProperty[] getProperties() {
             return null;
         }
 
-        public Graph filter(Graph[] graphs) {
-            HierarchicalGraph maxHGraph = (HierarchicalGraph) graphs[0];
-            int maxElements = 0;
-            for (int i = 0; i < graphs.length; i++) {
-                int count = ((HierarchicalGraph) graphs[i]).getNodeCount();
-                if (count > maxElements) {
-                    maxHGraph = (HierarchicalGraph) graphs[i];
-                    maxElements = count;
-                }
+        @Override
+        public Graph filter(Subgraph[] graphs) {
+            Subgraph subGraph = graphs[0];
+            for (int i = 1; i < graphs.length; i++) {
+                subGraph.union(graphs[i]);
             }
-            for (int i = 0; i < graphs.length; i++) {
-                if ((HierarchicalGraph) graphs[i] != maxHGraph) {
-                    //Merge
-                    for (Node n : ((HierarchicalGraph) graphs[i]).getNodes().toArray()) {
-                        maxHGraph.addNode(n);
-                    }
-                    for (Edge e : ((HierarchicalGraph) graphs[i]).getEdgesAndMetaEdges().toArray()) {
-                        maxHGraph.addEdge(e);
-                    }
-                }
-            }
-            return maxHGraph;
+
+            return subGraph;
         }
 
+        @Override
         public Graph filter(Graph graph, Filter[] filters) {
-            HierarchicalGraph hgraph = (HierarchicalGraph) graph;
             List<NodeFilter> nodeFilters = new ArrayList<NodeFilter>();
             List<EdgeFilter> edgeFilters = new ArrayList<EdgeFilter>();
             for (Filter f : filters) {
@@ -146,15 +142,15 @@ public class UNIONBuilder implements FilterBuilder {
             if (nodeFilters.size() > 0) {
                 for (Iterator<NodeFilter> itr = nodeFilters.iterator(); itr.hasNext();) {
                     NodeFilter nf = itr.next();
-                    if (!nf.init(hgraph)) {
+                    if (!nf.init(graph)) {
                         itr.remove();
                     }
                 }
                 List<Node> nodesToRemove = new ArrayList<Node>();
-                for (Node n : hgraph.getNodes()) {
+                for (Node n : graph.getNodes()) {
                     boolean remove = true;
                     for (NodeFilter nf : nodeFilters) {
-                        if (nf.evaluate(hgraph, n)) {
+                        if (nf.evaluate(graph, n)) {
                             remove = false;
                         }
                     }
@@ -164,7 +160,7 @@ public class UNIONBuilder implements FilterBuilder {
                 }
 
                 for (Node n : nodesToRemove) {
-                    hgraph.removeNode(n);
+                    graph.removeNode(n);
                 }
                 for (NodeFilter nf : nodeFilters) {
                     nf.finish();
@@ -173,15 +169,15 @@ public class UNIONBuilder implements FilterBuilder {
             if (edgeFilters.size() > 0) {
                 for (Iterator<EdgeFilter> itr = edgeFilters.iterator(); itr.hasNext();) {
                     EdgeFilter ef = itr.next();
-                    if (!ef.init(hgraph)) {
+                    if (!ef.init(graph)) {
                         itr.remove();
                     }
                 }
                 List<Edge> edgesToRemove = new ArrayList<Edge>();
-                for (Edge e : hgraph.getEdgesAndMetaEdges()) {
+                for (Edge e : graph.getEdges()) {
                     boolean remove = true;
                     for (EdgeFilter ef : edgeFilters) {
-                        if (ef.evaluate(hgraph, e)) {
+                        if (ef.evaluate(graph, e)) {
                             remove = false;
                         }
                     }
@@ -191,13 +187,13 @@ public class UNIONBuilder implements FilterBuilder {
                 }
 
                 for (Edge e : edgesToRemove) {
-                    hgraph.removeEdge(e);
+                    graph.removeEdge(e);
                 }
                 for (EdgeFilter ef : edgeFilters) {
                     ef.finish();
                 }
             }
-            return hgraph;
+            return graph;
         }
     }
 }

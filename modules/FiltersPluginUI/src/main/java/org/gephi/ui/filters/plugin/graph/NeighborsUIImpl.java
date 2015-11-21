@@ -53,6 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = NeighborsUI.class)
 public class NeighborsUIImpl implements NeighborsUI {
 
+    @Override
     public JPanel getPanel(NeighborsFilter neighborsFilter) {
         NeighborsPanel neighborsPanel = new NeighborsPanel();
         neighborsPanel.setup(neighborsFilter);
