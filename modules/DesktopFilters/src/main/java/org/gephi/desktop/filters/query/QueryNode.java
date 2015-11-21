@@ -63,7 +63,7 @@ import org.openide.util.NbBundle;
  */
 public class QueryNode extends AbstractNode {
 
-    private Query query;
+    private final Query query;
 
     public QueryNode(Query query) {
         super(new QueryChildren(query));
@@ -131,6 +131,7 @@ public class QueryNode extends AbstractNode {
             super(NbBundle.getMessage(QueryNode.class, "QueryNode.actions.remove"));
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
             if (query.getParent() == null) {
@@ -147,6 +148,7 @@ public class QueryNode extends AbstractNode {
             super(NbBundle.getMessage(QueryNode.class, "QueryNode.actions.rename"));
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
             NotifyDescriptor.InputLine question = new NotifyDescriptor.InputLine(
@@ -168,6 +170,7 @@ public class QueryNode extends AbstractNode {
             super(NbBundle.getMessage(QueryNode.class, "QueryNode.actions.save"));
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
             FilterLibrary filterLibrary = filterController.getModel().getLibrary();
@@ -185,6 +188,7 @@ public class QueryNode extends AbstractNode {
             super(NbBundle.getMessage(QueryNode.class, "QueryNode.actions.duplicate"));
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
             Query ancestor = query;
@@ -200,10 +204,12 @@ public class QueryNode extends AbstractNode {
             Filter filterCopy = builder.getFilter();
             FilterProperty[] filterProperties = filter.getProperties();
             FilterProperty[] filterCopyProperties = filterCopy.getProperties();
-            for(int i=0;i<filterProperties.length;i++) {
-                filterCopyProperties[i].setValue(filterProperties[i].getValue());
+            if (filterProperties != null && filterCopyProperties != null) {
+                for (int i = 0; i < filterProperties.length; i++) {
+                    filterCopyProperties[i].setValue(filterProperties[i].getValue());
+                }
             }
-            
+
             Query childQuery = filterController.createQuery(filterCopy);
             if (parent == null) {
                 filterController.add(childQuery);
