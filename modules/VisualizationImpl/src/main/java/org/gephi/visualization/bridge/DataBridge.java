@@ -92,7 +92,21 @@ public class DataBridge implements VizArchitecture {
     }
 
     public synchronized boolean updateWorld() {
-        if (observer != null && observer.hasGraphChanged()) {
+        boolean force = false;
+        if ((observer != null && observer.isDestroyed()) || (graphModel != null && graph.getView() != graphModel.getVisibleView())) {
+            if (observer != null && !observer.isDestroyed()) {
+                observer.destroy();
+            }
+            observer = null;
+            if (graphModel != null) {
+                graph.writeLock();
+                graph = graphModel.getGraphVisible();
+                observer = graphModel.createGraphObserver(graph, false);
+                force = true;
+                graph.writeUnlock();
+            }
+        }
+        if (force || (observer != null && observer.hasGraphChanged())) {
             NodeModeler nodeModeler = engine.getNodeModeler();
             EdgeModeler edgeModeler = engine.getEdgeModeler();
             Octree octree = engine.getOctree();
@@ -104,9 +118,10 @@ public class DataBridge implements VizArchitecture {
             int addedEdges = 0;
 
             graph.readLock();
+            boolean isView = !graph.getView().isMainView();
             for (int i = 0; i < nodes.length; i++) {
                 NodeModel node = nodes[i];
-                if (node != null && node.getNode().getStoreId() == -1) {
+                if (node != null && (node.getNode().getStoreId() == -1 || (isView && !graph.contains(node.getNode())))) {
                     //Removed
                     octree.removeNode(node);
                     nodes[i] = null;
@@ -129,7 +144,7 @@ public class DataBridge implements VizArchitecture {
             }
             for (int i = 0; i < edges.length; i++) {
                 EdgeModel edge = edges[i];
-                if (edge != null && edge.getEdge().getStoreId() == -1) {
+                if (edge != null && (edge.getEdge().getStoreId() == -1 || (isView && !graph.contains(edge.getEdge())))) {
                     //Removed
                     int sourceId = edge.getEdge().getSource().getStoreId();
                     int targetId = edge.getEdge().getTarget().getStoreId();
@@ -169,8 +184,10 @@ public class DataBridge implements VizArchitecture {
 
                 textManager.refreshEdge(model);
             }
-            limits.setMaxWeight(maxWeight);
-            limits.setMinWeight(minWeight);
+            if (!isView) {
+                limits.setMaxWeight(maxWeight);
+                limits.setMinWeight(minWeight);
+            }
 
             graph.readUnlock();
 
@@ -196,7 +213,9 @@ public class DataBridge implements VizArchitecture {
             graph = graphModel.getGraphVisible();
         }
         if (observer != null && (graphModel == null || observer.getGraph() != graph)) {
-            observer.destroy();
+            if (!observer.isDestroyed()) {
+                observer.destroy();
+            }
             observer = null;
         }
         nodes = new NodeModel[10];
