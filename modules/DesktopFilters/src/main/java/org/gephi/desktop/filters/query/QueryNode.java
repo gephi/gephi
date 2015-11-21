@@ -48,6 +48,9 @@ import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.filters.spi.FilterProperty;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.nodes.AbstractNode;
@@ -189,11 +192,19 @@ public class QueryNode extends AbstractNode {
                 ancestor = ancestor.getParent();
             }
             duplicateQuery(filterController, null, ancestor);
-
         }
 
         private void duplicateQuery(FilterController filterController, Query parent, Query child) {
-            Query childQuery = filterController.createQuery(child.getFilter());
+            Filter filter = child.getFilter();
+            FilterBuilder builder = filterController.getModel().getLibrary().getBuilder(filter);
+            Filter filterCopy = builder.getFilter();
+            FilterProperty[] filterProperties = filter.getProperties();
+            FilterProperty[] filterCopyProperties = filterCopy.getProperties();
+            for(int i=0;i<filterProperties.length;i++) {
+                filterCopyProperties[i].setValue(filterProperties[i].getValue());
+            }
+            
+            Query childQuery = filterController.createQuery(filterCopy);
             if (parent == null) {
                 filterController.add(childQuery);
             } else {
