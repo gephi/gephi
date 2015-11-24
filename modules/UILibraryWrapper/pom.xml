@@ -40,9 +40,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.swinglabs</groupId>
-            <artifactId>swingx</artifactId>
-            <version>1.6.1</version>
+            <groupId>org.swinglabs.swingx</groupId>
+            <artifactId>swingx-all</artifactId>
+            <version>1.6.5-1</version>
         </dependency>
         <dependency>
             <groupId>org.jdesktop</groupId>
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout</artifactId>
-            <version>3.7.1</version>
+            <version>3.7.4</version>
         </dependency>
         <dependency>
             <groupId>net.java.dev</groupId>
