@@ -49,6 +49,8 @@ import java.text.MessageFormat;
 import javax.swing.JComponent;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.openide.DialogDisplayer;
 import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
@@ -97,16 +99,17 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
             //Edges import parameters:
             Boolean createNewNodes = (Boolean) wizardDescriptor.getProperty("create-new-nodes");
 
+            Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
             DataTablesController dtc = Lookup.getDefault().lookup(DataTablesController.class);
             dtc.setAutoRefreshEnabled(false);
 
             switch ((Mode) wizardDescriptor.getProperty("mode")) {
                 case NODES_TABLE:
-                    ac.importCSVToNodesTable(file, separator, charset, columnNames, columnTypes, assignNewNodeIds);
+                    ac.importCSVToNodesTable(graph, file, separator, charset, columnNames, columnTypes, assignNewNodeIds);
                     break;
                 case EDGES_TABLE:
-                    ac.importCSVToEdgesTable(file, separator, charset, columnNames, columnTypes, createNewNodes);
+                    ac.importCSVToEdgesTable(graph, file, separator, charset, columnNames, columnTypes, createNewNodes);
                     break;
             }
             dtc.refreshCurrentTable();

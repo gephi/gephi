@@ -71,7 +71,6 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.TimestampMap;
-import org.gephi.graph.impl.GraphStoreConfiguration;
 import org.gephi.utils.StatisticsUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -481,7 +480,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
         
         if (isNodeColumn(column) || isEdgeColumn(column)) {
-            return !GraphStoreConfiguration.ENABLE_ELEMENT_LABEL || column.getIndex() != GraphStoreConfiguration.ELEMENT_LABEL_INDEX;
+            return !column.getTitle().equalsIgnoreCase("Label");
         } else {
             return true;
         }
@@ -554,7 +553,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     @Override
-    public void importCSVToNodesTable(File file, Character separator, Charset charset, String[] columnNames, Class[] columnTypes, boolean assignNewNodeIds) {
+    public void importCSVToNodesTable(Graph graph, File file, Character separator, Charset charset, String[] columnNames, Class[] columnTypes, boolean assignNewNodeIds) {
         if (columnNames == null || columnNames.length == 0) {
             return;
         }
@@ -566,7 +565,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         CsvReader reader = null;
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
-            Table nodesTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
+            Table nodesTable = graph.getModel().getNodeTable();
             String idColumn = null;
             ArrayList<Column> columnsList = new ArrayList<Column>();
             HashMap<Column, String> columnHeaders = new HashMap<Column, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
@@ -591,7 +590,6 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
             //Create nodes:
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-            Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
             String id = null;
             Node node;
             reader = new CsvReader(new FileInputStream(file), separator, charset);
@@ -635,7 +633,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     @Override
-    public void importCSVToEdgesTable(File file, Character separator, Charset charset, String[] columnNames, Class[] columnTypes, boolean createNewNodes) {
+    public void importCSVToEdgesTable(Graph graph, File file, Character separator, Charset charset, String[] columnNames, Class[] columnTypes, boolean createNewNodes) {
         if (columnNames == null || columnNames.length == 0) {
             return;
         }
@@ -647,7 +645,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         CsvReader reader = null;
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
-            Table edgesTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
+            Table edgesTable = graph.getModel().getEdgeTable();
             String idColumn = null;
             String sourceColumn = null;
             String targetColumn = null;
@@ -684,7 +682,6 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
             //Create edges:
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-            Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
             String id;
             Edge edge;
             String sourceId, targetId;

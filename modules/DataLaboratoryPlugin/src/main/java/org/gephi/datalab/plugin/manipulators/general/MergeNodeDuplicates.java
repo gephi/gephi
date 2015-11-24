@@ -51,6 +51,7 @@ import org.gephi.datalab.plugin.manipulators.general.ui.MergeNodeDuplicatesUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.PluginGeneralActionsManipulator;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
@@ -79,9 +80,10 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
 
     @Override
     public void execute() {
+        Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         for (List<Node> nodes : duplicateGroups) {
-            gec.mergeNodes(nodes.toArray(new Node[0]), nodes.get(0), columns, mergeStrategies, deleteMergedNodes);
+            gec.mergeNodes(graph, nodes.toArray(new Node[0]), nodes.get(0), columns, mergeStrategies, deleteMergedNodes);
         }
         NbPreferences.forModule(MergeNodeDuplicates.class).putBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, deleteMergedNodes);
         NbPreferences.forModule(MergeNodeDuplicates.class).putBoolean(CASE_SENSITIVE_SAVED_PREFERENCES, caseSensitive);
