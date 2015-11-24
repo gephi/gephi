@@ -125,23 +125,25 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         return true;
     }
 
-    private boolean canCreateEdge(Graph graph, Node source, Node target) {
+    private boolean canCreateEdge(Graph graph, Node source, Node target, boolean undirected) {
         Edge existingEdge = graph.getEdge(source, target);
-
-        if (existingEdge == null) {
+        
+        if(existingEdge == null && undirected){
             existingEdge = graph.getEdge(target, source);
         }
         
-        return existingEdge == null;//Edge or inverse edge found
+        return existingEdge == null;//Edge in that direction not found. An edge in the opposite direction is allowed.
     }
 
     private void refreshAvailableTargetNodes() {
         if (nodes != null) {
             ArrayList<Node> availableTargetNodes = new ArrayList<Node>();
             Node sourceNode = nodes[sourceNodesComboBox.getSelectedIndex()];
-            for (Node n : nodes) {
-                if (canCreateEdge(graph, sourceNode, n)) {
-                    availableTargetNodes.add(n);
+            
+            boolean undirected = undirectedRadioButton.isSelected();
+            for (Node targetNode : nodes) {
+                if (canCreateEdge(graph, sourceNode, targetNode, undirected)) {
+                    availableTargetNodes.add(targetNode);
                 }
             }
 
