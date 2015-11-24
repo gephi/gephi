@@ -68,6 +68,7 @@ import org.gephi.io.importer.api.EdgeDirectionDefault;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.EdgeWeightMergeStrategy;
 import org.gephi.io.importer.api.ElementDraft;
+import org.gephi.io.importer.api.ElementIdType;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Issue.Level;
 import org.gephi.io.importer.api.NodeDraft;
@@ -99,6 +100,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private EdgeDirectionDefault edgeDefault = EdgeDirectionDefault.MIXED;
     private final Object2ObjectMap<String, ColumnDraft> nodeColumns;
     private final Object2ObjectMap<String, ColumnDraft> edgeColumns;
+    //Config
+    private ElementIdType elementIdType = ElementIdType.STRING;
     //Management
     private boolean dynamicGraph = false;
     private boolean dynamicAttributes = false;
@@ -525,6 +528,17 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
+
+    @Override
+    public void setElementIdType(ElementIdType type) {
+        this.elementIdType = type;
+        report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.ElementIdType", elementIdType.toString()));
+    }
+
+    @Override
+    public ElementIdType getElementIdType() {
+        return elementIdType;
+    }
     public boolean verify() {
         //Edge weight zero or negative
         for (EdgeDraftImpl edge : new NullFilterIterable<EdgeDraftImpl>(edgeList)) {
@@ -544,6 +558,29 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
         } else if (directedEdgesCount > 0 && undirectedEdgesCount > 0) {
             setEdgeDefault(EdgeDirectionDefault.MIXED);
+        }
+
+        //IdType
+        if (elementIdType.equals(ElementIdType.INTEGER) || elementIdType.equals(ElementIdType.LONG)) {
+            try {
+                for (NodeDraftImpl node : nodeList) {
+                    if (elementIdType.equals(ElementIdType.INTEGER)) {
+                        Integer.parseInt(node.getId());
+                    } else if (elementIdType.equals(ElementIdType.LONG)) {
+                        Long.parseLong(node.getId());
+                    }
+                }
+                for (EdgeDraftImpl edge : edgeList) {
+                    if (elementIdType.equals(ElementIdType.INTEGER)) {
+                        Integer.parseInt(edge.getId());
+                    } else if (elementIdType.equals(ElementIdType.LONG)) {
+                        Long.parseLong(edge.getId());
+                    }
+                }
+            } catch (NumberFormatException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_ElementIdType_Parse_Error", elementIdType), Level.WARNING));
+                elementIdType = ElementIdType.STRING;
+            }
         }
 
         //Is dynamic graph

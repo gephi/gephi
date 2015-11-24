@@ -52,6 +52,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.ElementIdType;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
@@ -111,6 +112,8 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         if (container.getEdgeTypeLabelClass() != null) {
 //            configuration.setEdgeLabelType(container.getEdgeTypeLabelClass());
         }
+        configuration.setNodeIdType(container.getElementIdType().getTypeClass());
+        configuration.setEdgeIdType(container.getElementIdType().getTypeClass());
         graphController.getGraphModel(workspace).setConfiguration(configuration);
     }
 
@@ -137,8 +140,10 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         int addedNodes = 0, addedEdges = 0;
 
         //Create all nodes
+        ElementIdType elementIdType = container.getElementIdType();
         for (NodeDraft draftNode : container.getNodes()) {
-            String id = draftNode.getId();
+            String idString = draftNode.getId();
+            Object id = toElementId(elementIdType, idString);
             Node node = graph.getNode(id);
             if (node == null) {
                 node = factory.newNode(id);
@@ -153,11 +158,12 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
 
         //Create all edges and push to data structure
         for (EdgeDraft draftEdge : container.getEdges()) {
-            String id = draftEdge.getId();
+            String idString = draftEdge.getId();
+            Object id = toElementId(elementIdType, idString);
             String sourceId = draftEdge.getSource().getId();
             String targetId = draftEdge.getTarget().getId();
-            Node source = graph.getNode(sourceId);
-            Node target = graph.getNode(targetId);
+            Node source = graph.getNode(toElementId(elementIdType, sourceId));
+            Node target = graph.getNode(toElementId(elementIdType, targetId));
             Object type = draftEdge.getType();
             int edgeType = graphModel.addEdgeType(type);
 
@@ -196,5 +202,21 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         }
 
         Progress.finish(progressTicket);
+    }
+
+    private Object toElementId(ElementIdType elementIdType, String idString) {
+        Object id;
+        switch (elementIdType) {
+            case INTEGER:
+                id = Integer.parseInt(idString);
+                break;
+            case LONG:
+                id = Long.parseLong(idString);
+                break;
+            default:
+                id = idString;
+                break;
+        }
+        return id;
     }
 }

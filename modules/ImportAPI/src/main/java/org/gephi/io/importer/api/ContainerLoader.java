@@ -231,6 +231,13 @@ public interface ContainerLoader {
     public void setTimeFormat(TimeFormat timeFormat);
 
     /**
+    /**
+     * Sets the type of the id for elements.
+     *
+     * @param type id type
+     */
+    public void setElementIdType(ElementIdType type);
+
      * Sets the current time representation, either <code>TIMESTAMP</code> or
      * <code>INTERVAL</code>.
      * <p>

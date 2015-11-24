@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.RowFilter;
 import javax.swing.table.TableCellRenderer;
@@ -81,7 +82,7 @@ import org.openide.util.Lookup;
 public abstract class AbstractElementsDataTable<T extends Element> {
 
     protected final JXTable table;
-    protected RowFilter rowFilter;
+    protected String filterPattern;
     protected List<T> selectedElements;
     protected final AttributeColumnsController attributeColumnsController;
     protected boolean refreshingTable = false;
@@ -102,7 +103,6 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         table.setColumnControlVisible(false);
         table.setSortable(true);
         table.setAutoCreateRowSorter(true);
-        table.setRowFilter(rowFilter);
         sparkLinesRenderers = new ArrayList<SparkLinesRenderer>();
         intervalSetRenderer = new IntervalSetRenderer();
         intervalMapRenderer = new IntervalMapRenderer();
@@ -165,17 +165,31 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         return table;
     }
 
-    public boolean setPattern(String regularExpr, int column) {
+    public boolean setFilterPattern(String regularExpr, int column) {
         try {
-            if (!regularExpr.startsWith("(?i)")) {   //CASE_INSENSITIVE
-                regularExpr = "(?i)" + regularExpr;
+            if(Objects.equals(filterPattern, regularExpr)){
+                return true;
             }
-            rowFilter = RowFilter.regexFilter(regularExpr, column);
-            table.setRowFilter(rowFilter);
+            filterPattern = regularExpr;
+            
+            if(regularExpr == null || regularExpr.trim().isEmpty()){
+                table.setRowFilter(null);
+            }else{
+                if (!regularExpr.startsWith("(?i)")) {   //CASE_INSENSITIVE
+                    regularExpr = "(?i)" + regularExpr;
+                }
+                RowFilter rowFilter = RowFilter.regexFilter(regularExpr, column);
+                table.setRowFilter(rowFilter);
+            }
         } catch (PatternSyntaxException e) {
             return false;
         }
+        
         return true;
+    }
+    
+    public String getPattern(){
+        return filterPattern;
     }
 
     public void refreshModel(T[] elements, Column[] cols, GraphModel graphModel, DataTablesModel dataTablesModel) {

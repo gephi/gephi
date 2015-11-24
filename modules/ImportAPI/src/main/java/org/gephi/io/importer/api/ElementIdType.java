@@ -41,63 +41,24 @@
  */
 package org.gephi.io.importer.api;
 
-import org.gephi.graph.api.TimeFormat;
-import org.gephi.graph.api.TimeRepresentation;
-import org.gephi.io.processor.spi.Processor;
-import org.joda.time.DateTimeZone;
-
 /**
- * Interface for unloading a container.
- * <p>
- * Gives access to the draft graph elements, columns attributes. Also gives
- * access to basic settings and properties about the container's content.
- * <p>
- * Unloaders are used by <code>Processor</code> to load data from the container
- * to the main data structure.
+ * Element id type.
  *
  * @author Mathieu Bastian
- * @see Processor
  */
-public interface ContainerUnloader {
+public enum ElementIdType {
 
-    public Iterable<NodeDraft> getNodes();
+    STRING(String.class),
+    INTEGER(Integer.class),
+    LONG(Long.class);
 
-    public int getNodeCount();
+    private final Class cls;
 
-    public Iterable<EdgeDraft> getEdges();
+    ElementIdType(Class cls) {
+        this.cls = cls;
+    }
 
-    public int getEdgeCount();
-
-    public boolean hasNodeColumn(String key);
-
-    public boolean hasEdgeColumn(String key);
-
-    public Iterable<ColumnDraft> getNodeColumns();
-
-    public Iterable<ColumnDraft> getEdgeColumns();
-
-    public EdgeDirectionDefault getEdgeDefault();
-
-    public TimeFormat getTimeFormat();
-
-    public TimeRepresentation getTimeRepresentation();
-
-    public DateTimeZone getTimeZone();
-
-    public String getSource();
-
-    public Class getEdgeTypeLabelClass();
-
-    public ElementIdType getElementIdType();
-
-    //PARAMETERS GETTERS
-    public boolean allowSelfLoop();
-
-    public boolean allowAutoNode();
-
-    public boolean allowParallelEdges();
-
-    public boolean isAutoScale();
-
-    public EdgeWeightMergeStrategy getEdgesMergeStrategy();
+    public Class getTypeClass() {
+        return cls;
+    }
 }
