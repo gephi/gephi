@@ -291,7 +291,7 @@ public class ImporterGML implements FileImporter, LongTask {
             } else if ("directed".equalsIgnoreCase(key)) {
                 if (value instanceof Double) {
                     EdgeDirection type = ((Double) value) == 1 ? EdgeDirection.DIRECTED : EdgeDirection.UNDIRECTED;
-                    edge.setType(type);
+                    edge.setDirection(type);
                 } else {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_directedparse", edge.toString()), Issue.Level.WARNING));
                 }
