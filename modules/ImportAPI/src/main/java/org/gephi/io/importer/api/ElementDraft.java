@@ -377,4 +377,8 @@ public interface ElementDraft {
     public TimeSet getTimeSet();
 
     public Iterable<ColumnDraft> getColumns();
+
+    public Double getGraphTimestamp();
+
+    public Interval getGraphInterval();
 }

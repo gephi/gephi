@@ -41,6 +41,7 @@
  */
 package org.gephi.io.importer.api;
 
+import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.io.processor.spi.Processor;
@@ -87,6 +88,10 @@ public interface ContainerUnloader {
     public String getSource();
 
     public Class getEdgeTypeLabelClass();
+
+    public Double getTimestamp();
+
+    public Interval getInterval();
 
     public ElementIdType getElementIdType();
 

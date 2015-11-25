@@ -86,6 +86,16 @@ public abstract class ElementDraftImpl implements ElementDraft {
     abstract ColumnDraft getColumn(String key, Class type);
 
     @Override
+    public Double getGraphTimestamp() {
+        return container.getTimestamp();
+    }
+
+    @Override
+    public Interval getGraphInterval() {
+        return container.getInterval();
+    }
+
+    @Override
     public String getId() {
         return id;
     }

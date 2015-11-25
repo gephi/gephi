@@ -57,6 +57,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.io.importer.api.ColumnDraft;
@@ -114,6 +115,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
     private TimeRepresentation timeRepresentation = TimeRepresentation.INTERVAL;
     private DateTimeZone timeZone = DateTimeZone.getDefault();
+    private Double timestamp;
+    private Interval interval;
     //Report flag
     private boolean reportedUnknownNode;
     private boolean reportedParallelEdges;
@@ -528,6 +531,48 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
+    public void setTimestamp(String timestamp) {
+        try {
+            double t = timeFormat.equals(TimeFormat.DOUBLE) ? Double.parseDouble(timestamp) : AttributeUtils.parseDateTime(timestamp);
+            this.timestamp = t;
+        } catch (Exception e) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Timestamp_Parse_Error", timestamp), Level.SEVERE));
+            return;
+        }
+        report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.GraphTimestamp", timestamp));
+    }
+
+    @Override
+    public void setInterval(String startDateTime, String endDateTime) {
+        try {
+            double start, end;
+            if (startDateTime == null || startDateTime.isEmpty() || "-inf".equalsIgnoreCase(startDateTime) || "-infinity".equalsIgnoreCase(startDateTime)) {
+                start = Double.NEGATIVE_INFINITY;
+            } else {
+                start = timeFormat.equals(TimeFormat.DOUBLE) ? Double.parseDouble(startDateTime) : AttributeUtils.parseDateTime(startDateTime);
+            }
+            if (endDateTime == null || endDateTime.isEmpty() || "inf".equalsIgnoreCase(endDateTime) || "infinity".equalsIgnoreCase(endDateTime)) {
+                end = Double.POSITIVE_INFINITY;
+            } else {
+                end = timeFormat.equals(TimeFormat.DOUBLE) ? Double.parseDouble(endDateTime) : AttributeUtils.parseDateTime(endDateTime);
+            }
+            this.interval = new Interval(start, end);
+        } catch (Exception e) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Interval_Parse_Error", timestamp), Level.SEVERE));
+            return;
+        }
+        report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.GraphInterval", "[" + startDateTime + "," + endDateTime + "]"));
+    }
+
+    @Override
+    public Interval getInterval() {
+        return interval;
+    }
+
+    @Override
+    public Double getTimestamp() {
+        return timestamp;
+    }
 
     @Override
     public void setElementIdType(ElementIdType type) {
@@ -539,6 +584,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public ElementIdType getElementIdType() {
         return elementIdType;
     }
+
+    @Override
     public boolean verify() {
         //Edge weight zero or negative
         for (EdgeDraftImpl edge : new NullFilterIterable<EdgeDraftImpl>(edgeList)) {
