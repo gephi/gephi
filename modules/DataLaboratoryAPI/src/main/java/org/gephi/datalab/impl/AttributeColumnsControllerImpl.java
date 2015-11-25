@@ -653,27 +653,29 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
             Table edgesTable = graph.getModel().getEdgeTable();
-            String idColumn = null;
-            String sourceColumn = null;
-            String targetColumn = null;
-            String typeColumn = null;
-            String weightColumn = null;
+            boolean isDynamicWeight = edgesTable.getColumn("Weight").isDynamic();
+            
+            String idColumnHeader = null;
+            String sourceColumnHeader = null;
+            String targetColumnHeader = null;
+            String typeColumnHeader = null;
+            String weightColumnHeader = null;
             ArrayList<Column> columnsList = new ArrayList<Column>();
             HashMap<Column, String> columnHeaders = new HashMap<Column, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
             for (int i = 0; i < columnNames.length; i++) {
                 //Separate first id column found from the list to use as id. If more are found later, the will not be in the list and be ignored.
                 if (columnNames[i].equalsIgnoreCase("id")) {
-                    if (idColumn == null) {
-                        idColumn = columnNames[i];
+                    if (idColumnHeader == null) {
+                        idColumnHeader = columnNames[i];
                     }
-                } else if (columnNames[i].equalsIgnoreCase("source") && sourceColumn == null) {//Separate first source column found from the list to use as source node id
-                    sourceColumn = columnNames[i];
-                } else if (columnNames[i].equalsIgnoreCase("target") && targetColumn == null) {//Separate first target column found from the list to use as target node id
-                    targetColumn = columnNames[i];
-                } else if (columnNames[i].equalsIgnoreCase("type") && typeColumn == null) {//Separate first type column found from the list to use as edge type (directed/undirected)
-                    typeColumn = columnNames[i];
-                } else if (columnNames[i].equalsIgnoreCase("weight") && weightColumn == null) {//Separate first weight column found from the list to use as edge weight
-                    weightColumn = columnNames[i];
+                } else if (columnNames[i].equalsIgnoreCase("source") && sourceColumnHeader == null) {//Separate first source column found from the list to use as source node id
+                    sourceColumnHeader = columnNames[i];
+                } else if (columnNames[i].equalsIgnoreCase("target") && targetColumnHeader == null) {//Separate first target column found from the list to use as target node id
+                    targetColumnHeader = columnNames[i];
+                } else if (columnNames[i].equalsIgnoreCase("type") && typeColumnHeader == null) {//Separate first type column found from the list to use as edge type (directed/undirected)
+                    typeColumnHeader = columnNames[i];
+                } else if (columnNames[i].equalsIgnoreCase("weight") && weightColumnHeader == null) {//Separate first weight column found from the list to use as edge weight
+                    weightColumnHeader = columnNames[i];
                 } else if (edgesTable.hasColumn(columnNames[i])) {
                     Column column = edgesTable.getColumn(columnNames[i]);
                     columnsList.add(column);
@@ -702,8 +704,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             int recordNumber = 0;
             while (reader.readRecord()) {
                 recordNumber++;
-                sourceId = reader.get(sourceColumn);
-                targetId = reader.get(targetColumn);
+                sourceId = reader.get(sourceColumnHeader);
+                targetId = reader.get(targetColumnHeader);
 
                 if (sourceId == null || sourceId.trim().isEmpty() || targetId == null || targetId.trim().isEmpty()) {
                     Logger.getLogger("").log(Level.WARNING, "Ignoring record {0} due to empty source and/or target node ids", recordNumber);
@@ -738,8 +740,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     }
                 }
 
-                if (typeColumn != null) {
-                    type = reader.get(typeColumn);
+                if (typeColumnHeader != null) {
+                    type = reader.get(typeColumnHeader);
                     //Undirected if indicated correctly, otherwise always directed:
                     if (type != null) {
                         directed = !type.equalsIgnoreCase("undirected");
@@ -751,8 +753,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 }
 
                 //Prepare the correct edge to assign the attributes:
-                if (idColumn != null) {
-                    id = reader.get(idColumn);
+                if (idColumnHeader != null) {
+                    id = reader.get(idColumnHeader);
                     if (id == null || id.isEmpty()) {
                         edge = gec.createEdge(source, target, directed);//id null or empty, assign one
                     } else {
@@ -770,8 +772,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     for (Column column : columnsList) {
                         setAttributeValue(reader.get(columnHeaders.get(column)), edge, column);
                     }
-                } else {
-                    //Do not ignore repeated edge, instead increase edge weight
+                } else if(!isDynamicWeight) {
+                    //Do not ignore repeated edge, instead increase edge weight (as long as the table does not have dynamic weight)
                     edge = graph.getEdge(source, target);
                     if (edge == null) {
                         //Not from source to target but undirected and reverse?
@@ -780,10 +782,11 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                             edge = null;
                         }
                     }
+                    
                     if (edge != null) {
                         //Increase edge weight with specified weight (if specified), else increase by 1:
-                        String weight = reader.get(weightColumn);
-                        if (weight != null) {
+                        if (weightColumnHeader != null) {
+                            String weight = reader.get(weightColumnHeader);
                             try {
                                 Float weightFloat = Float.parseFloat(weight);
                                 edge.setWeight(weightFloat);
