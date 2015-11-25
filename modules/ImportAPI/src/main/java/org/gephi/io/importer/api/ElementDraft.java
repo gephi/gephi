@@ -42,6 +42,7 @@
 package org.gephi.io.importer.api;
 
 import java.awt.Color;
+import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.types.TimeSet;
 
 /**
@@ -370,9 +371,13 @@ public interface ElementDraft {
 
     public void addTimestamp(String dateTime);
 
+    public void addTimestamps(String timestamps);
+
     public void addInterval(double start, double end);
 
     public void addInterval(String startDateTime, String endDateTime);
+
+    public void addIntervals(String intervals);
 
     public TimeSet getTimeSet();
 

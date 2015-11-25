@@ -58,7 +58,7 @@ public class ElementFactoryImpl implements ElementDraft.Factory {
 
     @Override
     public NodeDraftImpl newNodeDraft() {
-        NodeDraftImpl node = new NodeDraftImpl(container, "n" + NODE_IDS.getAndIncrement());
+        NodeDraftImpl node = new NodeDraftImpl(container, String.valueOf(NODE_IDS.getAndIncrement()));
         return node;
     }
 
@@ -74,7 +74,7 @@ public class ElementFactoryImpl implements ElementDraft.Factory {
 
     @Override
     public EdgeDraftImpl newEdgeDraft() {
-        EdgeDraftImpl edge = new EdgeDraftImpl(container, "e" + EDGE_IDS.getAndIncrement());
+        EdgeDraftImpl edge = new EdgeDraftImpl(container, String.valueOf(EDGE_IDS.getAndIncrement()));
         return edge;
     }
 
