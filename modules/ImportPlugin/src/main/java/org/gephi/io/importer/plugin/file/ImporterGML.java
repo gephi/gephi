@@ -309,6 +309,12 @@ public class ImporterGML implements FileImporter, LongTask {
                 } else {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_directedparse", edge.toString()), Issue.Level.WARNING));
                 }
+            } else if ("fill".equalsIgnoreCase(key)) {
+                if (value instanceof String) {
+                    edge.setColor((String) value);
+                } else if (value instanceof Number) {
+                    edge.setColor(new Color(((Number) value).intValue()));
+                }
             } else {
                 edge.setValue(key, value);
             }
