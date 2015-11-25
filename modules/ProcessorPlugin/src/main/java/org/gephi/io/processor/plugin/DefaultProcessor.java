@@ -110,7 +110,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         Configuration configuration = new Configuration();
         configuration.setTimeRepresentation(container.getTimeRepresentation());
         if (container.getEdgeTypeLabelClass() != null) {
-//            configuration.setEdgeLabelType(container.getEdgeTypeLabelClass());
+            configuration.setEdgeLabelType(container.getEdgeTypeLabelClass());
         }
         configuration.setNodeIdType(container.getElementIdType().getTypeClass());
         configuration.setEdgeIdType(container.getElementIdType().getTypeClass());

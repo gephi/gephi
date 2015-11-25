@@ -136,6 +136,13 @@ public abstract class AbstractProcessor {
             flushTimeSet(nodeDraft.getTimeSet(), node);
         }
 
+        //Graph timeset
+        if (nodeDraft.getGraphTimestamp() != null) {
+            node.addTimestamp(nodeDraft.getGraphTimestamp());
+        } else if (nodeDraft.getGraphInterval() != null) {
+            node.addInterval(nodeDraft.getGraphInterval());
+        }
+
         //Attributes
         flushToElementAttributes(nodeDraft, node);
     }
@@ -150,6 +157,12 @@ public abstract class AbstractProcessor {
                     Object[] vals = ((TimeMap) val).toValuesArray();
                     for (int i = 0; i < keys.length; i++) {
                         existingMap.put(keys[i], vals[i]);
+                    }
+                } else if (col.isDynamic() && (elementDraft.getGraphInterval() != null || elementDraft.getGraphTimestamp() != null)) {
+                    if (elementDraft.getGraphTimestamp() != null) {
+                        element.setAttribute(col.getId(), val, elementDraft.getGraphTimestamp());
+                    } else if (elementDraft.getGraphInterval() != null) {
+                        element.setAttribute(col.getId(), val, elementDraft.getGraphInterval());
                     }
                 } else {
                     element.setAttribute(col.getId(), val);
@@ -188,6 +201,13 @@ public abstract class AbstractProcessor {
         //Timeset
         if (edgeDraft.getTimeSet() != null) {
             flushTimeSet(edgeDraft.getTimeSet(), edge);
+        }
+
+        //Graph timeset
+        if (edgeDraft.getGraphTimestamp() != null) {
+            edge.addTimestamp(edgeDraft.getGraphTimestamp());
+        } else if (edgeDraft.getGraphInterval() != null) {
+            edge.addInterval(edgeDraft.getGraphInterval());
         }
 
         //Attributes
