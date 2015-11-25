@@ -80,8 +80,8 @@ public class MergeColumnsUI extends javax.swing.JPanel {
     }
     private Mode mode = Mode.NODES_TABLE;
     private Table table;
-    private DefaultListModel availableColumnsModel;
-    private DefaultListModel columnsToMergeModel;
+    private final DefaultListModel availableColumnsModel;
+    private final DefaultListModel columnsToMergeModel;
     private AttributeColumnsMergeStrategy[] availableMergeStrategies;
 
     /** Creates new form MergeColumnsUI */
@@ -159,8 +159,8 @@ public class MergeColumnsUI extends javax.swing.JPanel {
             columns = table.toArray();
         }
 
-        for (int i = 0; i < columns.length; i++) {
-            availableColumnsModel.addElement(new ColumnWrapper(columns[i]));
+        for (Column column : columns) {
+            availableColumnsModel.addElement(new ColumnWrapper(column));
         }
 
         availableColumnsList.setModel(availableColumnsModel);
@@ -339,6 +339,11 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         availableStrategiesComboBox = new javax.swing.JComboBox();
         infoLabel = new javax.swing.JLabel();
 
+        columnsToMergeList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                columnsToMergeListMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(columnsToMergeList);
 
         description.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -360,6 +365,11 @@ public class MergeColumnsUI extends javax.swing.JPanel {
             }
         });
 
+        availableColumnsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                availableColumnsListMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(availableColumnsList);
 
         availableColumnsLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -459,6 +469,23 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         refreshOkButton();
         infoLabel.setEnabled(availableStrategiesComboBox.getSelectedIndex() != -1);
     }//GEN-LAST:event_availableStrategiesComboBoxItemStateChanged
+
+    private void availableColumnsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_availableColumnsListMouseClicked
+        if (evt.getClickCount() == 2) {
+            int index = availableColumnsList.locationToIndex(evt.getPoint());
+            availableColumnsList.setSelectedIndex(index);
+            moveElementsFromListToOtherList(availableColumnsList, columnsToMergeList);
+        }
+    }//GEN-LAST:event_availableColumnsListMouseClicked
+
+    private void columnsToMergeListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnsToMergeListMouseClicked
+        if (evt.getClickCount() == 2) {
+            int index = columnsToMergeList.locationToIndex(evt.getPoint());
+            columnsToMergeList.setSelectedIndex(index);
+            moveElementsFromListToOtherList(columnsToMergeList, availableColumnsList);
+        }
+    }//GEN-LAST:event_columnsToMergeListMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addColumnButton;
     private javax.swing.JLabel availableColumnsLabel;

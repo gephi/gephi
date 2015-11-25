@@ -90,7 +90,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         Class targetType = column.getTypeClass();
         if (value != null && !value.getClass().equals(targetType)) {
             try {
-                value = AttributeUtils.parse(value.toString(), targetType);//Try to convert to target type
+                String stringValue;
+                if(value.getClass().isArray()){
+                    stringValue = AttributeUtils.printArray(value);
+                } else {
+                    stringValue = value.toString();
+                }
+                
+                value = AttributeUtils.parse(stringValue, targetType);//Try to convert to target type from string representation
             } catch (Exception ex) {
                 return false;//Could not parse
             }

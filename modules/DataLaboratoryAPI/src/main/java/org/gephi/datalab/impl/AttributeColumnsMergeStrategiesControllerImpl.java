@@ -100,7 +100,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
                     }
                 }
             }
-            row.setAttribute(newColumn, sb.toString());
+            
+            ac.setAttributeValue(sb.toString(), row, newColumn);
         }
 
         return newColumn;

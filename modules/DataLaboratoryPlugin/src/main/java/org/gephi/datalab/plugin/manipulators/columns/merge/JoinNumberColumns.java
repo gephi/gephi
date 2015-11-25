@@ -56,7 +56,7 @@ import org.openide.util.NbBundle;
 
 /**
  * AttributeColumnsMergeStrategy that joins one or more number column into a number list column with AttributeType
- * <code>LIST_BIGDECIMAL</code>
+ * <code>double[]</code>
  *
  * @author Eduardo Ramos
  */
@@ -75,7 +75,7 @@ public class JoinNumberColumns implements AttributeColumnsMergeStrategy, General
 
     @Override
     public void execute() {
-        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).joinWithSeparatorMerge(table, columns, BigDecimal[].class, columnTitle, SEPARATOR);
+        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).joinWithSeparatorMerge(table, columns, double[].class, columnTitle, SEPARATOR);
     }
 
     @Override

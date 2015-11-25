@@ -145,7 +145,6 @@ public class AvailableColumnsModel {
         //Note: We need to remove all columns and add them all again because there could be a new column with the same title but different index 
         //if the old one with the same title was removed, and we should not keep the old column with same title.
         for (Column column : table) {
-
             if (availableColumnsCopy.contains(column) || !allKnownColumns.contains(column)) {
                 allKnownColumns.add(column);
 
