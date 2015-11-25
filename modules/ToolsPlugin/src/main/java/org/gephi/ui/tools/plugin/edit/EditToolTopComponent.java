@@ -56,7 +56,7 @@ import org.openide.windows.TopComponent;
 autostore = false)
 @TopComponent.Description(preferredID = "EditToolTopComponent",
 persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "rankingmode", openAtStartup = false, roles = {"overview"})
+@TopComponent.Registration(mode = "rankingmode", openAtStartup = false, roles = {"overview", "datalab"})
 @TopComponent.OpenActionRegistration(displayName = "#CTL_EditToolTopComponent",
 preferredID = "EditToolTopComponent")
 public final class EditToolTopComponent extends TopComponent {

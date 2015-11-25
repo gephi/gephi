@@ -41,9 +41,11 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.plugin.manipulators.general.ui;
 
+import com.sun.glass.events.KeyEvent;
 import java.awt.Color;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import javafx.scene.input.KeyCode;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -260,6 +262,12 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
             resultText.setText("");
         }
     }
+    
+    private void nextResult(){
+        searchResult = searchReplaceController.findNext(searchOptions);
+        refreshSearchOptions();
+        showSearchResult();
+    }
 
     private void showRegexReplaceError() {
         JOptionPane.showMessageDialog(null, NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.regexReplacementError"), NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.dialog.title.error"), JOptionPane.ERROR_MESSAGE);
@@ -373,6 +381,11 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         });
 
         searchText.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.searchText.text")); // NOI18N
+        searchText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                searchTextKeyPressed(evt);
+            }
+        });
 
         replaceText.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.replaceText.text")); // NOI18N
 
@@ -401,6 +414,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -430,14 +444,11 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
                             .addComponent(replaceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(findNextButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
-                    .addComponent(resultLabel))
-                .addContainerGap())
-            .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(columnsToSearchLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(columnsToSearchComboBox, 0, 185, Short.MAX_VALUE)
+                    .addComponent(resultLabel)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(columnsToSearchLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(columnsToSearchComboBox, 0, 185, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -500,9 +511,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
     }//GEN-LAST:event_caseSensitiveCheckBoxItemStateChanged
 
     private void findNextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findNextButtonActionPerformed
-        searchResult = searchReplaceController.findNext(searchOptions);
-        refreshSearchOptions();
-        showSearchResult();
+        nextResult();
     }//GEN-LAST:event_findNextButtonActionPerformed
 
     private void replaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceButtonActionPerformed
@@ -536,6 +545,13 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
     private void columnsToSearchComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_columnsToSearchComboBoxItemStateChanged
         refreshSearchOptions();
     }//GEN-LAST:event_columnsToSearchComboBoxItemStateChanged
+
+    private void searchTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            nextResult();
+        }
+    }//GEN-LAST:event_searchTextKeyPressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox caseSensitiveCheckBox;
     private javax.swing.JComboBox columnsToSearchComboBox;

@@ -219,6 +219,9 @@
           <ResourceString bundle="org/gephi/datalab/plugin/manipulators/general/ui/Bundle.properties" key="SearchReplaceUI.searchText.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="searchTextKeyPressed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="replaceText">
       <Properties>
