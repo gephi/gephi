@@ -79,8 +79,7 @@ import org.openide.util.NbBundle;
  */
 public class LoadTask implements LongTask, Runnable {
 
-    private File file;
-    private GephiReader gephiReader;
+    private final File file;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
 
