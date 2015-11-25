@@ -206,9 +206,9 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         if (selectedNode == null) {
             selectedNode = nodes[0];//Use first node as selected node if null
         }
-        
+
         //Create empty new node:
-        Node newNode = createNode("");
+        Node newNode = createNode("", null, graph);
 
         //Set properties (position, size and color) using the selected node properties:
         newNode.setX(selectedNode.x());
@@ -221,7 +221,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         newNode.setG(selectedNode.g());
         newNode.setB(selectedNode.b());
         newNode.setAlpha(selectedNode.alpha());
-        
+
         //Merge attributes:        
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         ac.mergeRowsValues(columns, mergeStrategies, nodes, selectedNode, newNode);
@@ -233,19 +233,29 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         Edge newEdge;
         for (Node node : nodes) {
             for (Edge edge : getNodeEdges(node)) {
+                Node newEdgeSource;
+                Node newEdgeTarget;
                 if (edge.getSource() == node) {
+                    newEdgeSource = newNode;
                     if (nodesSet.contains(edge.getTarget())) {
-                        newEdge = createEdge(newNode, newNode, edge.isDirected());//Self loop because of edge between merged nodes
+                        newEdgeTarget = newNode;//Self loop because of edge between merged nodes
                     } else {
-                        newEdge = createEdge(newNode, edge.getTarget(), edge.isDirected());
+                        newEdgeTarget = edge.getTarget();
                     }
                 } else {
+                    newEdgeTarget = newNode;
                     if (nodesSet.contains(edge.getSource())) {
-                        newEdge = createEdge(newNode, newNode, edge.isDirected());//Self loop because of edge between merged nodes
+                        newEdgeSource = newNode;//Self loop because of edge between merged nodes
                     } else {
-                        newEdge = createEdge(edge.getSource(), newNode, edge.isDirected());
+                        newEdgeSource = edge.getSource();
                     }
                 }
+                if (graph.getEdge(newEdgeSource, newEdgeTarget) != null) {
+                    //This edge already exists
+                    continue;
+                }
+
+                newEdge = createEdge(newEdgeSource, newEdgeTarget, edge.isDirected(), graph);
 
                 if (newEdge != null) {//Edge may not be created if repeated
                     //Copy edge attributes:
@@ -356,14 +366,16 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     private Node buildNode(Graph graph, String label) {
-        Node newNode = graph.getModel().factory().newNode();
-        newNode.setSize(DEFAULT_NODE_SIZE);
-        newNode.setLabel(label);
-        return newNode;
+        return buildNode(graph, label, null);
     }
 
     private Node buildNode(Graph graph, String label, String id) {
-        Node newNode = graph.getModel().factory().newNode(id);
+        Node newNode;
+        if (id != null) {
+            newNode = graph.getModel().factory().newNode(id);
+        } else {
+            newNode = graph.getModel().factory().newNode();
+        }
         newNode.setSize(DEFAULT_NODE_SIZE);
         newNode.setLabel(label);
         return newNode;
