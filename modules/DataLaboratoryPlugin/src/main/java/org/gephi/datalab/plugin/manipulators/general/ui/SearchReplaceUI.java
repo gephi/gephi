@@ -41,11 +41,10 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.plugin.manipulators.general.ui;
 
-import com.sun.glass.events.KeyEvent;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import javafx.scene.input.KeyCode;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
