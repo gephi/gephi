@@ -251,7 +251,21 @@ public class ImporterGML implements FileImporter, LongTask {
     }
 
     private boolean parseEdge(ArrayList list) {
-        EdgeDraft edgeDraft = container.factory().newEdgeDraft();
+        String id = null;
+        for (int i = 0; i < list.size(); i += 2) {
+            String key = (String) list.get(i);
+            Object value = list.get(i + 1);
+            if ("id".equalsIgnoreCase(key)) {
+                id = value.toString();
+            }
+        }
+        EdgeDraft edgeDraft;
+        if (id != null) {
+            edgeDraft = container.factory().newEdgeDraft(id);
+        } else {
+            edgeDraft = container.factory().newEdgeDraft();
+        }
+
         for (int i = 0; i < list.size(); i += 2) {
             String key = (String) list.get(i);
             Object value = list.get(i + 1);
@@ -279,7 +293,7 @@ public class ImporterGML implements FileImporter, LongTask {
         for (int i = 0; i < list.size(); i += 2) {
             String key = (String) list.get(i);
             Object value = list.get(i + 1);
-            if ("source".equalsIgnoreCase(key) || "target".equalsIgnoreCase(key) || "value".equalsIgnoreCase(key) || "weight".equalsIgnoreCase(key) || "label".equalsIgnoreCase(key)) {
+            if ("id".equalsIgnoreCase(key) || "source".equalsIgnoreCase(key) || "target".equalsIgnoreCase(key) || "value".equalsIgnoreCase(key) || "weight".equalsIgnoreCase(key) || "label".equalsIgnoreCase(key)) {
                 continue; // already parsed
             }
             if (value instanceof ArrayList) {
