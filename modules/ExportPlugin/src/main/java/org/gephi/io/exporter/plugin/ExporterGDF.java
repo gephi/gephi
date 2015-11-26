@@ -320,7 +320,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         List<Column> cols = new ArrayList<Column>();
         if (exportAttributes && graphModel != null) {
             for (Column column : graphModel.getNodeTable()) {
-                if (!isNodeDefaultColumn(column.getId())) {
+                if (!column.isProperty() && !isNodeDefaultColumn(column.getId())) {
                     cols.add(column);
                 }
             }
@@ -332,7 +332,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         List<Column> cols = new ArrayList<Column>();
         if (exportAttributes && graphModel != null) {
             for (Column column : graphModel.getEdgeTable()) {
-                if (!isEdgeDefaultColumn(column.getId())) {
+                if (!column.isProperty() && !isEdgeDefaultColumn(column.getId())) {
                     cols.add(column);
                 }
             }

@@ -441,10 +441,8 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         edgeE.setAttribute("source", e.getSource().getId().toString());
         edgeE.setAttribute("target", e.getTarget().getId().toString());
 
-        if (e.getId() != null && !e.getId().toString().isEmpty() && !String.valueOf(e.getId()).equals(e.getId())) {
-            Element idE = createEdgeId(document, e);
-            edgeE.appendChild(idE);
-        }
+        Element idE = createEdgeId(document, e);
+        edgeE.appendChild(idE);
 
         //Label
         if (e.getLabel() != null && !e.getLabel().isEmpty()) {

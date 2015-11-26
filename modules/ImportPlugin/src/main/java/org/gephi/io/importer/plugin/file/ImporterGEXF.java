@@ -931,9 +931,9 @@ public class ImporterGEXF implements FileImporter, LongTask {
             //Type
             Class attributeType = String.class;
             if (type.equalsIgnoreCase("boolean") || type.equalsIgnoreCase("bool")) {
-                attributeType = boolean.class;
+                attributeType = Boolean.class;
             } else if (type.equalsIgnoreCase("integer") || type.equalsIgnoreCase("int")) {
-                attributeType = int.class;
+                attributeType = Integer.class;
             } else if (type.equalsIgnoreCase("long")) {
                 attributeType = Long.class;
             } else if (type.equalsIgnoreCase("float")) {
@@ -948,13 +948,13 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 attributeType = BigInteger.class;
             } else if (type.equalsIgnoreCase("byte")) {
                 attributeType = Byte.class;
-            } else if (type.equalsIgnoreCase("char")) {
+            } else if (type.equalsIgnoreCase("char") || type.equalsIgnoreCase("character")) {
                 attributeType = Character.class;
             } else if (type.equalsIgnoreCase("short")) {
                 attributeType = Short.class;
             } else if (type.equalsIgnoreCase("listboolean")) {
                 attributeType = boolean[].class;
-            } else if (type.equalsIgnoreCase("listint")) {
+            } else if (type.equalsIgnoreCase("listint") || type.equalsIgnoreCase("listinteger")) {
                 attributeType = int[].class;
             } else if (type.equalsIgnoreCase("listlong")) {
                 attributeType = long[].class;
@@ -970,7 +970,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 attributeType = BigInteger[].class;
             } else if (type.equalsIgnoreCase("listbyte")) {
                 attributeType = byte[].class;
-            } else if (type.equalsIgnoreCase("listchar")) {
+            } else if (type.equalsIgnoreCase("listchar") || type.equalsIgnoreCase("listcharacter")) {
                 attributeType = char[].class;
             } else if (type.equalsIgnoreCase("listshort")) {
                 attributeType = short[].class;
