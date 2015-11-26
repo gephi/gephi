@@ -68,6 +68,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import net.java.dev.colorchooser.ColorChooser;
+import org.gephi.appearance.api.Partition;
 import org.gephi.appearance.api.PartitionFunction;
 import org.gephi.appearance.plugin.palette.Palette;
 import org.gephi.appearance.plugin.palette.PaletteManager;
@@ -184,8 +185,11 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Color c = function.getPartition().getColor(value);
-            setBackground(c);
+            Color color = function.getPartition().getColor(value);
+            if (color == null) {
+                color = Color.BLACK;
+            }
+            setBackground(color);
             return this;
         }
     }
@@ -239,7 +243,11 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
-                        function.getPartition().setColor(currentValue, (Color) evt.getNewValue());
+                        Color color = (Color) evt.getNewValue();
+                        Partition partition = function.getPartition();
+                        if (partition.getColor(currentValue) == null || !partition.getColor(currentValue).equals(color)) {
+                            function.getPartition().setColor(currentValue, (Color) evt.getNewValue());
+                        }
                     }
                 }
             });
