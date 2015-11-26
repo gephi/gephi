@@ -57,7 +57,7 @@ public class UIExporterGEXF implements ExporterUI {
 
     private UIExporterGEXFPanel panel;
     private ExporterGEXF exporterGEXF;
-    private ExporterGEXFSettings settings = new ExporterGEXFSettings();
+    private final ExporterGEXFSettings settings = new ExporterGEXFSettings();
 
     @Override
     public void setup(Exporter exporter) {
@@ -100,7 +100,6 @@ public class UIExporterGEXF implements ExporterUI {
         private boolean exportSize = true;
         private boolean exportAttributes = true;
         private boolean exportDynamics = true;
-        private boolean exportHierarchy = false;
 
         private void save(ExporterGEXF exporterGEXF) {
             this.normalize = exporterGEXF.isNormalize();
@@ -109,7 +108,6 @@ public class UIExporterGEXF implements ExporterUI {
             this.exportSize = exporterGEXF.isExportSize();
             this.exportAttributes = exporterGEXF.isExportAttributes();
             this.exportDynamics = exporterGEXF.isExportDynamic();
-            this.exportHierarchy = exporterGEXF.isExportHierarchy();
         }
 
         private void load(ExporterGEXF exporterGEXF) {
@@ -119,7 +117,6 @@ public class UIExporterGEXF implements ExporterUI {
             exporterGEXF.setExportPosition(exportPosition);
             exporterGEXF.setExportSize(exportSize);
             exporterGEXF.setExportDynamic(exportDynamics);
-            exporterGEXF.setExportHierarchy(exportHierarchy);
         }
     }
 }
