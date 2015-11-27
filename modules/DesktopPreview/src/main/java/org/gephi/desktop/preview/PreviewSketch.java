@@ -115,14 +115,14 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
     public void mousePressed(MouseEvent e) {
         previewController.sendMouseEvent(buildPreviewMouseEvent(e, PreviewMouseEvent.Type.PRESSED));
         ref.set(e.getX(), e.getY());
-
+        lastMove.set(target.getTranslate());
+        
         refreshLoop.refreshSketch();
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (!previewController.sendMouseEvent(buildPreviewMouseEvent(e, PreviewMouseEvent.Type.RELEASED))) {
-            lastMove.set(target.getTranslate());
             setMoving(false);
         }
 
