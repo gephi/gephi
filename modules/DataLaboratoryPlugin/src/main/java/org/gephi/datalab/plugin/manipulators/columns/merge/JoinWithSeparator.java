@@ -61,7 +61,7 @@ import org.openide.util.NbPreferences;
 public class JoinWithSeparator implements AttributeColumnsMergeStrategy {
 
     public static final String SEPARATOR_SAVED_PREFERENCES = "JoinWithSeparator_Separator";
-    private static final String DEFAULT_SEPARATOR = ",";
+    private static final String DEFAULT_SEPARATOR = ", ";
     private Table table;
     private Column[] columns;
     private String newColumnTitle, separator;

@@ -88,7 +88,17 @@ public class ElementsDataTableModel<T extends Element> extends AbstractTableMode
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return columns[columnIndex].getValueFor(elements[rowIndex]);
+        try {
+            return columns[columnIndex].getValueFor(elements[rowIndex]);
+        } catch (Exception e) {
+            /**
+             * We need to do this because the JTable might repaint itself 
+             * while datalab still has not detected that the column has been deleted 
+             * (it does so by polling on graph and table observers).
+             * I can't find a better solution...
+             */
+            return null;
+        }
     }
 
     @Override

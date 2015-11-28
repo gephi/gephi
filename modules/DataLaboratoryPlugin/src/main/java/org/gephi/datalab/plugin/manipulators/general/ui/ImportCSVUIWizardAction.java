@@ -46,6 +46,8 @@ import java.awt.Dialog;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
@@ -103,17 +105,22 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
             DataTablesController dtc = Lookup.getDefault().lookup(DataTablesController.class);
             dtc.setAutoRefreshEnabled(false);
-
-            switch ((Mode) wizardDescriptor.getProperty("mode")) {
-                case NODES_TABLE:
-                    ac.importCSVToNodesTable(graph, file, separator, charset, columnNames, columnTypes, assignNewNodeIds);
-                    break;
-                case EDGES_TABLE:
-                    ac.importCSVToEdgesTable(graph, file, separator, charset, columnNames, columnTypes, createNewNodes);
-                    break;
+            
+            try {
+                switch ((Mode) wizardDescriptor.getProperty("mode")) {
+                    case NODES_TABLE:
+                        ac.importCSVToNodesTable(graph, file, separator, charset, columnNames, columnTypes, assignNewNodeIds);
+                        break;
+                    case EDGES_TABLE:
+                        ac.importCSVToEdgesTable(graph, file, separator, charset, columnNames, columnTypes, createNewNodes);
+                        break;
+                }
+                dtc.refreshCurrentTable();
+            } catch(Exception e){
+                Logger.getLogger("").log(Level.SEVERE, null, e);
+            } finally {
+                dtc.setAutoRefreshEnabled(true);
             }
-            dtc.refreshCurrentTable();
-            dtc.setAutoRefreshEnabled(true);
         }
         step1.unSetup();
         step2.unSetup();
