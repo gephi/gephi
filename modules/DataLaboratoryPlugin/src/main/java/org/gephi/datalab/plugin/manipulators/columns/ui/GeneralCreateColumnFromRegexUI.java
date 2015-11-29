@@ -53,6 +53,7 @@ import org.gephi.datalab.plugin.manipulators.columns.GeneralCreateColumnFromRege
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulatorUI;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
@@ -117,7 +118,7 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
     }
 
     @Override
-    public void setup(AttributeColumnsManipulator m, Table table, Column column, DialogControls dialogControls) {
+    public void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column, DialogControls dialogControls) {
         this.manipulator = (GeneralCreateColumnFromRegex) m;
         this.table = table;
         this.dialogControls = dialogControls;

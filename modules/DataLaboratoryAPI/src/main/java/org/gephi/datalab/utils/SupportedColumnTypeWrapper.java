@@ -39,29 +39,36 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-
 package org.gephi.datalab.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.TimeRepresentation;
+import org.gephi.graph.api.types.IntervalMap;
+import org.gephi.graph.api.types.IntervalSet;
+import org.gephi.graph.api.types.TimestampMap;
+import org.gephi.graph.api.types.TimestampSet;
 
 /**
  * Simple wrapper class for column type selection in UI.
+ *
  * @author Eduardo Ramos
  */
 public class SupportedColumnTypeWrapper implements Comparable<SupportedColumnTypeWrapper> {
+
     private final Class<?> type;
 
     public SupportedColumnTypeWrapper(Class type) {
         this.type = type;
     }
-    
+
     @Override
     public String toString() {
         String name = type.getSimpleName();
-        
+
         return name;
     }
 
@@ -92,53 +99,81 @@ public class SupportedColumnTypeWrapper implements Comparable<SupportedColumnTyp
     }
 
     /**
-     * Order for column types by name.
-     * Simple types appear first, then dynamic types and then array/list types.
+     * Order for column types by name. Simple types appear first, then dynamic types and then array/list types.
+     *
      * @param other
-     * @return 
+     * @return
      */
     @Override
     public int compareTo(SupportedColumnTypeWrapper other) {
         boolean isArray = type.isArray();
         boolean isArrayOther = other.type.isArray();
-        
-        if(isArray != isArrayOther){
-            if(isArray){
+
+        if (isArray != isArrayOther) {
+            if (isArray) {
                 return 1;
-            }else{
+            } else {
                 return -1;
             }
-        }else{
+        } else {
             boolean isDynamic = AttributeUtils.isDynamicType(type);
             boolean isDynamicOther = AttributeUtils.isDynamicType(other.type);
-            
-            if(isDynamic != isDynamicOther){
-                if(isDynamic){
+
+            if (isDynamic != isDynamicOther) {
+                if (isDynamic) {
                     return 1;
-                }else{
+                } else {
                     return -1;
                 }
-            }else{
+            } else {
                 return type.getSimpleName().compareTo(other.type.getSimpleName());
             }
         }
     }
-    
+
     /**
      * Build a list of column type wrappers from GraphStore supported types.
+     *
+     * @param graphModel
      * @return Ordered column type wrappers list
      */
-    public static List<SupportedColumnTypeWrapper> buildOrderedSupportedTypesList(){
-         List<SupportedColumnTypeWrapper> supportedTypesWrappers = new ArrayList<SupportedColumnTypeWrapper>();
-        
+    public static List<SupportedColumnTypeWrapper> buildOrderedSupportedTypesList(GraphModel graphModel) {
+        List<SupportedColumnTypeWrapper> supportedTypesWrappers = new ArrayList<SupportedColumnTypeWrapper>();
+
+        TimeRepresentation timeRepresentation = graphModel.getConfiguration().getTimeRepresentation();
         for (Class<?> type : AttributeUtils.getSupportedTypes()) {
-            if(AttributeUtils.isStandardizedType(type)){
+            if (AttributeUtils.isStandardizedType(type) && isTypeAvailable(type, timeRepresentation)) {
                 supportedTypesWrappers.add(new SupportedColumnTypeWrapper(type));
             }
         }
-        
+
         Collections.sort(supportedTypesWrappers);
-        
+
         return supportedTypesWrappers;
+    }
+    
+    private static boolean isTypeAvailable(Class<?> type, TimeRepresentation timeRepresentation){
+        if(AttributeUtils.isDynamicType(type)){
+            switch(timeRepresentation){
+                case INTERVAL:
+                    return isIntervalType(type);
+                case TIMESTAMP:
+                    return isTimestampType(type);
+                default:
+                    throw new IllegalArgumentException("Unknown timeRepresentation");
+            }
+        }else{
+            return true;
+        }
+    }
+    
+    private static boolean isTimestampType(Class<?> type){
+        return TimestampSet.class.isAssignableFrom(type)
+                || TimestampMap.class.isAssignableFrom(type);
+    }
+    
+    private static boolean isIntervalType(Class<?> type){
+        return IntervalSet.class.isAssignableFrom(type)
+                || IntervalMap.class.isAssignableFrom(type);
     }
 }

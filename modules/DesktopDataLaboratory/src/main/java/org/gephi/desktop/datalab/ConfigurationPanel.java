@@ -66,7 +66,6 @@ public class ConfigurationPanel extends javax.swing.JPanel {
     public ConfigurationPanel(final DataTableTopComponent dataTableTopComponent, final GraphModel graphModel) {
         this.dataTableTopComponent = dataTableTopComponent;
         this.graphModel = graphModel;
-
         initComponents();
 
         for (TimeFormat tf : TimeFormat.values()) {
@@ -91,9 +90,19 @@ public class ConfigurationPanel extends javax.swing.JPanel {
         //Timezone:
         long currentTimestamp = System.currentTimeMillis();
         DateTimeZone currentTimeZone = graphModel.getTimeZone();
-        
+
         buildTimeZoneList();
         timeZoneComboBox.setSelectedItem(new TimeZoneWrapper(currentTimeZone.toTimeZone(), currentTimestamp));
+
+        timeZoneComboBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TimeZone selected = ((TimeZoneWrapper) timeZoneComboBox.getSelectedItem()).timeZone;
+                graphModel.setTimeZone(DateTimeZone.forTimeZone(selected));
+                dataTableTopComponent.refreshCurrentTable();
+            }
+        });
     }
 
     private void buildTimeZoneList() {
@@ -103,8 +112,8 @@ public class ConfigurationPanel extends javax.swing.JPanel {
         }
     }
 
-
     class TimeFormatWrapper {
+
         private final TimeFormat timeFormat;
 
         public TimeFormatWrapper(TimeFormat timeFormat) {
@@ -245,12 +254,6 @@ public class ConfigurationPanel extends javax.swing.JPanel {
 
         timeZoneLabel.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeZoneLabel.text")); // NOI18N
 
-        timeZoneComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                timeZoneComboBoxActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -310,12 +313,6 @@ public class ConfigurationPanel extends javax.swing.JPanel {
     private void showEdgesNodesLabelsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showEdgesNodesLabelsCheckBoxActionPerformed
         dataTableTopComponent.setShowEdgesNodesLabels(showEdgesNodesLabelsCheckBox.isSelected());
     }//GEN-LAST:event_showEdgesNodesLabelsCheckBoxActionPerformed
-
-    private void timeZoneComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeZoneComboBoxActionPerformed
-        TimeZone selected = ((TimeZoneWrapper) timeZoneComboBox.getSelectedItem()).timeZone;
-        graphModel.setTimeZone(DateTimeZone.forTimeZone(selected));
-        dataTableTopComponent.refreshCurrentTable();
-    }//GEN-LAST:event_timeZoneComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox onlyVisibleCheckBox;

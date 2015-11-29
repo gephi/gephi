@@ -109,20 +109,20 @@ public class AddColumnUI extends javax.swing.JPanel {
      * @param mode Mode
      */
     public void setup(Mode mode) {
-        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         //Set description text for the mode of column creation:
         switch (mode) {
             case NODES_TABLE:
                 descriptionLabel.setText(NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.descriptionLabel.text.nodes"));
-                table = am.getNodeTable();
+                table = graphModel.getNodeTable();
                 break;
             case EDGES_TABLE:
                 descriptionLabel.setText(NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.descriptionLabel.text.edges"));
-                table = am.getEdgeTable();
+                table = graphModel.getEdgeTable();
                 break;
         }
 
-        List<SupportedColumnTypeWrapper> supportedTypesWrappers = SupportedColumnTypeWrapper.buildOrderedSupportedTypesList();
+        List<SupportedColumnTypeWrapper> supportedTypesWrappers = SupportedColumnTypeWrapper.buildOrderedSupportedTypesList(graphModel);
         
         for (SupportedColumnTypeWrapper supportedColumnTypeWrapper : supportedTypesWrappers) {
             typeComboBox.addItem(supportedColumnTypeWrapper);

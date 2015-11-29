@@ -948,13 +948,13 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * Creates the buttons that call the AttributeColumnManipulators.
      */
     private void prepareColumnManipulatorsButtons() {
-        GraphModel attributeModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         Table table;
         Column[] columns;
         if (isShowingNodesTable()) {
-            table = attributeModel.getNodeTable();
+            table = graphModel.getNodeTable();
         } else {
-            table = attributeModel.getEdgeTable();
+            table = graphModel.getEdgeTable();
         }
         columns = getTableAvailableColumnsModel(table).getAvailableColumns();
 
@@ -974,7 +974,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                 currentButtonGroup.setDisplayState(CommandButtonDisplayState.BIG);
             }
             lastManipulatorType = acm.getType();
-            currentButtonGroup.add(prepareJCommandButton(table, columns, acm));
+            currentButtonGroup.add(prepareJCommandButton(graphModel, table, columns, acm));
         }
         columnManipulatorsPanel.add(currentButtonGroup);
     }
@@ -983,12 +983,13 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * Creates a JCommandButton for the specified columns of a table and
      * AttributeColumnsManipulator
      *
+     * @param graphModel graph model
      * @param table table
      * @param columns Columns
      * @param acm AttributeColumnsManipulator
      * @return Prepared JCommandButton
      */
-    private JCommandButton prepareJCommandButton(final Table table, final Column[] columns, final AttributeColumnsManipulator acm) {
+    private JCommandButton prepareJCommandButton(final GraphModel graphModel, final Table table, final Column[] columns, final AttributeColumnsManipulator acm) {
         JCommandButton manipulatorButton;
         if (acm.getIcon() != null) {
             manipulatorButton = new JCommandButton(acm.getName(), ImageWrapperResizableIcon.getIcon(acm.getIcon(), new Dimension(16, 16)));
@@ -1023,7 +1024,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                DataLaboratoryHelper.getDefault().executeAttributeColumnsManipulator(acm, table, column);
+                                DataLaboratoryHelper.getDefault().executeAttributeColumnsManipulator(acm, graphModel, table, column);
                             }
                         });
                         popup.addMenuButton(button);

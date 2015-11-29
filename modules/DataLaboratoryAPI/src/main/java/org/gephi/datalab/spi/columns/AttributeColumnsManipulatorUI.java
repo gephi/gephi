@@ -46,6 +46,8 @@ import javax.swing.JPanel;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Table;
 import org.gephi.datalab.spi.DialogControls;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
 
 /**
  * <p>UI AttributeColumnsManipulators can provide.</p>
@@ -59,11 +61,12 @@ public interface AttributeColumnsManipulatorUI {
     /**
      * Prepare this UI to be able to interact with its AttributeColumnsManipulator.
      * @param m Manipulator for the UI
+     * @param graphModel Graph model of the table
      * @param table Table of the column to manipulate
      * @param column Column to manipulate
      * @param dialogControls Used to enable/disable the dialog controls
      */
-    void setup(AttributeColumnsManipulator m, Table table, Column column, DialogControls dialogControls);
+    void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column, DialogControls dialogControls);
 
     /**
      * Called when the window is closed or accepted.

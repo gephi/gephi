@@ -57,6 +57,7 @@ import org.gephi.graph.api.Table;
 import org.gephi.datalab.plugin.manipulators.general.ui.ImportCSVUIWizardAction.Mode;
 import org.gephi.datalab.utils.SupportedColumnTypeWrapper;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -72,6 +73,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     private ImportCSVUIWizardAction.Mode mode;
     private final ArrayList<JCheckBox> columnsCheckBoxes = new ArrayList<JCheckBox>();
     private final ArrayList<JComboBox> columnsComboBoxes = new ArrayList<JComboBox>();
+    private GraphModel graphModel;
     private Table table;
     private Charset charset;
     //Nodes table settings:
@@ -101,14 +103,15 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
             JPanel settingsPanel = new JPanel();
             settingsPanel.setLayout(new MigLayout());
             loadDescription(settingsPanel);
+            graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
             switch (mode) {
                 case NODES_TABLE:
-                    table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
+                    table = graphModel.getNodeTable();
                     loadColumns(settingsPanel);
                     loadNodesTableSettings(settingsPanel);
                     break;
                 case EDGES_TABLE:
-                    table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
+                    table = graphModel.getEdgeTable();
                     loadColumns(settingsPanel);
                     loadEdgesTableSettings(settingsPanel);
                     break;
@@ -184,7 +187,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
 
     private void fillComboBoxWithColumnTypes(String column, JComboBox comboBox) {
         comboBox.removeAllItems();
-        List<SupportedColumnTypeWrapper> supportedTypesWrappers = SupportedColumnTypeWrapper.buildOrderedSupportedTypesList();
+        List<SupportedColumnTypeWrapper> supportedTypesWrappers = SupportedColumnTypeWrapper.buildOrderedSupportedTypesList(graphModel);
 
         for (SupportedColumnTypeWrapper supportedColumnTypeWrapper : supportedTypesWrappers) {
             comboBox.addItem(supportedColumnTypeWrapper);

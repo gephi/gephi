@@ -50,6 +50,7 @@ import org.gephi.datalab.plugin.manipulators.columns.CopyDataToOtherColumn;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulatorUI;
+import org.gephi.graph.api.GraphModel;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -71,7 +72,7 @@ public class CopyDataToOtherColumnUI extends javax.swing.JPanel implements Attri
     }
 
     @Override
-    public void setup(AttributeColumnsManipulator m, Table table, Column column, DialogControls dialogControls) {
+    public void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column, DialogControls dialogControls) {
         this.manipulator = (CopyDataToOtherColumn) m;
 
         sourceColumnLabel.setText(NbBundle.getMessage(CopyDataToOtherColumnUI.class, "CopyDataToOtherColumnUI.sourceColumnLabel.text", column.getTitle()));

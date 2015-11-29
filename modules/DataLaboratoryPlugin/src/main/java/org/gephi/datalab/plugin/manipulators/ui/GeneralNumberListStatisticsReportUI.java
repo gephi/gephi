@@ -50,6 +50,7 @@ import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulatorUI;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.ui.components.JFreeChartDialog;
 import org.gephi.ui.components.SimpleHTMLReport;
 import org.gephi.ui.utils.ChartsUtils;
@@ -63,10 +64,10 @@ import org.openide.windows.WindowManager;
  */
 public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI, ManipulatorUI {
 
-    private Number[] numbers;
-    private String dataName;
-    private String dialogTitle;
-    private BigDecimal[] statistics;
+    private final Number[] numbers;
+    private final String dataName;
+    private final String dialogTitle;
+    private final BigDecimal[] statistics;
     private JFreeChart boxPlot, scatterPlot, histogram;
     private JFreeChartDialog boxPlotDialog, scatterPlotDialog, histogramDialog;
     private SimpleHTMLReport reportDialog;
@@ -93,7 +94,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel impl
     }
 
     @Override
-    public void setup(AttributeColumnsManipulator m, Table table, Column column, DialogControls dialogControls) {
+    public void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column, DialogControls dialogControls) {
     }
 
     @Override

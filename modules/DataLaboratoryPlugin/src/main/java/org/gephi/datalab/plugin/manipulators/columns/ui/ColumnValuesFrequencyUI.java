@@ -49,6 +49,7 @@ import org.gephi.datalab.plugin.manipulators.columns.ColumnValuesFrequency;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulatorUI;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.ui.components.JFreeChartDialog;
 import org.gephi.ui.components.SimpleHTMLReport;
 import org.jfree.chart.JFreeChart;
@@ -74,7 +75,7 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
     }
 
     @Override
-    public void setup(AttributeColumnsManipulator m, Table table, Column column, DialogControls dialogControls) {
+    public void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column, DialogControls dialogControls) {
         this.table = table;
         this.column = column;
         this.manipulator = (ColumnValuesFrequency) m;

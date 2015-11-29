@@ -74,6 +74,7 @@ import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategyBuilder;
 import org.gephi.datalab.spi.values.AttributeValueManipulator;
 import org.gephi.datalab.spi.values.AttributeValueManipulatorBuilder;
+import org.gephi.graph.api.GraphModel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.Lookup;
@@ -330,10 +331,11 @@ public class DataLaboratoryHelper {
      * Prepares the dialog UI of a AttributeColumnsManipulator if it has one and executes the manipulator in a separate
      * Thread when the dialog is accepted or directly if there is no UI.
      * @param m AttributeColumnsManipulator
+     * @param graphModel Graph model of the table
      * @param table Table of the column
      * @param column Column to manipulate
      */
-    public void executeAttributeColumnsManipulator(final AttributeColumnsManipulator m, final Table table, final Column column) {
+    public void executeAttributeColumnsManipulator(final AttributeColumnsManipulator m, final GraphModel graphModel, final Table table, final Column column) {
         if (m.canManipulateColumn(table, column)) {
             SwingUtilities.invokeLater(new Runnable() {
 
@@ -344,7 +346,7 @@ public class DataLaboratoryHelper {
                     if (ui != null) {
                         final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelper.class, "DataLaboratoryHelper.ui.okButton.text"));
                         DialogControls dialogControls = new DialogControlsImpl(okButton);
-                        ui.setup(m, table, column, dialogControls);
+                        ui.setup(m, graphModel, table, column, dialogControls);
                         JPanel settingsPanel = ui.getSettingsPanel();
                         DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelper.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
 
