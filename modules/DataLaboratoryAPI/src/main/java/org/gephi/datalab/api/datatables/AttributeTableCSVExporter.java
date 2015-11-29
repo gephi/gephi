@@ -60,6 +60,7 @@ import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.graph.api.types.TimestampSet;
+import org.joda.time.DateTimeZone;
 import org.openide.util.Lookup;
 
 public class AttributeTableCSVExporter {
@@ -153,6 +154,7 @@ public class AttributeTableCSVExporter {
         }
         
         TimeFormat timeFormat = graph.getModel().getTimeFormat();
+        DateTimeZone timeZone = graph.getModel().getTimeZone();
 
         if (columnIndexesToExport == null) {
             List<Integer> columnIndexesToExportList = new ArrayList<Integer>();
@@ -210,13 +212,13 @@ public class AttributeTableCSVExporter {
 
                 if (value != null) {
                     if(value instanceof TimestampSet){
-                        text = ((TimestampSet) value).toString(timeFormat);
+                        text = ((TimestampSet) value).toString(timeFormat, timeZone);
                     } else if(value instanceof TimestampMap){
-                        text = ((TimestampMap) value).toString(timeFormat);
+                        text = ((TimestampMap) value).toString(timeFormat, timeZone);
                     } else if(value instanceof IntervalSet){
-                        text = ((IntervalSet) value).toString(timeFormat);
+                        text = ((IntervalSet) value).toString(timeFormat, timeZone);
                     } else if(value instanceof IntervalMap){
-                        text = ((IntervalMap) value).toString(timeFormat);
+                        text = ((IntervalMap) value).toString(timeFormat, timeZone);
                     } else {
                         text = value.toString();
                     }

@@ -54,6 +54,7 @@ import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.graph.api.types.TimestampSet;
+import org.joda.time.DateTimeZone;
 
 /**
  *
@@ -73,6 +74,7 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
     private final boolean isArrayType;
     
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
+    private DateTimeZone timeZone = DateTimeZone.UTC;
 
     public AttributeTypesSupportCellEditor(Class<?> typeClass) {
         super(new JTextField());
@@ -117,13 +119,13 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
             valueStr = "";
         }else{
             if(isTimestampSetType){
-                valueStr = ((TimestampSet) value).toString(timeFormat);
+                valueStr = ((TimestampSet) value).toString(timeFormat, timeZone);
             }else if(isTimestampMapType){
-                valueStr = ((TimestampMap) value).toString(timeFormat);
+                valueStr = ((TimestampMap) value).toString(timeFormat, timeZone);
             }else if(isIntervalSetType){
-                valueStr = ((IntervalSet) value).toString(timeFormat);
+                valueStr = ((IntervalSet) value).toString(timeFormat, timeZone);
             }else if(isIntervalMapType){
-                valueStr = ((IntervalMap) value).toString(timeFormat);
+                valueStr = ((IntervalMap) value).toString(timeFormat, timeZone);
             }else if(isArrayType){
                 valueStr = AttributeUtils.printArray(value);
             }else{
@@ -144,5 +146,13 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
 
     public void setTimeFormat(TimeFormat timeFormat) {
         this.timeFormat = timeFormat;
+    }
+
+    public DateTimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(DateTimeZone timeZone) {
+        this.timeZone = timeZone;
     }
 }

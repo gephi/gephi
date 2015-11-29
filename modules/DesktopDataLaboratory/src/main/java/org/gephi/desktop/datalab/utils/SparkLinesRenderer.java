@@ -57,6 +57,7 @@ import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.utils.sparklines.SparklineGraph;
 import org.gephi.utils.sparklines.SparklineParameters;
+import org.joda.time.DateTimeZone;
 
 /**
  * TableCellRenderer for drawing sparklines from cells that have a NumberList or DynamicNumber as their value.
@@ -68,6 +69,7 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
     private static final Color SELECTED_BACKGROUND = new Color(225, 255, 255);
     private static final Color UNSELECTED_BACKGROUND = Color.white;
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
+    private DateTimeZone timeZone = DateTimeZone.UTC;
     private boolean drawGraphics = false;
     
     //Config:
@@ -100,9 +102,9 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
         if (isArrayType) {
             stringRepresentation = AttributeUtils.printArray(value);
         } else if (isTimestampMapType) {
-            stringRepresentation = ((TimestampMap) value).toString(timeFormat);
+            stringRepresentation = ((TimestampMap) value).toString(timeFormat, timeZone);
         } else if (isIntervalMapType) {
-            stringRepresentation = ((IntervalMap) value).toString(timeFormat);
+            stringRepresentation = ((IntervalMap) value).toString(timeFormat, timeZone);
         }
         
         if (drawGraphics) {
@@ -190,6 +192,14 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
 
     public void setTimeFormat(TimeFormat timeFormat) {
         this.timeFormat = timeFormat;
+    }
+
+    public DateTimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(DateTimeZone timeZone) {
+        this.timeZone = timeZone;
     }
 
     public boolean isDrawGraphics() {

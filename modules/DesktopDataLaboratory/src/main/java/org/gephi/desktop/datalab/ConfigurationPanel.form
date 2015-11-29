@@ -18,25 +18,31 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="onlyVisibleCheckBox" alignment="0" max="32767" attributes="1"/>
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="timeFormatLabel" min="-2" pref="87" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="timeZoneLabel" min="-2" pref="87" max="-2" attributes="0"/>
+                          <Component id="timeFormatLabel" min="-2" pref="87" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="timeFormatComboBox" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="timeZoneComboBox" max="32767" attributes="0"/>
+                          <Component id="timeFormatComboBox" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
-                  <Component id="useSparklinesCheckBox" alignment="0" pref="324" max="32767" attributes="1"/>
-                  <Component id="timeIntervalsGraphicsCheckBox" alignment="0" max="32767" attributes="1"/>
                   <Component id="showEdgesNodesLabelsCheckBox" alignment="0" max="32767" attributes="1"/>
+                  <Component id="timeIntervalsGraphicsCheckBox" alignment="0" max="32767" attributes="1"/>
+                  <Component id="useSparklinesCheckBox" pref="305" max="32767" attributes="1"/>
+                  <Component id="onlyVisibleCheckBox" alignment="0" max="32767" attributes="1"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="onlyVisibleCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="useSparklinesCheckBox" min="-2" max="-2" attributes="0"/>
@@ -49,7 +55,12 @@
                   <Component id="timeFormatLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="timeFormatComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="timeZoneLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="timeZoneComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -108,6 +119,26 @@
           <ResourceString bundle="org/gephi/desktop/datalab/Bundle.properties" key="ConfigurationPanel.timeFormatLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="timeZoneLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/desktop/datalab/Bundle.properties" key="ConfigurationPanel.timeZoneLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="timeZoneComboBox">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="0"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="timeZoneComboBoxActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value=""/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

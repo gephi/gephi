@@ -72,6 +72,7 @@ import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.graph.api.types.TimestampMap;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.joda.time.DateTimeZone;
 import org.openide.util.Lookup;
 
 /**
@@ -203,18 +204,23 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         double min = timeBounds != null ? timeBounds.getLow() : Double.NEGATIVE_INFINITY;
         double max = timeBounds != null ? timeBounds.getHigh() : Double.POSITIVE_INFINITY;
         TimeFormat currentTimeFormat = graphModel.getTimeFormat();
+        DateTimeZone currentTimeZone = graphModel.getTimeZone();
 
         for (SparkLinesRenderer sparkLinesRenderer : sparkLinesRenderers) {
             sparkLinesRenderer.setTimeFormat(currentTimeFormat);
+            sparkLinesRenderer.setTimeZone(currentTimeZone);
         }
 
         intervalSetRenderer.setTimeFormat(currentTimeFormat);
+        intervalSetRenderer.setTimeZone(currentTimeZone);
         intervalSetRenderer.setMinMax(min, max);
         intervalMapRenderer.setTimeFormat(currentTimeFormat);
-        timestampMapRenderer.setTimeFormat(currentTimeFormat);
+        intervalMapRenderer.setTimeZone(currentTimeZone);
+        timestampMapRenderer.setTimeZone(currentTimeZone);
 
         for (AttributeTypesSupportCellEditor cellEditor : cellEditors) {
             cellEditor.setTimeFormat(currentTimeFormat);
+            cellEditor.setTimeZone(currentTimeZone);
         }
 
         refreshingTable = true;

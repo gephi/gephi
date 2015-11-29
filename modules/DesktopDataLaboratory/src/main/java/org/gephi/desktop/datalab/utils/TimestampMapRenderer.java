@@ -46,6 +46,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.TimestampMap;
+import org.joda.time.DateTimeZone;
 
 /**
  * TableCellRenderer for representing dynamic timestamp maps as strings in a table.
@@ -56,12 +57,13 @@ import org.gephi.graph.api.types.TimestampMap;
 public class TimestampMapRenderer extends DefaultTableCellRenderer {
 
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
+    private DateTimeZone timeZone = DateTimeZone.UTC;
     
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         String stringRepresentation = null;
         if (value != null) {
-            stringRepresentation = ((TimestampMap) value).toString(timeFormat);
+            stringRepresentation = ((TimestampMap) value).toString(timeFormat, timeZone);
         }
         
         return super.getTableCellRendererComponent(table, stringRepresentation, isSelected, hasFocus, row, column);
@@ -73,5 +75,13 @@ public class TimestampMapRenderer extends DefaultTableCellRenderer {
 
     public void setTimeFormat(TimeFormat timeFormat) {
         this.timeFormat = timeFormat;
+    }
+
+    public DateTimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(DateTimeZone timeZone) {
+        this.timeZone = timeZone;
     }
 }

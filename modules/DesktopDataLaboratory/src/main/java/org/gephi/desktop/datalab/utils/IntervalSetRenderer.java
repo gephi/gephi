@@ -51,6 +51,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.utils.TimeIntervalGraphics;
+import org.joda.time.DateTimeZone;
 
 /**
  * TableCellRenderer for drawing time intervals graphics from cells that have a {@link IntervalSet} as their value.
@@ -66,6 +67,7 @@ public class IntervalSetRenderer extends DefaultTableCellRenderer {
     private boolean drawGraphics = false;
     private final TimeIntervalGraphics timeIntervalGraphics;
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
+    private DateTimeZone timeZone = DateTimeZone.UTC;
 
     public IntervalSetRenderer() {
         this(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
@@ -87,7 +89,7 @@ public class IntervalSetRenderer extends DefaultTableCellRenderer {
             return super.getTableCellRendererComponent(table, null, isSelected, hasFocus, row, column);
         }
         IntervalSet intervalSet = (IntervalSet) value;
-        String stringRepresentation = intervalSet.toString(timeFormat);
+        String stringRepresentation = intervalSet.toString(timeFormat, timeZone);
         if (drawGraphics) {
             JLabel label = new JLabel();
             Color background;
@@ -129,6 +131,14 @@ public class IntervalSetRenderer extends DefaultTableCellRenderer {
 
     public void setTimeFormat(TimeFormat timeFormat) {
         this.timeFormat = timeFormat;
+    }
+
+    public DateTimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(DateTimeZone timeZone) {
+        this.timeZone = timeZone;
     }
 
     public double getMax() {

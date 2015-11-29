@@ -46,6 +46,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalMap;
+import org.joda.time.DateTimeZone;
 
 /**
  * TableCellRenderer for representing dynamic interval maps as strings in a table.
@@ -56,12 +57,13 @@ import org.gephi.graph.api.types.IntervalMap;
 public class IntervalMapRenderer extends DefaultTableCellRenderer {
 
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
+    private DateTimeZone timeZone = DateTimeZone.UTC;
     
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         String stringRepresentation = null;
         if (value != null) {
-            stringRepresentation = ((IntervalMap) value).toString(timeFormat);
+            stringRepresentation = ((IntervalMap) value).toString(timeFormat, timeZone);
         }
         
         return super.getTableCellRendererComponent(table, stringRepresentation, isSelected, hasFocus, row, column);
@@ -73,5 +75,13 @@ public class IntervalMapRenderer extends DefaultTableCellRenderer {
 
     public void setTimeFormat(TimeFormat timeFormat) {
         this.timeFormat = timeFormat;
+    }
+
+    public DateTimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(DateTimeZone timeZone) {
+        this.timeZone = timeZone;
     }
 }
