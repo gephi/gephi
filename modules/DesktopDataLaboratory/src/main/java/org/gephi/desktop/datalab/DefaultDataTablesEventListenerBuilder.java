@@ -41,6 +41,15 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.datalab;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import org.gephi.datalab.api.datatables.DataTablesEventListener;
 import org.gephi.datalab.api.datatables.DataTablesEventListenerBuilder;
 import org.openide.util.lookup.ServiceProvider;
@@ -55,6 +64,22 @@ public class DefaultDataTablesEventListenerBuilder implements DataTablesEventLis
 
     @Override
     public DataTablesEventListener getDataTablesEventListener() {
-        return (DataTableTopComponent)WindowManager.getDefault().findTopComponent("DataTableTopComponent");
+        final List<DataTableTopComponent> listenerHolder = new ArrayList<DataTableTopComponent>();
+        try {
+            //We have to do this in AWT thread...
+            //There is no support for Futures as far as I know
+            SwingUtilities.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    listenerHolder.add((DataTableTopComponent) WindowManager.getDefault().findTopComponent("DataTableTopComponent"));
+                }
+            });
+        } catch (InterruptedException ex) {
+            Logger.getLogger("").log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger("").log(Level.SEVERE, null, ex);
+        }
+        
+        return listenerHolder.get(0);
     }
 }
