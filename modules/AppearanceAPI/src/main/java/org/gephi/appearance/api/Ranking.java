@@ -41,6 +41,8 @@
  */
 package org.gephi.appearance.api;
 
+import org.gephi.graph.api.Element;
+
 /**
  *
  * @author mbastian
@@ -54,6 +56,8 @@ public interface Ranking {
     public Interpolator getInterpolator();
 
     public void setInterpolator(Interpolator interpolator);
+
+    public Number getValue(Element element);
 
     public float normalize(Number value);
 }

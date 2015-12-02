@@ -41,6 +41,7 @@
  */
 package org.gephi.appearance.api;
 
+import org.gephi.graph.api.Graph;
 import org.gephi.project.api.Workspace;
 
 /**
@@ -57,18 +58,16 @@ public interface AppearanceModel {
     public Workspace getWorkspace();
 
     /**
-     * Returns
-     * <code>true</code> if rankings are using the currently visible graph as a
-     * scale. If
-     * <code>false</code> the complete graph is used to determine minimum and
-     * maximum values, the ranking scale.
+     * Returns <code>true</code> if rankings are using the currently visible
+     * graph as a scale. If <code>false</code> the complete graph is used to
+     * determine minimum and maximum values, the ranking scale.
      *
      * @return <code>true</code> if using a local scale, <code>false</code> if
      * global scale
      */
     public boolean isLocalScale();
 
-    public Function[] getNodeFunctions();
+    public Function[] getNodeFunctions(Graph graph);
 
-    public Function[] getEdgeFunctions();
+    public Function[] getEdgeFunctions(Graph graph);
 }

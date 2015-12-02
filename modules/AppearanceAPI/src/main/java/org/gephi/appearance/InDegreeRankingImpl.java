@@ -39,13 +39,43 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
-package org.gephi.appearance.api;
+package org.gephi.appearance;
+
+import org.gephi.appearance.api.Interpolator;
+import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Node;
 
 /**
  *
  * @author mbastian
  */
-public interface PartitionFunction extends Function {
+public class InDegreeRankingImpl extends RankingImpl {
 
-    public Partition getPartition();
+    private final DirectedGraph graph;
+
+    public InDegreeRankingImpl(DirectedGraph graph, Interpolator interpolator) {
+        super(interpolator);
+        this.graph = graph;
+    }
+
+    @Override
+    public Number getValue(Element element) {
+        return graph.getInDegree((Node) element);
+    }
+
+    @Override
+    protected void refresh() {
+        if (graph.getNodeCount() > 0) {
+            int minV = Integer.MAX_VALUE;
+            int maxV = Integer.MIN_VALUE;
+            for (Node n : graph.getNodes()) {
+                int degree = graph.getInDegree(n);
+                minV = Math.min(degree, minV);
+                maxV = Math.max(degree, maxV);
+            }
+            min = minV;
+            max = maxV;
+        }
+    }
 }

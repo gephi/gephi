@@ -44,6 +44,7 @@ package org.gephi.appearance.api;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Graph;
 
 /**
  *
@@ -64,4 +65,6 @@ public interface Function {
     public boolean isRanking();
 
     public boolean isPartition();
+
+    public Graph getGraph();
 }

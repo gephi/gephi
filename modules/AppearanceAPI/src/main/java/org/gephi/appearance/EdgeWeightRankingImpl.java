@@ -39,13 +39,43 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
-package org.gephi.appearance.api;
+package org.gephi.appearance;
+
+import org.gephi.appearance.api.Interpolator;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Graph;
 
 /**
  *
  * @author mbastian
  */
-public interface PartitionFunction extends Function {
+public class EdgeWeightRankingImpl extends RankingImpl {
 
-    public Partition getPartition();
+    private final Graph graph;
+
+    public EdgeWeightRankingImpl(Graph graph, Interpolator interpolator) {
+        super(interpolator);
+        this.graph = graph;
+    }
+
+    @Override
+    public Number getValue(Element element) {
+        return ((Edge) element).getWeight();
+    }
+
+    @Override
+    protected void refresh() {
+        if (graph.getEdgeCount() > 0) {
+            double minV = Double.MAX_VALUE;
+            double maxV = Double.MIN_VALUE;
+            for (Edge e : graph.getEdges()) {
+                double weight = e.getWeight();
+                minV = Math.min(weight, minV);
+                maxV = Math.max(weight, maxV);
+            }
+            min = minV;
+            max = maxV;
+        }
+    }
 }

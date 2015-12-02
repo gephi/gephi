@@ -41,11 +41,7 @@
  */
 package org.gephi.appearance;
 
-import org.gephi.appearance.api.Partition;
-import org.gephi.appearance.api.PartitionFunction;
-import org.gephi.appearance.api.Ranking;
-import org.gephi.appearance.api.RankingFunction;
-import org.gephi.appearance.api.SimpleFunction;
+import org.gephi.appearance.api.Function;
 import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.SimpleTransformer;
@@ -53,35 +49,31 @@ import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Graph;
 
 /**
  *
  * @author mbastian
  */
-public class FunctionImpl implements RankingFunction, PartitionFunction, SimpleFunction {
+public abstract class FunctionImpl implements Function {
 
-    protected final AppearanceModelImpl model;
+    protected final String id;
+    protected final String name;
+    protected final Graph graph;
     protected final Column column;
     protected final Transformer transformer;
     protected final TransformerUI transformerUI;
     protected final PartitionImpl partition;
     protected final RankingImpl ranking;
 
-    public FunctionImpl(AppearanceModelImpl model, Column column, Transformer transformer, TransformerUI transformerUI) {
-        this(model, column, transformer, transformerUI, null, null);
-    }
-
-    public FunctionImpl(AppearanceModelImpl model, Column column, Transformer transformer, TransformerUI transformerUI, RankingImpl ranking) {
-        this(model, column, transformer, transformerUI, null, ranking);
-    }
-
-    public FunctionImpl(AppearanceModelImpl model, Column column, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition) {
-        this(model, column, transformer, transformerUI, partition, null);
-    }
-
-    public FunctionImpl(AppearanceModelImpl model, Column column, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition, RankingImpl ranking) {
-        this.model = model;
+    protected FunctionImpl(String id, String name, Graph graph, Column column, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition, RankingImpl ranking) {
+        if (id == null) {
+            throw new NullPointerException("The id can't be null");
+        }
+        this.id = id;
+        this.name = name;
         this.column = column;
+        this.graph = graph;
         try {
             this.transformer = transformer.getClass().newInstance();
         } catch (Exception ex) {
@@ -97,21 +89,12 @@ public class FunctionImpl implements RankingFunction, PartitionFunction, SimpleF
         if (isSimple()) {
             ((SimpleTransformer) transformer).transform(element);
         } else if (isRanking()) {
-            Number val = (Number) element.getAttribute(column);
+            Number val = ranking.getValue(element);
             ((RankingTransformer) transformer).transform(element, ranking, val);
         } else if (isPartition()) {
-            Object val = element.getAttribute(column);
+            Object val = partition.getValue(element);
             ((PartitionTransformer) transformer).transform(element, partition, val);
         }
-    }
-
-    @Override
-    public Column getColumn() {
-        return column;
-    }
-
-    public AppearanceModelImpl getModel() {
-        return model;
     }
 
     @Override
@@ -126,7 +109,7 @@ public class FunctionImpl implements RankingFunction, PartitionFunction, SimpleF
 
     @Override
     public boolean isSimple() {
-        return column == null;
+        return ranking == null && partition == null;
     }
 
     @Override
@@ -145,39 +128,30 @@ public class FunctionImpl implements RankingFunction, PartitionFunction, SimpleF
     }
 
     @Override
-    public Partition getPartition() {
-        return partition;
-    }
-
-    @Override
-    public Ranking getRanking() {
-        return ranking;
+    public Graph getGraph() {
+        return graph;
     }
 
     @Override
     public String toString() {
-        if (column != null) {
-            if (column.getTitle() != null) {
-                return column.getTitle();
-            } else {
-                return column.getId();
-            }
+        if (name != null) {
+            return name;
         }
-        return super.toString();
+        return id;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 47 * hash + (this.column != null ? this.column.hashCode() : 0);
-        hash = 47 * hash + (this.transformer != null ? this.transformer.hashCode() : 0);
-        hash = 47 * hash + (this.partition != null ? this.partition.hashCode() : 0);
-        hash = 47 * hash + (this.ranking != null ? this.ranking.hashCode() : 0);
+        hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj == null) {
             return false;
         }
@@ -185,16 +159,7 @@ public class FunctionImpl implements RankingFunction, PartitionFunction, SimpleF
             return false;
         }
         final FunctionImpl other = (FunctionImpl) obj;
-        if (this.column != other.column && (this.column == null || !this.column.equals(other.column))) {
-            return false;
-        }
-        if (this.transformer != other.transformer && (this.transformer == null || !this.transformer.equals(other.transformer))) {
-            return false;
-        }
-        if (this.partition != other.partition && (this.partition == null || !this.partition.equals(other.partition))) {
-            return false;
-        }
-        if (this.ranking != other.ranking && (this.ranking == null || !this.ranking.equals(other.ranking))) {
+        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
             return false;
         }
         return true;

@@ -39,13 +39,82 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
-package org.gephi.appearance.api;
+package org.gephi.appearance;
+
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Index;
 
 /**
  *
  * @author mbastian
  */
-public interface PartitionFunction extends Function {
+public class AttributePartitionImpl extends PartitionImpl {
 
-    public Partition getPartition();
+    protected final Index index;
+    protected final Column column;
+
+    public AttributePartitionImpl(Column column, Index index) {
+        super();
+        this.column = column;
+        this.index = index;
+    }
+
+    @Override
+    public Object getValue(Element element) {
+        return element.getAttribute(column);
+    }
+
+    @Override
+    public Iterable getValues() {
+        return index.values(column);
+    }
+
+    @Override
+    public int getElementCount() {
+        return index.countElements(column);
+    }
+
+    @Override
+    public int count(Object value) {
+        return index.count(column, value);
+    }
+
+    @Override
+    public float percentage(Object value) {
+        int count = index.count(column, value);
+        return (float) count / index.countElements(column);
+    }
+
+    @Override
+    public int size() {
+        return index.countValues(column);
+    }
+
+    @Override
+    public Column getColumn() {
+        return column;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 23 * hash + (this.column != null ? this.column.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AttributePartitionImpl other = (AttributePartitionImpl) obj;
+        if (this.column != other.column && (this.column == null || !this.column.equals(other.column))) {
+            return false;
+        }
+        return true;
+    }
 }

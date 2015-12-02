@@ -45,7 +45,6 @@ package org.gephi.appearance.api;
  *
  * @author mbastian
  */
-public interface PartitionFunction extends Function {
+public interface GraphFunction extends Function {
 
-    public Partition getPartition();
 }

@@ -52,9 +52,7 @@ import java.awt.geom.Point2D;
 public abstract class Interpolator {
 
     /**
-     * Linear interpolation
-     * <code>x = interpolate(x)
-     * <code>
+     * Linear interpolation <code>x = interpolate(x)</code>
      */
     public static final Interpolator LINEAR = new Interpolator() {
         @Override

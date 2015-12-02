@@ -39,13 +39,63 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
-package org.gephi.appearance.api;
+package org.gephi.appearance;
+
+import java.util.Arrays;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
 
 /**
  *
  * @author mbastian
  */
-public interface PartitionFunction extends Function {
+public class EdgeTypePartitionImpl extends PartitionImpl {
 
-    public Partition getPartition();
+    protected final Graph graph;
+    protected final GraphModel model;
+
+    public EdgeTypePartitionImpl(Graph graph) {
+        super();
+        this.graph = graph;
+        this.model = graph.getModel();
+    }
+
+    @Override
+    public Iterable getValues() {
+        return Arrays.asList(model.getEdgeTypeLabels());
+    }
+
+    @Override
+    public Object getValue(Element element) {
+        return ((Edge) element).getTypeLabel();
+    }
+
+    @Override
+    public int getElementCount() {
+        return graph.getEdgeCount();
+    }
+
+    @Override
+    public int count(Object value) {
+        return graph.getEdgeCount(model.getEdgeType(value));
+    }
+
+    @Override
+    public float percentage(Object value) {
+        int count = count(value);
+        return (float) count / graph.getEdgeCount();
+    }
+
+    @Override
+    public int size() {
+        return model.getEdgeTypeCount();
+    }
+
+    @Override
+    public Column getColumn() {
+        return null;
+    }
 }
