@@ -41,6 +41,7 @@
  */
 package org.gephi.appearance.plugin;
 
+import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.Transformer;
@@ -58,8 +59,8 @@ public class RankingNodeSizeTransformer implements RankingTransformer<Node> {
     protected float maxSize = 4f;
 
     @Override
-    public void transform(Node node, Ranking ranking, Number value) {
-        float rankingValue = ranking.normalize(value);
+    public void transform(Node node, Ranking ranking, Interpolator interpolator, Number value) {
+        float rankingValue = ranking.normalize(value, interpolator);
         float size = rankingValue * (maxSize - minSize) + minSize;
         node.setSize(size);
     }

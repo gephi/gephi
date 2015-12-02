@@ -42,6 +42,7 @@
 package org.gephi.appearance;
 
 import org.gephi.appearance.api.Function;
+import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.SimpleTransformer;
@@ -65,8 +66,9 @@ public abstract class FunctionImpl implements Function {
     protected final TransformerUI transformerUI;
     protected final PartitionImpl partition;
     protected final RankingImpl ranking;
+    protected Interpolator interpolator;
 
-    protected FunctionImpl(String id, String name, Graph graph, Column column, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition, RankingImpl ranking) {
+    protected FunctionImpl(String id, String name, Graph graph, Column column, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition, RankingImpl ranking, Interpolator interpolator) {
         if (id == null) {
             throw new NullPointerException("The id can't be null");
         }
@@ -74,6 +76,7 @@ public abstract class FunctionImpl implements Function {
         this.name = name;
         this.column = column;
         this.graph = graph;
+        this.interpolator = interpolator;
         try {
             this.transformer = transformer.getClass().newInstance();
         } catch (Exception ex) {
@@ -90,7 +93,7 @@ public abstract class FunctionImpl implements Function {
             ((SimpleTransformer) transformer).transform(element);
         } else if (isRanking()) {
             Number val = ranking.getValue(element);
-            ((RankingTransformer) transformer).transform(element, ranking, val);
+            ((RankingTransformer) transformer).transform(element, ranking, interpolator, val);
         } else if (isPartition()) {
             Object val = partition.getValue(element);
             ((PartitionTransformer) transformer).transform(element, partition, val);

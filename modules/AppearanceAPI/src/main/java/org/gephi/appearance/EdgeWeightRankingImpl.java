@@ -41,7 +41,6 @@
  */
 package org.gephi.appearance;
 
-import org.gephi.appearance.api.Interpolator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
@@ -54,8 +53,8 @@ public class EdgeWeightRankingImpl extends RankingImpl {
 
     private final Graph graph;
 
-    public EdgeWeightRankingImpl(Graph graph, Interpolator interpolator) {
-        super(interpolator);
+    public EdgeWeightRankingImpl(Graph graph) {
+        super();
         this.graph = graph;
     }
 

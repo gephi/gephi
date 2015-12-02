@@ -50,12 +50,10 @@ import org.gephi.appearance.api.Ranking;
  */
 public abstract class RankingImpl implements Ranking {
 
-    protected Interpolator interpolator;
     protected Number min;
     protected Number max;
 
-    protected RankingImpl(Interpolator interpolator) {
-        this.interpolator = interpolator;
+    protected RankingImpl() {
     }
 
     protected abstract void refresh();
@@ -71,17 +69,7 @@ public abstract class RankingImpl implements Ranking {
     }
 
     @Override
-    public Interpolator getInterpolator() {
-        return interpolator;
-    }
-
-    @Override
-    public void setInterpolator(Interpolator interpolator) {
-        this.interpolator = interpolator;
-    }
-
-    @Override
-    public float normalize(Number value) {
+    public float normalize(Number value, Interpolator interpolator) {
         float normalizedValue = (float) (value.doubleValue() - min.doubleValue()) / (float) (max.doubleValue() - min.doubleValue());
         return interpolator.interpolate(normalizedValue);
     }

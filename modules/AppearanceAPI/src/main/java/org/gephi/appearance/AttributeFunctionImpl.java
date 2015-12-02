@@ -6,6 +6,7 @@
 package org.gephi.appearance;
 
 import org.gephi.appearance.api.AttributeFunction;
+import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Partition;
 import org.gephi.appearance.api.PartitionFunction;
 import org.gephi.appearance.api.Ranking;
@@ -21,12 +22,22 @@ import org.gephi.graph.api.Graph;
  */
 public class AttributeFunctionImpl extends FunctionImpl implements RankingFunction, PartitionFunction, AttributeFunction {
 
-    public AttributeFunctionImpl(String id, Graph graph, Column column, Transformer transformer, TransformerUI transformerUI, RankingImpl ranking) {
-        super(id, null, graph, column, transformer, transformerUI, null, ranking);
+    public AttributeFunctionImpl(String id, Graph graph, Column column, Transformer transformer, TransformerUI transformerUI, RankingImpl ranking, Interpolator interpolator) {
+        super(id, null, graph, column, transformer, transformerUI, null, ranking, interpolator);
     }
 
     public AttributeFunctionImpl(String id, Graph graph, Column column, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition) {
-        super(id, null, graph, column, transformer, transformerUI, partition, null);
+        super(id, null, graph, column, transformer, transformerUI, partition, null, null);
+    }
+
+    @Override
+    public Interpolator getInterpolator() {
+        return interpolator;
+    }
+
+    @Override
+    public void setInterpolator(Interpolator interpolator) {
+        this.interpolator = interpolator;
     }
 
     @Override

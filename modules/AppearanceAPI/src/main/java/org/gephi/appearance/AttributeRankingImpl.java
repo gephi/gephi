@@ -19,8 +19,8 @@ public class AttributeRankingImpl extends RankingImpl {
     protected final Index index;
     protected final Column column;
 
-    public AttributeRankingImpl(Column column, Index index, Interpolator interpolator) {
-        super(interpolator);
+    public AttributeRankingImpl(Column column, Index index) {
+        super();
         this.column = column;
         this.index = index;
     }

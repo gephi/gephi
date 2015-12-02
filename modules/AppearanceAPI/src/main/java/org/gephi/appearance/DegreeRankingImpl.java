@@ -41,7 +41,6 @@
  */
 package org.gephi.appearance;
 
-import org.gephi.appearance.api.Interpolator;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
@@ -54,8 +53,8 @@ public class DegreeRankingImpl extends RankingImpl {
 
     private final Graph graph;
 
-    public DegreeRankingImpl(Graph graph, Interpolator interpolator) {
-        super(interpolator);
+    public DegreeRankingImpl(Graph graph) {
+        super();
         this.graph = graph;
     }
 

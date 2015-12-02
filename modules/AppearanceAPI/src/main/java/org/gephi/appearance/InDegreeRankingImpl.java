@@ -41,7 +41,6 @@
  */
 package org.gephi.appearance;
 
-import org.gephi.appearance.api.Interpolator;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Node;
@@ -54,8 +53,8 @@ public class InDegreeRankingImpl extends RankingImpl {
 
     private final DirectedGraph graph;
 
-    public InDegreeRankingImpl(DirectedGraph graph, Interpolator interpolator) {
-        super(interpolator);
+    public InDegreeRankingImpl(DirectedGraph graph) {
+        super();
         this.graph = graph;
     }
 

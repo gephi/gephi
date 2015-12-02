@@ -341,7 +341,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                 if (splineEditor == null) {
                     splineEditor = new SplineEditor(NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineEditor.title"));
                 }
-                Interpolator interpolator = function.getRanking().getInterpolator();
+                Interpolator interpolator = function.getInterpolator();
                 if (interpolator instanceof Interpolator.BezierInterpolator) {
                     Interpolator.BezierInterpolator bezierInterpolator = (Interpolator.BezierInterpolator) interpolator;
                     splineEditor.setControl1(bezierInterpolator.getControl1());
@@ -351,7 +351,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                     splineEditor.setControl2(new Point2D.Float(1, 1));
                 }
                 splineEditor.setVisible(true);
-                function.getRanking().setInterpolator(
+                function.setInterpolator(
                         new Interpolator.BezierInterpolator(
                                 (float) splineEditor.getControl1().getX(), (float) splineEditor.getControl1().getY(),
                                 (float) splineEditor.getControl2().getX(), (float) splineEditor.getControl2().getY()));

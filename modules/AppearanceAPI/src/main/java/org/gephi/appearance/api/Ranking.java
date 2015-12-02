@@ -53,11 +53,7 @@ public interface Ranking {
 
     public Number getMaxValue();
 
-    public Interpolator getInterpolator();
-
-    public void setInterpolator(Interpolator interpolator);
-
     public Number getValue(Element element);
 
-    public float normalize(Number value);
+    public float normalize(Number value, Interpolator interpolator);
 }
