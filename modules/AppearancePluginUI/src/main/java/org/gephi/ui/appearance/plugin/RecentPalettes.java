@@ -46,8 +46,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.gephi.appearance.plugin.RankingElementColorTransformer.LinearGradient;
@@ -62,14 +61,14 @@ public class RecentPalettes {
     protected static String DEFAULT_NODE_NAME = "prefs";
     public static final String COLORS = "PaletteColors";
     public static final String POSITIONS = "PalettePositions";
-    private List<LinearGradient> gradients;
-    private int maxSize;
+    private final LinkedList<LinearGradient> gradients;
+    private final int maxSize;
     protected String nodeName = null;
 
     public RecentPalettes() {
         nodeName = "recentpalettes";
         maxSize = 14;
-        gradients = new ArrayList<LinearGradient>(maxSize);
+        gradients = new LinkedList<LinearGradient>();
         retrieve();
     }
 
@@ -78,9 +77,9 @@ public class RecentPalettes {
         gradients.remove(gradient);
 
         // add to the top
-        gradients.add(0, gradient);
+        gradients.push(new LinearGradient(gradient.getColors(), gradient.getPositions()));
         while (gradients.size() > maxSize) {
-            gradients.remove(gradients.size() - 1);
+            gradients.removeLast();
         }
 
         store();
@@ -90,7 +89,7 @@ public class RecentPalettes {
         return gradients.toArray(new LinearGradient[0]);
     }
 
-    protected void store() {
+    private void store() {
         Preferences prefs = getPreferences();
 
         // clear the backing store
@@ -99,18 +98,19 @@ public class RecentPalettes {
         } catch (BackingStoreException ex) {
         }
 
-        for (int i = 0; i < gradients.size(); i++) {
-            LinearGradient gradient = gradients.get(i);
+        int i = 0;
+        for (LinearGradient gradient : gradients) {
             try {
                 prefs.putByteArray(COLORS + i, serializeColors(gradient.getColors()));
                 prefs.putByteArray(POSITIONS + i, serializePositions(gradient.getPositions()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            i++;
         }
     }
 
-    protected void retrieve() {
+    private void retrieve() {
         gradients.clear();
         Preferences prefs = getPreferences();
 
@@ -122,7 +122,7 @@ public class RecentPalettes {
                     Color[] colors = deserializeColors(cols);
                     float[] posisitons = deserializePositions(poss);
                     LinearGradient linearGradient = new LinearGradient(colors, posisitons);
-                    gradients.add(linearGradient);
+                    gradients.addLast(linearGradient);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
