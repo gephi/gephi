@@ -41,9 +41,11 @@
  */
 package org.gephi.ui.components;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import javax.swing.Icon;
 
 /**
@@ -79,12 +81,14 @@ public class PaletteIcon implements Icon {
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(1));
 
         for (int i = 0; i < maxColors; i++) {
-            g.setColor(BORDER_COLOR);
-            g.drawRect(x + 2 + i * COLOR_WIDTH, y, COLOR_WIDTH, COLOR_HEIGHT);
-            g.setColor(colors[i]);
-            g.fillRect(x + 2 + i * COLOR_WIDTH + 1, y + 1, COLOR_WIDTH - 1, COLOR_HEIGHT - 1);
+            g2.setColor(colors[i]);
+            g2.fillRect(x + 2 + i * COLOR_WIDTH, y, COLOR_WIDTH, COLOR_HEIGHT);
+            g2.setColor(BORDER_COLOR);
+            g2.drawRect(x + 2 + i * COLOR_WIDTH, y, COLOR_WIDTH, COLOR_HEIGHT);
         }
     }
 }
