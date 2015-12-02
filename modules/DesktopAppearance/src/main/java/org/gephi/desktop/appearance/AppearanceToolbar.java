@@ -120,6 +120,8 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
             refreshSelectedCategory((TransformerCategory) pce.getNewValue());
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_FUNCTION)) {
             refreshSelectedFunction((Function) pce.getNewValue());
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SELECTED_TRANSFORMER_UI)) {
+            refreshSelectedTransformerUI();
         }
 //        if (pce.getPropertyName().equals(AppearanceUIModelEvent.CURRENT_ELEMENT_TYPE)) {
 //            refreshSelectedElmntGroup((String) pce.getNewValue());
@@ -188,6 +190,16 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
             public void run() {
 
                 transformerToolbar.refreshTransformers();
+                controlToolbar.refreshControls();
+            }
+        });
+    }
+
+    private void refreshSelectedTransformerUI() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+
                 controlToolbar.refreshControls();
             }
         });
