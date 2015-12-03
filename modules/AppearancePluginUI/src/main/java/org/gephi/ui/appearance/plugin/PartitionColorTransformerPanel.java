@@ -233,6 +233,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
                         if (partition.getColor(currentValue) == null || !partition.getColor(currentValue).equals(color)) {
                             function.getPartition().setColor(currentValue, (Color) evt.getNewValue());
                         }
+                        PartitionColorTransformerPanel.this.requestFocusInWindow();
                     }
                 }
             });
