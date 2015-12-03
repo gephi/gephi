@@ -83,7 +83,7 @@ public class RootNode extends AbstractNode {
                     @Override
                     public Transferable paste() throws IOException {
                         FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-                        Query f = filterController.createQuery(fb.getFilter());
+                        Query f = filterController.createQuery(fb);
                         filterController.add(f);
                         return null;
                     }

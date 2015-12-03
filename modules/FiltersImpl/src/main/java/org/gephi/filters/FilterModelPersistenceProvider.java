@@ -255,9 +255,8 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
 
         if (builder != null) {
             //Create filter
-            Filter filter = builder.getFilter();
             FilterController fc = Lookup.getDefault().lookup(FilterController.class);
-            Query query = fc.createQuery(filter);
+            Query query = fc.createQuery(builder);
 
             FilterProperty property = null;
             boolean end = false;

@@ -72,7 +72,7 @@ public class FilterBuilderNodeDefaultAction extends SystemAction {
         FilterBuilderNode node = (FilterBuilderNode) ev.getSource();
         FilterBuilder builder = node.getBuilder();
         FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-        Query function = filterController.createQuery(builder.getFilter());
+        Query function = filterController.createQuery(builder);
         filterController.add(function);
     }
 }

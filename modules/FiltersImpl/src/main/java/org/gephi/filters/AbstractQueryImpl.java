@@ -150,7 +150,7 @@ public abstract class AbstractQueryImpl implements Query {
     public AbstractQueryImpl copy() {
         AbstractQueryImpl copy = null;
         if (this instanceof FilterQueryImpl) {
-            copy = new FilterQueryImpl(this.getFilter());
+            copy = new FilterQueryImpl(this.getBuilder(), this.getFilter());
         } else if (this instanceof OperatorQueryImpl) {
             copy = new OperatorQueryImpl((Operator) this.getFilter());
         }

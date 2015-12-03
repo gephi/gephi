@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.filters.api;
 
 import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
 
 /**
  * Queries are wrapping filters and are assembled in a query tree. Each query is
@@ -141,4 +142,12 @@ public interface Query {
      * @return the filter
      */
     public Filter getFilter();
+
+    /**
+     * Returns the filter builder that creates the filter this query is
+     * wrapping.
+     *
+     * @return the builder or null
+     */
+    public FilterBuilder getBuilder();
 }

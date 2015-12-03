@@ -311,7 +311,7 @@ public class FilterModelImpl implements FilterModel {
             for (Query q : absQuery.getDescendantsAndSelf()) {
                 if (q instanceof FilterQueryImpl) {
                     Filter f = ((FilterQueryImpl) q).getFilter();
-                    FilterBuilder builder = filterLibraryImpl.getBuilder(f);
+                    FilterBuilder builder = ((FilterQueryImpl) q).getBuilder();
                     if (builder != null) {
                         builder.destroy(f);
                     }

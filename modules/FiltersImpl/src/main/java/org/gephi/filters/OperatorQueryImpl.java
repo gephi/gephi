@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.filters;
 
 import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.Operator;
 
 /**
@@ -89,6 +90,11 @@ public class OperatorQueryImpl extends AbstractQueryImpl {
     @Override
     public Filter getFilter() {
         return operator;
+    }
+
+    @Override
+    public FilterBuilder getBuilder() {
+        return null;
     }
 
     public void setSimple(boolean simple) {

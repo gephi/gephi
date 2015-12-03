@@ -140,11 +140,12 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     @Override
-    public Query createQuery(Filter filter) {
+    public Query createQuery(FilterBuilder builder) {
+        Filter filter = builder.getFilter();
         if (filter instanceof Operator) {
             return new OperatorQueryImpl((Operator) filter);
         }
-        return new FilterQueryImpl(filter);
+        return new FilterQueryImpl(builder, filter);
     }
 
     @Override

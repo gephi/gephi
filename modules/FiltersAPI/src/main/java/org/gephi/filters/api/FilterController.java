@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.filters.api;
 
 import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.graph.api.GraphView;
 import org.gephi.project.api.Workspace;
 
@@ -81,13 +82,13 @@ import org.gephi.project.api.Workspace;
 public interface FilterController {
 
     /**
-     * Creates a query from <code>filter</code>. The created query is a root
+     * Creates a query from <code>builder</code>. The created query is a root
      * query.
      *
-     * @param filter the filter that is to be wrapped in a new query
+     * @param builder the builder that can create the filter that is to be wrapped in a new query
      * @return a query that is wrapping <code>filter</code>
      */
-    public Query createQuery(Filter filter);
+    public Query createQuery(FilterBuilder builder);
 
     /**
      * Adds <code>query</code> as a new query in the system. The query should be

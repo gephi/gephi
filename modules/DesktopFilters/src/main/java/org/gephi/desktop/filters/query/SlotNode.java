@@ -110,7 +110,7 @@ public class SlotNode extends AbstractNode {
                     try {
                         FilterBuilder builder = (FilterBuilder) t.getTransferData(FilterBuilderNode.DATA_FLAVOR);
                         FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-                        Query query = filterController.createQuery(builder.getFilter());
+                        Query query = filterController.createQuery(builder);
                         filterController.setSubQuery(parent, query);
                     } catch (UnsupportedFlavorException ex) {
                         Exceptions.printStackTrace(ex);

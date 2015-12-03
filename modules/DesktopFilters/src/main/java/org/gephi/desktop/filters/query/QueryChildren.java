@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.desktop.filters.query;
 
 import java.awt.datatransfer.Transferable;
@@ -127,7 +127,7 @@ public class QueryChildren extends Children.Array {
                         @Override
                         public Transferable paste() throws IOException {
                             FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-                            Query f = filterController.createQuery(fb.getFilter());
+                            Query f = filterController.createQuery(fb);
                             filterController.add(f);
                             return null;
                         }

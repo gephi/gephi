@@ -201,7 +201,10 @@ public class QueryNode extends AbstractNode {
         private void duplicateQuery(FilterController filterController, Query parent, Query child) {
             Filter filter = child.getFilter();
             FilterBuilder builder = filterController.getModel().getLibrary().getBuilder(filter);
-            Filter filterCopy = builder.getFilter();
+
+            Query childQuery = filterController.createQuery(builder);
+
+            Filter filterCopy = childQuery.getFilter();
             FilterProperty[] filterProperties = filter.getProperties();
             FilterProperty[] filterCopyProperties = filterCopy.getProperties();
             if (filterProperties != null && filterCopyProperties != null) {
@@ -210,7 +213,6 @@ public class QueryNode extends AbstractNode {
                 }
             }
 
-            Query childQuery = filterController.createQuery(filterCopy);
             if (parent == null) {
                 filterController.add(childQuery);
             } else {
