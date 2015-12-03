@@ -32,10 +32,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-plugin</artifactId>
         </dependency>
-<!--        <dependency>
+       <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>partition-api</artifactId>
-        </dependency>-->
+            <artifactId>appearance-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>lib.validation</artifactId>
