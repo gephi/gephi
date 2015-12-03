@@ -459,7 +459,7 @@ public class AppearanceModelImpl implements AppearanceModel {
                     if (isPartition(graph, column)) {
                         partition = new AttributePartitionImpl(column, getIndex(false));
                         partitions.put(getId(column), partition);
-                    } else {
+                    } else if (isRanking(graph, column)) {
                         ranking = new AttributeRankingImpl(column, getIndex(localScale));
                         rankings.put(getId(column), ranking);
                     }
@@ -582,7 +582,7 @@ public class AppearanceModelImpl implements AppearanceModel {
             } else {
                 index = localScale ? graphModel.getEdgeIndex(graph.getView()) : graphModel.getEdgeIndex();
             }
-            if (index.countValues(column) > 0 && !isPartition(graph, column)) {
+            if (index.countValues(column) > 0) {
                 return true;
             }
         }
