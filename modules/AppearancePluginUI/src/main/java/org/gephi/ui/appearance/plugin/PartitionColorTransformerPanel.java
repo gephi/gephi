@@ -49,11 +49,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -89,7 +85,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
     private PalettePopupButton palettePopupButton;
     private PartitionFunction function;
-    private List<Object> values;
+    private Collection<Object> values;
 
     public PartitionColorTransformerPanel() {
         initComponents();
@@ -108,18 +104,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         NumberFormat formatter = NumberFormat.getPercentInstance();
         formatter.setMaximumFractionDigits(2);
 
-        values = new ArrayList();
-        for (Object value : function.getPartition().getValues()) {
-            values.add(value);
-        }
-        Collections.sort(values, new Comparator() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                float p1 = PartitionColorTransformerPanel.this.function.getPartition().percentage(o1);
-                float p2 = PartitionColorTransformerPanel.this.function.getPartition().percentage(o2);
-                return p1 > p2 ? -1 : p1 < p2 ? 1 : 0;
-            }
-        });
+        values = function.getPartition().getSortedValues();
 
         //Model
         String[] columnNames = new String[]{"Color", "Partition", "Percentage"};
@@ -145,33 +130,33 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         colorCol.setPreferredWidth(16);
         colorCol.setMaxWidth(16);
 
-        for (int j = 0; j < values.size(); j++) {
-            Object value = values.get(j);
+        int j = 0;
+        for (Object value : values) {
             String displayName = value == null ? "null" : value.toString();
             float percentage = function.getPartition().percentage(value);
             model.setValueAt(value, j, 0);
             model.setValueAt(displayName, j, 1);
             String perc = "(" + formatter.format(percentage) + ")";
             model.setValueAt(perc, j, 2);
+            j++;
         }
     }
 
     private void applyPalette(Palette palette) {
         PaletteManager.getInstance().addRecentPalette(palette);
         Color[] colors = palette.getColors();
-        for (int i = 0; i < values.size(); i++) {
-            Object val = values.get(i);
-            Color col = colors[i];
-            function.getPartition().setColor(val, col);
+        int i = 0;
+        for (Object value : values) {
+            Color col = colors[i++];
+            function.getPartition().setColor(value, col);
         }
         table.revalidate();
         table.repaint();
     }
 
     private void applyColor(Color col) {
-        for (int i = 0; i < values.size(); i++) {
-            Object val = values.get(i);
-            function.getPartition().setColor(val, col);
+        for (Object value : values) {
+            function.getPartition().setColor(value, col);
         }
         table.revalidate();
         table.repaint();

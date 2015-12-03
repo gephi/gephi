@@ -42,7 +42,12 @@
 package org.gephi.appearance;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.gephi.appearance.api.Partition;
 
@@ -68,4 +73,17 @@ public abstract class PartitionImpl implements Partition {
         colorMap.put(value, color);
     }
 
+    @Override
+    public Collection getSortedValues() {
+        List values = new ArrayList(getValues());
+        Collections.sort(values, new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                float p1 = percentage(o1);
+                float p2 = percentage(o2);
+                return p1 > p2 ? -1 : p1 < p2 ? 1 : 0;
+            }
+        });
+        return values;
+    }
 }

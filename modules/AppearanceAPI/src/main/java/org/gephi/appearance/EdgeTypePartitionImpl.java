@@ -42,6 +42,7 @@
 package org.gephi.appearance;
 
 import java.util.Arrays;
+import java.util.Collection;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
@@ -64,7 +65,7 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
     }
 
     @Override
-    public Iterable getValues() {
+    public Collection getValues() {
 //        return Arrays.asList(model.getEdgeTypeLabels());
         return null;
     }

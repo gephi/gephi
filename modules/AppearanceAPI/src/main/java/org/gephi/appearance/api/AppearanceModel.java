@@ -41,6 +41,7 @@
  */
 package org.gephi.appearance.api;
 
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
 import org.gephi.project.api.Workspace;
 
@@ -66,6 +67,10 @@ public interface AppearanceModel {
      * global scale
      */
     public boolean isLocalScale();
+
+    public Partition getNodePartition(Graph graph, Column column);
+
+    public Partition getEdgePartition(Graph graph, Column column);
 
     public Function[] getNodeFunctions(Graph graph);
 

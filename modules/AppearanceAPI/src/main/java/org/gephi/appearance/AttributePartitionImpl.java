@@ -41,6 +41,7 @@
  */
 package org.gephi.appearance;
 
+import java.util.Collection;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Index;
@@ -66,7 +67,7 @@ public class AttributePartitionImpl extends PartitionImpl {
     }
 
     @Override
-    public Iterable getValues() {
+    public Collection getValues() {
         return index.values(column);
     }
 

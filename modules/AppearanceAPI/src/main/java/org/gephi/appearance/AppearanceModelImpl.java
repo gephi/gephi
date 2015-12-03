@@ -51,6 +51,7 @@ import java.util.Set;
 import org.gephi.appearance.api.AppearanceModel;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.Interpolator;
+import org.gephi.appearance.api.Partition;
 import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.SimpleTransformer;
@@ -126,6 +127,38 @@ public class AppearanceModelImpl implements AppearanceModel {
     @Override
     public Function[] getEdgeFunctions(Graph graph) {
         return refreshFunctions(graph).getEdgeFunctions();
+    }
+
+    @Override
+    public Partition getNodePartition(Graph graph, Column column) {
+        synchronized (functionLock) {
+            FunctionsModel m;
+            if (graph.getView().isMainView()) {
+                m = functionsMain;
+            } else {
+                m = functions.get(graph);
+            }
+            if (m != null) {
+                return m.nodeFunctionsModel.getPartition(column);
+            }
+            return null;
+        }
+    }
+
+    @Override
+    public Partition getEdgePartition(Graph graph, Column column) {
+        synchronized (functionLock) {
+            FunctionsModel m;
+            if (graph.getView().isMainView()) {
+                m = functionsMain;
+            } else {
+                m = functions.get(graph);
+            }
+            if (m != null) {
+                return m.edgeFunctionsModel.getPartition(column);
+            }
+            return null;
+        }
     }
 
     private FunctionsModel refreshFunctions(Graph graph) {
@@ -372,6 +405,10 @@ public class AppearanceModelImpl implements AppearanceModel {
 
         public abstract void refreshGraphFunctions();
 
+        public Partition getPartition(Column column) {
+            return partitions.get(getId(column));
+        }
+
         protected void refreshFunctions() {
             graph.readLock();
             boolean graphHasChanged = graphObserver.isNew() || graphObserver.hasGraphChanged();
@@ -393,7 +430,7 @@ public class AppearanceModelImpl implements AppearanceModel {
             //Clean
             for (Iterator<Map.Entry<Column, ColumnObserver>> itr = columnObservers.entrySet().iterator(); itr.hasNext();) {
                 Map.Entry<Column, ColumnObserver> entry = itr.next();
-                if (columns.contains(entry.getKey())) {
+                if (!columns.contains(entry.getKey())) {
                     rankings.remove(getId(entry.getKey()));
                     partitions.remove(getId(entry.getKey()));
                     for (Transformer t : getTransformers()) {

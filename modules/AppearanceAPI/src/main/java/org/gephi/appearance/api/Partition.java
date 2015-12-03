@@ -42,6 +42,7 @@
 package org.gephi.appearance.api;
 
 import java.awt.Color;
+import java.util.Collection;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 
@@ -51,7 +52,9 @@ import org.gephi.graph.api.Element;
  */
 public interface Partition {
 
-    public Iterable getValues();
+    public Collection getValues();
+    
+    public Collection getSortedValues();
 
     public int getElementCount();
 
