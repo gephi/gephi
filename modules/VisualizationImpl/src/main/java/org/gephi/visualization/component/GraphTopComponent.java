@@ -104,8 +104,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
                         requestActive();
                         add(drawable.getGraphComponent(), BorderLayout.CENTER);
                         remove(waitingLabel);
-
-                        engine.startDisplay();
                     }
                 });
             }

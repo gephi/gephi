@@ -48,7 +48,6 @@ import java.awt.Component;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import java.awt.Dimension;
-import java.awt.Point;
 import javax.swing.JPopupMenu;
 import javax.swing.ToolTipManager;
 
@@ -90,6 +89,8 @@ public class NewtGraphCanvas extends GLAbstractListener {
     @Override
     protected void init(GL2 gl) {
         globalScale = glWindow.getCurrentSurfaceScale(new float[2])[0];
+
+        engine.startDisplay();
     }
 
     public void reinitWindow() {
