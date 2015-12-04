@@ -92,6 +92,13 @@ public class NewtGraphCanvas extends GLAbstractListener {
         globalScale = glWindow.getCurrentSurfaceScale(new float[2])[0];
     }
 
+    public void reinitWindow() {
+        // Only used when collapse panel is set visible
+        // Workaround for JOGL bug 1274
+        glCanvas.setNEWTChild(null);
+        glCanvas.setNEWTChild(glWindow);
+    }
+
     @Override
     protected void render3DScene(GL2 gl, GLU glu) {
         if (vizController.getVizConfig().isShowFPS()) {
