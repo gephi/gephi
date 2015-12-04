@@ -475,6 +475,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         protected void setup() {
             clear();
             if (model != null) {
+                removeAll();
                 for (Enumeration<AbstractButton> btns = buttonGroups.getElements(); btns.hasMoreElements();) {
                     AbstractButton btn = btns.nextElement();
                     add(btn);
