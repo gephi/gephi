@@ -328,7 +328,7 @@ public class AppearanceUIModel {
             Method get = entry.getValue()[0];
             Method set = entry.getValue()[1];
             if (!(get != null && set != null
-                    && set.getParameterCount() == 1 && get.getParameterCount() == 0
+                    && set.getParameterTypes().length == 1 && get.getParameterTypes().length == 0
                     && set.getParameterTypes()[0].equals(get.getReturnType())
                     && isSupportedPropertyType(get.getReturnType()))) {
                 itr.remove();
