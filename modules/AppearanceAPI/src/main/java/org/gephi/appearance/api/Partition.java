@@ -53,7 +53,7 @@ import org.gephi.graph.api.Element;
 public interface Partition {
 
     public Collection getValues();
-    
+
     public Collection getSortedValues();
 
     public int getElementCount();

@@ -30,6 +30,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>appearance-plugin-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ui-components</artifactId>
         </dependency>
         <dependency>

@@ -319,7 +319,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                     for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
                         AbstractButton btn = btns.nextElement();
                         btn.setVisible(active);
-                        if (btn.getName().equals(selected)) {
+                        if (active && btn.getName().equals(selected)) {
                             g.setSelected(btn.getModel(), true);
                         }
                     }
@@ -417,7 +417,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                         for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
                             AbstractButton btn = btns.nextElement();
                             btn.setVisible(active);
-                            if (t != null && btn.getName().equals(t.getDisplayName())) {
+                            if (t != null && active && btn.getName().equals(t.getDisplayName())) {
                                 g.setSelected(btn.getModel(), true);
                             }
                         }

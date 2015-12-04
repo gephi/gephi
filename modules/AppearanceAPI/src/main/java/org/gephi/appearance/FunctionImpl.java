@@ -59,6 +59,7 @@ import org.gephi.graph.api.Graph;
 public abstract class FunctionImpl implements Function {
 
     protected final String id;
+    protected final Class<? extends Element> elementClass;
     protected final String name;
     protected final Graph graph;
     protected final Column column;
@@ -68,12 +69,13 @@ public abstract class FunctionImpl implements Function {
     protected final RankingImpl ranking;
     protected Interpolator interpolator;
 
-    protected FunctionImpl(String id, String name, Graph graph, Column column, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition, RankingImpl ranking, Interpolator interpolator) {
+    protected FunctionImpl(String id, String name, Class<? extends Element> elementClass, Graph graph, Column column, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition, RankingImpl ranking, Interpolator interpolator) {
         if (id == null) {
             throw new NullPointerException("The id can't be null");
         }
         this.id = id;
         this.name = name;
+        this.elementClass = elementClass;
         this.column = column;
         this.graph = graph;
         this.interpolator = interpolator;
@@ -133,6 +135,11 @@ public abstract class FunctionImpl implements Function {
     @Override
     public Graph getGraph() {
         return graph;
+    }
+
+    @Override
+    public Class<? extends Element> getElementClass() {
+        return elementClass;
     }
 
     @Override

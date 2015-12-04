@@ -194,6 +194,11 @@ public class AppearanceModelImpl implements AppearanceModel {
         }
 
         @Override
+        public Class<? extends Element> getElementClass() {
+            return Node.class;
+        }
+
+        @Override
         public Iterable<Node> getElements() {
             return graph.getNodes();
         }
@@ -240,7 +245,7 @@ public class AppearanceModelImpl implements AppearanceModel {
                 RankingImpl degreeRanking = rankings.get(getId("degree"));
                 if (!graphFunctions.containsKey(degreeId)) {
                     String name = NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.Degree.name");
-                    graphFunctions.put(degreeId, new GraphFunctionImpl(degreeId, name, graph, t, getTransformerUI(t), degreeRanking, defaultInterpolator));
+                    graphFunctions.put(degreeId, new GraphFunctionImpl(degreeId, name, Node.class, graph, t, getTransformerUI(t), degreeRanking, defaultInterpolator));
                 }
                 degreeRanking.refresh();
 
@@ -253,8 +258,8 @@ public class AppearanceModelImpl implements AppearanceModel {
                     if (!graphFunctions.containsKey(indegreeId)) {
                         String inDegreeName = NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.InDegree.name");
                         String outDegreeName = NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.OutDegree.name");
-                        graphFunctions.put(indegreeId, new GraphFunctionImpl(indegreeId, inDegreeName, graph, t, getTransformerUI(t), indegreeRanking, defaultInterpolator));
-                        graphFunctions.put(outdegreeId, new GraphFunctionImpl(outdegreeId, outDegreeName, graph, t, getTransformerUI(t), outdegreeRanking, defaultInterpolator));
+                        graphFunctions.put(indegreeId, new GraphFunctionImpl(indegreeId, inDegreeName, Node.class, graph, t, getTransformerUI(t), indegreeRanking, defaultInterpolator));
+                        graphFunctions.put(outdegreeId, new GraphFunctionImpl(outdegreeId, outDegreeName, Node.class, graph, t, getTransformerUI(t), outdegreeRanking, defaultInterpolator));
                     }
                     indegreeRanking.refresh();
                     outdegreeRanking.refresh();
@@ -278,8 +283,13 @@ public class AppearanceModelImpl implements AppearanceModel {
         }
 
         @Override
+        public Class<? extends Element> getElementClass() {
+            return Edge.class;
+        }
+
+        @Override
         public Table getTable() {
-            return graph.getModel().getNodeTable();
+            return graph.getModel().getEdgeTable();
         }
 
         @Override
@@ -316,7 +326,7 @@ public class AppearanceModelImpl implements AppearanceModel {
                 RankingImpl ranking = rankings.get(getId("weight"));
                 if (!graphFunctions.containsKey(weightId)) {
                     String name = NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Weight.name");
-                    graphFunctions.put(weightId, new GraphFunctionImpl(weightId, name, graph, t, getTransformerUI(t), ranking, defaultInterpolator));
+                    graphFunctions.put(weightId, new GraphFunctionImpl(weightId, name, Edge.class, graph, t, getTransformerUI(t), ranking, defaultInterpolator));
                 }
                 ranking.refresh();
             }
@@ -328,7 +338,7 @@ public class AppearanceModelImpl implements AppearanceModel {
                 if (partition != null) {
                     if (!graphFunctions.containsKey(typeId)) {
                         String name = NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Type.name");
-                        graphFunctions.put(typeId, new GraphFunctionImpl(typeId, name, graph, t, getTransformerUI(t), partition));
+                        graphFunctions.put(typeId, new GraphFunctionImpl(typeId, name, Edge.class, graph, t, getTransformerUI(t), partition));
                     }
                     //Refresh
                 } else {
@@ -355,7 +365,7 @@ public class AppearanceModelImpl implements AppearanceModel {
         }
 
         public Function[] getEdgeFunctions() {
-            return getFunctions(nodeFunctionsModel).toArray(new Function[0]);
+            return getFunctions(edgeFunctionsModel).toArray(new Function[0]);
         }
 
         private List<Function> getFunctions(ElementFunctionsModel model) {
@@ -404,6 +414,8 @@ public class AppearanceModelImpl implements AppearanceModel {
         public abstract String getIdPrefix();
 
         public abstract void refreshGraphFunctions();
+
+        public abstract Class<? extends Element> getElementClass();
 
         public Partition getPartition(Column column) {
             return partitions.get(getId(column));
@@ -503,7 +515,7 @@ public class AppearanceModelImpl implements AppearanceModel {
             for (Transformer transformer : getTransformers()) {
                 if (transformer instanceof SimpleTransformer) {
                     String id = getId(transformer, "simple");
-                    simpleFunctions.put(id, new SimpleFunctionImpl(id, graph, transformer, getTransformerUI(transformer)));
+                    simpleFunctions.put(id, new SimpleFunctionImpl(id, getElementClass(), graph, transformer, getTransformerUI(transformer)));
                 }
             }
         }

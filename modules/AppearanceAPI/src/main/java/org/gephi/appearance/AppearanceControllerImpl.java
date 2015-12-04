@@ -48,6 +48,7 @@ import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.ElementIterable;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -111,7 +112,7 @@ public class AppearanceControllerImpl implements AppearanceController {
         if (model != null) {
             GraphModel graphModel = model.getGraphModel();
             ElementIterable<? extends Element> iterable;
-            if (function.getTransformer().isNode()) {
+            if (function.getElementClass().equals(Node.class)) {
                 iterable = graphModel.getGraphVisible().getNodes();
             } else {
                 iterable = graphModel.getGraphVisible().getEdges();

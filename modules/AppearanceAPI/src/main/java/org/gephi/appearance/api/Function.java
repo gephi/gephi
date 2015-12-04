@@ -67,4 +67,6 @@ public interface Function {
     public boolean isPartition();
 
     public Graph getGraph();
+
+    public Class<? extends Element> getElementClass();
 }

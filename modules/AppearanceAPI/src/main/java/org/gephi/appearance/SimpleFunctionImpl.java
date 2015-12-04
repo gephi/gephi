@@ -8,6 +8,7 @@ package org.gephi.appearance;
 import org.gephi.appearance.api.SimpleFunction;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 
 /**
@@ -16,7 +17,7 @@ import org.gephi.graph.api.Graph;
  */
 public class SimpleFunctionImpl extends FunctionImpl implements SimpleFunction {
 
-    public SimpleFunctionImpl(String id, Graph graph, Transformer transformer, TransformerUI transformerUI) {
-        super(id, null, graph, null, transformer, transformerUI, null, null, null);
+    public SimpleFunctionImpl(String id, Class<? extends Element> elementClass, Graph graph, Transformer transformer, TransformerUI transformerUI) {
+        super(id, null, elementClass, graph, null, transformer, transformerUI, null, null, null);
     }
 }

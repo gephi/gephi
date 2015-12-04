@@ -11,6 +11,7 @@ import org.gephi.appearance.api.PartitionFunction;
 import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 
 /**
@@ -19,14 +20,14 @@ import org.gephi.graph.api.Graph;
  */
 public class GraphFunctionImpl extends FunctionImpl implements GraphFunction, RankingFunction, PartitionFunction {
 
-    public GraphFunctionImpl(String id, String name, Graph graph, Transformer transformer, TransformerUI transformerUI, RankingImpl ranking, Interpolator interpolator) {
-        super(id, name, graph, null, transformer, transformerUI, null, ranking, interpolator);
+    public GraphFunctionImpl(String id, String name, Class<? extends Element> elementClass, Graph graph, Transformer transformer, TransformerUI transformerUI, RankingImpl ranking, Interpolator interpolator) {
+        super(id, name, elementClass, graph, null, transformer, transformerUI, null, ranking, interpolator);
     }
 
-    public GraphFunctionImpl(String id, String name, Graph graph, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition) {
-        super(id, name, graph, null, transformer, transformerUI, partition, null, null);
+    public GraphFunctionImpl(String id, String name, Class<? extends Element> elementClass, Graph graph, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition) {
+        super(id, name, elementClass, graph, null, transformer, transformerUI, partition, null, null);
     }
-    
+
     @Override
     public Interpolator getInterpolator() {
         return interpolator;

@@ -45,20 +45,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.plugin.RankingElementColorTransformer;
 import org.gephi.ui.components.PaletteIcon;
@@ -67,7 +59,6 @@ import org.gephi.ui.components.gradientslider.MultiThumbSlider;
 import org.gephi.utils.PaletteUtils;
 import org.gephi.utils.PaletteUtils.Palette;
 import org.openide.util.NbBundle;
-import org.openide.util.NbPreferences;
 
 /**
  * @author Mathieu Bastian
@@ -97,12 +88,6 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
                     if (!Arrays.equals(positions, colorTransformer.getColorPositions()) || !Arrays.deepEquals(colors, colorTransformer.getColors())) {
                         colorTransformer.setColors(Arrays.copyOf(colors, colors.length));
                         colorTransformer.setColorPositions(Arrays.copyOf(positions, positions.length));
-                        try {
-                            NbPreferences.forModule(RankingColorTransformerPanel.class).putByteArray(getPositionKey(), serializePositions(positions));
-                            NbPreferences.forModule(RankingColorTransformerPanel.class).putByteArray(getColorKey(), serializeColors(colors));
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
                         addRecentPalette();
                     }
 //                prepareGradientTooltip();
@@ -126,15 +111,6 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
         float[] positionsStart = colorTransformer.getColorPositions();
         Color[] colorsStart = colorTransformer.getColors();
-
-        try {
-            positionsStart = deserializePositions(NbPreferences.forModule(RankingColorTransformerPanel.class).getByteArray(getPositionKey(), serializePositions(positionsStart)));
-            colorsStart = deserializeColors(NbPreferences.forModule(RankingColorTransformerPanel.class).getByteArray(getColorKey(), serializeColors(colorsStart)));
-            colorTransformer.setColorPositions(positionsStart);
-            colorTransformer.setColors(colorsStart);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         //Gradient
         gradientSlider.setValues(positionsStart, colorsStart);
@@ -233,46 +209,6 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
         }
 
         return res;
-    }
-
-    private byte[] serializePositions(float[] positions) throws Exception {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bos);
-        out.writeObject(positions);
-        out.close();
-        return bos.toByteArray();
-    }
-
-    private float[] deserializePositions(byte[] positions) throws Exception {
-        ByteArrayInputStream bis = new ByteArrayInputStream(positions);
-        ObjectInputStream in = new ObjectInputStream(bis);
-        float[] array = (float[]) in.readObject();
-        in.close();
-        return array;
-    }
-
-    private String getPositionKey() {
-        return "RankingColorTransformerPanel_" + colorTransformer.getClass().getSimpleName() + "_positions";
-    }
-
-    private String getColorKey() {
-        return "RankingColorTransformerPanel_" + colorTransformer.getClass().getSimpleName() + "_colors";
-    }
-
-    private byte[] serializeColors(Color[] colors) throws Exception {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bos);
-        out.writeObject(colors);
-        out.close();
-        return bos.toByteArray();
-    }
-
-    private Color[] deserializeColors(byte[] colors) throws Exception {
-        ByteArrayInputStream bis = new ByteArrayInputStream(colors);
-        ObjectInputStream in = new ObjectInputStream(bis);
-        Color[] array = (Color[]) in.readObject();
-        in.close();
-        return array;
     }
 
     /**
