@@ -229,7 +229,7 @@ public class ImporterDOT implements FileImporter, LongTask {
 
         if (streamTokenizer.ttype == ']' || streamTokenizer.ttype == StreamTokenizer.TT_EOF) {
             return;
-        } else if (streamTokenizer.ttype == StreamTokenizer.TT_WORD) {
+        } else if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
 
             if (streamTokenizer.sval.equalsIgnoreCase("label")) {
                 streamTokenizer.nextToken();
@@ -367,7 +367,7 @@ public class ImporterDOT implements FileImporter, LongTask {
 
         if (streamTokenizer.ttype == ']' || streamTokenizer.ttype == StreamTokenizer.TT_EOF) {
             return;
-        } else if (streamTokenizer.ttype == StreamTokenizer.TT_WORD) {
+        } else if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
             if (streamTokenizer.sval.equalsIgnoreCase("label")) {
                 streamTokenizer.nextToken();
                 if (streamTokenizer.ttype == '=') {
