@@ -198,7 +198,7 @@ public class PartitionBuilder implements CategoryBuilder {
 
     public static abstract class PartitionFilter implements Filter {
 
-        private static final Object NULL = new Object();
+        protected static final Object NULL = new Object();
         protected AppearanceModel appearanceModel;
         protected Column column;
         protected Partition partition;
