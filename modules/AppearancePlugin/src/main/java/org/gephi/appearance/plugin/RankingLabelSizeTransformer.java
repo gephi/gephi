@@ -39,66 +39,35 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
-package org.gephi.ui.appearance.plugin;
+package org.gephi.appearance.plugin;
 
-import javax.swing.AbstractButton;
-import javax.swing.Icon;
-import javax.swing.JPanel;
-import org.gephi.appearance.api.Function;
-import org.gephi.appearance.api.RankingFunction;
-import org.gephi.appearance.plugin.RankingElementColorTransformer;
-import org.gephi.appearance.spi.RankingTransformer;
-import org.gephi.appearance.spi.TransformerCategory;
-import org.gephi.appearance.spi.TransformerUI;
-import org.gephi.ui.appearance.plugin.category.DefaultCategory;
-import org.openide.util.NbBundle;
+import org.gephi.appearance.api.Interpolator;
+import org.gephi.appearance.api.Ranking;
+import org.gephi.appearance.spi.Transformer;
+import org.gephi.graph.api.Element;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author mbastian
  */
-@ServiceProvider(service = TransformerUI.class, position = 200)
-public class RankingElementColorTransformerUI implements TransformerUI {
-
-    private RankingColorTransformerPanel panel;
+@ServiceProvider(service = Transformer.class)
+public class RankingLabelSizeTransformer extends RankingNodeSizeTransformer {
 
     @Override
-    public TransformerCategory getCategory() {
-        return DefaultCategory.COLOR;
+    public void transform(Element element, Ranking ranking, Interpolator interpolator, Number value) {
+        float rankingValue = ranking.normalize(value, interpolator);
+        float size = rankingValue * (maxSize - minSize) + minSize;
+        element.getTextProperties().setSize(size);
     }
 
     @Override
-    public Icon getIcon() {
-        return null;
+    public boolean isNode() {
+        return true;
     }
 
     @Override
-    public String getDisplayName() {
-        return NbBundle.getMessage(RankingElementColorTransformerUI.class, "Attribute.name");
-    }
-
-    @Override
-    public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public synchronized JPanel getPanel(Function function) {
-        if (panel == null) {
-            panel = new RankingColorTransformerPanel();
-        }
-        panel.setup((RankingFunction) function);
-        return panel;
-    }
-
-    @Override
-    public synchronized AbstractButton[] getControlButton() {
-        return null;
-    }
-
-    @Override
-    public Class<? extends RankingTransformer> getTransformerClass() {
-        return RankingElementColorTransformer.class;
+    public boolean isEdge() {
+        return true;
     }
 }

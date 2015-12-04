@@ -45,6 +45,7 @@ import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.Transformer;
+import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Node;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -53,16 +54,16 @@ import org.openide.util.lookup.ServiceProvider;
  * @author mbastian
  */
 @ServiceProvider(service = Transformer.class)
-public class RankingNodeSizeTransformer implements RankingTransformer<Node> {
+public class RankingNodeSizeTransformer implements RankingTransformer<Element> {
 
     protected float minSize = 1f;
     protected float maxSize = 4f;
 
     @Override
-    public void transform(Node node, Ranking ranking, Interpolator interpolator, Number value) {
+    public void transform(Element element, Ranking ranking, Interpolator interpolator, Number value) {
         float rankingValue = ranking.normalize(value, interpolator);
         float size = rankingValue * (maxSize - minSize) + minSize;
-        node.setSize(size);
+        ((Node) element).setSize(size);
     }
 
     @Override

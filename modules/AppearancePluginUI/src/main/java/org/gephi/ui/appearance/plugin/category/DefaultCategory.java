@@ -84,4 +84,36 @@ public class DefaultCategory {
             return "COLOR";
         }
     };
+    public static TransformerCategory LABEL_COLOR = new TransformerCategory() {
+        @Override
+        public String getDisplayName() {
+            return NbBundle.getMessage(DefaultCategory.class, "Category.LabelColor.name");
+        }
+
+        @Override
+        public Icon getIcon() {
+            return new ImageIcon(getClass().getResource("/org/gephi/ui/appearance/plugin/resources/labelcolor.png"));
+        }
+
+        @Override
+        public String toString() {
+            return "LABEL_COLOR";
+        }
+    };
+    public static TransformerCategory LABEL_SIZE = new TransformerCategory() {
+        @Override
+        public String getDisplayName() {
+            return NbBundle.getMessage(DefaultCategory.class, "Category.LabelSize.name");
+        }
+
+        @Override
+        public Icon getIcon() {
+            return new ImageIcon(getClass().getResource("/org/gephi/ui/appearance/plugin/resources/labelsize.png"));
+        }
+
+        @Override
+        public String toString() {
+            return "LABEL_SIZE";
+        }
+    };
 }

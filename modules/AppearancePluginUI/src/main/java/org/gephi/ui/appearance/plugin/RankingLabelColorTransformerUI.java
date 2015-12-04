@@ -46,7 +46,7 @@ import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.RankingFunction;
-import org.gephi.appearance.plugin.RankingElementColorTransformer;
+import org.gephi.appearance.plugin.RankingLabelColorTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
@@ -58,14 +58,14 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author mbastian
  */
-@ServiceProvider(service = TransformerUI.class, position = 200)
-public class RankingElementColorTransformerUI implements TransformerUI {
+@ServiceProvider(service = TransformerUI.class, position = 400)
+public class RankingLabelColorTransformerUI implements TransformerUI {
 
     private RankingColorTransformerPanel panel;
 
     @Override
     public TransformerCategory getCategory() {
-        return DefaultCategory.COLOR;
+        return DefaultCategory.LABEL_COLOR;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class RankingElementColorTransformerUI implements TransformerUI {
 
     @Override
     public String getDisplayName() {
-        return NbBundle.getMessage(RankingElementColorTransformerUI.class, "Attribute.name");
+        return NbBundle.getMessage(RankingLabelColorTransformerUI.class, "Attribute.name");
     }
 
     @Override
@@ -99,6 +99,6 @@ public class RankingElementColorTransformerUI implements TransformerUI {
 
     @Override
     public Class<? extends RankingTransformer> getTransformerClass() {
-        return RankingElementColorTransformer.class;
+        return RankingLabelColorTransformer.class;
     }
 }

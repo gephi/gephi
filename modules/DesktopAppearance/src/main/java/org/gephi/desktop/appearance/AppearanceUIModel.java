@@ -42,7 +42,6 @@
 package org.gephi.desktop.appearance;
 
 import java.awt.Color;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -64,7 +63,6 @@ import static org.gephi.desktop.appearance.AppearanceUIController.ELEMENT_CLASSE
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.ui.appearance.plugin.category.DefaultCategory;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**

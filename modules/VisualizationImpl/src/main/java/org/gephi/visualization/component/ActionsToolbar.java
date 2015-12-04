@@ -172,10 +172,10 @@ public class ActionsToolbar extends JToolBar {
                 GraphModel gm = gc.getGraphModel();
                 Graph graph = gm.getGraphVisible();
                 for (Node n : graph.getNodes().toArray()) {
-                    n.getTextProperties().setColor(null);
+                    n.getTextProperties().setColor(Color.BLACK);
                 }
                 for (Edge e : graph.getEdges().toArray()) {
-                    e.getTextProperties().setColor(null);
+                    e.getTextProperties().setColor(Color.BLACK);
                 }
             }
         });
