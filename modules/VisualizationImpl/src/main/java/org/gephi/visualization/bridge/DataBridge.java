@@ -106,7 +106,10 @@ public class DataBridge implements VizArchitecture {
                 graph.writeUnlock();
             }
         }
-        if (force || (observer != null && observer.hasGraphChanged())) {
+        if (force || (observer != null && (observer.isNew() || observer.hasGraphChanged()))) {
+            if (observer.isNew()) {
+                observer.hasGraphChanged();
+            }
             NodeModeler nodeModeler = engine.getNodeModeler();
             EdgeModeler edgeModeler = engine.getEdgeModeler();
             Octree octree = engine.getOctree();
@@ -220,6 +223,10 @@ public class DataBridge implements VizArchitecture {
         }
         nodes = new NodeModel[10];
         edges = new EdgeModel[10];
+        Octree octree = engine.getOctree();
+        if (!octree.isEmpty()) {
+            octree.clear();
+        }
         if (graphModel != null) {
             observer = graphModel.createGraphObserver(graph, false);
         }
