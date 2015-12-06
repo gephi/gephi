@@ -44,7 +44,12 @@ package org.gephi.preview.plugin.renderers;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfGState;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.Rectangle2D;
@@ -183,6 +188,14 @@ public class NodeLabelRenderer implements Renderer {
         } else if (target instanceof PDFTarget) {
             renderPDF((PDFTarget) target, node, label, x, y, fontSize, color, outlineSize, outlineColor, showBox, boxColor);
         }
+    }
+
+    @Override
+    public CanvasSize getCanvasSize(
+            final Item item,
+            final PreviewProperties properties) {
+        //FIXME Compute the label canvas
+        return new CanvasSize();
     }
 
     public void renderG2D(G2DTarget target, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {

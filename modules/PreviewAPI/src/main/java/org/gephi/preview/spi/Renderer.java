@@ -61,7 +61,7 @@ import org.gephi.preview.api.*;
  * <code>render()</code> which is called many times.</li>
  * <li>The <code>isRendererForitem()</code> is then used to determine which renderer
  * should be used to render an item. The method provides an access to the preview
- * properties. For instance, if the properties says the edge display is disabled, 
+ * properties. For instance, if the properties says the edge display is disabled,
  * the edge renderer should return <code>false</code> for every item. Note that
  * nothing avoids several renderer to returns <code>true</code> for the same item.</li>
  * <li>The <code>render()</code> method is finally called for every item which
@@ -99,7 +99,7 @@ import org.gephi.preview.api.*;
  * @author Yudi Xue, Mathieu Bastian
  */
 public interface Renderer {
-    
+
     /**
      * Provides an user friendly name for the renderer.
      * This name will appear in the renderers manager UI.
@@ -109,14 +109,14 @@ public interface Renderer {
 
     /**
      * This method is called before rendering for all renderers and initializes
-     * items' additional attributes or run complex algorithms. 
+     * items' additional attributes or run complex algorithms.
      * <p>
      * This method has access to any item using the <code>getItems()</code> methods
      * of the preview model.
      * <p>
-     * No data should be stored in the renderer itself but put in items using 
+     * No data should be stored in the renderer itself but put in items using
      * {@link Item#setData(java.lang.String, java.lang.Object)}. Global states can
-     * be stored in properties using 
+     * be stored in properties using
      * {@link PreviewProperties#putValue(java.lang.String, java.lang.Object)}.
      * @param previewModel the model to get items from
      */
@@ -126,25 +126,25 @@ public interface Renderer {
      * Render <code>item</code> to <code>target</code> using the global properties
      * and item data.
      * <p>
-     * The target can be one of the default target {@link G2DTarget}, 
-     * {@link SVGTarget} or {@link PDFTarget}. Each target contains an access to 
+     * The target can be one of the default target {@link G2DTarget},
+     * {@link SVGTarget} or {@link PDFTarget}. Each target contains an access to
      * it's drawing canvas so the renderer can draw visual items.
      * @param item the item to be rendered
      * @param target the target to render the item on
      * @param properties the central properties
      */
     public void render(Item item, RenderTarget target, PreviewProperties properties);
-    
+
     /**
      * Returns all associated properties for this renderer. Properties can be built
-     * using static <code>PreviewProperty.createProperty()</code> methods. 
-     * 
+     * using static <code>PreviewProperty.createProperty()</code> methods.
+     *
      * @return a properties array
      */
     public PreviewProperty[] getProperties();
 
     /**
-     * Based on <code>properties</code>, determine whether this renderer is 
+     * Based on <code>properties</code>, determine whether this renderer is
      * valid to render <code>Item</code>.
      * <p>
      * Additional states in <code>properties</code> helps to make a decision,
@@ -161,7 +161,7 @@ public interface Renderer {
      * renderer, <code>false</code> otherwise
      */
     public boolean isRendererForitem(Item item, PreviewProperties properties);
-    
+
     /**
      * Based on the <code>itemBuilder</code> class and the <code>properties</code>,
      * determine whether this renderer needs the given <code>itemBuilder</code> to be
@@ -172,7 +172,7 @@ public interface Renderer {
      * You can simply return true if the builder builds items that this renderer renders,
      * but you can also check the current properties to see if your renderer is going to produce any graphic.
      * <p>
-     * 
+     *
      * Additional states in <code>properties</code> helps to make a decision,
      * including:
      * <ul>
@@ -182,8 +182,21 @@ public interface Renderer {
      * other than the node renderer usually render nothing while the user is moving
      * to speeds things up.</li></ul>
      * @param itemBuilder builder that your renderer may need
-     * @param properties Current properties
+     * @param properties the current properties
      * @return <code>true</code> if you are going to use built items for rendering, <code>false</code> otherwise
      */
     public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties);
+
+    /**
+     * Compute the canvas size of the item to render.
+     *
+     * The returned <code>CanvasSize</code> has to embed the whole item to
+     * render. If the canvas size cannot be computed, a <code>CanvasSize</code>
+     * with both width and height equlal to zero is returned.
+     *
+     * @param item the item to get the canvas size
+     * @param properties the current properties
+     * @return the item canvas size
+     */
+    public CanvasSize getCanvasSize(Item item, PreviewProperties properties);
 }

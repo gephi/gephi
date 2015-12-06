@@ -89,18 +89,25 @@ public class EdgeRenderer implements Renderer {
     protected int defaultOpacity = 100;
     protected float defaultRadius = 0f;
 
+    private static final StraightEdgeRenderer STRAIGHT_RENDERER
+            = new StraightEdgeRenderer();
+    private static final CurvedEdgeRenderer CURVED_RENDERER
+            = new CurvedEdgeRenderer();
+    private static final SelfLoopEdgeRenderer SELF_LOOP_RENDERER
+            = new SelfLoopEdgeRenderer();
+
     @Override
     public void preProcess(PreviewModel previewModel) {
-        PreviewProperties properties = previewModel.getProperties();
-        Item[] edgeItems = previewModel.getItems(Item.EDGE);
+        final PreviewProperties properties = previewModel.getProperties();
+        final Item[] edgeItems = previewModel.getItems(Item.EDGE);
 
         //Put nodes in edge item
-        for (Item item : edgeItems) {
-            Edge edge = (Edge) item.getSource();
-            Node source = edge.getSource();
-            Node target = edge.getTarget();
-            Item nodeSource = previewModel.getItem(Item.NODE, source);
-            Item nodeTarget = previewModel.getItem(Item.NODE, target);
+        for (final Item item : edgeItems) {
+            final Edge edge = (Edge) item.getSource();
+            final Node source = edge.getSource();
+            final Node target = edge.getTarget();
+            final Item nodeSource = previewModel.getItem(Item.NODE, source);
+            final Item nodeTarget = previewModel.getItem(Item.NODE, target);
             item.setData(SOURCE, nodeSource);
             item.setData(TARGET, nodeTarget);
         }
@@ -110,8 +117,12 @@ public class EdgeRenderer implements Renderer {
         double maxWeight = Double.NEGATIVE_INFINITY;
 
         for (Item edge : edgeItems) {
-            minWeight = Math.min(minWeight, (Double) edge.getData(EdgeItem.WEIGHT));
-            maxWeight = Math.max(maxWeight, (Double) edge.getData(EdgeItem.WEIGHT));
+            minWeight = Math.min(
+                    minWeight,
+                    (Double) edge.getData(EdgeItem.WEIGHT));
+            maxWeight = Math.max(
+                    maxWeight,
+                    (Double) edge.getData(EdgeItem.WEIGHT));
         }
         properties.putValue(EDGE_MIN_WEIGHT, minWeight);
         properties.putValue(EDGE_MAX_WEIGHT, maxWeight);
@@ -122,14 +133,17 @@ public class EdgeRenderer implements Renderer {
         }
 
         //Rescale weight if necessary - and avoid negative weights
-        boolean rescaleWeight = properties.getBooleanValue(PreviewProperty.EDGE_RESCALE_WEIGHT);
-        for (Item item : edgeItems) {
+        final boolean rescaleWeight = properties.getBooleanValue(
+                PreviewProperty.EDGE_RESCALE_WEIGHT);
+        for (final Item item : edgeItems) {
             double weight = (Double) item.getData(EdgeItem.WEIGHT);
 
             //Rescale weight
             if (rescaleWeight) {
-                if (!Double.isInfinite(minWeight) && !Double.isInfinite(maxWeight) && maxWeight != minWeight) {
-                    double ratio = 1.0 / (maxWeight - minWeight);
+                if (!Double.isInfinite(minWeight)
+                        && !Double.isInfinite(maxWeight)
+                        && maxWeight != minWeight) {
+                    final double ratio = 1.0 / (maxWeight - minWeight);
                     weight = (weight - minWeight) * ratio;
                 }
             } else if (minWeight <= 0) {
@@ -142,27 +156,35 @@ public class EdgeRenderer implements Renderer {
         }
 
         //Radius
-        for (Item item : edgeItems) {
+        for (final Item item : edgeItems) {
             if (!(Boolean) item.getData(EdgeItem.SELF_LOOP)) {
-                float edgeRadius = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
-                float targetRadius = 0;
-                if ((Boolean) item.getData(EdgeItem.DIRECTED) || edgeRadius > 0f) {
+                final float edgeRadius
+                        = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
+                if ((Boolean) item.getData(EdgeItem.DIRECTED)
+                        || edgeRadius > 0F) {
                     //Target
-                    Item targetItem = (Item) item.getData(TARGET);
-                    Double weight = item.getData(EdgeItem.WEIGHT);
+                    final Item targetItem = (Item) item.getData(TARGET);
+                    final Double weight = item.getData(EdgeItem.WEIGHT);
                     //Avoid negative arrow size:
-                    float arrowSize = properties.getFloatValue(PreviewProperty.ARROW_SIZE);
-                    if (arrowSize < 0) {
-                        arrowSize = 0;
+                    float arrowSize = properties.getFloatValue(
+                            PreviewProperty.ARROW_SIZE);
+                    if (arrowSize < 0F) {
+                        arrowSize = 0F;
                     }
-                    float size = arrowSize * weight.floatValue();
-                    targetRadius = -(edgeRadius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
+                    final float size = arrowSize * weight.floatValue();
+                    final float targetRadius = -(edgeRadius
+                            + (Float) targetItem.getData(NodeItem.SIZE) / 2F
+                            + properties.getFloatValue(
+                                    PreviewProperty.NODE_BORDER_WIDTH));
                     item.setData(TARGET_RADIUS, targetRadius - size);
                 }
                 if (edgeRadius > 0) {
                     //Source
-                    Item sourceItem = (Item) item.getData(SOURCE);
-                    float sourceRadius = -(edgeRadius + (Float) sourceItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
+                    final Item sourceItem = (Item) item.getData(SOURCE);
+                    final float sourceRadius = -(edgeRadius
+                            + (Float) sourceItem.getData(NodeItem.SIZE) / 2f
+                            + properties.getFloatValue(
+                                    PreviewProperty.NODE_BORDER_WIDTH));
                     item.setData(SOURCE_RADIUS, sourceRadius);
                 }
             }
@@ -170,227 +192,27 @@ public class EdgeRenderer implements Renderer {
     }
 
     @Override
-    public void render(Item item, RenderTarget target, PreviewProperties properties) {
-        //Get nodes
-        Item sourceItem = item.getData(SOURCE);
-        Item targetItem = item.getData(TARGET);
-
-        //Weight and color
-        Double weight = item.getData(EdgeItem.WEIGHT);
-        EdgeColor edgeColor = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
-        Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
-                (Color) sourceItem.getData(NodeItem.COLOR),
-                (Color) targetItem.getData(NodeItem.COLOR));
-        int alpha = (int) ((properties.getIntValue(PreviewProperty.EDGE_OPACITY) / 100f) * 255f);
-        color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-
-        if (sourceItem == targetItem) {
-            renderSelfLoop(sourceItem, weight.floatValue(), color, properties, target);
+    public void render(
+            Item item,
+            RenderTarget target,
+            PreviewProperties properties) {
+        if (isSelfLoopEdge(item)) {
+            SELF_LOOP_RENDERER.render(item, target, properties);
         } else if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
-            renderCurvedEdge(item, sourceItem, targetItem, weight.floatValue(), color, properties, target);
+            CURVED_RENDERER.render(item, target, properties);
         } else {
-            renderStraightEdge(item, sourceItem, targetItem, weight.floatValue(), color, properties, target);
+            STRAIGHT_RENDERER.render(item, target, properties);
         }
     }
 
-    public void renderSelfLoop(Item nodeItem, float thickness, Color color, PreviewProperties properties, RenderTarget renderTarget) {
-        Float x = nodeItem.getData(NodeItem.X);
-        Float y = nodeItem.getData(NodeItem.Y);
-        Float size = nodeItem.getData(NodeItem.SIZE);
-        Node node = (Node) nodeItem.getSource();
-
-        Vector v1 = new Vector(x, y);
-        v1.add(size, -size);
-
-        Vector v2 = new Vector(x, y);
-        v2.add(size, size);
-
-        if (renderTarget instanceof G2DTarget) {
-            Graphics2D graphics = ((G2DTarget) renderTarget).getGraphics();
-
-            graphics.setStroke(new BasicStroke(thickness));
-            graphics.setColor(color);
-            GeneralPath gp = new GeneralPath(GeneralPath.WIND_NON_ZERO);
-            gp.moveTo(x, y);
-            gp.curveTo(v1.x, v1.y, v1.x, v2.y, x, y);
-            graphics.draw(gp);
-
-        } else if (renderTarget instanceof SVGTarget) {
-            SVGTarget svgTarget = (SVGTarget) renderTarget;
-
-            Element selfLoopElem = svgTarget.createElement("path");
-            selfLoopElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f C %f,%f %f,%f %f,%f",
-                    x, y, v1.x, v1.y, v2.x, v2.y, x, y));
-            selfLoopElem.setAttribute("class", node.getId().toString());
-            selfLoopElem.setAttribute("stroke", svgTarget.toHexString(color));
-            selfLoopElem.setAttribute("stroke-opacity", (color.getAlpha() / 255f) + "");
-            selfLoopElem.setAttribute("stroke-width", Float.toString(thickness * svgTarget.getScaleRatio()));
-            selfLoopElem.setAttribute("fill", "none");
-            svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(selfLoopElem);
-        } else if (renderTarget instanceof PDFTarget) {
-            PDFTarget pdfTarget = (PDFTarget) renderTarget;
-            PdfContentByte cb = pdfTarget.getContentByte();
-            cb.moveTo(x, -y);
-            cb.curveTo(v1.x, -v1.y, v2.x, -v2.y, x, -y);
-            cb.setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
-            cb.setLineWidth(thickness);
-            if (color.getAlpha() < 255) {
-                cb.saveState();
-                float alpha = color.getAlpha() / 255f;
-                PdfGState gState = new PdfGState();
-                gState.setStrokeOpacity(alpha);
-                cb.setGState(gState);
-            }
-            cb.stroke();
-            if (color.getAlpha() < 255) {
-                cb.restoreState();
-            }
-        }
-    }
-
-    public void renderCurvedEdge(Item edgeItem, Item sourceItem, Item targetItem, float thickness, Color color, PreviewProperties properties, RenderTarget renderTarget) {
-        Edge edge = (Edge) edgeItem.getSource();
-        Float x1 = sourceItem.getData(NodeItem.X);
-        Float x2 = targetItem.getData(NodeItem.X);
-        Float y1 = sourceItem.getData(NodeItem.Y);
-        Float y2 = targetItem.getData(NodeItem.Y);
-
-        //Curved edgs
-        Vector direction = new Vector(x2, y2);
-        direction.sub(new Vector(x1, y1));
-        float length = direction.mag();
-        direction.normalize();
-
-        float factor = properties.getFloatValue(BEZIER_CURVENESS) * length;
-
-        // normal vector to the edge
-        Vector n = new Vector(direction.y, -direction.x);
-        n.mult(factor);
-
-        // first control point
-        Vector v1 = new Vector(direction.x, direction.y);
-        v1.mult(factor);
-        v1.add(new Vector(x1, y1));
-        v1.add(n);
-
-        // second control point
-        Vector v2 = new Vector(direction.x, direction.y);
-        v2.mult(-factor);
-        v2.add(new Vector(x2, y2));
-        v2.add(n);
-
-        if (renderTarget instanceof G2DTarget) {
-            Graphics2D graphics = ((G2DTarget) renderTarget).getGraphics();
-
-            graphics.setStroke(new BasicStroke(thickness));
-            graphics.setColor(color);
-            GeneralPath gp = new GeneralPath(GeneralPath.WIND_NON_ZERO);
-            gp.moveTo(x1, y1);
-            gp.curveTo(v1.x, v1.y, v2.x, v2.y, x2, y2);
-            graphics.draw(gp);
-
-        } else if (renderTarget instanceof SVGTarget) {
-            SVGTarget svgTarget = (SVGTarget) renderTarget;
-            Element edgeElem = svgTarget.createElement("path");
-            edgeElem.setAttribute("class", edge.getSource().getId() + " " + edge.getTarget().getId());
-            edgeElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f C %f,%f %f,%f %f,%f",
-                    x1, y1, v1.x, v1.y, v2.x, v2.y, x2, y2));
-            edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
-            edgeElem.setAttribute("stroke-width", Float.toString(thickness * svgTarget.getScaleRatio()));
-            edgeElem.setAttribute("stroke-opacity", (color.getAlpha() / 255f) + "");
-            edgeElem.setAttribute("fill", "none");
-            svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(edgeElem);
-        } else if (renderTarget instanceof PDFTarget) {
-            PDFTarget pdfTarget = (PDFTarget) renderTarget;
-            PdfContentByte cb = pdfTarget.getContentByte();
-            cb.moveTo(x1, -y1);
-            cb.curveTo(v1.x, -v1.y, v2.x, -v2.y, x2, -y2);
-            cb.setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
-            cb.setLineWidth(thickness);
-            if (color.getAlpha() < 255) {
-                cb.saveState();
-                float alpha = color.getAlpha() / 255f;
-                PdfGState gState = new PdfGState();
-                gState.setStrokeOpacity(alpha);
-                cb.setGState(gState);
-            }
-            cb.stroke();
-            if (color.getAlpha() < 255) {
-                cb.restoreState();
-            }
-        }
-    }
-
-    public void renderStraightEdge(Item edgeItem, Item sourceItem, Item targetItem, float thickness, Color color, PreviewProperties properties, RenderTarget renderTarget) {
-        Edge edge = (Edge) edgeItem.getSource();
-        Float x1 = sourceItem.getData(NodeItem.X);
-        Float x2 = targetItem.getData(NodeItem.X);
-        Float y1 = sourceItem.getData(NodeItem.Y);
-        Float y2 = targetItem.getData(NodeItem.Y);
-
-        //Target radius - to start at the base of the arrow
-        Float targetRadius = edgeItem.getData(TARGET_RADIUS);
-        //Avoid edge from passing the node's center:
-        if (targetRadius != null && targetRadius < 0) {
-            Vector direction = new Vector(x2, y2);
-            direction.sub(new Vector(x1, y1));
-            direction.normalize();
-            direction = new Vector(direction.x, direction.y);
-            direction.mult(targetRadius);
-            direction.add(new Vector(x2, y2));
-            x2 = direction.x;
-            y2 = direction.y;
-        }
-        //Source radius
-        Float sourceRadius = edgeItem.getData(SOURCE_RADIUS);
-        //Avoid edge from passing the node's center:
-        if (sourceRadius != null && sourceRadius < 0) {
-            Vector direction = new Vector(x1, y1);
-            direction.sub(new Vector(x2, y2));
-            direction.normalize();
-            direction = new Vector(direction.x, direction.y);
-            direction.mult(sourceRadius);
-            direction.add(new Vector(x1, y1));
-            x1 = direction.x;
-            y1 = direction.y;
-        }
-
-        if (renderTarget instanceof G2DTarget) {
-            Graphics2D graphics = ((G2DTarget) renderTarget).getGraphics();
-            graphics.setStroke(new BasicStroke(thickness, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER));
-            graphics.setColor(color);
-            Line2D.Float line = new Line2D.Float(x1, y1, x2, y2);
-            graphics.draw(line);
-        } else if (renderTarget instanceof SVGTarget) {
-            SVGTarget svgTarget = (SVGTarget) renderTarget;
-            Element edgeElem = svgTarget.createElement("path");
-            edgeElem.setAttribute("class", edge.getSource().getId() + " " + edge.getTarget().getId());
-            edgeElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f L %f,%f",
-                    x1, y1, x2, y2));
-            edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
-            DecimalFormat df = new DecimalFormat("#.########");
-            edgeElem.setAttribute("stroke-width", df.format(thickness * svgTarget.getScaleRatio()));
-            edgeElem.setAttribute("stroke-opacity", (color.getAlpha() / 255f) + "");
-            edgeElem.setAttribute("fill", "none");
-            svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(edgeElem);
-        } else if (renderTarget instanceof PDFTarget) {
-            PDFTarget pdfTarget = (PDFTarget) renderTarget;
-            PdfContentByte cb = pdfTarget.getContentByte();
-            cb.moveTo(x1, -y1);
-            cb.lineTo(x2, -y2);
-            cb.setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
-            cb.setLineWidth(thickness);
-            if (color.getAlpha() < 255) {
-                cb.saveState();
-                float alpha = color.getAlpha() / 255f;
-                PdfGState gState = new PdfGState();
-                gState.setStrokeOpacity(alpha);
-                cb.setGState(gState);
-            }
-            cb.stroke();
-            if (color.getAlpha() < 255) {
-                cb.restoreState();
-            }
+    @Override
+    public CanvasSize getCanvasSize(Item item, PreviewProperties properties) {
+        if (isSelfLoopEdge(item)) {
+            return SELF_LOOP_RENDERER.getCanvasSize(item, properties);
+        } else if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
+            return CURVED_RENDERER.getCanvasSize(item, properties);
+        } else {
+            return STRAIGHT_RENDERER.getCanvasSize(item, properties);
         }
     }
 
@@ -427,11 +249,6 @@ public class EdgeRenderer implements Renderer {
             PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultRadius),};
     }
 
-    private boolean showEdges(PreviewProperties properties) {
-        return properties.getBooleanValue(PreviewProperty.SHOW_EDGES)
-                && !properties.getBooleanValue(PreviewProperty.MOVING);
-    }
-
     @Override
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
         if (item instanceof EdgeItem) {
@@ -442,11 +259,417 @@ public class EdgeRenderer implements Renderer {
 
     @Override
     public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
-        return (itemBuilder instanceof EdgeBuilder || itemBuilder instanceof NodeBuilder) && showEdges(properties);//Needs some properties of nodes
+        return (itemBuilder instanceof EdgeBuilder
+                || itemBuilder instanceof NodeBuilder)
+                && showEdges(properties);//Needs some properties of nodes
     }
 
     @Override
     public String getDisplayName() {
         return NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.name");
+    }
+
+    public static Color getColor(
+            final Item item,
+            final PreviewProperties properties) {
+        final Item sourceItem = item.getData(SOURCE);
+        final Item targetItem = item.getData(TARGET);
+        final EdgeColor edgeColor
+                = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
+        final Color color = edgeColor.getColor(
+                (Color) item.getData(EdgeItem.COLOR),
+                (Color) sourceItem.getData(NodeItem.COLOR),
+                (Color) targetItem.getData(NodeItem.COLOR));
+        return new Color(
+                color.getRed(),
+                color.getGreen(),
+                color.getBlue(),
+                (int) getAlpha(properties) * 255);
+    }
+
+    private boolean showEdges(PreviewProperties properties) {
+        return properties.getBooleanValue(PreviewProperty.SHOW_EDGES)
+                && !properties.getBooleanValue(PreviewProperty.MOVING);
+    }
+
+    private static boolean isSelfLoopEdge(final Item item) {
+        final Item sourceItem = item.getData(SOURCE);
+        final Item targetItem = item.getData(TARGET);
+        return item instanceof EdgeItem && sourceItem == targetItem;
+    }
+
+    private static float getAlpha(final PreviewProperties properties) {
+        return properties.getIntValue(PreviewProperty.EDGE_OPACITY) / 100F;
+    }
+
+    private static float getThickness(final Item item) {
+        return ((Double) item.getData(EdgeItem.WEIGHT)).floatValue();
+    }
+
+    private static class StraightEdgeRenderer {
+
+        public void render(
+                final Item item,
+                final RenderTarget target,
+                final PreviewProperties properties) {
+            final Helper h = new Helper(item);
+            final Color color = getColor(item, properties);
+
+            if (target instanceof G2DTarget) {
+                final Graphics2D graphics = ((G2DTarget) target).getGraphics();
+                graphics.setStroke(new BasicStroke(
+                        getThickness(item),
+                        BasicStroke.CAP_SQUARE,
+                        BasicStroke.JOIN_MITER));
+                graphics.setColor(color);
+                final Line2D.Float line
+                        = new Line2D.Float(h.x1, h.y1, h.x2, h.y2);
+                graphics.draw(line);
+            } else if (target instanceof SVGTarget) {
+                final SVGTarget svgTarget = (SVGTarget) target;
+                final Element edgeElem = svgTarget.createElement("path");
+                edgeElem.setAttribute("class", String.format(
+                        "%s %s",
+                        ((Node) h.sourceItem.getSource()).getId(),
+                        ((Node) h.targetItem.getSource()).getId()));
+                edgeElem.setAttribute("d", String.format(
+                        Locale.ENGLISH,
+                        "M %f,%f L %f,%f",
+                        h.x1, h.y1, h.x2, h.y2));
+                edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
+                final DecimalFormat df = new DecimalFormat("#.########");
+                edgeElem.setAttribute(
+                        "stroke-width",
+                        df.format(getThickness(item)
+                                * svgTarget.getScaleRatio()));
+                edgeElem.setAttribute(
+                        "stroke-opacity",
+                        (color.getAlpha() / 255f) + "");
+                edgeElem.setAttribute("fill", "none");
+                svgTarget.getTopElement(SVGTarget.TOP_EDGES)
+                        .appendChild(edgeElem);
+            } else if (target instanceof PDFTarget) {
+                final PDFTarget pdfTarget = (PDFTarget) target;
+                final PdfContentByte cb = pdfTarget.getContentByte();
+                cb.moveTo(h.x1, -h.y1);
+                cb.lineTo(h.x2, -h.y2);
+                cb.setRGBColorStroke(
+                        color.getRed(),
+                        color.getGreen(),
+                        color.getBlue());
+                cb.setLineWidth(getThickness(item));
+                if (color.getAlpha() < 255) {
+                    cb.saveState();
+                    final PdfGState gState = new PdfGState();
+                    gState.setStrokeOpacity(
+                            getAlpha(properties));
+                    cb.setGState(gState);
+                }
+                cb.stroke();
+                if (color.getAlpha() < 255) {
+                    cb.restoreState();
+                }
+            }
+        }
+
+        public CanvasSize getCanvasSize(
+                final Item item,
+                final PreviewProperties properties) {
+            final Item sourceItem = item.getData(SOURCE);
+            final Item targetItem = item.getData(TARGET);
+            final Float x1 = sourceItem.getData(NodeItem.X);
+            final Float x2 = targetItem.getData(NodeItem.X);
+            final Float y1 = sourceItem.getData(NodeItem.Y);
+            final Float y2 = targetItem.getData(NodeItem.Y);
+            final float minX = Math.min(x1, x2);
+            final float minY = Math.min(y1, y2);
+            final float maxX = Math.max(x1, x2);
+            final float maxY = Math.max(y1, y2);
+            return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
+        }
+
+        private class Helper {
+
+            public final Item sourceItem;
+            public final Item targetItem;
+            public final Float x1;
+            public final Float x2;
+            public final Float y1;
+            public final Float y2;
+
+            public Helper(final Item item) {
+                sourceItem = item.getData(SOURCE);
+                targetItem = item.getData(TARGET);
+
+                Float _x1 = sourceItem.getData(NodeItem.X);
+                Float _x2 = targetItem.getData(NodeItem.X);
+                Float _y1 = sourceItem.getData(NodeItem.Y);
+                Float _y2 = targetItem.getData(NodeItem.Y);
+
+                //Target radius - to start at the base of the arrow
+                final Float targetRadius = item.getData(TARGET_RADIUS);
+                //Avoid edge from passing the node's center:
+                if (targetRadius != null && targetRadius < 0) {
+                    Vector direction = new Vector(_x2, _y2);
+                    direction.sub(new Vector(_x1, _y1));
+                    direction.normalize();
+                    direction = new Vector(direction.x, direction.y);
+                    direction.mult(targetRadius);
+                    direction.add(new Vector(_x2, _y2));
+                    _x2 = direction.x;
+                    _y2 = direction.y;
+                }
+
+                //Source radius
+                final Float sourceRadius = item.getData(SOURCE_RADIUS);
+                //Avoid edge from passing the node's center:
+                if (sourceRadius != null && sourceRadius < 0) {
+                    Vector direction = new Vector(_x1, _y1);
+                    direction.sub(new Vector(_x2, _y2));
+                    direction.normalize();
+                    direction = new Vector(direction.x, direction.y);
+                    direction.mult(sourceRadius);
+                    direction.add(new Vector(_x1, _y1));
+                    _x1 = direction.x;
+                    _y1 = direction.y;
+                }
+
+                x1 = _x1;
+                y1 = _y1;
+                x2 = _x2;
+                y2 = _y2;
+            }
+        }
+    }
+
+    private static class CurvedEdgeRenderer {
+
+        public void render(
+                final Item item,
+                final RenderTarget target,
+                final PreviewProperties properties) {
+            final Helper h = new Helper(item, properties);
+            final Color color = getColor(item, properties);
+
+            if (target instanceof G2DTarget) {
+                final Graphics2D graphics = ((G2DTarget) target).getGraphics();
+                graphics.setStroke(new BasicStroke(getThickness(item)));
+                graphics.setColor(color);
+                final GeneralPath gp
+                        = new GeneralPath(GeneralPath.WIND_NON_ZERO);
+                gp.moveTo(h.x1, h.y1);
+                gp.curveTo(h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x2, h.y2);
+                graphics.draw(gp);
+            } else if (target instanceof SVGTarget) {
+                final SVGTarget svgTarget = (SVGTarget) target;
+                final Element edgeElem = svgTarget.createElement("path");
+                edgeElem.setAttribute("class", String.format(
+                        "%s %s",
+                        ((Node) h.sourceItem.getSource()).getId(),
+                        ((Node) h.targetItem.getSource()).getId()));
+                edgeElem.setAttribute("d", String.format(
+                        Locale.ENGLISH,
+                        "M %f,%f C %f,%f %f,%f %f,%f",
+                        h.x1, h.y1,
+                        h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x2, h.y2));
+                edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
+                edgeElem.setAttribute(
+                        "stroke-width",
+                        Float.toString(getThickness(item)
+                                * svgTarget.getScaleRatio()));
+                edgeElem.setAttribute(
+                        "stroke-opacity",
+                        (color.getAlpha() / 255f) + "");
+                edgeElem.setAttribute("fill", "none");
+                svgTarget.getTopElement(SVGTarget.TOP_EDGES)
+                        .appendChild(edgeElem);
+            } else if (target instanceof PDFTarget) {
+                final PDFTarget pdfTarget = (PDFTarget) target;
+                final PdfContentByte cb = pdfTarget.getContentByte();
+                cb.moveTo(h.x1, -h.y1);
+                cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x2, -h.y2);
+                cb.setRGBColorStroke(
+                        color.getRed(),
+                        color.getGreen(),
+                        color.getBlue());
+                cb.setLineWidth(getThickness(item));
+                if (color.getAlpha() < 255) {
+                    cb.saveState();
+                    final PdfGState gState = new PdfGState();
+                    gState.setStrokeOpacity(
+                            getAlpha(properties));
+                    cb.setGState(gState);
+                }
+                cb.stroke();
+                if (color.getAlpha() < 255) {
+                    cb.restoreState();
+                }
+            }
+        }
+
+        public CanvasSize getCanvasSize(
+                final Item item,
+                final PreviewProperties properties) {
+            final Helper h = new Helper(item, properties);
+            final float minX
+                    = Math.min(Math.min(Math.min(h.x1, h.x2), h.v1.x), h.v2.x);
+            final float minY
+                    = Math.min(Math.min(Math.min(h.y1, h.y2), h.v1.y), h.v2.y);
+            final float maxX
+                    = Math.max(Math.max(Math.max(h.x1, h.x2), h.v1.x), h.v2.x);
+            final float maxY
+                    = Math.max(Math.max(Math.max(h.y1, h.y2), h.v1.y), h.v2.y);
+            return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
+        }
+
+        private class Helper {
+
+            public final Item sourceItem;
+            public final Item targetItem;
+            public final Float x1;
+            public final Float x2;
+            public final Float y1;
+            public final Float y2;
+            public final Vector v1;
+            public final Vector v2;
+
+            public Helper(
+                    final Item item,
+                    final PreviewProperties properties) {
+                sourceItem = item.getData(SOURCE);
+                targetItem = item.getData(TARGET);
+
+                x1 = sourceItem.getData(NodeItem.X);
+                x2 = targetItem.getData(NodeItem.X);
+                y1 = sourceItem.getData(NodeItem.Y);
+                y2 = targetItem.getData(NodeItem.Y);
+
+                final Vector direction = new Vector(x2, y2);
+                direction.sub(new Vector(x1, y1));
+
+                final float length = direction.mag();
+
+                direction.normalize();
+                final float factor
+                        = properties.getFloatValue(BEZIER_CURVENESS) * length;
+
+                final Vector n = new Vector(direction.y, -direction.x);
+                n.mult(factor);
+
+                v1 = computeCtrlPoint(x1, y1, direction, factor, n);
+                v2 = computeCtrlPoint(x2, y2, direction, -factor, n);
+            }
+
+            private Vector computeCtrlPoint(
+                    final Float x,
+                    final Float y,
+                    final Vector direction,
+                    final float factor,
+                    final Vector normalVector) {
+                final Vector v = new Vector(direction.x, direction.y);
+                v.mult(factor);
+                v.add(new Vector(x, y));
+                v.add(normalVector);
+                return v;
+            }
+        }
+    }
+
+    private static class SelfLoopEdgeRenderer {
+
+        public static final String ID = "SelfLoopEdge";
+
+        public void render(
+                final Item item,
+                final RenderTarget target,
+                final PreviewProperties properties) {
+            final Helper h = new Helper(item);
+            final Color color = getColor(item, properties);
+
+            if (target instanceof G2DTarget) {
+                final Graphics2D graphics = ((G2DTarget) target).getGraphics();
+                graphics.setStroke(new BasicStroke(getThickness(item)));
+                graphics.setColor(color);
+                final GeneralPath gp
+                        = new GeneralPath(GeneralPath.WIND_NON_ZERO);
+                gp.moveTo(h.x, h.y);
+                gp.curveTo(h.v1.x, h.v1.y, h.v1.x, h.v2.y, h.x, h.y);
+                graphics.draw(gp);
+            } else if (target instanceof SVGTarget) {
+                final SVGTarget svgTarget = (SVGTarget) target;
+
+                final Element selfLoopElem = svgTarget.createElement("path");
+                selfLoopElem.setAttribute("d", String.format(
+                        Locale.ENGLISH,
+                        "M %f,%f C %f,%f %f,%f %f,%f",
+                        h.x, h.y, h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x, h.y));
+                selfLoopElem.setAttribute("class", h.node.getId().toString());
+                selfLoopElem.setAttribute(
+                        "stroke",
+                        svgTarget.toHexString(color));
+                selfLoopElem.setAttribute(
+                        "stroke-opacity",
+                        (color.getAlpha() / 255f) + "");
+                selfLoopElem.setAttribute("stroke-width", Float.toString(
+                        getThickness(item) * svgTarget.getScaleRatio()));
+                selfLoopElem.setAttribute("fill", "none");
+                svgTarget.getTopElement(SVGTarget.TOP_EDGES)
+                        .appendChild(selfLoopElem);
+            } else if (target instanceof PDFTarget) {
+                final PDFTarget pdfTarget = (PDFTarget) target;
+                final PdfContentByte cb = pdfTarget.getContentByte();
+                cb.moveTo(h.x, -h.y);
+                cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x, -h.y);
+                cb.setRGBColorStroke(
+                        color.getRed(),
+                        color.getGreen(),
+                        color.getBlue());
+                cb.setLineWidth(getThickness(item));
+                if (color.getAlpha() < 255) {
+                    cb.saveState();
+                    final PdfGState gState = new PdfGState();
+                    gState.setStrokeOpacity(
+                            getAlpha(properties));
+                    cb.setGState(gState);
+                }
+                cb.stroke();
+                if (color.getAlpha() < 255) {
+                    cb.restoreState();
+                }
+            }
+        }
+
+        public CanvasSize getCanvasSize(
+                final Item item,
+                final PreviewProperties properties) {
+            final Helper h = new Helper(item);
+            final float minX = Math.min(Math.min(h.x, h.v1.x), h.v2.x);
+            final float minY = Math.min(Math.min(h.y, h.v1.y), h.v2.y);
+            final float maxX = Math.max(Math.max(h.x, h.v1.x), h.v2.x);
+            final float maxY = Math.max(Math.max(h.y, h.v1.y), h.v2.y);
+            return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
+        }
+
+        private class Helper {
+
+            public final Float x;
+            public final Float y;
+            public final Node node;
+            public final Vector v1;
+            public final Vector v2;
+
+            public Helper(final Item item) {
+                x = item.getData(NodeItem.X);
+                y = item.getData(NodeItem.Y);
+                final Float size = item.getData(NodeItem.SIZE);
+                node = (Node) item.getSource();
+
+                v1 = new Vector(x, y);
+                v1.add(size, -size);
+
+                v2 = new Vector(x, y);
+                v2.add(size, size);
+            }
+        }
     }
 }

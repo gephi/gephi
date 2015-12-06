@@ -41,8 +41,7 @@
  */
 package org.gephi.preview;
 
-import java.awt.Dimension;
-import java.awt.Point;
+import java.awt.Rectangle;
 import java.beans.PropertyEditorManager;
 import java.util.*;
 import java.util.Map.Entry;
@@ -81,9 +80,6 @@ public class PreviewModelImpl implements PreviewModel {
     private PreviewMouseListener[] enabledMouseListeners;
     //Properties
     private PreviewProperties properties;
-    //Dimensions
-    private Dimension dimensions;
-    private Point topLeftPosition;
 
     public PreviewModelImpl(Workspace workspace) {
         this(workspace, null);
@@ -233,10 +229,6 @@ public class PreviewModelImpl implements PreviewModel {
                     sourceMap.put(item.getSource(), item);
                 } else if (value instanceof List) {
                     ((List) value).add(item);
-                } else {
-                    List<Item> list = new ArrayList<Item>();
-                    list.add((Item) value);
-                    list.add(item);
                 }
             }
         } else {
@@ -281,21 +273,24 @@ public class PreviewModelImpl implements PreviewModel {
     }
 
     @Override
-    public Dimension getDimensions() {
-        return dimensions;
-    }
-
-    @Override
-    public Point getTopLeftPosition() {
-        return topLeftPosition;
-    }
-
-    public void setDimensions(Dimension dimensions) {
-        this.dimensions = dimensions;
-    }
-
-    public void setTopLeftPosition(Point topLeftPosition) {
-        this.topLeftPosition = topLeftPosition;
+    public CanvasSize getGraphicsCanvasSize() {
+        Rectangle.Float rect = new Rectangle.Float();
+        for (Renderer r : getManagedEnabledRenderers()) {
+            for (String type : getItemTypes()) {
+                for (Item item : getItems(type)) {
+                    if (r.isRendererForitem(item, getProperties())) {
+                        CanvasSize cs = r.getCanvasSize(item, getProperties());
+                        Rectangle.Float itemRect = new Rectangle.Float(
+                            cs.getX(),
+                            cs.getY(),
+                            cs.getWidth(),
+                            cs.getHeight());
+                        java.awt.geom.Rectangle2D.union(rect, itemRect, rect);
+                    }
+                }
+            }
+        }
+        return new CanvasSize(rect.x, rect.y, rect.width, rect.height);
     }
 
     @Override
@@ -362,8 +357,8 @@ public class PreviewModelImpl implements PreviewModel {
     @Override
     public void setManagedRenderers(ManagedRenderer[] managedRenderers) {
         //Validate no null ManagedRenderers
-        for (int i = 0; i < managedRenderers.length; i++) {
-            if (managedRenderers[i] == null) {
+        for (ManagedRenderer managedRenderer : managedRenderers) {
+            if (managedRenderer == null) {
                 throw new IllegalArgumentException("managedRenderers should not contain null values");
             }
         }
