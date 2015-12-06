@@ -43,6 +43,8 @@ package org.gephi.visualization;
 
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -136,7 +138,7 @@ public class VizController implements VisualizationController {
             @Override
             public void initialize(Workspace workspace) {
                 if (workspace.getLookup().lookup(VizModel.class) == null) {
-                    workspace.add(new VizModel());
+                    workspace.add(new VizModel(workspace));
                 }
             }
 
@@ -172,8 +174,9 @@ public class VizController implements VisualizationController {
         } else {
             model = pc.getCurrentWorkspace().getLookup().lookup(VizModel.class);
             if (model == null) {
-                model = new VizModel();
+                model = new VizModel(pc.getCurrentWorkspace());
                 pc.getCurrentWorkspace().add(model);
+
             }
         }
         if (model != currentModel) {

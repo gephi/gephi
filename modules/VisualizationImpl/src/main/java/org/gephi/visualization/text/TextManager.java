@@ -210,6 +210,7 @@ public class TextManager implements VizArchitecture {
                 return true;
             }
         }
+        nodeRefresh = true;
         return false;
     }
 
@@ -224,6 +225,7 @@ public class TextManager implements VizArchitecture {
                 return true;
             }
         }
+        edgeRefresh = true;
         return false;
     }
 
@@ -232,7 +234,8 @@ public class TextManager implements VizArchitecture {
         if (selectedColumns == null || selectedColumns.length == 0) {
             txt = element.getLabel();
         } else if (selectedColumns.length == 1) {
-            txt = element.getAttribute(selectedColumns[0]).toString();
+            Object o = element.getAttribute(selectedColumns[0]);
+            return o != null ? o.toString() : "";
         } else {
             StringBuilder sb = new StringBuilder();
             int i = 0;

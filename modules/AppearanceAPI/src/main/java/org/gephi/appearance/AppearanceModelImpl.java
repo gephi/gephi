@@ -425,6 +425,9 @@ public class AppearanceModelImpl implements AppearanceModel {
             graph.readLock();
             boolean graphHasChanged = graphObserver.isNew() || graphObserver.hasGraphChanged();
             if (graphHasChanged) {
+                if(graphObserver.isNew()) {
+                    graphObserver.hasGraphChanged();
+                }
                 refreshGraphFunctions();
             }
             refreshAttributeFunctions(graphHasChanged);
