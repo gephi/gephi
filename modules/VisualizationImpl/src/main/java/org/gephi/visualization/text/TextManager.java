@@ -199,11 +199,11 @@ public class TextManager implements VizArchitecture {
         return edgeRenderer;
     }
 
-    public boolean refreshNode(NodeModel node) {
+    public boolean refreshNode(NodeModel node, TextModelImpl modelImpl) {
         TextProperties textData = node.getNode().getTextProperties();
         if (textData != null) {
             String txt = textData.getText();
-            String newTxt = buildText(node.getNode(), model.getNodeTextColumns());
+            String newTxt = buildText(node.getNode(), modelImpl.getNodeTextColumns());
             if ((txt == null && newTxt != null) || (txt != null && newTxt == null)
                     || (txt != null && newTxt != null && !txt.equals(newTxt))) {
                 node.setText(newTxt);
@@ -214,11 +214,11 @@ public class TextManager implements VizArchitecture {
         return false;
     }
 
-    public boolean refreshEdge(EdgeModel edge) {
+    public boolean refreshEdge(EdgeModel edge, TextModelImpl modelImpl) {
         TextProperties textData = edge.getEdge().getTextProperties();
         if (textData != null) {
             String txt = textData.getText();
-            String newTxt = buildText(edge.getEdge(), model.getEdgeTextColumns());
+            String newTxt = buildText(edge.getEdge(), modelImpl.getEdgeTextColumns());
             if ((txt == null && newTxt != null) || (txt != null && newTxt == null)
                     || (txt != null && newTxt != null && !txt.equals(newTxt))) {
                 edge.setText(newTxt);

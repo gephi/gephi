@@ -62,6 +62,7 @@ import org.gephi.visualization.model.node.NodeModeler;
 import org.gephi.visualization.octree.Octree;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.text.TextManager;
+import org.gephi.visualization.text.TextModelImpl;
 import org.openide.util.Lookup;
 
 /**
@@ -81,6 +82,7 @@ public class DataBridge implements VizArchitecture {
     protected int nodeColumnHashCode;
     protected int edgeColumnHashCode;
     private VizConfig vizConfig;
+    private TextModelImpl textModel;
     protected GraphLimits limits;
     //Graph
     protected GraphModel graphModel;
@@ -100,24 +102,19 @@ public class DataBridge implements VizArchitecture {
     }
 
     public synchronized boolean updateWorld() {
-        boolean force = false;
         if ((observer != null && observer.isDestroyed()) || (graphModel != null && graph.getView() != graphModel.getVisibleView())) {
             if (observer != null && !observer.isDestroyed()) {
                 observer.destroy();
             }
             observer = null;
-            if (graphModel != null) {
-                graph.writeLock();
-                graph = graphModel.getGraphVisible();
-                observer = graphModel.createGraphObserver(graph, false);
-                force = true;
-                graph.writeUnlock();
-            }
+            graphModel = null;
+            return false;
         }
-        if (force || (observer != null && (observer.isNew() || observer.hasGraphChanged())) || hasColumnsChanged()) {
+        if ((observer != null && (observer.isNew() || observer.hasGraphChanged())) || hasColumnsChanged()) {
             if (observer.isNew()) {
                 observer.hasGraphChanged();
             }
+            System.out.println("Update world");
             NodeModeler nodeModeler = engine.getNodeModeler();
             EdgeModeler edgeModeler = engine.getEdgeModeler();
             Octree octree = engine.getOctree();
@@ -151,7 +148,7 @@ public class DataBridge implements VizArchitecture {
                 } else {
                     model = nodes[id];
                 }
-                textManager.refreshNode(model);
+                textManager.refreshNode(model, textModel);
             }
             for (int i = 0; i < edges.length; i++) {
                 EdgeModel edge = edges[i];
@@ -193,7 +190,7 @@ public class DataBridge implements VizArchitecture {
                 minWeight = Math.min(w, minWeight);
                 maxWeight = Math.max(w, maxWeight);
 
-                textManager.refreshEdge(model);
+                textManager.refreshEdge(model, textModel);
             }
             if (!isView) {
                 limits.setMaxWeight(maxWeight);
@@ -220,16 +217,16 @@ public class DataBridge implements VizArchitecture {
 
     private boolean hasColumnsChanged() {
         if (nodeColumnObservers != null && edgeColumnObservers != null) {
-            Column[] nodeColumns = VizController.getInstance().getVizModel().getTextModel().getNodeTextColumns();
+            Column[] nodeColumns = textModel.getNodeTextColumns();
             int nodeCode = Arrays.hashCode(nodeColumns);
             if (nodeCode != nodeColumnHashCode) {
-                refreshNodeColumns();
+                refreshNodeColumns(textModel);
                 return true;
             }
-            Column[] edgeColumns = VizController.getInstance().getVizModel().getTextModel().getEdgeTextColumns();
+            Column[] edgeColumns = textModel.getEdgeTextColumns();
             int edgeCode = Arrays.hashCode(edgeColumns);
             if (edgeCode != edgeColumnHashCode) {
-                refreshEdgeColumns();
+                refreshEdgeColumns(textModel);
                 return true;
             }
 
@@ -280,12 +277,13 @@ public class DataBridge implements VizArchitecture {
         }
         if (graphModel != null) {
             observer = graphModel.createGraphObserver(graph, false);
-            refreshNodeColumns();
-            refreshEdgeColumns();
+            textModel = VizController.getInstance().getVizModel().getTextModel();
+            refreshNodeColumns(textModel);
+            refreshEdgeColumns(textModel);
         }
     }
 
-    private void refreshNodeColumns() {
+    private void refreshNodeColumns(TextModelImpl textModelImpl) {
         if (nodeColumnObservers != null) {
             for (ColumnObserver c : nodeColumnObservers) {
                 if (!c.isDestroyed()) {
@@ -294,7 +292,7 @@ public class DataBridge implements VizArchitecture {
             }
             nodeColumnObservers = null;
         }
-        Column[] nodeColumns = VizController.getInstance().getVizModel().getTextModel().getNodeTextColumns();
+        Column[] nodeColumns = textModelImpl.getNodeTextColumns();
         nodeColumnHashCode = Arrays.hashCode(nodeColumns);
         nodeColumnObservers = new ColumnObserver[nodeColumns.length];
         for (int i = 0; i < nodeColumns.length; i++) {
@@ -302,7 +300,7 @@ public class DataBridge implements VizArchitecture {
         }
     }
 
-    private void refreshEdgeColumns() {
+    private void refreshEdgeColumns(TextModelImpl textModelImpl) {
         if (edgeColumnObservers != null) {
             for (ColumnObserver c : edgeColumnObservers) {
                 if (!c.isDestroyed()) {
@@ -311,7 +309,7 @@ public class DataBridge implements VizArchitecture {
             }
             edgeColumnObservers = null;
         }
-        Column[] edgeColumns = VizController.getInstance().getVizModel().getTextModel().getEdgeTextColumns();
+        Column[] edgeColumns = textModelImpl.getEdgeTextColumns();
         edgeColumnHashCode = Arrays.hashCode(edgeColumns);
         edgeColumnObservers = new ColumnObserver[edgeColumns.length];
         for (int i = 0; i < edgeColumns.length; i++) {
