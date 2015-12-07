@@ -102,19 +102,24 @@ public class DataBridge implements VizArchitecture {
     }
 
     public synchronized boolean updateWorld() {
+        boolean force = false;
         if ((observer != null && observer.isDestroyed()) || (graphModel != null && graph.getView() != graphModel.getVisibleView())) {
             if (observer != null && !observer.isDestroyed()) {
                 observer.destroy();
             }
             observer = null;
-            graphModel = null;
-            return false;
+            if (graphModel != null) {
+                graph.writeLock();
+                graph = graphModel.getGraphVisible();
+                observer = graphModel.createGraphObserver(graph, false);
+                force = true;
+                graph.writeUnlock();
+            }
         }
-        if ((observer != null && (observer.isNew() || observer.hasGraphChanged())) || hasColumnsChanged()) {
+        if (force || (observer != null && (observer.isNew() || observer.hasGraphChanged())) || hasColumnsChanged()) {
             if (observer.isNew()) {
                 observer.hasGraphChanged();
             }
-            System.out.println("Update world");
             NodeModeler nodeModeler = engine.getNodeModeler();
             EdgeModeler edgeModeler = engine.getEdgeModeler();
             Octree octree = engine.getOctree();
