@@ -105,4 +105,9 @@ public class AttributeDataColumn<T extends Element> implements ElementDataColumn
     public boolean isEditable() {
         return attributeColumnsController.canChangeColumnData(column);
     }
+
+    @Override
+    public Column getColumn() {
+        return column;
+    }
 }

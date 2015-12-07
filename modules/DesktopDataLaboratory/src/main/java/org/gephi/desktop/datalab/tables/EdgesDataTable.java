@@ -51,8 +51,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.edges.EdgesManipulator;
+import org.gephi.desktop.datalab.DataTablesModel;
 import org.gephi.desktop.datalab.tables.popup.EdgesPopupAdapter;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.tools.api.EditWindowController;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -65,7 +67,7 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
 
     public EdgesDataTable() {
         super();
-        
+
         //Add listener of table selection to refresh edit window when the selection changes (and if the table is not being refreshed):
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
@@ -83,9 +85,7 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
                 }
             }
         });
-        
-        
-        
+
         table.addMouseListener(new EdgesPopupAdapter(this));
         table.addKeyListener(new KeyAdapter() {
 
@@ -107,18 +107,16 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
             }
         });
     }
-    
-    
 
     private List<PropertyDataColumn<Edge>> propertiesColumns;
     private boolean showEdgesNodesLabels = false;
 
     @Override
-    public List<? extends ElementDataColumn<Edge>> getFakeDataColumns() {
-        if(propertiesColumns != null){
+    public List<? extends ElementDataColumn<Edge>> getFakeDataColumns(GraphModel graphModel, DataTablesModel dataTablesModel) {
+        if (propertiesColumns != null) {
             return propertiesColumns;
         }
-        
+
         propertiesColumns = new ArrayList<PropertyDataColumn<Edge>>();
 
         propertiesColumns.add(new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.source.column.text")) {
@@ -154,27 +152,26 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
                 }
             }
         });
-        
-        propertiesColumns.add(new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.text")) {
 
-            @Override
-            public Class getColumnClass() {
-                return String.class;
-            }
+        if (graphModel.isMultiGraph()) {
+            propertiesColumns.add(new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.kind.column.text")) {
 
-            @Override
-            public Object getValueFor(Edge edge) {
-                if (edge.isDirected()) {
-                    return NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.directed");
-                } else {
-                    return NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.undirected");
+                @Override
+                public Class getColumnClass() {
+                    return String.class;
                 }
-            }
-        });
+
+                @Override
+                public Object getValueFor(Edge edge) {
+                    return edge.getTypeLabel() != null ? edge.getTypeLabel().toString() : null;
+                }
+            });
+
+        }
 
         return propertiesColumns;
     }
-    
+
     public boolean isShowEdgesNodesLabels() {
         return showEdgesNodesLabels;
     }

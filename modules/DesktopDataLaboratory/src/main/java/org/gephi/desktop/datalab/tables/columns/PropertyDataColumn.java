@@ -41,6 +41,7 @@
  */
 package org.gephi.desktop.datalab.tables.columns;
 
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 
 /**
@@ -48,29 +49,35 @@ import org.gephi.graph.api.Element;
  * @author Eduardo Ramos
  */
 public abstract class PropertyDataColumn<T extends Element> implements ElementDataColumn<T> {
+
     private final String name;
 
-        public PropertyDataColumn(String name) {
-            this.name = name;
-        }
+    public PropertyDataColumn(String name) {
+        this.name = name;
+    }
 
-        @Override
-        public abstract Class getColumnClass();
+    @Override
+    public abstract Class getColumnClass();
 
-        @Override
-        public String getColumnName() {
-            return name;
-        }
+    @Override
+    public String getColumnName() {
+        return name;
+    }
 
-        @Override
-        public abstract Object getValueFor(T element);
+    @Override
+    public abstract Object getValueFor(T element);
 
-        @Override
-        public void setValueFor(T element, Object value) {
-        }
+    @Override
+    public void setValueFor(T element, Object value) {
+    }
 
-        @Override
-        public boolean isEditable() {
-            return false;
-        }
+    @Override
+    public boolean isEditable() {
+        return false;
+    }
+
+    @Override
+    public Column getColumn() {
+        return null;
+    }
 }

@@ -41,6 +41,7 @@
  */
 package org.gephi.desktop.datalab.tables.columns;
 
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 
 /**
@@ -58,4 +59,6 @@ public interface ElementDataColumn<T extends Element> {
     public void setValueFor(T element, Object value);
 
     public boolean isEditable();
+    
+    public Column getColumn();
 }
