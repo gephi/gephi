@@ -249,14 +249,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>settings-upgrader</artifactId>
         </dependency>
-        <!--        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>spigot-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>spigot-plugin-ui</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>statistics-api</artifactId>
@@ -354,10 +346,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>layout-plugin</artifactId>
         </dependency>
-        <!--        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-spigot</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-generate</artifactId>
