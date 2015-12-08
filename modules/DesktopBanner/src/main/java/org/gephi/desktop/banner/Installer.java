@@ -43,10 +43,12 @@ package org.gephi.desktop.banner;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import javax.swing.*;
 import org.gephi.desktop.banner.perspective.spi.BottomComponent;
 import org.gephi.perspective.api.PerspectiveController;
 import org.openide.modules.ModuleInstall;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.windows.WindowManager;
 
@@ -85,19 +87,29 @@ public class Installer extends ModuleInstall {
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {
-                JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+                final JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+                Container contentPane = ((JRootPane) frame.getComponents()[0]).getContentPane();
 
                 //Get the bottom component
                 BottomComponent bottomComponentImpl = Lookup.getDefault().lookup(BottomComponent.class);
                 JComponent bottomComponent = bottomComponentImpl != null ? bottomComponentImpl.getComponent() : null;
 
-                //Replace the content pane with our creation
                 JComponent statusLinePanel = null;
-                for (Component cpnt : frame.getContentPane().getComponents()) {
-                    if (cpnt.getName() != null && cpnt.getName().equals("statusLine")) {
-                        statusLinePanel = (JComponent) cpnt;
+                JPanel childPanel = (JPanel) contentPane.getComponents()[1];
+                JLayeredPane layeredPane = (JLayeredPane) childPanel.getComponents()[0];
+                Container desktopPanel = (Container) layeredPane.getComponent(0);
+                for (Component c : desktopPanel.getComponents()) {
+                    if (c instanceof JPanel) {
+                        JPanel cp = (JPanel) c;
+                        for (Component cpnt : cp.getComponents()) {
+                            if (cpnt.getName() != null && cpnt.getName().equals("statusLine")) {
+                                statusLinePanel = (JComponent) cpnt;
+                                break;
+                            }
+                        }
                     }
                 }
+
                 if (statusLinePanel != null) {
                     frame.getContentPane().remove(statusLinePanel);
                     JPanel southPanel = new JPanel(new BorderLayout());
