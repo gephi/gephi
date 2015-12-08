@@ -66,7 +66,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class GraphElementsControllerImpl implements GraphElementsController {
 
     private static final float DEFAULT_NODE_SIZE = 10f;
-    private static final int DEFAULT_EDGE_TYPE = 0;//0 is graphstore EdgeTypeStore.NULL_LABEL
     private static final float DEFAULT_EDGE_WEIGHT = 1f;
 
     @Override
@@ -126,19 +125,39 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     public Edge createEdge(String id, Node source, Node target, boolean directed) {
         return createEdge(id, source, target, directed, getCurrentGraph());
     }
+    
+    @Override
+    public Edge createEdge(Node source, Node target, boolean directed, Object typeLabel) {
+        return createEdge(null, source, target, directed, typeLabel, getCurrentGraph());
+    }
+
+    @Override
+    public Edge createEdge(Node source, Node target, boolean directed, Object typeLabel, Graph graph) {
+        return createEdge(null, source, target, directed, typeLabel, graph);
+    }
+
+    @Override
+    public Edge createEdge(String id, Node source, Node target, boolean directed, Object typeLabel) {
+        return createEdge(id, source, target, directed, typeLabel, getCurrentGraph());
+    }
 
     @Override
     public Edge createEdge(String id, Node source, Node target, boolean directed, Graph graph) {
+        return createEdge(id, source, target, directed, null, graph);
+    }
+    
+    @Override
+    public Edge createEdge(String id, Node source, Node target, boolean directed, Object typeLabel, Graph graph) {
         Edge newEdge;
         if (directed) {
-            newEdge = buildEdge(graph, id, source, target, true);
+            newEdge = buildEdge(graph, id, source, target, true, typeLabel);
             if (graph.addEdge(newEdge)) {//The edge will be created if it does not already exist.
                 return newEdge;
             } else {
                 return null;
             }
         } else {
-            newEdge = buildEdge(graph, id, source, target, false);
+            newEdge = buildEdge(graph, id, source, target, false, typeLabel);
             if (graph.addEdge(newEdge)) {//The edge will be created if it does not already exist.
                 return newEdge;
             } else {
@@ -255,7 +274,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
                     continue;
                 }
 
-                newEdge = createEdge(newEdgeSource, newEdgeTarget, edge.isDirected(), graph);
+                newEdge = createEdge(newEdgeSource, newEdgeTarget, edge.isDirected(), edge.getTypeLabel(), graph);
 
                 if (newEdge != null) {//Edge may not be created if repeated
                     //Copy edge attributes:
@@ -381,12 +400,20 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         return newNode;
     }
 
-    private Edge buildEdge(Graph graph, String id, Node source, Node target, boolean directed) {
+    private Edge buildEdge(Graph graph, String id, Node source, Node target, boolean directed, Object typeLabel) {
+        int type;
+        if(typeLabel == null){
+            type = graph.getModel().getEdgeType(null);
+        } else {
+            //Create the type if missing:
+            type = graph.getModel().addEdgeType(typeLabel);
+        }
+        
         Edge newEdge;
         if (id != null) {
-            newEdge = graph.getModel().factory().newEdge(id, source, target, DEFAULT_EDGE_TYPE, DEFAULT_EDGE_WEIGHT, directed);
+            newEdge = graph.getModel().factory().newEdge(id, source, target, type, DEFAULT_EDGE_WEIGHT, directed);
         } else {
-            newEdge = graph.getModel().factory().newEdge(source, target, DEFAULT_EDGE_TYPE, DEFAULT_EDGE_WEIGHT, directed);
+            newEdge = graph.getModel().factory().newEdge(source, target, type, DEFAULT_EDGE_WEIGHT, directed);
         }
         return newEdge;
     }

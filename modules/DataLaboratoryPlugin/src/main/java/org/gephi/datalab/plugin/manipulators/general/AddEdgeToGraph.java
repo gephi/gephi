@@ -64,12 +64,13 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
 
     private Node source = null, target = null;
     private boolean directed;
+    private Object edgeTypeLabel = null;
     private GraphModel graphModel = null;
 
     @Override
     public void execute() {
         if (source != null && target != null) {
-            Lookup.getDefault().lookup(GraphElementsController.class).createEdge(source, target, directed);
+            Lookup.getDefault().lookup(GraphElementsController.class).createEdge(source, target, directed, edgeTypeLabel);
         }
     }
 
@@ -136,5 +137,13 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
 
     public void setTarget(Node target) {
         this.target = target;
+    }
+
+    public Object getEdgeTypeLabel() {
+        return edgeTypeLabel;
+    }
+
+    public void setEdgeTypeLabel(Object edgeTypeLabel) {
+        this.edgeTypeLabel = edgeTypeLabel;
     }
 }
