@@ -73,16 +73,18 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = GeneratorController.class)
 public class DesktopGeneratorController implements GeneratorController {
 
-    private LongTaskExecutor executor;
+    private final LongTaskExecutor executor;
 
     public DesktopGeneratorController() {
         executor = new LongTaskExecutor(true, "Generator");
     }
 
+    @Override
     public Generator[] getGenerators() {
         return Lookup.getDefault().lookupAll(Generator.class).toArray(new Generator[0]);
     }
 
+    @Override
     public void generate(final Generator generator) {
 
         String title = generator.getName();
@@ -95,6 +97,7 @@ public class DesktopGeneratorController implements GeneratorController {
                 ValidationPanel vp = (ValidationPanel) panel;
                 vp.addChangeListener(new ChangeListener() {
 
+                    @Override
                     public void stateChanged(ChangeEvent e) {
                         dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
                     }
@@ -115,14 +118,16 @@ public class DesktopGeneratorController implements GeneratorController {
         //Error handler
         LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
+            @Override
             public void fatalError(Throwable t) {
-                Logger.getLogger("").log(Level.WARNING, "", t.getCause() != null ? t.getCause() : t);
+                Logger.getLogger("").log(Level.SEVERE, "", t.getCause() != null ? t.getCause() : t);
             }
         };
 
         //Execute
         executor.execute(generator, new Runnable() {
 
+            @Override
             public void run() {
                 generator.generate(container.getLoader());
                 finishGenerate(container);
@@ -139,12 +144,8 @@ public class DesktopGeneratorController implements GeneratorController {
             pcui.newProject();
             workspace = pc.getCurrentWorkspace();
         } else {
-            if (pc.getCurrentWorkspace() == null) {
-                workspace = pc.newWorkspace(pc.getCurrentProject());
-                pc.openWorkspace(workspace);
-            } else {
-                workspace = pc.getCurrentWorkspace();
-            }
+            workspace = pc.newWorkspace(pc.getCurrentProject());
+            pc.openWorkspace(workspace);
         }
         if (container.getSource() != null) {
             pc.setSource(workspace, container.getSource());
@@ -153,7 +154,7 @@ public class DesktopGeneratorController implements GeneratorController {
         container.closeLoader();
 
         DefaultProcessor defaultProcessor = new DefaultProcessor();
-        defaultProcessor.setContainers(new ContainerUnloader[] {container.getUnloader()});
+        defaultProcessor.setContainers(new ContainerUnloader[]{container.getUnloader()});
         defaultProcessor.setWorkspace(workspace);
         defaultProcessor.process();
     }
