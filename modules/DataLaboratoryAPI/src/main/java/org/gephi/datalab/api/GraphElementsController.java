@@ -113,6 +113,16 @@ public interface GraphElementsController {
      * @return New edge if the edge was created succesfully, null otherwise
      */
     Edge createEdge(Node source, Node target, boolean directed);
+
+    /**
+     * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected, in the current graph.</p>
+     * @param source Source node
+     * @param target Target node
+     * @param directed Indicates if the edge has to be directed
+     * @param typeLabel Edge type label or null
+     * @return New edge if the edge was created succesfully, null otherwise
+     */
+    Edge createEdge(Node source, Node target, boolean directed, Object typeLabel);
     
     /**
      * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
@@ -123,7 +133,18 @@ public interface GraphElementsController {
      * @return New edge if the edge was created succesfully, null otherwise
      */
     Edge createEdge(Node source, Node target, boolean directed, Graph graph);
-
+    
+    /**
+     * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
+     * @param source Source node
+     * @param target Target node
+     * @param directed Indicates if the edge has to be directed
+     * @param typeLabel Edge type label or null
+     * @param graph Graph to insert the node into
+     * @return New edge if the edge was created succesfully, null otherwise
+     */
+    Edge createEdge(Node source, Node target, boolean directed, Object typeLabel, Graph graph);
+    
     /**
      * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
      * <p>If a edge with the given id already exists, no edge will be created.</p>
@@ -134,7 +155,19 @@ public interface GraphElementsController {
      * @return New edge if the edge was created succesfully, null otherwise
      */
     Edge createEdge(String id, Node source, Node target, boolean directed);
-    
+
+    /**
+     * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
+     * <p>If a edge with the given id already exists, no edge will be created.</p>
+     * @param id Id for the new edge
+     * @param source Source node
+     * @param target Target node
+     * @param directed Indicates if the edge has to be directed
+     * @param typeLabel Edge type label or null
+     * @return New edge if the edge was created succesfully, null otherwise
+     */
+    Edge createEdge(String id, Node source, Node target, boolean directed, Object typeLabel);
+
     /**
      * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected, in the current graph.</p>
      * <p>If a edge with the given id already exists, no edge will be created.</p>
@@ -146,6 +179,19 @@ public interface GraphElementsController {
      * @return New edge if the edge was created succesfully, null otherwise
      */
     Edge createEdge(String id, Node source, Node target, boolean directed, Graph graph);
+    
+    /**
+     * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected, in the current graph.</p>
+     * <p>If a edge with the given id already exists, no edge will be created.</p>
+     * @param id Id for the new edge
+     * @param source Source node
+     * @param target Target node
+     * @param directed Indicates if the edge has to be directed
+     * @param typeLabel Edge type label or null
+     * @param graph Graph to insert the node into
+     * @return New edge if the edge was created succesfully, null otherwise
+     */
+    Edge createEdge(String id, Node source, Node target, boolean directed, Object typeLabel, Graph graph);
     
     /**
      * <p>Tries to create edges between the source node and all other edges, directed or undirected.</p>

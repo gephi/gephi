@@ -46,6 +46,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.table.AbstractTableModel;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 
 /**
@@ -130,6 +131,18 @@ public class ElementsDataTableModel<T extends Element> extends AbstractTableMode
             fireTableStructureChanged();//Only firing this event if columns change is useful because JXTable will not reset columns width if there is no change
         } else {
             fireTableDataChanged();
+        }
+    }
+    
+    /**
+     * Column at index or null if it's a fake column.
+     * @return 
+     */
+    public Column getColumnAtIndex(int i){
+        if (i >= 0 && i < columns.length) {
+            return columns[i].getColumn();
+        } else {
+            return null;
         }
     }
 }

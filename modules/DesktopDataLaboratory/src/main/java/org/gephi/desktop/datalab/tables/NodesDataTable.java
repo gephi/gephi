@@ -51,7 +51,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
+import org.gephi.desktop.datalab.DataTablesModel;
 import org.gephi.desktop.datalab.tables.popup.NodesPopupAdapter;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.api.EditWindowController;
 import org.openide.util.Lookup;
@@ -110,7 +112,7 @@ public final class NodesDataTable extends AbstractElementsDataTable<Node> {
     private final List<PropertyDataColumn<Node>> propertiesColumns = new ArrayList<PropertyDataColumn<Node>>();
 
     @Override
-    public List<? extends ElementDataColumn<Node>> getFakeDataColumns() {
+    public List<? extends ElementDataColumn<Node>> getFakeDataColumns(GraphModel graphModel, DataTablesModel dataTablesModel) {
         return propertiesColumns;
     }
 }

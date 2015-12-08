@@ -113,7 +113,7 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         prepareRenderers();
     }
 
-    public abstract List<? extends ElementDataColumn<T>> getFakeDataColumns();
+    public abstract List<? extends ElementDataColumn<T>> getFakeDataColumns(GraphModel graphModel, DataTablesModel dataTablesModel);
 
     private void prepareCellEditors() {
         for (Class<?> typeClass : AttributeUtils.getSupportedTypes()) {
@@ -195,12 +195,7 @@ public abstract class AbstractElementsDataTable<T extends Element> {
 
     public void refreshModel(T[] elements, Column[] cols, GraphModel graphModel, DataTablesModel dataTablesModel) {
         showingColumns = cols;
-        Interval timeBounds = null;
-        try {
-            timeBounds = graphModel.getTimeBounds();
-        } catch (Exception e) {
-            //Current graphstore does not implement this for intervals... (TODO)
-        }
+        Interval timeBounds = graphModel.getTimeBounds();
         double min = timeBounds != null ? timeBounds.getLow() : Double.NEGATIVE_INFINITY;
         double max = timeBounds != null ? timeBounds.getHigh() : Double.POSITIVE_INFINITY;
         TimeFormat currentTimeFormat = graphModel.getTimeFormat();
@@ -228,7 +223,7 @@ public abstract class AbstractElementsDataTable<T extends Element> {
             selectedElements = getElementsFromSelectedRows();
         }
         ArrayList<ElementDataColumn<T>> columns = new ArrayList<ElementDataColumn<T>>();
-        columns.addAll(getFakeDataColumns());
+        columns.addAll(getFakeDataColumns(graphModel, dataTablesModel));
 
         for (Column c : cols) {
             columns.add(new AttributeDataColumn<T>(attributeColumnsController, c));
@@ -253,15 +248,11 @@ public abstract class AbstractElementsDataTable<T extends Element> {
     /**
      *
      * @param columnIndex View index, not model index
-     * @return
+     * @return Column or null if it's a fake column
      */
     public Column getColumnAtIndex(int columnIndex) {
-        int realColumnIndex = table.convertColumnIndexToModel(columnIndex) - getFakeDataColumns().size();//Get real attribute column index not counting fake columns.
-        if (realColumnIndex >= 0 && realColumnIndex < showingColumns.length) {
-            return showingColumns[realColumnIndex];
-        } else {
-            return null;
-        }
+        int realColumnIndex = table.convertColumnIndexToModel(columnIndex);
+        return model.getColumnAtIndex(realColumnIndex);
     }
 
     public void setElementsSelection(List<T> elements) {

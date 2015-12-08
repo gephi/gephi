@@ -51,8 +51,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.edges.EdgesManipulator;
+import org.gephi.desktop.datalab.DataTablesModel;
 import org.gephi.desktop.datalab.tables.popup.EdgesPopupAdapter;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.tools.api.EditWindowController;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -65,7 +67,7 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
 
     public EdgesDataTable() {
         super();
-        
+
         //Add listener of table selection to refresh edit window when the selection changes (and if the table is not being refreshed):
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
@@ -83,9 +85,7 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
                 }
             }
         });
-        
-        
-        
+
         table.addMouseListener(new EdgesPopupAdapter(this));
         table.addKeyListener(new KeyAdapter() {
 
@@ -107,74 +107,87 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
             }
         });
     }
-    
-    
 
-    private List<PropertyDataColumn<Edge>> propertiesColumns;
     private boolean showEdgesNodesLabels = false;
 
-    @Override
-    public List<? extends ElementDataColumn<Edge>> getFakeDataColumns() {
-        if(propertiesColumns != null){
-            return propertiesColumns;
+    private final PropertyDataColumn<Edge> SOURCE_COLUMN = new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.source.column.text")) {
+
+        @Override
+        public Class getColumnClass() {
+            return String.class;
         }
-        
-        propertiesColumns = new ArrayList<PropertyDataColumn<Edge>>();
 
-        propertiesColumns.add(new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.source.column.text")) {
-
-            @Override
-            public Class getColumnClass() {
-                return String.class;
+        @Override
+        public Object getValueFor(Edge edge) {
+            if (showEdgesNodesLabels) {
+                return edge.getSource().getId() + " - " + edge.getSource().getLabel();
+            } else {
+                return edge.getSource().getId();
             }
+        }
+    };
 
-            @Override
-            public Object getValueFor(Edge edge) {
-                if (showEdgesNodesLabels) {
-                    return edge.getSource().getId() + " - " + edge.getSource().getLabel();
-                } else {
-                    return edge.getSource().getId();
-                }
+    private final PropertyDataColumn<Edge> TARGET_COLUMN = new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.target.column.text")) {
+
+        @Override
+        public Class getColumnClass() {
+            return String.class;
+        }
+
+        @Override
+        public Object getValueFor(Edge edge) {
+            if (showEdgesNodesLabels) {
+                return edge.getTarget().getId() + " - " + edge.getTarget().getLabel();
+            } else {
+                return edge.getTarget().getId();
             }
-        });
+        }
+    };
 
-        propertiesColumns.add(new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.target.column.text")) {
+    private final PropertyDataColumn<Edge> TYPE_COLUMN = new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.text")) {
 
-            @Override
-            public Class getColumnClass() {
-                return String.class;
+        @Override
+        public Class getColumnClass() {
+            return String.class;
+        }
+
+        @Override
+        public Object getValueFor(Edge edge) {
+            if (edge.isDirected()) {
+                return NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.directed");
+            } else {
+                return NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.undirected");
             }
+        }
+    };
 
-            @Override
-            public Object getValueFor(Edge edge) {
-                if (showEdgesNodesLabels) {
-                    return edge.getTarget().getId() + " - " + edge.getTarget().getLabel();
-                } else {
-                    return edge.getTarget().getId();
-                }
-            }
-        });
-        
-        propertiesColumns.add(new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.text")) {
+    private final PropertyDataColumn<Edge> KIND_COLUMN = new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.kind.column.text")) {
 
-            @Override
-            public Class getColumnClass() {
-                return String.class;
-            }
+        @Override
+        public Class getColumnClass() {
+            return String.class;
+        }
 
-            @Override
-            public Object getValueFor(Edge edge) {
-                if (edge.isDirected()) {
-                    return NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.directed");
-                } else {
-                    return NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.undirected");
-                }
-            }
-        });
+        @Override
+        public Object getValueFor(Edge edge) {
+            return edge.getTypeLabel() != null ? edge.getTypeLabel().toString() : null;
+        }
+    };
+
+    @Override
+    public List<? extends ElementDataColumn<Edge>> getFakeDataColumns(GraphModel graphModel, DataTablesModel dataTablesModel) {
+        ArrayList<PropertyDataColumn<Edge>> propertiesColumns = new ArrayList<PropertyDataColumn<Edge>>();
+
+        propertiesColumns.add(SOURCE_COLUMN);
+        propertiesColumns.add(TARGET_COLUMN);
+        propertiesColumns.add(TYPE_COLUMN);
+        if (graphModel.isMultiGraph()) {
+            propertiesColumns.add(KIND_COLUMN);
+        }
 
         return propertiesColumns;
     }
-    
+
     public boolean isShowEdgesNodesLabels() {
         return showEdgesNodesLabels;
     }
