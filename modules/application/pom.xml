@@ -261,11 +261,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>statistics-plugin-ui</artifactId>
         </dependency>
-        <!--        <dependency>
-                     <groupId>${project.groupId}</groupId>
-                    <artifactId>timeline</artifactId>
-                </dependency>
-        -->        
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>timeline-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>tools-api</artifactId>
@@ -433,11 +432,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-tools</artifactId>
-        </dependency><!--
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-timeline</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>directory-chooser</artifactId>

@@ -110,4 +110,8 @@ public class GraphCanvas extends GLAbstractListener {
     protected void reshape3DScene(GL2 gl) {
     }
 
+    @Override
+    public void reinitWindow() {
+    }
+
 }

@@ -41,44 +41,47 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.timeline.api;
 
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.Graph;
 
 /**
- * Sparkline type chart visible in the timeline, for instance the number of nodes
- * over time.
+ * Sparkline type chart visible in the timeline, for instance the number of
+ * nodes over time.
  * <p>
  * Charts are usually created from the Statistics module and data are saved
- * within {@link Graph#getAttributes()}. Columns can be accessed from the graph table
- * in the {@link AttributeModel#getGraphTable() }.
- * 
+ * within {@link Graph#getAttributes()}. Columns can be accessed from the graph
+ * table in the {@link AttributeModel#getGraphTable() }.
+ *
  * @author Mathieu Bastian
- * @see TimelineController#selectColumn(org.gephi.data.attributes.api.AttributeColumn) 
+ * @see
+ * TimelineController#selectColumn(org.gephi.data.attributes.api.AttributeColumn)
  */
 public interface TimelineChart {
 
     /**
      * The attribute column used to create this chart.
+     *
      * @return the attribute column
      */
-    public AttributeColumn getColumn();
+    public String getColumn();
 
     /**
      * Returns the X values of this chart.
+     *
      * @return the X values
      */
     public Number[] getX();
 
     /**
      * Returns the Y values of this chart.
+     *
      * @return the Y values
      */
     public Number[] getY();
-    
+
     /**
-     * Return the Y value for the given <code>x</code> position. It returns the closest
-     * value, as <code>x</code> may not exist.
+     * Return the Y value for the given <code>x</code> position. It returns the
+     * closest value, as <code>x</code> may not exist.
+     *
      * @param x the point in time
      * @return the Y value
      */
@@ -86,24 +89,28 @@ public interface TimelineChart {
 
     /**
      * Returns the min Y value .This is the minimum value in the chart.
+     *
      * @return the min Y value
      */
     public Number getMinY();
 
     /**
      * Returns the max Y value. This is the maximum value in the chart.
+     *
      * @return the max Y value
      */
     public Number getMaxY();
-    
+
     /**
      * Returns the min X value .This is the minimum interval in the chart.
+     *
      * @return the min X value
      */
     public Number getMinX();
 
     /**
      * Returns the max X value. This is the maximum interval in the chart.
+     *
      * @return the max X value
      */
     public Number getMaxX();

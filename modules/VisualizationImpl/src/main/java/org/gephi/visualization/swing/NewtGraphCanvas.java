@@ -50,6 +50,7 @@ import com.jogamp.opengl.glu.GLU;
 import java.awt.Dimension;
 import javax.swing.JPopupMenu;
 import javax.swing.ToolTipManager;
+import org.gephi.ui.utils.UIUtils;
 
 /**
  *
@@ -93,11 +94,14 @@ public class NewtGraphCanvas extends GLAbstractListener {
         engine.startDisplay();
     }
 
+    @Override
     public void reinitWindow() {
-        // Only used when collapse panel is set visible
-        // Workaround for JOGL bug 1274
-        glCanvas.setNEWTChild(null);
-        glCanvas.setNEWTChild(glWindow);
+        if (UIUtils.isAquaLookAndFeel()) {
+            // Only used when collapse panel is set visible
+            // Workaround for JOGL bug 1274
+            glCanvas.setNEWTChild(null);
+            glCanvas.setNEWTChild(glWindow);
+        }
     }
 
     @Override

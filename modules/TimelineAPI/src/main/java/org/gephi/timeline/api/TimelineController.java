@@ -41,27 +41,28 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.timeline.api;
 
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.graph.api.TimeFormat;
 import org.gephi.project.api.Workspace;
 
 /**
  * Controls the timeline bounds and animation features.
  * <p>
- * By default the timeline is disabled and can be enabled with the <code>setEnabled()</code>
- * method. Once enabled, the controller is setting its interval value to the
- * {@link DynamicModel}.
+ * By default the timeline is disabled and can be enabled with the
+ * <code>setEnabled()</code> method. Once enabled, the controller is setting its
+ * interval value to the {@link DynamicModel}.
  * <p>
- * The interval can be animated using the <code>startPlay()</code> and <code>stopPlay()</code>
- * methods. Configuration parameters are also available.
+ * The interval can be animated using the <code>startPlay()</code> and
+ * <code>stopPlay()</code> methods. Configuration parameters are also available.
  * <p>
- * This controller also allows to lookup graph attribute columns that can be used
- * as sparklines (e.g. node count, average degree...). Use the <code>selectColumn()</code>
- * to create a {@link TimelineChart} accessible from the <code>TimelineModel</code>
+ * This controller also allows to lookup graph attribute columns that can be
+ * used as sparklines (e.g. node count, average degree...). Use the
+ * <code>selectColumn()</code> to create a {@link TimelineChart} accessible from
+ * the <code>TimelineModel</code>
  * <p>
- * All interval values are in the same space as the <code>DynamicAPI</code> module and
- * no value should eb out of the min/max bounds maintained by the <code>DynamicModel</code>.
- * 
+ * All interval values are in the same space as the <code>DynamicAPI</code>
+ * module and no value should eb out of the min/max bounds maintained by the
+ * <code>DynamicModel</code>.
+ *
  * @author Julian Bilcke, Mathieu Bastian
  * @see TimelineModel
  */
@@ -69,6 +70,7 @@ public interface TimelineController {
 
     /**
      * Returns the timeline model from <code>workspace</code>.
+     *
      * @param workspace the workspace to get the model from
      * @return the timeline model for this workspace
      */
@@ -82,8 +84,10 @@ public interface TimelineController {
     public TimelineModel getModel();
 
     /**
-     * Sets the timeline custom bounds. Custom bounds still need to be included in the
-     * min and max bound of the time scale. The timeline will resize accordingly.
+     * Sets the timeline custom bounds. Custom bounds still need to be included
+     * in the min and max bound of the time scale. The timeline will resize
+     * accordingly.
+     *
      * @param min the lower bound
      * @param max the upper bound
      * @throws IllegalArgumentException if <code>min<code> is superior or equal than
@@ -93,22 +97,29 @@ public interface TimelineController {
 
     /**
      * Sets the timeline enable status.
+     *
      * @param enabled the enabled value to set
      */
     public void setEnabled(boolean enabled);
 
     /**
-     * Sets the current timeline interval. This is propagated to the <code>DynamicModel</code>
-     * and defines the interval the graph is filtered with.
+     * Sets the current timeline interval. This is propagated to the
+     * <code>DynamicModel</code> and defines the interval the graph is filtered
+     * with.
+     *
      * @param from the lower bound
      * @param to the upper bound
      * @throws IllegalArgumentException if <code>min<code> is superior or equal than
      * <code>max</code> or out of bounds
      */
     public void setInterval(double from, double to);
+    
+    public void setTimeFormat(TimeFormat timeFormat);
+    
 
     /**
-     * Starts the timeline animation using the current delay, step size and play mode.
+     * Starts the timeline animation using the current delay, step size and play
+     * mode.
      */
     public void startPlay();
 
@@ -118,8 +129,9 @@ public interface TimelineController {
     public void stopPlay();
 
     /**
-     * Sets the play delay in milliseconds. Defines the time between each interval
-     * shift.
+     * Sets the play delay in milliseconds. Defines the time between each
+     * interval shift.
+     *
      * @param delay the delay in milliseconds
      */
     public void setPlaySpeed(int delay);
@@ -127,39 +139,46 @@ public interface TimelineController {
     /**
      * Sets the play step. Defines how much the interval is moved at each step
      * during animation. Defined in percentage of the total interval.
+     *
      * @param step the step, between 0 and 1
      */
     public void setPlayStep(double step);
 
     /**
      * Sets the play mode. This defines how the interval is moved.
+     *
      * @param playMode the play mode
      */
     public void setPlayMode(TimelineModel.PlayMode playMode);
 
     /**
-     * Returns all the possible dynamic attribute columns. This is essentially all
-     * number-based dynamic columns defined in the graph table.
+     * Returns all the possible dynamic attribute columns. This is essentially
+     * all number-based dynamic columns defined in the graph table.
+     *
      * @return all dynamic number columns in the graph table
      */
-    public AttributeColumn[] getDynamicGraphColumns();
+    public String[] getDynamicGraphColumns();
 
     /**
-     * Select a column to make a {@link TimelineChart} of it. The column must be member
-     * of the graph table.
+     * Select a column to make a {@link TimelineChart} of it. The column must be
+     * member of the graph table.
+     *
      * @param column the column to select
-     * @throws IllegalArgumentException if <code>column</code> is not a graph column
+     * @throws IllegalArgumentException if <code>column</code> is not a graph
+     * column
      */
-    public void selectColumn(AttributeColumn column);
+    public void selectColumn(String column);
 
     /**
      * Add <code>listener</code> to the list of event listerners.
+     *
      * @param listener the listener to add
      */
     public void addListener(TimelineModelListener listener);
 
     /**
      * Remove <code>listerner</code> from the list of event listeners.
+     *
      * @param listener the listener to remove
      */
     public void removeListener(TimelineModelListener listener);

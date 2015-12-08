@@ -42,7 +42,8 @@
 package org.gephi.desktop.timeline;
 
 import javax.swing.JComponent;
-import org.gephi.desktop.perspective.spi.BottomComponent;
+import org.gephi.desktop.banner.perspective.spi.BottomComponent;
+import org.gephi.visualization.VizController;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -52,16 +53,19 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=BottomComponent.class)
 public class BottomComponentImpl implements BottomComponent {
 
-    private TimelineTopComponent timelineTopComponent = new TimelineTopComponent();
+    private final TimelineTopComponent timelineTopComponent = new TimelineTopComponent();
     
+    @Override
     public JComponent getComponent() {
         return timelineTopComponent;
     }
 
+    @Override
     public void setVisible(boolean visible) {
         timelineTopComponent.setTimeLineVisible(visible);
     }
     
+    @Override
     public boolean isVisible() {
         return timelineTopComponent.isVisible();
     }

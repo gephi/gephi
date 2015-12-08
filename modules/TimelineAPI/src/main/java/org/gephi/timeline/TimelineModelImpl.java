@@ -42,8 +42,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.timeline;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.gephi.dynamic.api.DynamicModel;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Interval;
+import org.gephi.graph.api.TimeFormat;
 import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineModel;
 
@@ -54,12 +55,12 @@ import org.gephi.timeline.api.TimelineModel;
 public class TimelineModelImpl implements TimelineModel {
 
     private boolean enabled;
-    private DynamicModel dynamicModel;
+    private final GraphModel graphModel;
     private double customMin;
     private double customMax;
     //Animation
     private int playDelay;
-    private AtomicBoolean playing;
+    private final AtomicBoolean playing;
     private double playStep;
     private PlayMode playMode;
     //Chart
@@ -67,17 +68,20 @@ public class TimelineModelImpl implements TimelineModel {
     //MinMax
     private double previousMin;
     private double previousMax;
+    //
+    private Interval interval;
 
-    public TimelineModelImpl(DynamicModel dynamicModel) {
-        this.dynamicModel = dynamicModel;
-        this.customMin = dynamicModel.getMin();
-        this.customMax = dynamicModel.getMax();
+    public TimelineModelImpl(GraphModel dynamicModel) {
+        this.graphModel = dynamicModel;
+        this.customMin = dynamicModel.getTimeBounds().getLow();
+        this.customMax = dynamicModel.getTimeBounds().getHigh();
         this.previousMin = customMin;
         this.previousMax = customMax;
         playDelay = 100;
         playStep = 0.01;
         playing = new AtomicBoolean(false);
         playMode = PlayMode.TWO_BOUNDS;
+        interval = new Interval(customMin, customMax);
     }
 
     @Override
@@ -87,12 +91,12 @@ public class TimelineModelImpl implements TimelineModel {
 
     @Override
     public double getMin() {
-        return dynamicModel.getMin();
+        return graphModel.getTimeBounds().getLow();
     }
 
     @Override
     public double getMax() {
-        return dynamicModel.getMax();
+        return graphModel.getTimeBounds().getHigh();
     }
 
     public double getPreviousMin() {
@@ -123,13 +127,14 @@ public class TimelineModelImpl implements TimelineModel {
 
     @Override
     public boolean hasCustomBounds() {
-        return customMax != dynamicModel.getMax() || customMin != dynamicModel.getMin();
+        Interval tm = graphModel.getTimeBounds();
+        return customMax != tm.getHigh() || customMin != tm.getLow();
     }
 
     @Override
     public double getIntervalStart() {
-        double vi = dynamicModel.getVisibleInterval().getLow();
-        if(Double.isInfinite(vi)) {
+        double vi = interval.getLow();
+        if (Double.isInfinite(vi)) {
             return getCustomMin();
         }
         return vi;
@@ -137,8 +142,8 @@ public class TimelineModelImpl implements TimelineModel {
 
     @Override
     public double getIntervalEnd() {
-        double vi = dynamicModel.getVisibleInterval().getHigh();
-        if(Double.isInfinite(vi)) {
+        double vi = interval.getHigh();
+        if (Double.isInfinite(vi)) {
             return getCustomMax();
         }
         return vi;
@@ -146,11 +151,7 @@ public class TimelineModelImpl implements TimelineModel {
 
     @Override
     public TimeFormat getTimeFormat() {
-        return dynamicModel.getTimeFormat();
-    }
-
-    public DynamicModel getDynamicModel() {
-        return dynamicModel;
+        return graphModel.getTimeFormat();
     }
 
     public void setCustomMax(double customMax) {
@@ -164,10 +165,19 @@ public class TimelineModelImpl implements TimelineModel {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+    
+    public void setInterval(double start, double end) {
+        this.interval = new Interval(start, end);
+    }
 
     @Override
     public boolean hasValidBounds() {
-        return !Double.isInfinite(dynamicModel.getMin()) && !Double.isInfinite(dynamicModel.getMax());
+        Interval i = graphModel.getTimeBounds();
+        return !Double.isInfinite(i.getLow()) && !Double.isInfinite(i.getHigh());
+    }
+
+    public GraphModel getGraphModel() {
+        return graphModel;
     }
 
     @Override

@@ -43,7 +43,6 @@ package org.gephi.timeline;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.timeline.api.TimelineChart;
 
 /**
@@ -52,7 +51,7 @@ import org.gephi.timeline.api.TimelineChart;
  */
 public class TimelineChartImpl implements TimelineChart {
 
-    private final AttributeColumn column;
+    private final String column;
     private final Number[] x;
     private final Number[] y;
     private final Number minY;
@@ -60,7 +59,7 @@ public class TimelineChartImpl implements TimelineChart {
     private final Number minX;
     private final Number maxX;
 
-    public TimelineChartImpl(AttributeColumn column, Number[] x, Number y[]) {
+    public TimelineChartImpl(String column, Number[] x, Number y[]) {
         this.column = column;
         this.x = x;
         this.y = y;
@@ -117,7 +116,7 @@ public class TimelineChartImpl implements TimelineChart {
     }
 
     @Override
-    public AttributeColumn getColumn() {
+    public String getColumn() {
         return column;
     }
 
@@ -128,13 +127,13 @@ public class TimelineChartImpl implements TimelineChart {
         }
         Number t = yValues[0];
         if (t instanceof Double) {
-            return new Double(min);
+            return min;
         } else if (t instanceof Float) {
             return new Float(min);
         } else if (t instanceof Short) {
-            return new Short((short) min);
+            return (short) min;
         } else if (t instanceof Long) {
-            return new Long((long) min);
+            return (long) min;
         } else if (t instanceof BigInteger) {
             return new BigDecimal(min);
         }
@@ -148,13 +147,13 @@ public class TimelineChartImpl implements TimelineChart {
         }
         Number t = yValues[0];
         if (t instanceof Double) {
-            return new Double(max);
+            return max;
         } else if (t instanceof Float) {
             return new Float(max);
         } else if (t instanceof Short) {
-            return new Short((short) max);
+            return (short) max;
         } else if (t instanceof Long) {
-            return new Long((long) max);
+            return (long) max;
         } else if (t instanceof BigInteger) {
             return new BigDecimal(max);
         }

@@ -437,7 +437,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>timeline</artifactId>
+                <artifactId>timeline-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1154,6 +1154,7 @@
         <module>modules/DesktopRecentFiles</module>
         <module>modules/DesktopStatistics</module>
         <module>modules/DesktopTools</module>
+        <module>modules/DesktopTimeline</module>
         <module>modules/DirectoryChooser</module>
         <module>modules/ExportAPI</module>
         <module>modules/ExportPlugin</module>
@@ -1186,6 +1187,7 @@
         <module>modules/StatisticsAPI</module>
         <module>modules/StatisticsPlugin</module>
         <module>modules/StatisticsPluginUI</module>
+        <module>modules/TimelineAPI</module>
         <module>modules/ToolsAPI</module>
         <module>modules/ToolsPlugin</module>
         <module>modules/UIComponents</module>

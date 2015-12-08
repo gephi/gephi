@@ -44,21 +44,18 @@ package org.gephi.desktop.timeline;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 import javax.swing.JTextField;
-import org.gephi.dynamic.DynamicUtilities;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.TimeFormat;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
+import org.joda.time.format.ISODateTimeFormat;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -68,8 +65,6 @@ import org.openide.util.NbBundle;
  */
 public class CustomBoundsDialog extends javax.swing.JPanel {
 
-    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    private final SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS");
     private TimelineModel model;
     private TimelineController controller;
 
@@ -85,34 +80,28 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
     }
 
     public void setDefaults() {
-        if (model.getTimeFormat().equals(TimeFormat.DATE)) {
-            Date min = DynamicUtilities.getDateFromDouble(model.getMin());
-            Date max = DynamicUtilities.getDateFromDouble(model.getMax());
-            Date from = DynamicUtilities.getDateFromDouble(model.getMin());
-            Date to = DynamicUtilities.getDateFromDouble(model.getMax());
-
-            minTextField.setText(DATE_FORMAT.format(min));
-            maxTextField.setText(DATE_FORMAT.format(max));
-            startTextField.setText(DATE_FORMAT.format(from));
-            endTextField.setText(DATE_FORMAT.format(to));
-        } else if (model.getTimeFormat().equals(TimeFormat.DATETIME)) {
-            Date min = DynamicUtilities.getDateFromDouble(model.getMin());
-            Date max = DynamicUtilities.getDateFromDouble(model.getMax());
-            Date from = DynamicUtilities.getDateFromDouble(model.getMin());
-            Date to = DynamicUtilities.getDateFromDouble(model.getMax());
-
-            minTextField.setText(DATETIME_FORMAT.format(min));
-            maxTextField.setText(DATETIME_FORMAT.format(max));
-            startTextField.setText(DATETIME_FORMAT.format(from));
-            endTextField.setText(DATETIME_FORMAT.format(to));
-        } else {
-            NumberFormat f = NumberFormat.getInstance(Locale.ENGLISH);
-            f.setGroupingUsed(false);
-            f.setMaximumFractionDigits(20);
-            minTextField.setText(f.format(model.getMin()));
-            maxTextField.setText(f.format(model.getMax()));
-            startTextField.setText(f.format(model.getMin()));
-            endTextField.setText(f.format(model.getMax()));
+        switch (model.getTimeFormat()) {
+            case DATE:
+                minTextField.setText(AttributeUtils.printDate(model.getMin()));
+                maxTextField.setText(AttributeUtils.printDate(model.getMax()));
+                startTextField.setText(AttributeUtils.printDate(model.getMin()));
+                endTextField.setText(AttributeUtils.printDate(model.getMax()));
+                break;
+            case DATETIME:
+                minTextField.setText(AttributeUtils.printDateTime(model.getMin()));
+                maxTextField.setText(AttributeUtils.printDateTime(model.getMax()));
+                startTextField.setText(AttributeUtils.printDateTime(model.getMin()));
+                endTextField.setText(AttributeUtils.printDateTime(model.getMax()));
+                break;
+            default:
+                NumberFormat f = NumberFormat.getInstance(Locale.ENGLISH);
+                f.setGroupingUsed(false);
+                f.setMaximumFractionDigits(20);
+                minTextField.setText(f.format(model.getMin()));
+                maxTextField.setText(f.format(model.getMax()));
+                startTextField.setText(f.format(model.getMin()));
+                endTextField.setText(f.format(model.getMax()));
+                break;
         }
     }
 
@@ -120,65 +109,42 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
         this.model = timelineModel;
         this.controller = Lookup.getDefault().lookup(TimelineController.class);
         setDefaults();
-        
-        if (model.getTimeFormat().equals(TimeFormat.DATE)) {
-            Date min = DynamicUtilities.getDateFromDouble(model.getCustomMin());
-            Date max = DynamicUtilities.getDateFromDouble(model.getCustomMax());
-            Date from = DynamicUtilities.getDateFromDouble(model.getIntervalStart());
-            Date to = DynamicUtilities.getDateFromDouble(model.getIntervalEnd());
 
-            minTextField.setText(DATE_FORMAT.format(min));
-            maxTextField.setText(DATE_FORMAT.format(max));
-            startTextField.setText(DATE_FORMAT.format(from));
-            endTextField.setText(DATE_FORMAT.format(to));
-        } else if (model.getTimeFormat().equals(TimeFormat.DATETIME)) {
-            Date min = DynamicUtilities.getDateFromDouble(model.getCustomMin());
-            Date max = DynamicUtilities.getDateFromDouble(model.getCustomMax());
-            Date from = DynamicUtilities.getDateFromDouble(model.getIntervalStart());
-            Date to = DynamicUtilities.getDateFromDouble(model.getIntervalEnd());
-
-            minTextField.setText(DATETIME_FORMAT.format(min));
-            maxTextField.setText(DATETIME_FORMAT.format(max));
-            startTextField.setText(DATETIME_FORMAT.format(from));
-            endTextField.setText(DATETIME_FORMAT.format(to));
-        } else {
-            NumberFormat f = NumberFormat.getInstance(Locale.ENGLISH);
-            f.setGroupingUsed(false);
-            f.setMaximumFractionDigits(20);
-            minTextField.setText(f.format(model.getCustomMin()));
-            maxTextField.setText(f.format(model.getCustomMax()));
-            startTextField.setText(f.format(model.getIntervalStart()));
-            endTextField.setText(f.format(model.getIntervalEnd()));
+        switch (model.getTimeFormat()) {
+            case DATE:
+                minTextField.setText(AttributeUtils.printDate(model.getCustomMin()));
+                maxTextField.setText(AttributeUtils.printDate(model.getCustomMax()));
+                startTextField.setText(AttributeUtils.printDate(model.getIntervalStart()));
+                endTextField.setText(AttributeUtils.printDate(model.getIntervalEnd()));
+                break;
+            case DATETIME:
+                minTextField.setText(AttributeUtils.printDateTime(model.getCustomMin()));
+                maxTextField.setText(AttributeUtils.printDateTime(model.getCustomMax()));
+                startTextField.setText(AttributeUtils.printDateTime(model.getIntervalStart()));
+                endTextField.setText(AttributeUtils.printDateTime(model.getIntervalEnd()));
+                break;
+            default:
+                NumberFormat f = NumberFormat.getInstance(Locale.ENGLISH);
+                f.setGroupingUsed(false);
+                f.setMaximumFractionDigits(20);
+                minTextField.setText(f.format(model.getCustomMin()));
+                maxTextField.setText(f.format(model.getCustomMax()));
+                startTextField.setText(f.format(model.getIntervalStart()));
+                endTextField.setText(f.format(model.getIntervalEnd()));
+                break;
         }
     }
 
     public void unsetup() {
-        if (model.getTimeFormat().equals(TimeFormat.DATE)) {
-            try {
-                double min = DynamicUtilities.getDoubleFromDate(DATE_FORMAT.parse(minTextField.getText()));
-                double max = DynamicUtilities.getDoubleFromDate(DATE_FORMAT.parse(maxTextField.getText()));
-                double start = DynamicUtilities.getDoubleFromDate(DATE_FORMAT.parse(startTextField.getText()));
-                double end = DynamicUtilities.getDoubleFromDate(DATE_FORMAT.parse(endTextField.getText()));
-                start = Math.max(min, start);
-                end = Math.min(max, end);
-                controller.setCustomBounds(min, max);
-                controller.setInterval(start, end);
-            } catch (ParseException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        } else if (model.getTimeFormat().equals(TimeFormat.DATETIME)) {
-            try {
-                double min = DynamicUtilities.getDoubleFromDate(DATETIME_FORMAT.parse(minTextField.getText()));
-                double max = DynamicUtilities.getDoubleFromDate(DATETIME_FORMAT.parse(maxTextField.getText()));
-                double start = DynamicUtilities.getDoubleFromDate(DATETIME_FORMAT.parse(startTextField.getText()));
-                double end = DynamicUtilities.getDoubleFromDate(DATETIME_FORMAT.parse(endTextField.getText()));
-                start = Math.max(min, start);
-                end = Math.min(max, end);
-                controller.setCustomBounds(min, max);
-                controller.setInterval(start, end);
-            } catch (ParseException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+        if (model.getTimeFormat().equals(TimeFormat.DATE) || model.getTimeFormat().equals(TimeFormat.DATETIME)) {
+            double min = AttributeUtils.parseDateTime(minTextField.getText());
+            double max = AttributeUtils.parseDateTime(maxTextField.getText());
+            double start = AttributeUtils.parseDateTime(startTextField.getText());
+            double end = AttributeUtils.parseDateTime(endTextField.getText());
+            start = Math.max(min, start);
+            end = Math.min(max, end);
+            controller.setCustomBounds(min, max);
+            controller.setInterval(start, end);
         } else {
             double min = Double.parseDouble(minTextField.getText());
             double max = Double.parseDouble(maxTextField.getText());
@@ -223,17 +189,17 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
         public boolean validate(Problems prblms, String string, String t) {
             double thisDate;
             double otherDate;
-            if (model.getTimeFormat().equals(TimeFormat.DATE)) {
+            if (model.getTimeFormat().equals(TimeFormat.DATE) || model.getTimeFormat().equals(TimeFormat.DATETIME)) {
                 try {
-                    thisDate = DynamicUtilities.getDoubleFromDate(DATE_FORMAT.parse(t));
-                    otherDate = DynamicUtilities.getDoubleFromDate(DATE_FORMAT.parse(other.getText()));
+                    thisDate = AttributeUtils.parseDateTime(t);
+                    otherDate = AttributeUtils.parseDateTime(other.getText());
                     double minDate = max ? otherDate : thisDate;
                     double maxDate = max ? thisDate : otherDate;
-                    if(minDate < model.getMin()) {
+                    if (minDate < model.getMin()) {
                         prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.min"));
                         return false;
                     }
-                    if(maxDate > model.getMax()) {
+                    if (maxDate > model.getMax()) {
                         prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.max"));
                         return false;
                     }
@@ -244,46 +210,22 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                         prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
                         return false;
                     }
-                } catch (ParseException ex) {
-                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", DATE_FORMAT.toPattern()));
+                } catch (Exception ex) {
+                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", ISODateTimeFormat.dateTime()));
                     return false;
                 }
-            } else if (model.getTimeFormat().equals(TimeFormat.DATETIME)) {
-                try {
-                    thisDate = DynamicUtilities.getDoubleFromDate(DATETIME_FORMAT.parse(t));
-                    otherDate = DynamicUtilities.getDoubleFromDate(DATETIME_FORMAT.parse(other.getText()));
-                    double minDate = max ? otherDate : thisDate;
-                    double maxDate = max ? thisDate : otherDate;
-                    if(minDate < model.getMin()) {
-                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.min"));
-                        return false;
-                    }
-                    if(maxDate > model.getMax()) {
-                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.max"));
-                        return false;
-                    }
-                    if (minDate >= maxDate) {
-                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
-                        return false;
-                    } else if (maxDate <= minDate) {
-                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
-                        return false;
-                    }
-                } catch (ParseException ex) {
-                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", DATETIME_FORMAT.toPattern()));
-                    return false;
-                }
+
             } else {
                 try {
                     thisDate = Double.parseDouble(t);
                     otherDate = Double.parseDouble(other.getText());
                     double minDate = max ? otherDate : thisDate;
                     double maxDate = max ? thisDate : otherDate;
-                    if(minDate < model.getMin()) {
+                    if (minDate < model.getMin()) {
                         prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.min"));
                         return false;
                     }
-                    if(maxDate > model.getMax()) {
+                    if (maxDate > model.getMax()) {
                         prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.max"));
                         return false;
                     }
@@ -308,16 +250,16 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
         public boolean validate(Problems prblms, String string, String t) {
             if (model.getTimeFormat().equals(TimeFormat.DATE)) {
                 try {
-                    DATE_FORMAT.parse(t);
-                } catch (ParseException ex) {
-                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", DATE_FORMAT.toPattern()));
+                    AttributeUtils.parseDateTime(t);
+                } catch (Exception ex) {
+                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", ISODateTimeFormat.date()));
                     return false;
                 }
             } else if (model.getTimeFormat().equals(TimeFormat.DATETIME)) {
                 try {
-                    DATETIME_FORMAT.parse(t);
-                } catch (ParseException ex) {
-                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", DATETIME_FORMAT.toPattern()));
+                    AttributeUtils.parseDateTime(t);
+                } catch (Exception ex) {
+                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", ISODateTimeFormat.dateTime()));
                     return false;
                 }
             } else {
@@ -332,10 +274,10 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
         }
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

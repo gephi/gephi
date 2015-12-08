@@ -41,7 +41,6 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.timeline;
 
-import org.gephi.dynamic.DynamicUtilities;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.DurationFieldType;

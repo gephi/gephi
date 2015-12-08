@@ -47,18 +47,19 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeUtils;
-import org.gephi.data.attributes.type.DynamicType;
-import org.gephi.data.attributes.type.Interval;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.dynamic.api.DynamicController;
-import org.gephi.dynamic.api.DynamicModelEvent;
-import org.gephi.dynamic.api.DynamicModelListener;
+import org.gephi.filters.api.FilterController;
+import org.gephi.filters.api.FilterModel;
+import org.gephi.filters.api.Query;
+import org.gephi.filters.api.Range;
+import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder;
+import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder.DynamicRangeFilter;
+import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.TimeFormat;
+import org.gephi.graph.api.types.IntervalMap;
+import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -72,20 +73,22 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = TimelineController.class)
-public class TimelineControllerImpl implements TimelineController, DynamicModelListener {
+public class TimelineControllerImpl implements TimelineController {
 
     private final List<TimelineModelListener> listeners;
     private TimelineModelImpl model;
-    private final DynamicController dynamicController;
-    private AttributeModel attributeModel;
+    private GraphObserverThread observerThread;
+    private GraphModel graphModel;
     private ScheduledExecutorService playExecutor;
+    private FilterModel filterModel;
+    private FilterController filterController;
 
     public TimelineControllerImpl() {
         listeners = new ArrayList<TimelineModelListener>();
 
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        filterController = Lookup.getDefault().lookup(FilterController.class);
 
         pc.addWorkspaceListener(new WorkspaceListener() {
 
@@ -96,17 +99,24 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
             @Override
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(TimelineModelImpl.class);
+                graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
                 if (model == null) {
-                    model = new TimelineModelImpl(dynamicController.getModel(workspace));
+                    model = new TimelineModelImpl(graphModel);
                     workspace.add(model);
                 }
-                attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel(workspace);
+                observerThread = new GraphObserverThread(TimelineControllerImpl.this, model);
                 setup();
+                observerThread.start();
+                filterModel = filterController.getModel(workspace);
             }
 
             @Override
             public void unselect(Workspace workspace) {
                 unsetup();
+                if (observerThread != null) {
+                    observerThread.stopThread();
+                }
+                filterModel = null;
             }
 
             @Override
@@ -116,18 +126,22 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
             @Override
             public void disable() {
                 model = null;
-                attributeModel = null;
+                graphModel = null;
+                filterModel = null;
+                if (observerThread != null) {
+                    observerThread.stopThread();
+                }
                 fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, null, null));
             }
         });
 
         if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(TimelineModelImpl.class);
+            graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(pc.getCurrentWorkspace());
             if (model == null) {
-                model = new TimelineModelImpl(dynamicController.getModel(pc.getCurrentWorkspace()));
+                model = new TimelineModelImpl(graphModel);
                 pc.getCurrentWorkspace().add(model);
             }
-            attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel(pc.getCurrentWorkspace());
             setup();
         }
     }
@@ -144,32 +158,34 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
 
     private void setup() {
         fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, model, null));
-
-        dynamicController.addModelListener(this);
     }
 
     private void unsetup() {
-        dynamicController.removeModelListener(this);
     }
 
     @Override
-    public void dynamicModelChanged(DynamicModelEvent event) {
-        if (event.getEventType().equals(DynamicModelEvent.EventType.MIN_CHANGED)
-                || event.getEventType().equals(DynamicModelEvent.EventType.MAX_CHANGED)) {
-            double newMax = event.getSource().getMax();
-            double newMin = event.getSource().getMin();
-            setMinMax(newMin, newMax);
-        } else if (event.getEventType().equals(DynamicModelEvent.EventType.VISIBLE_INTERVAL)) {
-            TimeInterval timeInterval = (TimeInterval) event.getData();
-            double min = timeInterval.getLow();
-            double max = timeInterval.getHigh();
-            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.INTERVAL, model, new double[]{min, max}));
-        } else if (event.getEventType().equals(DynamicModelEvent.EventType.TIME_FORMAT)) {
-            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, model, null)); //refresh display
-        }
+    public void setTimeFormat(TimeFormat timeFormat) {
+        graphModel.setTimeFormat(timeFormat);
     }
 
-    private boolean setMinMax(double min, double max) {
+//
+//    @Override
+//    public void dynamicModelChanged(DynamicModelEvent event) {
+//        if (event.getEventType().equals(DynamicModelEvent.EventType.MIN_CHANGED)
+//                || event.getEventType().equals(DynamicModelEvent.EventType.MAX_CHANGED)) {
+//            double newMax = event.getSource().getMax();
+//            double newMin = event.getSource().getMin();
+//            setMinMax(newMin, newMax);
+//        } else if (event.getEventType().equals(DynamicModelEvent.EventType.VISIBLE_INTERVAL)) {
+//            TimeInterval timeInterval = (TimeInterval) event.getData();
+//            double min = timeInterval.getLow();
+//            double max = timeInterval.getHigh();
+//            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.INTERVAL, model, new double[]{min, max}));
+//        } else if (event.getEventType().equals(DynamicModelEvent.EventType.TIME_FORMAT)) {
+//            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, model, null)); //refresh display
+//        }
+//    }
+    protected boolean setMinMax(double min, double max) {
         if (model != null) {
             if (min > max) {
                 throw new IllegalArgumentException("min should be less than max");
@@ -228,7 +244,7 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
 
                 //Interval
                 if (model.getIntervalStart() < min || model.getIntervalEnd() > max) {
-                    dynamicController.setVisibleInterval(min, max);
+//                    dynamicController.setVisibleInterval(min, max);
                 }
 
                 //Custom bounds
@@ -249,7 +265,7 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
             }
             if (!enabled) {
                 //Disable filtering
-                dynamicController.setVisibleInterval(new TimeInterval());
+                model.setInterval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
             }
         }
     }
@@ -264,32 +280,78 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
                 if (from < model.getCustomMin() || to > model.getCustomMax()) {
                     throw new IllegalArgumentException("From and to should be in the bounds");
                 }
-                dynamicController.setVisibleInterval(from, to);
-            }
-        }
-    }
+                model.setInterval(from, to);
 
-    @Override
-    public AttributeColumn[] getDynamicGraphColumns() {
-        if (attributeModel != null) {
-            List<AttributeColumn> columns = new ArrayList<AttributeColumn>();
-            AttributeUtils utils = AttributeUtils.getDefault();
-            for (AttributeColumn col : attributeModel.getGraphTable().getColumns()) {
-                if (utils.isDynamicNumberColumn(col)) {
-                    columns.add(col);
+                //Filter magic
+                Query dynamicQuery = null;
+                boolean selecting = false;
+
+                //Get or create Dynamic Query
+                if (filterModel.getCurrentQuery() != null) {
+                    //Look if current query is dynamic - filtering must be active
+                    Query query = filterModel.getCurrentQuery();
+                    Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
+                    if (dynamicQueries.length > 0) {
+                        dynamicQuery = query;
+                        selecting = filterModel.isSelecting();
+                    }
+                } else if (filterModel.getQueries().length == 1) {
+                    //Look if a dynamic query alone exists
+                    Query query = filterModel.getQueries()[0];
+                    Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
+                    if (dynamicQueries.length > 0) {
+                        dynamicQuery = query;
+                    }
+                }
+
+                if (Double.isInfinite(from) && Double.isInfinite(to)) {
+                    if (dynamicQuery != null) {
+                        filterController.remove(dynamicQuery);
+                    }
+                } else {
+                    if (dynamicQuery == null) {
+                        //Create dynamic filter
+                        DynamicRangeBuilder rangeBuilder = filterModel.getLibrary().getLookup().lookup(DynamicRangeBuilder.class);
+                        FilterBuilder[] fb = rangeBuilder.getBuilders();
+                        if (fb.length > 0) {
+                            dynamicQuery = filterController.createQuery(fb[0]);
+                            filterController.add(dynamicQuery);
+                        }
+                    }
+                    if (dynamicQuery != null) {
+                        dynamicQuery.getFilter().getProperties()[0].setValue(new Range(from, to));
+                        if (selecting) {
+                            filterController.selectVisible(dynamicQuery);
+                        } else {
+                            filterController.filterVisible(dynamicQuery);
+                        }
+                    }
                 }
             }
-            return columns.toArray(new AttributeColumn[0]);
         }
-        return new AttributeColumn[0];
     }
 
     @Override
-    public void selectColumn(final AttributeColumn column) {
+    public String[] getDynamicGraphColumns() {
+        if (graphModel != null) {
+            List<String> columns = new ArrayList<String>();
+            for (String k : graphModel.getGraph().getAttributeKeys()) {
+                Object a = graphModel.getGraph().getAttribute(k);
+                if (a instanceof IntervalMap || a instanceof TimestampMap) {
+                    columns.add(k);
+                }
+            }
+            return columns.toArray(new String[0]);
+        }
+        return new String[0];
+    }
+
+    @Override
+    public void selectColumn(final String column) {
         if (model != null) {
             if (!(model.getChart() == null && column == null)
                     || (model.getChart() != null && !model.getChart().getColumn().equals(column))) {
-                if (column != null && !attributeModel.getGraphTable().hasColumn(column.getId())) {
+                if (column != null && graphModel.getGraph().getAttribute(column) != null) {
                     throw new IllegalArgumentException("Not a graph column");
                 }
                 Thread thread = new Thread(new Runnable() {
@@ -297,34 +359,34 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
                     @Override
                     public void run() {
                         TimelineChart chart = null;
-                        Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraphVisible();
+                        Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraphVisible();
                         if (column != null) {
-                            DynamicType type = (DynamicType) graph.getAttributes().getValue(column.getIndex());
-                            if (type != null) {
-                                List<Interval> intervals = type.getIntervals(model.getCustomMin(), model.getCustomMax());
-                                Number[] xs = new Number[intervals.size() * 2];
-                                Number[] ys = new Number[intervals.size() * 2];
-                                int i = 0;
-                                Interval interval;
-                                for (int j = 0; j < intervals.size(); j++) {
-                                    interval = intervals.get(j);
-                                    Number x = (Double) interval.getLow();
-                                    Number y = (Number) interval.getValue();
-                                    xs[i] = x;
-                                    ys[i] = y;
-                                    i++;
-                                    if (j != intervals.size() - 1 && intervals.get(j + 1).getLow() < interval.getHigh()) {
-                                        xs[i] = (Double) intervals.get(j + 1).getLow();
-                                    } else {
-                                        xs[i] = (Double) interval.getHigh();
-                                    }
-                                    ys[i] = y;
-                                    i++;
-                                }
-                                if (xs.length > 0) {
-                                    chart = new TimelineChartImpl(column, xs, ys);
-                                }
-                            }
+//                            DynamicType type = (DynamicType) graph.getAttributes().getValue(column.getIndex());
+//                            if (type != null) {
+//                                List<Interval> intervals = type.getIntervals(model.getCustomMin(), model.getCustomMax());
+//                                Number[] xs = new Number[intervals.size() * 2];
+//                                Number[] ys = new Number[intervals.size() * 2];
+//                                int i = 0;
+//                                Interval interval;
+//                                for (int j = 0; j < intervals.size(); j++) {
+//                                    interval = intervals.get(j);
+//                                    Number x = (Double) interval.getLow();
+//                                    Number y = (Number) interval.getValue();
+//                                    xs[i] = x;
+//                                    ys[i] = y;
+//                                    i++;
+//                                    if (j != intervals.size() - 1 && intervals.get(j + 1).getLow() < interval.getHigh()) {
+//                                        xs[i] = (Double) intervals.get(j + 1).getLow();
+//                                    } else {
+//                                        xs[i] = (Double) interval.getHigh();
+//                                    }
+//                                    ys[i] = y;
+//                                    i++;
+//                                }
+//                                if (xs.length > 0) {
+//                                    chart = new TimelineChartImpl(column, xs, ys);
+//                                }
+//                            }
                         }
                         model.setChart(chart);
 
@@ -387,14 +449,12 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
                             to += step;
                             someAction = true;
                         }
-                    } else {
-                        if (step > 0 && to < max) {
-                            to += step;
-                            someAction = true;
-                        } else if (step < 0 && from > min) {
-                            from += step;
-                            someAction = true;
-                        }
+                    } else if (step > 0 && to < max) {
+                        to += step;
+                        someAction = true;
+                    } else if (step < 0 && from > min) {
+                        from += step;
+                        someAction = true;
                     }
 
                     if (someAction) {

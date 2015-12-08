@@ -42,6 +42,7 @@
 package org.gephi.io.generator.plugin;
 
 import java.util.Random;
+import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
 import org.gephi.io.importer.api.ColumnDraft;
@@ -69,6 +70,7 @@ public class DynamicGraph implements Generator {
         double end = 2015.0;
         double tick = 1.0;
         ColumnDraft col = container.addNodeColumn("score", Integer.class, true);
+        container.setTimeRepresentation(TimeRepresentation.TIMESTAMP);
 
         NodeDraft[] nodeArray = new NodeDraft[numberOfNodes];
         for (int i = 0; i < numberOfNodes; i++) {

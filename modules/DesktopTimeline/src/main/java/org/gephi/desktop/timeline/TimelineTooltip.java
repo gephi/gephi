@@ -49,7 +49,6 @@ import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.JComponent;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.ui.components.richtooltip.RichTooltip;
@@ -121,40 +120,43 @@ public class TimelineTooltip {
     }
 
     private void buildData(double currentPosition) {
-        if (model.getTimeFormat().equals(TimeFormat.DOUBLE)) {
-            int exponentMin = (int) Math.round(Math.log10(model.getCustomMin()));
-
-            DecimalFormat decimalFormat = new DecimalFormat();
-            decimalFormat.setRoundingMode(RoundingMode.HALF_EVEN);
-
-            if (exponentMin > 0) {
-                min = String.valueOf(model.getCustomMin());
-                max = String.valueOf(model.getCustomMax());
-                position = String.valueOf(currentPosition);
-            } else {
-                decimalFormat.setMaximumFractionDigits(Math.abs(exponentMin) + 2);
-                min = decimalFormat.format(model.getCustomMin());
-                max = decimalFormat.format(model.getCustomMax());
-                position = decimalFormat.format(currentPosition);
-            }
-        } else if (model.getTimeFormat().equals(TimeFormat.DATE)) {
-            DateTime minDate = new DateTime((long) model.getCustomMin());
-            DateTime maxDate = new DateTime((long) model.getCustomMax());
-            DateTime posDate = new DateTime((long) currentPosition);
-
-            DateTimeFormatter formatter = ISODateTimeFormat.date();
-            min = formatter.print(minDate);
-            max = formatter.print(maxDate);
-            position = formatter.print(posDate);
-        } else {
-            DateTime minDate = new DateTime((long) model.getCustomMin());
-            DateTime maxDate = new DateTime((long) model.getCustomMax());
-            DateTime posDate = new DateTime((long) currentPosition);
-
-            DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
-            min = formatter.print(minDate);
-            max = formatter.print(maxDate);
-            position = formatter.print(posDate);
+        switch (model.getTimeFormat()) {
+            case DOUBLE:
+                int exponentMin = (int) Math.round(Math.log10(model.getCustomMin()));
+                DecimalFormat decimalFormat = new DecimalFormat();
+                decimalFormat.setRoundingMode(RoundingMode.HALF_EVEN);
+                if (exponentMin > 0) {
+                    min = String.valueOf(model.getCustomMin());
+                    max = String.valueOf(model.getCustomMax());
+                    position = String.valueOf(currentPosition);
+                } else {
+                    decimalFormat.setMaximumFractionDigits(Math.abs(exponentMin) + 2);
+                    min = decimalFormat.format(model.getCustomMin());
+                    max = decimalFormat.format(model.getCustomMax());
+                    position = decimalFormat.format(currentPosition);
+                }   break;
+            case DATE:
+                {
+                    DateTime minDate = new DateTime((long) model.getCustomMin());
+                    DateTime maxDate = new DateTime((long) model.getCustomMax());
+                    DateTime posDate = new DateTime((long) currentPosition);
+                    DateTimeFormatter formatter = ISODateTimeFormat.date();
+                    min = formatter.print(minDate);
+                    max = formatter.print(maxDate);
+                    position = formatter.print(posDate);
+                    break;
+                }
+            default:
+                {
+                    DateTime minDate = new DateTime((long) model.getCustomMin());
+                    DateTime maxDate = new DateTime((long) model.getCustomMax());
+                    DateTime posDate = new DateTime((long) currentPosition);
+                    DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
+                    min = formatter.print(minDate);
+                    max = formatter.print(maxDate);
+                    position = formatter.print(posDate);
+                    break;
+                }
         }
 
         if (model.getChart() != null) {
@@ -183,7 +185,7 @@ public class TimelineTooltip {
 
         //Chart
         if (getY() != null) {
-            richTooltip.addFooterSection(model.getChart().getColumn().getTitle());
+            richTooltip.addFooterSection(model.getChart().getColumn());
             richTooltip.addFooterSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.chart") + ": " + getY());
 
             //Img

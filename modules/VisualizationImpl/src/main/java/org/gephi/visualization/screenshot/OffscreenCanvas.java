@@ -182,4 +182,8 @@ public class OffscreenCanvas extends GLAbstractListener implements TileRendererB
     public void endTileRendering(TileRendererBase trb) {
 
     }
+
+    @Override
+    public void reinitWindow() {
+    }
 }

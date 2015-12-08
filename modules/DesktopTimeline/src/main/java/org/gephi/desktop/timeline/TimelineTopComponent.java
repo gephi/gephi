@@ -48,13 +48,14 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.graph.api.Column;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.api.TimelineModelEvent;
 import org.gephi.timeline.api.TimelineModelListener;
 import org.gephi.ui.components.CloseButton;
 import org.gephi.ui.utils.UIUtils;
+import org.gephi.visualization.VizController;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -132,7 +133,6 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
             }
         });
 
-
         columnsButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -140,14 +140,14 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 JPopupMenu menu = new JPopupMenu();
 
                 //Add columns
-                AttributeColumn selectedColumn = model.getChart() != null ? model.getChart().getColumn() : null;
+                String selectedColumn = model.getChart() != null ? model.getChart().getColumn() : null;
 
                 //Dynamic columns
-                AttributeColumn[] columns = controller.getDynamicGraphColumns();
+                String[] columns = controller.getDynamicGraphColumns();
 
-                for (final AttributeColumn col : columns) {
-                    boolean selected = col == selectedColumn;
-                    JRadioButtonMenuItem item = new JRadioButtonMenuItem(col.getTitle(), selected);
+                for (final String col : columns) {
+                    boolean selected = (col == null ? selectedColumn == null : col.equals(selectedColumn));
+                    JRadioButtonMenuItem item = new JRadioButtonMenuItem(col, selected);
                     item.addActionListener(new ActionListener() {
 
                         public void actionPerformed(ActionEvent e) {
@@ -176,7 +176,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                     });
 
                     menu.add(disableItem);
-                    if(selectedColumn == null) {
+                    if (selectedColumn == null) {
                         disableItem.setEnabled(false);
                     }
                 }
@@ -255,7 +255,6 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 });
                 menu.add(dateFormatItem);
 
-                
                 menu.show(settingsButton, 0, -menu.getPreferredSize().height);
             }
         });
@@ -339,10 +338,11 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
     public void setTimeLineVisible(final boolean visible) {
         SwingUtilities.invokeLater(new Runnable() {
-
             public void run() {
                 if (visible != TimelineTopComponent.this.isVisible()) {
+
                     TimelineTopComponent.this.setVisible(visible);
+                    VizController.getInstance().getDrawable().reinitWindow();
                 }
             }
         });

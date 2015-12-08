@@ -41,8 +41,8 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.timeline;
 
-import org.gephi.dynamic.api.DynamicController;
-import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.graph.api.TimeFormat;
+import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -53,7 +53,7 @@ import org.openide.util.NbBundle;
  */
 public class TimeFormatDialog extends javax.swing.JPanel {
 
-    private DynamicController dynamicController;
+    private TimelineController timelineController;
 
     /**
      * Creates new form DateFormatDialog
@@ -63,17 +63,30 @@ public class TimeFormatDialog extends javax.swing.JPanel {
     }
 
     public void setup(TimelineModel model) {
-        this.dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        this.timelineController = Lookup.getDefault().lookup(TimelineController.class);
 
-        if (dynamicController.getModel().getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) {
-            numericRadio.setSelected(true);
-        } else {
-            dateRadio.setSelected(true);
+        TimeFormat timeFormat = model.getTimeFormat();
+        switch(timeFormat) {
+            case DATE:
+                dateRadio.setSelected(true);
+                break;
+            case DATETIME:
+                dateTimeRadio.setSelected(true);
+                break;
+            case DOUBLE:
+                numericRadio.setSelected(true);
+                break;
         }
     }
 
     public void unsetup() {
-        dynamicController.setTimeFormat(dateRadio.isSelected() ? DynamicModel.TimeFormat.DATE : DynamicModel.TimeFormat.DOUBLE);
+        if(dateRadio.isSelected()) {
+            timelineController.setTimeFormat(TimeFormat.DATE);
+        } else if(dateTimeRadio.isSelected()) {
+            timelineController.setTimeFormat(TimeFormat.DATETIME);
+        } else {
+            timelineController.setTimeFormat(TimeFormat.DOUBLE);
+        }
     }
 
     /**
@@ -89,6 +102,7 @@ public class TimeFormatDialog extends javax.swing.JPanel {
         headerTitle = new org.jdesktop.swingx.JXHeader();
         dateRadio = new javax.swing.JRadioButton();
         numericRadio = new javax.swing.JRadioButton();
+        dateTimeRadio = new javax.swing.JRadioButton();
 
         headerTitle.setDescription(NbBundle.getMessage (TimelineTopComponent.class, "TimeFormatDialog.headerTitle.description")); // NOI18N
         headerTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/time_format.png"))); // NOI18N
@@ -100,17 +114,22 @@ public class TimeFormatDialog extends javax.swing.JPanel {
         buttonGroup.add(numericRadio);
         numericRadio.setText(NbBundle.getMessage (TimelineTopComponent.class, "TimeFormatDialog.numericRadio.text")); // NOI18N
 
+        buttonGroup.add(dateTimeRadio);
+        dateTimeRadio.setText(org.openide.util.NbBundle.getMessage(TimeFormatDialog.class, "TimeFormatDialog.dateTimeRadio.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(headerTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(headerTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(126, 126, 126)
+                .addGap(23, 23, 23)
                 .addComponent(numericRadio)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dateTimeRadio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(dateRadio)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,13 +138,15 @@ public class TimeFormatDialog extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(numericRadio)
-                    .addComponent(dateRadio))
+                    .addComponent(dateRadio)
+                    .addComponent(dateTimeRadio))
                 .addGap(0, 22, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JRadioButton dateRadio;
+    private javax.swing.JRadioButton dateTimeRadio;
     private org.jdesktop.swingx.JXHeader headerTitle;
     private javax.swing.JRadioButton numericRadio;
     // End of variables declaration//GEN-END:variables

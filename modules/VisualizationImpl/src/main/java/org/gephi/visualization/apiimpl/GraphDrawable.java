@@ -97,4 +97,6 @@ public interface GraphDrawable {
     public void destroy();
 
     public Point getLocationOnScreen();
+
+    public void reinitWindow();
 }

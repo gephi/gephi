@@ -41,7 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.timeline.api;
 
-import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.graph.api.TimeFormat;
 
 /**
  * Timeline model which holds timeline bounds, interval and animation flags.
@@ -136,7 +136,7 @@ public interface TimelineModel {
      * Returns the current time format. Default is <code>DOUBLE</code>
      * @return the current tie
      */
-    public DynamicModel.TimeFormat getTimeFormat();
+    public TimeFormat getTimeFormat();
 
     /**
      * Returns the play delay in milliseconds. Defines the time between each interval

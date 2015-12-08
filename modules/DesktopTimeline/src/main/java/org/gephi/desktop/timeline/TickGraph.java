@@ -46,7 +46,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
+import org.gephi.graph.api.TimeFormat;
 import org.gephi.timeline.api.TimelineModel;
 import org.joda.time.Interval;
 
