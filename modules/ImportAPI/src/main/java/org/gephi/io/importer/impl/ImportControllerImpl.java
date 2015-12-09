@@ -211,7 +211,7 @@ public class ImportControllerImpl implements ImportController {
 
         try {
             if (importer.execute(container.getLoader())) {
-                if (importer.getReport() != null) {
+                if (importer.getReport() != null && importer.getReport() != report) {
                     report.append(importer.getReport());
                 }
                 report.close();

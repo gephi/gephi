@@ -46,11 +46,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = SQLDriver.class, position = 20)
 public class SQLiteDriver implements SQLDriver {
 
     public SQLiteDriver() {

@@ -329,16 +329,20 @@ public class ImporterEdgeList implements DatabaseImporter {
     private TimeFormat getTimeFormat(ResultSet rs, int column) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         int type = metaData.getColumnType(column);
-        if (type == Types.DATE) {
-            return TimeFormat.DATE;
-        } else if (type == Types.TIME) {
-            return TimeFormat.DATETIME;
-        } else if (type == Types.TIMESTAMP) {
-            return TimeFormat.DATETIME;
-        } else if (type == Types.VARCHAR) {
-            return TimeFormat.DATETIME;
-        } else if (type == Types.DOUBLE || type == Types.FLOAT) {
-            return TimeFormat.DOUBLE;
+        switch (type) {
+            case Types.DATE:
+                return TimeFormat.DATE;
+            case Types.TIME:
+                return TimeFormat.DATETIME;
+            case Types.TIMESTAMP:
+                return TimeFormat.DATETIME;
+            case Types.VARCHAR:
+                return TimeFormat.DATETIME;
+            case Types.DOUBLE:
+            case Types.FLOAT:
+                return TimeFormat.DOUBLE;
+            default:
+                break;
         }
         return TimeFormat.DOUBLE;
     }

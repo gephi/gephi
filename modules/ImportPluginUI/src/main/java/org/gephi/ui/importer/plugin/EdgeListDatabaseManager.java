@@ -95,8 +95,8 @@ public class EdgeListDatabaseManager {
 
     private void load() {
         if (databaseConfigurations == null) {
-            databaseConfigurations =
-                    FileUtil.getConfigFile("EdgeListDatabase");
+            databaseConfigurations
+                    = FileUtil.getConfigFile("EdgeListDatabase");
         }
 
         if (databaseConfigurations != null) {

@@ -341,9 +341,13 @@ public final class Report {
                 return new ReportEntry(pointer.substring(1, pointer.length()));
             } else {
                 int index = pointer.indexOf(";");
-                String levelStr = pointer.substring(0, index);
-                String message = pointer.substring(index + 1);
-                return new ReportEntry(new Issue(message, Level.valueOf(levelStr)));
+                if (index == -1) {
+                    return new ReportEntry(pointer);
+                } else {
+                    String levelStr = pointer.substring(0, index);
+                    String message = pointer.substring(index + 1);
+                    return new ReportEntry(new Issue(message, Level.valueOf(levelStr)));
+                }
             }
         }
 

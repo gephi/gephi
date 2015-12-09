@@ -44,13 +44,16 @@ package org.gephi.io.database.drivers;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = SQLDriver.class, position = 10)
 public class MySQLDriver implements SQLDriver {
 
+    @Override
     public Connection getConnection(String connectionUrl, String username, String passwd) throws SQLException {
         return DriverManager.getConnection(connectionUrl, username, passwd);
     }
