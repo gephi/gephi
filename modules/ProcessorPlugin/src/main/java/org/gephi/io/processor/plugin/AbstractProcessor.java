@@ -121,13 +121,16 @@ public abstract class AbstractProcessor {
             node.getTextProperties().setSize(nodeDraft.getLabelSize());
         }
 
-        node.setX(nodeDraft.getX());
-        node.setY(nodeDraft.getY());
-        node.setZ(nodeDraft.getZ());
+        if ((nodeDraft.getX() != 0 || nodeDraft.getY() != 0 || nodeDraft.getZ() != 0)
+                && (node.x() == 0 && node.y() == 0 && node.z() == 0)) {
+            node.setX(nodeDraft.getX());
+            node.setY(nodeDraft.getY());
+            node.setZ(nodeDraft.getZ());
+        }
 
         if (nodeDraft.getSize() != 0 && !Float.isNaN(nodeDraft.getSize())) {
             node.setSize(nodeDraft.getSize());
-        } else {
+        } else if (node.size() == 0) {
             node.setSize(10f);
         }
 
