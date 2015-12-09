@@ -41,6 +41,7 @@
  */
 package org.gephi.appearance;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import org.gephi.graph.api.Column;
@@ -66,7 +67,14 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
 
     @Override
     public Collection getValues() {
-        return Arrays.asList(model.getEdgeTypeLabels());
+        Object[] labels = model.getEdgeTypeLabels();
+        ArrayList<Object> col = new ArrayList<Object>(labels.length);
+        for (Object l : labels) {
+            if (!(l == null && graph.getEdgeCount(0) == 0)) {
+                col.add(l);
+            }
+        }
+        return col;
     }
 
     @Override
@@ -92,7 +100,8 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
 
     @Override
     public int size() {
-        return model.getEdgeTypeCount();
+        int size = model.getEdgeTypeCount();
+        return graph.getEdgeCount(0) == 0 ? size - 1 : size;
     }
 
     @Override
