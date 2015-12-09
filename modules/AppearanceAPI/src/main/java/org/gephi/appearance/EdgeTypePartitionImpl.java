@@ -66,8 +66,7 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
 
     @Override
     public Collection getValues() {
-//        return Arrays.asList(model.getEdgeTypeLabels());
-        return null;
+        return Arrays.asList(model.getEdgeTypeLabels());
     }
 
     @Override
@@ -93,8 +92,7 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
 
     @Override
     public int size() {
-//        return model.getEdgeTypeCount();
-        return 0;
+        return model.getEdgeTypeCount();
     }
 
     @Override
