@@ -325,6 +325,7 @@ public class TimelineControllerImpl implements TimelineController {
                         } else {
                             filterController.filterVisible(dynamicQuery);
                         }
+                        fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.INTERVAL, model, new double[]{from, to}));
                     }
                 }
             }
