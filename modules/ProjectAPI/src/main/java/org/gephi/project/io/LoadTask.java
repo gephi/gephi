@@ -176,6 +176,10 @@ public class LoadTask implements LongTask, Runnable {
 
     private ProjectImpl readProject(ZipFile zipFile) throws Exception {
         ZipEntry entry = zipFile.getEntry("Project_xml");
+        if (entry == null) {
+            // Try legacy
+            entry = zipFile.getEntry("Project");
+        }
         if (entry != null) {
             InputStream is = null;
             try {
