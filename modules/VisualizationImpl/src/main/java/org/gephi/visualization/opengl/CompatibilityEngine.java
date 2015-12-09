@@ -235,32 +235,33 @@ public class CompatibilityEngine extends AbstractEngine {
 //                gl.glVertex3f(textX-textW/2f, textY-textH/2, 0);
 //                gl.glEnd();
 //            }
-//            if (edgeClass.isEnabled() && vizModel.getTextModel().isShowEdgeLabels()) {
-//                textManager.getEdgeRenderer().beginRendering();
-//                textManager.defaultEdgeColor();
-//                if (textManager.isSelectedOnly()) {
-//                    for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
-//                        ModelImpl obj = itr.next();
-//                        if (obj.markTime != markTime) {
-//                            if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().getTextData().isVisible()) {
-//                                textManager.getEdgeRenderer().drawTextEdge(obj);
-//                            }
-//                            obj.markTime = markTime;
-//                        }
-//                    }
-//                } else {
-//                    for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
-//                        ModelImpl obj = itr.next();
-//                        if (obj.markTime != markTime) {
-//                            if (obj.getObj().getTextData().isVisible()) {
-//                                textManager.getEdgeRenderer().drawTextEdge(obj);
-//                            }
-//                            obj.markTime = markTime;
-//                        }
-//                    }
-//                }
-//                textManager.getEdgeRenderer().endRendering();
-//            }
+            if (edgeModeler.isEnabled() && vizModel.getTextModel().isShowEdgeLabels()) {
+                markTime++;
+                textManager.getEdgeRenderer().beginRendering();
+                textManager.defaultEdgeColor();
+                if (textManager.isSelectedOnly()) {
+                    for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
+                        EdgeModel obj = itr.next();
+                        if (obj.markTime != markTime) {
+                            if (obj.isSelected() || obj.isTextVisible()) {
+                                textManager.getEdgeRenderer().drawTextEdge(obj);
+                            }
+                            obj.markTime = markTime;
+                        }
+                    }
+                } else {
+                    for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
+                        EdgeModel obj = itr.next();
+                        if (obj.markTime != markTime) {
+                            if (obj.isTextVisible()) {
+                                textManager.getEdgeRenderer().drawTextEdge(obj);
+                            }
+                            obj.markTime = markTime;
+                        }
+                    }
+                }
+                textManager.getEdgeRenderer().endRendering();
+            }
         }
 
 //        octree.displayOctree(gl, glu);

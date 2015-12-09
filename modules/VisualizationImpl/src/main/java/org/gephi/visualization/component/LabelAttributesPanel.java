@@ -119,12 +119,10 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
         AttributesCheckBox[] target;
         if (elementButtonGroup.getSelection() == nodesToggleButton.getModel()) {
             for (Column c : graphController.getGraphModel().getNodeTable()) {
-                if (c.getOrigin().equals(Origin.DATA)) {
+                if (!c.isProperty()) {
                     availableColumns.add(c);
-                } else if (showProperties) {
-                    if (c.getId().equalsIgnoreCase("label")) {
-                        availableColumns.add(c);
-                    }
+                } else if (showProperties && c.isProperty() && !c.getId().equals("timeset")) {
+                    availableColumns.add(c);
                 }
             }
 

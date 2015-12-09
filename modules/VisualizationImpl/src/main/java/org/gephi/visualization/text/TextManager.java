@@ -356,13 +356,6 @@ public class TextManager implements VizArchitecture {
                 }
                 model.colorMode.textNodeColor(this, objectModel);
 
-//                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor3d(model.nodeSizeFactor, objectModel);
-//
-//                float width = sizeFactor * objectModel.getTextWidth();
-//                float height = sizeFactor * objectModel.getTextHeight();
-//                float posX = node.x() + (float) width / -2;
-//                float posY = node.y() + (float) height / -2;
-//                float posZ = node.z();
                 renderer.draw3D(txt, posX, posY, (float) node.z(), sizeFactor);
             }
         }
@@ -373,30 +366,31 @@ public class TextManager implements VizArchitecture {
             TextProperties textData = (TextProperties) edge.getTextProperties();
             if (textData != null) {
                 String txt = textData.getText();
-                Rectangle2D r;
+                float width, height, posX, posY;
 
                 if (txt == null || txt.isEmpty()) {
                     return;
                 }
 
-                float sizeFactor = 1f;
-//                if (edgeRefresh || objectModel.getTextBounds() == null) {
-//                    r = renderer.getBounds(txt);
-//                    objectModel.setTextBounds(r);
-//                } else {
-//                    r = objectModel.getTextBounds();
-//                }
+                float sizeFactor = drawable.getGlobalScale() * textData.getSize() * model.edgeSizeFactor;
+                if (edgeRefresh || (objectModel.getTextWidth() == 0f && objectModel.getTextHeight() == 0f)) {
+                    Rectangle2D r = renderer.getBounds(txt);
+
+                    width = (float) (sizeFactor * r.getWidth());
+                    height = (float) (sizeFactor * r.getHeight());
+                    textData.setDimensions(width, height);
+                } else {
+                    width = textData.getWidth();
+                    height = textData.getHeight();
+                }
 
                 model.colorMode.textEdgeColor(this, objectModel);
-//                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor3d(model.edgeSizeFactor, objectModel);
-                float width = sizeFactor * objectModel.getTextWidth();
-                float height = sizeFactor * objectModel.getTextHeight();
+
                 float x = (objectModel.getSourceModel().getNode().x() + 2 * objectModel.getTargetModel().getNode().x()) / 3f;
                 float y = (objectModel.getSourceModel().getNode().y() + 2 * objectModel.getTargetModel().getNode().y()) / 3f;
-                float z = (objectModel.getSourceModel().getNode().z() + 2 * objectModel.getTargetModel().getNode().z()) / 3f;
 
-                float posX = x + (float) width / -2 * sizeFactor;
-                float posY = y + (float) height / -2 * sizeFactor;
+                posX = x + (float) width / -2;
+                posY = y + (float) height / -2;
                 float posZ = 0;
 
                 renderer.draw3D(txt, posX, posY, posZ, sizeFactor);
