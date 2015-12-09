@@ -86,13 +86,33 @@ public class MultiGraph implements Generator {
                 for (int j = i + 1; j < numberOfNodes; j++) {
                     NodeDraft node2 = nodeArray[j];
                     if (random.nextDouble() < wiringProbability) {
-                        EdgeDraft edgeDraft = container.factory().newEdgeDraft();
-                        edgeDraft.setSource(node1);
-                        edgeDraft.setTarget(node2);
-                        edgeDraft.setType(edgeTypes[random.nextInt(edgeTypes.length)]);
-                        edgeDraft.setLabel((String)edgeDraft.getType());
+                        if (random.nextDouble() < 0.3) {
+                            //Double
+                            EdgeDraft edgeDraft1 = container.factory().newEdgeDraft();
+                            edgeDraft1.setSource(node1);
+                            edgeDraft1.setTarget(node2);
+                            edgeDraft1.setType(edgeTypes[0]);
+                            edgeDraft1.setLabel((String) edgeDraft1.getType());
 
-                        container.addEdge(edgeDraft);
+                            container.addEdge(edgeDraft1);
+
+                            EdgeDraft edgeDraft2 = container.factory().newEdgeDraft();
+                            edgeDraft2.setSource(node1);
+                            edgeDraft2.setTarget(node2);
+                            edgeDraft2.setType(edgeTypes[1]);
+                            edgeDraft2.setLabel((String) edgeDraft2.getType());
+
+                            container.addEdge(edgeDraft2);
+                        } else {
+                            //Single
+                            EdgeDraft edgeDraft = container.factory().newEdgeDraft();
+                            edgeDraft.setSource(node1);
+                            edgeDraft.setTarget(node2);
+                            edgeDraft.setType(edgeTypes[random.nextInt(edgeTypes.length)]);
+                            edgeDraft.setLabel((String) edgeDraft.getType());
+
+                            container.addEdge(edgeDraft);
+                        }
                     }
                 }
             }
