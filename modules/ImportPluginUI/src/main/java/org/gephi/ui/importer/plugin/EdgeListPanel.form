@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <AuxValues>
@@ -68,8 +68,8 @@
               <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="removeConfigurationButton" min="0" pref="0" max="32767" attributes="1"/>
-                  <Component id="configurationCombo" alignment="0" pref="24" max="32767" attributes="1"/>
-                  <Component id="configurationLabel" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
+                  <Component id="configurationCombo" alignment="0" pref="0" max="32767" attributes="1"/>
+                  <Component id="configurationLabel" min="-2" pref="25" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
