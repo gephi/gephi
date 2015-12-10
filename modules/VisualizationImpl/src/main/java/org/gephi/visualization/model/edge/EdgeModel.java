@@ -100,7 +100,7 @@ public abstract class EdgeModel implements Model, TextModel {
 
     @Override
     public boolean hasCustomTextColor() {
-        return edge.getTextProperties().getR() > 0;
+        return edge.getTextProperties().getAlpha()> 0;
     }
 
     @Override

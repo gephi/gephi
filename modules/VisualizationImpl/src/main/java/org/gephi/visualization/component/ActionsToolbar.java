@@ -130,37 +130,6 @@ public class ActionsToolbar extends JToolBar {
         add(resetColorButton);
 
         //Reset sizes
-        final JButton resetSizeButton = new JButton();
-        resetSizeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetSize.png")));
-        resetSizeButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetSizes"));
-        resetSizeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                GraphModel gm = gc.getGraphModel();
-                Graph graph = gm.getGraphVisible();
-                for (Node n : graph.getNodes()) {
-                    n.setSize(size);
-                }
-            }
-        });
-        resetSizeButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    Object res = JOptionPane.showInputDialog(resetSizeButton, NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetSizes.dialog"), "" + size);
-                    if (res != null) {
-                        try {
-                            size = Float.parseFloat((String) res);
-                        } catch (Exception ex) {
-                        }
-                    }
-                }
-            }
-        });
-        add(resetSizeButton);
-
         //Reset label colors
         final JButton resetLabelColorButton = new JButton();
         resetLabelColorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetLabelColor.png")));
@@ -173,15 +142,17 @@ public class ActionsToolbar extends JToolBar {
                 Graph graph = gm.getGraphVisible();
                 for (Node n : graph.getNodes().toArray()) {
                     n.getTextProperties().setColor(Color.BLACK);
+                    n.getTextProperties().setAlpha(0f);
                 }
                 for (Edge e : graph.getEdges().toArray()) {
                     e.getTextProperties().setColor(Color.BLACK);
+                    e.getTextProperties().setAlpha(0f);
                 }
             }
         });
         add(resetLabelColorButton);
 
-        //Reset label colors
+        //Reset label visible
         final JButton resetLabelVisibleButton = new JButton();
         resetLabelVisibleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetLabelVisible.png")));
         resetLabelVisibleButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetLabelVisible"));
@@ -200,23 +171,6 @@ public class ActionsToolbar extends JToolBar {
             }
         });
         add(resetLabelVisibleButton);
-
-        //Reset label size
-        JButton resetLabelSizeButton = new JButton();
-        resetLabelSizeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetLabelSize.png")));
-        resetLabelSizeButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetLabelSizes"));
-        resetLabelSizeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                GraphModel gm = gc.getGraphModel();
-                Graph graph = gm.getGraphVisible();
-                for (Node n : graph.getNodes()) {
-                    n.getTextProperties().setSize(1f);
-                }
-            }
-        });
-        add(resetLabelSizeButton);
     }
 
     private void initDesign() {

@@ -165,7 +165,7 @@ public abstract class NodeModel implements Model, TextModel {
 
     @Override
     public boolean hasCustomTextColor() {
-        return node.getTextProperties().getR() > 0;
+        return node.getTextProperties().getAlpha()> 0;
     }
 
     @Override

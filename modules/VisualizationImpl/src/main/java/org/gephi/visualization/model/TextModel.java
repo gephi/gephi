@@ -4,7 +4,6 @@
  */
 package org.gephi.visualization.model;
 
-import java.awt.geom.Rectangle2D;
 import org.gephi.graph.api.ElementProperties;
 
 /**
