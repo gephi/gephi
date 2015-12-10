@@ -574,19 +574,7 @@ public class AppearanceModelImpl implements AppearanceModel {
         int valueCount = index.countValues(column);
         int elementCount = index.countElements(column);
         double ratio = valueCount / (double) elementCount;
-        if (column.isNumber()) {
-            Class columnTypeClass = column.getTypeClass();
-            if (columnTypeClass.equals(Integer.class)) {
-                if (ratio < 0.6) {
-                    return true;
-                }
-            } else if (ratio < 0.1) {
-                return true;
-            }
-        } else if (ratio < 0.8) {
-            return true;
-        }
-        return false;
+        return ratio <= 0.9;
     }
 
     private boolean isRanking(Graph graph, Column column) {
