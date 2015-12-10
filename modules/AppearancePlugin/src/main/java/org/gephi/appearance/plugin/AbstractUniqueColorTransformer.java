@@ -39,66 +39,19 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
-package org.gephi.ui.appearance.plugin;
+package org.gephi.appearance.plugin;
 
-import javax.swing.AbstractButton;
-import javax.swing.Icon;
-import javax.swing.JPanel;
-import org.gephi.appearance.api.Function;
-import org.gephi.appearance.api.RankingFunction;
-import org.gephi.appearance.plugin.RankingLabelSizeTransformer;
-import org.gephi.appearance.spi.RankingTransformer;
-import org.gephi.appearance.spi.TransformerCategory;
-import org.gephi.appearance.spi.TransformerUI;
-import org.gephi.ui.appearance.plugin.category.DefaultCategory;
-import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
+import java.awt.Color;
 
-/**
- *
- * @author mbastian
- */
-@ServiceProvider(service = TransformerUI.class, position = 800)
-public class RankingLabelSizeTransformerUI implements TransformerUI {
+public class AbstractUniqueColorTransformer {
 
-    private RankingSizeTransformerPanel panel;
+    protected Color color = Color.BLACK;
 
-    @Override
-    public TransformerCategory getCategory() {
-        return DefaultCategory.LABEL_SIZE;
+    public Color getColor() {
+        return color;
     }
 
-    @Override
-    public Icon getIcon() {
-        return null;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return NbBundle.getMessage(UniqueElementColorTransformerUI.class, "Attribute.name");
-    }
-
-    @Override
-    public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public synchronized JPanel getPanel(Function function) {
-        if (panel == null) {
-            panel = new RankingSizeTransformerPanel();
-        }
-        panel.setup((RankingFunction) function);
-        return panel;
-    }
-
-    @Override
-    public synchronized AbstractButton[] getControlButton() {
-        return null;
-    }
-
-    @Override
-    public Class<? extends RankingTransformer> getTransformerClass() {
-        return RankingLabelSizeTransformer.class;
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

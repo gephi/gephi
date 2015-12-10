@@ -41,7 +41,6 @@
  */
 package org.gephi.appearance.plugin;
 
-import java.awt.Color;
 import org.gephi.appearance.spi.SimpleTransformer;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.graph.api.Element;
@@ -52,9 +51,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author mbastian
  */
 @ServiceProvider(service = Transformer.class)
-public class UniqueElementColorTransformer implements SimpleTransformer<Element> {
-
-    private Color color = Color.BLACK;
+public class UniqueElementColorTransformer extends AbstractUniqueColorTransformer implements SimpleTransformer<Element> {
 
     @Override
     public void transform(Element element) {
@@ -69,13 +66,5 @@ public class UniqueElementColorTransformer implements SimpleTransformer<Element>
     @Override
     public boolean isEdge() {
         return true;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
     }
 }

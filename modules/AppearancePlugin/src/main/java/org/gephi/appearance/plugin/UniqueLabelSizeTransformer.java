@@ -39,66 +39,32 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
-package org.gephi.ui.appearance.plugin;
+package org.gephi.appearance.plugin;
 
-import javax.swing.AbstractButton;
-import javax.swing.Icon;
-import javax.swing.JPanel;
-import org.gephi.appearance.api.Function;
-import org.gephi.appearance.api.RankingFunction;
-import org.gephi.appearance.plugin.RankingLabelSizeTransformer;
-import org.gephi.appearance.spi.RankingTransformer;
-import org.gephi.appearance.spi.TransformerCategory;
-import org.gephi.appearance.spi.TransformerUI;
-import org.gephi.ui.appearance.plugin.category.DefaultCategory;
-import org.openide.util.NbBundle;
+import org.gephi.appearance.spi.SimpleTransformer;
+import org.gephi.appearance.spi.Transformer;
+import org.gephi.graph.api.Element;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author mbastian
  */
-@ServiceProvider(service = TransformerUI.class, position = 800)
-public class RankingLabelSizeTransformerUI implements TransformerUI {
-
-    private RankingSizeTransformerPanel panel;
+@ServiceProvider(service = Transformer.class)
+public class UniqueLabelSizeTransformer extends AbstractUniqueSizeTransformer implements SimpleTransformer<Element> {
 
     @Override
-    public TransformerCategory getCategory() {
-        return DefaultCategory.LABEL_SIZE;
+    public void transform(Element elmt) {
+        elmt.getTextProperties().setSize(size);
     }
 
     @Override
-    public Icon getIcon() {
-        return null;
+    public boolean isNode() {
+        return true;
     }
 
     @Override
-    public String getDisplayName() {
-        return NbBundle.getMessage(UniqueElementColorTransformerUI.class, "Attribute.name");
-    }
-
-    @Override
-    public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public synchronized JPanel getPanel(Function function) {
-        if (panel == null) {
-            panel = new RankingSizeTransformerPanel();
-        }
-        panel.setup((RankingFunction) function);
-        return panel;
-    }
-
-    @Override
-    public synchronized AbstractButton[] getControlButton() {
-        return null;
-    }
-
-    @Override
-    public Class<? extends RankingTransformer> getTransformerClass() {
-        return RankingLabelSizeTransformer.class;
+    public boolean isEdge() {
+        return true;
     }
 }

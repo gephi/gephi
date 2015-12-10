@@ -58,7 +58,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author mbastian
  */
-@ServiceProvider(service = TransformerUI.class, position = 400)
+@ServiceProvider(service = TransformerUI.class, position = 600)
 public class RankingLabelColorTransformerUI implements TransformerUI {
 
     private RankingColorTransformerPanel panel;

@@ -42,12 +42,11 @@
 package org.gephi.ui.appearance.plugin;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.appearance.api.SimpleFunction;
+import org.gephi.appearance.plugin.AbstractUniqueColorTransformer;
 import org.gephi.appearance.plugin.UniqueElementColorTransformer;
 
 /**
@@ -56,11 +55,8 @@ import org.gephi.appearance.plugin.UniqueElementColorTransformer;
  */
 public class UniqueColorTransformerPanel extends javax.swing.JPanel {
 
-    private UniqueElementColorTransformer transformer;
+    private AbstractUniqueColorTransformer transformer;
 
-    /**
-     * Creates new form UniqueNodeColorTransformerPanel
-     */
     public UniqueColorTransformerPanel() {
         initComponents();
 
@@ -78,7 +74,7 @@ public class UniqueColorTransformerPanel extends javax.swing.JPanel {
     }
 
     public void setup(SimpleFunction function) {
-        transformer = (UniqueElementColorTransformer) function.getTransformer();
+        transformer = (AbstractUniqueColorTransformer) function.getTransformer();
         colorChooser.setColor(transformer.getColor());
         colorLabel.setText(getHex(transformer.getColor()));
     }

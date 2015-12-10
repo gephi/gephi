@@ -58,14 +58,14 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author mbastian
  */
-@ServiceProvider(service = TransformerUI.class, position = 100)
+@ServiceProvider(service = TransformerUI.class, position = 300)
 public class UniqueNodeSizeTransformerUI implements TransformerUI {
 
     private UniqueSizeTransformerPanel panel;
 
     @Override
     public String getDisplayName() {
-        return NbBundle.getMessage(UniqueElementColorTransformerUI.class, "Unique.name");
+        return NbBundle.getMessage(UniqueNodeSizeTransformerUI.class, "Unique.name");
     }
 
     @Override

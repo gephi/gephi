@@ -58,7 +58,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author mbastian
  */
-@ServiceProvider(service = TransformerUI.class, position = 300)
+@ServiceProvider(service = TransformerUI.class, position = 400)
 public class RankingElementSizeTransformerUI implements TransformerUI {
 
     private RankingSizeTransformerPanel panel;

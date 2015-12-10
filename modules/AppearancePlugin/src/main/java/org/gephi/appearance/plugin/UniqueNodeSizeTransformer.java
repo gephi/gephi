@@ -51,9 +51,12 @@ import org.openide.util.lookup.ServiceProvider;
  * @author mbastian
  */
 @ServiceProvider(service = Transformer.class)
-public class UniqueNodeSizeTransformer implements SimpleTransformer<Node> {
+public class UniqueNodeSizeTransformer extends AbstractUniqueSizeTransformer implements SimpleTransformer<Node> {
 
-    private float size = 10f;
+    public UniqueNodeSizeTransformer() {
+        super();
+        size = 10f;
+    }
 
     @Override
     public void transform(Node node) {
@@ -68,13 +71,5 @@ public class UniqueNodeSizeTransformer implements SimpleTransformer<Node> {
     @Override
     public boolean isEdge() {
         return false;
-    }
-
-    public float getSize() {
-        return size;
-    }
-
-    public void setSize(float size) {
-        this.size = size;
     }
 }

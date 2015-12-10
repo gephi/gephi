@@ -44,7 +44,7 @@ package org.gephi.ui.appearance.plugin;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.appearance.api.SimpleFunction;
-import org.gephi.appearance.plugin.UniqueNodeSizeTransformer;
+import org.gephi.appearance.plugin.AbstractUniqueSizeTransformer;
 
 /**
  *
@@ -52,7 +52,7 @@ import org.gephi.appearance.plugin.UniqueNodeSizeTransformer;
  */
 public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
 
-    private UniqueNodeSizeTransformer transformer;
+    private AbstractUniqueSizeTransformer transformer;
 
     public UniqueSizeTransformerPanel() {
         initComponents();
@@ -66,7 +66,7 @@ public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
     }
 
     public void setup(SimpleFunction function) {
-        transformer = (UniqueNodeSizeTransformer) function.getTransformer();
+        transformer = (AbstractUniqueSizeTransformer) function.getTransformer();
         sizeSpinner.setValue(transformer.getSize());
     }
 
