@@ -83,7 +83,8 @@ import org.openide.util.NbBundle;
  */
 public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
-    private PalettePopupButton palettePopupButton;
+    private static final int PALETTE_DISPLAY_LIMIT = 15;
+    private final PalettePopupButton palettePopupButton;
     private PartitionFunction function;
     private Collection<Object> values;
 
@@ -281,14 +282,14 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
                 menu.add("<html><i>" + NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.norecent") + "</i></html>");
             } else {
                 for (Palette pl : recentPalettes) {
-                    menu.add(new PaletteMenuItem(pl, colorsCount));
+                    menu.add(new PaletteMenuItem(pl, Math.min(PALETTE_DISPLAY_LIMIT, colorsCount)));
                 }
             }
 
             menu.add(new JXTitledSeparator(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.standard")));
             JMenu lightPalette = new JMenu(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.light"));
             for (Palette pl : paletteManager.getWhiteBackgroudPalette(colorsCount)) {
-                lightPalette.add(new PaletteMenuItem(pl, colorsCount));
+                lightPalette.add(new PaletteMenuItem(pl, Math.min(PALETTE_DISPLAY_LIMIT, colorsCount)));
             }
             menu.add(lightPalette);
 
