@@ -307,6 +307,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                         }
 
                     }
+                    localScaleButton.setSelected(model.isLocalScale());
                     return;
                 }
                 //Disable

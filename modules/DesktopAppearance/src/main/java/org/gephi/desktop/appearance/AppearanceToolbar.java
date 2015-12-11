@@ -433,7 +433,6 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         private transient final Set<AbstractButton> rankingSouthControls;
         private transient final Set<AbstractButton> partitionSouthControls;
         private transient final Set<AbstractButton> controlButtons;
-        private final ButtonGroup buttonGroups = new ButtonGroup();
 
         public ControlToolbar() {
             rankingSouthControls = new HashSet<AbstractButton>();
@@ -444,23 +443,19 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         public void addRankingButton(AbstractButton btn) {
             removeAll();
             rankingSouthControls.add(btn);
-            if (!partitionSouthControls.contains(btn)) {
-                buttonGroups.add(btn);
-            }
         }
 
         public void addPartitionButton(AbstractButton btn) {
             removeAll();
             partitionSouthControls.add(btn);
-            if (!rankingSouthControls.contains(btn)) {
-                buttonGroups.add(btn);
-            }
         }
 
         private void clear() {
             //Clear precent buttons
-            for (Enumeration<AbstractButton> btns = buttonGroups.getElements(); btns.hasMoreElements();) {
-                AbstractButton btn = btns.nextElement();
+            for (AbstractButton btn : rankingSouthControls) {
+                remove(btn);
+            }
+            for (AbstractButton btn : partitionSouthControls) {
                 remove(btn);
             }
         }
@@ -476,9 +471,13 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
             clear();
             if (model != null) {
                 removeAll();
-                for (Enumeration<AbstractButton> btns = buttonGroups.getElements(); btns.hasMoreElements();) {
-                    AbstractButton btn = btns.nextElement();
+                for (AbstractButton btn : partitionSouthControls) {
                     add(btn);
+                }
+                for (AbstractButton btn : rankingSouthControls) {
+                    if (!partitionSouthControls.contains(btn)) {
+                        add(btn);
+                    }
                 }
                 JLabel box = new javax.swing.JLabel();
                 box.setMaximumSize(new java.awt.Dimension(32767, 32767));
@@ -489,8 +488,10 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
 
         protected void refreshControls() {
             if (model != null) {
-                for (Enumeration<AbstractButton> btns = buttonGroups.getElements(); btns.hasMoreElements();) {
-                    AbstractButton btn = btns.nextElement();
+                for (AbstractButton btn : partitionSouthControls) {
+                    btn.setVisible(false);
+                }
+                for (AbstractButton btn : rankingSouthControls) {
                     btn.setVisible(false);
                 }
                 TransformerUI u = model.getSelectedTransformerUI();

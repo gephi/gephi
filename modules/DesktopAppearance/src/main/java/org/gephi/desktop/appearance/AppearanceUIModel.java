@@ -164,6 +164,10 @@ public class AppearanceUIModel {
     public void unselect() {
     }
 
+    public boolean isLocalScale() {
+        return appearanceModel.isLocalScale();
+    }
+
     public void saveTransformerProperties() {
         Function func = getSelectedFunction();
         if (func != null) {
