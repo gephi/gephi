@@ -60,6 +60,9 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TimeRepresentation;
+import org.gephi.graph.api.types.IntervalSet;
+import org.gephi.graph.api.types.TimeSet;
+import org.gephi.graph.api.types.TimestampSet;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -93,8 +96,8 @@ public class DynamicRangeBuilder implements CategoryBuilder {
 
     private static class DynamicRangeFilterBuilder implements FilterBuilder {
 
-        private GraphModel graphModel;
-        
+        private final GraphModel graphModel;
+
         public DynamicRangeFilterBuilder(GraphModel graphModel) {
             this.graphModel = graphModel;
         }
@@ -141,7 +144,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
 
     public static class DynamicRangeFilter implements ComplexFilter {
 
-        private TimeRepresentation timeRepresentation;
+        private final TimeRepresentation timeRepresentation;
         private FilterProperty[] filterProperties;
         private Interval visibleInterval;
         private Range range = new Range(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
@@ -170,7 +173,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                 }
             }
             graph.removeAllEdges(toRemoveEdge);
-            
+
             graph.getModel().setTimeInterval(graph.getView(), visibleInterval);
 
             return graph;
@@ -178,16 +181,26 @@ public class DynamicRangeBuilder implements CategoryBuilder {
 
         private boolean evaluateElement(Element element) {
             if (timeRepresentation.equals(TimeRepresentation.INTERVAL)) {
-                for (Interval i : element.getIntervals()) {
-                    if (visibleInterval.compareTo(i) == 0) {
-                        return true;
+                IntervalSet timeSet = (IntervalSet) element.getAttribute("timeset");
+                if (timeSet != null) {
+                    for (Interval i : timeSet.toArray()) {
+                        if (visibleInterval.compareTo(i) == 0) {
+                            return true;
+                        }
                     }
+                } else if (keepNull) {
+                    return true;
                 }
             } else {
-                for (double t : element.getTimestamps()) {
-                    if (visibleInterval.compareTo(t) == 0) {
-                        return true;
+                TimestampSet timeSet = (TimestampSet) element.getAttribute("timeset");
+                if (timeSet != null) {
+                    for (double t : timeSet.toPrimitiveArray()) {
+                        if (visibleInterval.compareTo(t) == 0) {
+                            return true;
+                        }
                     }
+                } else if (keepNull) {
+                    return true;
                 }
             }
             return false;
