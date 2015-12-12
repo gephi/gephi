@@ -115,6 +115,8 @@ public abstract class AbstractProcessor {
         if (nodeDraft.getLabelColor() != null && node.getTextProperties() != null) {
             Color labelColor = nodeDraft.getLabelColor();
             node.getTextProperties().setColor(labelColor);
+        } else {
+            node.getTextProperties().setColor(new Color(0, 0, 0, 0));
         }
 
         if (nodeDraft.getLabelSize() != -1f && node.getTextProperties() != null) {
@@ -199,6 +201,8 @@ public abstract class AbstractProcessor {
         if (edgeDraft.getLabelColor() != null && edge.getTextProperties() != null) {
             Color labelColor = edgeDraft.getLabelColor();
             edge.getTextProperties().setColor(labelColor);
+        } else {
+            edge.getTextProperties().setColor(new Color(0, 0, 0, 0));
         }
 
         //Timeset
