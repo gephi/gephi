@@ -282,7 +282,9 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
                 menu.add("<html><i>" + NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.norecent") + "</i></html>");
             } else {
                 for (Palette pl : recentPalettes) {
-                    menu.add(new PaletteMenuItem(pl, Math.min(PALETTE_DISPLAY_LIMIT, colorsCount)));
+                    if (pl.size() >= colorsCount) {
+                        menu.add(new PaletteMenuItem(pl, Math.min(PALETTE_DISPLAY_LIMIT, colorsCount)));
+                    }
                 }
             }
 
