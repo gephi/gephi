@@ -168,14 +168,14 @@ public class SelfLoopModel extends EdgeModel {
                 a = uni[3];
             } else if (a == 0f) {
                 Node source = edge.getSource();
-                r = 0.498f * source.r();
-                g = 0.498f * source.g();
-                b = 0.498f * source.b();
+                r = source.r();
+                g = source.g();
+                b = source.b();
                 a = source.alpha();
             } else {
-                g = 0.498f * edge.g();
-                b = 0.498f * edge.b();
-                r = 0.498f * edge.r();
+                g = edge.g();
+                b = edge.b();
+                r = edge.r();
                 a = edge.alpha();
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
@@ -196,15 +196,21 @@ public class SelfLoopModel extends EdgeModel {
                     g = both[1];
                     b = both[2];
                 }
-            } else if (edge.alpha() == 0f) {
-                Node source = edge.getSource();
-                r = source.r();
-                g = source.g();
-                b = source.b();
             } else {
                 r = edge.r();
                 g = edge.g();
                 b = edge.b();
+
+                if (edge.alpha() == 0f) {
+                    Node source = edge.getSource();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
+                }
+
+                r = Math.min(1, 0.5f * r + 0.5f);
+                g = Math.min(1, 0.5f * g + 0.5f);
+                b = Math.min(1, 0.5f * b + 0.5f);
             }
             gl.glColor4f(r, g, b, 1f);
         }

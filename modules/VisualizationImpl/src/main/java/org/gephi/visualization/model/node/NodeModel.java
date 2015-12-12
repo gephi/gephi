@@ -41,7 +41,6 @@
  */
 package org.gephi.visualization.model.node;
 
-import java.awt.geom.Rectangle2D;
 import org.gephi.graph.api.ElementProperties;
 import org.gephi.graph.api.Node;
 import org.gephi.lib.gleem.linalg.Vecf;
@@ -165,7 +164,7 @@ public abstract class NodeModel implements Model, TextModel {
 
     @Override
     public boolean hasCustomTextColor() {
-        return node.getTextProperties().getAlpha()> 0;
+        return node.getTextProperties().getAlpha() > 0;
     }
 
     @Override

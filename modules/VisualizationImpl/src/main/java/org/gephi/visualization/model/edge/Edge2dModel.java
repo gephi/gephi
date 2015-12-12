@@ -128,17 +128,25 @@ public class Edge2dModel extends EdgeModel {
                     g = uni[1];
                     b = uni[2];
                     a = uni[3];
+                } else if (edge.isDirected()) {
+                    Node source = edge.getSource();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
+                    a = source.alpha();
                 } else {
                     Node source = edge.getSource();
-                    r = 0.498f * source.r();
-                    g = 0.498f * source.g();
-                    b = 0.498f * source.b();
-                    a = source.alpha();
+                    Node target = edge.getTarget();
+
+                    r = (source.r() + target.r()) / 2f;
+                    g = (source.g() + target.g()) / 2f;
+                    b = (source.b() + target.b()) / 2f;
+                    a = (source.alpha() + target.alpha()) / 2f;
                 }
             } else {
-                g = 0.498f * edge.g();
-                b = 0.498f * edge.b();
-                r = 0.498f * edge.r();
+                g = edge.g();
+                b = edge.b();
+                r = edge.r();
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
@@ -168,15 +176,21 @@ public class Edge2dModel extends EdgeModel {
                     g = in[1];
                     b = in[2];
                 }
-            } else if (edge.alpha() == 0f) {
-                Node source = edge.getSource();
-                r = source.r();
-                g = source.g();
-                b = source.b();
             } else {
                 r = edge.r();
                 g = edge.g();
                 b = edge.b();
+
+                if (edge.alpha() == 0f) {
+                    Node node = sourceModel.isSelected() ? edge.getTarget() : edge.getSource();
+                    r = node.r();
+                    g = node.g();
+                    b = node.b();
+                }
+
+                r = Math.min(1, 0.5f * r + 0.5f);
+                g = Math.min(1, 0.5f * g + 0.5f);
+                b = Math.min(1, 0.5f * b + 0.5f);
             }
             gl.glColor4f(r, g, b, 1f);
         }
@@ -191,7 +205,9 @@ public class Edge2dModel extends EdgeModel {
 
     @Override
     public void displayArrow(GL2 gl, GLU glu, VizModel vizModel) {
-        if (!selected && vizModel.isHideNonSelectedEdges()) {
+        boolean selec = selected || isAutoSelected();
+
+        if (!selec && vizModel.isHideNonSelectedEdges()) {
             return;
         }
 
@@ -246,7 +262,7 @@ public class Edge2dModel extends EdgeModel {
         sideVectorY /= norm;
 
         //Color
-        if (!selected) {
+        if (!selec) {
             float r;
             float g;
             float b;
@@ -258,17 +274,25 @@ public class Edge2dModel extends EdgeModel {
                     g = uni[1];
                     b = uni[2];
                     a = uni[3];
+                } else if (edge.isDirected()) {
+                    Node source = edge.getSource();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
+                    a = source.alpha();
                 } else {
                     Node source = edge.getSource();
-                    r = 0.498f * source.r();
-                    g = 0.498f * source.g();
-                    b = 0.498f * source.b();
-                    a = source.alpha();
+                    Node target = edge.getTarget();
+
+                    r = (source.r() + target.r()) / 2f;
+                    g = (source.g() + target.g()) / 2f;
+                    b = (source.b() + target.b()) / 2f;
+                    a = (source.alpha() + target.alpha()) / 2f;
                 }
             } else {
-                g = 0.498f * edge.g();
-                b = 0.498f * edge.b();
-                r = 0.498f * edge.r();
+                g = edge.g();
+                b = edge.b();
+                r = edge.r();
                 a = edge.alpha();
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
@@ -299,15 +323,21 @@ public class Edge2dModel extends EdgeModel {
                     g = in[1];
                     b = in[2];
                 }
-            } else if (edge.alpha() == 0f) {
-                Node source = edge.getSource();
-                r = source.r();
-                g = source.g();
-                b = source.b();
             } else {
                 r = edge.r();
                 g = edge.g();
                 b = edge.b();
+
+                if (edge.alpha() == 0f) {
+                    Node node = sourceModel.isSelected() ? edge.getTarget() : edge.getSource();
+                    r = node.r();
+                    g = node.g();
+                    b = node.b();
+                }
+
+                r = Math.min(1, 0.5f * r + 0.5f);
+                g = Math.min(1, 0.5f * g + 0.5f);
+                b = Math.min(1, 0.5f * b + 0.5f);
             }
             gl.glColor4f(r, g, b, 1f);
         }
