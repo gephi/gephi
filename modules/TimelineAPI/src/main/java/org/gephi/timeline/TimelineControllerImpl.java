@@ -265,7 +265,7 @@ public class TimelineControllerImpl implements TimelineController {
             }
             if (!enabled) {
                 //Disable filtering
-                model.setInterval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+                setInterval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
             }
         }
     }
@@ -277,8 +277,10 @@ public class TimelineControllerImpl implements TimelineController {
                 if (from >= to) {
                     throw new IllegalArgumentException("from should be less than to");
                 }
-                if (from < model.getCustomMin() || to > model.getCustomMax()) {
-                    throw new IllegalArgumentException("From and to should be in the bounds");
+                if (!(Double.isInfinite(from) && Double.isInfinite(to))) {
+                    if (from < model.getCustomMin() || to > model.getCustomMax()) {
+                        throw new IllegalArgumentException("From and to should be in the bounds");
+                    }
                 }
                 model.setInterval(from, to);
 
