@@ -153,7 +153,7 @@ public class DataBridge implements VizArchitecture {
                 } else {
                     model = nodes[id];
                 }
-                textManager.refreshNode(model, textModel);
+                textManager.refreshNode(graph, model, textModel);
             }
             for (int i = 0; i < edges.length; i++) {
                 EdgeModel edge = edges[i];
@@ -195,7 +195,7 @@ public class DataBridge implements VizArchitecture {
                 minWeight = Math.min(w, minWeight);
                 maxWeight = Math.max(w, maxWeight);
 
-                textManager.refreshEdge(model, textModel);
+                textManager.refreshEdge(graph, model, textModel);
             }
             if (!isView) {
                 limits.setMaxWeight(maxWeight);
@@ -203,12 +203,6 @@ public class DataBridge implements VizArchitecture {
             }
 
             graph.readUnlock();
-
-            System.out.println("DATABRIDGE:");
-            System.out.println(" Removed Edges: " + removedEdges);
-            System.out.println(" Added Edges: " + addedEdges);
-            System.out.println(" Removed Nodes: " + removedNodes);
-            System.out.println(" Added Nodes: " + addedNodes);
 
             return true;
         } else if (observer == null) {

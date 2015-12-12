@@ -51,6 +51,7 @@ import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TextProperties;
 import org.gephi.visualization.VizArchitecture;
@@ -199,11 +200,11 @@ public class TextManager implements VizArchitecture {
         return edgeRenderer;
     }
 
-    public boolean refreshNode(NodeModel node, TextModelImpl modelImpl) {
+    public boolean refreshNode(Graph graph, NodeModel node, TextModelImpl modelImpl) {
         TextProperties textData = node.getNode().getTextProperties();
         if (textData != null) {
             String txt = textData.getText();
-            String newTxt = buildText(node.getNode(), modelImpl.getNodeTextColumns());
+            String newTxt = buildText(graph, node.getNode(), modelImpl.getNodeTextColumns());
             if ((txt == null && newTxt != null) || (txt != null && newTxt == null)
                     || (txt != null && newTxt != null && !txt.equals(newTxt))) {
                 node.setText(newTxt);
@@ -214,11 +215,11 @@ public class TextManager implements VizArchitecture {
         return false;
     }
 
-    public boolean refreshEdge(EdgeModel edge, TextModelImpl modelImpl) {
+    public boolean refreshEdge(Graph graph, EdgeModel edge, TextModelImpl modelImpl) {
         TextProperties textData = edge.getEdge().getTextProperties();
         if (textData != null) {
             String txt = textData.getText();
-            String newTxt = buildText(edge.getEdge(), modelImpl.getEdgeTextColumns());
+            String newTxt = buildText(graph, edge.getEdge(), modelImpl.getEdgeTextColumns());
             if ((txt == null && newTxt != null) || (txt != null && newTxt == null)
                     || (txt != null && newTxt != null && !txt.equals(newTxt))) {
                 edge.setText(newTxt);
@@ -229,12 +230,12 @@ public class TextManager implements VizArchitecture {
         return false;
     }
 
-    private String buildText(Element element, Column[] selectedColumns) {
+    private String buildText(Graph graph, Element element, Column[] selectedColumns) {
         String txt;
         if (selectedColumns == null || selectedColumns.length == 0) {
             txt = element.getLabel();
         } else if (selectedColumns.length == 1) {
-            Object o = element.getAttribute(selectedColumns[0]);
+            Object o = element.getAttribute(selectedColumns[0], graph.getView());
             return o != null ? o.toString() : "";
         } else {
             StringBuilder sb = new StringBuilder();
@@ -243,7 +244,7 @@ public class TextManager implements VizArchitecture {
                 if (i++ > 0) {
                     sb.append(" - ");
                 }
-                Object val = element.getAttribute(c);
+                Object val = element.getAttribute(c, graph.getView());
                 sb.append(val != null ? val : "");
             }
             txt = sb.toString();
