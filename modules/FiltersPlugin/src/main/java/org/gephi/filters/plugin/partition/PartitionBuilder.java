@@ -217,7 +217,7 @@ public class PartitionBuilder implements CategoryBuilder {
         }
 
         public boolean evaluate(Graph graph, Node node) {
-            Object value = partition.getValue(node);
+            Object value = partition.getValue(node, graph);
             if (value == null) {
                 return parts.contains(NULL);
             } else {
@@ -226,7 +226,7 @@ public class PartitionBuilder implements CategoryBuilder {
         }
 
         public boolean evaluate(Graph graph, Edge edge) {
-            Object value = partition.getValue(edge);
+            Object value = partition.getValue(edge, graph);
             if (value == null) {
                 return parts.contains(NULL);
             } else {

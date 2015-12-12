@@ -167,8 +167,8 @@ public class IntraEdgesBuilder implements CategoryBuilder {
 
         @Override
         public boolean evaluate(Graph graph, Edge edge) {
-            Object srcValue = partition.getValue(edge.getSource());
-            Object destValue = partition.getValue(edge.getTarget());
+            Object srcValue = partition.getValue(edge.getSource(), graph);
+            Object destValue = partition.getValue(edge.getTarget(), graph);
             srcValue = srcValue == null ? NULL : srcValue;
             destValue = destValue == null ? NULL : destValue;
             return parts.contains(srcValue) && parts.contains(destValue) && srcValue.equals(destValue);

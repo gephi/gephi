@@ -159,7 +159,7 @@ public class PartitionCountBuilder implements CategoryBuilder {
 
         @Override
         public boolean evaluate(Graph graph, Element element) {
-            Object p = partition.getValue(element);
+            Object p = partition.getValue(element, graph);
             if (p != null) {
                 int partCount = partition.count(p);
                 return range.isInRange(partCount);
