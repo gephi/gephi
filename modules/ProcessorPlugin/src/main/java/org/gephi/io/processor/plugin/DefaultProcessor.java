@@ -194,11 +194,11 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         int touchedNodes = container.getNodeCount();
         int touchedEdges = container.getEdgeCount();
         if (touchedNodes != addedNodes || touchedEdges != addedEdges) {
-            Logger.getLogger(getClass().toString()).log(Level.INFO, "# Nodes loaded: {0} ({1} added)", new Object[]{touchedNodes, addedNodes});
-            Logger.getLogger(getClass().toString()).log(Level.INFO, "# Edges loaded: {0} ({1} added)", new Object[]{touchedEdges, addedEdges});
+            Logger.getLogger(getClass().getSimpleName()).log(Level.INFO, "# Nodes loaded: {0} ({1} added)", new Object[]{touchedNodes, addedNodes});
+            Logger.getLogger(getClass().getSimpleName()).log(Level.INFO, "# Edges loaded: {0} ({1} added)", new Object[]{touchedEdges, addedEdges});
         } else {
-            Logger.getLogger(getClass().toString()).log(Level.INFO, "# Nodes loaded: {0}", new Object[]{touchedNodes});
-            Logger.getLogger(getClass().toString()).log(Level.INFO, "# Edges loaded: {0}", new Object[]{touchedEdges});
+            Logger.getLogger(getClass().getSimpleName()).log(Level.INFO, "# Nodes loaded: {0}", new Object[]{touchedNodes});
+            Logger.getLogger(getClass().getSimpleName()).log(Level.INFO, "# Edges loaded: {0}", new Object[]{touchedEdges});
         }
 
         Progress.finish(progressTicket);
