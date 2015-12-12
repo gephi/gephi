@@ -110,6 +110,9 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             centerPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
 
+        //Hide for now
+        localScaleButton.setVisible(false);
+
         refreshModel(model);
     }
 
@@ -127,9 +130,9 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             refreshCenterPanel();
             refreshCombo();
             refreshControls();
-        } else if(pce.getPropertyName().equals(AppearanceUIModelEvent.SET_AUTO_APPLY)) {
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SET_AUTO_APPLY)) {
             refreshControls();
-        } else if(pce.getPropertyName().equals(AppearanceUIModelEvent.START_STOP_AUTO_APPLY)) {
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.START_STOP_AUTO_APPLY)) {
             refreshControls();
         }
         //        if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
@@ -322,12 +325,11 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
     private void initControls() {
         //Add ranking controls
-        toolbar.addRankingControl(localScaleButton);
+//        toolbar.addRankingControl(localScaleButton);
         toolbar.addRankingControl(splineButton);
 
         //Add partition controls
-        toolbar.addPartitionControl(localScaleButton);
-
+//        toolbar.addPartitionControl(localScaleButton);
         //Actions
         localScaleButton.addActionListener(new ActionListener() {
             @Override
@@ -549,7 +551,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         splineButton.setFocusPainted(false);
         splineButton.setFocusable(false);
         splineButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        splineButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         controlToolbar.add(splineButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
