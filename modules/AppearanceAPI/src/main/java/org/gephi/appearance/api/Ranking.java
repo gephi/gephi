@@ -42,6 +42,7 @@
 package org.gephi.appearance.api;
 
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Graph;
 
 /**
  *
@@ -53,7 +54,7 @@ public interface Ranking {
 
     public Number getMaxValue();
 
-    public Number getValue(Element element);
+    public Number getValue(Element element, Graph graph);
 
     public float normalize(Number value, Interpolator interpolator);
 }

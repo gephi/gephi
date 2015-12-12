@@ -63,6 +63,7 @@ import org.gephi.graph.api.ColumnObserver;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.ElementIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Index;
 import org.gephi.graph.api.GraphController;
@@ -70,6 +71,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphObserver;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Table;
+import org.gephi.graph.api.types.TimeMap;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -340,7 +342,7 @@ public class AppearanceModelImpl implements AppearanceModel {
                         String name = NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Type.name");
                         graphFunctions.put(typeId, new GraphFunctionImpl(typeId, name, Edge.class, graph, t, getTransformerUI(t), partition));
                     }
-                    //Refresh
+                    partition.refresh();
                 } else {
                     graphFunctions.remove(typeId);
                 }
@@ -425,7 +427,7 @@ public class AppearanceModelImpl implements AppearanceModel {
             graph.readLock();
             boolean graphHasChanged = graphObserver.isNew() || graphObserver.hasGraphChanged();
             if (graphHasChanged) {
-                if(graphObserver.isNew()) {
+                if (graphObserver.isNew()) {
                     graphObserver.hasGraphChanged();
                 }
                 refreshGraphFunctions();
@@ -437,7 +439,7 @@ public class AppearanceModelImpl implements AppearanceModel {
         private void refreshAttributeFunctions(boolean graphHasChanged) {
             Set<Column> columns = new HashSet<Column>();
             for (Column column : getTable()) {
-                if (!column.isProperty() && column.isIndexed()) {
+                if (!column.isProperty()) {
                     columns.add(column);
                 }
             }
@@ -472,10 +474,18 @@ public class AppearanceModelImpl implements AppearanceModel {
                 PartitionImpl partition = partitions.get(getId(column));
                 if (ranking == null && partition == null) {
                     if (isPartition(graph, column)) {
-                        partition = new AttributePartitionImpl(column, getIndex(false));
+                        if (column.isIndexed()) {
+                            partition = new AttributePartitionImpl(column, getIndex(false));
+                        } else {
+                            partition = new AttributePartitionImpl(column, graph);
+                        }
                         partitions.put(getId(column), partition);
                     } else if (isRanking(graph, column)) {
-                        ranking = new AttributeRankingImpl(column, getIndex(localScale));
+                        if (column.isIndexed()) {
+                            ranking = new AttributeRankingImpl(column, getIndex(localScale));
+                        } else {
+                            ranking = new AttributeRankingImpl(column, graph);
+                        }
                         rankings.put(getId(column), ranking);
                     }
                 }
@@ -483,7 +493,7 @@ public class AppearanceModelImpl implements AppearanceModel {
                     ranking.refresh();
                 }
                 if (partition != null) {
-                    //Refresh
+                    partition.refresh();
                 }
             }
 
@@ -565,20 +575,52 @@ public class AppearanceModelImpl implements AppearanceModel {
     }
 
     private boolean isPartition(Graph graph, Column column) {
-        Index index;
-        if (AttributeUtils.isNodeColumn(column)) {
-            index = graphModel.getNodeIndex(graph.getView());
-        } else {
-            index = graphModel.getEdgeIndex(graph.getView());
+        if (column.isDynamic()) {
+            Set<Object> set = new HashSet<Object>();
+            boolean hasNullValue = false;
+            int elements = 0;
+            ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
+            for (Element el : iterable) {
+                TimeMap val = (TimeMap) el.getAttribute(column);
+                if (val != null) {
+                    Object[] va = val.toValuesArray();
+                    for (Object v : va) {
+                        if (v != null) {
+                            set.add(v);
+                        } else {
+                            hasNullValue = true;
+                        }
+                        elements++;
+                    }
+                }
+            }
+            double ratio = set.size() / (double) elements;
+            return ratio <= 0.9;
+        } else if (column.isIndexed()) {
+            Index index;
+            if (AttributeUtils.isNodeColumn(column)) {
+                index = graphModel.getNodeIndex(graph.getView());
+            } else {
+                index = graphModel.getEdgeIndex(graph.getView());
+            }
+            int valueCount = index.countValues(column);
+            int elementCount = index.countElements(column);
+            double ratio = valueCount / (double) elementCount;
+            return ratio <= 0.9;
         }
-        int valueCount = index.countValues(column);
-        int elementCount = index.countElements(column);
-        double ratio = valueCount / (double) elementCount;
-        return ratio <= 0.9;
+        return false;
     }
 
     private boolean isRanking(Graph graph, Column column) {
-        if (column.isNumber()) {
+        if (column.isDynamic() && column.isNumber()) {
+            ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
+            for (Element el : iterable) {
+                if (el.getAttribute(column, graph.getView()) != null) {
+                    iterable.doBreak();
+                    return true;
+                }
+            }
+        } else if (!column.isDynamic() && column.isIndexed() && column.isNumber()) {
             Index index;
             if (AttributeUtils.isNodeColumn(column)) {
                 index = localScale ? graphModel.getNodeIndex(graph.getView()) : graphModel.getNodeIndex();

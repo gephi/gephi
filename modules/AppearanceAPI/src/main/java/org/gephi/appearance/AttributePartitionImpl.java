@@ -42,9 +42,16 @@
 package org.gephi.appearance;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.ElementIterable;
+import org.gephi.graph.api.Estimator;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Index;
+import org.gephi.graph.api.types.TimeMap;
 
 /**
  *
@@ -52,44 +59,107 @@ import org.gephi.graph.api.Index;
  */
 public class AttributePartitionImpl extends PartitionImpl {
 
+    protected final Graph graph;
     protected final Index index;
     protected final Column column;
+    protected final Map<Object, Integer> parts;
+    protected int elements;
 
     public AttributePartitionImpl(Column column, Index index) {
         super();
         this.column = column;
         this.index = index;
+        this.graph = null;
+        this.parts = null;
+    }
+
+    public AttributePartitionImpl(Column column, Graph graph) {
+        super();
+        this.column = column;
+        this.index = null;
+        this.graph = graph;
+        this.parts = new HashMap<Object, Integer>();
     }
 
     @Override
-    public Object getValue(Element element) {
+    protected void refresh() {
+        parts.clear();
+        elements = 0;
+        ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
+        for (Element el : iterable) {
+            TimeMap val = (TimeMap) el.getAttribute(column);
+            if (val != null) {
+                Object[] va = val.toValuesArray();
+                for (Object v : va) {
+                    Integer count = parts.get(v);
+                    if (count == null) {
+                        count = 0;
+                    }
+                    parts.put(v, ++count);
+                    elements++;
+                }
+            }
+        }
+    }
+
+    @Override
+    public Object getValue(Element element, Graph gr) {
+        if (graph != null) {
+            TimeMap val = (TimeMap) element.getAttribute(column);
+            if (val != null) {
+                return val.get(gr.getView().getTimeInterval(), Estimator.FIRST);
+            }
+            return null;
+        }
         return element.getAttribute(column);
     }
 
     @Override
     public Collection getValues() {
-        return index.values(column);
+        if (index != null) {
+            return index.values(column);
+        } else {
+            return parts.keySet();
+        }
     }
 
     @Override
     public int getElementCount() {
-        return index.countElements(column);
+        if (index != null) {
+            return index.countElements(column);
+        } else {
+            return elements;
+        }
     }
 
     @Override
     public int count(Object value) {
-        return index.count(column, value);
+        if (index != null) {
+            return index.count(column, value);
+        } else {
+            Integer c = parts.get(value);
+            return c != null ? c : 0;
+        }
     }
 
     @Override
     public float percentage(Object value) {
-        int count = index.count(column, value);
-        return (float) count / index.countElements(column);
+        if (index != null) {
+            int count = index.count(column, value);
+            return (float) count / index.countElements(column);
+        } else {
+            Integer c = parts.get(value);
+            return c != null ? c.floatValue() / elements : 0f;
+        }
     }
 
     @Override
     public int size() {
-        return index.countValues(column);
+        if (index != null) {
+            return index.countValues(column);
+        } else {
+            return parts.size();
+        }
     }
 
     @Override

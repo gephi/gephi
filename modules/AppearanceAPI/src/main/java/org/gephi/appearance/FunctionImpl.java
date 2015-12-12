@@ -90,14 +90,14 @@ public abstract class FunctionImpl implements Function {
     }
 
     @Override
-    public void transform(Element element) {
+    public void transform(Element element, Graph graph) {
         if (isSimple()) {
             ((SimpleTransformer) transformer).transform(element);
         } else if (isRanking()) {
-            Number val = ranking.getValue(element);
+            Number val = ranking.getValue(element, graph);
             ((RankingTransformer) transformer).transform(element, ranking, interpolator, val);
         } else if (isPartition()) {
-            Object val = partition.getValue(element);
+            Object val = partition.getValue(element, graph);
             ((PartitionTransformer) transformer).transform(element, partition, val);
         }
     }

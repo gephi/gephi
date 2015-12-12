@@ -73,6 +73,8 @@ public abstract class PartitionImpl implements Partition {
         colorMap.put(value, color);
     }
 
+    protected abstract void refresh();
+
     @Override
     public Collection getSortedValues() {
         List values = new ArrayList(getValues());

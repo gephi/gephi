@@ -43,7 +43,9 @@ package org.gephi.appearance;
 
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.types.TimeMap;
 
 /**
  *
@@ -59,8 +61,8 @@ public class EdgeWeightRankingImpl extends RankingImpl {
     }
 
     @Override
-    public Number getValue(Element element) {
-        return ((Edge) element).getWeight();
+    public Number getValue(Element element, Graph gr) {
+        return ((Edge) element).getWeight(gr.getView());
     }
 
     @Override
@@ -69,9 +71,15 @@ public class EdgeWeightRankingImpl extends RankingImpl {
             double minV = Double.MAX_VALUE;
             double maxV = Double.MIN_VALUE;
             for (Edge e : graph.getEdges()) {
-                double weight = e.getWeight();
-                minV = Math.min(weight, minV);
-                maxV = Math.max(weight, maxV);
+                if (e.hasDynamicWeight()) {
+                    TimeMap timeMap = (TimeMap) e.getAttribute("weight");
+                    if (timeMap != null) {
+                        Double numMin = (Double) timeMap.get(graph.getView().getTimeInterval(), Estimator.MIN);
+                        Double numMax = (Double) timeMap.get(graph.getView().getTimeInterval(), Estimator.MAX);
+                        minV = Math.min(numMin, minV);
+                        maxV = Math.max(numMax, maxV);
+                    }
+                }
             }
             min = minV;
             max = maxV;

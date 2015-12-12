@@ -5,10 +5,14 @@
  */
 package org.gephi.appearance;
 
-import org.gephi.appearance.api.Interpolator;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.ElementIterable;
+import org.gephi.graph.api.Estimator;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Index;
+import org.gephi.graph.api.types.TimeMap;
 
 /**
  *
@@ -18,21 +22,62 @@ public class AttributeRankingImpl extends RankingImpl {
 
     protected final Index index;
     protected final Column column;
+    protected final Graph graph;
 
     public AttributeRankingImpl(Column column, Index index) {
         super();
         this.column = column;
         this.index = index;
+        this.graph = null;
+    }
+
+    public AttributeRankingImpl(Column column, Graph graph) {
+        super();
+        this.column = column;
+        this.graph = graph;
+        this.index = null;
     }
 
     @Override
     protected void refresh() {
-        min = index.getMinValue(column);
-        max = index.getMaxValue(column);
+        if (index != null) {
+            min = index.getMinValue(column);
+            max = index.getMaxValue(column);
+        } else {
+            ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
+            double minN = Double.POSITIVE_INFINITY;
+            double maxN = Double.NEGATIVE_INFINITY;
+            for (Element el : iterable) {
+                if (column.isDynamic()) {
+                    TimeMap timeMap = (TimeMap) el.getAttribute(column);
+                    if (timeMap != null) {
+                        Number numMin = (Number) timeMap.get(graph.getView().getTimeInterval(), Estimator.MIN);
+                        Number numMax = (Number) timeMap.get(graph.getView().getTimeInterval(), Estimator.MAX);
+                        if (numMin.doubleValue() < minN) {
+                            min = numMin;
+                        }
+                        if (numMax.doubleValue() > maxN) {
+                            max = numMax;
+                        }
+                    }
+                } else {
+                    Number num = (Number) el.getAttribute(column);
+                    if (num.doubleValue() < minN) {
+                        min = num;
+                    }
+                    if (num.doubleValue() > maxN) {
+                        max = num;
+                    }
+                }
+            }
+        }
     }
 
     @Override
-    public Number getValue(Element element) {
+    public Number getValue(Element element, Graph gr) {
+        if (graph != null) {
+            return (Number) element.getAttribute(column, gr.getView());
+        }
         return (Number) element.getAttribute(column);
     }
 

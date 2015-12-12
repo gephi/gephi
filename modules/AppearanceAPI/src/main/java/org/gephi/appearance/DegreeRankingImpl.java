@@ -59,8 +59,8 @@ public class DegreeRankingImpl extends RankingImpl {
     }
 
     @Override
-    public Number getValue(Element element) {
-        return graph.getDegree((Node) element);
+    public Number getValue(Element element, Graph gr) {
+        return gr.getDegree((Node) element);
     }
 
     @Override

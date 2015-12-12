@@ -42,7 +42,6 @@
 package org.gephi.appearance;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
@@ -66,6 +65,10 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
     }
 
     @Override
+    protected void refresh() {
+    }
+
+    @Override
     public Collection getValues() {
         Object[] labels = model.getEdgeTypeLabels();
         ArrayList<Object> col = new ArrayList<Object>(labels.length);
@@ -78,7 +81,7 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
     }
 
     @Override
-    public Object getValue(Element element) {
+    public Object getValue(Element element, Graph gr) {
         return ((Edge) element).getTypeLabel();
     }
 

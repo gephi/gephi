@@ -52,7 +52,7 @@ import org.gephi.graph.api.Graph;
  */
 public interface Function {
 
-    public void transform(Element element);
+    public void transform(Element element, Graph graph);
 
     public Transformer getTransformer();
 
