@@ -83,20 +83,22 @@ public class AttributePartitionImpl extends PartitionImpl {
 
     @Override
     protected void refresh() {
-        parts.clear();
-        elements = 0;
-        ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
-        for (Element el : iterable) {
-            TimeMap val = (TimeMap) el.getAttribute(column);
-            if (val != null) {
-                Object[] va = val.toValuesArray();
-                for (Object v : va) {
-                    Integer count = parts.get(v);
-                    if (count == null) {
-                        count = 0;
+        if (graph != null) {
+            parts.clear();
+            elements = 0;
+            ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
+            for (Element el : iterable) {
+                TimeMap val = (TimeMap) el.getAttribute(column);
+                if (val != null) {
+                    Object[] va = val.toValuesArray();
+                    for (Object v : va) {
+                        Integer count = parts.get(v);
+                        if (count == null) {
+                            count = 0;
+                        }
+                        parts.put(v, ++count);
+                        elements++;
                     }
-                    parts.put(v, ++count);
-                    elements++;
                 }
             }
         }
