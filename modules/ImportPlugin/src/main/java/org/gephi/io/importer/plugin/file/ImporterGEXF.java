@@ -305,6 +305,8 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 container.setElementIdType(ElementIdType.INTEGER);
             } else if (idType.equalsIgnoreCase("long")) {
                 container.setElementIdType(ElementIdType.LONG);
+            } else if (idType.equalsIgnoreCase("string")) {
+                container.setElementIdType(ElementIdType.STRING);
             } else {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_idtype_error", idType), Issue.Level.SEVERE));
             }
