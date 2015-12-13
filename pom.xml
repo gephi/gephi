@@ -337,11 +337,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>data-attributes-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>preview-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -448,11 +443,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>algorithms-plugin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>utils-collection</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -603,11 +593,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>import-plugin-ui</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-hierarchy</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
