@@ -70,7 +70,7 @@ def get_resource_name(directory):
         parts.append(part)
         directory, part = os.path.split(directory)
     parts.reverse()
-    return '-'.join(parts) + '-pr'
+    return '-'.join(parts)
 
 
 directories = [".."]
