@@ -47,12 +47,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.desktop.project.api.ProjectControllerUI;
@@ -96,11 +96,16 @@ public final class WelcomeTopComponent extends JPanel {
     }
 
     private void closeDialog() {
-        Container container = this;
-        for (; !(container instanceof JDialog);) {
-            container = container.getParent();
-        }
-        container.setVisible(false);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                Container container = WelcomeTopComponent.this;
+                for (; !(container instanceof JDialog);) {
+                    container = container.getParent();
+                }
+                container.setVisible(false);
+            }
+        });
     }
 
     private void initAction() {
