@@ -3,3 +3,5 @@ OpenIDE-Module-Localizing-Bundle: org/gephi/branding/Bundle.properties
 AutoUpdate-Essential-Module: true
 OpenIDE-Module-Layer: org/gephi/branding/layer.xml
 OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}
+OpenIDE-Module-Name: Branding
+OpenIDE-Module-Display-Category: Gephi UI

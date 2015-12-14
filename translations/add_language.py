@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Gephi
+#  Copyright 2008-2015 Gephi
 #  Website: https://gephi.github.io/
 #
 # This file is part of Gephi.
@@ -42,8 +42,8 @@ import os, os.path, sys
 #Use this script when pulling translations of a new language or new files of existing languages.
 #After it, just use tx pull
 
-#Simple script to ensure that .po files exist for a given language in every folder that a .pot file exists.
-#Creates empty .po files when not existing. This is necessary to get new language translations that are
+#Simple script to ensure that .properties files exist for a given language in every folder that a Bundle.properties file exists.
+#Creates empty .properties files when not existing. This is necessary to get new language translations that are
 #in transifex but not in the repository (tx pull --all is not suitable because it pulls even not translated at all resources).
 
 if (len(sys.argv) < 2):
@@ -51,27 +51,26 @@ if (len(sys.argv) < 2):
     print ">>python ./add_language.py {lang}"
     sys.exit(1)
 
-#Creates po files of the given language when necessary
-def recurseDirs(dir,langPO):
-	containsPOT=False
-	containsLangPO=False
+#Creates .properties files of the given language when necessary
+def recurseDirs(dir,langBundleName):
+	containsBundle=False
+	containsLangFile=False
 	for name in os.listdir(dir):
 		fullpath = os.path.join(dir,name)
 		if os.path.isfile(fullpath):
 			dir, filename = os.path.split(fullpath)
-			resource, extension = os.path.splitext(filename)
-			if extension == ".pot":
-				containsPOT=True
-			if filename == langPO:
-				containsLangPO=True
-		elif os.path.isdir(fullpath) and dir.find("target") == -1: #Only search pot files in code, not build:
-			recurseDirs(fullpath,langPO)
+			if filename == "Bundle.properties":
+				containsBundle=True
+			if filename == langBundleName:
+				containsLangFile=True
+		elif os.path.isdir(fullpath) and dir.find("target") == -1: #Only search files in code, not build:
+			recurseDirs(fullpath,langBundleName)
 	
-	if containsPOT and not containsLangPO:
-		newFilePath=os.path.join(dir,langPO)
+	if containsBundle and not containsLangFile:
+		newFilePath=os.path.join(dir,langBundleName)
 		print "Adding ",newFilePath
-		file = open(newFilePath,"w") #Create empty lang.po file if not existing and pot exists
+		file = open(newFilePath,"w") #Create empty lang file if not existing and Bundle exists
 		file.write("")
 		file.close()
 
-recurseDirs("../modules", sys.argv[1] + ".po")
+recurseDirs("../modules", "Bundle_" + sys.argv[1] + ".properties")

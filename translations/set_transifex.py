@@ -1,4 +1,4 @@
-#  Copyright 2008-2012 Gephi
+#  Copyright 2008-2015 Gephi
 #  Website: https://gephi.github.io/
 #
 # This file is part of Gephi.
@@ -43,34 +43,46 @@ import re
 
 project = "gephi"
 
-#Note: gehpi-maven version of this script, use with transifex tool 0.8 or better
+#Note: gephi-maven version of this script, use with transifex tool 0.11 or better
 
-#This script sets the initial state of transifex for existing .pot files
-#See http://wiki.gephi.org/index.php/Localization for more information
+#This script sets the initial state of transifex for existing .properties files
+#See https://github.com/gephi/gephi/wiki/Localization for more information
 #!!Transifex client must be in the system path to run this script
-#If you add 1 or a few pot files, it is faster to do set it manually using a command like the following:
-#tx set --auto-local -r gephi.org-gephi-data-attributes-api --source-language=en --source-file org-gephi-data-attributes-api.pot "<lang>.po" --execute#
+#If you add 1 or a few .properties files, it is faster to do set it manually using a command like the following:
+#tx set --auto-local -r gephi.org-gephi-data-attributes-api --source-language=en --source-file Bundle.properties "Bundle_<lang>.properties" --execute#
 #This means:
-#tx set --auto-local -r project.resource --source-language=en --source-file resource.pot "automatically find translations for this resource in this folder with this expression" --execute
+#tx set --auto-local -r project.resource --source-language=en --source-file Bundle.properties "automatically find translations for this resource in this folder with this expression" --execute
 
-#Searchs for .pot files in subdirectories of the repository and sets them as resources of transifex, also sets its .po translations
+#Searchs for .properties files in subdirectories of the repository and sets them as resources of transifex, also sets its .properties translations
 #Assumes an executable called transifex in the repository
-#This script should be run from gephi repository root
+#This script should be run from gephi/translations repository folder
 #The result transifex config file exists in .tx/config
 #!!Resources with names longer than 50 chars are shortened so they can be correctly pushed
-#!!After this script, you should run tx push -s to push new .pot files and optionally -l to push also existing translations
+#!!After this script, you should run tx push -s to push new .properties files and optionally -t to push also existing translations. Use command "tx help push" for more info
 
-#To update .po translations from Transifex website you have to execute tx pull
+#To update .properties translations from Transifex website you have to execute tx pull
+
+def get_resource_name(directory):
+    part = None
+    parts = []
+    directory, part = os.path.split(directory)
+    while directory != '' and (part != 'resources' or not directory.endswith('main')):
+        parts.append(part)
+        directory, part = os.path.split(directory)
+    parts.reverse()
+    return '-'.join(parts) + '-pr'
+
 
 directories = [".."]
 while len(directories) > 0:
     directory = directories.pop()
+    directory = directory.replace('\\', '/')
     for name in os.listdir(directory):
-        fullpath = os.path.join(directory,name)
+        fullpath = os.path.join(directory, name)
         if os.path.isfile(fullpath):
             dir, filename = os.path.split(fullpath)
-            resource, extension = os.path.splitext(filename)
-            if extension == ".pot":
+            if filename == "Bundle.properties":
+                resource = get_resource_name(dir)
                 resourceLen = len(resource)
                 if resourceLen > 50: #Maximum of 50 chars for a resource slug, shorten it:
                     print "\n!!Necessary to shorten the following resource (longer than 50 chars): ", resource
@@ -78,8 +90,8 @@ while len(directories) > 0:
                     resource = start + resource[(resourceLen-50+len(start)):resourceLen]
                 print "\n", resource
                 #set transifex resource
-                command="tx set --auto-local -r "+project+"."+resource+" --source-language=en --source-file "+fullpath+" \""+dir+"/<lang>.po\" -t PO --execute"
+                command="tx set --auto-local -r "+project+"."+resource+" --source-language=en --source-file "+fullpath+" \""+dir+"/Bundle_<lang>.properties\" -t PROPERTIES --execute"
                 os.system(command)
-        elif os.path.isdir(fullpath) and directory.find("target") == -1: #Only search pot files in code, not build:
+        elif os.path.isdir(fullpath) and directory.find("target") == -1 and directory.find("modules/branding") == -1 and directory.find("src/java") == -1: #Only search pot files in code, not build. Also ignore branding module and anything in src/java
             directories.append(fullpath)
 			

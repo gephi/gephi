@@ -3,3 +3,5 @@ OpenIDE-Module-Install: org/gephi/desktop/welcome/Installer.class
 OpenIDE-Module-Layer: org/gephi/desktop/welcome/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/welcome/Bundle.properties
 OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}
+OpenIDE-Module-Display-Category: Gephi UI
+OpenIDE-Module-Name: Welcome Screen

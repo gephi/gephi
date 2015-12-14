@@ -3,3 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module-Layer: org/gephi/project/api/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/project/api/Bundle.properties
 OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}
+OpenIDE-Module-Display-Category: Gephi Core
+OpenIDE-Module-Name: Project API

@@ -3,3 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module-Localizing-Bundle: org/netbeans/swing/dirchooser/Bundle.properties
 OpenIDE-Module-Install: org/netbeans/swing/dirchooser/Module.class
 OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}
+OpenIDE-Module-Display-Category: Libraries
+OpenIDE-Module-Name: Directory Chooser
