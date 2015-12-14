@@ -53,24 +53,25 @@ if (len(sys.argv) < 2):
 
 #Creates .properties files of the given language when necessary
 def recurseDirs(dir,langBundleName):
-	containsBundle=False
-	containsLangFile=False
-	for name in os.listdir(dir):
-		fullpath = os.path.join(dir,name)
-		if os.path.isfile(fullpath):
-			dir, filename = os.path.split(fullpath)
-			if filename == "Bundle.properties":
-				containsBundle=True
-			if filename == langBundleName:
-				containsLangFile=True
-		elif os.path.isdir(fullpath) and dir.find("target") == -1: #Only search files in code, not build:
-			recurseDirs(fullpath,langBundleName)
-	
-	if containsBundle and not containsLangFile:
-		newFilePath=os.path.join(dir,langBundleName)
-		print "Adding ",newFilePath
-		file = open(newFilePath,"w") #Create empty lang file if not existing and Bundle exists
-		file.write("")
-		file.close()
+    dir = dir.replace('\\', '/')
+    containsBundle=False
+    containsLangFile=False
+    for name in os.listdir(dir):
+        fullpath = os.path.join(dir,name)
+        if os.path.isfile(fullpath):
+            dir, filename = os.path.split(fullpath)
+            if filename == "Bundle.properties":
+                containsBundle=True
+            if filename == langBundleName:
+                containsLangFile=True
+        elif os.path.isdir(fullpath) and dir.find("target") == -1 and dir.find("modules/branding") == -1 and dir.find("src/java") == -1: #Only search files in code, not build. Also ignore branding module and anything in src/java
+            recurseDirs(fullpath,langBundleName)
+    
+    if containsBundle and not containsLangFile:
+        newFilePath=os.path.join(dir,langBundleName)
+        print "Adding ",newFilePath
+        file = open(newFilePath,"w") #Create empty lang file if not existing and Bundle exists
+        file.write("")
+        file.close()
 
 recurseDirs("../modules", "Bundle_" + sys.argv[1] + ".properties")

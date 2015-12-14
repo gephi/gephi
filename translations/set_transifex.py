@@ -92,6 +92,5 @@ while len(directories) > 0:
                 #set transifex resource
                 command="tx set --auto-local -r "+project+"."+resource+" --source-language=en --source-file "+fullpath+" \""+dir+"/Bundle_<lang>.properties\" -t PROPERTIES --execute"
                 os.system(command)
-        elif os.path.isdir(fullpath) and directory.find("target") == -1 and directory.find("modules/branding") == -1 and directory.find("src/java") == -1: #Only search pot files in code, not build. Also ignore branding module and anything in src/java
+        elif os.path.isdir(fullpath) and directory.find("target") == -1 and directory.find("modules/branding") == -1 and directory.find("src/java") == -1: #Only search files in code, not build. Also ignore branding module and anything in src/java
             directories.append(fullpath)
-			
