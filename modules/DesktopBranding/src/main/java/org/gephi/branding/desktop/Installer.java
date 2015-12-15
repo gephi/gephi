@@ -82,13 +82,6 @@ public class Installer extends ModuleInstall {
 
     @Override
     public void restored() {
-        try {
-            //Fix old preview loading - bug 873148
-            doDisable("org.gephi.preview");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
         //Init
         initGephi();
 
@@ -149,44 +142,6 @@ public class Installer extends ModuleInstall {
         return true;
     }
 
-    public void doDisable(String codeName) throws Exception {
-        FileObject confFileObject = FileUtil.getConfigFile("Modules/" + codeName.replace('.', '-') + ".xml");
-
-        if (confFileObject != null && confFileObject.isValid()) {
-            StringBuilder outputBuilder = new StringBuilder();
-
-            String matchOptionsLine = "<param name=\"enabled\">true";
-
-            //In
-            File confFile = FileUtil.toFile(confFileObject);
-            BufferedReader reader = new BufferedReader(new FileReader(confFile));
-            String strLine;
-            boolean matched = false;
-            while ((strLine = reader.readLine()) != null) {
-                if (strLine.indexOf(matchOptionsLine) != -1) {
-                    matched = true;
-                    strLine = strLine.replaceAll("<param name=\"enabled\">true</param>", "<param name=\"enabled\">false</param>");
-                }
-                outputBuilder.append(strLine);
-                outputBuilder.append("\n");
-            }
-            reader.close();
-
-            //Out
-            FileWriter writer = new FileWriter(confFile);
-            writer.write(outputBuilder.toString());
-            writer.close();
-
-            if (matched) {
-                JOptionPane.showMessageDialog(null, "A custom patch to import your 0.8 alpha settings has been applied and Gephi needs to restart now. Sorry for the inconvenience.");
-
-                //Restart
-                LifecycleManager.getDefault().markForRestart();
-                LifecycleManager.getDefault().exit();
-            }
-        }
-    }
-
     private void checkForNewMajorRelease() {
         boolean doCheck = NbPreferences.forModule(Installer.class).getBoolean("check_latest_version", true);
         if (doCheck) {
@@ -207,7 +162,7 @@ public class Installer extends ModuleInstall {
                     }
                 }
             } catch (Exception ex) {
-                System.out.println("Error while checking latest Gephi version");
+                Logger.getLogger("").warning("Error while checking latest Gephi version");
             }
         }
     }
