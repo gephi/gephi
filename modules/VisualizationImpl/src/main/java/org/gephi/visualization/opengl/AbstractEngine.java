@@ -75,7 +75,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     public enum Limits {
 
         MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z
-    };
+    }
+
     //Architecture
     protected GraphDrawable graphDrawable;
     protected GraphIO graphIO;

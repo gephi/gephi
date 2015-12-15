@@ -53,7 +53,8 @@ public final class DependantColor {
     public enum Mode {
 
         PARENT, CUSTOM
-    };
+    }
+
     private final Color customColor;
     private final Mode mode;
 

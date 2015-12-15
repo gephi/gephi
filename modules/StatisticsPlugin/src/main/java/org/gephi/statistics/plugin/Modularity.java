@@ -613,7 +613,7 @@ public class Modularity implements Statistics, LongTask {
             modCol = nodeTable.addColumn(MODULARITY_CLASS, "Modularity Class", Integer.class, new Integer(0));
         }
         for (Node n : hgraph.getNodes()) {
-            int n_index = theStructure.map.get(n);;
+            int n_index = theStructure.map.get(n);
             n.setAttribute(modCol, struct[n_index]);
         }
     }

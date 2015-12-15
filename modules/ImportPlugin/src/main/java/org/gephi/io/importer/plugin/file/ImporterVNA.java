@@ -85,7 +85,7 @@ public class ImporterVNA implements FileImporter, LongTask {
 
         DEFAULT, NODE_DATA, NODE_PROPERTIES, TIE_DATA,
         NODE_DATA_DEF, NODE_PROPERTIES_DEF, TIE_DATA_DEF
-    };
+    }
 
     /**
      * Attributes defined by the VNA file: VNA files allow some or no properties
@@ -95,7 +95,8 @@ public class ImporterVNA implements FileImporter, LongTask {
 
         OTHER, NODE_X, NODE_Y, NODE_COLOR, NODE_SIZE,
         NODE_SHAPE, NODE_SHORT_LABEL, EDGE_STRENGTH
-    };
+    }
+
     /**
      * Declared column labels for all sections.
      */
@@ -390,7 +391,8 @@ public class ImporterVNA implements FileImporter, LongTask {
         public enum Function {
 
             LINEAR, SQUARE_ROOT, LOGARITHMIC
-        };
+        }
+
         public final Function function;
         public final float coefficient;
 

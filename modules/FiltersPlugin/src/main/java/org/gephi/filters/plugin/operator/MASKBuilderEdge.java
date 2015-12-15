@@ -110,7 +110,8 @@ public class MASKBuilderEdge implements FilterBuilder {
         public enum EdgesOptions {
 
             SOURCE, TARGET, ANY, BOTH
-        };
+        }
+
         private EdgesOptions option = EdgesOptions.ANY;
         private FilterProperty[] filterProperties;
 

@@ -53,5 +53,5 @@ package org.gephi.io.importer.api;
  */
 public enum EdgeDirection {
 
-    DIRECTED, UNDIRECTED;
+    DIRECTED, UNDIRECTED
 }

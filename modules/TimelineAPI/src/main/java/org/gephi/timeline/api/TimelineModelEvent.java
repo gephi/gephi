@@ -52,7 +52,8 @@ public final class TimelineModelEvent {
     public enum EventType {
 
         MODEL, MIN_MAX, INTERVAL, CUSTOM_BOUNDS, ENABLED, PLAY_START, PLAY_STOP, CHART, VALID_BOUNDS
-    };
+    }
+
     private final EventType type;
     private final TimelineModel source;
     private final Object data;

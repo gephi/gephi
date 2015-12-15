@@ -277,9 +277,9 @@ public class ClusteringCoefficientNGTest {
         undirectedGraph.addEdge(edge31);
         undirectedGraph.addEdge(edge14);
         undirectedGraph.addEdge(edge25);
-        undirectedGraph.addEdge(edge36);;
-        
-        Graph hgraph = graphModel.getGraph();
+        undirectedGraph.addEdge(edge36);
+
+       Graph hgraph = graphModel.getGraph();
         ClusteringCoefficient cc = new ClusteringCoefficient();
 
         ArrayWrapper[] network = new ArrayWrapper[6];
