@@ -149,7 +149,7 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
         }
 
         @Override
-        public void refresh() {
+        public synchronized void refresh() {
             if (graphics != null) {
                 graphics.refresh(previewModel, this);
             }
@@ -183,32 +183,39 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
         }
 
         public void refresh(PreviewModel m, RenderTarget target) {
-            if (m != null) {
-                background = m.getProperties()
-                        .getColorValue(PreviewProperty.BACKGROUND_COLOR);
-                initAppletLayout(m);
-
-                g2.clearRect(0, 0, width, height);
-                g2.setTransform(new AffineTransform());
-
-                if (background != null) {
-                    g2.setColor(background);
-                    g2.fillRect(0, 0, width, height);
-                }
-
-                // user zoom
-                Vector center = new Vector(width / 2f, height / 2f);
-                Vector scaledCenter = Vector.mult(center, scaling);
-                Vector scaledTrans = Vector.sub(center, scaledCenter);
-                g2.translate(scaledTrans.x, scaledTrans.y);
-                g2.scale(scaling, scaling);
-
-                // user move
-                g2.translate(trans.x, trans.y);
-
-                //Draw target
-                previewController.render(target);
+            if (m == null) {
+                return;
             }
+
+            if (!inited) {
+                CanvasSize cs = getSheetCanvasSize(m);
+                scaling = computeDefaultScaling(cs);
+                fit(cs);
+                inited = true;
+            }
+
+            g2.clearRect(0, 0, width, height);
+            g2.setTransform(new AffineTransform());
+
+            background = m.getProperties()
+                    .getColorValue(PreviewProperty.BACKGROUND_COLOR);
+            if (background != null) {
+                g2.setColor(background);
+                g2.fillRect(0, 0, width, height);
+            }
+
+            // user zoom
+            Vector center = new Vector(width / 2F, height / 2F);
+            Vector scaledCenter = Vector.mult(center, scaling);
+            Vector scaledTrans = Vector.sub(center, scaledCenter);
+            g2.translate(scaledTrans.x, scaledTrans.y);
+            g2.scale(scaling, scaling);
+
+            // user move
+            g2.translate(trans.x, trans.y);
+
+            //Draw target
+            previewController.render(target);
         }
 
         public Vector getTranslate() {
@@ -243,32 +250,33 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
             inited = false;
         }
 
-        /**
-         * Initializes the preview applet layout according to the graph's
-         * dimension.
-         */
-        private void initAppletLayout(PreviewModel m) {
-//            graphSheet.setMargin(MARGIN);
-            if (!inited) {
+        private CanvasSize getSheetCanvasSize(PreviewModel m) {
+            CanvasSize cs = m.getGraphicsCanvasSize();
+            float marginPercentage = m.getProperties()
+                    .getFloatValue(PreviewProperty.MARGIN);
+            float marginWidth = cs.getWidth() * marginPercentage / 100F;
+            float marginHeight = cs.getHeight() * marginPercentage / 100F;
+            return new CanvasSize(
+                    cs.getX() - marginWidth,
+                    cs.getY() - marginHeight,
+                    cs.getWidth() + 2F * marginWidth,
+                    cs.getHeight() + 2F * marginHeight);
+        }
 
-                // initializes zoom
-                CanvasSize cs = m.getGraphicsCanvasSize();
-                Vector box = new Vector(cs.getWidth(), cs.getHeight());
-                float ratioWidth = width / box.x;
-                float ratioHeight = height / box.y;
-                scaling = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+        private float computeDefaultScaling(CanvasSize cs) {
+            float ratioWidth = width / cs.getWidth();
+            float ratioHeight = height / cs.getHeight();
+            return ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+        }
 
-                // initializes move
-                Vector semiBox = Vector.div(box, 2);
-                Vector topLeft = new Vector(cs.getX(), cs.getY());
-                Vector center = new Vector(width / 2F, height / 2F);
-                Vector scaledCenter = Vector.add(topLeft, semiBox);
-                trans.set(center);
-                trans.sub(scaledCenter);
-//            lastMove.set(trans);
-
-                inited = true;
-            }
+        private void fit(CanvasSize cs) {
+            Vector box = new Vector(cs.getWidth(), cs.getHeight());
+            Vector semiBox = Vector.div(box, 2F);
+            Vector topLeft = new Vector(cs.getX(), cs.getY());
+            Vector center = new Vector(width / 2F, height / 2F);
+            Vector scaledCenter = Vector.add(topLeft, semiBox);
+            trans.set(center);
+            trans.sub(scaledCenter);
         }
     }
 }

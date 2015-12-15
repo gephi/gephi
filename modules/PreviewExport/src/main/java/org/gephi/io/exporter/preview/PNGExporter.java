@@ -50,6 +50,7 @@ import org.gephi.io.exporter.spi.ByteExporter;
 import org.gephi.io.exporter.spi.VectorExporter;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
@@ -72,34 +73,27 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
     private int width = 1024;
     private int height = 1024;
     private boolean transparentBackground = false;
-    private int margin = 4;
+    private int margin = 4; //FIXME Use a float instead to avoid extra cast
     private G2DTarget target;
+    private Color oldColor;
 
     @Override
     public boolean execute() {
         Progress.start(progress);
 
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        controller.getModel(workspace).getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, 1.0);
+        PreviewController ctrl
+                = Lookup.getDefault().lookup(PreviewController.class);
+        PreviewModel m = ctrl.getModel(workspace);
 
-        PreviewProperties props = controller.getModel(workspace).getProperties();
-        props.putValue("width", width);
-        props.putValue("height", height);
-        Color oldColor = props.getColorValue(PreviewProperty.BACKGROUND_COLOR);
-        if (transparentBackground) {
-            props.putValue(PreviewProperty.BACKGROUND_COLOR, new Color(255, 255, 255, 0));//White transparent
-        }
-        props.putValue(PreviewProperty.MARGIN, new Float((float) margin));
-        controller.refreshPreview(workspace);
-        target = (G2DTarget) controller.getRenderTarget(RenderTarget.G2D_TARGET, workspace);
+        setExportProperties(m);
+        ctrl.refreshPreview(workspace);
+
+        target = (G2DTarget) ctrl.getRenderTarget(
+                RenderTarget.G2D_TARGET,
+                workspace);
         if (target instanceof LongTask) {
             ((LongTask) target).setProgressTicket(progress);
         }
-        //Fix bug caused by keeping width and height in the workspace preview properties.
-        //When a .gephi file is loaded later with these properties PGraphics will be created instead of a PApplet
-        props.removeSimpleValue("width");
-        props.removeSimpleValue("height");
-        props.removeSimpleValue(PreviewProperty.MARGIN);
 
         try {
             target.refresh();
@@ -111,11 +105,11 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
             img.getGraphics().drawImage(sourceImg, 0, 0, null);
             ImageIO.write(img, "png", stream);
             stream.close();
-
-            props.putValue(PreviewProperty.BACKGROUND_COLOR, oldColor);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        discardExportProperties(m);
 
         Progress.finish(progress);
 
@@ -169,6 +163,7 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
         this.stream = stream;
     }
 
+    @Override
     public boolean cancel() {
         cancel = true;
         if (target instanceof LongTask) {
@@ -177,7 +172,30 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progress = progressTicket;
+    }
+
+    private synchronized void setExportProperties(PreviewModel m) {
+        PreviewProperties props = m.getProperties();
+        props.putValue(PreviewProperty.VISIBILITY_RATIO, 1.0F);
+        props.putValue("width", width);
+        props.putValue("height", height);
+        oldColor = props.getColorValue(PreviewProperty.BACKGROUND_COLOR);
+        if (transparentBackground) {
+            props.putValue(
+                    PreviewProperty.BACKGROUND_COLOR,
+                    new Color(255, 255, 255, 0)); //White transparent
+        }
+        props.putValue(PreviewProperty.MARGIN, new Float(margin));
+    }
+
+    private synchronized void discardExportProperties(PreviewModel m) {
+        PreviewProperties props = m.getProperties();
+        props.removeSimpleValue("width");
+        props.removeSimpleValue("height");
+        props.removeSimpleValue(PreviewProperty.MARGIN);
+        props.putValue(PreviewProperty.BACKGROUND_COLOR, oldColor);
     }
 }
