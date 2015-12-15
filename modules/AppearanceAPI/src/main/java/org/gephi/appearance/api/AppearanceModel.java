@@ -56,7 +56,7 @@ public interface AppearanceModel {
      *
      * @return the workspace of this model
      */
-    public Workspace getWorkspace();
+    Workspace getWorkspace();
 
     /**
      * Returns <code>true</code> if rankings are using the currently visible
@@ -66,13 +66,13 @@ public interface AppearanceModel {
      * @return <code>true</code> if using a local scale, <code>false</code> if
      * global scale
      */
-    public boolean isLocalScale();
+    boolean isLocalScale();
 
-    public Partition getNodePartition(Graph graph, Column column);
+    Partition getNodePartition(Graph graph, Column column);
 
-    public Partition getEdgePartition(Graph graph, Column column);
+    Partition getEdgePartition(Graph graph, Column column);
 
-    public Function[] getNodeFunctions(Graph graph);
+    Function[] getNodeFunctions(Graph graph);
 
-    public Function[] getEdgeFunctions(Graph graph);
+    Function[] getEdgeFunctions(Graph graph);
 }

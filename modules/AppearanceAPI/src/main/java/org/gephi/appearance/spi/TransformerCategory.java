@@ -49,7 +49,7 @@ import javax.swing.Icon;
  */
 public interface TransformerCategory {
 
-    public String getDisplayName();
+    String getDisplayName();
 
-    public Icon getIcon();
+    Icon getIcon();
 }

@@ -60,28 +60,28 @@ public interface ToolUI {
      * @param tool the tool instance
      * @return a <code>JPanel</code> for the the tool's properties bar
      */
-    public JPanel getPropertiesBar(Tool tool);
+    JPanel getPropertiesBar(Tool tool);
 
     /**
      * Returns the tool icon, for the toobar.
      *
      * @return tool's icon
      */
-    public Icon getIcon();
+    Icon getIcon();
 
     /**
      * Returns the tool's name.
      *
      * @return tool's name
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the tool's description.
      *
      * @return tool's description
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * Returns the tool's relative position.
@@ -90,5 +90,5 @@ public interface ToolUI {
      *
      * @return A number between 0 and 200
      */
-    public int getPosition();
+    int getPosition();
 }

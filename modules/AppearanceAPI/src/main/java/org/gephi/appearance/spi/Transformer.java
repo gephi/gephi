@@ -47,7 +47,7 @@ package org.gephi.appearance.spi;
  */
 public interface Transformer {
 
-    public boolean isNode();
+    boolean isNode();
 
-    public boolean isEdge();
+    boolean isEdge();
 }

@@ -58,5 +58,5 @@ public interface NodeClickEventListener extends ToolEventListener {
      *
      * @param nodes the clicked nodes
      */
-    public void clickNodes(Node[] nodes);
+    void clickNodes(Node[] nodes);
 }

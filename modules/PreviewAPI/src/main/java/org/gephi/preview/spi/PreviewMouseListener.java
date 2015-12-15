@@ -61,7 +61,7 @@ public interface PreviewMouseListener {
      * @param properties Preview properties for the workspace
      * @param workspace  Current workspace
      */
-    public void mouseClicked(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
+    void mouseClicked(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
     
     /**
      * A mouse press event. If your listener needs to receive drag or release events, you <b>must</b> mark the previous press event as consumed.
@@ -69,7 +69,7 @@ public interface PreviewMouseListener {
      * @param properties Preview properties for the workspace
      * @param workspace  Current workspace
      */
-    public void mousePressed(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
+    void mousePressed(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
     
     /**
      * If your listener needs to receive drag events, you <b>must</b> mark the previous press event as consumed.
@@ -77,7 +77,7 @@ public interface PreviewMouseListener {
      * @param properties Preview properties for the workspace
      * @param workspace  Current workspace
      */
-    public void mouseDragged(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
+    void mouseDragged(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
     
     /**
      * If your listener needs to receive release events, you <b>must</b> mark the previous press event as consumed.
@@ -85,5 +85,5 @@ public interface PreviewMouseListener {
      * @param properties Preview properties for the workspace
      * @param workspace  Current workspace
      */
-    public void mouseReleased(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
+    void mouseReleased(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
 }

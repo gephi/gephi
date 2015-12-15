@@ -53,23 +53,23 @@ import org.gephi.graph.api.Graph;
  */
 public interface Partition {
 
-    public Collection getValues();
+    Collection getValues();
 
-    public Collection getSortedValues();
+    Collection getSortedValues();
 
-    public int getElementCount();
+    int getElementCount();
 
-    public int count(Object value);
+    int count(Object value);
 
-    public Object getValue(Element element, Graph graph);
+    Object getValue(Element element, Graph graph);
 
-    public Color getColor(Object value);
+    Color getColor(Object value);
 
-    public void setColor(Object value, Color color);
+    void setColor(Object value, Color color);
 
-    public float percentage(Object value);
+    float percentage(Object value);
 
-    public int size();
+    int size();
 
-    public Column getColumn();
+    Column getColumn();
 }

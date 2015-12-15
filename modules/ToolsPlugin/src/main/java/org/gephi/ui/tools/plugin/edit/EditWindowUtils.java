@@ -49,47 +49,47 @@ public class EditWindowUtils {
 
     interface AttributeValueWrapper {
 
-        public Byte getValueByte();
+        Byte getValueByte();
 
-        public void setValueByte(Byte object);
+        void setValueByte(Byte object);
 
-        public Short getValueShort();
+        Short getValueShort();
 
-        public void setValueShort(Short object);
+        void setValueShort(Short object);
 
-        public Character getValueCharacter();
+        Character getValueCharacter();
 
-        public void setValueCharacter(Character object);
+        void setValueCharacter(Character object);
 
-        public String getValueString();
+        String getValueString();
 
-        public void setValueString(String object);
+        void setValueString(String object);
 
-        public Double getValueDouble();
+        Double getValueDouble();
 
-        public void setValueDouble(Double object);
+        void setValueDouble(Double object);
 
-        public Float getValueFloat();
+        Float getValueFloat();
 
-        public void setValueFloat(Float object);
+        void setValueFloat(Float object);
 
-        public Integer getValueInteger();
+        Integer getValueInteger();
 
-        public void setValueInteger(Integer object);
+        void setValueInteger(Integer object);
 
-        public Boolean getValueBoolean();
+        Boolean getValueBoolean();
 
-        public void setValueBoolean(Boolean object);
+        void setValueBoolean(Boolean object);
 
-        public Long getValueLong();
+        Long getValueLong();
 
-        public void setValueLong(Long object);
+        void setValueLong(Long object);
 
         /**
          * **** Other types are not supported by property editors by default so they are used and parsed as Strings *****
          */
-        public String getValueAsString();
+        String getValueAsString();
 
-        public void setValueAsString(String value);
+        void setValueAsString(String value);
     }
 }

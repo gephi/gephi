@@ -49,5 +49,5 @@ package org.gephi.utils.longtask.api;
  */
 public interface LongTaskErrorHandler {
 
-    public void fatalError(Throwable t);
+    void fatalError(Throwable t);
 }

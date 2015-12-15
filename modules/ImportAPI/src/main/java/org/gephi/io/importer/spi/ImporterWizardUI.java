@@ -65,7 +65,7 @@ public interface ImporterWizardUI {
      *
      * @return the importer display name
      */
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * There are two levels for wizard UIs, the category and then the display
@@ -73,21 +73,21 @@ public interface ImporterWizardUI {
      *
      * @return the importer category
      */
-    public String getCategory();
+    String getCategory();
 
     /**
      * Returns the description for this importer
      *
      * @return the description test
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * Returns wizard panels.
      *
      * @return panels of the current importer
      */
-    public WizardDescriptor.Panel[] getPanels();
+    WizardDescriptor.Panel[] getPanels();
 
     /**
      * Configure <code>panel</code> with previously remembered settings. This
@@ -95,7 +95,7 @@ public interface ImporterWizardUI {
      *
      * @param panel the panel that settings are to be set
      */
-    public void setup(WizardDescriptor.Panel panel);
+    void setup(WizardDescriptor.Panel panel);
 
     /**
      * Notify UI the settings panel has been closed and that new values can be
@@ -105,7 +105,7 @@ public interface ImporterWizardUI {
      * @param importer the importer that settings are to be written
      * @param panel the panel that settings are read
      */
-    public void unsetup(SpigotImporter importer, WizardDescriptor.Panel panel);
+    void unsetup(SpigotImporter importer, WizardDescriptor.Panel panel);
 
     /**
      * Returns <code>true</code> if this UI belongs to the given importer.
@@ -114,5 +114,5 @@ public interface ImporterWizardUI {
      * @return          <code>true</code> if the UI is matching with
      * <code>importer</code>, <code>false</code> otherwise.
      */
-    public boolean isUIForImporter(Importer importer);
+    boolean isUIForImporter(Importer importer);
 }

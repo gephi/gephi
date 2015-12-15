@@ -47,5 +47,5 @@ package org.gephi.visualization;
  */
 public interface VizArchitecture {
 
-    public void initArchitecture();
+    void initArchitecture();
 }

@@ -50,5 +50,5 @@ import org.gephi.filters.spi.RangeFilter;
  */
 public interface RangeUI {
 
-    public JPanel getPanel(RangeFilter rangeFilter);
+    JPanel getPanel(RangeFilter rangeFilter);
 }

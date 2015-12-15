@@ -50,32 +50,32 @@ import com.jogamp.opengl.glu.GLU;
  */
 public interface Scheduler {
 
-    public void start();
+    void start();
 
-    public void stop();
+    void stop();
 
-    public boolean isAnimating();
+    boolean isAnimating();
 
-    public void updatePosition();
+    void updatePosition();
 
-    public void updateWorld();
+    void updateWorld();
 
-    public void display(GL2 gl, GLU glu);
+    void display(GL2 gl, GLU glu);
 
-    public void requireUpdateVisible();
+    void requireUpdateVisible();
 
-    public void requireUpdateSelection();
+    void requireUpdateSelection();
 
-    public void requireStartDrag();
+    void requireStartDrag();
 
-    public void requireDrag();
+    void requireDrag();
 
-    public void requireStopDrag();
+    void requireStopDrag();
 
 //    public void requireUpdatePosition();
-    public void requireMouseClick();
+void requireMouseClick();
 
-    public void setFps(float maxFps);
+    void setFps(float maxFps);
 
-    public float getFps();
+    float getFps();
 }

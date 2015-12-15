@@ -60,5 +60,5 @@ public interface MouseClickEventListener extends ToolEventListener {
      * @param position3d Position in the 3D coordinate system, (0,0) is located
      * at the center.
      */
-    public void mouseClick(int[] positionViewport, float[] position3d);
+    void mouseClick(int[] positionViewport, float[] position3d);
 }

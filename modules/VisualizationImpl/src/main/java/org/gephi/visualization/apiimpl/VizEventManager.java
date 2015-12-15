@@ -49,37 +49,37 @@ import org.gephi.visualization.VizArchitecture;
  */
 public interface VizEventManager extends VizArchitecture {
 
-    public void startDrag();
+    void startDrag();
 
-    public void drag();
+    void drag();
 
-    public void stopDrag();
+    void stopDrag();
 
-    public void mouseLeftPress();
+    void mouseLeftPress();
 
-    public void mouseRightPress();
+    void mouseRightPress();
 
-    public void mouseMiddlePress();
+    void mouseMiddlePress();
 
-    public void mouseLeftClick();
+    void mouseLeftClick();
 
-    public void mouseRightClick();
+    void mouseRightClick();
 
-    public void mouseMiddleClick();
+    void mouseMiddleClick();
 
-    public void mouseMove();
+    void mouseMove();
 
-    public void mouseLeftPressing();
+    void mouseLeftPressing();
 
-    public void mouseReleased();
+    void mouseReleased();
 
-    public void addListener(VizEventListener listener);
+    void addListener(VizEventListener listener);
 
-    public void addListener(VizEventListener[] listeners);
+    void addListener(VizEventListener[] listeners);
 
-    public void removeListener(VizEventListener listener);
+    void removeListener(VizEventListener listener);
 
-    public void removeListener(VizEventListener[] listeners);
+    void removeListener(VizEventListener[] listeners);
 
-    public boolean hasListeners(VizEvent.Type type);
+    boolean hasListeners(VizEvent.Type type);
 }

@@ -49,9 +49,9 @@ import javax.swing.JComponent;
  */
 public interface BottomComponent {
     
-    public JComponent getComponent();
+    JComponent getComponent();
     
-    public void setVisible(boolean visible);
+    void setVisible(boolean visible);
     
-    public boolean isVisible();
+    boolean isVisible();
 }

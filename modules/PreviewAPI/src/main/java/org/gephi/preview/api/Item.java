@@ -58,24 +58,24 @@ import org.gephi.preview.spi.Renderer;
  */
 public interface Item {
 
-    public static final String NODE = "node";
-    public static final String EDGE = "edge";
-    public static final String NODE_LABEL = "node_label";
-    public static final String EDGE_LABEL = "edge_label";
+    String NODE = "node";
+    String EDGE = "edge";
+    String NODE_LABEL = "node_label";
+    String EDGE_LABEL = "edge_label";
 
     /**
      * Returns the source of the item. The source is usually a graph object like
      * a <code>Node</code> or <code>Edge</code>.
      * @return the item's source object
      */
-    public Object getSource();
+    Object getSource();
 
     /**
      * Returns the type of the item. Default types are <code>Item.NODE</code>, 
      * <code>Item.EDGE</code>, <code>Item.NODE_LABEL</code> and <code>Item.EDGE_LABEL</code>.
      * @return the item's type
      */
-    public String getType();
+    String getType();
 
     /**
      * Returns data associated to this item.
@@ -84,19 +84,19 @@ public interface Item {
      * @return the value associated to <code>key</code>, or <code>null</code> if
      * not exist
      */
-    public <D> D getData(String key);
+    <D> D getData(String key);
 
     /**
      * Sets data to this item.
      * @param key the key
      * @param value the value to be associated with <code>key</code>
      */
-    public void setData(String key, Object value);
+    void setData(String key, Object value);
 
     /**
      * Returns all the keys. That allows to enumerate all data associated with
      * this item.
      * @return all keys
      */
-    public String[] getKeys();
+    String[] getKeys();
 }

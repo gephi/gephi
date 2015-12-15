@@ -49,5 +49,5 @@ import javax.swing.JPanel;
  */
 public interface NeighborsUI {
 
-    public JPanel getPanel(NeighborsBuilder.NeighborsFilter neighborsFilter);
+    JPanel getPanel(NeighborsBuilder.NeighborsFilter neighborsFilter);
 }

@@ -50,11 +50,11 @@ import org.gephi.graph.api.Graph;
  */
 public interface Ranking {
 
-    public Number getMinValue();
+    Number getMinValue();
 
-    public Number getMaxValue();
+    Number getMaxValue();
 
-    public Number getValue(Element element, Graph graph);
+    Number getValue(Element element, Graph graph);
 
-    public float normalize(Number value, Interpolator interpolator);
+    float normalize(Number value, Interpolator interpolator);
 }

@@ -54,5 +54,5 @@ public interface DatabaseImporterBuilder extends ImporterBuilder {
      * @return a new database importer
      */
     @Override
-    public DatabaseImporter buildImporter();
+    DatabaseImporter buildImporter();
 }

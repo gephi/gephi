@@ -60,13 +60,13 @@ public interface AppearanceController {
      * @param useLocalScale <code>true</code> for local, <code>false</code> for
      * global
      */
-    public void setUseLocalScale(boolean useLocalScale);
+    void setUseLocalScale(boolean useLocalScale);
 
-    public void transform(Function function);
+    void transform(Function function);
 
-    public AppearanceModel getModel();
+    AppearanceModel getModel();
 
-    public AppearanceModel getModel(Workspace workspace);
+    AppearanceModel getModel(Workspace workspace);
 
-    public Transformer getTransformer(TransformerUI ui);
+    Transformer getTransformer(TransformerUI ui);
 }

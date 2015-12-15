@@ -61,12 +61,12 @@ public interface Statistics {
      * visualization.
      * @param graphModel The graph model
      */
-    public void execute(GraphModel graphModel);
+    void execute(GraphModel graphModel);
 
     /**
      * Returns an HTML string that displays the statistics result. Can contains
      * complex HTML snippets and images.
      * @return An HTML string that displays the results for this Statistics
      */
-    public String getReport();
+    String getReport();
 }

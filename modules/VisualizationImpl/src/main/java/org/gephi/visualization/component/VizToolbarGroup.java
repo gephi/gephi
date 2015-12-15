@@ -49,13 +49,13 @@ import javax.swing.JComponent;
  */
 public interface VizToolbarGroup {
 
-    public String getName();
+    String getName();
 
-    public JComponent[] getToolbarComponents();
+    JComponent[] getToolbarComponents();
 
-    public JComponent getExtendedComponent();
+    JComponent getExtendedComponent();
 
-    public boolean hasToolbar();
+    boolean hasToolbar();
 
-    public boolean hasExtended();
+    boolean hasExtended();
 }

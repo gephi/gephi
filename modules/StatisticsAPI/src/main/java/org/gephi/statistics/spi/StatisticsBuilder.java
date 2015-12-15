@@ -58,17 +58,17 @@ public interface StatisticsBuilder {
      * Returns the name of statistics
      * @return  the name of the statistics
      */
-    public String getName();
+    String getName();
 
     /**
      * Build a new statistics instance and return it
      * @return  a new statistics instance
      */
-    public Statistics getStatistics();
+    Statistics getStatistics();
 
     /**
      * Returns the statistics' class this UI belongs to.
      * @return  the statistics' class this UI belongs to
      */
-    public Class<? extends Statistics> getStatisticsClass();
+    Class<? extends Statistics> getStatisticsClass();
 }

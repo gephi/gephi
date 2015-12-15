@@ -49,8 +49,8 @@ import org.gephi.graph.api.Graph;
  */
 public interface RangeFilter extends Filter {
 
-    public Number[] getValues(Graph graph);
+    Number[] getValues(Graph graph);
 
-    public FilterProperty getRangeProperty();
+    FilterProperty getRangeProperty();
 
 }

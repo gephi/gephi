@@ -50,27 +50,27 @@ import java.awt.event.KeyListener;
  */
 public interface GraphIO extends MouseListener, KeyListener {
 
-    public float[] getMousePosition();
+    float[] getMousePosition();
 
-    public float[] getMousePosition3d();
+    float[] getMousePosition3d();
 
-    public float[] getMouseDrag();
+    float[] getMouseDrag();
 
-    public float[] getMouseDrag3d();
+    float[] getMouseDrag3d();
 
-    public void startMouseListening();
+    void startMouseListening();
 
-    public void stopMouseListening();
+    void stopMouseListening();
 
-    public void trigger();
+    void trigger();
 
-    public void setCameraDistance(float distance);
+    void setCameraDistance(float distance);
 
-    public void centerOnZero();
+    void centerOnZero();
 
-    public void centerOnGraph();
+    void centerOnGraph();
 
-    public void centerOnCoordinate(float x, float y, float z);
+    void centerOnCoordinate(float x, float y, float z);
 
-    public boolean isDragging();
+    boolean isDragging();
 }

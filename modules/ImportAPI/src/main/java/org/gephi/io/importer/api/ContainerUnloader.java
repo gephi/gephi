@@ -61,48 +61,48 @@ import org.joda.time.DateTimeZone;
  */
 public interface ContainerUnloader {
 
-    public Iterable<NodeDraft> getNodes();
+    Iterable<NodeDraft> getNodes();
 
-    public int getNodeCount();
+    int getNodeCount();
 
-    public Iterable<EdgeDraft> getEdges();
+    Iterable<EdgeDraft> getEdges();
 
-    public int getEdgeCount();
+    int getEdgeCount();
 
-    public boolean hasNodeColumn(String key);
+    boolean hasNodeColumn(String key);
 
-    public boolean hasEdgeColumn(String key);
+    boolean hasEdgeColumn(String key);
 
-    public Iterable<ColumnDraft> getNodeColumns();
+    Iterable<ColumnDraft> getNodeColumns();
 
-    public Iterable<ColumnDraft> getEdgeColumns();
+    Iterable<ColumnDraft> getEdgeColumns();
 
-    public EdgeDirectionDefault getEdgeDefault();
+    EdgeDirectionDefault getEdgeDefault();
 
-    public TimeFormat getTimeFormat();
+    TimeFormat getTimeFormat();
 
-    public TimeRepresentation getTimeRepresentation();
+    TimeRepresentation getTimeRepresentation();
 
-    public DateTimeZone getTimeZone();
+    DateTimeZone getTimeZone();
 
-    public String getSource();
+    String getSource();
 
-    public Class getEdgeTypeLabelClass();
+    Class getEdgeTypeLabelClass();
 
-    public Double getTimestamp();
+    Double getTimestamp();
 
-    public Interval getInterval();
+    Interval getInterval();
 
-    public ElementIdType getElementIdType();
+    ElementIdType getElementIdType();
 
     //PARAMETERS GETTERS
-    public boolean allowSelfLoop();
+    boolean allowSelfLoop();
 
-    public boolean allowAutoNode();
+    boolean allowAutoNode();
 
-    public boolean allowParallelEdges();
+    boolean allowParallelEdges();
 
-    public boolean isAutoScale();
+    boolean isAutoScale();
 
-    public EdgeWeightMergeStrategy getEdgesMergeStrategy();
+    EdgeWeightMergeStrategy getEdgesMergeStrategy();
 }

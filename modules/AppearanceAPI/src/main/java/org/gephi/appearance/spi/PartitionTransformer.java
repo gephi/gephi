@@ -50,5 +50,5 @@ import org.gephi.graph.api.Element;
  */
 public interface PartitionTransformer<E extends Element> extends Transformer {
 
-    public void transform(E element, Partition partition, Object value);
+    void transform(E element, Partition partition, Object value);
 }

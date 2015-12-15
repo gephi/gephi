@@ -47,9 +47,9 @@ package org.gephi.appearance.api;
  */
 public interface RankingFunction extends Function {
 
-    public Ranking getRanking();
+    Ranking getRanking();
 
-    public void setInterpolator(Interpolator interpolator);
+    void setInterpolator(Interpolator interpolator);
 
-    public Interpolator getInterpolator();
+    Interpolator getInterpolator();
 }

@@ -55,5 +55,5 @@ public interface FileImporter extends Importer {
      *
      * @param reader the reader on data
      */
-    public void setReader(Reader reader);
+    void setReader(Reader reader);
 }

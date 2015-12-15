@@ -52,15 +52,15 @@ import org.gephi.visualization.text.TextManager.Renderer;
  */
 public interface ColorMode {
 
-    public String getName();
+    String getName();
 
-    public ImageIcon getIcon();
+    ImageIcon getIcon();
 
-    public void defaultNodeColor(Renderer renderer);
+    void defaultNodeColor(Renderer renderer);
 
-    public void defaultEdgeColor(Renderer renderer);
+    void defaultEdgeColor(Renderer renderer);
 
-    public void textNodeColor(Renderer renderer, NodeModel nodeModel);
+    void textNodeColor(Renderer renderer, NodeModel nodeModel);
 
-    public void textEdgeColor(Renderer renderer, EdgeModel edgeModel);
+    void textEdgeColor(Renderer renderer, EdgeModel edgeModel);
 }

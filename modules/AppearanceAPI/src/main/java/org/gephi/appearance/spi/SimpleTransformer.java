@@ -49,5 +49,5 @@ import org.gephi.graph.api.Element;
  */
 public interface SimpleTransformer<E extends Element> extends Transformer {
 
-    public void transform(E element);
+    void transform(E element);
 }

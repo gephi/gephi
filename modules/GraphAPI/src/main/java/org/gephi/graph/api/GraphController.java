@@ -59,7 +59,7 @@ public interface GraphController {
      *
      * @return the current graph model
      */
-    public GraphModel getGraphModel();
+    GraphModel getGraphModel();
 
     /**
      * Returns the graph model for the given <code>workspace</code>.
@@ -67,5 +67,5 @@ public interface GraphController {
      * @param workspace the workspace that graph model is to be returned
      * @return the <code>workspace</code>'s graph model
      */
-    public GraphModel getGraphModel(Workspace workspace);
+    GraphModel getGraphModel(Workspace workspace);
 }

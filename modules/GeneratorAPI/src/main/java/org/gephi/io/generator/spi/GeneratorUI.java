@@ -58,17 +58,17 @@ public interface GeneratorUI {
      * Returns the panel settings.
      * @return          the panel settings
      */
-    public JPanel getPanel();
+    JPanel getPanel();
 
     /**
      * Push the generator instance to get settings values.
      * @param generator the generator instance that is to be configured
      */
-    public void setup(Generator generator);
+    void setup(Generator generator);
 
     /**
      * Notify UI that generator settings panel has been closed and that
      * settings values can be written into current generator instance.
      */
-    public void unsetup();
+    void unsetup();
 }

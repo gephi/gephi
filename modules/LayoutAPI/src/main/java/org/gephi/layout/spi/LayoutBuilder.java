@@ -66,18 +66,18 @@ public interface LayoutBuilder {
      * The name of the behaviour of the Layout's provided by this Builder.
      * @return  the display neame of the layout algorithm
      */
-    public String getName();
+    String getName();
 
     /**
      * User interface attributes (name, description, icon...) for all Layouts
      * built by this builder.
      * @return a <code>LayoutUI</code> instance
      */
-    public LayoutUI getUI();
+    LayoutUI getUI();
 
     /**
      * Builds an instance of the Layout.
      * @return  a new <code>Layout</code> instance
      */
-    public Layout buildLayout();
+    Layout buildLayout();
 }

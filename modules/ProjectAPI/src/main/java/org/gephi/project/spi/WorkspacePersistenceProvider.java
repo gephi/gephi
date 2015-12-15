@@ -82,5 +82,5 @@ public interface WorkspacePersistenceProvider {
      *
      * @return Unique identifier describing your data
      */
-    public String getIdentifier();
+    String getIdentifier();
 }

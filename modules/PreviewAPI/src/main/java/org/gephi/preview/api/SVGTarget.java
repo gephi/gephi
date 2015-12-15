@@ -66,49 +66,49 @@ public interface SVGTarget extends RenderTarget {
     /**
      * SVG <code>Boolean</code> property whether to rescale stroke's width/thickness.
      */
-    public static final String SCALE_STROKES = "svg.scale.strokes";
+    String SCALE_STROKES = "svg.scale.strokes";
     /**
      * Default top element name for nodes
      */
-    public static final String TOP_NODES = "nodes";
+    String TOP_NODES = "nodes";
     /**
      * Default top element name for edges
      */
-    public static final String TOP_EDGES = "edges";
+    String TOP_EDGES = "edges";
     /**
      * Default top element name for node labels
      */
-    public static final String TOP_NODE_LABELS = "node-labels";
+    String TOP_NODE_LABELS = "node-labels";
     /**
      * Default top element name for node labels outline
      */
-    public static final String TOP_NODE_LABELS_OUTLINE = "node-labels-outline";
+    String TOP_NODE_LABELS_OUTLINE = "node-labels-outline";
     /**
      * Default top element name for edge labels
      */
-    public static final String TOP_EDGE_LABELS = "edge-labels";
+    String TOP_EDGE_LABELS = "edge-labels";
     /**
      * Default top element name for edge labels outline
      */
-    public static final String TOP_EDGE_LABELS_OUTLINE = "edge-labels-outline";
+    String TOP_EDGE_LABELS_OUTLINE = "edge-labels-outline";
     /**
      * Default top element name for arrows
      */
-    public static final String TOP_ARROWS = "arrows";
+    String TOP_ARROWS = "arrows";
 
     /**
      * Create a new element <code>qualifiedName</code> in the document.
      * @param qualifiedName the name of the element
      * @return the newly created element
      */
-    public Element createElement(String qualifiedName);
+    Element createElement(String qualifiedName);
 
     /**
      * Create a new text node with <code>data</code> in it.
      * @param data the text data
      * @return the newly created text node
      */
-    public Text createTextNode(String data);
+    Text createTextNode(String data);
 
     /**
      * Returns the top element <code>name</code> in the document. Top elements are
@@ -117,25 +117,25 @@ public interface SVGTarget extends RenderTarget {
      * @param name the top element name to lookup
      * @return the top element
      */
-    public Element getTopElement(String name);
+    Element getTopElement(String name);
 
     /**
      * Returns the SVG document
      * @return the SVG document
      */
-    public Document getDocument();
+    Document getDocument();
 
     /**
      * When <code>SCALE_STROKES</code> property is <code>true</code> returns
      * the scale ratio to scale strokes with.
      * @return the current scale ratio
      */
-    public float getScaleRatio();
+    float getScaleRatio();
 
     /**
      * Returns <code>color</code> in the hex format (e.g. #ff0000).
      * @param color the color to convert
      * @return the color in a hex format
      */
-    public String toHexString(Color color);
+    String toHexString(Color color);
 }

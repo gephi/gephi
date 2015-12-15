@@ -49,5 +49,5 @@ import org.gephi.graph.api.Column;
  */
 public interface AttributeFunction extends Function {
 
-    public Column getColumn();
+    Column getColumn();
 }

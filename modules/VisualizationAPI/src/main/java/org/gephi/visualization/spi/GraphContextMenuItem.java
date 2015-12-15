@@ -89,5 +89,5 @@ public interface GraphContextMenuItem extends ContextMenuItemManipulator {
      * @param graph graph
      * @param nodes All selected nodes
      */
-    public void setup(Graph graph, Node[] nodes);
+    void setup(Graph graph, Node[] nodes);
 }

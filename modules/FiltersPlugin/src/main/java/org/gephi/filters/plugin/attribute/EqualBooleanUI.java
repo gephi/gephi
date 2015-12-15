@@ -49,5 +49,5 @@ import javax.swing.JPanel;
  */
 public interface EqualBooleanUI {
 
-    public JPanel getPanel(AttributeEqualBuilder.EqualBooleanFilter filter);
+    JPanel getPanel(AttributeEqualBuilder.EqualBooleanFilter filter);
 }

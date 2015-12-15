@@ -56,11 +56,11 @@ public interface DatabaseImporter extends Importer {
      * Sets the database description, connection details and queries
      * @param database  the database that is to be used to import
      */
-    public void setDatabase(Database database);
+    void setDatabase(Database database);
 
     /**
      * Returns the current database description, connection details and queries
      * @return         the database that is to be used to import
      */
-    public Database getDatabase();
+    Database getDatabase();
 }
