@@ -62,31 +62,31 @@ import java.io.File;
  */
 public interface ProjectInformation {
 
-    public static final String EVENT_OPEN = "open";
-    public static final String EVENT_CLOSE = "close";
-    public static final String EVENT_RENAME = "rename";
-    public static final String EVENT_SET_FILE = "setFile";
+    String EVENT_OPEN = "open";
+    String EVENT_CLOSE = "close";
+    String EVENT_RENAME = "rename";
+    String EVENT_SET_FILE = "setFile";
 
     /**
      * Returns true if the project is open.
      *
      * @return true if open, false otherwise
      */
-    public boolean isOpen();
+    boolean isOpen();
 
     /**
      * Returns true if the project is closed.
      *
      * @return true if closed, false otherwise
      */
-    public boolean isClosed();
+    boolean isClosed();
 
     /**
      * Returns true if the project is invalid.
      *
      * @return true if invalid, false otherwise
      */
-    public boolean isInvalid();
+    boolean isInvalid();
 
     /**
      * Returns the name of the project.
@@ -95,7 +95,7 @@ public interface ProjectInformation {
      *
      * @return the project's name
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns true if the project is associated with a file.
@@ -105,7 +105,7 @@ public interface ProjectInformation {
      *
      * @return true if associated with a file, false otherwise
      */
-    public boolean hasFile();
+    boolean hasFile();
 
     /**
      * Returns the filename associated with this project.
@@ -115,7 +115,7 @@ public interface ProjectInformation {
      * @see #hasFile()
      * @return file name
      */
-    public String getFileName();
+    String getFileName();
 
     /**
      * Returns the file associated with this project.
@@ -125,26 +125,26 @@ public interface ProjectInformation {
      * @see #hasFile()
      * @return file or null if none
      */
-    public File getFile();
+    File getFile();
 
     /**
      * Returns the project this information class belongs to.
      *
      * @return project reference
      */
-    public Project getProject();
+    Project getProject();
 
     /**
      * Add change listener.
      *
      * @param listener change listener
      */
-    public void addChangeListener(PropertyChangeListener listener);
+    void addChangeListener(PropertyChangeListener listener);
 
     /**
      * Remove change listener.
      *
      * @param listener change listener
      */
-    public void removeChangeListener(PropertyChangeListener listener);
+    void removeChangeListener(PropertyChangeListener listener);
 }

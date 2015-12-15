@@ -226,13 +226,13 @@ public class AutoLayout {
         return new InterpolateDynamicProperty(propertyName, value, ratio, interpolation);
     }
 
-    public static interface DynamicProperty {
+    public interface DynamicProperty {
 
-        public Object getValue(float ratio);
+        Object getValue(float ratio);
 
-        public Property getProperty();
+        Property getProperty();
 
-        public String getCanonicalName();
+        String getCanonicalName();
     }
 
     public enum Interpolation {

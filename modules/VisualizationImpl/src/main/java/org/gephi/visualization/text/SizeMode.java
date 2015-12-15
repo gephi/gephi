@@ -50,13 +50,13 @@ import org.gephi.visualization.model.node.NodeModel;
  */
 public interface SizeMode {
 
-    public String getName();
+    String getName();
 
-    public ImageIcon getIcon();
+    ImageIcon getIcon();
 
-    public void init();
+    void init();
 
-    public float getSizeFactor2d(float sizeFactor, NodeModel model);
+    float getSizeFactor2d(float sizeFactor, NodeModel model);
 
-    public float getSizeFactor3d(float sizeFactor, NodeModel model);
+    float getSizeFactor3d(float sizeFactor, NodeModel model);
 }

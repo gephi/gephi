@@ -51,11 +51,11 @@ import org.gephi.graph.api.Node;
  */
 public interface VisualizationController {
 
-    public void selectNodes(Node[] nodes);
+    void selectNodes(Node[] nodes);
 
-    public void selectEdges(Edge[] edges);
+    void selectEdges(Edge[] edges);
 
-    public Column[] getEdgeTextColumns();
+    Column[] getEdgeTextColumns();
 
-    public Column[] getNodeTextColumns();
+    Column[] getNodeTextColumns();
 }

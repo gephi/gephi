@@ -70,7 +70,7 @@ public interface PreviewUI {
      * <code>getPanel()</code>.
      * @param previewModel the model associated to the current workspace
      */
-    public void setup(PreviewModel previewModel);
+    void setup(PreviewModel previewModel);
 
     /**
      * Returns the <code>JPanel</code> component to be displayed. 
@@ -82,24 +82,24 @@ public interface PreviewUI {
      * requested at each workspace selection.
      * @return the panel to be displayed
      */
-    public JPanel getPanel();
+    JPanel getPanel();
 
     /**
      * Method called when the UI is unloaded and the panel to be destroyed. This
      * happens when the workspace changes and before a new <code>PreviewModel</code>
      * is passed through <code>setup()</code>.
      */
-    public void unsetup();
+    void unsetup();
 
     /**
      * Returns the icon of the tab or <code>null</code> if none
      * @return the tab's icon or <code>null</code>
      */
-    public Icon getIcon();
+    Icon getIcon();
 
     /**
      * Returns the title of the tab
      * @return the tab's title
      */
-    public String getPanelTitle();
+    String getPanelTitle();
 }

@@ -52,33 +52,33 @@ import org.gephi.io.database.drivers.SQLDriver;
  */
 public interface Database extends Serializable {
 
-    public String getName();
+    String getName();
 
-    public SQLDriver getSQLDriver();
+    SQLDriver getSQLDriver();
 
-    public String getHost();
+    String getHost();
 
-    public int getPort();
+    int getPort();
 
-    public String getUsername();
+    String getUsername();
 
-    public String getPasswd();
+    String getPasswd();
 
-    public String getDBName();
+    String getDBName();
 
-    public void setName(String name);
+    void setName(String name);
 
-    public void setSQLDriver(SQLDriver driver);
+    void setSQLDriver(SQLDriver driver);
 
-    public void setHost(String host);
+    void setHost(String host);
 
-    public void setPort(int port);
+    void setPort(int port);
 
-    public void setUsername(String username);
+    void setUsername(String username);
 
-    public void setPasswd(String passwd);
+    void setPasswd(String passwd);
 
-    public void setDBName(String dbName);
+    void setDBName(String dbName);
 
-    public PropertiesAssociations getPropertiesAssociations();
+    PropertiesAssociations getPropertiesAssociations();
 }

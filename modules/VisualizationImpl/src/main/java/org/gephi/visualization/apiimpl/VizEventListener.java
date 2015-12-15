@@ -49,7 +49,7 @@ import java.util.EventListener;
  */
 public interface VizEventListener extends EventListener {
 
-    public void handleEvent(VizEvent event);
+    void handleEvent(VizEvent event);
 
-    public VizEvent.Type getType();
+    VizEvent.Type getType();
 }

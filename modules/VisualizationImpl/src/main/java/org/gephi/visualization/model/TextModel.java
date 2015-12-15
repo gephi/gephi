@@ -12,27 +12,27 @@ import org.gephi.graph.api.ElementProperties;
  */
 public interface TextModel {
 
-    public boolean hasCustomTextColor();
+    boolean hasCustomTextColor();
 
-    public void setText(String text);
+    void setText(String text);
 
-    public float getTextWidth();
+    float getTextWidth();
 
-    public float getTextHeight();
+    float getTextHeight();
 
-    public String getText();
+    String getText();
 
-    public float getTextSize();
+    float getTextSize();
 
-    public float getTextR();
+    float getTextR();
 
-    public float getTextG();
+    float getTextG();
 
-    public float getTextB();
+    float getTextB();
 
-    public float getTextAlpha();
+    float getTextAlpha();
 
-    public boolean isTextVisible();
+    boolean isTextVisible();
 
-    public ElementProperties getElementProperties();
+    ElementProperties getElementProperties();
 }

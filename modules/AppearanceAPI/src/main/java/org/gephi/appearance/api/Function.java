@@ -52,21 +52,21 @@ import org.gephi.graph.api.Graph;
  */
 public interface Function {
 
-    public void transform(Element element, Graph graph);
+    void transform(Element element, Graph graph);
 
-    public Transformer getTransformer();
+    Transformer getTransformer();
 
-    public TransformerUI getUI();
+    TransformerUI getUI();
 
-    public boolean isSimple();
+    boolean isSimple();
 
-    public boolean isAttribute();
+    boolean isAttribute();
 
-    public boolean isRanking();
+    boolean isRanking();
 
-    public boolean isPartition();
+    boolean isPartition();
 
-    public Graph getGraph();
+    Graph getGraph();
 
-    public Class<? extends Element> getElementClass();
+    Class<? extends Element> getElementClass();
 }

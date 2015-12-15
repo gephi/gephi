@@ -49,5 +49,5 @@ import javax.swing.JComponent;
  */
 public interface PropertiesBarAddon {
 
-    public JComponent getComponent();
+    JComponent getComponent();
 }

@@ -52,17 +52,17 @@ import org.gephi.appearance.api.Function;
  */
 public interface TransformerUI<T extends Transformer> {
 
-    public TransformerCategory getCategory();
+    TransformerCategory getCategory();
 
-    public JPanel getPanel(Function function);
+    JPanel getPanel(Function function);
 
-    public String getDisplayName();
+    String getDisplayName();
 
-    public String getDescription();
+    String getDescription();
 
-    public Icon getIcon();
+    Icon getIcon();
 
-    public AbstractButton[] getControlButton();
+    AbstractButton[] getControlButton();
 
-    public Class<? extends T> getTransformerClass();
+    Class<? extends T> getTransformerClass();
 }

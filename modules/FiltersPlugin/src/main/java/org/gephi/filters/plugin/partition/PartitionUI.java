@@ -50,5 +50,5 @@ import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
  */
 public interface PartitionUI {
 
-    public JPanel getPanel(PartitionFilter filter);
+    JPanel getPanel(PartitionFilter filter);
 }

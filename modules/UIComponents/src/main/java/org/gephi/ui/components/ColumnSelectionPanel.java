@@ -133,14 +133,14 @@ public class ColumnSelectionPanel extends JPanel {
         }
     }
 
-    public static interface ColumnSelectionModel {
+    public interface ColumnSelectionModel {
 
-        public boolean isEnabled();
+        boolean isEnabled();
 
-        public boolean isSelected();
+        boolean isSelected();
 
-        public void setSelected(boolean selected);
+        void setSelected(boolean selected);
 
-        public String getName();
+        String getName();
     }
 }

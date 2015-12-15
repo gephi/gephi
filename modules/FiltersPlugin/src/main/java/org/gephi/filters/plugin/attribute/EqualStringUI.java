@@ -50,5 +50,5 @@ import org.gephi.filters.plugin.attribute.AttributeEqualBuilder.EqualStringFilte
  */
 public interface EqualStringUI {
 
-    public JPanel getPanel(EqualStringFilter filter);
+    JPanel getPanel(EqualStringFilter filter);
 }

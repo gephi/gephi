@@ -67,19 +67,19 @@ public interface PerspectiveController {
      * is selected. By default the 'Overview' perspective is selected.
      * @return the currently selected perspective or <code>null</code>
      */
-    public Perspective getSelectedPerspective();
+    Perspective getSelectedPerspective();
 
     /**
      * Returns all perspectives installed. This is equivalent to
      * <code>Lookup.getDefault().lookupAll(Perspective.class)</code>.
      * @return all installed perspectives
      */
-    public Perspective[] getPerspectives();
+    Perspective[] getPerspectives();
 
     /**
      * Switch the current perspective to the given perspective. Only one perspective
      * can be selected at a time.
      * @param perspective the perspective to select
      */
-    public void selectPerspective(Perspective perspective);
+    void selectPerspective(Perspective perspective);
 }

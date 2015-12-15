@@ -10,5 +10,5 @@ import org.gephi.visualization.VizModel;
  */
 public interface Model {
 
-    public void display(GL2 gl, GLU glu, VizModel model);
+    void display(GL2 gl, GLU glu, VizModel model);
 }

@@ -253,29 +253,29 @@ public class TextManager implements VizArchitecture {
     }
 
     //-------------------------------------------------------------------------------------------------
-    public static interface Renderer {
+    public interface Renderer {
 
-        public void initRenderer(Font font);
+        void initRenderer(Font font);
 
-        public void reinitRenderer();
+        void reinitRenderer();
 
-        public void disposeRenderer();
+        void disposeRenderer();
 
-        public void beginRendering();
+        void beginRendering();
 
-        public void endRendering();
+        void endRendering();
 
-        public void drawTextNode(NodeModel model);
+        void drawTextNode(NodeModel model);
 
-        public void drawTextEdge(EdgeModel model);
+        void drawTextEdge(EdgeModel model);
 
-        public Font getFont();
+        Font getFont();
 
-        public void setFont(Font font);
+        void setFont(Font font);
 
-        public void setColor(float r, float g, float b, float a);
+        void setColor(float r, float g, float b, float a);
 
-        public TextRenderer getJOGLRenderer();
+        TextRenderer getJOGLRenderer();
     }
 
     private class Renderer3D implements Renderer {

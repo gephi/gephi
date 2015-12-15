@@ -53,5 +53,5 @@ public interface VectorFileExporterBuilder extends FileExporterBuilder {
      * @return  a new vector exporter
      */
     @Override
-    public VectorExporter buildExporter();
+    VectorExporter buildExporter();
 }

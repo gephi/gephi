@@ -51,5 +51,5 @@ import org.gephi.graph.api.Element;
  */
 public interface RankingTransformer<E extends Element> extends Transformer {
 
-    public void transform(E element, Ranking ranking, Interpolator interpolator, Number value);
+    void transform(E element, Ranking ranking, Interpolator interpolator, Number value);
 }

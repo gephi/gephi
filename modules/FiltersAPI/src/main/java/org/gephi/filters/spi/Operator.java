@@ -50,9 +50,9 @@ import org.gephi.graph.api.Subgraph;
  */
 public interface Operator extends Filter {
 
-    public Graph filter(Subgraph[] graphs);
+    Graph filter(Subgraph[] graphs);
 
-    public Graph filter(Graph graph, Filter[] filters);
+    Graph filter(Graph graph, Filter[] filters);
 
-    public int getInputCount();
+    int getInputCount();
 }

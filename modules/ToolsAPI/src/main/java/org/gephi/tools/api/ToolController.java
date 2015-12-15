@@ -61,19 +61,19 @@ public interface ToolController {
      * @param tool the tool that is to be selected or null to only unselect the
      * current tool
      */
-    public void select(Tool tool);
+    void select(Tool tool);
 
     /**
      * Returns the toolbar component, build from tools implementations.
      *
      * @return the toolbar component
      */
-    public JComponent getToolbar();
+    JComponent getToolbar();
 
     /**
      * Returns the properties bar component, that display tools settings.
      *
      * @return the properties bar component
      */
-    public JComponent getPropertiesBar();
+    JComponent getPropertiesBar();
 }

@@ -47,5 +47,5 @@ package org.gephi.appearance.api;
  */
 public interface PartitionFunction extends Function {
 
-    public Partition getPartition();
+    Partition getPartition();
 }

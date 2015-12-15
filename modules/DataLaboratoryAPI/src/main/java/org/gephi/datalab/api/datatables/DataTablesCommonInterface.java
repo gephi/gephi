@@ -162,7 +162,7 @@ interface DataTablesCommonInterface {
      */
     void setShowEdgesNodesLabels(boolean showEdgesNodesLabels);
 
-    public enum ExportMode {
+    enum ExportMode {
 
         CSV
     }

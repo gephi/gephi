@@ -55,7 +55,7 @@ public interface ExporterUI {
      *
      * @return a settings panel, or <code>null</code>
      */
-    public JPanel getPanel();
+    JPanel getPanel();
 
     /**
      * Link the UI to the exporter and therefore to settings values. This method
@@ -63,7 +63,7 @@ public interface ExporterUI {
      *
      * @param exporter  the exporter that settings is to be set
      */
-    public void setup(Exporter exporter);
+    void setup(Exporter exporter);
 
     /**
      * Notify UI the settings panel has been closed and that new values can be
@@ -72,7 +72,7 @@ public interface ExporterUI {
      * @param update    <code>true</code> if user clicked OK or <code>false</code>
      *                  if CANCEL.
      */
-    public void unsetup(boolean update);
+    void unsetup(boolean update);
 
     /**
      * Returns <code>true</code> if this UI belongs to the given exporter.
@@ -81,11 +81,11 @@ public interface ExporterUI {
      * @return          <code>true</code> if the UI is matching with <code>exporter</code>,
      *                  <code>false</code> otherwise.
      */
-    public boolean isUIForExporter(Exporter exporter);
+    boolean isUIForExporter(Exporter exporter);
 
     /**
      * Returns the exporter display name
      * @return          the exporter display name
      */
-    public String getDisplayName();
+    String getDisplayName();
 }

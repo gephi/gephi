@@ -49,5 +49,5 @@ package org.gephi.timeline.api;
  */
 public interface TimelineModelListener {
 
-    public void timelineModelChanged(TimelineModelEvent event);
+    void timelineModelChanged(TimelineModelEvent event);
 }

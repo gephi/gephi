@@ -52,5 +52,5 @@ import org.gephi.graph.api.Graph;
  */
 public interface ComplexFilter extends Filter {
 
-    public Graph filter(Graph graph);
+    Graph filter(Graph graph);
 }

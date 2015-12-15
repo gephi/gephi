@@ -51,10 +51,10 @@ import java.sql.SQLException;
  */
 public interface SQLDriver extends Serializable {
 
-    public String getPrefix();
+    String getPrefix();
 
-    public Connection getConnection(String connectionUrl, String username, String passwd) throws SQLException;
+    Connection getConnection(String connectionUrl, String username, String passwd) throws SQLException;
 
     @Override
-    public String toString();
+    String toString();
 }

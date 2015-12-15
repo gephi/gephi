@@ -55,7 +55,7 @@ public interface AttributeColumnsMergeStrategiesController {
     /**
      * Enumeration that defines the supported logic operations for a merge with <code>booleanLogicOperationsMerge</code> strategy.
      */
-    public enum BooleanOperations {
+    enum BooleanOperations {
         AND,
         OR,
         XOR,

@@ -57,5 +57,5 @@ public interface Scaler {
      * the scale of nodes positions and sizes.
      * @param container the container that is to be scaled to the right scale
      */
-    public void doScale(Container container);
+    void doScale(Container container);
 }

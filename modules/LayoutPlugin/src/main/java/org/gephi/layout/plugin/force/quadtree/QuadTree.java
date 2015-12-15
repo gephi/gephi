@@ -526,5 +526,5 @@ public class QuadTree implements Node {
 
 interface AddBehaviour {
 
-    public boolean addNode(NodeProperties node);
+    boolean addNode(NodeProperties node);
 }

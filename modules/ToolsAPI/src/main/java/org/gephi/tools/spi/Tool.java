@@ -66,12 +66,12 @@ public interface Tool {
     /**
      * Notify when this tool is selected.
      */
-    public void select();
+    void select();
 
     /**
      * Notify when this tool is unselected.
      */
-    public void unselect();
+    void unselect();
 
     /**
      * Returns the declared tool listeners for this tool. Tool listeners says
@@ -79,19 +79,19 @@ public interface Tool {
      *
      * @return tool listeners declared for this tool implementation
      */
-    public ToolEventListener[] getListeners();
+    ToolEventListener[] getListeners();
 
     /**
      * Returns <code>ToolUI</code> instance for this tool.
      *
      * @return the user interface attributes for this tool
      */
-    public ToolUI getUI();
+    ToolUI getUI();
 
     /**
      * Returns the tool type of selection interaction.
      *
      * @return the tool type of selection interaction
      */
-    public ToolSelectionType getSelectionType();
+    ToolSelectionType getSelectionType();
 }

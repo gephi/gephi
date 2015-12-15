@@ -61,7 +61,7 @@ public interface StatisticsControllerUI {
      * The <code>statistics</code> should implement {@link LongTask}.
      * @param statistics    the statistics algorithm instance
      */
-    public void execute(Statistics statistics);
+    void execute(Statistics statistics);
     
     /**
      * Execute the statistics in a background thread an call the listener when finished.
@@ -69,12 +69,12 @@ public interface StatisticsControllerUI {
      * @param statistics    the statistics algorithm instance
      * @param listener      a listener that is notified when execution finished
      */
-    public void execute(Statistics statistics, LongTaskListener listener);
+    void execute(Statistics statistics, LongTaskListener listener);
 
     /**
      * Sets the visible state for a given <code>StatisticsUI</code>.
      * @param ui            the UI instance
      * @param visible       <code>true</code> to display the front-end
      */
-    public void setStatisticsUIVisible(StatisticsUI ui, boolean visible);
+    void setStatisticsUIVisible(StatisticsUI ui, boolean visible);
 }

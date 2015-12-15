@@ -52,15 +52,15 @@ import org.gephi.visualization.model.node.NodeModel;
  */
 public interface SelectionArea {
 
-    public float[] getSelectionAreaRectancle();
+    float[] getSelectionAreaRectancle();
 
-    public float[] getSelectionAreaCenter();
+    float[] getSelectionAreaCenter();
 
-    public boolean mouseTest(Vecf distanceFromMouse, NodeModel nodeModel);
+    boolean mouseTest(Vecf distanceFromMouse, NodeModel nodeModel);
 
-    public void drawArea(GL2 gl, GLU glu);
+    void drawArea(GL2 gl, GLU glu);
 
-    public boolean isEnabled();
+    boolean isEnabled();
 
-    public boolean blockSelection();
+    boolean blockSelection();
 }

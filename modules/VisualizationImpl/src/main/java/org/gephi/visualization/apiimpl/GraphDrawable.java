@@ -56,47 +56,47 @@ import org.gephi.visualization.opengl.GraphicalConfiguration;
  */
 public interface GraphDrawable {
 
-    public Component getGraphComponent();
+    Component getGraphComponent();
 
-    public float getGlobalScale();
+    float getGlobalScale();
 
-    public int getViewportHeight();
+    int getViewportHeight();
 
-    public int getViewportWidth();
+    int getViewportWidth();
 
-    public float[] getCameraTarget();
+    float[] getCameraTarget();
 
-    public float[] getCameraLocation();
+    float[] getCameraLocation();
 
-    public void setCameraLocation(float[] cameraLocation);
+    void setCameraLocation(float[] cameraLocation);
 
-    public void setCameraTarget(float[] cameraTarget);
+    void setCameraTarget(float[] cameraTarget);
 
-    public Vec3f getCameraVector();
+    Vec3f getCameraVector();
 
-    public double getDraggingMarkerX();
+    double getDraggingMarkerX();
 
-    public double getDraggingMarkerY();
+    double getDraggingMarkerY();
 
-    public FloatBuffer getProjectionMatrix();
+    FloatBuffer getProjectionMatrix();
 
-    public IntBuffer getViewport();
+    IntBuffer getViewport();
 
-    public double[] myGluProject(float x, float y);
+    double[] myGluProject(float x, float y);
 
-    public float[] myGluProject(float x, float y, float z);
+    float[] myGluProject(float x, float y, float z);
 
-    public void display();
+    void display();
 
-    public void setCameraPosition(GL2 gl, GLU glu);
+    void setCameraPosition(GL2 gl, GLU glu);
 
-    public void initConfig(GL2 gl);
+    void initConfig(GL2 gl);
 
-    public GraphicalConfiguration getGraphicalConfiguration();
+    GraphicalConfiguration getGraphicalConfiguration();
 
-    public void destroy();
+    void destroy();
 
-    public Point getLocationOnScreen();
+    Point getLocationOnScreen();
 
-    public void reinitWindow();
+    void reinitWindow();
 }
