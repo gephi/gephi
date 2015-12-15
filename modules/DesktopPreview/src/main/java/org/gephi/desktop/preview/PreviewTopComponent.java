@@ -45,10 +45,13 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Field;
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -56,6 +59,7 @@ import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.ui.components.JColorButton;
@@ -177,14 +181,33 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         });
     }
 
+    protected Dimension getSketchDimensions() {
+        int width = sketchPanel.getWidth();
+        int height = sketchPanel.getHeight();
+        if (width > 1 && height > 1) {
+            if (isRetina()) {
+                width = (int) (width * 2.0);
+                height = (int) (height * 2.0);
+            }
+            return new Dimension(width, height);
+        }
+        return new Dimension(1, 1);
+    }
+
     public void initTarget(PreviewUIModel previewUIModel) {
         // inits the preview applet
         if (previewUIModel != null && target == null) {
             PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-            Color background = previewController.getModel().getProperties().getColorValue(PreviewProperty.BACKGROUND_COLOR);
+            PreviewModel previewModel = previewUIModel.getPreviewModel();
+
+            Color background = previewModel.getProperties().getColorValue(PreviewProperty.BACKGROUND_COLOR);
             if (background != null) {
                 setBackgroundColor(background);
             }
+
+            Dimension dimensions = getSketchDimensions();
+            previewModel.getProperties().putValue("width", (int) dimensions.getWidth());
+            previewModel.getProperties().putValue("height", (int) dimensions.getHeight());
 
             target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
             if (target != null) {
@@ -410,5 +433,29 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+
+    /**
+     * Returns true if the default screen is in retina display (high dpi).
+     *
+     * @return true if retina, false otherwise
+     */
+    protected static boolean isRetina() {
+
+        boolean isRetina = false;
+        try {
+            GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+            Field field = graphicsDevice.getClass().getDeclaredField("scale");
+            if (field != null) {
+                field.setAccessible(true);
+                Object scale = field.get(graphicsDevice);
+                if (scale instanceof Integer && ((Integer) scale).intValue() == 2) {
+                    isRetina = true;
+                }
+            }
+        } catch (Exception e) {
+            //Ignore
+        }
+        return isRetina;
     }
 }

@@ -41,6 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.preview.api;
 
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
 
 /**
@@ -49,11 +50,13 @@ import org.gephi.preview.api.PreviewPreset;
  */
 public interface PreviewUIModel {
 
+    public PreviewModel getPreviewModel();
+
     public PreviewPreset getCurrentPreset();
 
     public float getVisibilityRatio();
-    
+
     public boolean isRefreshing();
-    
+
     public boolean isWorkspaceBarVisible();
 }

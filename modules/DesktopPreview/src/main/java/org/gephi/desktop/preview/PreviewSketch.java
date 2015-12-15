@@ -75,10 +75,12 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
     private final RefreshLoop refreshLoop = new RefreshLoop();
     private Timer wheelTimer;
     private boolean inited;
+    private final boolean isRetina;
 
     public PreviewSketch(G2DTarget target) {
         this.target = target;
         previewController = Lookup.getDefault().lookup(PreviewController.class);
+        isRetina = PreviewTopComponent.isRetina();
     }
 
     @Override
@@ -93,11 +95,14 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
             inited = true;
         }
 
-        if (target.getWidth() != getWidth() || target.getHeight() != getHeight()) {
-            target.resize(getWidth(), getHeight());
+        int width = (int) (getWidth() * (isRetina ? 2.0 : 1.0));
+        int height = (int) (getHeight() * (isRetina ? 2.0 : 1.0));
+
+        if (target.getWidth() != width || target.getHeight() != height) {
+            target.resize(width, height);
         }
 
-        g.drawImage(target.getImage(), 0, 0, this);
+        g.drawImage(target.getImage(), 0, 0, getWidth(), getHeight(), this);
     }
 
     public void setMoving(boolean moving) {
@@ -116,7 +121,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
         previewController.sendMouseEvent(buildPreviewMouseEvent(e, PreviewMouseEvent.Type.PRESSED));
         ref.set(e.getX(), e.getY());
         lastMove.set(target.getTranslate());
-        
+
         refreshLoop.refreshSketch();
     }
 
@@ -168,6 +173,7 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
             Vector trans = target.getTranslate();
             trans.set(e.getX(), e.getY());
             trans.sub(ref);
+            trans.mult(isRetina ? 2f : 1f);
             trans.div(target.getScaling()); // ensure const. moving speed whatever the zoom is
             trans.add(lastMove);
 

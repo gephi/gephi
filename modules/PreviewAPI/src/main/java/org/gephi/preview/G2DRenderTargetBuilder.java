@@ -87,13 +87,11 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
 
     public static class G2DTargetImpl extends AbstractRenderTarget implements G2DTarget {
 
-        private final PreviewController previewController;
         private final PreviewModel previewModel;
         private G2DGraphics graphics;
 
         public G2DTargetImpl(PreviewModel model, int width, int height) {
             graphics = new G2DGraphics(width, height);
-            previewController = Lookup.getDefault().lookup(PreviewController.class);
             previewModel = model;
         }
 
@@ -153,7 +151,7 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
         @Override
         public void refresh() {
             if (graphics != null) {
-                graphics.refresh(previewController.getModel(), this);
+                graphics.refresh(previewModel, this);
             }
         }
     }

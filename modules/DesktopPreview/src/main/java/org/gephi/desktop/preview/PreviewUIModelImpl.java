@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.preview;
 
 import org.gephi.desktop.preview.api.PreviewUIModel;
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.presets.DefaultPreset;
 
@@ -51,14 +52,21 @@ import org.gephi.preview.presets.DefaultPreset;
  */
 public class PreviewUIModelImpl implements PreviewUIModel {
 
+    private final PreviewModel previewModel;
     //Data
     private float visibilityRatio = 1f;
     private PreviewPreset currentPreset;
     private boolean refreshing;
     private boolean workspaceBarVisible;
 
-    public PreviewUIModelImpl() {
+    public PreviewUIModelImpl(PreviewModel model) {
+        previewModel = model;
         currentPreset = new DefaultPreset();
+    }
+
+    @Override
+    public PreviewModel getPreviewModel() {
+        return previewModel;
     }
 
     @Override
