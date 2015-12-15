@@ -69,7 +69,7 @@ public class AddColumnUI extends javax.swing.JPanel {
 
     public enum Mode {
 
-        NODES_TABLE, EDGES_TABLE;
+        NODES_TABLE, EDGES_TABLE
     }
 
     /**

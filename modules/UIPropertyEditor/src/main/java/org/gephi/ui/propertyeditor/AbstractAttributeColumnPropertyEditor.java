@@ -59,12 +59,13 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
     public enum EditorClass {
 
         NODE, EDGE, NODEEDGE
-    };
+    }
 
     public enum AttributeTypeClass {
 
         ALL, NUMBER, STRING, DYNAMIC_NUMBER, ALL_NUMBER
-    };
+    }
+
     private Column[] columns;
     private Column selectedColumn;
     private final EditorClass editorClass;
