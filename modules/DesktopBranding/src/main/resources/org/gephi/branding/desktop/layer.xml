@@ -98,10 +98,6 @@
                 <attr name="originalFile" stringvalue="Actions/Workspace/org-gephi-branding-desktop-actions-RenameWorkspace.instance"/>
                 <attr name="position" intvalue="2800"/>
             </file>
-            <file name="org-gephi-branding-desktop-actions-DuplicateWorkspace.instance">
-                <!--attr name="originalFile" stringvalue="Actions/Workspace/org-gephi-branding-desktop-actions-DuplicateWorkspace.instance"/-->
-                <attr name="position" intvalue="2900"/>
-            </file>
         </folder>
         <folder name="Plugins">
             <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#Menu/Plugins"/>
