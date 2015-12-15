@@ -43,6 +43,7 @@ package org.gephi.algorithms.shortestpath;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -124,25 +125,7 @@ public class DijkstraShortestPathAlgorithm extends AbstractShortestPathAlgorithm
     }
 
     @Override
-    protected double edgeWeight(Edge edge) {
-        return edge.getWeight();
-    }
-
-    @Override
-    public Node getPredecessor(Node node) {
-        Edge edge = predecessors.get(node);
-        if (edge != null) {
-            if (edge.getSource() != node) {
-                return edge.getSource();
-            } else {
-                return edge.getTarget();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Edge getPredecessorIncoming(Node node) {
-        return predecessors.get(node);
+    public Map<Node, Edge> getPredecessors() {
+        return predecessors;
     }
 }
