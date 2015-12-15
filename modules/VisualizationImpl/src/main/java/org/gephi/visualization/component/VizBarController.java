@@ -248,9 +248,10 @@ public class VizBarController {
 
         @Override
         public JComponent getExtendedComponent() {
-            NodeSettingsPanel panel = new NodeSettingsPanel();
-            panel.setup();
-            return panel;
+//            NodeSettingsPanel panel = new NodeSettingsPanel();
+//            panel.setup();
+//            return panel;
+            return null;
         }
 
         @Override
