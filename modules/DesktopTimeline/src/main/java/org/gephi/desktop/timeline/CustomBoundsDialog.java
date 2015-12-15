@@ -206,9 +206,6 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                     if (minDate >= maxDate) {
                         prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
                         return false;
-                    } else if (maxDate <= minDate) {
-                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
-                        return false;
                     }
                 } catch (Exception ex) {
                     prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", ISODateTimeFormat.dateTime()));
@@ -230,9 +227,6 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                         return false;
                     }
                     if (minDate >= maxDate) {
-                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
-                        return false;
-                    } else if (maxDate <= minDate) {
                         prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
                         return false;
                     }
