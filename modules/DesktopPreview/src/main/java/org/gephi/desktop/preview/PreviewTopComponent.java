@@ -88,7 +88,6 @@ import org.openide.windows.TopComponent;
         preferredID = "PreviewTopComponent")
 public final class PreviewTopComponent extends TopComponent implements PropertyChangeListener {
 
-    private final transient ProcessingListener processingListener = new ProcessingListener();
     //Data
     private transient PreviewUIModel model;
     private transient G2DTarget target;
@@ -217,29 +216,6 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         } else if (previewUIModel == null) {
             sketchPanel.remove(sketch);
             target = null;
-        }
-    }
-
-    public class ProcessingListener {
-
-        public void post() {
-//            final boolean isRedraw = target.isRedrawn();
-//            SwingUtilities.invokeLater(new Runnable() {
-//                public void run() {
-//                    southBusyLabel.setVisible(isRedraw);
-//                    ((JXBusyLabel) southBusyLabel).setBusy(isRedraw);
-//                }
-//            });
-        }
-
-        public void pre() {
-//            final boolean isRedraw = target.isRedrawn();
-//            SwingUtilities.invokeLater(new Runnable() {
-//                public void run() {
-//                    southBusyLabel.setVisible(isRedraw);
-//                    ((JXBusyLabel) southBusyLabel).setBusy(isRedraw);
-//                }
-//            });
         }
     }
 
