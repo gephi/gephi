@@ -42,15 +42,14 @@
 package org.gephi.preview;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
+import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
@@ -162,7 +161,6 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
     public static class G2DGraphics {
 
         private final PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-        private PreviewModel model;
         private boolean inited;
         //Drawing
         private final Image image;
@@ -186,11 +184,11 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
         }
 
-        public void refresh(PreviewModel previewModel, RenderTarget target) {
-            this.model = previewModel;
-            if (model != null) {
-                background = model.getProperties().getColorValue(PreviewProperty.BACKGROUND_COLOR);
-                initAppletLayout();
+        public void refresh(PreviewModel m, RenderTarget target) {
+            if (m != null) {
+                background = m.getProperties()
+                        .getColorValue(PreviewProperty.BACKGROUND_COLOR);
+                initAppletLayout(m);
 
                 g2.clearRect(0, 0, width, height);
                 g2.setTransform(new AffineTransform());
@@ -251,23 +249,22 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
          * Initializes the preview applet layout according to the graph's
          * dimension.
          */
-        private void initAppletLayout() {
+        private void initAppletLayout(PreviewModel m) {
 //            graphSheet.setMargin(MARGIN);
-            if (!inited && model != null && model.getDimensions() != null && model.getTopLeftPosition() != null) {
+            if (!inited) {
 
                 // initializes zoom
-                Dimension dimensions = model.getDimensions();
-                Point topLeftPostition = model.getTopLeftPosition();
-                Vector box = new Vector((float) dimensions.getWidth(), (float) dimensions.getHeight());
+                CanvasSize cs = m.getGraphicsCanvasSize();
+                Vector box = new Vector(cs.getWidth(), cs.getHeight());
                 float ratioWidth = width / box.x;
                 float ratioHeight = height / box.y;
                 scaling = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
 
                 // initializes move
                 Vector semiBox = Vector.div(box, 2);
-                Vector topLeftVector = new Vector((float) topLeftPostition.x, (float) topLeftPostition.y);
-                Vector center = new Vector(width / 2f, height / 2f);
-                Vector scaledCenter = Vector.add(topLeftVector, semiBox);
+                Vector topLeft = new Vector(cs.getX(), cs.getY());
+                Vector center = new Vector(width / 2F, height / 2F);
+                Vector scaledCenter = Vector.add(topLeft, semiBox);
                 trans.set(center);
                 trans.sub(scaledCenter);
 //            lastMove.set(trans);

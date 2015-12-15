@@ -51,6 +51,7 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.api.SVGTarget;
@@ -71,15 +72,12 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
 
     @Override
     public RenderTarget buildRenderTarget(PreviewModel previewModel) {
-        int width = (int) previewModel.getDimensions().getWidth();
-        int height = (int) previewModel.getDimensions().getHeight();
-        width = Math.max(1, width);
-        height = Math.max(1, height);
-        int topLeftX = previewModel.getTopLeftPosition().x;
-        int topLeftY = previewModel.getTopLeftPosition().y;
-        boolean scaleStrokes = previewModel.getProperties().getBooleanValue(SVGTarget.SCALE_STROKES);
+        CanvasSize cs = previewModel.getGraphicsCanvasSize();
+        boolean scaleStrokes = previewModel.getProperties()
+                .getBooleanValue(SVGTarget.SCALE_STROKES);
 
-        SVGRenderTargetImpl renderTarget = new SVGRenderTargetImpl(width, height, topLeftX, topLeftY, scaleStrokes);
+        SVGRenderTargetImpl renderTarget
+                = new SVGRenderTargetImpl(cs, scaleStrokes);
         return renderTarget;
     }
 
@@ -88,13 +86,14 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
         return RenderTarget.SVG_TARGET;
     }
 
-    public static class SVGRenderTargetImpl extends AbstractRenderTarget implements SVGTarget {
+    public static class SVGRenderTargetImpl
+            extends AbstractRenderTarget implements SVGTarget {
 
-        private Document document;
+        private final Document document;
         private float scaleRatio = 1f;
-        private Map<String, Element> topElements = new HashMap<String, Element>();
+        private final Map<String, Element> topElements = new HashMap<String, Element>();
 
-        public SVGRenderTargetImpl(int width, int height, int topLeftX, int topLeftY, boolean scaleStrokes) {
+        public SVGRenderTargetImpl(CanvasSize cs, boolean scaleStrokes) {
             DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
             DocumentType doctype = impl.createDocumentType(
                     "-//W3C//DTD SVG 1.1//EN",
@@ -111,27 +110,36 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
             builder.build(ctx, document);
 
             //Dimension
-            SupportSize supportSize = new SupportSize(595, 841, LengthUnit.PIXELS);
-            if (width > height) {
-                supportSize = new SupportSize(width * supportSize.getHeightInt() / height, supportSize.getHeightInt(), LengthUnit.PIXELS);
-            } else if (height > width) {
-                supportSize = new SupportSize(supportSize.getWidthInt(), height * supportSize.getWidthInt() / width, LengthUnit.PIXELS);
+            SupportSize ss = new SupportSize(595F, 841F, LengthUnit.PIXELS);
+            if (cs.getWidth() > cs.getHeight()) {
+                ss = new SupportSize(
+                        cs.getWidth() * ss.getHeightFloat() / cs.getHeight(),
+                        ss.getHeightFloat(),
+                        LengthUnit.PIXELS);
+            } else if (cs.getHeight() > cs.getWidth()) {
+                ss = new SupportSize(
+                        ss.getWidthFloat(),
+                        cs.getHeight() * ss.getWidthFloat() / cs.getWidth(),
+                        LengthUnit.PIXELS);
             }
 
             // root element
             Element svgRoot = document.getDocumentElement();
-            svgRoot.setAttributeNS(null, "width", supportSize.getWidth());
-            svgRoot.setAttributeNS(null, "height", supportSize.getHeight());
+            svgRoot.setAttributeNS(null, "width", cs.getWidth() + "");
+            svgRoot.setAttributeNS(null, "height", cs.getHeight() + "");
             svgRoot.setAttributeNS(null, "version", "1.1");
-            svgRoot.setAttributeNS(null, "viewBox", String.format(Locale.ENGLISH, "%d %d %d %d",
-                    topLeftX,
-                    topLeftY,
-                    width,
-                    height));
+            svgRoot.setAttributeNS(
+                    null,
+                    "viewBox",
+                    String.format(Locale.ENGLISH, "%f %f %f %f",
+                            cs.getX(),
+                            cs.getY(),
+                            cs.getWidth(),
+                            cs.getHeight()));
 
             //Scale & ratio
             if (scaleStrokes) {
-                scaleRatio = supportSize.getWidthInt() / (float) width;
+                scaleRatio = ss.getWidthFloat() / cs.getWidth();
             }
         }
 
@@ -190,8 +198,8 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
      */
     public static class SupportSize {
 
-        private final Integer width;
-        private final Integer height;
+        private final float width;
+        private final float height;
         private final LengthUnit lengthUnit;
 
         /**
@@ -201,17 +209,17 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
          * @param height      the support's height
          * @param lengthUnit  the lenght unit
          */
-        public SupportSize(int width, int height, LengthUnit lengthUnit) {
+        public SupportSize(float width, float height, LengthUnit lengthUnit) {
             this.width = width;
             this.height = height;
             this.lengthUnit = lengthUnit;
-        }
+}
 
-        public Integer getWidthInt() {
+        public float getWidthFloat() {
             return width;
         }
 
-        public Integer getHeightInt() {
+        public float getHeightFloat() {
             return height;
         }
 
@@ -221,7 +229,7 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
          * @return the support's width
          */
         public String getWidth() {
-            return width.toString() + lengthUnit.toString();
+            return width + lengthUnit.toString();
         }
 
         /**
@@ -230,7 +238,7 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
          * @return the support's height
          */
         public String getHeight() {
-            return height.toString() + lengthUnit.toString();
+            return height + lengthUnit.toString();
         }
     }
 

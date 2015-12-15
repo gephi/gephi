@@ -47,7 +47,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 import java.util.Locale;
-import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
 import org.gephi.preview.api.*;
 import org.gephi.preview.plugin.builders.EdgeBuilder;
 import org.gephi.preview.plugin.builders.NodeBuilder;
@@ -55,7 +55,6 @@ import org.gephi.preview.plugin.items.EdgeItem;
 import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.Renderer;
-import org.gephi.preview.types.EdgeColor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
@@ -77,93 +76,43 @@ public class ArrowRenderer implements Renderer {
     }
 
     @Override
-    public void render(Item item, RenderTarget target, PreviewProperties properties) {
-        float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE);
-        if (size > 0) {
-            //Get nodes
-            Item sourceItem = item.getData(EdgeRenderer.SOURCE);
-            Item targetItem = item.getData(EdgeRenderer.TARGET);
-
-            //Weight and color
-            Double weight = item.getData(EdgeItem.WEIGHT);
-            EdgeColor edgeColor = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
-            Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
-                    (Color) sourceItem.getData(NodeItem.COLOR),
-                    (Color) targetItem.getData(NodeItem.COLOR));
-            int alpha = (int) ((properties.getFloatValue(PreviewProperty.EDGE_OPACITY) / 100f) * 255f);
-            color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-
-            //Size and radius
-            float radius = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
-
-            size *= weight;
-            radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + Math.max(0, properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH)));
-
-            //Avoid arrow from passing the node's center:
-            if (radius > 0) {
-                radius = 0;
-            }
-
-            //3 points
-            Float x1 = sourceItem.getData(NodeItem.X);
-            Float x2 = targetItem.getData(NodeItem.X);
-            Float y1 = sourceItem.getData(NodeItem.Y);
-            Float y2 = targetItem.getData(NodeItem.Y);
-
-            if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
-            } else {
-                renderStraight(target, item, x1, y1, x2, y2, radius, size, color);
-            }
-        }
-    }
-
-    public void renderStraight(RenderTarget target, Item item, float x1, float y1, float x2, float y2, float radius, float size, Color color) {
-        Edge edge = (Edge) item.getSource();
-        Vector direction = new Vector(x2, y2);
-        direction.sub(new Vector(x1, y1));
-        direction.normalize();
-
-        Vector p1 = new Vector(direction.x, direction.y);
-        p1.mult(radius);
-        p1.add(new Vector(x2, y2));
-
-        Vector p1r = new Vector(direction.x, direction.y);
-        p1r.mult(radius - size);
-        p1r.add(new Vector(x2, y2));
-
-        Vector p2 = new Vector(-direction.y, direction.x);
-        p2.mult(size * BASE_RATIO);
-        p2.add(p1r);
-
-        Vector p3 = new Vector(direction.y, -direction.x);
-        p3.mult(size * BASE_RATIO);
-        p3.add(p1r);
+    public void render(
+            final Item item,
+            final RenderTarget target,
+            final PreviewProperties properties) {
+        final Helper h = new Helper(item, properties);
+        final Color color = EdgeRenderer.getColor(item, properties);
 
         if (target instanceof G2DTarget) {
             Graphics2D graphics = ((G2DTarget) target).getGraphics();
             graphics.setColor(color);
-            GeneralPath gpath = new GeneralPath();
-            gpath.moveTo(p1.x, p1.y);
-            gpath.lineTo(p2.x, p2.y);
-            gpath.lineTo(p3.x, p3.y);
+            final GeneralPath gpath = new GeneralPath();
+            gpath.moveTo(h.p1.x, h.p1.y);
+            gpath.lineTo(h.p2.x, h.p2.y);
+            gpath.lineTo(h.p3.x, h.p3.y);
             gpath.closePath();
             graphics.fill(gpath);
         } else if (target instanceof SVGTarget) {
-            SVGTarget svgTarget = (SVGTarget) target;
-            Element arrowElem = svgTarget.createElement("polyline");
-            arrowElem.setAttribute("points", String.format(Locale.ENGLISH, "%f,%f %f,%f %f,%f",
-                    p1.x, p1.y, p2.x, p2.y, p3.x, p3.y));
-            arrowElem.setAttribute("class", edge.getSource().getId() + " " + edge.getTarget().getId());
+            final SVGTarget svgTarget = (SVGTarget) target;
+            final Element arrowElem = svgTarget.createElement("polyline");
+            arrowElem.setAttribute("points", String.format(
+                    Locale.ENGLISH,
+                    "%f,%f %f,%f %f,%f",
+                    h.p1.x, h.p1.y, h.p2.x, h.p2.y, h.p3.x, h.p3.y));
+            arrowElem.setAttribute("class", String.format(
+                    "%s %s",
+                    ((Node) h.sourceItem.getSource()).getId(),
+                    ((Node) h.targetItem.getSource()).getId()));
             arrowElem.setAttribute("fill", svgTarget.toHexString(color));
             arrowElem.setAttribute("fill-opacity", (color.getAlpha() / 255f) + "");
             arrowElem.setAttribute("stroke", "none");
             svgTarget.getTopElement(SVGTarget.TOP_ARROWS).appendChild(arrowElem);
         } else if (target instanceof PDFTarget) {
-            PDFTarget pdfTarget = (PDFTarget) target;
-            PdfContentByte cb = pdfTarget.getContentByte();
-            cb.moveTo(p1.x, -p1.y);
-            cb.lineTo(p2.x, -p2.y);
-            cb.lineTo(p3.x, -p3.y);
+            final PDFTarget pdfTarget = (PDFTarget) target;
+            final PdfContentByte cb = pdfTarget.getContentByte();
+            cb.moveTo(h.p1.x, -h.p1.y);
+            cb.lineTo(h.p2.x, -h.p2.y);
+            cb.lineTo(h.p3.x, -h.p3.y);
             cb.closePath();
             cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
             if (color.getAlpha() < 255) {
@@ -181,6 +130,20 @@ public class ArrowRenderer implements Renderer {
     }
 
     @Override
+    public CanvasSize getCanvasSize(
+            final Item item,
+            final PreviewProperties properties) {
+        final Helper h = new Helper(item, properties);
+        final float minX = Math.min(Math.min(h.p1.x, h.p2.x), h.p3.x);
+        final float minY = Math.min(Math.min(h.p1.y, h.p2.y), h.p3.y);
+        final float maxX = Math.max(Math.max(h.p1.x, h.p2.x), h.p3.x);
+        final float maxY = Math.max(Math.max(h.p1.y, h.p2.y), h.p3.y);
+        return properties.getBooleanValue(PreviewProperty.EDGE_CURVED)
+                ? new CanvasSize()
+                : new CanvasSize(minX, minY, maxX - minX, maxY - minY);
+    }
+
+    @Override
     public PreviewProperty[] getProperties() {
         return new PreviewProperty[]{
             PreviewProperty.createProperty(this, PreviewProperty.ARROW_SIZE, Float.class,
@@ -190,21 +153,83 @@ public class ArrowRenderer implements Renderer {
     }
 
     private boolean showArrows(PreviewProperties properties) {
-        return properties.getBooleanValue(PreviewProperty.SHOW_EDGES) && properties.getBooleanValue(PreviewProperty.DIRECTED) && !properties.getBooleanValue(PreviewProperty.MOVING);
+        return properties.getBooleanValue(PreviewProperty.SHOW_EDGES)
+                && properties.getBooleanValue(PreviewProperty.DIRECTED)
+                && !properties.getBooleanValue(PreviewProperty.EDGE_CURVED)
+                && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 
     @Override
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
-        return item instanceof EdgeItem && showArrows(properties) && (Boolean) item.getData(EdgeItem.DIRECTED) && !(Boolean) item.getData(EdgeItem.SELF_LOOP);
+        return item instanceof EdgeItem
+                && showArrows(properties)
+                && (Boolean) item.getData(EdgeItem.DIRECTED)
+                && !(Boolean) item.getData(EdgeItem.SELF_LOOP);
     }
 
     @Override
     public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
-        return (itemBuilder instanceof EdgeBuilder || itemBuilder instanceof NodeBuilder) && showArrows(properties);//Needs some properties of nodes
+        return (itemBuilder instanceof EdgeBuilder
+                || itemBuilder instanceof NodeBuilder)
+                && showArrows(properties);//Needs some properties of nodes
     }
 
     @Override
     public String getDisplayName() {
         return NbBundle.getMessage(ArrowRenderer.class, "ArrowRenderer.name");
+    }
+
+    private class Helper {
+
+        public final Item sourceItem;
+        public final Item targetItem;
+        public final Vector p1;
+        public final Vector p2;
+        public final Vector p3;
+
+        public Helper(
+                final Item item,
+                final PreviewProperties properties) {
+            sourceItem = item.getData(EdgeRenderer.SOURCE);
+            targetItem = item.getData(EdgeRenderer.TARGET);
+
+            final Float x1 = sourceItem.getData(NodeItem.X);
+            final Float x2 = targetItem.getData(NodeItem.X);
+            final Float y1 = sourceItem.getData(NodeItem.Y);
+            final Float y2 = targetItem.getData(NodeItem.Y);
+
+            final Double weight = item.getData(EdgeItem.WEIGHT);
+            final float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE)
+                    * weight.floatValue();
+            float radius = -(properties.getFloatValue(PreviewProperty.EDGE_RADIUS)
+                    + (Float) targetItem.getData(NodeItem.SIZE) / 2f
+                    + Math.max(0, properties.getFloatValue(
+                            PreviewProperty.NODE_BORDER_WIDTH)));
+
+            //Avoid arrow from passing the node's center:
+            if (radius > 0) {
+                radius = 0;
+            }
+
+            final Vector direction = new Vector(x2, y2);
+            direction.sub(new Vector(x1, y1));
+            direction.normalize();
+
+            p1 = new Vector(direction.x, direction.y);
+            p1.mult(radius);
+            p1.add(new Vector(x2, y2));
+
+            final Vector p1r = new Vector(direction.x, direction.y);
+            p1r.mult(radius - size);
+            p1r.add(new Vector(x2, y2));
+
+            p2 = new Vector(-direction.y, direction.x);
+            p2.mult(size * BASE_RATIO);
+            p2.add(p1r);
+
+            p3 = new Vector(direction.y, -direction.x);
+            p3.mult(size * BASE_RATIO);
+            p3.add(p1r);
+        }
     }
 }

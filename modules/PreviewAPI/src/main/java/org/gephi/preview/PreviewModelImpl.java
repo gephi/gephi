@@ -41,8 +41,6 @@
  */
 package org.gephi.preview;
 
-import java.awt.Dimension;
-import java.awt.Point;
 import java.beans.PropertyEditorManager;
 import java.util.*;
 import java.util.Map.Entry;
@@ -81,9 +79,6 @@ public class PreviewModelImpl implements PreviewModel {
     private PreviewMouseListener[] enabledMouseListeners;
     //Properties
     private PreviewProperties properties;
-    //Dimensions
-    private Dimension dimensions;
-    private Point topLeftPosition;
 
     public PreviewModelImpl(Workspace workspace) {
         this(workspace, null);
@@ -233,10 +228,6 @@ public class PreviewModelImpl implements PreviewModel {
                     sourceMap.put(item.getSource(), item);
                 } else if (value instanceof List) {
                     ((List) value).add(item);
-                } else {
-                    List<Item> list = new ArrayList<Item>();
-                    list.add((Item) value);
-                    list.add(item);
                 }
             }
         } else {
@@ -281,21 +272,25 @@ public class PreviewModelImpl implements PreviewModel {
     }
 
     @Override
-    public Dimension getDimensions() {
-        return dimensions;
-    }
-
-    @Override
-    public Point getTopLeftPosition() {
-        return topLeftPosition;
-    }
-
-    public void setDimensions(Dimension dimensions) {
-        this.dimensions = dimensions;
-    }
-
-    public void setTopLeftPosition(Point topLeftPosition) {
-        this.topLeftPosition = topLeftPosition;
+    public CanvasSize getGraphicsCanvasSize() {
+        float x1 = Float.MAX_VALUE;
+        float y1 = Float.MAX_VALUE;
+        float x2 = Float.MIN_VALUE;
+        float y2 = Float.MIN_VALUE;
+        for (Renderer r : getManagedEnabledRenderers()) {
+            for (String type : getItemTypes()) {
+                for (Item item : getItems(type)) {
+                    if (r.isRendererForitem(item, getProperties())) {
+                        CanvasSize cs = r.getCanvasSize(item, getProperties());
+                        x1 = Math.min(x1, cs.getX());
+                        y1 = Math.min(y1, cs.getY());
+                        x2 = Math.max(x2, cs.getMaxX());
+                        y2 = Math.max(y2, cs.getMaxY());
+                    }
+                }
+            }
+        }
+        return new CanvasSize(x1, y1, x2 - x1, y2 - y1);
     }
 
     @Override
@@ -362,8 +357,8 @@ public class PreviewModelImpl implements PreviewModel {
     @Override
     public void setManagedRenderers(ManagedRenderer[] managedRenderers) {
         //Validate no null ManagedRenderers
-        for (int i = 0; i < managedRenderers.length; i++) {
-            if (managedRenderers[i] == null) {
+        for (ManagedRenderer managedRenderer : managedRenderers) {
+            if (managedRenderer == null) {
                 throw new IllegalArgumentException("managedRenderers should not contain null values");
             }
         }

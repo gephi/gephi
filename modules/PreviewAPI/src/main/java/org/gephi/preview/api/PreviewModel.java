@@ -41,8 +41,6 @@
  */
 package org.gephi.preview.api;
 
-import java.awt.Dimension;
-import java.awt.Point;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
@@ -137,16 +135,9 @@ public interface PreviewModel {
     public PreviewMouseListener[] getEnabledMouseListeners();
 
     /**
-     * Returns the width and height of the graph in the graph coordinates.
+     * Computes the graphics canvas size.
      *
-     * @return the graph dimensions
+     * @return the graphics canvas size
      */
-    public Dimension getDimensions();
-
-    /**
-     * Returns the top left position in the graph coordinate (i.e. not the preview coordinates).
-     *
-     * @return the top left position point
-     */
-    public Point getTopLeftPosition();
+    public CanvasSize getGraphicsCanvasSize();
 }
