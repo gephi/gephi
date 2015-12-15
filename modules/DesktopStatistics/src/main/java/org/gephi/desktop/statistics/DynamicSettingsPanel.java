@@ -430,6 +430,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
             this.combo = comboBoxModel;
         }
 
+        @Override
         public boolean validate(Problems prblms, String string, String t) {
             Integer i = 0;
             try {
@@ -458,6 +459,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
             this.dates = dates;
         }
 
+        @Override
         public boolean validate(Problems prblms, String string, String t) {
             if (dates) {
                 Integer tick = 0;

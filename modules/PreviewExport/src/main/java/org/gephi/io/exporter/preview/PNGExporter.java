@@ -169,6 +169,7 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
         this.stream = stream;
     }
 
+    @Override
     public boolean cancel() {
         cancel = true;
         if (target instanceof LongTask) {
@@ -177,6 +178,7 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progress = progressTicket;
     }

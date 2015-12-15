@@ -203,6 +203,7 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         directedUndirectedRadioButtonGroup.add(directedRadioButton);
         directedRadioButton.setText(org.openide.util.NbBundle.getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.directedRadioButton.text")); // NOI18N
         directedRadioButton.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 directedRadioButtonItemStateChanged(evt);
             }
@@ -211,6 +212,7 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         directedUndirectedRadioButtonGroup.add(undirectedRadioButton);
         undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.undirectedRadioButton.text")); // NOI18N
         undirectedRadioButton.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 undirectedRadioButtonItemStateChanged(evt);
             }
@@ -219,6 +221,7 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         descriptionLabel.setText(org.openide.util.NbBundle.getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.descriptionLabel.text")); // NOI18N
 
         sourceNodesComboBox.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 sourceNodesComboBoxItemStateChanged(evt);
             }
@@ -232,6 +235,7 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
 
         edgeTypeComboBox.setEditable(true);
         edgeTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 edgeTypeComboBoxActionPerformed(evt);
             }

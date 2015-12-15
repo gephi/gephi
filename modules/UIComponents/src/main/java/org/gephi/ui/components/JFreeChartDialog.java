@@ -139,6 +139,7 @@ public class JFreeChartDialog extends javax.swing.JDialog {
 
         closeButton.setText(org.openide.util.NbBundle.getMessage(JFreeChartDialog.class, "JFreeChartDialog.closeButton.text")); // NOI18N
         closeButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeButtonActionPerformed(evt);
             }
@@ -147,6 +148,7 @@ public class JFreeChartDialog extends javax.swing.JDialog {
         resetButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/magnifier-history.png"))); // NOI18N
         resetButton.setText(org.openide.util.NbBundle.getMessage(JFreeChartDialog.class, "JFreeChartDialog.resetButton.text")); // NOI18N
         resetButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetButtonActionPerformed(evt);
             }
@@ -155,6 +157,7 @@ public class JFreeChartDialog extends javax.swing.JDialog {
         zoomOutButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/magnifier--minus.png"))); // NOI18N
         zoomOutButton.setText(org.openide.util.NbBundle.getMessage(JFreeChartDialog.class, "JFreeChartDialog.zoomOutButton.text")); // NOI18N
         zoomOutButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 zoomOutButtonActionPerformed(evt);
             }
@@ -163,6 +166,7 @@ public class JFreeChartDialog extends javax.swing.JDialog {
         zoomInButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/magnifier--plus.png"))); // NOI18N
         zoomInButton.setText(org.openide.util.NbBundle.getMessage(JFreeChartDialog.class, "JFreeChartDialog.zoomInButton.text")); // NOI18N
         zoomInButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 zoomInButtonActionPerformed(evt);
             }

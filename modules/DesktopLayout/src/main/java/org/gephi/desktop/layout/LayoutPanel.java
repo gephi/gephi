@@ -353,6 +353,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         runButton.setIconTextGap(5);
         runButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         runButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runButtonActionPerformed(evt);
             }
@@ -376,6 +377,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
         resetButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.resetButton.text")); // NOI18N
         resetButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetButtonActionPerformed(evt);
             }

@@ -196,6 +196,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
         closeButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.closeButton.text")); // NOI18N
         closeButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeButtonActionPerformed(evt);
             }
@@ -207,6 +208,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         printButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/print.png"))); // NOI18N
         printButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.printButton.text")); // NOI18N
         printButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 printButtonActionPerformed(evt);
             }
@@ -216,6 +218,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/copy.gif"))); // NOI18N
         copyButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.copyButton.text")); // NOI18N
         copyButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 copyButtonActionPerformed(evt);
             }
@@ -225,6 +228,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/save.png"))); // NOI18N
         saveButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.saveButton.text")); // NOI18N
         saveButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveButtonActionPerformed(evt);
             }

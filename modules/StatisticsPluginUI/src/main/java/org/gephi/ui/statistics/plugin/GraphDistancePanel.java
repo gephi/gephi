@@ -104,6 +104,7 @@ public class GraphDistancePanel extends javax.swing.JPanel {
         directedButtonGroup.add(directedRadioButton);
         directedRadioButton.setText(org.openide.util.NbBundle.getMessage(GraphDistancePanel.class, "GraphDistancePanel.directedRadioButton.text")); // NOI18N
         directedRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 directedRadioButtonActionPerformed(evt);
             }

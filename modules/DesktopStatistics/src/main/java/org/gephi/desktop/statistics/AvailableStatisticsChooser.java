@@ -77,6 +77,7 @@ public class AvailableStatisticsChooser extends javax.swing.JPanel {
         //Sort categories by position
         Arrays.sort(categories, new Comparator() {
 
+            @Override
             public int compare(Object o1, Object o2) {
                 Integer p1 = ((StatisticsCategory) o1).getPosition();
                 Integer p2 = ((StatisticsCategory) o2).getPosition();
@@ -104,6 +105,7 @@ public class AvailableStatisticsChooser extends javax.swing.JPanel {
             //Sort it by position
             Collections.sort(uis, new Comparator() {
 
+                @Override
                 public int compare(Object o1, Object o2) {
                     Integer p1 = ((StatisticsUI) o1).getPosition();
                     Integer p2 = ((StatisticsUI) o2).getPosition();

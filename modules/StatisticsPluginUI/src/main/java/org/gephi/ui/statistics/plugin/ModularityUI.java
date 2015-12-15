@@ -56,11 +56,13 @@ public class ModularityUI implements StatisticsUI {
     private ModularityPanel panel;
     private Modularity mod;
 
+    @Override
     public JPanel getSettingsPanel() {
         panel = new ModularityPanel();
         return panel;
     }
 
+    @Override
     public void setup(Statistics statistics) {
         this.mod = (Modularity) statistics;
         if (panel != null) {
@@ -71,6 +73,7 @@ public class ModularityUI implements StatisticsUI {
         }
     }
 
+    @Override
     public void unsetup() {
         if (panel != null) {
             mod.setRandom(panel.isRandomize());
@@ -82,27 +85,33 @@ public class ModularityUI implements StatisticsUI {
         panel = null;
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return Modularity.class;
     }
 
+    @Override
     public String getValue() {
         DecimalFormat df = new DecimalFormat("###.###");
         return "" + df.format(mod.getModularity());
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "ModularityUI.name");
     }
 
+    @Override
     public String getCategory() {
         return StatisticsUI.CATEGORY_NETWORK_OVERVIEW;
     }
 
+    @Override
     public int getPosition() {
         return 600;
     }
 
+    @Override
     public String getShortDescription() {
         return NbBundle.getMessage(getClass(), "ModularityUI.shortDescription");
     }

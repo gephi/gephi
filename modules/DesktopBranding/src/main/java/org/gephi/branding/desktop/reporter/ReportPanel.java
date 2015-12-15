@@ -64,6 +64,7 @@ public class ReportPanel extends javax.swing.JPanel {
         //Bind
         followCheckBox.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 labelEmail.setEnabled(followCheckBox.isSelected());
                 emailTextField.setEnabled(followCheckBox.isSelected());
@@ -75,6 +76,7 @@ public class ReportPanel extends javax.swing.JPanel {
         helpLabel.setEnabled(followCheckBox.isSelected());
         viewDataButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 //Set
                 ReportPanel.this.report.setUserDescription(problemArea.getText());

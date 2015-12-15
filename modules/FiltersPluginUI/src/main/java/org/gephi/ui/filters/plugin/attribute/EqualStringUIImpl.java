@@ -53,6 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = EqualStringUI.class)
 public class EqualStringUIImpl implements EqualStringUI {
 
+    @Override
     public JPanel getPanel(EqualStringFilter filter) {
         EqualStringPanel panel = new EqualStringPanel();
         panel.setup(filter);

@@ -55,11 +55,13 @@ public class DiameterUI implements StatisticsUI {
     private GraphDistancePanel panel;
     private GraphDistance graphDistance;
 
+    @Override
     public JPanel getSettingsPanel() {
         panel = new GraphDistancePanel();
         return panel;
     }
 
+    @Override
     public void setup(Statistics statistics) {
         this.graphDistance = (GraphDistance) statistics;
         if (panel != null) {
@@ -68,6 +70,7 @@ public class DiameterUI implements StatisticsUI {
         }
     }
 
+    @Override
     public void unsetup() {
         if (panel != null) {
             graphDistance.setDirected(panel.isDirected());
@@ -77,27 +80,33 @@ public class DiameterUI implements StatisticsUI {
         graphDistance = null;
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return GraphDistance.class;
     }
 
+    @Override
     public String getValue() {
         DecimalFormat df = new DecimalFormat("###.###");
         return "" + df.format(graphDistance.getDiameter());
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "DiameterUI.name");
     }
 
+    @Override
     public String getCategory() {
         return StatisticsUI.CATEGORY_NETWORK_OVERVIEW;
     }
 
+    @Override
     public int getPosition() {
         return 100;
     }
 
+    @Override
     public String getShortDescription() {
         return NbBundle.getMessage(getClass(), "DiameterUI.shortDescription");
     }

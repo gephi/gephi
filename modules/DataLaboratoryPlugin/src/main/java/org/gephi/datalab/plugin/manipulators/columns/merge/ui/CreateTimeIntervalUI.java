@@ -334,12 +334,14 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         startColumnLabel.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.startColumnLabel.text")); // NOI18N
 
         startColumnComboBox.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startColumnComboBoxActionPerformed(evt);
             }
         });
 
         endColumnComboBox.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 endColumnComboBoxActionPerformed(evt);
             }
@@ -351,6 +353,7 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         parseNumbersRadioButton.setSelected(true);
         parseNumbersRadioButton.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.parseNumbersRadioButton.text")); // NOI18N
         parseNumbersRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 parseNumbersRadioButtonActionPerformed(evt);
             }
@@ -362,6 +365,7 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         buttonGroup.add(parseDatesRadioButton);
         parseDatesRadioButton.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.parseDatesRadioButton.text")); // NOI18N
         parseDatesRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 parseDatesRadioButtonActionPerformed(evt);
             }

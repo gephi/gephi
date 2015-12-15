@@ -107,6 +107,7 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
         }
     }
 
+    @Override
     public void execute(final Statistics statistics) {
         StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
         final StatisticsUI[] uis = getUI(statistics);
@@ -118,6 +119,7 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
 
         controller.execute(statistics, new LongTaskListener() {
 
+            @Override
             public void taskFinished(LongTask task) {
                 model.setRunning(statistics, false);
                 for (StatisticsUI s : uis) {
@@ -128,6 +130,7 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
         });
     }
 
+    @Override
     public void execute(final Statistics statistics, final LongTaskListener listener) {
         StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
         final StatisticsUI[] uis = getUI(statistics);
@@ -139,6 +142,7 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
 
         controller.execute(statistics, new LongTaskListener() {
 
+            @Override
             public void taskFinished(LongTask task) {
                 model.setRunning(statistics, false);
                 for (StatisticsUI s : uis) {
@@ -163,6 +167,7 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
         return list.toArray(new StatisticsUI[0]);
     }
 
+    @Override
     public void setStatisticsUIVisible(StatisticsUI ui, boolean visible) {
         if (model != null) {
             model.setVisible(ui, visible);

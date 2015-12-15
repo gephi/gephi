@@ -68,6 +68,7 @@ public interface DynamicStatistics extends Statistics {
      * graph structure and the attribute model the attribute columns.
      * @param graphModel the graph model
      */
+    @Override
     public void execute(GraphModel graphModel);
 
     /**

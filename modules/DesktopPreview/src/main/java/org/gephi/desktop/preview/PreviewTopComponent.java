@@ -299,6 +299,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.refreshButton.text")); // NOI18N
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 refreshButtonActionPerformed(evt);
             }
