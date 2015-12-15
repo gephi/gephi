@@ -77,7 +77,7 @@ public class CanvasSize {
     }
 
     /**
-     * Return the x coordinate of the top left position.
+     * Returns the x coordinate of the top left position.
      *
      * @return the x coordinate of the top left position
      */
@@ -95,7 +95,7 @@ public class CanvasSize {
     }
 
     /**
-     * Returs the canvas width.
+     * Returns the canvas width.
      *
      * @return the canvas width
      */
@@ -104,11 +104,29 @@ public class CanvasSize {
     }
 
     /**
-     * Returs the canvas height.
+     * Returns the canvas height.
      *
      * @return the canvas height
      */
     public float getHeight() {
         return height;
+    }
+
+    /**
+     * Returns the x coordinate of the bottom right position.
+     *
+     * @return the x coordinate of the bottom right position
+     */
+    public float getMaxX() {
+        return getX() + getWidth();
+    }
+
+    /**
+     * Returns the y coordinate of the bottom right position.
+     *
+     * @return the y coordinate of the bottom right position
+     */
+    public float getMaxY() {
+        return getY() + getHeight();
     }
 }

@@ -41,7 +41,6 @@
  */
 package org.gephi.preview;
 
-import java.awt.Rectangle;
 import java.beans.PropertyEditorManager;
 import java.util.*;
 import java.util.Map.Entry;
@@ -274,23 +273,24 @@ public class PreviewModelImpl implements PreviewModel {
 
     @Override
     public CanvasSize getGraphicsCanvasSize() {
-        Rectangle.Float rect = new Rectangle.Float();
+        float x1 = Float.MAX_VALUE;
+        float y1 = Float.MAX_VALUE;
+        float x2 = Float.MIN_VALUE;
+        float y2 = Float.MIN_VALUE;
         for (Renderer r : getManagedEnabledRenderers()) {
             for (String type : getItemTypes()) {
                 for (Item item : getItems(type)) {
                     if (r.isRendererForitem(item, getProperties())) {
                         CanvasSize cs = r.getCanvasSize(item, getProperties());
-                        Rectangle.Float itemRect = new Rectangle.Float(
-                            cs.getX(),
-                            cs.getY(),
-                            cs.getWidth(),
-                            cs.getHeight());
-                        java.awt.geom.Rectangle2D.union(rect, itemRect, rect);
+                        x1 = Math.min(x1, cs.getX());
+                        y1 = Math.min(y1, cs.getY());
+                        x2 = Math.max(x2, cs.getMaxX());
+                        y2 = Math.max(y2, cs.getMaxY());
                     }
                 }
             }
         }
-        return new CanvasSize(rect.x, rect.y, rect.width, rect.height);
+        return new CanvasSize(x1, y1, x2 - x1, y2 - y1);
     }
 
     @Override
