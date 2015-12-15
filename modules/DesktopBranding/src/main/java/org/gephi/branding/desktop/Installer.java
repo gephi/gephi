@@ -58,11 +58,7 @@ import javax.swing.UIManager;
 import org.gephi.branding.desktop.reporter.ReporterHandler;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.ProjectController;
-import org.openide.LifecycleManager;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.modules.ModuleInstall;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -78,7 +74,7 @@ import org.openide.windows.WindowManager;
  */
 public class Installer extends ModuleInstall {
 
-    private static final String LATEST_GEPHI_VERSION_URL = "https://gephi.org/updates/latest";
+    private static final String LATEST_GEPHI_VERSION_URL = "https://gephi.org/gephi/latest";
 
     @Override
     public void restored() {
@@ -145,11 +141,19 @@ public class Installer extends ModuleInstall {
     private void checkForNewMajorRelease() {
         boolean doCheck = NbPreferences.forModule(Installer.class).getBoolean("check_latest_version", true);
         if (doCheck) {
+            InputStream stream = null;
+            BufferedReader reader = null;
             try {
                 String gephiVersion = System.getProperty("netbeans.productversion");
+
                 URL url = new URL(LATEST_GEPHI_VERSION_URL);
-                URLConnection conn = url.openConnection();
-                String latest = new BufferedReader(new InputStreamReader(conn.getInputStream())).readLine();
+                URLConnection connection = url.openConnection();
+                connection.setRequestProperty("User-Agent", "");
+                connection.connect();
+                stream = connection.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(stream));
+
+                String latest = reader.readLine();
                 latest = latest.replaceAll("[a-zA-Z .-]", "");
                 if (!gephiVersion.contains("SNAPSHOT") && !latest.equals(gephiVersion.replaceAll("[0-9]{12}", "").replaceAll("[a-zA-Z .-]", ""))) {
                     //Show update dialog
@@ -163,6 +167,17 @@ public class Installer extends ModuleInstall {
                 }
             } catch (Exception ex) {
                 Logger.getLogger("").warning("Error while checking latest Gephi version");
+            } finally {
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                    if (stream != null) {
+                        stream.close();
+                    }
+                } catch (IOException e) {
+
+                }
             }
         }
     }
