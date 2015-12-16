@@ -14,11 +14,6 @@
     <artifactId>gephi-branding</artifactId>
     <packaging>nbm</packaging>
     <name>Branding</name>
-    
-    <properties>  
-        <gephi.branding.update.center.official.url>${gephi.update.center.testing.url}</gephi.branding.update.center.official.url>
-        <gephi.branding.update.center.thirdparty.url>${gephi.update.center.testing.url}</gephi.branding.update.center.thirdparty.url>
-    </properties>
 
     <build>
         <plugins>
@@ -71,15 +66,4 @@
             </plugin>
         </plugins>
     </build>
-    
-    <profiles>
-        <!-- Release profile -->
-        <profile>
-            <id>release</id>
-            <properties>
-                <gephi.branding.update.center.official.url>${gephi.update.center.official.url}</gephi.branding.update.center.official.url>
-                <gephi.branding.update.center.thirdparty.url>${gephi.update.center.thirdparty.url}</gephi.branding.update.center.thirdparty.url>
-            </properties>
-        </profile>
-    </profiles>
 </project>

@@ -74,7 +74,7 @@ import org.openide.windows.WindowManager;
  */
 public class Installer extends ModuleInstall {
 
-    private static final String LATEST_GEPHI_VERSION_URL = "https://gephi.org/gephi/latest";
+    private static final String LATEST_GEPHI_VERSION_URL = "https://raw.githubusercontent.com/gephi/gephi/gh-pages/latest";
 
     @Override
     public void restored() {
