@@ -23,7 +23,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>graphstore</artifactId>
-            <version>0.4.6</version>
+            <version>${graphstore.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
