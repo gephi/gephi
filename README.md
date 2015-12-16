@@ -48,7 +48,7 @@ Consult the [**Javadoc**](http://gephi.github.io/gephi/0.9-SNAPSHOT/apidocs/inde
 
 ### Requirements
 
-- Java JDK 6, 7 or 8 with preferably [Oracle Java JDK](http://java.com/en/).
+- Java JDK 7 or 8 with preferably [Oracle Java JDK](http://java.com/en/).
 
 - [Apache Maven](http://maven.apache.org/) version 3.2.2 or later
 
