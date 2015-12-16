@@ -6,19 +6,29 @@
     <body>
 		<style type="text/css">
 		.unstable { background: none repeat scroll 0% 0% rgb(221, 204, 128); }
-		.friend { background: none repeat scroll 0% 0% rgb(224, 192, 192); }
 		.deprecated { background: none repeat scroll 0% 0% rgb(150, 150, 150); text-decoration: line-through;}
 		</style>
         <p>
             This documents provides Gephi APIs documentation and gives details about
             current status of each API. Each API is categorized by it's stability:
-            stable, <span class="unstable">under development</span>, <span class="deprecated">deprecated</span> or
-            <span class="friend">friend</span>.
+            stable, <span class="unstable">under development</span> or <span class="deprecated">deprecated</span>.
         </p>
         <hr/>
         <h2>API Changes</h2>
 		<p>
         <ul>
+            <li>(December 03 2015) The <code>createQuery()</code> method in <code>FilterController</code> now takes a <code>FilterBuilder</code> instead of a <code>Filter</code>. It allows to track down builders down to the query level.</li>
+            <li>(November 25 2015) The <code>ImportAPI</code> now supports importing multiple graphs at the time and supports graph slices through an additional parameter on <code>ContainerLoader</code>. The <code>setTimestamp()</code> and <code>setInterval()</code> allows to define a point or period of existence for the entire graph. The <code>ImportController</code> also allow multiple containers to be processed through a new <code>process()</code> method. In parallel, <code>ImporterUI</code> now takes multiple importers and so does the <code>Processor</code> interface that now takes multiple containes.</li>
+            <li>(November 21 2015) The <code>NodeFilter</code> and <code>EdgeFilter</code> interfaces now inherit from a new <code>ElementFilter</code> so it's easier to create filters that work at the element level.</li>
+            <li>(November 21 2015) The <code>filter()</code> method in <code>Operator</code> now takes an array of <code>Subgraph</code> instead of <code>Graph</code>. This gives access to operations such as <code>union</code> or <code>not</code>.</li>
+            <li>(October 27 2015) Add ability to configure timezone with <code>setTimeZone()</code> on <code>ContainerLoader</code> in <code>ImportAPI</code>.</li>
+            <li>(October 10 2015) Remove standalone <code>ContainerFactory</code> class in <code>ImportAPI</code> and replace it with <code>Container.Factory</code>. Also add the ability to configure the <code>TimeRepresentation</code> in <code>ContainerLoader</code>. Finally, add color parsing utility in <code>ImportUtils</code>. It can be used to parse color names or codes.</li> 
+            <li>(August 26 2015) The <code>ChangeListener</code> in <code>WorkspaceInformation</code> has been replaced with a <code>PropertyChangeListener</code>.</li>
+            <li>(May 27 2013) The <em>Processing</em> dependency in <code>PreviewAPI</code> has been removed and replaced by regular Java2D. Therefore, the <code>ProcessingTarget</code> is now the <code>G2DTarget</code>. Also add a <code>resize()</code> method to facilitate integration.</li>
+            <li>(May 13 2013) Addition of a <code>EdgeWeightMergeStrategy</code> enum to control the way parallel edge weights are merged in <code>ImportAPI</code>.</li>
+            <li>(May 12 2013) Add ability to create <code>WorkspacePersistenceProvider</code> with a new SPI interface: <code>WorkspaceBytesPersistenceProvider</code>. The XML-based interfce has being renamed into <code>WorkspaceXMLPersistenceProvider</code>.</li>
+            <li>(April 15 2013) Importers can now use the <code>setValueString()</code> method on <code>ElementDraft</code>. This will automatically parse the value based on the declared type reducing parsing code on the importer side. If the type is already in the right type, use the <code>setValue()</code> instead.</li>
+            <li>(April 07 2013) Refactoring of the import API. Introduction of a <code>ColumnDraft</code> interface which represents a to-be-created column and the method to manipulate them in <code>ContainerLoader</code>. The <code>NodeDraft</code> and <code>EdgeDraft</code> classes now inherits from a new <code>ElementDraft</code>, centralizing a lot of the code. The <code>EdgeDraftGetter</code> and <code>NodeDraftGetter</code> have been removed and their methods moved directly to the node/edge draft. New elements are now created using the <code>ElementDraft.Factory</code>, which can be obtained with the <code>factory()</code> method on <code>ContainerLoader</code>. Previously the <code>ContainerUnloader</code> returned an <code>AttributeModel</code>. This has been replaced with iterables over column drafts. The <code>EdgeDefault</code> enum becomes <code>EdgeDiretionDefault</code> and represents a graph-level configuration. The <code>EdgeDefault</code> is now edge-level configuration and can be set by <code>setEdgeDirection()</code> on <code>EdgeDraft</code>. Finally, convenient <code>setColor()</code> methods have been added to <code>ElementDraft</code>.</li>
             <li>(December 07 2012) Add support for mouse listeners in Preview plugins. Create a <code>PreviewMouseListener</code> and implement <code>MouseResponsiveRenderer</code> interface in the renderers that use the listener.
 			</li>
 			<li>(April 10 2012) Add a <code>getShortDescription()</code> method to the <code>StatisticsUI</code> API. It enables to get a short description of statistics (used to display tooltips).
@@ -227,22 +237,18 @@
         <h2>API List</h2>
 		<p>
         <ul>
-            <li><b>Attributes API</b> - Provides access to attributes values through an efficient column/row system.</li>
-            <li><span class="unstable"><b>Clustering API</b></span> - API/SPI for clustering algorithms (experimental).</li>
+            <li><b>Appearance API</b> - API/SPI for ranking and partition data to transform values in visual signs like color or size.</li>
             <li><b>DataLaboratory API</b> - API/SPI for data laboratory features (columns manipulation, edit, ...).</li>
             <li><b>Export API</b>  - Export API/SPI provides the infrastructure for exporting data to any support and define new exporters.</li>
             <li><b>Filters API</b>  - API/SPI for filters, define and control current filtering.</li>
             <li><b>Generator API</b> -  Generator API/SPI provides the way to create and execute graph generators.</li>
             <li><b>Graph API</b> - API for accessing the graph.</li>
-            <li><span class="unstable"><b>Dynamic API</b></span>  - Provide features for dynamic graphs.</li>
             <li><b>Import API</b> - Import API/SPI provides the import workflow to import data form any support.</li>
             <li><b>Layout API</b> - Layout API/SPI provides real-time layout algorithms execution.</li>
-            <li><b>LongTask API</b> - LongTask API provides utility features for long and asynchronous task execution.</li>
-            <li><span class="unstable"><b>Partition API</b></span>  - API for manipulating partition within data.</li>
+            <li><b>LongTask API</b> - LongTask API provides utility features for long and asynchronous task execution.</li> 
             <li><b>Perspective API</b> - API/SPI for perspective management. Only related to the user interface.</li>
             <li><b>Preview API</b> - API for building the graph preview structure.</li>
             <li><b>Project API</b> - Project API/SPI for project and worskpaces manipulation.</li>
-            <li><b>Ranking API</b>  - API/SPI for ranking data values and transform values in visual signs like color or size.</li>
             <li><b>Statistics API</b> - Statistics and Metrics API/SPI provides (a)synchronous algorithms execution.</li>
             <li><b>Timeline API</b> - API which provides access to the timeline component data, time interval, settings and animation.</li>
             <li><b>Tools API</b> - Tool API/SPI defines interactive actions users can make with the visualization.</li>
