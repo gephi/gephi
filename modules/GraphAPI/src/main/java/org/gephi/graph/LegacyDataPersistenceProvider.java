@@ -150,10 +150,22 @@ public class LegacyDataPersistenceProvider implements WorkspaceXMLPersistencePro
             if (eventType.equals(XMLEvent.START_ELEMENT)) {
                 String name = reader.getLocalName();
                 if (ELEMENT_EDGEDATA_COLOR.equalsIgnoreCase(name)) {
-                    edge.setR(Float.parseFloat(reader.getAttributeValue(null, "r")));
-                    edge.setG(Float.parseFloat(reader.getAttributeValue(null, "g")));
-                    edge.setB(Float.parseFloat(reader.getAttributeValue(null, "b")));
-                    edge.setAlpha(Float.parseFloat(reader.getAttributeValue(null, "a")));
+                    float r = Float.parseFloat(reader.getAttributeValue(null, "r"));
+                    float g = Float.parseFloat(reader.getAttributeValue(null, "g"));
+                    float b = Float.parseFloat(reader.getAttributeValue(null, "b"));
+                    float alpha = Float.parseFloat(reader.getAttributeValue(null, "a"));
+                    
+                    //I have an old .gephi file with <color r="-1.0" g="0.0" b="0.0" a="1.0"> in every <edgedata>
+                    //So it seems that old versions of Gephi stored r = -1 sometimes. I guess it means no edge color set up? So use black instead.
+                    if(r < 0 || g < 0 || b < 0){
+                        r = g = b = 0;
+                        alpha = 1;
+                    }
+                    
+                    edge.setR(r);
+                    edge.setG(g);
+                    edge.setB(b);
+                    edge.setAlpha(alpha);
                 }
             } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
                 if (ELEMENT_EDGEDATA.equalsIgnoreCase(reader.getLocalName())) {
