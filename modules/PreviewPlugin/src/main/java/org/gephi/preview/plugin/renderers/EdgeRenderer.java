@@ -284,7 +284,7 @@ public class EdgeRenderer implements Renderer {
                 color.getRed(),
                 color.getGreen(),
                 color.getBlue(),
-                (int) getAlpha(properties) * 255);
+                (int) (getAlpha(properties) * 255));
     }
 
     private boolean showEdges(PreviewProperties properties) {
@@ -299,7 +299,14 @@ public class EdgeRenderer implements Renderer {
     }
 
     private static float getAlpha(final PreviewProperties properties) {
-        return properties.getIntValue(PreviewProperty.EDGE_OPACITY) / 100F;
+        float opacity = properties.getIntValue(PreviewProperty.EDGE_OPACITY) / 100F;
+        if (opacity < 0) {
+            opacity = 0;
+        }
+        if (opacity > 1) {
+            opacity = 1;
+        }
+        return opacity;
     }
 
     private static float getThickness(final Item item) {

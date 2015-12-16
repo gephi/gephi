@@ -111,6 +111,9 @@ public class NodeRenderer implements Renderer {
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
         float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
         int alpha = (int) ((properties.getFloatValue(PreviewProperty.NODE_OPACITY) / 100f) * 255f);
+        if (alpha < 0) {
+            alpha = 0;
+        }
         if (alpha > 255) {
             alpha = 255;
         }

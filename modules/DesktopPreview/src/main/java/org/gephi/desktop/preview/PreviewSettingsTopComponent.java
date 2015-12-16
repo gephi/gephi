@@ -80,15 +80,15 @@ import org.openide.windows.TopComponent;
  * @author Jérémy Subtil, Mathieu Bastian
  */
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.preview//PreviewSettings//EN",
-autostore = false)
+        autostore = false)
 @TopComponent.Description(preferredID = "PreviewSettingsTopComponent",
-iconBase = "org/gephi/desktop/preview/resources/settings.png",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        iconBase = "org/gephi/desktop/preview/resources/settings.png",
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"preview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.preview.PreviewSettingsTopComponent")
 @ActionReference(path = "Menu/Window", position = 1000)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_PreviewSettingsTopComponent",
-preferredID = "PreviewSettingsTopComponent")
+        preferredID = "PreviewSettingsTopComponent")
 public final class PreviewSettingsTopComponent extends TopComponent implements PropertyChangeListener {
 
     private final String NO_SELECTION = "---";
@@ -107,39 +107,27 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
 
-        PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-
         // property sheet
         propertySheet = new PropertySheet();
         propertySheet.setNodes(new Node[]{new PreviewNode(propertySheet)});
         propertySheet.setDescriptionAreaVisible(false);
 
-        // renderer manager - show only if at least 1 plugin renderer exists
-        if (previewController.isAnyPluginRendererRegistered()) {
-            rendererManager = new RendererManager();
-        }
+        rendererManager = new RendererManager();
+        //Tabs for property sheet, manager and preview UI
+        tabbedPane = new JTabbedPane();
+        tabbedPane.addTab(NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.propertySheetTab"), propertySheet);
+        tabbedPane.addTab(NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.rendererManagerTab"), rendererManager);
+        propertiesPanel.add(tabbedPane, BorderLayout.CENTER);
 
-        if (rendererManager != null || Lookup.getDefault().lookupAll(PreviewUI.class).size() > 0) {
-            //Tabs for property sheet, manager and preview UI
-            tabbedPane = new JTabbedPane();
-            tabbedPane.addTab(NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.propertySheetTab"), propertySheet);
-            if (rendererManager != null) {
-                tabbedPane.addTab(NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.rendererManagerTab"), rendererManager);
-            }
-            propertiesPanel.add(tabbedPane, BorderLayout.CENTER);
+        tabbedPane.addChangeListener(new ChangeListener() {
 
-            tabbedPane.addChangeListener(new ChangeListener() {
-
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    if (tabbedPane.getSelectedComponent() == propertySheet) {
-                        propertySheet.setNodes(new Node[]{new PreviewNode(propertySheet)});
-                    }
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (tabbedPane.getSelectedComponent() == propertySheet) {
+                    propertySheet.setNodes(new Node[]{new PreviewNode(propertySheet)});
                 }
-            });
-        } else {
-            propertiesPanel.add(propertySheet, BorderLayout.CENTER);
-        }
+            }
+        });
 
         //Ratio
         ratioSlider.addChangeListener(new ChangeListener() {
@@ -252,29 +240,27 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         }
 
         //Refresh tabs
-        if (tabbedPane != null) {
-            int tabCount = tabbedPane.getTabCount();
-            for (int i = (rendererManager == null ? 1 : 2); i < tabCount; i++) {
-                tabbedPane.removeTabAt(i);
-            }
+        int tabCount = tabbedPane.getTabCount();
+        for (int i = 2; i < tabCount; i++) {//Start at 2, not removing settings and renderer manager tabs
+            tabbedPane.removeTabAt(i);
+        }
+        for (PreviewUI pui : Lookup.getDefault().lookupAll(PreviewUI.class)) {
+            pui.unsetup();
+        }
+        if (previewModel != null) {
+            PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+            PreviewModel pModel = previewController.getModel();
+            //Add new tabs
             for (PreviewUI pui : Lookup.getDefault().lookupAll(PreviewUI.class)) {
-                pui.unsetup();
-            }
-            if (previewModel != null) {
-                PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-                PreviewModel pModel = previewController.getModel();
-                //Add new tabs
-                for (PreviewUI pui : Lookup.getDefault().lookupAll(PreviewUI.class)) {
-                    pui.setup(pModel);
-                    JPanel pluginPanel = pui.getPanel();
-                    if (UIUtils.isAquaLookAndFeel()) {
-                        pluginPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
-                    }
-                    if (pui.getIcon() != null) {
-                        tabbedPane.addTab(pui.getPanelTitle(), pui.getIcon(), pluginPanel);
-                    } else {
-                        tabbedPane.addTab(pui.getPanelTitle(), pluginPanel);
-                    }
+                pui.setup(pModel);
+                JPanel pluginPanel = pui.getPanel();
+                if (UIUtils.isAquaLookAndFeel()) {
+                    pluginPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+                }
+                if (pui.getIcon() != null) {
+                    tabbedPane.addTab(pui.getPanelTitle(), pui.getIcon(), pluginPanel);
+                } else {
+                    tabbedPane.addTab(pui.getPanelTitle(), pluginPanel);
                 }
             }
         }
@@ -329,7 +315,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
     }
 
     private boolean isDefaultPreset(PreviewPreset preset) {
-        int i = 0;
+        int i;
         for (i = 0; i < presetComboBox.getItemCount(); i++) {
             if (presetComboBox.getModel().getElementAt(i).equals(preset)) {
                 break;

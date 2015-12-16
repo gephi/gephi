@@ -165,6 +165,9 @@ public class NodeLabelRenderer implements Renderer {
         Float outlineSize = properties.getFloatValue(PreviewProperty.NODE_LABEL_OUTLINE_SIZE);
         outlineSize = outlineSize * (fontSize / 32f);
         int outlineAlpha = (int) ((properties.getFloatValue(PreviewProperty.NODE_LABEL_OUTLINE_OPACITY) / 100f) * 255f);
+        if (outlineAlpha < 0) {
+            outlineAlpha = 0;
+        }
         if (outlineAlpha > 255) {
             outlineAlpha = 255;
         }
@@ -176,6 +179,9 @@ public class NodeLabelRenderer implements Renderer {
         DependantColor boxDependantColor = properties.getValue(PreviewProperty.NODE_LABEL_BOX_COLOR);
         Color boxColor = boxDependantColor.getColor(nodeColor);
         int boxAlpha = (int) ((properties.getFloatValue(PreviewProperty.NODE_LABEL_BOX_OPACITY) / 100f) * 255f);
+        if (boxAlpha < 0) {
+            boxAlpha = 0;
+        }
         if (boxAlpha > 255) {
             boxAlpha = 255;
         }
