@@ -132,6 +132,7 @@ public class EigenvectorCentralityNGTest {
         UndirectedGraph hgraph = graphModel.getUndirectedGraph();
 
         EigenvectorCentrality ec = new EigenvectorCentrality();
+        ec.setDirected(false);
 
         double[] centralities = new double[5];
 
@@ -155,6 +156,7 @@ public class EigenvectorCentralityNGTest {
         UndirectedGraph hgraph = graphModel.getUndirectedGraph();
 
         EigenvectorCentrality ec = new EigenvectorCentrality();
+        ec.setDirected(false);
 
         double[] centralities = new double[5];
 

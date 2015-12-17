@@ -230,6 +230,8 @@ public class EigenvectorCentrality implements Statistics, LongTask {
             if (max != 0) {
                 sumChanged += Math.abs(centralityValues[k] - (tempValues[k] / max));
                 centralityValues[k] = tempValues[k] / max;
+            } else {
+                centralityValues[k] = 0.0;
             }
             if (isCanceled) {
                 return sumChanged;
