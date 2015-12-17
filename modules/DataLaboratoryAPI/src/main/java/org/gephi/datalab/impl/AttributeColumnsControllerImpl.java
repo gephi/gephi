@@ -201,15 +201,20 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
 
         Class targetType = targetColumn.getTypeClass();
+        Object value;
         if (!targetType.equals(sourceColumn.getTypeClass())) {
-            Object value;
             for (Element row : getTableAttributeRows(table)) {
                 value = row.getAttribute(sourceColumn);
                 setAttributeValue(value, row, targetColumn);
             }
         } else {
             for (Element row : getTableAttributeRows(table)) {
-                row.setAttribute(targetColumn, row.getAttribute(sourceColumn));
+                value = row.getAttribute(sourceColumn);
+                if (value == null) {
+                    row.removeAttribute(targetColumn);
+                } else {
+                    row.setAttribute(targetColumn, value);
+                }
             }
         }
     }
@@ -245,7 +250,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     public void clearColumnData(Table table, Column column) {
         if (canClearColumnData(column)) {
             for (Element row : getTableAttributeRows(table)) {
-                row.setAttribute(column, null);
+                row.removeAttribute(column);
             }
         }
     }
@@ -364,7 +369,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             for (Column column : columnsToClear) {
                 //Clear all except id and computed attributes:
                 if (canClearColumnData(column)) {
-                    row.setAttribute(column, null);
+                    row.removeAttribute(column);
                 }
             }
         } else {
@@ -377,7 +382,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             
             for (Column column : table) {
                 if(canClearColumnData(column)){
-                    row.setAttribute(column, null);
+                    row.removeAttribute(column);
                 }
             }
         }
@@ -400,7 +405,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 //Copy all except id and computed attributes:
                 if (canChangeColumnData(column)) {
                     for (Element otherRow : otherRows) {
-                        otherRow.setAttribute(column, row.getAttribute(column));
+                        Object value = row.getAttribute(column);
+                        setAttributeValue(value, otherRow, column);
                     }
                 }
             }
@@ -415,7 +421,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             for (Column column : table) {
                 if(canChangeColumnData(column)){
                     for (Element otherRow : otherRows) {
-                        otherRow.setAttribute(column, null);
+                        otherRow.removeAttribute(column);
                     }
                 }
             }
