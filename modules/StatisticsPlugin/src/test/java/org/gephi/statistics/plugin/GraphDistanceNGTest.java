@@ -122,7 +122,7 @@ public class GraphDistanceNGTest {
         d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
 
         double averageDegree = d.getPathLength();
-        assertEquals(averageDegree, 0.0);
+        assertEquals(averageDegree, Double.NaN);
     }
 
     @Test
