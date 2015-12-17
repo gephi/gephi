@@ -45,6 +45,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Table;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
@@ -170,14 +171,16 @@ public class Modularity implements Statistics, LongTask {
                 int node_index = map.get(node);
                 topology[node_index] = new LinkedList<ModEdge>();
 
-                for (Node neighbor : hgraph.getNeighbors(node)) {
+                for (Edge edge : hgraph.getEdges(node)) {
+                    Node neighbor = hgraph.getOpposite(node, edge);
+
                     if (node == neighbor) {
                         continue;
                     }
                     int neighbor_index = map.get(neighbor);
                     float weight = 1;
                     if (useWeight) {
-                        weight = (float) hgraph.getEdge(node, neighbor).getWeight();
+                        weight = (float) edge.getWeight(graph.getView());
                     }
 
                     weights[node_index] += weight;
@@ -592,7 +595,7 @@ public class Modularity implements Statistics, LongTask {
                 int neigh_index = theStructure.map.get(neighbor);
                 if (struct[neigh_index] == struct[n_index]) {
                     if (weighted) {
-                        internal[struct[neigh_index]] += hgraph.getEdge(n, neighbor).getWeight();
+                        internal[struct[neigh_index]] += hgraph.getEdge(n, neighbor).getWeight(hgraph.getView());
                     } else {
                         internal[struct[neigh_index]]++;
                     }
