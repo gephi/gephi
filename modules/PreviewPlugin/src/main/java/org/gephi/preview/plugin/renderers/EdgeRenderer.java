@@ -160,29 +160,36 @@ public class EdgeRenderer implements Renderer {
                 final float edgeRadius
                         = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
                 
-                //Target
-                final Item targetItem = (Item) item.getData(TARGET);
-                final Double weight = item.getData(EdgeItem.WEIGHT);
-                //Avoid negative arrow size:
-                float arrowSize = properties.getFloatValue(
-                        PreviewProperty.ARROW_SIZE);
-                if (arrowSize < 0F) {
-                    arrowSize = 0F;
+                boolean isDirected = (Boolean) item.getData(EdgeItem.DIRECTED);
+                if (isDirected
+                        || edgeRadius > 0F) {
+                    //Target
+                    final Item targetItem = (Item) item.getData(TARGET);
+                    final Double weight = item.getData(EdgeItem.WEIGHT);
+                    //Avoid negative arrow size:
+                    float arrowSize = properties.getFloatValue(
+                            PreviewProperty.ARROW_SIZE);
+                    if (arrowSize < 0F) {
+                        arrowSize = 0F;
+                    }
+                    
+                    final float arrowRadiusSize = isDirected ? arrowSize * weight.floatValue() : 0f;
+                    
+                    final float targetRadius = -(edgeRadius
+                            + (Float) targetItem.getData(NodeItem.SIZE) / 2f
+                            + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f //We have to divide by 2 because the border stroke is not only an outline but also draws the other half of the curve inside the node
+                            + arrowRadiusSize
+                            );
+                    item.setData(TARGET_RADIUS, targetRadius);
+                    
+                    //Source
+                    final Item sourceItem = (Item) item.getData(SOURCE);
+                    final float sourceRadius = -(edgeRadius
+                            + (Float) sourceItem.getData(NodeItem.SIZE) / 2f
+                            + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f
+                            );
+                    item.setData(SOURCE_RADIUS, sourceRadius);
                 }
-                final float size = arrowSize * weight.floatValue();
-                final float targetRadius = -(edgeRadius
-                        + (Float) targetItem.getData(NodeItem.SIZE) / 2f
-                        + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f //We have to divide by 2 because the border stroke is not only an outline but also draws the other half of the curve inside the node
-                        );
-                item.setData(TARGET_RADIUS, targetRadius - size);
-                
-                //Source
-                final Item sourceItem = (Item) item.getData(SOURCE);
-                final float sourceRadius = -(edgeRadius
-                        + (Float) sourceItem.getData(NodeItem.SIZE) / 2f
-                        + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f
-                        );
-                item.setData(SOURCE_RADIUS, sourceRadius);
             }
         }
     }
