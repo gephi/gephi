@@ -672,7 +672,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     }
 
     private void saveCalculatedValue(Node node, Column clusteringColumn,
-            float nodeClusteringCoefficient) {
+            double nodeClusteringCoefficient) {
 
         if (clusteringColumn == null) {
             return;

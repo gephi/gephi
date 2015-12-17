@@ -50,6 +50,7 @@ public class ClusteringCoefficientNGTest {
         Graph hgraph = graphModel.getGraph();
 
         ClusteringCoefficient cc = new ClusteringCoefficient();
+        cc.setDirected(false);
         ArrayWrapper[] network = new ArrayWrapper[1];
         int[] triangles = new int[1];
         double[] nodeClustering = new double[1];
@@ -82,6 +83,7 @@ public class ClusteringCoefficientNGTest {
         Graph hgraph = graphModel.getGraph();
 
         ClusteringCoefficient cc = new ClusteringCoefficient();
+        cc.setDirected(false);
         ArrayWrapper[] network = new ArrayWrapper[5];
         int[] triangles = new int[5];
         double[] nodeClustering = new double[5];
@@ -98,6 +100,7 @@ public class ClusteringCoefficientNGTest {
         Graph hgraph = graphModel.getGraph();
 
         ClusteringCoefficient cc = new ClusteringCoefficient();
+        cc.setDirected(false);
         ArrayWrapper[] network = new ArrayWrapper[5];
         int[] triangles = new int[5];
         double[] nodeClustering = new double[5];
@@ -114,6 +117,7 @@ public class ClusteringCoefficientNGTest {
         Graph hgraph = graphModel.getGraph();
 
         ClusteringCoefficient cc = new ClusteringCoefficient();
+        cc.setDirected(false);
         ArrayWrapper[] network = new ArrayWrapper[6];
         int[] triangles = new int[6];
         double[] nodeClustering = new double[6];
