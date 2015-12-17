@@ -154,8 +154,8 @@ public class Hits implements Statistics, LongTask {
             System.arraycopy(temp_authority, 0, authorityValues, 0, N);
             System.arraycopy(temp_hubs, 0, hubValues, 0, N);
 
-//            temp_authority = new double[N];
-//            temp_hubs = new double[N]
+            temp_authority = new double[N];
+            temp_hubs = new double[N];
 
             if ((done) || (isCanceled)) {
                 break;

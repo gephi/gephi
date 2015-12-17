@@ -51,7 +51,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author pjmcswee
  */
-@ServiceProvider(service = StatisticsBuilder.class)
+//@ServiceProvider(service = StatisticsBuilder.class)
 public class HitsBuilder implements StatisticsBuilder {
 
     @Override
