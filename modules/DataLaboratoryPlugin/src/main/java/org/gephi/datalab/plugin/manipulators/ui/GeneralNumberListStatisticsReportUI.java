@@ -180,6 +180,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel impl
         configureBoxPlotButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalab/plugin/manipulators/resources/wooden-box.png"))); // NOI18N
         configureBoxPlotButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.configureBoxPlotButton.text")); // NOI18N
         configureBoxPlotButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 configureBoxPlotButtonActionPerformed(evt);
             }
@@ -188,6 +189,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel impl
         configureScatterPlotButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalab/plugin/manipulators/resources/chart-up.png"))); // NOI18N
         configureScatterPlotButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.configureScatterPlotButton.text_1")); // NOI18N
         configureScatterPlotButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 configureScatterPlotButtonActionPerformed(evt);
             }
@@ -196,6 +198,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel impl
         showReportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalab/plugin/manipulators/resources/application-block.png"))); // NOI18N
         showReportButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.showReportButton.text")); // NOI18N
         showReportButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showReportButtonActionPerformed(evt);
             }
@@ -203,6 +206,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel impl
 
         useLinesCheckBox.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.useLinesCheckBox.text")); // NOI18N
         useLinesCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 useLinesCheckBoxActionPerformed(evt);
             }
@@ -210,6 +214,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel impl
 
         useLinearRegression.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.useLinearRegression.text")); // NOI18N
         useLinearRegression.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 useLinearRegressionActionPerformed(evt);
             }
@@ -218,6 +223,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel impl
         configureHistogramButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalab/plugin/manipulators/resources/chart.png"))); // NOI18N
         configureHistogramButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.configureHistogramButton.text")); // NOI18N
         configureHistogramButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 configureHistogramButtonActionPerformed(evt);
             }
@@ -226,6 +232,7 @@ public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel impl
         divisionsLabel.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.divisionsLabel.text")); // NOI18N
 
         divisionsComboBox.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 divisionsComboBoxItemStateChanged(evt);
             }

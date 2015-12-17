@@ -61,6 +61,7 @@ public class MASKEdgePanel extends javax.swing.JPanel implements ActionListener 
         targetButton.addActionListener(this);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (operator != null) {
             MASKBuilderEdge.MaskEdgeOperator.EdgesOptions option = MASKBuilderEdge.MaskEdgeOperator.EdgesOptions.ANY;

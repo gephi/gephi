@@ -93,6 +93,7 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
             model.addChangeListener(this);
             SwingUtilities.invokeLater(new Runnable() {
 
+                @Override
                 public void run() {
                     manager.setRootContext(new RootNode(new QueryChildren(model.getQueries())));
                 }
@@ -100,6 +101,7 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
         } else {
             SwingUtilities.invokeLater(new Runnable() {
 
+                @Override
                 public void run() {
                     manager.setRootContext(new AbstractNode(Children.LEAF) {
 
@@ -119,6 +121,7 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
         }
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(ExplorerManager.PROP_SELECTED_NODES)) {
             if (uiModel == null) {
@@ -144,6 +147,7 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
                 final Query query = queryNode.getQuery();
                 new Thread(new Runnable() {
 
+                    @Override
                     public void run() {
                         uiModel.setSelectedQuery(query);
                         model.removeChangeListener(QueryExplorer.this);
@@ -155,10 +159,12 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
         }
     }
 
+    @Override
     public void stateChanged(ChangeEvent e) {
         //System.out.println("model updated");
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 //uiModel.setSelectedQuery(model.getCurrentQuery());
                 saveExpandStatus(QueryExplorer.this.manager.getRootContext());
@@ -171,6 +177,7 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
     private void updateEnabled(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 setRootVisible(enabled);
                 setEnabled(enabled);

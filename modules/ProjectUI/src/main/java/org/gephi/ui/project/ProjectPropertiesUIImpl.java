@@ -55,15 +55,18 @@ public class ProjectPropertiesUIImpl implements ProjectPropertiesUI {
 
     private ProjectPropertiesEditor panel;
 
+    @Override
     public JPanel getPanel() {
         panel = new ProjectPropertiesEditor();
         return panel;
     }
 
+    @Override
     public void setup(Project project) {
         panel.load(project);
     }
 
+    @Override
     public void unsetup(Project project) {
         panel.save(project);
         panel = null;

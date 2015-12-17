@@ -59,11 +59,13 @@ public class EigenvectorCentralityUI implements StatisticsUI {
     private EigenvectorCentralityPanel panel;
     private EigenvectorCentrality eigen;
 
+    @Override
     public JPanel getSettingsPanel() {
         panel = new EigenvectorCentralityPanel();
         return panel;
     }
 
+    @Override
     public void setup(Statistics statistics) {
         this.eigen = (EigenvectorCentrality) statistics;
         if (panel != null) {
@@ -73,6 +75,7 @@ public class EigenvectorCentralityUI implements StatisticsUI {
         }
     }
 
+    @Override
     public void unsetup() {
         if (panel != null) {
             eigen.setNumRuns(panel.getNumRuns());
@@ -83,26 +86,32 @@ public class EigenvectorCentralityUI implements StatisticsUI {
         eigen = null;
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return EigenvectorCentrality.class;
     }
 
+    @Override
     public String getValue() {
         return null;
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "EigenvectorCentralityUI.name");
     }
 
+    @Override
     public String getCategory() {
         return StatisticsUI.CATEGORY_NODE_OVERVIEW;
     }
 
+    @Override
     public int getPosition() {
         return 1000;
     }
 
+    @Override
     public String getShortDescription() {
         return NbBundle.getMessage(getClass(), "EigenvectorCentralityUI.shortDescription");
     }

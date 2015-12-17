@@ -108,6 +108,7 @@ public class DelegatingChooserUI extends ComponentUI {
             fc.addPropertyChangeListener(
                     JFileChooser.FILE_SELECTION_MODE_CHANGED_PROPERTY,
                     new PropertyChangeListener () {
+                        @Override
                         public void propertyChange(PropertyChangeEvent evt) {
                             JFileChooser fileChooser = (JFileChooser)evt.getSource();
                             fileChooser.updateUI();

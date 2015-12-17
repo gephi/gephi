@@ -382,6 +382,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         saveButton.setFocusable(false);
         saveButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         saveButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveButtonActionPerformed(evt);
             }
@@ -417,6 +418,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         refreshButton.setEnabled(false);
         refreshButton.setMargin(new java.awt.Insets(10, 14, 10, 14));
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 refreshButtonActionPerformed(evt);
             }

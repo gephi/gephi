@@ -340,6 +340,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         infoLabel = new javax.swing.JLabel();
 
         columnsToMergeList.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 columnsToMergeListMouseClicked(evt);
             }
@@ -352,6 +353,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         addColumnButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/datalab/resources/arrow.png"))); // NOI18N
         addColumnButton.setText(org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.addColumnButton.text")); // NOI18N
         addColumnButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addColumnButtonActionPerformed(evt);
             }
@@ -360,12 +362,14 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         removeColumnButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/datalab/resources/arrow-180.png"))); // NOI18N
         removeColumnButton.setText(org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.removeColumnButton.text")); // NOI18N
         removeColumnButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeColumnButtonActionPerformed(evt);
             }
         });
 
         availableColumnsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 availableColumnsListMouseClicked(evt);
             }
@@ -382,6 +386,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         availableStrategiesLabel.setText(org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.availableStrategiesLabel.text")); // NOI18N
 
         availableStrategiesComboBox.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 availableStrategiesComboBoxItemStateChanged(evt);
             }

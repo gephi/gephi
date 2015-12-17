@@ -67,6 +67,7 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
         okButton.addActionListener(this);
     }
 
+    @Override
     public void actionPerformed(ActionEvent evt) {
         FilterProperty pattern = filter.getProperties()[1];
         FilterProperty useRegex = filter.getProperties()[2];
@@ -102,6 +103,7 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
         ValidationGroup group = validationPanel.getValidationGroup();
         validationPanel.addChangeListener(new ChangeListener() {
 
+            @Override
             public void stateChanged(ChangeEvent e) {
                 innerPanel.okButton.setEnabled(!validationPanel.isProblem());
             }

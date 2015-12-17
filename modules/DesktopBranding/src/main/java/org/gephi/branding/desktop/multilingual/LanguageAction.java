@@ -119,6 +119,7 @@ public final class LanguageAction extends CallableSystemAction {
         for (final Language lang : Language.values()) {
             JMenuItem menuItem = new JMenuItem(new AbstractAction(lang.getName()) {
 
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     String msg = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.message" + (Utilities.isMac() || Utilities.isUnix() ? ".mac" : ""));
                     String title = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.title");

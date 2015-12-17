@@ -47,6 +47,7 @@ import org.openide.util.Lookup;
 
 public final class TimelineWindowAction implements ActionListener {
     
+    @Override
     public void actionPerformed(ActionEvent e) {
         BottomComponentImpl bottomComponent = Lookup.getDefault().lookup(BottomComponentImpl.class);
         if (bottomComponent != null) {

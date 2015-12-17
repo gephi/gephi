@@ -82,6 +82,7 @@ public class StatisticsModelImpl implements StatisticsModel {
         reportMap.put(statistics.getClass(), statistics.getReport());
     }
 
+    @Override
     public String getReport(Class<? extends Statistics> statisticsClass) {
         return reportMap.get(statisticsClass);
     }

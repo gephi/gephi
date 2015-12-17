@@ -1367,6 +1367,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         nodesButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nodesButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         nodesButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nodesButtonActionPerformed(evt);
             }
@@ -1379,6 +1380,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         edgesButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         edgesButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         edgesButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 edgesButtonActionPerformed(evt);
             }
@@ -1393,6 +1395,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         configurationButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         configurationButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         configurationButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 configurationButtonActionPerformed(evt);
             }
@@ -1424,6 +1427,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         availableColumnsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         availableColumnsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         availableColumnsButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 availableColumnsButtonActionPerformed(evt);
             }
@@ -1461,6 +1465,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.refreshButton.text")); // NOI18N
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 refreshButtonActionPerformed(evt);
             }

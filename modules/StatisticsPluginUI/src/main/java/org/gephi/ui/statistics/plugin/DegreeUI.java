@@ -58,39 +58,48 @@ public class DegreeUI implements StatisticsUI {
 
     private Degree inOutDegree;
 
+    @Override
     public JPanel getSettingsPanel() {
         return null;
     }
 
+    @Override
     public void setup(Statistics statistics) {
         this.inOutDegree = (Degree) statistics;
     }
 
+    @Override
     public void unsetup() {
         inOutDegree = null;
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return Degree.class;
     }
 
+    @Override
     public String getValue() {
         DecimalFormat df = new DecimalFormat("###.###");
         return "" + df.format(inOutDegree.getAverageDegree());
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "InOutDegreeUI.name");
     }
 
+    @Override
     public String getCategory() {
         return StatisticsUI.CATEGORY_NETWORK_OVERVIEW;
     }
 
+    @Override
     public int getPosition() {
         return 1;
     }
 
+    @Override
     public String getShortDescription() {
         return NbBundle.getMessage(getClass(), "InOutDegreeUI.shortDescription");
     }

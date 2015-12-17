@@ -95,9 +95,11 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
 
+            @Override
             public void initialize(Workspace workspace) {
             }
 
+            @Override
             public void select(Workspace workspace) {
                 StatisticsModelUIImpl model = workspace.getLookup().lookup(StatisticsModelUIImpl.class);
                 if (model == null) {
@@ -107,12 +109,15 @@ public final class StatisticsTopComponent extends TopComponent implements Change
                 refreshModel(model);
             }
 
+            @Override
             public void unselect(Workspace workspace) {
             }
 
+            @Override
             public void close(Workspace workspace) {
             }
 
+            @Override
             public void disable() {
                 refreshModel(null);
             }
@@ -132,6 +137,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         //Settings
         settingsButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 AvailableStatisticsChooser chooser = new AvailableStatisticsChooser();
                 chooser.setup(model, ((StatisticsPanel) statisticsPanel).getCategories());
@@ -156,6 +162,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         ((StatisticsPanel) statisticsPanel).refreshModel(model);
     }
 
+    @Override
     public void stateChanged(ChangeEvent e) {
         refreshModel(model);
     }

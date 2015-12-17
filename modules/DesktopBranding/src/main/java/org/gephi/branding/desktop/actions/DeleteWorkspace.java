@@ -50,6 +50,7 @@ import org.openide.util.actions.SystemAction;
 
 public class DeleteWorkspace extends SystemAction {
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         Lookup.getDefault().lookup(ProjectControllerUI.class).deleteWorkspace();
     }

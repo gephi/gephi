@@ -106,6 +106,7 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
 
         quotesCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.quotesCheckbox.text")); // NOI18N
         quotesCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 quotesCheckboxActionPerformed(evt);
             }

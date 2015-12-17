@@ -113,6 +113,7 @@ public class SavedQueryNode extends AbstractNode {
             super(NbBundle.getMessage(SavedQueryNode.class, "SavedQueryNode.actions.remove"));
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
             FilterLibrary filterLibrary = filterController.getModel().getLibrary();

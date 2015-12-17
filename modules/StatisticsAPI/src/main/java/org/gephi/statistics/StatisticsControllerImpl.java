@@ -217,6 +217,7 @@ public class StatisticsControllerImpl implements StatisticsController {
         model.addReport(statistics);
     }
 
+    @Override
     public StatisticsBuilder getBuilder(Class<? extends Statistics> statisticsClass) {
         for (StatisticsBuilder b : statisticsBuilders) {
             if (b.getStatisticsClass().equals(statisticsClass)) {
@@ -226,10 +227,12 @@ public class StatisticsControllerImpl implements StatisticsController {
         return null;
     }
 
+    @Override
     public StatisticsModelImpl getModel() {
         return model;
     }
 
+    @Override
     public StatisticsModel getModel(Workspace workspace) {
         StatisticsModel statModel = workspace.getLookup().lookup(StatisticsModelImpl.class);
         if (statModel == null) {
@@ -253,6 +256,7 @@ public class StatisticsControllerImpl implements StatisticsController {
             }
         }
 
+        @Override
         public boolean cancel() {
             cancel = true;
             if (longTask != null) {
@@ -261,6 +265,7 @@ public class StatisticsControllerImpl implements StatisticsController {
             return true;
         }
 
+        @Override
         public void setProgressTicket(ProgressTicket progressTicket) {
             this.progressTicket = progressTicket;
         }
