@@ -757,7 +757,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
     private enum DataTypeGDF {
 
         VARCHAR, BOOL, BOOLEAN, INTEGER, TINYINT, INT, DOUBLE, FLOAT
-    };
+    }
 
     private abstract class NodeColumnsGDF {
 

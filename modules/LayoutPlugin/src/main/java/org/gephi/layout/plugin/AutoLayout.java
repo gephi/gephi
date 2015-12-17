@@ -238,7 +238,7 @@ public class AutoLayout {
     public enum Interpolation {
 
         LINEAR, LOG
-    };
+    }
 
     private static abstract class AbstractDynamicProperty implements DynamicProperty {
 

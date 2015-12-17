@@ -66,7 +66,8 @@ public class VizEvent extends EventObject {
         MOUSE_RELEASED,
         NODE_LEFT_PRESS,
         NODE_LEFT_PRESSING,
-    };
+    }
+
     private Type type;
     private Object data;
 

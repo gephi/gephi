@@ -98,7 +98,7 @@ public class DateTick {
         DateTime minDate = new DateTime((long) min);
         DateTime maxDate = new DateTime((long) max);
 
-        Period period = new Period(minDate, maxDate, PeriodType.yearMonthDayTime());;
+        Period period = new Period(minDate, maxDate, PeriodType.yearMonthDayTime());
         int years = period.getYears();
         int months = period.getMonths();
         int days = period.getDays();
@@ -177,7 +177,7 @@ public class DateTick {
             for (int i = 0; i < totalIntervals; i++) {
                 Interval currentInterval;
                 if (i == 0) {
-                    currentInterval = min.property(type).toInterval();;
+                    currentInterval = min.property(type).toInterval();
                 } else {
                     currentInterval = min.property(type).addToCopy(i).property(type).toInterval();
                 }

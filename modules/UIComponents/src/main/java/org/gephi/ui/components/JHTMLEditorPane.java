@@ -614,7 +614,6 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
         } catch (Exception ex) {
         }
 
-        ;
     }
 
     @Override

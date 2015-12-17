@@ -145,7 +145,8 @@ preferredID = "DataTableTopComponent")
 public class DataTableTopComponent extends TopComponent implements AWTEventListener, DataTablesEventListener {
     private enum DisplayTable {
         NODE, EDGE
-    };
+    }
+
     //Settings
     private static final long AUTO_REFRESH_RATE_MILLISECONDS = 100;
     private static final String DATA_LABORATORY_DYNAMIC_FILTERING = "DataLaboratory_Dynamic_Filtering";

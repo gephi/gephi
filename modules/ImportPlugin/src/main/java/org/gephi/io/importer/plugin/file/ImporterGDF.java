@@ -561,12 +561,13 @@ public class ImporterGDF implements FileImporter, LongTask {
         public enum NodeGuessColumn {
 
             X, Y, VISIBLE, FIXED, STYLE, COLOR, WIDTH, HEIGHT, LABEL, LABELVISIBLE
-        };
+        }
 
         public enum EdgeGuessColumn {
 
             VISIBLE, COLOR, WEIGHT, DIRECTED, LABEL, LABELVISIBLE
-        };
+        }
+
         private ColumnDraft column;
         private NodeGuessColumn nodeColumn;
         private EdgeGuessColumn edgeColumn;

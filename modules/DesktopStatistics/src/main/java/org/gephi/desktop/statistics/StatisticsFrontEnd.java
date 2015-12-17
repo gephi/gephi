@@ -85,7 +85,6 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     private StatisticsModelUI currentModel;
 
     //Img
-    ;
 
     public StatisticsFrontEnd(StatisticsUI ui) {
         initComponents();

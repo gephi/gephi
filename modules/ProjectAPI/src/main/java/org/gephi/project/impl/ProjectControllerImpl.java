@@ -70,7 +70,8 @@ public class ProjectControllerImpl implements ProjectController {
     private enum EventType {
 
         INITIALIZE, SELECT, UNSELECT, CLOSE, DISABLE
-    };
+    }
+
     //Data
     private final ProjectsImpl projects = new ProjectsImpl();
     private final List<WorkspaceListener> listeners;
