@@ -43,6 +43,7 @@ package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import java.util.Arrays;
 import javax.swing.Icon;
+import javax.swing.JOptionPane;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.graph.api.Graph;
@@ -123,16 +124,16 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
         return null;
     }
 
-    public void copyToWorkspace(Workspace workspace) {
+    public boolean copyToWorkspace(Workspace workspace) {
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
         Workspace currentWorkspace = projectController.getCurrentWorkspace();
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        
+
         GraphModel graphModel;
         if (workspace == null) {
             workspace = Lookup.getDefault().lookup(ProjectControllerUI.class).newWorkspace();
             graphModel = graphController.getGraphModel(workspace);
-            
+
             GraphModel currentGraphModel = graphController.getGraphModel(currentWorkspace);
             graphModel.setConfiguration(currentGraphModel.getConfiguration());
             graphModel.setTimeFormat(currentGraphModel.getTimeFormat());
@@ -140,13 +141,22 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
         } else {
             graphModel = graphController.getGraphModel(workspace);
         }
-        
-        graphModel.bridge().copyNodes(nodes);
+
+        try {
+            graphModel.bridge().copyNodes(nodes);
+            return true;
+        } catch (Exception e) {
+            String error = NbBundle.getMessage(CopyOrMoveToWorkspace.class, "GraphContextMenu_CopyOrMoveToWorkspace_ConfigurationNotCompatible");
+            String title = NbBundle.getMessage(CopyOrMoveToWorkspace.class, "GraphContextMenu_CopyOrMoveToWorkspace_ConfigurationNotCompatible_Title");
+            JOptionPane.showMessageDialog(null, error, title, JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
     }
 
     public void moveToWorkspace(Workspace workspace) {
-        copyToWorkspace(workspace);
-        delete();
+        if(copyToWorkspace(workspace)){
+            delete();
+        }
     }
 
     public void delete() {
