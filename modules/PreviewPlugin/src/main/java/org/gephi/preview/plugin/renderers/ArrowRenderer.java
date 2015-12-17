@@ -203,8 +203,8 @@ public class ArrowRenderer implements Renderer {
                     * weight.floatValue();
             float radius = -(properties.getFloatValue(PreviewProperty.EDGE_RADIUS)
                     + (Float) targetItem.getData(NodeItem.SIZE) / 2f
-                    + Math.max(0, properties.getFloatValue(
-                            PreviewProperty.NODE_BORDER_WIDTH)));
+                    + Math.max(0, properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH)) / 2f //We have to divide by 2 because the border stroke is not only an outline but also draws the other half of the curve inside the node
+                    );
 
             //Avoid arrow from passing the node's center:
             if (radius > 0) {

@@ -48,7 +48,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
-import java.text.DecimalFormat;
 import java.util.Locale;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -160,33 +159,30 @@ public class EdgeRenderer implements Renderer {
             if (!(Boolean) item.getData(EdgeItem.SELF_LOOP)) {
                 final float edgeRadius
                         = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
-                if ((Boolean) item.getData(EdgeItem.DIRECTED)
-                        || edgeRadius > 0F) {
-                    //Target
-                    final Item targetItem = (Item) item.getData(TARGET);
-                    final Double weight = item.getData(EdgeItem.WEIGHT);
-                    //Avoid negative arrow size:
-                    float arrowSize = properties.getFloatValue(
-                            PreviewProperty.ARROW_SIZE);
-                    if (arrowSize < 0F) {
-                        arrowSize = 0F;
-                    }
-                    final float size = arrowSize * weight.floatValue();
-                    final float targetRadius = -(edgeRadius
-                            + (Float) targetItem.getData(NodeItem.SIZE) / 2F
-                            + properties.getFloatValue(
-                                    PreviewProperty.NODE_BORDER_WIDTH));
-                    item.setData(TARGET_RADIUS, targetRadius - size);
+                
+                //Target
+                final Item targetItem = (Item) item.getData(TARGET);
+                final Double weight = item.getData(EdgeItem.WEIGHT);
+                //Avoid negative arrow size:
+                float arrowSize = properties.getFloatValue(
+                        PreviewProperty.ARROW_SIZE);
+                if (arrowSize < 0F) {
+                    arrowSize = 0F;
                 }
-                if (edgeRadius > 0) {
-                    //Source
-                    final Item sourceItem = (Item) item.getData(SOURCE);
-                    final float sourceRadius = -(edgeRadius
-                            + (Float) sourceItem.getData(NodeItem.SIZE) / 2f
-                            + properties.getFloatValue(
-                                    PreviewProperty.NODE_BORDER_WIDTH));
-                    item.setData(SOURCE_RADIUS, sourceRadius);
-                }
+                final float size = arrowSize * weight.floatValue();
+                final float targetRadius = -(edgeRadius
+                        + (Float) targetItem.getData(NodeItem.SIZE) / 2f
+                        + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f //We have to divide by 2 because the border stroke is not only an outline but also draws the other half of the curve inside the node
+                        );
+                item.setData(TARGET_RADIUS, targetRadius - size);
+                
+                //Source
+                final Item sourceItem = (Item) item.getData(SOURCE);
+                final float sourceRadius = -(edgeRadius
+                        + (Float) sourceItem.getData(NodeItem.SIZE) / 2f
+                        + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f
+                        );
+                item.setData(SOURCE_RADIUS, sourceRadius);
             }
         }
     }
@@ -344,10 +340,9 @@ public class EdgeRenderer implements Renderer {
                         "M %f,%f L %f,%f",
                         h.x1, h.y1, h.x2, h.y2));
                 edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
-                final DecimalFormat df = new DecimalFormat("#.########");
                 edgeElem.setAttribute(
                         "stroke-width",
-                        df.format(getThickness(item)
+                        Float.toString(getThickness(item)
                                 * svgTarget.getScaleRatio()));
                 edgeElem.setAttribute(
                         "stroke-opacity",
@@ -420,7 +415,6 @@ public class EdgeRenderer implements Renderer {
                     Vector direction = new Vector(_x2, _y2);
                     direction.sub(new Vector(_x1, _y1));
                     direction.normalize();
-                    direction = new Vector(direction.x, direction.y);
                     direction.mult(targetRadius);
                     direction.add(new Vector(_x2, _y2));
                     _x2 = direction.x;
@@ -434,7 +428,6 @@ public class EdgeRenderer implements Renderer {
                     Vector direction = new Vector(_x1, _y1);
                     direction.sub(new Vector(_x2, _y2));
                     direction.normalize();
-                    direction = new Vector(direction.x, direction.y);
                     direction.mult(sourceRadius);
                     direction.add(new Vector(_x1, _y1));
                     _x1 = direction.x;
@@ -593,6 +586,7 @@ public class EdgeRenderer implements Renderer {
             final Helper h = new Helper(item);
             final Color color = getColor(item, properties);
 
+            //FIXME: This still won't draw a curve (draws a line) in any of the targets and I don't know why
             if (target instanceof G2DTarget) {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
                 graphics.setStroke(new BasicStroke(getThickness(item)));
@@ -600,7 +594,7 @@ public class EdgeRenderer implements Renderer {
                 final GeneralPath gp
                         = new GeneralPath(GeneralPath.WIND_NON_ZERO);
                 gp.moveTo(h.x, h.y);
-                gp.curveTo(h.v1.x, h.v1.y, h.v1.x, h.v2.y, h.x, h.y);
+                gp.curveTo(h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x, h.y);
                 graphics.draw(gp);
             } else if (target instanceof SVGTarget) {
                 final SVGTarget svgTarget = (SVGTarget) target;
@@ -666,10 +660,12 @@ public class EdgeRenderer implements Renderer {
             public final Vector v2;
 
             public Helper(final Item item) {
-                x = item.getData(NodeItem.X);
-                y = item.getData(NodeItem.Y);
-                final Float size = item.getData(NodeItem.SIZE);
-                node = (Node) item.getSource();
+                node = ((Edge) item.getSource()).getSource();
+
+                Item nodeSource = item.getData(SOURCE);
+                x = nodeSource.getData(NodeItem.X);
+                y = nodeSource.getData(NodeItem.Y);
+                Float size = nodeSource.getData(NodeItem.SIZE);
 
                 v1 = new Vector(x, y);
                 v1.add(size, -size);
