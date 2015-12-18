@@ -411,7 +411,6 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
         centerScrollPane.setBorder(null);
         centerScrollPane.setOpaque(false);
-        centerScrollPane.setViewportView(null);
 
         backPanel.setLayout(new java.awt.GridBagLayout());
 
