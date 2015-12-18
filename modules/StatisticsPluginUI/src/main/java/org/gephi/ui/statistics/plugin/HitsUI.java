@@ -52,7 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = StatisticsUI.class)
+//@ServiceProvider(service = StatisticsUI.class)
 public class HitsUI implements StatisticsUI {
 
     private final StatSettings settings = new StatSettings();
