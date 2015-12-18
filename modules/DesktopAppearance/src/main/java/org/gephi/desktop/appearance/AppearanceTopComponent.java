@@ -58,10 +58,12 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import org.gephi.appearance.api.AttributeFunction;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.graph.api.Column;
 import org.gephi.ui.components.splineeditor.SplineEditor;
 import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -312,6 +314,24 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                             applyButton.setEnabled(true);
                         }
 
+                        Function func = model.getSelectedFunction();
+                        rankingButton.setEnabled(true);
+                        partitionButton.setEnabled(true);
+                        if (func.isPartition()) {
+                            if (!func.isAttribute()) {
+                                rankingButton.setEnabled(false);
+                            } else {
+                                AttributeFunction af = (AttributeFunction) func;
+                                Column col = af.getColumn();
+                                if (!col.isNumber()) {
+                                    rankingButton.setEnabled(false);
+                                }
+                            }
+                        } else if (func.isRanking()) {
+                            if (!func.isAttribute()) {
+                                partitionButton.setEnabled(false);
+                            }
+                        }
                     }
                     localScaleButton.setSelected(model.isLocalScale());
                     return;
@@ -330,6 +350,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         //Add ranking controls
 //        toolbar.addRankingControl(localScaleButton);
         toolbar.addRankingControl(splineButton);
+        toolbar.addRankingControl(partitionButton);
+        toolbar.addPartitionControl(rankingButton);
 
         //Add partition controls
 //        toolbar.addPartitionControl(localScaleButton);
@@ -361,6 +383,26 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                         new Interpolator.BezierInterpolator(
                                 (float) splineEditor.getControl1().getX(), (float) splineEditor.getControl1().getY(),
                                 (float) splineEditor.getControl2().getX(), (float) splineEditor.getControl2().getY()));
+            }
+        });
+        rankingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.appearanceController.forceRankingFunction(model.getSelectedFunction());
+                Function newFunct = model.replaceSelectedFunction();
+                if (newFunct != null) {
+                    controller.setSelectedFunction(newFunct);
+                }
+            }
+        });
+        partitionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.appearanceController.forcePartitionFunction(model.getSelectedFunction());
+                Function newFunct = model.replaceSelectedFunction();
+                if (newFunct != null) {
+                    controller.setSelectedFunction(newFunct);
+                }
             }
         });
         applyButton.addActionListener(new ActionListener() {
@@ -475,6 +517,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         centerPanel = new javax.swing.JPanel();
         controlToolbar = toolbar.getControlToolbar();
         localScaleButton = new javax.swing.JToggleButton();
+        rankingButton = new javax.swing.JButton();
+        partitionButton = new javax.swing.JButton();
         splineButton = new org.jdesktop.swingx.JXHyperlink();
         controlPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
@@ -541,6 +585,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
         controlToolbar.setFloatable(false);
         controlToolbar.setRollover(true);
+        controlToolbar.setMargin(new java.awt.Insets(0, 4, 0, 0));
         controlToolbar.setOpaque(false);
 
         localScaleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png"))); // NOI18N
@@ -548,11 +593,26 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         localScaleButton.setFocusable(false);
         controlToolbar.add(localScaleButton);
 
+        rankingButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/appearance/resources/ranking.png"))); // NOI18N
+        rankingButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.rankingButton.toolTipText")); // NOI18N
+        rankingButton.setFocusable(false);
+        rankingButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        rankingButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        controlToolbar.add(rankingButton);
+
+        partitionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/appearance/resources/partition.png"))); // NOI18N
+        partitionButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.partitionButton.toolTipText")); // NOI18N
+        partitionButton.setFocusable(false);
+        partitionButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        partitionButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        controlToolbar.add(partitionButton);
+
         org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.text")); // NOI18N
         splineButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.toolTipText")); // NOI18N
         splineButton.setClickedColor(new java.awt.Color(0, 51, 255));
         splineButton.setFocusPainted(false);
         splineButton.setFocusable(false);
+        splineButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         splineButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         controlToolbar.add(splineButton);
 
@@ -649,6 +709,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private javax.swing.JToggleButton enableAutoButton;
     private javax.swing.JToggleButton localScaleButton;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JButton partitionButton;
+    private javax.swing.JButton rankingButton;
     private org.jdesktop.swingx.JXHyperlink splineButton;
     private javax.swing.JToggleButton stopAutoApplyButton;
     private javax.swing.JToolBar tranformerToolbar;

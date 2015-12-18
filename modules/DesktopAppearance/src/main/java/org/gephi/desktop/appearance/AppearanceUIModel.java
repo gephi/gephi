@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.gephi.appearance.api.AppearanceModel;
+import org.gephi.appearance.api.AttributeFunction;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
@@ -147,6 +148,23 @@ public class AppearanceUIModel {
         }
     }
 
+    public synchronized Function replaceSelectedFunction() {
+        Graph graph = graphController.getGraphModel(appearanceModel.getWorkspace()).getGraph();
+        Function sFunction = getSelectedFunction();
+        if (sFunction instanceof AttributeFunction) {
+            AttributeFunction af = (AttributeFunction) sFunction;
+            for (Function func : getSelectedElementClass().equals(AppearanceUIController.NODE_ELEMENT) ? appearanceModel.getNodeFunctions(graph) : appearanceModel.getEdgeFunctions(graph)) {
+                if (func instanceof AttributeFunction) {
+                    if (af.getColumn().equals(((AttributeFunction) func).getColumn())
+                            && sFunction.getUI().getCategory().equals(func.getUI().getCategory())) {
+                        return func;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public synchronized boolean refreshSelectedFunction() {
         Graph graph = graphController.getGraphModel(appearanceModel.getWorkspace()).getGraph();
         Function sFunction = getSelectedFunction();
@@ -155,6 +173,7 @@ public class AppearanceUIModel {
                 if (func.equals(sFunction)) {
                     return false;
                 }
+
             }
         }
         return true;

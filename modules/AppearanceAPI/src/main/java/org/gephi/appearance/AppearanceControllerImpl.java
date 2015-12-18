@@ -156,4 +156,18 @@ public class AppearanceControllerImpl implements AppearanceController {
             model.setLocalScale(useLocalScale);
         }
     }
+
+    @Override
+    public void forcePartitionFunction(Function function) {
+        if (model != null) {
+            model.forcePartition(function);
+        }
+    }
+
+    @Override
+    public void forceRankingFunction(Function function) {
+        if (model != null) {
+            model.forceRanking(function);
+        }
+    }
 }
