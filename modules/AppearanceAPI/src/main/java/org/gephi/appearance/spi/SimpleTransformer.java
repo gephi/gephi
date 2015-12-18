@@ -44,10 +44,16 @@ package org.gephi.appearance.spi;
 import org.gephi.graph.api.Element;
 
 /**
+ * Basic transformer that takes only an element to transform it.
  *
- * @author mbastian
+ * @param <E> element class
  */
 public interface SimpleTransformer<E extends Element> extends Transformer {
 
+    /**
+     * Transforms the given element.
+     *
+     * @param element element to transform
+     */
     public void transform(E element);
 }

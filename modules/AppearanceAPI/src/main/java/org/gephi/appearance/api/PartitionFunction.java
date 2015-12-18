@@ -42,10 +42,14 @@
 package org.gephi.appearance.api;
 
 /**
- *
- * @author mbastian
+ * Partition function.
  */
 public interface PartitionFunction extends Function {
 
+    /**
+     * Returns the partition configuration associated with this function.
+     *
+     * @return partition
+     */
     public Partition getPartition();
 }

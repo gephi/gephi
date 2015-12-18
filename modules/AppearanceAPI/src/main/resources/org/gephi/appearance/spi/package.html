@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body bgcolor="white">
+        Interfaces that define the different ways the appearance of elements can
+        be transformed.
+        <p>
+            The purpose of transformers is to change the appearance of elements
+            based on user parameters and column's values. There are three types
+            of transformers: simple, ranking and partition. The simple transformer
+            interface is defined in <code>org.gephi.appearance.spi.SimpleTransformer</code>.
+            The ranking and partition transformers are both based on the specific value
+            an element has in a given column. The ranking transformer work with
+            numerical, sorted values (e.g. age, number of followers) and the 
+            partition transformer work with categorical values (e.g. community id,
+            gender). The ranking transformer is defined in <code>org.gephi.appearance.spi.RankingTransformer</code>
+            and the partition transformer in <code>org.gephi.appearance.spi.PartitionTransformer</code>.
+        </p>
+        <p>
+            Then, transformers can be associated with user interfaces elements
+            through the implementation of <code>org.gephi.appearance.spi.TransformerUI</code>.
+        </p>
+    </body>
+</html>
+

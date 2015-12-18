@@ -46,10 +46,23 @@ import org.gephi.appearance.api.Ranking;
 import org.gephi.graph.api.Element;
 
 /**
+ * Ranking transformer that transforms an element based on a numerical ranking
+ * column.
  *
- * @author mbastian
+ * @param <E> element class
  */
 public interface RankingTransformer<E extends Element> extends Transformer {
 
+    /**
+     * Transforms the given element based on the provided ranking parameters.
+     * <p>
+     * The <code>ranking</code> object contains the min and max value so the
+     * ranked value can be calculated.
+     *
+     * @param element element to transform
+     * @param ranking ranking configuration
+     * @param interpolator interpolator
+     * @param value element's value for this ranking
+     */
     public void transform(E element, Ranking ranking, Interpolator interpolator, Number value);
 }

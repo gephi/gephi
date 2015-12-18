@@ -48,28 +48,93 @@ import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 
 /**
- *
- * @author mbastian
+ * Partition configuration for categorical attributes.
+ * <p>
+ * This interface has access to the underlying index so it can return the
+ * complete collection of different values, as well as the number of elements
+ * with this value.
+ * <p>
+ * Note that <code>null</code> can be a valid value.
+ * <p>
+ * Colors can be associated with values.
  */
 public interface Partition {
 
+    /**
+     * Returns the collection of values this partition represents. Each value
+     * has at least one element.
+     *
+     * @return values
+     */
     public Collection getValues();
 
+    /**
+     * Returns the same collection as {@link #getValues() } but sorted
+     * descendant in counts.
+     *
+     * @return sorted values
+     */
     public Collection getSortedValues();
 
+    /**
+     * Returns the number of elements that have a value in this partition.
+     *
+     * @return element count
+     */
     public int getElementCount();
 
+    /**
+     * Returns the number of elements for the given value.
+     *
+     * @param value value
+     * @return value count
+     */
     public int count(Object value);
 
+    /**
+     * Returns the element's value for this partition.
+     *
+     * @param element element to get the value for
+     * @param graph graph this element belongs to
+     * @return the value for this partition
+     */
     public Object getValue(Element element, Graph graph);
 
+    /**
+     * Returns the color for the given value.
+     *
+     * @param value value to get the color for
+     * @return color or null if not defined
+     */
     public Color getColor(Object value);
 
+    /**
+     * Sets the color for the given value.
+     *
+     * @param value value to set the color for
+     * @param color color
+     */
     public void setColor(Object value, Color color);
 
+    /**
+     * Returns the percentage of elements with the given value.
+     *
+     * @param value value
+     * @return percentage, between zero and 100
+     */
     public float percentage(Object value);
 
+    /**
+     * Returns the number of values this partition represents.
+     *
+     * @return value count
+     */
     public int size();
 
+    /**
+     * Returns the column associated with this partition.
+     *
+     * @return column or null if partition not based on a column
+     */
     public Column getColumn();
 }

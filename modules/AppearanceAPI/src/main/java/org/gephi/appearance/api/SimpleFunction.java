@@ -42,8 +42,7 @@
 package org.gephi.appearance.api;
 
 /**
- *
- * @author mbastian
+ * Simple functions are neither ranking nor partition.
  */
 public interface SimpleFunction extends Function {
 }

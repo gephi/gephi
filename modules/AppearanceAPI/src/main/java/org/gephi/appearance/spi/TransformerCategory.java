@@ -44,12 +44,27 @@ package org.gephi.appearance.spi;
 import javax.swing.Icon;
 
 /**
+ * Transformer categories are associated with <code>TransformerUI</code> to
+ * describe what kind of transformation is performed. It is designed to group
+ * together different transformers. For instance if two transformers both act on
+ * the size of a node but in a different way they should be grouped together
+ * with the same category.
  *
- * @author mbastian
+ * @see TransformerUI
  */
 public interface TransformerCategory {
 
+    /**
+     * Returns the transformer category display name.
+     *
+     * @return display name
+     */
     public String getDisplayName();
 
+    /**
+     * Returns the transformer category icon.
+     *
+     * @return icon or null if missing
+     */
     public Icon getIcon();
 }

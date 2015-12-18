@@ -42,14 +42,31 @@
 package org.gephi.appearance.api;
 
 /**
- *
- * @author mbastian
+ * Ranking function.
  */
 public interface RankingFunction extends Function {
 
+    /**
+     * Returns the ranking configuration associated with this function.
+     *
+     * @return ranking
+     */
     public Ranking getRanking();
 
+    /**
+     * Sets the interpolator for this function.
+     *
+     * @param interpolator interpolator
+     */
     public void setInterpolator(Interpolator interpolator);
 
+    /**
+     * Returns the interpolator.
+     * <p>
+     * By default, a <code>Interpolator.LINEAR</code> is used so no
+     * transformation is operated.
+     *
+     * @return interpolator
+     */
     public Interpolator getInterpolator();
 }

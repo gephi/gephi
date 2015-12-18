@@ -45,16 +45,45 @@ import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 
 /**
- *
- * @author mbastian
+ * Ranking configuration for numerical attributes.
+ * <p>
+ * This interface has underlying access to the elements value so it can return
+ * the minimum and maximum values.
  */
 public interface Ranking {
 
+    /**
+     * Returns the minimum value in this ranking.
+     *
+     * @return minimum value
+     */
     public Number getMinValue();
 
+    /**
+     * Returns the maximum value in this ranking.
+     *
+     * @return maximum value
+     */
     public Number getMaxValue();
 
+    /**
+     * Returns the element's value for this ranking.
+     *
+     * @param element element to get the value for
+     * @param graph graph this element belongs to
+     * @return the value for this ranking
+     */
     public Number getValue(Element element, Graph graph);
 
+    /**
+     * Normalizes the given value with the interpolator.
+     * <p>
+     * The value is first put between zero and one by doing <code>(value - min) / (max
+     * - min)</code> and then passed to the given interpolator.
+     *
+     * @param value value to normalize
+     * @param interpolator interpolator
+     * @return normalized value
+     */
     public float normalize(Number value, Interpolator interpolator);
 }

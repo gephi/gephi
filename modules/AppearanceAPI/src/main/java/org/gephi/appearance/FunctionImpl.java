@@ -150,6 +150,10 @@ public abstract class FunctionImpl implements Function {
         return id;
     }
 
+    public String getId() {
+        return id;
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;

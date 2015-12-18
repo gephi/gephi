@@ -46,8 +46,11 @@ import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.project.api.Workspace;
 
 /**
- *
- * @author mbastian
+ * Manage and controls the appearance of elements through visual
+ * transformations.
+ * <p>
+ * This controller is a singleton and can therefore be found in Lookup:
+ * <pre>AppearanceController ac = Lookup.getDefault().lookup(AppearanceController.class);</pre>
  */
 public interface AppearanceController {
 
@@ -62,11 +65,34 @@ public interface AppearanceController {
      */
     public void setUseLocalScale(boolean useLocalScale);
 
+    /**
+     * Apply the function's transformer. If the function is for nodes all nodes
+     * in the visible graph will be transformed. Similarly for edges.
+     *
+     * @param function function to transform
+     */
     public void transform(Function function);
 
+    /**
+     * Returns the appearance model for the current workspace.
+     *
+     * @return appearance model
+     */
     public AppearanceModel getModel();
 
+    /**
+     * Returns the appearance model for the given workspace.
+     *
+     * @param workspace workspace
+     * @return appearance model
+     */
     public AppearanceModel getModel(Workspace workspace);
 
+    /**
+     * Returns the transformer associated with the given transformer UI.
+     *
+     * @param ui user interface instance
+     * @return transformer instance or null if not found
+     */
     public Transformer getTransformer(TransformerUI ui);
 }

@@ -45,10 +45,20 @@ import org.gephi.appearance.api.Partition;
 import org.gephi.graph.api.Element;
 
 /**
+ * Partition transformer that transforms an element based on a categorical
+ * partition column.
  *
- * @author mbastian
+ * @param <E> element class
  */
 public interface PartitionTransformer<E extends Element> extends Transformer {
 
+    /**
+     * Transforms the given element based on the provided partition
+     * configuration.
+     *
+     * @param element element to transform
+     * @param partition partition configuration
+     * @param value element's value for this partition
+     */
     public void transform(E element, Partition partition, Object value);
 }

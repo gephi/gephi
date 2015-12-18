@@ -42,8 +42,9 @@
 package org.gephi.appearance.api;
 
 /**
- *
- * @author mbastian
+ * A graph function operates based on graph attributes such as edge type or node
+ * degree. These values are different from <code>AttributeFunction</code> as
+ * they change when the graph topology change.
  */
 public interface GraphFunction extends Function {
 

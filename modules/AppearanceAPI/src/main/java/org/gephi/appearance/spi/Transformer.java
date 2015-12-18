@@ -42,12 +42,27 @@
 package org.gephi.appearance.spi;
 
 /**
- *
- * @author mbastian
+ * Transformers role is to transform the appearance of elements based on user
+ * configuration. Examples of appearance alteration are color, size, label color
+ * or label size.
+ * <p>
+ * Transformers can be defined as singleton services by adding the
+ * <code>@ServiceProvider</code> annotation:
+ * <pre>@ServiceProvider(service = Transformer.class)</pre>
  */
 public interface Transformer {
 
+    /**
+     * True is this transformer can be applied to nodes.
+     *
+     * @return true if is node, false otherwise
+     */
     public boolean isNode();
 
+    /**
+     * True if this transformer can be applied to edges.
+     *
+     * @return true if is edge, false otherwise
+     */
     public boolean isEdge();
 }

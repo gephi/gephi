@@ -47,22 +47,68 @@ import javax.swing.JPanel;
 import org.gephi.appearance.api.Function;
 
 /**
+ * Defines the user interface associated with a transformer.
+ * <p>
+ * It is a one-to-one relationship as only a single transformer UI can be
+ * associated with a transformer.
+ * <p>
+ * Implementations of this class should be singleton services by adding the
+ * <code>@ServiceProvider</code> annotation:
+ * <pre>@ServiceProvider(service = TransformerUI.class, position = 2000)</pre>
+ * The position parameter is optional but can be used to control the order in
+ * which the transformers appear in the user interface. The higher the last.
  *
- * @author mbastian
+ * @param <T> transformer class
  */
 public interface TransformerUI<T extends Transformer> {
 
+    /**
+     * Returns the transformer category.
+     *
+     * @return transformer category
+     */
     public TransformerCategory getCategory();
 
+    /**
+     * Returns the transformer panel for the given function.
+     *
+     * @param function function
+     * @return transformer panel
+     */
     public JPanel getPanel(Function function);
 
+    /**
+     * Returns the transformer's display name.
+     *
+     * @return display name
+     */
     public String getDisplayName();
 
+    /**
+     * Returns the transformer's description.
+     *
+     * @return description or null if missing
+     */
     public String getDescription();
 
+    /**
+     * Returns the transformer's icon.
+     *
+     * @return icon or null if missing
+     */
     public Icon getIcon();
 
+    /**
+     * Returns the control buttons associated with this transformer.
+     *
+     * @return control buttons or null if missing
+     */
     public AbstractButton[] getControlButton();
 
+    /**
+     * Returns the transformer class this transformer UI is associated with.
+     *
+     * @return transformer class
+     */
     public Class<? extends T> getTransformerClass();
 }
