@@ -148,10 +148,10 @@ public class AttributePartitionImpl extends PartitionImpl {
     public float percentage(Object value) {
         if (index != null) {
             int count = index.count(column, value);
-            return (float) count / index.countElements(column);
+            return 100f * ((float) count / index.countElements(column));
         } else {
             Integer c = parts.get(value);
-            return c != null ? c.floatValue() / elements : 0f;
+            return 100f * (c != null ? c.floatValue() / elements : 0f);
         }
     }
 
