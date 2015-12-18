@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.gephi.appearance.api.AppearanceModel;
+import org.gephi.appearance.api.AttributeFunction;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Partition;
@@ -129,6 +130,50 @@ public class AppearanceModelImpl implements AppearanceModel {
     @Override
     public Function[] getEdgeFunctions(Graph graph) {
         return refreshFunctions(graph).getEdgeFunctions();
+    }
+
+    @Override
+    public Function getNodeFunction(Graph graph, Column column, Class<? extends Transformer> transformer) {
+        for (Function f : refreshFunctions(graph).getNodeFunctions()) {
+            if (f.isAttribute() && f.getTransformer().getClass().equals(transformer)
+                    && ((AttributeFunction) f).getColumn().equals(column)) {
+                return f;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Function getEdgeFunction(Graph graph, Column column, Class<? extends Transformer> transformer) {
+        for (Function f : refreshFunctions(graph).getEdgeFunctions()) {
+            if (f.isAttribute() && f.getTransformer().getClass().equals(transformer)
+                    && ((AttributeFunction) f).getColumn().equals(column)) {
+                return f;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Function getNodeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer) {
+        String id = getNodeId(transformer, graphFunction);
+        for (Function f : refreshFunctions(graph).getNodeFunctions()) {
+            if (((FunctionImpl) f).getId().equals(id) && f.getTransformer().getClass().equals(transformer)) {
+                return f;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Function getEdgeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer) {
+        String id = getEdgeId(transformer, graphFunction);
+        for (Function f : refreshFunctions(graph).getEdgeFunctions()) {
+            if (((FunctionImpl) f).getId().equals(id) && f.getTransformer().getClass().equals(transformer)) {
+                return f;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -227,35 +272,35 @@ public class AppearanceModelImpl implements AppearanceModel {
 
         @Override
         public void refreshGraphFunctions() {
-            if (!rankings.containsKey(getId("degree"))) {
-                rankings.put(getId("degree"), new DegreeRankingImpl(graph));
+            if (!rankings.containsKey(getId(GraphFunction.NODE_DEGREE.getId()))) {
+                rankings.put(getId(GraphFunction.NODE_DEGREE.getId()), new DegreeRankingImpl(graph));
             }
             if (graph.isDirected()) {
-                if (!rankings.containsKey(getId("indegree"))) {
+                if (!rankings.containsKey(getId(GraphFunction.NODE_INDEGREE.getId()))) {
                     DirectedGraph directedGraph = (DirectedGraph) graph;
-                    rankings.put(getId("indegree"), new InDegreeRankingImpl(directedGraph));
-                    rankings.put(getId("outdegree"), new OutDegreeRankingImpl(directedGraph));
+                    rankings.put(getId(GraphFunction.NODE_INDEGREE.getId()), new InDegreeRankingImpl(directedGraph));
+                    rankings.put(getId(GraphFunction.NODE_OUTDEGREE.getId()), new OutDegreeRankingImpl(directedGraph));
                 }
             } else {
-                rankings.remove(getId("indegree"));
-                rankings.remove(getId("outdegree"));
+                rankings.remove(getId(GraphFunction.NODE_INDEGREE.getId()));
+                rankings.remove(getId(GraphFunction.NODE_OUTDEGREE.getId()));
             }
 
             // Degree functions
             for (Transformer t : getRankingTransformers()) {
-                String degreeId = getId(t, "degree");
-                RankingImpl degreeRanking = rankings.get(getId("degree"));
+                String degreeId = getId(t, GraphFunction.NODE_DEGREE.getId());
+                RankingImpl degreeRanking = rankings.get(getId(GraphFunction.NODE_DEGREE.getId()));
                 if (!graphFunctions.containsKey(degreeId)) {
                     String name = NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.Degree.name");
                     graphFunctions.put(degreeId, new GraphFunctionImpl(degreeId, name, Node.class, graph, t, getTransformerUI(t), degreeRanking, defaultInterpolator));
                 }
                 degreeRanking.refresh();
 
-                String indegreeId = getId(t, "indegree");
-                String outdegreeId = getId(t, "outdegree");
+                String indegreeId = getId(t, GraphFunction.NODE_INDEGREE.getId());
+                String outdegreeId = getId(t, GraphFunction.NODE_OUTDEGREE.getId());
 
-                RankingImpl indegreeRanking = rankings.get(getId("indegree"));
-                RankingImpl outdegreeRanking = rankings.get(getId("outdegree"));
+                RankingImpl indegreeRanking = rankings.get(getId(GraphFunction.NODE_INDEGREE.getId()));
+                RankingImpl outdegreeRanking = rankings.get(getId(GraphFunction.NODE_OUTDEGREE.getId()));
                 if (indegreeRanking != null && outdegreeRanking != null) {
                     if (!graphFunctions.containsKey(indegreeId)) {
                         String inDegreeName = NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.InDegree.name");
@@ -311,21 +356,21 @@ public class AppearanceModelImpl implements AppearanceModel {
 
         @Override
         public void refreshGraphFunctions() {
-            if (!rankings.containsKey(getId("weight"))) {
-                rankings.put(getId("weight"), new EdgeWeightRankingImpl(graph));
+            if (!rankings.containsKey(getId(GraphFunction.EDGE_WEIGHT.getId()))) {
+                rankings.put(getId(GraphFunction.EDGE_WEIGHT.getId()), new EdgeWeightRankingImpl(graph));
             }
             if (graph.getModel().isMultiGraph()) {
-                if (!partitions.containsKey(getId("type"))) {
-                    partitions.put(getId("type"), new EdgeTypePartitionImpl(graph));
+                if (!partitions.containsKey(getId(GraphFunction.EDGE_TYPE.getId()))) {
+                    partitions.put(getId(GraphFunction.EDGE_TYPE.getId()), new EdgeTypePartitionImpl(graph));
                 }
             } else {
-                partitions.remove(getId("type"));
+                partitions.remove(getId(GraphFunction.EDGE_TYPE.getId()));
             }
 
             // Weight function
             for (Transformer t : getRankingTransformers()) {
-                String weightId = getId(t, "weight");
-                RankingImpl ranking = rankings.get(getId("weight"));
+                String weightId = getId(t, GraphFunction.EDGE_WEIGHT.getId());
+                RankingImpl ranking = rankings.get(getId(GraphFunction.EDGE_WEIGHT.getId()));
                 if (!graphFunctions.containsKey(weightId)) {
                     String name = NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Weight.name");
                     graphFunctions.put(weightId, new GraphFunctionImpl(weightId, name, Edge.class, graph, t, getTransformerUI(t), ranking, defaultInterpolator));
@@ -335,8 +380,8 @@ public class AppearanceModelImpl implements AppearanceModel {
 
             // Type Function
             for (Transformer t : getPartitionTransformers()) {
-                String typeId = getId(t, "type");
-                PartitionImpl partition = partitions.get(getId("type"));
+                String typeId = getId(t, GraphFunction.EDGE_TYPE.getId());
+                PartitionImpl partition = partitions.get(getId(GraphFunction.EDGE_TYPE.getId()));
                 if (partition != null) {
                     if (!graphFunctions.containsKey(typeId)) {
                         String name = NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Type.name");
@@ -572,6 +617,14 @@ public class AppearanceModelImpl implements AppearanceModel {
         protected String getId(String suffix) {
             return getIdPrefix() + "_" + suffix;
         }
+    }
+
+    protected String getNodeId(Class<? extends Transformer> transformer, GraphFunction graphFunction) {
+        return "node_" + transformer.getSimpleName() + "_" + graphFunction.getId();
+    }
+
+    protected String getEdgeId(Class<? extends Transformer> transformer, GraphFunction graphFunction) {
+        return "edge_" + transformer.getSimpleName() + "_" + graphFunction.getId();
     }
 
     private boolean isPartition(Graph graph, Column column) {

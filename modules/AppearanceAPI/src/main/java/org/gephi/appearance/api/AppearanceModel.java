@@ -41,15 +41,38 @@
  */
 package org.gephi.appearance.api;
 
+import org.gephi.appearance.spi.Transformer;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
 import org.gephi.project.api.Workspace;
 
 /**
- *
- * @author mbastian
+ * Entry point to access the appearance functions.
+ * <p>
+ * One model exists for each workspace.
  */
 public interface AppearanceModel {
+
+    /**
+     * Identifies the non-column-based functions.
+     */
+    public enum GraphFunction {
+        NODE_DEGREE("degree"),
+        NODE_INDEGREE("indegree"),
+        NODE_OUTDEGREE("outdegree"),
+        EDGE_WEIGHT("weight"),
+        EDGE_TYPE("type");
+
+        private final String id;
+
+        GraphFunction(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+    }
 
     /**
      * Return the workspace this model is associated with
@@ -68,11 +91,79 @@ public interface AppearanceModel {
      */
     public boolean isLocalScale();
 
+    /**
+     * Returns the node partition for this graph and column.
+     *
+     * @param graph graph
+     * @param column column
+     * @return node partition of null if it doesn't exist
+     */
     public Partition getNodePartition(Graph graph, Column column);
 
+    /**
+     * Returns the edge partition for this graph and column.
+     *
+     * @param graph graph
+     * @param column column
+     * @return edge partition of null if it doesn't exist
+     */
     public Partition getEdgePartition(Graph graph, Column column);
 
+    /**
+     * Returns all node functions for the given graph.
+     *
+     * @param graph graph
+     * @return all node functions
+     */
     public Function[] getNodeFunctions(Graph graph);
 
+    /**
+     * Returns the node function for the given column and transformer.
+     *
+     * @param graph graph
+     * @param column column
+     * @param transformer transformer class
+     * @return node function or null if not found
+     */
+    public Function getNodeFunction(Graph graph, Column column, Class<? extends Transformer> transformer);
+
+    /**
+     * Returns the node function for the given graph function identifier and
+     * transformer.
+     *
+     * @param graph graph
+     * @param graphFunction graphFunction
+     * @param transformer transformer class
+     * @return node function or null if not found
+     */
+    public Function getNodeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer);
+
+    /**
+     * Returns all edge functions for the given graph.
+     *
+     * @param graph graph
+     * @return all edge functions
+     */
     public Function[] getEdgeFunctions(Graph graph);
+
+    /**
+     * Returns the node function for the given column and transformer.
+     *
+     * @param graph graph
+     * @param column column
+     * @param transformer transformer class
+     * @return edge function or null if not found
+     */
+    public Function getEdgeFunction(Graph graph, Column column, Class<? extends Transformer> transformer);
+
+    /**
+     * Returns the edge function for the given graph function identifier and
+     * transformer.
+     *
+     * @param graph graph
+     * @param graphFunction graphFunction
+     * @param transformer transformer class
+     * @return edge function or null if not found
+     */
+    public Function getEdgeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer);
 }
