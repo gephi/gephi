@@ -45,7 +45,7 @@ import java.awt.Color;
 
 public class AbstractUniqueColorTransformer {
 
-    protected Color color = Color.BLACK;
+    protected Color color = Color.LIGHT_GRAY;
 
     public Color getColor() {
         return color;
