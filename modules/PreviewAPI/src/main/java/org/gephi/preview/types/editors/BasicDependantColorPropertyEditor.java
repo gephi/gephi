@@ -39,7 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.preview.types.propertyeditors;
+package org.gephi.preview.types.editors;
 
 import java.awt.Color;
 import java.beans.PropertyEditorSupport;
@@ -48,10 +48,12 @@ import java.util.regex.Pattern;
 import org.gephi.preview.types.DependantColor;
 
 /**
- * Basic <code>PropertyEditor</code> for <code>DependantColor</code>.
- * It is necessary to define this basic editor without CustomEditor support in order to deserialize
- * <code>DependantColor</code> values from a project file when the full editor (from DesktopPreview module)
- * is not available (when using the toolkit or when the Preview UI is not loaded yet).
+ * Basic <code>PropertyEditor</code> for <code>DependantColor</code>. It is
+ * necessary to define this basic editor without CustomEditor support in order
+ * to deserialize <code>DependantColor</code> values from a project file when
+ * the full editor (from DesktopPreview module) is not available (when using the
+ * toolkit or when the Preview UI is not loaded yet).
+ *
  * @author Mathieu Bastian
  */
 public class BasicDependantColorPropertyEditor extends PropertyEditorSupport {

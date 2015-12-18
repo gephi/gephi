@@ -39,27 +39,29 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.preview.types.propertyeditors;
+package org.gephi.preview.types.editors;
 
 import java.awt.Color;
 import java.beans.PropertyEditorSupport;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.gephi.preview.types.EdgeColor;
+import org.gephi.preview.types.DependantOriginalColor;
 
 /**
- * Basic <code>PropertyEditor</code> for <code>EdgeColor</code>.
- * It is necessary to define this basic editor without CustomEditor support in order to deserialize
- * <code>EdgeColor</code> values from a project file when the full editor (from DesktopPreview module)
- * is not available (when using the toolkit or when the Preview UI is not loaded yet).
+ * Basic <code>PropertyEditor</code> for <code>DependantOriginalColor</code>. It
+ * is necessary to define this basic editor without CustomEditor support in
+ * order to deserialize <code>DependantOriginalColor</code> values from a
+ * project file when the full editor (from DesktopPreview module) is not
+ * available (when using the toolkit or when the Preview UI is not loaded yet).
+ *
  * @author Mathieu Bastian
  */
-public class BasicEdgeColorPropertyEditor extends PropertyEditorSupport {
+public class BasicDependantOriginalColorPropertyEditor extends PropertyEditorSupport {
 
     @Override
     public String getAsText() {
-        EdgeColor c = (EdgeColor) getValue();
-        if (c.getMode().equals(EdgeColor.Mode.CUSTOM)) {
+        DependantOriginalColor c = (DependantOriginalColor) getValue();
+        if (c.getMode().equals(DependantOriginalColor.Mode.CUSTOM)) {
             Color color = c.getCustomColor() == null ? Color.BLACK : c.getCustomColor();
             return String.format(
                     "%s [%d,%d,%d]",
@@ -70,12 +72,13 @@ public class BasicEdgeColorPropertyEditor extends PropertyEditorSupport {
         } else {
             return c.getMode().name().toLowerCase();
         }
+
     }
 
     @Override
     public void setAsText(String s) {
 
-        if (matchColorMode(s, EdgeColor.Mode.CUSTOM.name().toLowerCase())) {
+        if (matchColorMode(s, DependantOriginalColor.Mode.CUSTOM.name().toLowerCase())) {
             Pattern p = Pattern.compile("\\w+\\s*\\[\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\]");
             Matcher m = p.matcher(s);
             if (m.lookingAt()) {
@@ -83,16 +86,12 @@ public class BasicEdgeColorPropertyEditor extends PropertyEditorSupport {
                 int g = Integer.valueOf(m.group(2));
                 int b = Integer.valueOf(m.group(3));
 
-                setValue(new EdgeColor(new Color(r, g, b)));
+                setValue(new DependantOriginalColor(new Color(r, g, b)));
             }
-        } else if (matchColorMode(s, EdgeColor.Mode.MIXED.name().toLowerCase())) {
-            setValue(new EdgeColor(EdgeColor.Mode.MIXED));
-        } else if (matchColorMode(s, EdgeColor.Mode.ORIGINAL.name().toLowerCase())) {
-            setValue(new EdgeColor(EdgeColor.Mode.ORIGINAL));
-        } else if (matchColorMode(s, EdgeColor.Mode.SOURCE.name().toLowerCase())) {
-            setValue(new EdgeColor(EdgeColor.Mode.SOURCE));
-        } else if (matchColorMode(s, EdgeColor.Mode.TARGET.name().toLowerCase())) {
-            setValue(new EdgeColor(EdgeColor.Mode.TARGET));
+        } else if (matchColorMode(s, DependantOriginalColor.Mode.ORIGINAL.name().toLowerCase())) {
+            setValue(new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL));
+        } else if (matchColorMode(s, DependantOriginalColor.Mode.PARENT.name().toLowerCase())) {
+            setValue(new DependantOriginalColor(DependantOriginalColor.Mode.PARENT));
         }
     }
 
