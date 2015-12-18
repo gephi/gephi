@@ -588,14 +588,15 @@ public class Modularity implements Statistics, LongTask {
         double[] internal = new double[degrees.length];
         for (Node n : hgraph.getNodes()) {
             int n_index = theStructure.map.get(n);
-            for (Node neighbor : hgraph.getNeighbors(n)) {
+            for (Edge edge : hgraph.getEdges(n)) {
+                Node neighbor = hgraph.getOpposite(n, edge);
                 if (n == neighbor) {
                     continue;
                 }
                 int neigh_index = theStructure.map.get(neighbor);
                 if (struct[neigh_index] == struct[n_index]) {
                     if (weighted) {
-                        internal[struct[neigh_index]] += hgraph.getEdge(n, neighbor).getWeight(hgraph.getView());
+                        internal[struct[neigh_index]] += edge.getWeight(hgraph.getView());
                     } else {
                         internal[struct[neigh_index]]++;
                     }
