@@ -53,6 +53,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.lib.validation.PositiveNumberValidator;
@@ -116,9 +117,11 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         TimeFormat timeFormat = graphModel.getTimeFormat();
 
         //Bounds
-        bounds = dynamicStatistics.getBounds();
-        if (bounds == null) {
-            bounds = graphModel.getTimeBoundsVisible();
+        GraphView currentView = graphModel.getVisibleView();
+        if (currentView.isMainView()) {
+            bounds = graphModel.getTimeBounds();
+        } else {
+            bounds = currentView.getTimeInterval();
         }
         String boundsStr = timeFormat.print(bounds.getLow()) + " - " + timeFormat.print(bounds.getHigh());
         currentIntervalLabel.setText(boundsStr);

@@ -52,6 +52,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Subgraph;
 import org.gephi.graph.api.TimeIndex;
 import org.gephi.project.api.ProjectController;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -169,9 +170,15 @@ public class StatisticsControllerImpl implements StatisticsController {
 
         double window = statistics.getWindow();
         double tick = statistics.getTick();
+
+        GraphView currentView = graphModel.getVisibleView();
         Interval bounds = statistics.getBounds();
         if (bounds == null) {
-            bounds = graphModel.getTimeBoundsVisible();
+            if (currentView.isMainView()) {
+                bounds = graphModel.getTimeBounds();
+            } else {
+                bounds = currentView.getTimeInterval();
+            }
             statistics.setBounds(bounds);
         }
 
@@ -188,21 +195,40 @@ public class StatisticsControllerImpl implements StatisticsController {
         for (double low = bounds.getLow(); low <= bounds.getHigh() - window; low += tick) {
             double high = low + window;
 
-//            Graph g = dynamicGraph.getSnapshotGraph(low, high);
-            GraphView currentView = graphModel.getVisibleView();
             Graph graph = graphModel.getGraphVisible();
+
+            graph.writeLock();
+
             GraphView view = graphModel.createView();
-            Graph g = graphModel.getGraph(view);
+            Subgraph g = graphModel.getGraph(view);
 
             TimeIndex<Node> nodeIndex = graphModel.getNodeTimeIndex(currentView);
-            for (Node node : nodeIndex.get(new Interval(low, high))) {
-                g.addNode(node);
+            if (Double.isInfinite(nodeIndex.getMinTimestamp()) && Double.isInfinite(nodeIndex.getMaxTimestamp())) {
+                for (Node node : graph.getNodes()) {
+                    g.addNode(node);
+                }
+            } else {
+                for (Node node : nodeIndex.get(new Interval(low, high))) {
+                    g.addNode(node);
+                }
             }
 
             TimeIndex<Edge> edgeIndex = graphModel.getEdgeTimeIndex(currentView);
-            for (Edge edge : edgeIndex.get(new Interval(low, high))) {
-                g.addEdge(edge);
+            if (Double.isInfinite(edgeIndex.getMinTimestamp()) && Double.isInfinite(edgeIndex.getMaxTimestamp())) {
+                for (Edge edge : graph.getEdges()) {
+                    if (g.contains(edge.getSource()) && g.contains(edge.getTarget())) {
+                        g.addEdge(edge);
+                    }
+                }
+            } else {
+                for (Edge edge : edgeIndex.get(new Interval(low, high))) {
+                    if (g.contains(edge.getSource()) && g.contains(edge.getTarget())) {
+                        g.addEdge(edge);
+                    }
+                }
             }
+
+            graph.writeUnlock();
 
             statistics.loop(g.getView(), new Interval(low, high));
 
@@ -217,6 +243,7 @@ public class StatisticsControllerImpl implements StatisticsController {
         model.addReport(statistics);
     }
 
+    @Override
     public StatisticsBuilder getBuilder(Class<? extends Statistics> statisticsClass) {
         for (StatisticsBuilder b : statisticsBuilders) {
             if (b.getStatisticsClass().equals(statisticsClass)) {
@@ -226,10 +253,12 @@ public class StatisticsControllerImpl implements StatisticsController {
         return null;
     }
 
+    @Override
     public StatisticsModelImpl getModel() {
         return model;
     }
 
+    @Override
     public StatisticsModel getModel(Workspace workspace) {
         StatisticsModel statModel = workspace.getLookup().lookup(StatisticsModelImpl.class);
         if (statModel == null) {
@@ -253,6 +282,7 @@ public class StatisticsControllerImpl implements StatisticsController {
             }
         }
 
+        @Override
         public boolean cancel() {
             cancel = true;
             if (longTask != null) {
@@ -261,6 +291,7 @@ public class StatisticsControllerImpl implements StatisticsController {
             return true;
         }
 
+        @Override
         public void setProgressTicket(ProgressTicket progressTicket) {
             this.progressTicket = progressTicket;
         }
