@@ -57,6 +57,8 @@ import com.jogamp.opengl.glu.GLU;
 import java.awt.Component;
 import java.awt.Point;
 import java.nio.DoubleBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -276,7 +278,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
 
     public void refreshDraggingMarker() {
         //Refresh dragging marker
-		/*DoubleBuffer objPos = BufferUtil.newDoubleBuffer(3);
+        /*DoubleBuffer objPos = BufferUtil.newDoubleBuffer(3);
          glu.gluProject(0, 0, 0, modelMatrix, projMatrix, viewport, objPos);
          double dxx = objPos.get(0);
          double dyy = objPos.get(1);
@@ -377,10 +379,11 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
 
             if (showGLLog) {
                 showGLLog = false;
-                System.err.println("GL_VENDOR: " + gl.glGetString(GL2.GL_VENDOR));
-                System.err.println("GL_RENDERER: " + gl.glGetString(GL2.GL_RENDERER));
-                System.err.println("GL_VERSION: " + gl.glGetString(GL2.GL_VERSION));
-                System.err.println("GL_SURFACE_SCALE: " + globalScale);
+                Logger logger = Logger.getLogger("");
+                logger.log(Level.INFO, "GL_VENDOR: {0}", gl.glGetString(GL2.GL_VENDOR));
+                logger.log(Level.INFO, "GL_RENDERER: {0}", gl.glGetString(GL2.GL_RENDERER));
+                logger.log(Level.INFO, "GL_VERSION: {0}", gl.glGetString(GL2.GL_VERSION));
+                logger.log(Level.INFO, "GL_SURFACE_SCALE: {0}", globalScale);
             }
 
             resizing = false;

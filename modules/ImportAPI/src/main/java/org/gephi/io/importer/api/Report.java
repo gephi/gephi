@@ -73,7 +73,6 @@ public final class Report {
         try {
             f = File.createTempFile("tempreport", Long.toString(System.nanoTime()));
             f.deleteOnExit();
-            System.out.println("Report created at " + f.getAbsolutePath());
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         } finally {

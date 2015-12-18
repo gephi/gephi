@@ -46,6 +46,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
 import org.openide.NotifyDescriptor;
@@ -60,12 +62,12 @@ import org.openide.util.NbPreferences;
 public class Upgrader {
 
     private final static String UPGRADER_LAST_VERSION = "Upgrader_Last_Version";
-    private final static List<String> VERSION_TO_CHECK =
-            Arrays.asList(new String[]{"gephi", "gephi08alpha", "gephi07beta", "gephi07alpha"});
+    private final static List<String> VERSION_TO_CHECK
+            = Arrays.asList(new String[]{"gephi", "gephi08alpha", "gephi07beta", "gephi07alpha"});
 
     public void upgrade() {
         String currentVersion = getCurrentVersion();
-        System.out.println("Current Version is " + currentVersion);
+        Logger.getLogger("").log(Level.INFO, "Current Version is {0}", currentVersion);
         String lastVersion = NbPreferences.root().get(UPGRADER_LAST_VERSION, null);
         NbPreferences.root().put(UPGRADER_LAST_VERSION, currentVersion);
         if (lastVersion == null || !lastVersion.equals(currentVersion)) {
