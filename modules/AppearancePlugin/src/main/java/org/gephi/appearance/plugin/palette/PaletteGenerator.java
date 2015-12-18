@@ -60,6 +60,10 @@ public class PaletteGenerator {
         return generatePalette(colorsCount, quality, false, null, null);
     }
 
+    public static Color[] generatePalette(int colorsCount, int quality, Random random) {
+        return generatePalette(colorsCount, quality, false, random, null);
+    }
+
     public static Color[] generatePalette(int colorsCount, int quality, float[] filter) {
         return generatePalette(colorsCount, quality, false, null, filter);
     }
@@ -137,34 +141,32 @@ public class PaletteGenerator {
 
                 if (count != 0 && checkColor2(candidateKMean[0], candidateKMean[1], candidateKMean[2], filter)) {
                     kMeans[j] = candidateKMean;
-                } else {
-                    // The candidate kMean is out of the boundaries of the color space, or unfound.
-                    if (freeColorSamples.size() > 0) {
-                        // We just search for the closest FREE color of the candidate kMean
-                        double minDistance = 10000000000.0;
-                        int closest = -1;
-                        for (int i = 0; i < freeColorSamples.size(); i++) {
-                            double distance = Math.sqrt(Math.pow(freeColorSamples.get(i)[0] - candidateKMean[0], 2) + Math.pow(freeColorSamples.get(i)[1] - candidateKMean[1], 2) + Math.pow(freeColorSamples.get(i)[2] - candidateKMean[2], 2));
-                            if (distance < minDistance) {
-                                minDistance = distance;
-                                closest = i;
-                            }
+                } else // The candidate kMean is out of the boundaries of the color space, or unfound.
+                if (freeColorSamples.size() > 0) {
+                    // We just search for the closest FREE color of the candidate kMean
+                    double minDistance = 10000000000.0;
+                    int closest = -1;
+                    for (int i = 0; i < freeColorSamples.size(); i++) {
+                        double distance = Math.sqrt(Math.pow(freeColorSamples.get(i)[0] - candidateKMean[0], 2) + Math.pow(freeColorSamples.get(i)[1] - candidateKMean[1], 2) + Math.pow(freeColorSamples.get(i)[2] - candidateKMean[2], 2));
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            closest = i;
                         }
-                        kMeans[j] = colorSamples.get(closest);
-
-                    } else {
-                        // Then we just search for the closest color of the candidate kMean
-                        double minDistance = 10000000000.0;
-                        int closest = -1;
-                        for (int i = 0; i < colorSamples.size(); i++) {
-                            double distance = Math.sqrt(Math.pow(colorSamples.get(i)[0] - candidateKMean[0], 2) + Math.pow(colorSamples.get(i)[1] - candidateKMean[1], 2) + Math.pow(colorSamples.get(i)[2] - candidateKMean[2], 2));
-                            if (distance < minDistance) {
-                                minDistance = distance;
-                                closest = i;
-                            }
-                        }
-                        kMeans[j] = colorSamples.get(closest);
                     }
+                    kMeans[j] = colorSamples.get(closest);
+
+                } else {
+                    // Then we just search for the closest color of the candidate kMean
+                    double minDistance = 10000000000.0;
+                    int closest = -1;
+                    for (int i = 0; i < colorSamples.size(); i++) {
+                        double distance = Math.sqrt(Math.pow(colorSamples.get(i)[0] - candidateKMean[0], 2) + Math.pow(colorSamples.get(i)[1] - candidateKMean[1], 2) + Math.pow(colorSamples.get(i)[2] - candidateKMean[2], 2));
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            closest = i;
+                        }
+                    }
+                    kMeans[j] = colorSamples.get(closest);
                 }
                 List<double[]> newFreeColorSamples = new ArrayList<double[]>();
                 for (double[] color : freeColorSamples) {

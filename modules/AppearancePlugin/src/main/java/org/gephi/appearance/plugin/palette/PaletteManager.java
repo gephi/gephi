@@ -46,10 +46,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import org.openide.util.Exceptions;
 
 /**
@@ -68,15 +70,32 @@ public class PaletteManager {
     }
     private final static int RECENT_PALETTE_SIZE = 5;
     private final List<Preset> presets;
-    private final Collection<Palette> whiteBackgroundPalette;
-    private final Collection<Palette> blackBackgroundPalette;
+    private final Collection<Palette> defaultPalettes;
     private final LinkedList<Palette> recentPalette;
+    private final Color DEFAULT_COLOR = Color.LIGHT_GRAY;
 
     public PaletteManager() {
         presets = loadPresets();
-        whiteBackgroundPalette = loadWhiteBackgroundPalettes();
-        blackBackgroundPalette = loadBlackBackgroundPalettes();
+        defaultPalettes = loadDefaultPalettes();
         recentPalette = new LinkedList<Palette>();
+    }
+
+    public Palette randomPalette(int colorCount) {
+        List<Color> colors = new ArrayList<Color>();
+
+        Random random = new Random();
+        float B = random.nextFloat() * 2 / 5f + 0.6f;
+        float S = random.nextFloat() * 2 / 5f + 0.6f;
+
+        for (int i = 1; i <= colorCount; i++) {
+            float H = i / (float) colorCount;
+            Color c = Color.getHSBColor(H, S, B);
+            colors.add(c);
+        }
+
+        Collections.shuffle(colors);
+
+        return new Palette(colors.toArray(new Color[0]));
     }
 
     public Palette generatePalette(int colorCount) {
@@ -102,21 +121,24 @@ public class PaletteManager {
         return presets;
     }
 
-    public Collection<Palette> getWhiteBackgroudPalette(int colorCount) {
+    public Collection<Palette> getDefaultPalette(int colorCount) {
         List<Palette> palettes = new ArrayList<Palette>();
-        for (Palette p : whiteBackgroundPalette) {
-            if (p.size() >= colorCount) {
+        int max = Integer.MIN_VALUE;
+        for (Palette p : defaultPalettes) {
+            if (p.size() == colorCount) {
                 palettes.add(p);
             }
+            max = Math.max(p.size(), max);
         }
-        return palettes;
-    }
-
-    public Collection<Palette> getBlackBackgroudPalette(int colorCount) {
-        List<Palette> palettes = new ArrayList<Palette>();
-        for (Palette p : blackBackgroundPalette) {
-            if (p.size() >= colorCount) {
-                palettes.add(p);
+        if (palettes.isEmpty()) {
+            for (Palette p : defaultPalettes) {
+                if (p.size() == max) {
+                    Color[] cols = Arrays.copyOf(p.getColors(), colorCount);
+                    for (int i = p.size(); i < cols.length; i++) {
+                        cols[i] = DEFAULT_COLOR;
+                    }
+                    palettes.add(new Palette(cols));
+                }
             }
         }
         return palettes;
@@ -158,18 +180,9 @@ public class PaletteManager {
         return presetList;
     }
 
-    private static Collection<Palette> loadWhiteBackgroundPalettes() {
+    private static Collection<Palette> loadDefaultPalettes() {
         try {
-            return loadPalettes("palette_white_background.csv");
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        return Collections.EMPTY_LIST;
-    }
-
-    private static Collection<Palette> loadBlackBackgroundPalettes() {
-        try {
-            return loadPalettes("palette_black_background.csv");
+            return loadPalettes("palette_default.csv");
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -177,30 +190,23 @@ public class PaletteManager {
     }
 
     private static Collection<Palette> loadPalettes(String fileName) throws IOException {
-        List<List<Color>> palettes = new ArrayList<List<Color>>();
         LineNumberReader reader = new LineNumberReader(new InputStreamReader(PaletteManager.class.getResourceAsStream(fileName)));
-        reader.readLine();
         String line;
-        int maxPalette = 32;
+        List<List<Color>> palettes = new ArrayList<List<Color>>();
         while ((line = reader.readLine()) != null) {
+            List<Color> palette = new ArrayList<Color>();
             String[] split = line.split(",");
-            for (int i = 0; i < split.length && i < maxPalette; i++) {
-                String colorStr = split[i];
+            for (String colorStr : split) {
                 if (!colorStr.isEmpty()) {
-                    List<Color> palette;
-                    if (palettes.size() <= i) {
-                        palette = new ArrayList<Color>();
-                        palettes.add(palette);
-                    } else {
-                        palette = palettes.get(i);
-                    }
                     palette.add(parseHexColor(colorStr.trim()));
                 }
+            }
+            if (!palette.isEmpty()) {
+                palettes.add(palette);
             }
         }
         List<Palette> result = new ArrayList<Palette>();
         for (List<Color> cls : palettes) {
-            Collections.reverse(cls);
             Palette plt = new Palette(cls.toArray(new Color[0]));
             result.add(plt);
         }

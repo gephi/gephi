@@ -49,7 +49,10 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -67,6 +70,7 @@ import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.appearance.api.Partition;
 import org.gephi.appearance.api.PartitionFunction;
 import org.gephi.appearance.plugin.palette.Palette;
+import org.gephi.appearance.plugin.palette.PaletteGenerator;
 import org.gephi.appearance.plugin.palette.PaletteManager;
 import org.gephi.ui.appearance.plugin.palette.PaletteGeneratorPanel;
 import org.gephi.ui.components.PaletteIcon;
@@ -104,8 +108,31 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         this.function = function;
         NumberFormat formatter = NumberFormat.getPercentInstance();
         formatter.setMaximumFractionDigits(2);
+        Partition partition = function.getPartition();
 
-        values = function.getPartition().getSortedValues();
+        values = partition.getSortedValues();
+
+        List<Object> nullColors = new ArrayList<Object>();
+        Color defaultColor = Color.LIGHT_GRAY;
+        for (Object val : values) {
+            Color c = partition.getColor(val);
+            if (c == null) {
+                nullColors.add(val);
+                partition.setColor(val, defaultColor);
+            }
+        }
+
+        int valuesWithColors = values.size() - nullColors.size();
+        if (!nullColors.isEmpty() && valuesWithColors < 8) {
+            Color[] cls = PaletteGenerator.generatePalette(Math.min(8, values.size()), 5, new Random(42l));
+            int i = 0;
+            for (Object val : nullColors) {
+                int index = valuesWithColors + i++;
+                if(index < cls.length) {
+                    partition.setColor(val, cls[index]);
+                }
+            }
+        }
 
         //Model
         String[] columnNames = new String[]{"Color", "Partition", "Percentage"};
@@ -300,26 +327,20 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
             }
 
             menu.add(new JXTitledSeparator(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.standard")));
-            JMenu lightPalette = new JMenu(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.light"));
-            for (Palette pl : paletteManager.getWhiteBackgroudPalette(colorsCount)) {
+            JMenu lightPalette = new JMenu(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.palette"));
+            for (Palette pl : paletteManager.getDefaultPalette(colorsCount)) {
                 lightPalette.add(new PaletteMenuItem(pl, Math.min(PALETTE_DISPLAY_LIMIT, colorsCount)));
             }
             menu.add(lightPalette);
 
-            JMenu darkPalette = new JMenu(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.dark"));
-            for (Palette pl : paletteManager.getBlackBackgroudPalette(colorsCount)) {
-                darkPalette.add(new PaletteMenuItem(pl, colorsCount));
-            }
-            menu.add(darkPalette);
-
-            JMenuItem allBlack = new JMenuItem(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.allblack"));
-            allBlack.addActionListener(new ActionListener() {
+            JMenuItem allGrey = new JMenuItem(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.allgrey"));
+            allGrey.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    applyColor(Color.BLACK);
+                    applyColor(Color.LIGHT_GRAY);
                 }
             });
-            menu.add(allBlack);
+            menu.add(allGrey);
 
             JMenuItem allWhite = new JMenuItem(NbBundle.getMessage(PartitionColorTransformerPanel.class, "PalettePopup.allwhite"));
             allWhite.addActionListener(new ActionListener() {
