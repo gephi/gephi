@@ -57,7 +57,6 @@ import org.gephi.perspective.spi.Perspective;
  * <li>org.gephi.perspective.default=PreviewGroup</li></ul>
  * 
  * @see Perspective
- * @see PerspectiveMember
  * @author Mathieu Bastian
  */
 public interface PerspectiveController {

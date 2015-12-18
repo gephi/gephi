@@ -57,11 +57,7 @@ import org.gephi.project.api.Workspace;
  * This controller also allows to lookup graph attribute columns that can be
  * used as sparklines (e.g. node count, average degree...). Use the
  * <code>selectColumn()</code> to create a {@link TimelineChart} accessible from
- * the <code>TimelineModel</code>
- * <p>
- * All interval values are in the same space as the <code>DynamicAPI</code>
- * module and no value should eb out of the min/max bounds maintained by the
- * <code>DynamicModel</code>.
+ * the <code>TimelineModel</code>.
  *
  * @author Julian Bilcke, Mathieu Bastian
  * @see TimelineModel

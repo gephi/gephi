@@ -39,11 +39,10 @@
         <h3>Extend or replace an existing renderer</h3>
         <p>To extend or completely replace a default Renderer by your own implementation, 
         create a new Renderer and set the annotation like below. In addition add Preview Plugin module as a dependency.
-        </p><p><code>
-        @ServiceProvider(service=Renderer.class, position=XXX)
+        </p><pre>@ServiceProvider(service=Renderer.class, position=XXX)
         public class MyRenderer extends NodeRenderer
-        </code>
-        </p><p>Being XXX the new position of the renderer
+        </pre>
+        <p>Being XXX the new position of the renderer
         Then you can reuse parts of the base class or just override them.
         </p><p>Default renderers are:
         </p>

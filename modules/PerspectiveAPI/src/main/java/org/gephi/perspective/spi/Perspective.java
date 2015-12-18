@@ -54,7 +54,6 @@ import javax.swing.Icon;
  * the system, like <b>@ServiceProvider(service = Perspective.class, position = 500)</b>.</li>
  * <li>Set the position to define the order of appearance, Overview is 100, Preview is 300.</li>
  * </ol>
- * @see PerspectiveMember
  * @author Mathieu Bastian
  */
 public interface Perspective {

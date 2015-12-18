@@ -124,7 +124,7 @@ public interface Function {
     /**
      * Returns the element class this function will be applied to.
      *
-     * @return
+     * @return element class
      */
     public Class<? extends Element> getElementClass();
 }

@@ -61,7 +61,7 @@ public interface ContextMenuItemManipulator extends Manipulator {
      * must return the subitem(s) with the mnemonic even when it has not been setup.
      * If you don't need a mnemonic, return null if the item is not setup.</p>
      * <p>Returned items have to be of the same type as the subinterface (NodesManipulator for example)</p>
-     * @return
+     * @return sub items
      */
     ContextMenuItemManipulator[] getSubItems();
 
