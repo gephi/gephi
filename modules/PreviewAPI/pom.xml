@@ -62,7 +62,7 @@
                         <publicPackage>org.gephi.preview.presets</publicPackage>
                         <publicPackage>org.gephi.preview.spi</publicPackage>
                         <publicPackage>org.gephi.preview.types</publicPackage>
-                        <publicPackage>org.gephi.preview.types.propertyeditors</publicPackage>
+                        <publicPackage>org.gephi.preview.types.editors</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
