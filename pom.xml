@@ -994,7 +994,7 @@
                         <configuration>
                             <show>private</show>
                             <nohelp>true</nohelp>
-                            <detectLinks>true</detectLinks>
+                            <detectLinks>false</detectLinks>
                             <detectOfflineLinks>true</detectOfflineLinks>   
                             <quiet>true</quiet>   
                         </configuration>
@@ -1018,7 +1018,7 @@
                                     <doctitle>Gephi ${project.version} API Index</doctitle>
                                     <subpackages>org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.api.types:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.appearance.api:org.gephi.appearance.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress</subpackages>
                                     <nohelp>true</nohelp>
-                                    <detectLinks>true</detectLinks>
+                                    <detectLinks>false</detectLinks>
                                     <detectOfflineLinks>true</detectOfflineLinks>
                                     <sourcepath>modules/LongTaskAPI/src/main/java;modules/DataLaboratoryAPI/src/main/java;modules/FiltersAPI/src/main/java;modules/GraphAPI/src/main/java;modules/ExportAPI/src/main/java;modules/GeneratorAPI/src/main/java;modules/ImportAPI/src/main/java;modules/LayoutAPI/src/main/java;modules/PerspectiveAPI/src/main/java;modules/PreviewAPI/src/main/java;modules/ProjectAPI/src/main/java;modules/AppearanceAPI/src/main/java;modules/StatisticsAPI/src/main/java;modules/TimelineAPI/src/main/java;modules/ToolsAPI/src/main/java;modules/VisualizationAPI/src/main/java;${project.build.directory}/graphstore-sources</sourcepath>
                                 </configuration>
