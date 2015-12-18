@@ -53,11 +53,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 import org.gephi.appearance.api.AppearanceController;
 import org.gephi.appearance.api.AppearanceModel;
+import org.gephi.appearance.api.AttributeFunction;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.ColumnObserver;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphObserver;
 import org.gephi.graph.api.TableObserver;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -84,7 +89,8 @@ public class AppearanceUIController {
     //Model
     private AppearanceUIModel model;
     //Observer
-    private ColumnObserver tableObserver;
+    private TableChangeObserver tableObserver;
+    private GraphChangeObserver graphObserver;
 
     public AppearanceUIController() {
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -107,7 +113,11 @@ public class AppearanceUIController {
                 if (tableObserver != null) {
                     tableObserver.destroy();
                 }
-                tableObserver = new ColumnObserver(workspace);
+                if (graphObserver != null) {
+                    graphObserver.destroy();
+                    graphObserver = null;
+                }
+                tableObserver = new TableChangeObserver(workspace);
                 tableObserver.start();
 
                 firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, model);
@@ -131,6 +141,10 @@ public class AppearanceUIController {
                 firePropertyChangeEvent(AppearanceUIModelEvent.MODEL, oldModel, model);
                 if (tableObserver != null) {
                     tableObserver.destroy();
+                }
+                if (graphObserver != null) {
+                    graphObserver.destroy();
+                    graphObserver = null;
                 }
             }
         });
@@ -204,6 +218,10 @@ public class AppearanceUIController {
     }
 
     public void setSelectedElementClass(String elementClass) {
+        if (graphObserver != null) {
+            graphObserver.destroy();
+            graphObserver = null;
+        }
         if (!elementClass.equals(NODE_ELEMENT) && !elementClass.equals(EDGE_ELEMENT)) {
             throw new RuntimeException("Element class has to be " + NODE_ELEMENT + " or " + EDGE_ELEMENT);
         }
@@ -211,39 +229,86 @@ public class AppearanceUIController {
             String oldValue = model.getSelectedElementClass();
             if (!oldValue.equals(elementClass)) {
                 model.setSelectedElementClass(elementClass);
+
+                Function function = model.getSelectedFunction();
+                if (function != null) {
+                    model.refreshSelectedFunction();
+                    if (!function.isSimple()) {
+                        graphObserver = new GraphChangeObserver(function.getGraph(), function instanceof AttributeFunction ? ((AttributeFunction) function).getColumn() : null);
+                        graphObserver.start();
+                    }
+                }
+
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_ELEMENT_CLASS, oldValue, elementClass);
             }
         }
     }
 
     public void setSelectedCategory(TransformerCategory category) {
+        if (graphObserver != null) {
+            graphObserver.destroy();
+            graphObserver = null;
+        }
         if (model != null) {
             TransformerCategory oldValue = model.getSelectedCategory();
             if (!oldValue.equals(category)) {
                 model.setSelectedCategory(category);
+
+                Function function = model.getSelectedFunction();
+                if (function != null) {
+                    model.refreshSelectedFunction();
+                    if (!function.isSimple()) {
+                        graphObserver = new GraphChangeObserver(function.getGraph(), function instanceof AttributeFunction ? ((AttributeFunction) function).getColumn() : null);
+                        graphObserver.start();
+                    }
+                }
+
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_CATEGORY, oldValue, category);
             }
         }
     }
 
     public void setSelectedTransformerUI(TransformerUI ui) {
+        if (graphObserver != null) {
+            graphObserver.destroy();
+            graphObserver = null;
+        }
         if (model != null) {
             TransformerUI oldValue = model.getSelectedTransformerUI();
             if (!oldValue.equals(ui)) {
                 model.setAutoApply(false);
                 model.setSelectedTransformerUI(ui);
+
+                Function function = model.getSelectedFunction();
+                if (function != null) {
+                    model.refreshSelectedFunction();
+                    if (!function.isSimple()) {
+                        graphObserver = new GraphChangeObserver(function.getGraph(), function instanceof AttributeFunction ? ((AttributeFunction) function).getColumn() : null);
+                        graphObserver.start();
+                    }
+                }
+
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_TRANSFORMER_UI, oldValue, ui);
             }
         }
     }
 
     public void setSelectedFunction(Function function) {
+        if (graphObserver != null) {
+            graphObserver.destroy();
+            graphObserver = null;
+        }
         if (model != null) {
             Function oldValue = model.getSelectedFunction();
             if ((oldValue == null && function != null) || (oldValue != null && function == null) || (function != null && oldValue != null && !oldValue.equals(function))) {
                 model.setAutoApply(false);
                 model.setSelectedFunction(function);
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_FUNCTION, oldValue, function);
+
+                if (function != null && !function.isSimple()) {
+                    graphObserver = new GraphChangeObserver(function.getGraph(), function instanceof AttributeFunction ? ((AttributeFunction) function).getColumn() : null);
+                    graphObserver.start();
+                }
             }
         }
     }
@@ -305,7 +370,51 @@ public class AppearanceUIController {
         }
     }
 
-    private class ColumnObserver extends TimerTask {
+    private class GraphChangeObserver extends TimerTask {
+
+        private static final int INTERVAL = 2000;
+        private final Timer timer;
+        private final ColumnObserver columnObserver;
+        private final GraphObserver graphObserver;
+
+        public GraphChangeObserver(Graph graph, Column column) {
+            timer = new Timer("GraphChangeObserver", true);
+            graphObserver = graph.getModel().createGraphObserver(graph, false);
+            columnObserver = column != null ? column.createColumnObserver() : null;
+        }
+
+        @Override
+        public void run() {
+            boolean graphChanged = graphObserver.hasGraphChanged();
+            boolean columnChanged = columnObserver != null ? columnObserver.hasColumnChanged() : false;
+            if (graphChanged || columnChanged) {
+                Function oldValue = model.getSelectedFunction();
+                model.refreshSelectedFunction();
+                Function newValue = model.getSelectedFunction();
+                firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_FUNCTION, oldValue, newValue);
+            }
+        }
+
+        public void start() {
+            timer.schedule(this, INTERVAL, INTERVAL);
+        }
+
+        public void stop() {
+            timer.cancel();
+        }
+
+        public void destroy() {
+            stop();
+            if (!graphObserver.isDestroyed()) {
+                graphObserver.destroy();
+            }
+            if (columnObserver != null && !columnObserver.isDestroyed()) {
+                columnObserver.destroy();
+            }
+        }
+    }
+
+    private class TableChangeObserver extends TimerTask {
 
         private final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
         private static final int INTERVAL = 500;
@@ -313,8 +422,8 @@ public class AppearanceUIController {
         private final TableObserver nodeObserver;
         private final TableObserver edgeObserver;
 
-        public ColumnObserver(Workspace workspace) {
-            timer = new Timer("RankingColumnObserver", true);
+        public TableChangeObserver(Workspace workspace) {
+            timer = new Timer("AppearanceColumnObserver", true);
             nodeObserver = gc.getGraphModel(workspace).getNodeTable().createTableObserver(false);
             edgeObserver = gc.getGraphModel(workspace).getEdgeTable().createTableObserver(false);
         }
@@ -339,8 +448,12 @@ public class AppearanceUIController {
 
         public void destroy() {
             stop();
-            nodeObserver.destroy();
-            edgeObserver.destroy();
+            if (!nodeObserver.isDestroyed()) {
+                nodeObserver.destroy();
+            }
+            if (!edgeObserver.isDestroyed()) {
+                edgeObserver.destroy();
+            }
         }
     }
 }

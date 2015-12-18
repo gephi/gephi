@@ -140,12 +140,14 @@ public class AppearanceUIModel {
         for (Function func : functionSet) {
             Function oldFunc = selectedFunction.get(elementClass).get(func.getUI());
             if (oldFunc == null || !functionSet.contains(oldFunc)) {
-                selectedFunction.get(elementClass).put(func.getUI(), func);
+                if (func.isSimple()) {
+                    selectedFunction.get(elementClass).put(func.getUI(), func);
+                }
             }
         }
     }
 
-    public boolean refreshSelectedFunction() {
+    public synchronized boolean refreshSelectedFunction() {
         Graph graph = graphController.getGraphModel(appearanceModel.getWorkspace()).getGraph();
         Function sFunction = getSelectedFunction();
         if (sFunction != null && sFunction.isAttribute()) {

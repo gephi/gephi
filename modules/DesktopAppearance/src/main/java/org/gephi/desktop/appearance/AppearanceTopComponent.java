@@ -266,7 +266,10 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                                 if (model != null) {
                                     if (!attibuteBox.getSelectedItem().equals(NO_SELECTION)) {
                                         Function selectedItem = (Function) attibuteBox.getSelectedItem();
-                                        controller.setSelectedFunction(selectedItem);
+                                        Function selectedFunction = model.getSelectedFunction();
+                                        if (selectedFunction != selectedItem) {
+                                            controller.setSelectedFunction(selectedItem);
+                                        }
                                     } else {
                                         controller.setSelectedFunction(null);
                                     }
