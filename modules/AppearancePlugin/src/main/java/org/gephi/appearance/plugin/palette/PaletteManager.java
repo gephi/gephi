@@ -74,7 +74,7 @@ public class PaletteManager {
     private final LinkedList<Palette> recentPalette;
     private final Color DEFAULT_COLOR = Color.LIGHT_GRAY;
 
-    public PaletteManager() {
+    private PaletteManager() {
         presets = loadPresets();
         defaultPalettes = loadDefaultPalettes();
         recentPalette = new LinkedList<Palette>();
@@ -145,6 +145,7 @@ public class PaletteManager {
     }
 
     public void addRecentPalette(Palette palette) {
+        recentPalette.remove(palette);
         if (recentPalette.size() == RECENT_PALETTE_SIZE) {
             recentPalette.removeLast();
         }
