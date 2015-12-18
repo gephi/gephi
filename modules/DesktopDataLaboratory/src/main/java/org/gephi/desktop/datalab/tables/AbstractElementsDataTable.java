@@ -117,9 +117,13 @@ public abstract class AbstractElementsDataTable<T extends Element> {
 
     private void prepareCellEditors() {
         for (Class<?> typeClass : AttributeUtils.getSupportedTypes()) {
-            AttributeTypesSupportCellEditor cellEditor = new AttributeTypesSupportCellEditor(typeClass);
-            cellEditors.add(cellEditor);
-            table.setDefaultEditor(typeClass, cellEditor);
+            //For booleans we want the default cell editor that uses a checkbox
+            //For any other type, use our own cell editor that supports all attribute types parsing.
+            if (!typeClass.equals(Boolean.class) && !typeClass.equals(boolean.class)) {
+                AttributeTypesSupportCellEditor cellEditor = new AttributeTypesSupportCellEditor(typeClass);
+                cellEditors.add(cellEditor);
+                table.setDefaultEditor(typeClass, cellEditor);
+            }
         }
     }
 
@@ -157,9 +161,13 @@ public abstract class AbstractElementsDataTable<T extends Element> {
             if (typeRenderer == null) {
                 typeRenderer = defaultStringRepresentationRenderer;
             }
-            table.setDefaultRenderer(typeClass, typeRenderer);
+            
+            //For booleans we want the default cell renderer that uses a checkbox
+            //For any other type, use our own cell renderer that shows the values with standard, not locale specific toString methods
+            if (!typeClass.equals(Boolean.class) && !typeClass.equals(boolean.class)) {
+                table.setDefaultRenderer(typeClass, typeRenderer);
+            }
         }
-
     }
 
     public JXTable getTable() {
@@ -168,14 +176,14 @@ public abstract class AbstractElementsDataTable<T extends Element> {
 
     public boolean setFilterPattern(String regularExpr, int column) {
         try {
-            if(Objects.equals(filterPattern, regularExpr)){
+            if (Objects.equals(filterPattern, regularExpr)) {
                 return true;
             }
             filterPattern = regularExpr;
-            
-            if(regularExpr == null || regularExpr.trim().isEmpty()){
+
+            if (regularExpr == null || regularExpr.trim().isEmpty()) {
                 table.setRowFilter(null);
-            }else{
+            } else {
                 if (!regularExpr.startsWith("(?i)")) {   //CASE_INSENSITIVE
                     regularExpr = "(?i)" + regularExpr;
                 }
@@ -185,11 +193,11 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         } catch (PatternSyntaxException e) {
             return false;
         }
-        
+
         return true;
     }
-    
-    public String getPattern(){
+
+    public String getPattern() {
         return filterPattern;
     }
 
