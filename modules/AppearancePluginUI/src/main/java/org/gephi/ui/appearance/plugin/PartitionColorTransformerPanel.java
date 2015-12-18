@@ -117,11 +117,13 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         };
         table.setModel(model);
 
+        String countMsg = NbBundle.getMessage(PartitionColorTransformerPanel.class, "PartitionColorTransformerPanel.tooltip.elementsCount");
+
         TableColumn partCol = table.getColumnModel().getColumn(1);
-        partCol.setCellRenderer(new TextRenderer());
+        partCol.setCellRenderer(new TextRenderer(null));
 
         TableColumn percCol = table.getColumnModel().getColumn(2);
-        percCol.setCellRenderer(new TextRenderer());
+        percCol.setCellRenderer(new TextRenderer(countMsg));
         percCol.setPreferredWidth(60);
         percCol.setMaxWidth(60);
 
@@ -134,11 +136,12 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         int j = 0;
         for (Object value : values) {
             String displayName = value == null ? "null" : value.toString();
-            float percentage = function.getPartition().percentage(value);
+            int count = function.getPartition().count(value);
+            float percentage = function.getPartition().percentage(value) / 100f;
             model.setValueAt(value, j, 0);
             model.setValueAt(displayName, j, 1);
-            String perc = "(" + formatter.format(percentage) + ")";
-            model.setValueAt(perc, j, 2);
+            String percCount = count + "_(" + formatter.format(percentage) + ")";
+            model.setValueAt(percCount, j, 2);
             j++;
         }
     }
@@ -182,21 +185,29 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
     class TextRenderer extends JLabel implements TableCellRenderer {
 
-        private EmptyIcon emptyIcon;
+        private final EmptyIcon emptyIcon;
+        private final String elementsMessage;
 
-        public TextRenderer() {
+        public TextRenderer(String countMessage) {
             setFont(table.getFont());
             emptyIcon = new EmptyIcon();
+            elementsMessage = countMessage;
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setText((String) value);
+            String valTxt = (String) value;
             if (column == 1) {
+                setText(valTxt);
+                setToolTipText(valTxt);
                 setIcon(emptyIcon);
-            } else {
+            } else if (column == 2) {
+                String[] spl = valTxt.split("_");
+                setText(spl[1]);
+                setToolTipText(spl[0] + " " + elementsMessage);
                 setIcon(null);
             }
+
             return this;
         }
     }
