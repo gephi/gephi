@@ -42,7 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.preview.propertyeditors;
 
 import java.awt.Component;
-import org.gephi.preview.types.propertyeditors.BasicEdgeColorPropertyEditor;
+import org.gephi.preview.types.editors.BasicEdgeColorPropertyEditor;
 
 /**
  *
