@@ -997,7 +997,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private long getLongId(EdgeDraftImpl edge) {
         EdgeDirection direction = edge.getDirection();
         boolean directed = edgeDefault.equals(EdgeDirectionDefault.DIRECTED)
-                || (!edgeDefault.equals(EdgeDirectionDefault.UNDIRECTED) && direction != null && direction == EdgeDirection.DIRECTED);
+                || (edgeDefault.equals(EdgeDirectionDefault.MIXED) && ((direction != null && direction == EdgeDirection.DIRECTED) || direction == null));
         return getLongId(edge.getSource(), edge.getTarget(), directed);
     }
 
