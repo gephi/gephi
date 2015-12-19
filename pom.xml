@@ -678,14 +678,6 @@
             <version>${gephi.testng.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- GraphStore dependency (used for javadoc building) -->
-        <dependency>
-            <groupId>org.gephi</groupId>
-            <artifactId>graphstore</artifactId>
-            <version>${graphstore.version}</version>
-            <classifier>sources</classifier>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -976,14 +968,20 @@
                                 <inherited>false</inherited>
                                 <phase>pre-site</phase>
                                 <goals>
-                                    <goal>unpack-dependencies</goal>
+                                    <goal>unpack</goal>
                                 </goals>
                                 <configuration>
-                                    <includeGroupIds>org.gephi</includeGroupIds>
-                                    <includeArtifactIds>graphstore</includeArtifactIds>
-                                    <outputDirectory>
-                                        ${project.build.directory}/graphstore-sources
-                                    </outputDirectory>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.gephi</groupId>
+                                            <artifactId>graphstore</artifactId>
+                                            <version>${graphstore.version}</version>
+                                            <classifier>sources</classifier>
+                                            <outputDirectory>
+                                                ${project.build.directory}/graphstore-sources
+                                            </outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
                                 </configuration>
                             </execution>
                         </executions>
