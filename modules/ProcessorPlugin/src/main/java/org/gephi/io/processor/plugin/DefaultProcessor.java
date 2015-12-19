@@ -49,6 +49,10 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.TimeRepresentation;
+import org.gephi.graph.api.types.IntervalDoubleMap;
+import org.gephi.graph.api.types.TimestampDoubleMap;
+import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDraft;
@@ -114,6 +118,16 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         }
         configuration.setNodeIdType(container.getElementIdType().getTypeClass());
         configuration.setEdgeIdType(container.getElementIdType().getTypeClass());
+
+        ColumnDraft weightColumn = container.getEdgeColumn("weight");
+        if (weightColumn != null && weightColumn.isDynamic()) {
+            if (container.getTimeRepresentation().equals(TimeRepresentation.INTERVAL)) {
+                configuration.setEdgeWeightType(IntervalDoubleMap.class);
+            } else {
+                configuration.setEdgeWeightType(TimestampDoubleMap.class);
+            }
+        }
+
         graphController.getGraphModel(workspace).setConfiguration(configuration);
     }
 

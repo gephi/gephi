@@ -73,6 +73,22 @@ public interface ContainerUnloader {
 
     public boolean hasEdgeColumn(String key);
 
+    /**
+     * Returns the node column draft with <code>key</code> as identifier.
+     *
+     * @param key node column key
+     * @return column draft or null if not found
+     */
+    public ColumnDraft getNodeColumn(String key);
+
+    /**
+     * Returns the edge column draft with <code>key</code> as identifier.
+     *
+     * @param key edge column key
+     * @return column draft or null if not found
+     */
+    public ColumnDraft getEdgeColumn(String key);
+
     public Iterable<ColumnDraft> getNodeColumns();
 
     public Iterable<ColumnDraft> getEdgeColumns();

@@ -41,7 +41,6 @@
  */
 package org.gephi.io.importer.api;
 
-import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.io.importer.spi.Importer;
