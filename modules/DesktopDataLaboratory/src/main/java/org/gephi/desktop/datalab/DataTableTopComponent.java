@@ -94,6 +94,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphObserver;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
@@ -270,7 +271,10 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     }
     
     private void deactivateAll(){
-        graphObserver = null;
+        if(graphObserver != null){
+            graphObserver.destroy();
+            graphObserver = null;
+        }
         if(nodesTableObserver != null){
             nodesTableObserver.destroy();
             nodesTableObserver = null;
@@ -286,6 +290,21 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         edgeAvailableColumnsModel = null;
 
         clearAll();
+    }
+    
+    /**
+     * Used only for detecting changes in graph filters (visible view).
+     */
+    class LatestVisibleView {
+        private final GraphView view;
+
+        public LatestVisibleView(GraphView view) {
+            this.view = view;
+        }
+
+        public GraphView getView() {
+            return view;
+        }
     }
     
     private void initEvents() {
@@ -335,14 +354,26 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                 if(!autoRefreshEnabled){
                     return;
                 }
-                
-                boolean hasChanges = 
-                        (graphObserver != null && graphObserver.hasGraphChanged())
-                        || (nodesTableObserver != null && nodesTableObserver.hasTableChanged())
-                        || (edgesTableObserver != null && edgesTableObserver.hasTableChanged());
-                
-                if(hasChanges){
-                    graphChanged();//Execute refresh
+                Workspace workspace = pc.getCurrentWorkspace();
+                if(workspace != null){
+                    boolean hasChanges = 
+                            (graphObserver != null && graphObserver.hasGraphChanged())
+                            || (nodesTableObserver != null && nodesTableObserver.hasTableChanged())
+                            || (edgesTableObserver != null && edgesTableObserver.hasTableChanged());
+                    
+                    LatestVisibleView latestVisibleView = workspace.getLookup().lookup(LatestVisibleView.class);
+
+                    if(latestVisibleView != null){
+                        workspace.remove(latestVisibleView);
+                        if(latestVisibleView.getView().isDestroyed()){
+                            hasChanges = true;
+                        }
+                    }
+                    workspace.add(new LatestVisibleView(graphModel.getVisibleView()));
+
+                    if(hasChanges){
+                        graphChanged();//Execute refresh
+                    }
                 }
             }
         }
