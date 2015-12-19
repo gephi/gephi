@@ -166,7 +166,7 @@ public class DataBridge implements VizArchitecture {
                     if (sourceModel != null) {
                         sourceModel.removeEdge(edge);
                     }
-                    if (targetModel != null) {
+                    if (targetModel != null && sourceModel != targetModel) {
                         targetModel.removeEdge(edge);
                     }
                     edges[i] = null;
@@ -184,7 +184,9 @@ public class DataBridge implements VizArchitecture {
                     NodeModel targetModel = nodes[edge.getTarget().getStoreId()];
                     model = edgeModeler.initModel(edge, sourceModel, targetModel);
                     sourceModel.addEdge(model);
-                    targetModel.addEdge(model);
+                    if (targetModel != sourceModel) {
+                        targetModel.addEdge(model);
+                    }
                     edges[id] = model;
                     addedEdges++;
                 } else {
