@@ -3,9 +3,8 @@
     <body bgcolor="white">
         Interfaces for creating new statistics and metrics algorihms.
         <h3>Create a new Metrics</h3>
-        <ol><li>Create a new module and set <code>StatisticsAPI</code>,
-                <code>GraphAPI</code> and <code>AttributesAPI</code>
-                as dependencies.</li>
+        <ol><li>Create a new module and set <code>StatisticsAPI</code> and
+                <code>GraphAPI</code> as dependencies.</li>
             <li>Create a new builder class by implementing <code>StatisticsBuilder</code></li>
             <li>Add <b>@ServiceProvider</b> annotation to your builder, that it can
                 be found by the system. Set <code>StatisticsBuilder</code> as the
@@ -16,7 +15,7 @@
                 <b>@ServiceProvider</b> annotation as well.</li>
             <li>In both <code>StatisticsBuilder</code> and <code>StatisticsUI</code>,
                 return your <code>Statistics</code> class object for the
-                <code>getStatisticsClass()</code>/ method.
+                <code>getStatisticsClass()</code> method.
         </ol>
         <p>To let your export task be cancelled and its progress watched, implement
             <code>LongTask</code> interface.</p>
