@@ -684,6 +684,7 @@
             <artifactId>graphstore</artifactId>
             <version>${graphstore.version}</version>
             <classifier>sources</classifier>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -972,6 +973,7 @@
                         <executions>
                             <execution>
                                 <id>unpack</id>
+                                <inherited>false</inherited>
                                 <phase>pre-site</phase>
                                 <goals>
                                     <goal>unpack-dependencies</goal>
