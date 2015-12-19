@@ -103,9 +103,9 @@ public class IntervalSetRenderer extends DefaultTableCellRenderer {
 
             double starts[] = new double[intervals.length / 2];
             double ends[] = new double[intervals.length / 2];
-            for (int i = 0; i < intervals.length; i+=2) {
-                starts[i] = intervals[i];
-                ends[i] = intervals[i + 1];
+            for (int i = 0, startIndex = 0; startIndex < intervals.length; i++, startIndex += 2) {
+                starts[i] = intervals[startIndex];
+                ends[i] = intervals[startIndex + 1];
             }
 
             final BufferedImage i = timeIntervalGraphics.createTimeIntervalImage(starts, ends, table.getColumnModel().getColumn(column).getWidth() - 1, table.getRowHeight(row) - 1, FILL_COLOR, BORDER_COLOR, background);
