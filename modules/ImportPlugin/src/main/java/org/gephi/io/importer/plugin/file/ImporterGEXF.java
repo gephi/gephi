@@ -368,7 +368,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
 
         //Parent
         if (!pid.isEmpty()) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_pid"), Issue.Level.SEVERE));
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_pid", id), Issue.Level.SEVERE));
         }
 
         if (!container.nodeExists(id)) {
@@ -760,7 +760,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
             } else if (edgeType.equalsIgnoreCase("directed")) {
                 edge.setDirection(EdgeDirection.DIRECTED);
             } else {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetype", edgeType, edge), Issue.Level.SEVERE));
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetype", edgeType, edge.getId()), Issue.Level.SEVERE));
             }
         }
 
