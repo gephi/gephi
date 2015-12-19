@@ -56,7 +56,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TimeZone;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.TimeFormat;
@@ -460,6 +459,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     @Override
     public ColumnDraft addNodeColumn(String key, Class typeClass, boolean dynamic) {
+        key = key.toLowerCase();
         ColumnDraft column = nodeColumns.get(key);
         typeClass = AttributeUtils.getStandardizedType(typeClass);
         if (column == null) {
@@ -484,6 +484,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     @Override
     public ColumnDraft addEdgeColumn(String key, Class typeClass, boolean dynamic) {
+        key = key.toLowerCase();
         ColumnDraft column = edgeColumns.get(key);
         typeClass = AttributeUtils.getStandardizedType(typeClass);
         if (column == null) {
@@ -503,22 +504,22 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     @Override
     public ColumnDraft getNodeColumn(String key) {
-        return nodeColumns.get(key);
+        return nodeColumns.get(key.toLowerCase());
     }
 
     @Override
     public boolean hasNodeColumn(String key) {
-        return nodeColumns.containsKey(key);
+        return nodeColumns.containsKey(key.toLowerCase());
     }
 
     @Override
     public ColumnDraft getEdgeColumn(String key) {
-        return edgeColumns.get(key);
+        return edgeColumns.get(key.toLowerCase());
     }
 
     @Override
     public boolean hasEdgeColumn(String key) {
-        return edgeColumns.containsKey(key);
+        return edgeColumns.containsKey(key.toLowerCase());
     }
 
     @Override
