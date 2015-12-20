@@ -347,7 +347,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         }
         
         observersTimer = new java.util.Timer("DataLaboratoryGraphObservers");
-        observersTimer.scheduleAtFixedRate(new TimerTask() {
+        observersTimer.schedule(new TimerTask() {
 
             @Override
             public void run() {
