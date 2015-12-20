@@ -155,6 +155,9 @@ public class AppearanceUIController {
                 AppearanceModel appearanceModel = appearanceController.getModel(pc.getCurrentWorkspace());
                 model = new AppearanceUIModel(this, appearanceModel);
                 pc.getCurrentWorkspace().add(model);
+                model.select();
+                tableObserver = new TableChangeObserver(pc.getCurrentWorkspace());
+                tableObserver.start();
             }
         }
 

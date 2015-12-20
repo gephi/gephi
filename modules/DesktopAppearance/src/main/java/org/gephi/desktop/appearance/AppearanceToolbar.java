@@ -88,6 +88,11 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         controlToolbar = new ControlToolbar();
 
         controller.addPropertyChangeListener(this);
+
+        AppearanceUIModel uimodel = controller.getModel();
+        if (uimodel != null) {
+            setup(uimodel);
+        }
     }
 
     public JToolBar getCategoryToolbar() {
