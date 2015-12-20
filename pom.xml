@@ -39,6 +39,90 @@
         <url>https://github.com/gephi/gephi</url>
     </scm>
     
+    <!-- Developers -->
+    <developers>
+        <developer>
+            <id>mbastian</id>
+            <name>Mathieu Bastian</name>
+            <email>mathieu.bastian@gephi.org</email>
+        </developer>
+        <developer>
+            <id>eduramiba</id>
+            <name>Eduardo Ramos</name>
+            <email>eduardo.ramos@gephi.org</email>
+        </developer>
+        <developer>
+            <id>jacomyma</id>
+            <name>Mathieu Jacomy</name>
+            <email>mathieu.jacomy@gephi.org</email>
+        </developer>
+        <developer>
+            <id>sheymann</id>
+            <name>Sébastien Heymann</name>
+            <email>sebastien.heymann@gephi.org</email>
+        </developer>
+        <developer>
+            <id>jbilcke</id>
+            <name>Julian Bilcke</name>
+            <email>julian.bilcke@gephi.org</email>
+        </developer>
+        <developer>
+            <id>jersub</id>
+            <name>Jeremy Subtil</name>
+            <email>jeremy.subtil@gephi.org</email>
+        </developer>
+        <developer>
+            <id>cbartosiak</id>
+            <name>Cezary Bartosiak</name>
+            <email>cezary.bartosiak@gephi.org</email>
+        </developer>
+        <developer>
+            <id>megaterik</id>
+            <name>Taras Klaskovsky</name>
+            <email>taras.klaskovsky@gephi.org</email>
+        </developer>
+        <developer>
+            <id>vojtech-bardiovsky</id>
+            <name>Vojtech Bardiovsky</name>
+            <email>vojtech.bardiovsky@gephi.org</email>
+        </developer>
+        <developer>
+            <id>luizribeiro</id>
+            <name>Luiz Ribeiro</name>
+            <email>luiz.ribeiro@gephi.org</email>
+        </developer>
+        <developer>
+            <id>baiacu</id>
+            <name>Helder Suzuki</name>
+            <email>helder.suzuki@gephi.org</email>
+        </developer>
+        <developer>
+            <id>daniel-bernardes</id>
+            <name>Daniel Bernades</name>
+            <email>daniel.bernades@gephi.org</email>
+        </developer>
+        <developer>
+            <id>taynaud</id>
+            <name>Thomas Aynaud</name>
+            <email>thomas.aynaud@gephi.org</email>
+        </developer>
+        <developer>
+            <id>panisson</id>
+            <name>André Panisson</name>
+            <email>andre.panission@gephi.org</email>
+        </developer>
+        <developer>
+            <id>annaalkh</id>
+            <name>Anna Kharitonova</name>
+            <email>anna.kharitonova@gephi.org</email>
+        </developer>
+        <developer>
+            <id>binarycrayon</id>
+            <name>Yudi Xue</name>
+            <email>yudi.xue@gephi.org</email>
+        </developer>
+    </developers>
+
     <!-- Properties -->
     <properties>        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
