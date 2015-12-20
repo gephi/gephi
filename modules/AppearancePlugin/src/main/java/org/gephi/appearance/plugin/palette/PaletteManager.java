@@ -136,24 +136,18 @@ public class PaletteManager {
 
     public Collection<Palette> getDefaultPalette(int colorCount) {
         List<Palette> palettes = new ArrayList<Palette>();
-        int max = Integer.MIN_VALUE;
         for (Palette p : defaultPalettes) {
             if (p.size() == colorCount) {
                 palettes.add(p);
-            }
-            max = Math.max(p.size(), max);
-        }
-        if (palettes.isEmpty()) {
-            for (Palette p : defaultPalettes) {
-                if (p.size() == max) {
-                    Color[] cols = Arrays.copyOf(p.getColors(), colorCount);
-                    for (int i = p.size(); i < cols.length; i++) {
-                        cols[i] = DEFAULT_COLOR;
-                    }
-                    palettes.add(new Palette(cols));
+            } else if (p.size() < colorCount) {
+                Color[] cols = Arrays.copyOf(p.getColors(), colorCount);
+                for (int i = p.size(); i < cols.length; i++) {
+                    cols[i] = DEFAULT_COLOR;
                 }
+                palettes.add(new Palette(cols));
             }
         }
+        Collections.reverse(palettes);
         return palettes;
     }
 
