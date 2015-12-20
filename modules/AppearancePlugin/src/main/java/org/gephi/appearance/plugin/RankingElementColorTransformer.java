@@ -58,7 +58,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Transformer.class)
 public class RankingElementColorTransformer implements RankingTransformer<Element> {
 
-    protected final LinearGradient linearGradient = new LinearGradient(new Color[]{Color.WHITE, Color.BLACK}, new float[]{0f, 1f});
+    protected final LinearGradient linearGradient = new LinearGradient(new Color[]{new Color(0xEDF8FB), new Color(0x66C2A4), new Color(0x006D2C)}, new float[]{0f, 0.5f, 1f});
 
     @Override
     public void transform(Element element, Ranking ranking, Interpolator interpolator, Number value) {
