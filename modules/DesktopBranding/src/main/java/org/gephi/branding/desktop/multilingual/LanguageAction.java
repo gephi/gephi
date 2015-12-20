@@ -119,8 +119,9 @@ public final class LanguageAction extends CallableSystemAction {
         for (final Language lang : Language.values()) {
             JMenuItem menuItem = new JMenuItem(new AbstractAction(lang.getName()) {
 
+                @Override
                 public void actionPerformed(ActionEvent e) {
-                    String msg = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.message" + (Utilities.isMac() || Utilities.isUnix() ? ".mac" : ""));
+                    String msg = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.message");
                     String title = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.title");
                     DialogDescriptor.Confirmation dd = new DialogDescriptor.Confirmation(msg, title, DialogDescriptor.YES_NO_OPTION);
                     if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.YES_OPTION)) {
@@ -171,7 +172,7 @@ public final class LanguageAction extends CallableSystemAction {
         BufferedReader reader = new BufferedReader(new FileReader(confFile));
         String strLine;
         while ((strLine = reader.readLine()) != null) {
-            if (strLine.indexOf(matchOptionsLine) != -1) {
+            if (strLine.contains(matchOptionsLine)) {
                 //Remove old language and country:
                 strLine = strLine.replaceAll(" -J-Duser\\.language=..", "");
                 strLine = strLine.replaceAll(" -J-Duser\\.country=..", "");
@@ -197,12 +198,7 @@ public final class LanguageAction extends CallableSystemAction {
         FileWriter writer = new FileWriter(confFile);
         writer.write(outputBuilder.toString());
         writer.close();
-
-        //Restart
-        if (!Utilities.isMac() && !Utilities.isUnix()) {
-            //On Mac the change is applied only if restarted manually
-            LifecycleManager.getDefault().markForRestart();
-        }
+        
         LifecycleManager.getDefault().exit();
     }
 }
