@@ -42,9 +42,13 @@
 package org.gephi.appearance.plugin.palette;
 
 import java.awt.Color;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,7 +56,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+import org.gephi.appearance.plugin.RankingElementColorTransformer;
 import org.openide.util.Exceptions;
+import org.openide.util.NbPreferences;
 
 /**
  *
@@ -68,16 +76,21 @@ public class PaletteManager {
         }
         return instance;
     }
+    protected static String DEFAULT_NODE_NAME = "prefs";
+    public static final String COLORS = "PaletteColors";
     private final static int RECENT_PALETTE_SIZE = 5;
     private final List<Preset> presets;
     private final Collection<Palette> defaultPalettes;
     private final LinkedList<Palette> recentPalette;
     private final Color DEFAULT_COLOR = Color.LIGHT_GRAY;
+    protected String nodeName = null;
 
     private PaletteManager() {
+        nodeName = "recentpartitionpalettes";
         presets = loadPresets();
         defaultPalettes = loadDefaultPalettes();
         recentPalette = new LinkedList<Palette>();
+        retrieve();
     }
 
     public Palette randomPalette(int colorCount) {
@@ -150,6 +163,7 @@ public class PaletteManager {
             recentPalette.removeLast();
         }
         recentPalette.addFirst(palette);
+        store();
     }
 
     public Collection<Palette> getRecentPalettes() {
@@ -217,5 +231,76 @@ public class PaletteManager {
     private static Color parseHexColor(String hexColor) {
         int rgb = Integer.parseInt(hexColor.replaceFirst("#", ""), 16);
         return new Color(rgb);
+    }
+
+    private void retrieve() {
+        recentPalette.clear();
+        Preferences prefs = getPreferences();
+
+        for (int i = 0; i < RECENT_PALETTE_SIZE; i++) {
+            byte[] cols = prefs.getByteArray(COLORS + i, null);
+            if (cols != null) {
+                try {
+                    Color[] colors = deserializeColors(cols);
+                    recentPalette.addLast(new Palette(colors));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                break;
+            }
+        }
+    }
+
+    private void store() {
+        Preferences prefs = getPreferences();
+
+        // clear the backing store
+        try {
+            prefs.clear();
+        } catch (BackingStoreException ex) {
+        }
+
+        int i = 0;
+        for (Palette palette : recentPalette) {
+            try {
+                prefs.putByteArray(COLORS + i, serializeColors(palette.getColors()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            i++;
+        }
+    }
+
+    private byte[] serializeColors(Color[] colors) throws Exception {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bos);
+        out.writeObject(colors);
+        out.close();
+        return bos.toByteArray();
+    }
+
+    private Color[] deserializeColors(byte[] colors) throws Exception {
+        ByteArrayInputStream bis = new ByteArrayInputStream(colors);
+        ObjectInputStream in = new ObjectInputStream(bis);
+        Color[] array = (Color[]) in.readObject();
+        in.close();
+        return array;
+    }
+
+    /**
+     * Return the backing store Preferences
+     *
+     * @return Preferences
+     */
+    protected final Preferences getPreferences() {
+        String name = DEFAULT_NODE_NAME;
+        if (nodeName != null) {
+            name = nodeName;
+        }
+
+        Preferences prefs = NbPreferences.forModule(this.getClass()).node("options").node(name);
+
+        return prefs;
     }
 }
