@@ -87,8 +87,6 @@
         
         <!-- Mac OS X bundle settings -->
         <gephi.appbundle.name>Gephi</gephi.appbundle.name>
-        <gephi.appbundle.signature>????</gephi.appbundle.signature>
-        <gephi.jarbundler.version>2.2.0</gephi.jarbundler.version>
         <gephi.bundle.jre.url>http://download.oracle.com/otn-pub/java/jdk/8u66-b17</gephi.bundle.jre.url>
         <gephi.bundle.jre.version>jre-8u66-macosx-x64</gephi.bundle.jre.version>
 
