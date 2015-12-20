@@ -49,6 +49,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import javax.swing.DefaultComboBoxModel;
 
@@ -465,7 +466,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
             if (conn != null) {
                 try {
                     conn.close();
-                    System.out.println("Database connection terminated");
+                    Logger.getLogger("").info("Database connection terminated");
                 } catch (Exception e) {
                     /* ignore close errors */ }
             }

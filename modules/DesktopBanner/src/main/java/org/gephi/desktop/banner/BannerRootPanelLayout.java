@@ -177,7 +177,6 @@ class BannerRootPanelLayout implements LayoutManager2 {
 
     @Override
     public void addLayoutComponent(Component comp, Object constraints) {
-        System.out.println(comp);
     }
 
     @Override
