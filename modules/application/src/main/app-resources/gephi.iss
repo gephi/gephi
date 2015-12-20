@@ -37,6 +37,9 @@ Name: "associategdf"; Description: "&Associate .gdf files"; Flags: unchecked
 Name: "associategraphml"; Description: "&Associate .graphml files"; Flags: unchecked
 Name: "associatenet"; Description: "&Associate .net files"; Flags: unchecked
 
+[Dirs]
+Name: "{app}"; Permissions: users-full
+
 [Files]
 ;Source: "gephi\bin\gephi.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "gephi\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
