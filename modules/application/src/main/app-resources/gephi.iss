@@ -43,10 +43,10 @@ Source: "gephi\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createa
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\Gephi"; Filename: "{app}\bin\gephi.exe"
-Name: "{commondesktop}\Gephi"; Filename: "{app}\bin\gephi.exe"; Tasks: desktopicon
+Name: "{group}\Gephi"; Filename: "{app}\bin\gephi.exe"; AppUserModelID: "Gephi"
+Name: "{commondesktop}\Gephi"; Filename: "{app}\bin\gephi.exe"; Tasks: desktopicon; AppUserModelID: "Gephi"
 Name: "{group}\Startup settings"; Filename: "{app}\etc\gephi.conf"
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Gephi"; Filename: "{app}\bin\gephi.exe"; Tasks: quicklaunchicon
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Gephi"; Filename: "{app}\bin\gephi.exe"; Tasks: quicklaunchicon; AppUserModelID: "Gephi"
 
 [Run]
 Filename: "{app}\bin\gephi.exe"; Description: "{cm:LaunchProgram,Gephi}"; Flags: nowait postinstall skipifsilent
@@ -74,9 +74,14 @@ Root: HKCR; Subkey: "PajekGraphFile\DefaultIcon"; ValueType: string; ValueName: 
 Root: HKCR; Subkey: "PajekGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI.EXE"" ""%1"""; Tasks: associatenet
 
  [InstallDelete]
-Type: filesandordirs; Name: "{userappdata}\.gephi\dev\config\Modules"
-Type: filesandordirs; Name: "{userappdata}\.gephi\dev\config\Preferences"
-Type: filesandordirs; Name: "{userappdata}\.gephi\dev\config\Windows2Local"
-Type: filesandordirs; Name: "{userappdata}\.gephi\dev\modules"
-Type: filesandordirs; Name: "{userappdata}\.gephi\dev\update_tracking"
-Type: filesandordirs; Name: "{userappdata}\.gephi\dev\var"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Modules"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Preferences"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Windows2Local"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Windows2Local-datalab"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Windows2Local-overview"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Windows2Local-preview"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Preferences.properties"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\modules"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\update_tracking"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\var"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\lock"
