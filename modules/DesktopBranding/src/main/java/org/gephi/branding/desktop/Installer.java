@@ -145,6 +145,9 @@ public class Installer extends ModuleInstall {
             BufferedReader reader = null;
             try {
                 String gephiVersion = System.getProperty("netbeans.productversion");
+                if (gephiVersion.contains("SNAPSHOT")) {
+                    return;
+                }
 
                 URL url = new URL(LATEST_GEPHI_VERSION_URL);
                 URLConnection connection = url.openConnection();
@@ -155,7 +158,8 @@ public class Installer extends ModuleInstall {
 
                 String latest = reader.readLine();
                 latest = latest.replaceAll("[a-zA-Z .-]", "");
-                if (!gephiVersion.contains("SNAPSHOT") && !latest.equals(gephiVersion.replaceAll("[0-9]{12}", "").replaceAll("[a-zA-Z .-]", ""))) {
+                String gephiVersionTst = gephiVersion.replaceAll("[0-9]{12}", "").replaceAll("[a-zA-Z .-]", "");
+                if (Integer.parseInt(latest) > Integer.parseInt(gephiVersionTst)) {
                     //Show update dialog
                     JCheckBox checkbox = new JCheckBox(NbBundle.getMessage(Installer.class, "MajorReleaseCheck.dontShowAgain"), false);
                     String message = NbBundle.getMessage(Installer.class, "MajorReleaseCheck.message", latest, gephiVersion);
