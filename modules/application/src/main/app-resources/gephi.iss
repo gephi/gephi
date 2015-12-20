@@ -36,6 +36,7 @@ Name: "associategexf"; Description: "&Associate .gexf files"; Flags: checkedonce
 Name: "associategdf"; Description: "&Associate .gdf files"; Flags: unchecked
 Name: "associategraphml"; Description: "&Associate .graphml files"; Flags: unchecked
 Name: "associatenet"; Description: "&Associate .net files"; Flags: unchecked
+Name: "cleanuserdir"; Description: "&Clean previous user preferences"; Flags: checkedonce
 
 [Dirs]
 Name: "{app}"; Permissions: users-full
@@ -77,14 +78,15 @@ Root: HKCR; Subkey: "PajekGraphFile\DefaultIcon"; ValueType: string; ValueName: 
 Root: HKCR; Subkey: "PajekGraphFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\GEPHI.EXE"" ""%1"""; Tasks: associatenet
 
  [InstallDelete]
-Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Modules"
-Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Preferences"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Modules"; Tasks: cleanuserdir
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Preferences"; Tasks: cleanuserdir
 Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Windows2Local"
 Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Windows2Local-datalab"
 Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Windows2Local-overview"
 Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Windows2Local-preview"
-Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Preferences.properties"
-Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\modules"
-Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\update_tracking"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\config\Preferences.properties"; Tasks: cleanuserdir
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\modules"; Tasks: cleanuserdir
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\update_tracking"; Tasks: cleanuserdir
 Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\var"
 Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\lock"
+Type: filesandordirs; Name: "{userappdata}\.gephi\${project.version}\dev\update"
