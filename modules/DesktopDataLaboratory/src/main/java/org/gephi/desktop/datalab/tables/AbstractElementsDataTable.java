@@ -58,6 +58,7 @@ import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.desktop.datalab.tables.celleditors.AttributeTypesSupportCellEditor;
 import org.gephi.desktop.datalab.utils.ArrayRenderer;
 import org.gephi.desktop.datalab.utils.DefaultStringRepresentationRenderer;
+import org.gephi.desktop.datalab.utils.DoubleRenderer;
 import org.gephi.desktop.datalab.utils.IntervalMapRenderer;
 import org.gephi.desktop.datalab.utils.TimestampMapRenderer;
 import org.gephi.desktop.datalab.utils.SparkLinesRenderer;
@@ -96,6 +97,7 @@ public abstract class AbstractElementsDataTable<T extends Element> {
     private final List<SparkLinesRenderer> sparkLinesRenderers;
     private final ArrayRenderer arrayRenderer = new ArrayRenderer();
     private final DefaultStringRepresentationRenderer defaultStringRepresentationRenderer = new DefaultStringRepresentationRenderer();
+    private final DoubleRenderer doubleRenderer = new DoubleRenderer();
 
     public AbstractElementsDataTable() {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
@@ -144,6 +146,15 @@ public abstract class AbstractElementsDataTable<T extends Element> {
                     sparkLinesRenderers.add(renderer);
 
                     typeRenderer = renderer;
+                } else {
+                    boolean isDecimalType = typeClass.equals(Double.class)
+                            || typeClass.equals(double.class)
+                            || typeClass.equals(Float.class)
+                            || typeClass.equals(float.class);
+
+                    if (isDecimalType) {
+                        typeRenderer = doubleRenderer;
+                    }
                 }
             } else if (isArray) {
                 typeRenderer = arrayRenderer;
@@ -161,7 +172,7 @@ public abstract class AbstractElementsDataTable<T extends Element> {
             if (typeRenderer == null) {
                 typeRenderer = defaultStringRepresentationRenderer;
             }
-            
+
             //For booleans we want the default cell renderer that uses a checkbox
             //For any other type, use our own cell renderer that shows the values with standard, not locale specific toString methods
             if (!typeClass.equals(Boolean.class) && !typeClass.equals(boolean.class)) {
