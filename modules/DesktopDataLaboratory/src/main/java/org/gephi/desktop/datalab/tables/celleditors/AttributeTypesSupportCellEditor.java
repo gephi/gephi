@@ -48,6 +48,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
+import org.gephi.desktop.datalab.utils.DoubleRenderer;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalMap;
@@ -63,7 +64,7 @@ import org.joda.time.DateTimeZone;
 public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
 
     private static final Border RED_BORDER = new LineBorder(Color.red);
-    
+
     private final JTextField textField;
     private final Border originalBorder;
     private final Class<?> typeClass;
@@ -72,28 +73,33 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
     private final boolean isIntervalSetType;
     private final boolean isIntervalMapType;
     private final boolean isArrayType;
-    
+    private final boolean isDecimalType;
+
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
     private DateTimeZone timeZone = DateTimeZone.UTC;
 
     public AttributeTypesSupportCellEditor(Class<?> typeClass) {
         super(new JTextField());
         this.typeClass = typeClass;
-        
+
         textField = new JTextField();
         originalBorder = textField.getBorder();
-        
+
         isTimestampSetType = TimestampSet.class.isAssignableFrom(typeClass);
         isTimestampMapType = TimestampMap.class.isAssignableFrom(typeClass);
         isIntervalSetType = IntervalSet.class.isAssignableFrom(typeClass);
         isIntervalMapType = IntervalMap.class.isAssignableFrom(typeClass);
         isArrayType = typeClass.isArray();
+        isDecimalType = typeClass.equals(Double.class)
+                || typeClass.equals(double.class)
+                || typeClass.equals(Float.class)
+                || typeClass.equals(float.class);
     }
 
     @Override
     public boolean stopCellEditing() {
         String value = getCellEditorValue().toString();
-        if(!value.trim().isEmpty()){
+        if (!value.trim().isEmpty()) {
             try {
                 AttributeUtils.parse(value, typeClass);
             } catch (Exception e) {
@@ -101,7 +107,7 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
                 return false;//Invalid value for type
             }
         }
-        
+
         return super.stopCellEditing();
     }
 
@@ -117,22 +123,21 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
         String valueStr;
         if (value == null) {
             valueStr = "";
-        }else{
-            if(isTimestampSetType){
-                valueStr = ((TimestampSet) value).toString(timeFormat, timeZone);
-            }else if(isTimestampMapType){
-                valueStr = ((TimestampMap) value).toString(timeFormat, timeZone);
-            }else if(isIntervalSetType){
-                valueStr = ((IntervalSet) value).toString(timeFormat, timeZone);
-            }else if(isIntervalMapType){
-                valueStr = ((IntervalMap) value).toString(timeFormat, timeZone);
-            }else if(isArrayType){
-                valueStr = AttributeUtils.printArray(value);
-            }else{
-                valueStr = value.toString();
-            }
+        } else if (isTimestampSetType) {
+            valueStr = ((TimestampSet) value).toString(timeFormat, timeZone);
+        } else if (isTimestampMapType) {
+            valueStr = ((TimestampMap) value).toString(timeFormat, timeZone);
+        } else if (isIntervalSetType) {
+            valueStr = ((IntervalSet) value).toString(timeFormat, timeZone);
+        } else if (isIntervalMapType) {
+            valueStr = ((IntervalMap) value).toString(timeFormat, timeZone);
+        } else if (isArrayType) {
+            valueStr = AttributeUtils.printArray(value);
+        } else if (isDecimalType) {
+            valueStr = DoubleRenderer.FORMAT.format(value);
+        } else {
+            valueStr = value.toString();
         }
-        
 
         textField.setBorder(originalBorder);
         textField.setEditable(true);
