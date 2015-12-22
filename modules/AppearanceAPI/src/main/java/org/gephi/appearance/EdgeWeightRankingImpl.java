@@ -79,6 +79,9 @@ public class EdgeWeightRankingImpl extends RankingImpl {
                         minV = Math.min(numMin, minV);
                         maxV = Math.max(numMax, maxV);
                     }
+                } else {
+                    minV = e.getWeight();
+                    maxV = e.getWeight();
                 }
             }
             min = minV;
