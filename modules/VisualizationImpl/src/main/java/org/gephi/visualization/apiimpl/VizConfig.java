@@ -135,7 +135,7 @@ public class VizConfig {
     public static final Color DEFAULT_RECTANGLE_SELECTION_COLOR = new Color(0.16f, 0.48f, 0.81f, 0.2f);
     public static final boolean DEFAULT_DRAGGING = true;
     public static final boolean DEFAULT_CAMERA_CONTROL = true;
-    public static final boolean DEFAULT_SHOW_FPS = true;
+    public static final boolean DEFAULT_SHOW_FPS = false;
     public static final boolean DEFAULT_REDUCE_FPS_MOUSE_OUT = true;
     public static final boolean DEFAULT_PAUSE_LOOP_MOUSE_OUT = false;
     public static final int DEFAULT_REDUCE_FPS_MOUSE_OUT_VALUE = 20;
