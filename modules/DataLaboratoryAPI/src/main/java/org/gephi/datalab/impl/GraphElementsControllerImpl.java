@@ -397,6 +397,11 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         }
         newNode.setSize(DEFAULT_NODE_SIZE);
         newNode.setLabel(label);
+        
+        //Set random position to the node:
+        newNode.setX((float) ((0.01 + Math.random()) * 1000) - 500);
+        newNode.setY((float) ((0.01 + Math.random()) * 1000) - 500);
+        
         return newNode;
     }
 
