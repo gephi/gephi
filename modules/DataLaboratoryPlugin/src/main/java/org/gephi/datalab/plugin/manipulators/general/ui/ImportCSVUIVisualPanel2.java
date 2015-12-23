@@ -56,6 +56,7 @@ import net.miginfocom.swing.MigLayout;
 import org.gephi.graph.api.Table;
 import org.gephi.datalab.plugin.manipulators.general.ui.ImportCSVUIWizardAction.Mode;
 import org.gephi.datalab.utils.SupportedColumnTypeWrapper;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.openide.util.Exceptions;
@@ -153,8 +154,13 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
                 if (columns[i].isEmpty()) {
                     continue;//Remove empty column headers:
                 }
-
+                
                 JCheckBox columnCheckBox = new JCheckBox(columns[i], true);
+                Column column = table.getColumn(columns[i]);
+                if(column != null){
+                    columnCheckBox.setToolTipText(column.getTitle());
+                }
+                
                 columnsCheckBoxes.add(columnCheckBox);
                 settingsPanel.add(columnCheckBox, "wrap");
                 JComboBox columnComboBox = new JComboBox();
