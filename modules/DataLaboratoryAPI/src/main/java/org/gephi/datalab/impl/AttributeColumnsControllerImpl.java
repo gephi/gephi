@@ -53,6 +53,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -87,6 +88,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     @Override
     public boolean setAttributeValue(Object value, Element row, Column column) {
+        if (!canChangeColumnData(column)) {
+            return false;
+        }
+
         Class targetType = column.getTypeClass();
         if (value != null && !value.getClass().equals(targetType)) {
             try {
@@ -468,12 +473,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     @Override
     public boolean isNodeColumn(Column column) {
-        return Node.class.equals(column.getTypeClass());
+        return isNodeTable(column.getTable());
     }
 
     @Override
     public boolean isEdgeColumn(Column column) {
-        return Edge.class.equals(column.getTypeClass());
+        return isEdgeTable(column.getTable());
     }
 
     @Override
@@ -483,6 +488,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     @Override
     public boolean canClearColumnData(Column column) {
+        if(isEdgeColumn(column) && column.getId().equalsIgnoreCase("weight")){
+            return false;//Should not remove weight value but grapshtore currently allows it
+        }
+        
         return !column.isReadOnly();
     }
 
@@ -580,7 +589,6 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             //Prepare attribute columns for the column names, creating the not already existing columns:
             Table nodesTable = graph.getModel().getNodeTable();
             String idColumn = null;
-            ArrayList<Column> columnsList = new ArrayList<Column>();
             HashMap<Column, String> columnHeaders = new HashMap<Column, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
             for (int i = 0; i < columnNames.length; i++) {
                 //Separate first id column found from the list to use as id. If more are found later, the will not be in the list and be ignored.
@@ -590,20 +598,20 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     }
                 } else if (nodesTable.hasColumn(columnNames[i])) {
                     Column column = nodesTable.getColumn(columnNames[i]);
-                    columnsList.add(column);
                     columnHeaders.put(column, columnNames[i]);
                 } else {
                     Column column = addAttributeColumn(nodesTable, columnNames[i], columnTypes[i]);
                     if (column != null) {
-                        columnsList.add(column);
                         columnHeaders.put(column, columnNames[i]);
                     }
                 }
             }
+            
+            Set<Column> columnList = columnHeaders.keySet();
 
             //Create nodes:
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-            String id = null;
+            String id;
             Node node;
             reader = new CsvReader(new FileInputStream(file), separator, charset);
             reader.setTrimWhitespace(false);
@@ -630,7 +638,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     node = gec.createNode(null);
                 }
                 //Assign attributes to the current node:
-                for (Column column : columnsList) {
+                for (Column column : columnList) {
                     setAttributeValue(reader.get(columnHeaders.get(column)), node, column);
                 }
             }
@@ -659,14 +667,11 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
             Table edgesTable = graph.getModel().getEdgeTable();
-            boolean isDynamicWeight = edgesTable.getColumn("Weight").isDynamic();
 
             String idColumnHeader = null;
             String sourceColumnHeader = null;
             String targetColumnHeader = null;
             String typeColumnHeader = null;
-            String weightColumnHeader = null;
-            ArrayList<Column> columnsList = new ArrayList<Column>();
             HashMap<Column, String> columnHeaders = new HashMap<Column, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
             for (int i = 0; i < columnNames.length; i++) {
                 //Separate first id column found from the list to use as id. If more are found later, the will not be in the list and be ignored.
@@ -680,35 +685,36 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     targetColumnHeader = columnNames[i];
                 } else if (columnNames[i].equalsIgnoreCase("type") && typeColumnHeader == null) {//Separate first type column found from the list to use as edge type (directed/undirected)
                     typeColumnHeader = columnNames[i];
-                } else if (columnNames[i].equalsIgnoreCase("weight") && weightColumnHeader == null) {//Separate first weight column found from the list to use as edge weight
-                    weightColumnHeader = columnNames[i];
                 } else if (edgesTable.hasColumn(columnNames[i])) {
+                    //Any other existing column:
                     Column column = edgesTable.getColumn(columnNames[i]);
-                    columnsList.add(column);
                     columnHeaders.put(column, columnNames[i]);
                 } else {
+                    //New column:
                     Column column = addAttributeColumn(edgesTable, columnNames[i], columnTypes[i]);
                     if (column != null) {
-                        columnsList.add(column);
                         columnHeaders.put(column, columnNames[i]);
                     }
                 }
             }
+            
+            Set<Column> columnList = columnHeaders.keySet();
 
             //Create edges:
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-            String id;
-            Edge edge;
-            String sourceId, targetId;
-            Node source, target;
-            String type;
-            boolean directed;
             reader = new CsvReader(new FileInputStream(file), separator, charset);
             reader.setTrimWhitespace(false);
             reader.readHeaders();
 
             int recordNumber = 0;
             while (reader.readRecord()) {
+                String id;
+                Edge edge = null;
+                String sourceId, targetId;
+                Node source, target;
+                String type;
+                boolean directed;
+                
                 recordNumber++;
                 sourceId = reader.get(sourceColumnHeader);
                 targetId = reader.get(targetColumnHeader);
@@ -764,7 +770,11 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     if (id == null || id.isEmpty()) {
                         edge = gec.createEdge(source, target, directed);//id null or empty, assign one
                     } else {
-                        edge = gec.createEdge(id, source, target, directed);
+                        Edge edgeById = graph.getEdge(id);
+                        
+                        if(edgeById == null){
+                            edge = gec.createEdge(id, source, target, directed);
+                        }
                         if (edge == null) {//Edge with that id already in graph
                             edge = gec.createEdge(source, target, directed);
                         }
@@ -775,7 +785,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
                 if (edge != null) {//Edge could be created because it does not already exist:
                     //Assign attributes to the current edge:
-                    for (Column column : columnsList) {
+                    for (Column column : columnList) {
                         setAttributeValue(reader.get(columnHeaders.get(column)), edge, column);
                     }
                 } else {
@@ -787,23 +797,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                             edge = null;
                         }
                     }
-                }
-
-                //Do not ignore repeated edge, instead increase edge weight (as long as the table does not have dynamic weight)
-                if (edge != null && !isDynamicWeight) {
-                    //Increase edge weight with specified weight (if specified), else increase by 1:
-                    if (weightColumnHeader != null) {
-                        String weight = reader.get(weightColumnHeader);
-                        try {
-                            Float weightFloat = Float.parseFloat(weight);
-                            edge.setWeight(weightFloat);
-                        } catch (NumberFormatException numberFormatException) {
-                            //Not valid weight, add 1
-                            edge.setWeight(edge.getWeight() + 1);
+                    
+                    if(edge != null){
+                        //Update edge attributes:
+                        for (Column column : columnList) {
+                            setAttributeValue(reader.get(columnHeaders.get(column)), edge, column);
                         }
-                    } else {
-                        //Add 1 (weight not specified)
-                        edge.setWeight(edge.getWeight() + 1);
                     }
                 }
             }

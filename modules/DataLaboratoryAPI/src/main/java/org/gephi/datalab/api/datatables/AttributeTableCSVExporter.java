@@ -187,7 +187,11 @@ public class AttributeTableCSVExporter {
             } else if (columnIndex == FAKE_COLUMN_EDGE_TYPE) {
                 writer.write("Type");
             } else {
-                writer.write(table.getColumn(columnIndex).getTitle(), true);
+                //Use the title only if it's the same as the id (case insensitive):
+                String columnId = table.getColumn(columnIndex).getId();
+                String columnTitle = table.getColumn(columnIndex).getId();
+                String columnHeader = columnId.equalsIgnoreCase(columnTitle) ? columnTitle : columnId;
+                writer.write(columnHeader, true);
             }
 
         }
