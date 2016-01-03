@@ -52,6 +52,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -80,8 +81,8 @@ public class EdgeTypeBuilder implements FilterBuilder {
     }
 
     @Override
-    public Filter getFilter() {
-        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+    public Filter getFilter(Workspace workspace) {
+        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         return new EdgeTypeFilter(am);
     }
 

@@ -50,6 +50,7 @@ import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.AbstractFilter;
 import org.gephi.filters.spi.*;
 import org.gephi.graph.api.*;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -82,7 +83,7 @@ public class MutualDegreeRangeBuilder implements FilterBuilder {
     }
 
     @Override
-    public MutualDegreeRangeFilter getFilter() {
+    public MutualDegreeRangeFilter getFilter(Workspace workspace) {
         return new MutualDegreeRangeFilter();
     }
 

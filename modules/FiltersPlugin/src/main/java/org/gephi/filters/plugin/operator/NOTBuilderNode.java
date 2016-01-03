@@ -55,6 +55,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Subgraph;
+import org.gephi.project.api.Workspace;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -86,7 +87,7 @@ public class NOTBuilderNode implements FilterBuilder {
     }
 
     @Override
-    public Filter getFilter() {
+    public Filter getFilter(Workspace workspace) {
         return new NOTOperatorNode();
     }
 
@@ -138,7 +139,7 @@ public class NOTBuilderNode implements FilterBuilder {
                 Node target = e.getTarget();
                 if (graph.contains(source) && graph.contains(target)) {
                     Edge edgeInGraph = graph.getEdge(source, target, e.getType());
-                    if(edgeInGraph == null) {
+                    if (edgeInGraph == null) {
                         graph.addEdge(e);
                     }
                 }

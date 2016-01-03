@@ -59,6 +59,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -81,11 +82,11 @@ public class IntraEdgesBuilder implements CategoryBuilder {
     }
 
     @Override
-    public FilterBuilder[] getBuilders() {
+    public FilterBuilder[] getBuilders(Workspace workspace) {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
-        GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         Graph graph = gm.getGraph();
-        AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel();
+        AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel(workspace);
 
         for (Column nodeCol : gm.getNodeTable()) {
             if (!nodeCol.isProperty()) {
@@ -130,7 +131,7 @@ public class IntraEdgesBuilder implements CategoryBuilder {
         }
 
         @Override
-        public IntraEdgesFilter getFilter() {
+        public IntraEdgesFilter getFilter(Workspace workspace) {
             return new IntraEdgesFilter(column, model);
         }
 

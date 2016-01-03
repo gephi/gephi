@@ -65,6 +65,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -88,11 +89,14 @@ public class PartitionBuilder implements CategoryBuilder {
     }
 
     @Override
-    public FilterBuilder[] getBuilders() {
+    public FilterBuilder[] getBuilders(Workspace workspace) {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
-        GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         Graph graph = gm.getGraph();
-        AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel();
+        AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel(workspace);
+
+        //Force refresh
+        am.getNodeFunctions(graph);
 
         for (Column nodeCol : gm.getNodeTable()) {
             if (!nodeCol.isProperty()) {
@@ -148,7 +152,7 @@ public class PartitionBuilder implements CategoryBuilder {
         }
 
         @Override
-        public PartitionFilter getFilter() {
+        public PartitionFilter getFilter(Workspace workspace) {
             if (AttributeUtils.isNodeColumn(column)) {
                 return new NodePartitionFilter(column, model);
             } else {

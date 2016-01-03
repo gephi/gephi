@@ -44,6 +44,7 @@ package org.gephi.filters.spi;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.filters.api.FilterLibrary;
+import org.gephi.project.api.Workspace;
 
 /**
  * Filter builder, creating <code>Filter</code> instances for a <b>single</b>
@@ -96,9 +97,10 @@ public interface FilterBuilder {
     /**
      * Builds a new <code>Filter</code> instance.
      *
+     * @param workspace workspace
      * @return a new <code>Filter</code> object
      */
-    public Filter getFilter();
+    public Filter getFilter(Workspace workspace);
 
     /**
      * Returns the settings panel for the filter this builder is building, the

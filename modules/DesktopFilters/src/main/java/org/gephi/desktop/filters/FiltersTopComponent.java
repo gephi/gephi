@@ -93,7 +93,7 @@ public final class FiltersTopComponent extends TopComponent {
 
             @Override
             public void initialize(Workspace workspace) {
-                workspace.add(new FilterUIModel());
+                workspace.add(new FilterUIModel(workspace));
             }
 
             @Override
@@ -101,7 +101,7 @@ public final class FiltersTopComponent extends TopComponent {
                 filterModel = workspace.getLookup().lookup(FilterModel.class);
                 uiModel = workspace.getLookup().lookup(FilterUIModel.class);
                 if (uiModel == null) {
-                    uiModel = new FilterUIModel();
+                    uiModel = new FilterUIModel(workspace);
                     workspace.add(uiModel);
                 }
                 refreshModel();
@@ -127,7 +127,7 @@ public final class FiltersTopComponent extends TopComponent {
             filterModel = workspace.getLookup().lookup(FilterModel.class);
             uiModel = workspace.getLookup().lookup(FilterUIModel.class);
             if (uiModel == null) {
-                uiModel = new FilterUIModel();
+                uiModel = new FilterUIModel(workspace);
                 workspace.add(uiModel);
             }
         }

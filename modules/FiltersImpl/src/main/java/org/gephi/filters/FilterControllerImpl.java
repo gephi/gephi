@@ -42,6 +42,7 @@
 package org.gephi.filters;
 
 import java.beans.PropertyEditorManager;
+import java.util.Set;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.PropertyExecutor;
@@ -85,6 +86,8 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         //Register range editor
         PropertyEditorManager.registerEditor(Range.class, RangePropertyEditor.class);
         PropertyEditorManager.registerEditor(Column.class, AttributeColumnPropertyEditor.class);
+        PropertyEditorManager.registerEditor(Set.class, GenericPropertyEditor.class);
+        PropertyEditorManager.registerEditor(Number.class, GenericPropertyEditor.class);
 
         //Model management
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -141,7 +144,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
     @Override
     public Query createQuery(FilterBuilder builder) {
-        Filter filter = builder.getFilter();
+        Filter filter = builder.getFilter(model.getWorkspace());
         if (filter instanceof Operator) {
             return new OperatorQueryImpl((Operator) filter);
         }

@@ -63,6 +63,7 @@ import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.graph.api.types.TimeSet;
 import org.gephi.graph.api.types.TimestampSet;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -85,9 +86,9 @@ public class DynamicRangeBuilder implements CategoryBuilder {
     }
 
     @Override
-    public FilterBuilder[] getBuilders() {
+    public FilterBuilder[] getBuilders(Workspace workspace) {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
-        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         if (am.isDynamic()) {
             builders.add(new DynamicRangeFilterBuilder(am));
         }
@@ -123,7 +124,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         }
 
         @Override
-        public DynamicRangeFilter getFilter() {
+        public DynamicRangeFilter getFilter(Workspace workspace) {
             return new DynamicRangeFilter(graphModel);
         }
 

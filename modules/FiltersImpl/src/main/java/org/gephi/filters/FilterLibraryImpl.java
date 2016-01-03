@@ -49,6 +49,7 @@ import org.gephi.filters.spi.CategoryBuilder;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterLibraryMask;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -59,11 +60,13 @@ import org.openide.util.lookup.InstanceContent;
  */
 public class FilterLibraryImpl implements FilterLibrary {
 
+    private final Workspace workspace;
     private final AbstractLookup lookup;
     private final InstanceContent content;
     private final Map<Class<? extends Filter>, FilterBuilder> buildersMap;
 
-    public FilterLibraryImpl() {
+    public FilterLibraryImpl(Workspace workspace) {
+        this.workspace = workspace;
         content = new InstanceContent();
         lookup = new AbstractLookup(content);
 
@@ -86,16 +89,16 @@ public class FilterLibraryImpl implements FilterLibrary {
 
         for (FilterBuilder builder : lookup.lookupAll(FilterBuilder.class)) {
             try {
-                Filter f = builder.getFilter();
+                Filter f = builder.getFilter(workspace);
                 buildersMap.put(f.getClass(), builder);
                 builder.destroy(f);
             } catch (Exception e) {
             }
         }
         for (CategoryBuilder catBuilder : Lookup.getDefault().lookupAll(CategoryBuilder.class)) {
-            for (FilterBuilder builder : catBuilder.getBuilders()) {
+            for (FilterBuilder builder : catBuilder.getBuilders(workspace)) {
                 try {
-                    Filter f = builder.getFilter();
+                    Filter f = builder.getFilter(workspace);
                     buildersMap.put(f.getClass(), builder);
                     builder.destroy(f);
                 } catch (Exception e) {

@@ -53,6 +53,7 @@ import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
+import org.gephi.project.api.Workspace;
 import org.gephi.statistics.plugin.ConnectedComponents;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -85,7 +86,7 @@ public class GiantComponentBuilder implements FilterBuilder {
     }
 
     @Override
-    public Filter getFilter() {
+    public Filter getFilter(Workspace workspace) {
         return new GiantComponentFilter();
     }
 

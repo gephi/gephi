@@ -57,6 +57,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Subgraph;
+import org.gephi.project.api.Workspace;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -88,7 +89,7 @@ public class UNIONBuilder implements FilterBuilder {
     }
 
     @Override
-    public Filter getFilter() {
+    public Filter getFilter(Workspace workspace) {
         return new UnionOperator();
     }
 

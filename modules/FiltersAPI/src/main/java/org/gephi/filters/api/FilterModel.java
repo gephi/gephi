@@ -43,6 +43,7 @@ package org.gephi.filters.api;
 
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.project.api.Workspace;
 
 /**
  * The Filter Model hosts the queries defined in the system and the currently
@@ -95,6 +96,8 @@ public interface FilterModel {
     public boolean isSelecting();
 
     public boolean isAutoRefresh();
+
+    public Workspace getWorkspace();
 
     public void addChangeListener(ChangeListener listener);
 

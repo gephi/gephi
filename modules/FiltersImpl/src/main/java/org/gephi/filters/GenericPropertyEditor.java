@@ -42,54 +42,83 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.filters;
 
 import java.beans.PropertyEditorSupport;
-import org.gephi.graph.api.AttributeUtils;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.GraphModel;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import org.apache.commons.codec.binary.Base64;
 
-/**
- *
- * @author Mathieu Bastian
- */
-public class AttributeColumnPropertyEditor extends PropertyEditorSupport {
-
-    private Column column;
-    private GraphModel model;
-
+public class GenericPropertyEditor extends PropertyEditorSupport {
+    
+    private Object val;
+    
     @Override
     public void setValue(Object value) {
-        this.column = (Column) value;
+        this.val = value;
     }
-
+    
     @Override
     public Object getValue() {
-        return column;
+        return val;
     }
-
+    
     @Override
     public String getAsText() {
-        if (column != null) {
-            if (AttributeUtils.isNodeColumn(column)) {
-                return "NODE*-*" + column.getId() + "*-*" + column.getTypeClass().getName();
-            } else {
-                return "EDGE*-*" + column.getId() + "*-*" + column.getTypeClass().getName();
+        if (val != null) {
+            ByteArrayOutputStream bos = null;
+            ObjectOutputStream oos = null;
+            try {
+                bos = new ByteArrayOutputStream();
+                oos = new ObjectOutputStream(bos);
+                oos.writeObject(val);
+            } catch (Exception e) {
+                e.printStackTrace();;
+            } finally {
+                if (oos != null) {
+                    try {
+                        oos.close();
+                    } catch (IOException ex) {
+                    }
+                }
+                if (bos != null) {
+                    try {
+                        bos.close();
+                    } catch (IOException ex) {
+                    }
+                }
+            }
+            if (bos != null) {
+                return Base64.encodeBase64String(bos.toByteArray());
             }
         }
         return "null";
-
     }
-
-    public void setGraphModel(GraphModel model) {
-        this.model = model;
-    }
-
+    
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         if (!text.equals("null")) {
-            String[] arr = text.split("\\*-\\*");
-            if (arr[0].equals("NODE")) {
-                column = model.getNodeTable().getColumn(arr[1]);
-            } else if (arr[0].equals("EDGE")) {
-                column = model.getEdgeTable().getColumn(arr[1]);
+            ByteArrayInputStream bis = null;
+            ObjectInputStream ois = null;
+            try {
+                bis = new ByteArrayInputStream(Base64.decodeBase64(text));
+                ois = new ObjectInputStream(bis);
+                val = ois.readObject();
+            } catch (Exception e) {
+                e.printStackTrace();;
+            } finally {
+                if (ois != null) {
+                    try {
+                        ois.close();
+                    } catch (IOException ex) {
+                    }
+                }
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (IOException ex) {
+                    }
+                }
             }
         }
     }

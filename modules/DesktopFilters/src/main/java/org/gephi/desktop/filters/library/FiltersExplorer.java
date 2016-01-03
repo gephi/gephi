@@ -194,7 +194,7 @@ public class FiltersExplorer extends BeanTreeView {
                     } else if (cb.getCategory().getParent() != null && cb.getCategory().getParent().getParent() == category) {
                         cats.add(cb.getCategory().getParent());
                     } else if (cb.getCategory() == category) {
-                        for (FilterBuilder fb : cb.getBuilders()) {
+                        for (FilterBuilder fb : cb.getBuilders(uiModel.getWorkspace())) {
                             cats.add(fb);
                         }
                     }
