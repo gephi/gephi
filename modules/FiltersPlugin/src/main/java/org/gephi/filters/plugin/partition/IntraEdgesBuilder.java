@@ -88,6 +88,9 @@ public class IntraEdgesBuilder implements CategoryBuilder {
         Graph graph = gm.getGraph();
         AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel(workspace);
 
+        //Force refresh
+        am.getNodeFunctions(graph);
+
         for (Column nodeCol : gm.getNodeTable()) {
             if (!nodeCol.isProperty()) {
                 if (am.getNodePartition(graph, nodeCol) != null) {
