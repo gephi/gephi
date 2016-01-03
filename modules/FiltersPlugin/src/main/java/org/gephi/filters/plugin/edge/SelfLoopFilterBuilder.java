@@ -47,6 +47,7 @@ import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.spi.*;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.project.api.Workspace;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -78,7 +79,7 @@ public class SelfLoopFilterBuilder implements FilterBuilder {
     }
 
     @Override
-    public Filter getFilter() {
+    public Filter getFilter(Workspace workspace) {
         return new SelfLoopFilter();
     }
 

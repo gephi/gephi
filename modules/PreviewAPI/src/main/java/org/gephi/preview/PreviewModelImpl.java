@@ -386,8 +386,6 @@ public class PreviewModelImpl implements PreviewModel {
 
     //PERSISTENCE
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeStartElement("previewmodel");
-
         initProperties();
         //Write PreviewProperties:
         for (PreviewProperty property : properties.getProperties()) {
@@ -438,9 +436,6 @@ public class PreviewModelImpl implements PreviewModel {
                 writer.writeEndElement();
             }
         }
-
-
-        writer.writeEndElement();
     }
 
     public void readXML(XMLStreamReader reader) throws XMLStreamException {

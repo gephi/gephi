@@ -165,7 +165,6 @@ public class StatisticsModelUIImpl implements StatisticsModelUI {
 
     //PERSISTENCE
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeStartElement("statisticsmodelui");
 
         writer.writeStartElement("results");
         for (Map.Entry<StatisticsUI, String> entry : resultMap.entrySet()) {
@@ -176,8 +175,6 @@ public class StatisticsModelUIImpl implements StatisticsModelUI {
                 writer.writeEndElement();
             }
         }
-        writer.writeEndElement();
-
         writer.writeEndElement();
     }
 

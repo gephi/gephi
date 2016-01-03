@@ -41,6 +41,8 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.filters.spi;
 
+import org.gephi.project.api.Workspace;
+
 /**
  * Category builder is a convenient way to define multiple builders from a
  * single source and grouped in a single category.
@@ -60,9 +62,10 @@ public interface CategoryBuilder {
     /**
      * Returns the filter builders this category builder is building.
      *
+     * @param workspace workspace
      * @return the builders this category builder is building
      */
-    public FilterBuilder[] getBuilders();
+    public FilterBuilder[] getBuilders(Workspace workspace);
 
     /**
      * Returns the category builders are to be grouped in. It can't be a default

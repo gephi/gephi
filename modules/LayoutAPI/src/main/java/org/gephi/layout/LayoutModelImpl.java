@@ -253,8 +253,6 @@ public class LayoutModelImpl implements LayoutModel {
     }
 
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeStartElement("layoutmodel");
-
         if (selectedLayout != null) {
             saveProperties(selectedLayout);
             writer.writeStartElement("selectedlayoutbuilder");
@@ -274,8 +272,6 @@ public class LayoutModelImpl implements LayoutModel {
                 writer.writeEndElement();
             }
         }
-
-        writer.writeEndElement();
 
         writer.writeEndElement();
     }

@@ -388,8 +388,6 @@ public class VizModel {
     }
 
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeStartElement("vizmodel");
-
         //Fast refreh
         GraphDrawable drawable = VizController.getInstance().getDrawable();
         cameraPosition = Arrays.copyOf(drawable.getCameraLocation(), 3);
@@ -466,8 +464,6 @@ public class VizModel {
         //Float
         writer.writeStartElement("edgeScale");
         writer.writeAttribute("value", String.valueOf(edgeScale));
-        writer.writeEndElement();
-
         writer.writeEndElement();
     }
 }

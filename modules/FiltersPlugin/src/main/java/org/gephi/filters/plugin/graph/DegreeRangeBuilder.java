@@ -51,6 +51,7 @@ import org.gephi.filters.plugin.AbstractFilter;
 import org.gephi.filters.spi.*;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -83,7 +84,7 @@ public class DegreeRangeBuilder implements FilterBuilder {
     }
 
     @Override
-    public DegreeRangeFilter getFilter() {
+    public DegreeRangeFilter getFilter(Workspace workspace) {
         return new DegreeRangeFilter();
     }
 

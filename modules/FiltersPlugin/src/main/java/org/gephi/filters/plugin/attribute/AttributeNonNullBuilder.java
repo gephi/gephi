@@ -59,6 +59,7 @@ import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -81,9 +82,9 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
     }
 
     @Override
-    public FilterBuilder[] getBuilders() {
+    public FilterBuilder[] getBuilders(Workspace workspace) {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
-        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         for (Column col : am.getNodeTable()) {
             if (!col.isProperty()) {
                 AttributeNonNullFilterBuilder b = new AttributeNonNullFilterBuilder(col);
@@ -109,7 +110,7 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
         }
 
         @Override
-        public AttributeNonNullFilter getFilter() {
+        public AttributeNonNullFilter getFilter(Workspace workspace) {
             return AttributeUtils.isNodeColumn(column) ? new AttributeNonNullFilter.Node(column) : new AttributeNonNullFilter.Edge(column);
         }
 

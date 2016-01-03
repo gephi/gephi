@@ -80,7 +80,7 @@ public class FilterModelImpl implements FilterModel {
 
     public FilterModelImpl(Workspace workspace) {
         this.workspace = workspace;
-        filterLibraryImpl = new FilterLibraryImpl();
+        filterLibraryImpl = new FilterLibraryImpl(workspace);
         queries = new LinkedList<Query>();
         listeners = new ArrayList<ChangeListener>();
         autoRefresh = true;
@@ -289,6 +289,7 @@ public class FilterModelImpl implements FilterModel {
         return graphModel;
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }

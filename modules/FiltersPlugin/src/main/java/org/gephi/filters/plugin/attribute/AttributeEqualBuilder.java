@@ -60,6 +60,7 @@ import org.gephi.graph.api.types.IntervalBooleanMap;
 import org.gephi.graph.api.types.IntervalStringMap;
 import org.gephi.graph.api.types.TimestampBooleanMap;
 import org.gephi.graph.api.types.TimestampStringMap;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -82,9 +83,9 @@ public class AttributeEqualBuilder implements CategoryBuilder {
     }
 
     @Override
-    public FilterBuilder[] getBuilders() {
+    public FilterBuilder[] getBuilders(Workspace workspace) {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
-        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         List<Column> columns = new ArrayList<Column>();
         columns.addAll(am.getNodeTable().toList());
         columns.addAll(am.getEdgeTable().toList());
@@ -115,7 +116,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         @Override
-        public EqualStringFilter getFilter() {
+        public EqualStringFilter getFilter(Workspace workspace) {
             return AttributeUtils.isNodeColumn(column) ? new EqualStringFilter.Node(column) : new EqualStringFilter.Edge(column);
         }
 
@@ -209,7 +210,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         @Override
-        public EqualNumberFilter getFilter() {
+        public EqualNumberFilter getFilter(Workspace workspace) {
             return AttributeUtils.isNodeColumn(column) ? new EqualNumberFilter.Node(column) : new EqualNumberFilter.Edge(column);
         }
 
@@ -334,7 +335,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         @Override
-        public EqualBooleanFilter getFilter() {
+        public EqualBooleanFilter getFilter(Workspace workspace) {
             return AttributeUtils.isNodeColumn(column) ? new EqualBooleanFilter.Node(column) : new EqualBooleanFilter.Edge(column);
         }
 

@@ -314,7 +314,7 @@ public class TimelineControllerImpl implements TimelineController {
                     if (dynamicQuery == null) {
                         //Create dynamic filter
                         DynamicRangeBuilder rangeBuilder = filterModel.getLibrary().getLookup().lookup(DynamicRangeBuilder.class);
-                        FilterBuilder[] fb = rangeBuilder.getBuilders();
+                        FilterBuilder[] fb = rangeBuilder.getBuilders(filterModel.getWorkspace());
                         if (fb.length > 0) {
                             dynamicQuery = filterController.createQuery(fb[0]);
                             filterController.add(dynamicQuery);

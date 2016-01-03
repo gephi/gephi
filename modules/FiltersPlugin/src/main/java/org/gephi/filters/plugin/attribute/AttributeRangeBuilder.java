@@ -51,6 +51,7 @@ import org.gephi.filters.plugin.AbstractAttributeFilterBuilder;
 import org.gephi.filters.plugin.graph.RangeUI;
 import org.gephi.filters.spi.*;
 import org.gephi.graph.api.*;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -73,9 +74,9 @@ public class AttributeRangeBuilder implements CategoryBuilder {
     }
 
     @Override
-    public FilterBuilder[] getBuilders() {
+    public FilterBuilder[] getBuilders(Workspace workspace) {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
-        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         List<Column> columns = new ArrayList<Column>();
         columns.addAll(am.getNodeTable().toList());
         columns.addAll(am.getEdgeTable().toList());
@@ -100,7 +101,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
 
         @Override
-        public AttributeRangeFilter getFilter() {
+        public AttributeRangeFilter getFilter(Workspace workspace) {
             return AttributeUtils.isNodeColumn(column) ? new AttributeRangeFilter.Node(column) : new AttributeRangeFilter.Edge(column);
         }
 

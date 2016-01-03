@@ -47,6 +47,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.Category;
+import org.gephi.project.api.Workspace;
 
 /**
  *
@@ -54,17 +55,23 @@ import org.gephi.filters.spi.Category;
  */
 public final class FilterUIModel {
 
+    private final Workspace workspace;
     private Query selectedQuery;
     private final List<Query> expandedQueryNodes;
     private final List<Query> expandedParametersNodes;
     private final List<Category> expandedCategoryNodes;
     private final List<ChangeListener> listeners;
 
-    public FilterUIModel() {
+    public FilterUIModel(Workspace workspace) {
+        this.workspace = workspace;
         listeners = new ArrayList<ChangeListener>();
         expandedQueryNodes = new ArrayList<Query>();
         expandedCategoryNodes = new ArrayList<Category>();
         expandedParametersNodes = new ArrayList<Query>();
+    }
+
+    public Workspace getWorkspace() {
+        return workspace;
     }
 
     public Query getSelectedQuery() {
