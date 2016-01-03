@@ -99,7 +99,6 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
     private int queryId = 0;
 
     public void writeXML(XMLStreamWriter writer, FilterModelImpl model) throws XMLStreamException {
-        writer.writeStartElement("filtermodel");
         writer.writeAttribute("autorefresh", String.valueOf(model.isAutoRefresh()));
 
         //Queries

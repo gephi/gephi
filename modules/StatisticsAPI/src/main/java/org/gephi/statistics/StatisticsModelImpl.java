@@ -87,8 +87,6 @@ public class StatisticsModelImpl implements StatisticsModel {
     }
 
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeStartElement("statisticsmodel");
-
         writer.writeStartElement("reports");
         for (Map.Entry<Class, String> entry : reportMap.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
@@ -100,8 +98,6 @@ public class StatisticsModelImpl implements StatisticsModel {
                 writer.writeEndElement();
             }
         }
-        writer.writeEndElement();
-
         writer.writeEndElement();
     }
 
