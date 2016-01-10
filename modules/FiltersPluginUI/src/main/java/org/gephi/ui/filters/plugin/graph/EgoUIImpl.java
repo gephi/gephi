@@ -53,6 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = EgoUI.class)
 public class EgoUIImpl implements EgoUI {
 
+    @Override
     public JPanel getPanel(EgoFilter egoFilter) {
         EgoPanel egoPanel = new EgoPanel();
         egoPanel.setup(egoFilter);

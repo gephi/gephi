@@ -341,11 +341,13 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
 
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
         latestMousePositionX = e.getX();
         currentMousePositionX = latestMousePositionX;
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         if (model == null) {
             return;
@@ -392,6 +394,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
 //        }        
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet.");
         if (currentState == TimelineState.IDLE) {
@@ -401,6 +404,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
         mouseInside = true;
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet.");
         if (currentState == TimelineState.IDLE) {
@@ -413,6 +417,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
         repaint();
     }
 
+    @Override
     public void mouseReleased(MouseEvent evt) {
 
         latestMousePositionX = evt.getX();
@@ -422,6 +427,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
         this.getParent().repaint(); // so it will repaint upper and bottom panes
     }
 
+    @Override
     public void mouseMoved(MouseEvent evt) {
         if (model == null) {
             return;
@@ -489,6 +495,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
 
     }
 
+    @Override
     public void mouseDragged(MouseEvent evt) {
 
         if (model == null) {

@@ -112,6 +112,7 @@ public class MemoryStarvationManager implements NotificationListener {
         }
     }
 
+    @Override
     public void handleNotification(Notification n, Object o) {
         if (messageDelivered) {
             return;

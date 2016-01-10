@@ -90,6 +90,7 @@ public class ReportController {
     public void sendReport(final Report report) {
         Thread thread = new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 ProgressHandle handle = ProgressHandleFactory.createHandle(NbBundle.getMessage(ReportController.class, "ReportController.status.sending"));
                 try {

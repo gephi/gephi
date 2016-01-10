@@ -54,6 +54,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = MASKEdgeUI.class)
 public class MASKEdgeUIImpl implements MASKEdgeUI {
 
+    @Override
     public JPanel getPanel(MaskEdgeOperator filter) {
         MASKEdgePanel panel = new MASKEdgePanel();
         panel.setup(filter);

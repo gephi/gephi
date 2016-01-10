@@ -288,6 +288,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
         configurationCombo.setModel(new EdgeListPanel.ConfigurationComboModel());
         configurationCombo.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 configurationComboActionPerformed(evt);
             }
@@ -326,6 +327,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         testConnection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/importer/plugin/resources/test_connection.png"))); // NOI18N
         testConnection.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.testConnection.text")); // NOI18N
         testConnection.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 testConnectionActionPerformed(evt);
             }
@@ -342,6 +344,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         removeConfigurationButton.setMargin(new java.awt.Insets(0, 4, 0, 2));
         removeConfigurationButton.setPreferredSize(new java.awt.Dimension(65, 29));
         removeConfigurationButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeConfigurationButtonActionPerformed(evt);
             }

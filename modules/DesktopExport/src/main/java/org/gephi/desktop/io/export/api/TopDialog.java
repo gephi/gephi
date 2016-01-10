@@ -118,6 +118,7 @@ class TopDialog extends JDialog {
 
         Action cancelAction = new AbstractAction() {
 
+            @Override
             public void actionPerformed(ActionEvent ev) {
                 cancel();
             }
@@ -127,6 +128,7 @@ class TopDialog extends JDialog {
         addWindowListener(
                 new WindowAdapter() {
 
+                    @Override
                     public void windowClosing(WindowEvent ev) {
                         if (!haveFinalValue) {
                             TopDialog.this.nd.setValue(NotifyDescriptor.CLOSED_OPTION);
@@ -288,6 +290,7 @@ class TopDialog extends JDialog {
     private ActionListener makeListener(final Object option) {
         return new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 //System.err.println("actionPerformed: " + option);
                 nd.setValue(option);

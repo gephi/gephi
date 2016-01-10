@@ -135,6 +135,7 @@ public class DynamicNbEdges implements DynamicStatistics {
     public void end() {
     }
 
+    @Override
     public void setBounds(Interval bounds) {
         this.bounds = bounds;
     }

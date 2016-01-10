@@ -72,6 +72,7 @@ public class DesktopExportController implements ExportControllerUI {
         controller = Lookup.getDefault().lookup(ExportController.class);
         errorHandler = new LongTaskErrorHandler() {
 
+            @Override
             public void fatalError(Throwable t) {
                 t.printStackTrace();
                 String message = t.getCause().getMessage();
@@ -86,6 +87,7 @@ public class DesktopExportController implements ExportControllerUI {
         executor = new LongTaskExecutor(true, "Exporter", 10);
     }
 
+    @Override
     public void exportFile(final FileObject fileObject, final Exporter exporter) {
         if (exporter == null) {
             throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_file_exporter"));
@@ -99,6 +101,7 @@ public class DesktopExportController implements ExportControllerUI {
         String taskmsg = NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.exportTaskName", fileObject.getNameExt());
         executor.execute(task, new Runnable() {
 
+            @Override
             public void run() {
                 try {
                     controller.exportFile(FileUtil.toFile(fileObject), exporter);
@@ -110,6 +113,7 @@ public class DesktopExportController implements ExportControllerUI {
         }, taskmsg, errorHandler);
     }
 
+    @Override
     public ExportController getExportController() {
         return controller;
     }

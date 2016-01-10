@@ -59,11 +59,13 @@ public class DynamicClusteringCoefficientUI implements StatisticsUI {
     private DynamicClusteringCoefficient clusetingCoefficient;
     private DynamicClusteringCoefficientPanel panel;
 
+    @Override
     public JPanel getSettingsPanel() {
         panel = new DynamicClusteringCoefficientPanel();
         return panel;
     }
 
+    @Override
     public void setup(Statistics statistics) {
         this.clusetingCoefficient = (DynamicClusteringCoefficient) statistics;
         if (panel != null) {
@@ -73,6 +75,7 @@ public class DynamicClusteringCoefficientUI implements StatisticsUI {
         }
     }
 
+    @Override
     public void unsetup() {
         if (panel != null) {
             clusetingCoefficient.setDirected(panel.isDirected());
@@ -82,26 +85,32 @@ public class DynamicClusteringCoefficientUI implements StatisticsUI {
         clusetingCoefficient = null;
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return DynamicClusteringCoefficient.class;
     }
 
+    @Override
     public String getValue() {
         return "";
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "DynamicClusteringCoefficientUI.name");
     }
 
+    @Override
     public String getCategory() {
         return StatisticsUI.CATEGORY_DYNAMIC;
     }
 
+    @Override
     public int getPosition() {
         return 400;
     }
 
+    @Override
     public String getShortDescription() {
         return NbBundle.getMessage(getClass(), "DynamicClusteringCoefficientUI.shortDescription");
     }

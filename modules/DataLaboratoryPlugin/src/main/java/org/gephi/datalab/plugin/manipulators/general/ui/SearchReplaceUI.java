@@ -329,6 +329,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
 
         matchWholeValueCheckBox.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.matchWholeValueCheckBox.text")); // NOI18N
         matchWholeValueCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 matchWholeValueCheckBoxItemStateChanged(evt);
             }
@@ -338,6 +339,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         normalSearchModeRadioButton.setSelected(true);
         normalSearchModeRadioButton.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.normalSearchModeRadioButton.text")); // NOI18N
         normalSearchModeRadioButton.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 normalSearchModeRadioButtonItemStateChanged(evt);
             }
@@ -346,6 +348,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         searchModeButtonGroup.add(regexSearchModeRadioButton);
         regexSearchModeRadioButton.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.regexSearchModeRadioButton.text")); // NOI18N
         regexSearchModeRadioButton.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 regexSearchModeRadioButtonItemStateChanged(evt);
             }
@@ -353,6 +356,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
 
         caseSensitiveCheckBox.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.caseSensitiveCheckBox.text")); // NOI18N
         caseSensitiveCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 caseSensitiveCheckBoxItemStateChanged(evt);
             }
@@ -360,6 +364,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
 
         findNextButton.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.findNextButton.text")); // NOI18N
         findNextButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 findNextButtonActionPerformed(evt);
             }
@@ -367,6 +372,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
 
         replaceButton.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.replaceButton.text")); // NOI18N
         replaceButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 replaceButtonActionPerformed(evt);
             }
@@ -374,6 +380,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
 
         replaceAllButton.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.replaceAllButton.text")); // NOI18N
         replaceAllButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 replaceAllButtonActionPerformed(evt);
             }
@@ -381,6 +388,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
 
         searchText.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.searchText.text")); // NOI18N
         searchText.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 searchTextKeyPressed(evt);
             }
@@ -396,6 +404,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
 
         regexReplaceCheckBox.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.regexReplaceCheckBox.text")); // NOI18N
         regexReplaceCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 regexReplaceCheckBoxItemStateChanged(evt);
             }
@@ -404,6 +413,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         columnsToSearchLabel.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.columnsToSearchLabel.text")); // NOI18N
 
         columnsToSearchComboBox.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 columnsToSearchComboBoxItemStateChanged(evt);
             }

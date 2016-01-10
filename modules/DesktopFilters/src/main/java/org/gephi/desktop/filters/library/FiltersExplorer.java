@@ -224,6 +224,7 @@ public class FiltersExplorer extends BeanTreeView {
     private void updateEnabled(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 setRootVisible(enabled);
                 setEnabled(enabled);

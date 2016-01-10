@@ -97,25 +97,32 @@ public class InputBlocker extends JComponent implements MouseInputListener {
         glassPane.setVisible(false);
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
         Toolkit.getDefaultToolkit().beep();
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
+    @Override
     public void mouseDragged(MouseEvent e) {
     }
 
+    @Override
     public void mouseMoved(MouseEvent e) {
     }
 }

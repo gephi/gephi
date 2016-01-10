@@ -115,6 +115,7 @@ public class EigenvectorCentralityPanel extends javax.swing.JPanel {
         buttonGroup1.add(undirectedRadioButton);
         undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(EigenvectorCentralityPanel.class, "EigenvectorCentralityPanel.undirectedButton.text")); // NOI18N
         undirectedRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 undirectedRadioButtonActionPerformed(evt);
             }

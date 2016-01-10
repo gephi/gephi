@@ -59,11 +59,13 @@ public class DynamicNbEdgesUI implements StatisticsUI {
     private DynamicNbEdges nbEdges;
     private DynamicNbEdgesPanel panel;
 
+    @Override
     public JPanel getSettingsPanel() {
         panel = new DynamicNbEdgesPanel();
         return panel;
     }
 
+    @Override
     public void setup(Statistics statistics) {
         this.nbEdges = (DynamicNbEdges) statistics;
         if (panel != null) {
@@ -71,6 +73,7 @@ public class DynamicNbEdgesUI implements StatisticsUI {
         }
     }
 
+    @Override
     public void unsetup() {
         if (panel != null) {
             settings.save(nbEdges);
@@ -78,26 +81,32 @@ public class DynamicNbEdgesUI implements StatisticsUI {
         nbEdges = null;
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return DynamicNbEdges.class;
     }
 
+    @Override
     public String getValue() {
         return "";
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "DynamicNbEdgesUI.name");
     }
 
+    @Override
     public String getCategory() {
         return StatisticsUI.CATEGORY_DYNAMIC;
     }
 
+    @Override
     public int getPosition() {
         return 200;
     }
 
+    @Override
     public String getShortDescription() {
         return NbBundle.getMessage(getClass(), "DynamicNbEdgesUI.shortDescription");
     }

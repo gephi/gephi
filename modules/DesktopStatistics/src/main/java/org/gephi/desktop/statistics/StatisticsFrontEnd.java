@@ -96,6 +96,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
         runButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (runButton.getText().equals(RUN)) {
                     run();
@@ -107,6 +108,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
         reportButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 showReport();
             }
@@ -209,6 +211,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
                     ValidationPanel vp = (ValidationPanel) dynamicSettingsPanel;
                     vp.addChangeListener(new ChangeListener() {
 
+                        @Override
                         public void stateChanged(ChangeEvent e) {
                             dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
                         }
@@ -228,6 +231,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
                     ValidationPanel vp = (ValidationPanel) settingsPanel;
                     vp.addChangeListener(new ChangeListener() {
 
+                        @Override
                         public void stateChanged(ChangeEvent e) {
                             dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
                         }
@@ -256,6 +260,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         if (report != null) {
             SwingUtilities.invokeLater(new Runnable() {
 
+                @Override
                 public void run() {
                     SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), report);
                 }

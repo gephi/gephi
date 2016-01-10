@@ -59,11 +59,13 @@ public class DynamicNbNodesUI implements StatisticsUI {
     private DynamicNbNodes nbNodes;
     private DynamicNbNodesPanel panel;
 
+    @Override
     public JPanel getSettingsPanel() {
         panel = new DynamicNbNodesPanel();
         return panel;
     }
 
+    @Override
     public void setup(Statistics statistics) {
         this.nbNodes = (DynamicNbNodes) statistics;
         if (panel != null) {
@@ -71,6 +73,7 @@ public class DynamicNbNodesUI implements StatisticsUI {
         }
     }
 
+    @Override
     public void unsetup() {
         if (panel != null) {
             settings.save(nbNodes);
@@ -78,26 +81,32 @@ public class DynamicNbNodesUI implements StatisticsUI {
         nbNodes = null;
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return DynamicNbNodes.class;
     }
 
+    @Override
     public String getValue() {
         return "";
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "DynamicNbNodesUI.name");
     }
 
+    @Override
     public String getCategory() {
         return StatisticsUI.CATEGORY_DYNAMIC;
     }
 
+    @Override
     public int getPosition() {
         return 100;
     }
 
+    @Override
     public String getShortDescription() {
         return NbBundle.getMessage(getClass(), "DynamicNbNodesUI.shortDescription");
     }

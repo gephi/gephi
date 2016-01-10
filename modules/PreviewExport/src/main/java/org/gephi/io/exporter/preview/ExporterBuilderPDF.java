@@ -54,15 +54,18 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = VectorFileExporterBuilder.class)
 public class ExporterBuilderPDF implements VectorFileExporterBuilder {
 
+    @Override
     public VectorExporter buildExporter() {
         return new PDFExporter();
     }
 
+    @Override
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".pdf", NbBundle.getMessage(ExporterBuilderPDF.class, "fileType_PDF_Name"));
         return new FileType[]{ft};
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(ExporterBuilderPDF.class, "ExporterPDF_name");
     }

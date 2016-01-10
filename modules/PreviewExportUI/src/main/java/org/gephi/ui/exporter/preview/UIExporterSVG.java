@@ -59,12 +59,14 @@ public class UIExporterSVG implements ExporterUI {
     private UIExporterSVGPanel panel;
     private SVGExporter exporterSVG;
 
+    @Override
     public void setup(Exporter exporter) {
         exporterSVG = (SVGExporter) exporter;
         loadPreferences();
         panel.setup(exporterSVG);
     }
 
+    @Override
     public void unsetup(boolean update) {
         if (update) {
             panel.unsetup(exporterSVG);
@@ -74,15 +76,18 @@ public class UIExporterSVG implements ExporterUI {
         exporterSVG = null;
     }
 
+    @Override
     public JPanel getPanel() {
         panel = new UIExporterSVGPanel();
         return panel;
     }
 
+    @Override
     public boolean isUIForExporter(Exporter exporter) {
         return exporter instanceof SVGExporter;
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(UIExporterPDF.class, "UIExporterSVG.name");
     }

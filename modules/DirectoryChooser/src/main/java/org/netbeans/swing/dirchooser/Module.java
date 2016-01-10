@@ -91,6 +91,7 @@ public class Module extends ModuleInstall {
         }
         // #61147: prevent NB from switching to a different UI later (under GTK):
         uid.addPropertyChangeListener(pcl = new PropertyChangeListener() {
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 String name = evt.getPropertyName();
                 Object className = uid.get(KEY);

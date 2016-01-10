@@ -53,6 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = DynamicRangeUI.class)
 public class DynamicRangeUIImpl implements DynamicRangeUI {
 
+    @Override
     public JPanel getPanel(DynamicRangeFilter filter) {
         DynamicRangePanel panel = new DynamicRangePanel();
         panel.setup(filter);
