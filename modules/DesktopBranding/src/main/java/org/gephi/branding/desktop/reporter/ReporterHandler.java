@@ -92,12 +92,14 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
         throwable = null;
     }
 
+    @Override
     public JButton call() throws Exception {
         JButton btn = new JButton(NbBundle.getMessage(ReporterHandler.class, "ReportHandler.button"));
         btn.addActionListener(this);
         return btn;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         Report report = new Report();
         report.setThrowable(throwable);

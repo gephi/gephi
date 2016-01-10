@@ -59,11 +59,13 @@ public class ConnectedComponentUI implements StatisticsUI {
     private ConnectedComponentPanel panel;
     private ConnectedComponents connectedComponents;
 
+    @Override
     public JPanel getSettingsPanel() {
         panel = new ConnectedComponentPanel();
         return panel;
     }
 
+    @Override
     public void setup(Statistics statistics) {
         this.connectedComponents = (ConnectedComponents) statistics;
         if (panel != null) {
@@ -71,6 +73,7 @@ public class ConnectedComponentUI implements StatisticsUI {
         }
     }
 
+    @Override
     public void unsetup() {
         if (panel != null) {
             connectedComponents.setDirected(panel.isDirected());
@@ -79,27 +82,33 @@ public class ConnectedComponentUI implements StatisticsUI {
         panel = null;
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return ConnectedComponents.class;
     }
 
+    @Override
     public String getValue() {
         DecimalFormat df = new DecimalFormat("###.###");
         return "" + df.format(connectedComponents.getConnectedComponentsCount());
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "ConnectedComponentUI.name");
     }
 
+    @Override
     public String getCategory() {
         return StatisticsUI.CATEGORY_NETWORK_OVERVIEW;
     }
 
+    @Override
     public int getPosition() {
         return 900;
     }
 
+    @Override
     public String getShortDescription() {
         return NbBundle.getMessage(getClass(), "ConnectedComponentUI.shortDescription");
     }

@@ -72,10 +72,12 @@ class DirectoryCellEditor extends DefaultCellEditor {
         this.fileChooser = fileChooser;
     }
     
+    @Override
     public boolean isCellEditable(EventObject event) {
         return ((event instanceof MouseEvent) ? false : true);
     }
     
+    @Override
     public Component getTreeCellEditorComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row) {
         Component c = super.getTreeCellEditorComponent(tree, value, isSelected, expanded, leaf, row);
         DirectoryNode node = (DirectoryNode)value;

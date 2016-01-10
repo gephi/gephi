@@ -59,11 +59,13 @@ public class DynamicDegreeUI implements StatisticsUI {
     private DynamicDegree degree;
     private DynamicDegreePanel panel;
 
+    @Override
     public JPanel getSettingsPanel() {
         panel = new DynamicDegreePanel();
         return panel;
     }
 
+    @Override
     public void setup(Statistics statistics) {
         this.degree = (DynamicDegree) statistics;
         if (panel != null) {
@@ -73,6 +75,7 @@ public class DynamicDegreeUI implements StatisticsUI {
         }
     }
 
+    @Override
     public void unsetup() {
         if (panel != null) {
             degree.setDirected(panel.isDirected());
@@ -83,26 +86,32 @@ public class DynamicDegreeUI implements StatisticsUI {
         panel = null;
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return DynamicDegree.class;
     }
 
+    @Override
     public String getValue() {
         return "";
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "DynamicDegreeUI.name");
     }
 
+    @Override
     public String getCategory() {
         return StatisticsUI.CATEGORY_DYNAMIC;
     }
 
+    @Override
     public int getPosition() {
         return 300;
     }
 
+    @Override
     public String getShortDescription() {
         return NbBundle.getMessage(getClass(), "DynamicDegreeUI.shortDescription");
     }

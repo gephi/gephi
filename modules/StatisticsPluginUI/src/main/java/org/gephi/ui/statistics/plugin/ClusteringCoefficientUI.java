@@ -59,11 +59,13 @@ public class ClusteringCoefficientUI implements StatisticsUI {
     private ClusteringCoefficientPanel panel;
     private ClusteringCoefficient clusteringCoefficient;
 
+    @Override
     public JPanel getSettingsPanel() {
         panel = new ClusteringCoefficientPanel();
         return panel;
     }
 
+    @Override
     public void setup(Statistics statistics) {
         this.clusteringCoefficient = (ClusteringCoefficient) statistics;
         if (panel != null) {
@@ -71,6 +73,7 @@ public class ClusteringCoefficientUI implements StatisticsUI {
         }
     }
 
+    @Override
     public void unsetup() {
         if (panel != null) {
             clusteringCoefficient.setDirected(panel.isDirected());
@@ -79,27 +82,33 @@ public class ClusteringCoefficientUI implements StatisticsUI {
         panel = null;
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return ClusteringCoefficient.class;
     }
 
+    @Override
     public String getValue() {
         DecimalFormat df = new DecimalFormat("###.###");
         return "" + df.format(clusteringCoefficient.getAverageClusteringCoefficient());
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "ClusteringCoefficientUI.name");
     }
 
+    @Override
     public String getCategory() {
         return StatisticsUI.CATEGORY_NODE_OVERVIEW;
     }
 
+    @Override
     public int getPosition() {
         return 300;
     }
 
+    @Override
     public String getShortDescription() {
         return NbBundle.getMessage(getClass(), "ClusteringCoefficientUI.shortDescription");
     }

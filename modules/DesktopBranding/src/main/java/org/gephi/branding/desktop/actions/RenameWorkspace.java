@@ -58,6 +58,7 @@ import org.openide.util.actions.SystemAction;
  */
 public class RenameWorkspace extends SystemAction {
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         String name = "";
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);

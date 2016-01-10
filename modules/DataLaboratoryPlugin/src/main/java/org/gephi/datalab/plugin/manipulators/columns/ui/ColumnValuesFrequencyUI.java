@@ -124,6 +124,7 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
         configurePieChartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalab/plugin/manipulators/resources/category.png"))); // NOI18N
         configurePieChartButton.setText(org.openide.util.NbBundle.getMessage(ColumnValuesFrequencyUI.class, "ColumnValuesFrequencyUI.configurePieChartButton.text")); // NOI18N
         configurePieChartButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 configurePieChartButtonActionPerformed(evt);
             }
@@ -132,6 +133,7 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
         showReportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalab/plugin/manipulators/resources/application-block.png"))); // NOI18N
         showReportButton.setText(org.openide.util.NbBundle.getMessage(ColumnValuesFrequencyUI.class, "ColumnValuesFrequencyUI.showReportButton.text")); // NOI18N
         showReportButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showReportButtonActionPerformed(evt);
             }

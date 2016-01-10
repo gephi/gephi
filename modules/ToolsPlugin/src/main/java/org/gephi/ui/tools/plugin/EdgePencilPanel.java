@@ -127,6 +127,7 @@ public class EdgePencilPanel extends javax.swing.JPanel {
         labelColor.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.labelColor.text")); // NOI18N
 
         typeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 typeComboBoxActionPerformed(evt);
             }

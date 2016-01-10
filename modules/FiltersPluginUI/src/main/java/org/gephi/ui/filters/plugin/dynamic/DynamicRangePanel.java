@@ -72,6 +72,7 @@ public class DynamicRangePanel extends javax.swing.JPanel {
         timelineButton.setText(bottomComponent.isVisible() ? CLOSE : OPEN);
         timelineButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
 
                 if (!bottomComponent.isVisible()) {
@@ -86,6 +87,7 @@ public class DynamicRangePanel extends javax.swing.JPanel {
         keepEmptyCheckbox.setSelected(filter.isKeepNull());
         keepEmptyCheckbox.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 if (!filter.isKeepNull() == keepEmptyCheckbox.isSelected()) {
                     filter.getProperties()[1].setValue(keepEmptyCheckbox.isSelected());

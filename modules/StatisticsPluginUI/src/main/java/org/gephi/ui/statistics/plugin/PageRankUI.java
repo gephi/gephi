@@ -55,11 +55,13 @@ public class PageRankUI implements StatisticsUI {
     private PageRankPanel panel;
     private PageRank pageRank;
 
+    @Override
     public JPanel getSettingsPanel() {
         panel = new PageRankPanel();
         return panel;
     }
 
+    @Override
     public void setup(Statistics statistics) {
         this.pageRank = (PageRank) statistics;
         if (panel != null) {
@@ -71,6 +73,7 @@ public class PageRankUI implements StatisticsUI {
         }
     }
 
+    @Override
     public void unsetup() {
         if (panel != null) {
             pageRank.setEpsilon(panel.getEpsilon());
@@ -83,26 +86,32 @@ public class PageRankUI implements StatisticsUI {
         pageRank = null;
     }
 
+    @Override
     public Class<? extends Statistics> getStatisticsClass() {
         return PageRank.class;
     }
 
+    @Override
     public String getValue() {
         return null;
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "PageRankUI.name");
     }
 
+    @Override
     public String getCategory() {
         return StatisticsUI.CATEGORY_NETWORK_OVERVIEW;
     }
 
+    @Override
     public int getPosition() {
         return 800;
     }
 
+    @Override
     public String getShortDescription() {
         return NbBundle.getMessage(getClass(), "PageRankUI.shortDescription");
     }

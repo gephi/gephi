@@ -90,14 +90,17 @@ public final class GraphFileExporterUI implements ExporterClassUI {
     private boolean visibleOnlyGraph = false;
     private JDialog dialog;
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_title");
     }
 
+    @Override
     public boolean isEnable() {
         return true;
     }
 
+    @Override
     public void action() {
         final String LAST_PATH = "GraphFileExporterUI_Last_Path";
         final String LAST_PATH_DEFAULT = "GraphFileExporterUI_Last_Path_Default";
@@ -118,6 +121,7 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         optionsPanel.add(optionsButton);
         optionsButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 ExporterUI exporterUI = exportController.getExportController().getUI(selectedExporter);
                 if (exporterUI != null) {
@@ -169,6 +173,7 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         chooser.setDialogTitle(NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_filechooser_title"));
         chooser.addPropertyChangeListener(JFileChooser.FILE_FILTER_CHANGED_PROPERTY, new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 DialogFileFilter fileFilter = (DialogFileFilter) evt.getNewValue();
 
@@ -198,6 +203,7 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         });
         chooser.addPropertyChangeListener(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY, new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getNewValue() != null) {
                     selectedFile = (File) evt.getNewValue();

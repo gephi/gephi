@@ -312,6 +312,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
 
         onlyVisibleCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.onlyVisibleCheckBox.text")); // NOI18N
         onlyVisibleCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 onlyVisibleCheckBoxActionPerformed(evt);
             }
@@ -319,6 +320,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
 
         useSparklinesCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.useSparklinesCheckBox.text")); // NOI18N
         useSparklinesCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 useSparklinesCheckBoxActionPerformed(evt);
             }
@@ -326,6 +328,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
 
         showEdgesNodesLabelsCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.showEdgesNodesLabelsCheckBox.text")); // NOI18N
         showEdgesNodesLabelsCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showEdgesNodesLabelsCheckBoxActionPerformed(evt);
             }
@@ -333,6 +336,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
 
         timeIntervalsGraphicsCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeIntervalsGraphicsCheckBox.text")); // NOI18N
         timeIntervalsGraphicsCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 timeIntervalsGraphicsCheckBoxActionPerformed(evt);
             }

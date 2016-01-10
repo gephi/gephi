@@ -426,6 +426,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
 
         fileButton.setText(org.openide.util.NbBundle.getMessage(ImportCSVUIVisualPanel1.class, "ImportCSVUIVisualPanel1.fileButton.text")); // NOI18N
         fileButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fileButtonActionPerformed(evt);
             }
@@ -435,6 +436,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
         separatorLabel.setText(org.openide.util.NbBundle.getMessage(ImportCSVUIVisualPanel1.class, "ImportCSVUIVisualPanel1.separatorLabel.text")); // NOI18N
 
         separatorComboBox.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 separatorComboBoxItemStateChanged(evt);
             }
@@ -444,6 +446,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
         tableLabel.setText(org.openide.util.NbBundle.getMessage(ImportCSVUIVisualPanel1.class, "ImportCSVUIVisualPanel1.tableLabel.text")); // NOI18N
 
         tableComboBox.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 tableComboBoxItemStateChanged(evt);
             }
@@ -457,6 +460,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
         charsetLabel.setText(org.openide.util.NbBundle.getMessage(ImportCSVUIVisualPanel1.class, "ImportCSVUIVisualPanel1.charsetLabel.text")); // NOI18N
 
         charsetComboBox.addItemListener(new java.awt.event.ItemListener() {
+            @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 charsetComboBoxItemStateChanged(evt);
             }

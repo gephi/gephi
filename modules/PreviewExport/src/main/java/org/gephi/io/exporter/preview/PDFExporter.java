@@ -87,6 +87,7 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
     private boolean landscape = false;
     private Rectangle pageSize = PageSize.A4;
 
+    @Override
     public boolean execute() {
         Progress.start(progress);
 
@@ -189,10 +190,12 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         this.pageSize = pageSize;
     }
 
+    @Override
     public void setOutputStream(OutputStream stream) {
         this.stream = stream;
     }
 
+    @Override
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
@@ -201,10 +204,12 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         this.landscape = landscape;
     }
 
+    @Override
     public Workspace getWorkspace() {
         return workspace;
     }
 
+    @Override
     public boolean cancel() {
         this.cancel = true;
         if (target instanceof LongTask) {
@@ -213,6 +218,7 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progress = progressTicket;
     }

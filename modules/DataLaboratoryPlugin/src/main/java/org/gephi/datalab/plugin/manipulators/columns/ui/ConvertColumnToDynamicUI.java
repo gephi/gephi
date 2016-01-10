@@ -187,6 +187,7 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
         replaceColumnCheckbox.setToolTipText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicUI.class, "ConvertColumnToDynamicUI.replaceColumnCheckbox.toolTipText")); // NOI18N
         replaceColumnCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         replaceColumnCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 replaceColumnCheckboxActionPerformed(evt);
             }

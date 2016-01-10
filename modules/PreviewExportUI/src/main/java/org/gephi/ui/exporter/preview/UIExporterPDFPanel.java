@@ -128,6 +128,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
     private void initEvents() {
         pageSizeCombo.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 Object selectedItem = pageSizeCombo.getSelectedItem();
                 if (selectedItem != customSizeString) {
@@ -139,6 +140,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
 
         widthTextField.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 updatePageSize();
             }
@@ -146,12 +148,14 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
 
         heightTextField.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 updatePageSize();
             }
         });
         unitLink.setAction(new AbstractAction() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 millimeter = !millimeter;
                 refreshUnit(true);
@@ -170,6 +174,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
         return validationPanel;
     }
 
+    @Override
     public void validate(ValidationGroup group) {
         //Size
         group.add(widthTextField, Validators.REQUIRE_NON_EMPTY_STRING,

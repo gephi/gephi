@@ -83,6 +83,7 @@ public class Generate extends CallableSystemAction {
                 String menuName = gen.getName() + "...";
                 JMenuItem menuItem = new JMenuItem(new AbstractAction(menuName) {
 
+                    @Override
                     public void actionPerformed(ActionEvent e) {
                         generatorController.generate(gen);
                     }

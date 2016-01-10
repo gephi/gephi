@@ -59,6 +59,7 @@ public class NeighborsPanel extends javax.swing.JPanel {
 
         depthComboBox.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 int depth = -1;
                 int index = depthComboBox.getSelectedIndex();
@@ -75,6 +76,7 @@ public class NeighborsPanel extends javax.swing.JPanel {
 
         withSelfCheckbox.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 if (!neighborsFilter.isSelf() == withSelfCheckbox.isSelected()) {
                     neighborsFilter.getProperties()[1].setValue(withSelfCheckbox.isSelected());

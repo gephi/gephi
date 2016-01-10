@@ -151,6 +151,7 @@ public class FileCompletionPopup extends JPopupMenu implements KeyListener {
     }
     
     private class MouseHandler extends MouseAdapter implements MouseMotionListener{
+        @Override
         public void mouseMoved(MouseEvent e) {
             if (e.getSource() == list) {
                 Point location = e.getPoint();
@@ -163,6 +164,7 @@ public class FileCompletionPopup extends JPopupMenu implements KeyListener {
             }
         }
         
+        @Override
         public void mouseDragged(MouseEvent e) {
             if (e.getSource() == list) {
                 return;
@@ -214,6 +216,7 @@ public class FileCompletionPopup extends JPopupMenu implements KeyListener {
 
     /****** implementation of KeyListener of fileNameTextField ******/
     
+    @Override
     public void keyPressed(KeyEvent e) {
         if (!isVisible()) {
             return;
@@ -261,10 +264,12 @@ public class FileCompletionPopup extends JPopupMenu implements KeyListener {
         }
     }
 
+    @Override
     public void keyReleased(KeyEvent e) {
         // no operation
     }
     
+    @Override
     public void keyTyped(KeyEvent e) {
         // no operation
     }

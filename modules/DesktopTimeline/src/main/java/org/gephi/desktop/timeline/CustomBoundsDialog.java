@@ -73,6 +73,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
 
         resetDefaultsDate.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 setDefaults();
             }
@@ -186,6 +187,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
             this.max = max;
         }
 
+        @Override
         public boolean validate(Problems prblms, String string, String t) {
             double thisDate;
             double otherDate;
@@ -247,6 +249,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
 
     private class FormatValidator implements Validator<String> {
 
+        @Override
         public boolean validate(Problems prblms, String string, String t) {
             if (model.getTimeFormat().equals(TimeFormat.DATE)) {
                 try {

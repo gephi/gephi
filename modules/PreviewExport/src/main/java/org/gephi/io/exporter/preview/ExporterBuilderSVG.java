@@ -54,15 +54,18 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = VectorFileExporterBuilder.class)
 public class ExporterBuilderSVG implements VectorFileExporterBuilder {
 
+    @Override
     public VectorExporter buildExporter() {
         return new SVGExporter();
     }
 
+    @Override
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".svg", NbBundle.getMessage(ExporterBuilderSVG.class, "fileType_SVG_Name"));
         return new FileType[]{ft};
     }
 
+    @Override
     public String getName() {
         return NbBundle.getMessage(ExporterBuilderSVG.class, "ExporterSVG_name");
     }

@@ -238,6 +238,7 @@ public class DirectoryNode extends DefaultMutableTreeNode {
 
     private class DirectoryFilter implements FileFilter {
 
+        @Override
         public boolean accept(File f) {
             return f.isDirectory();
         }
@@ -250,6 +251,7 @@ public class DirectoryNode extends DefaultMutableTreeNode {
     /** Compares files ignoring case sensitivity */
     private static class FileNameComparator implements Comparator<File> {
 
+        @Override
         public int compare(File f1, File f2) {
             return String.CASE_INSENSITIVE_ORDER.compare(f1.getName(), f2.getName());
         }

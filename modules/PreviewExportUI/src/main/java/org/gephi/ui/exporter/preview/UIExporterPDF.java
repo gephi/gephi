@@ -60,11 +60,13 @@ public class UIExporterPDF implements ExporterUI {
     private ValidationPanel validationPanel;
     private PDFExporter exporterPDF;
 
+    @Override
     public void setup(Exporter exporter) {
         exporterPDF = (PDFExporter) exporter;
         panel.setup(exporterPDF);
     }
 
+    @Override
     public void unsetup(boolean update) {
         if (update) {
             panel.unsetup(exporterPDF);
@@ -73,16 +75,19 @@ public class UIExporterPDF implements ExporterUI {
         exporterPDF = null;
     }
 
+    @Override
     public JPanel getPanel() {
         panel = new UIExporterPDFPanel();
         validationPanel = UIExporterPDFPanel.createValidationPanel(panel);
         return validationPanel;
     }
 
+    @Override
     public boolean isUIForExporter(Exporter exporter) {
         return exporter instanceof PDFExporter;
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(UIExporterPDF.class, "UIExporterPDF.name");
     }

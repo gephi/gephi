@@ -97,6 +97,7 @@ public class Installer extends ModuleInstall {
 
         //Check for new major release:
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+            @Override
             public void run() {
                 new Thread() {
                     @Override
@@ -114,6 +115,7 @@ public class Installer extends ModuleInstall {
     private void initGephi() {
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+            @Override
             public void run() {
                 pc.startup();
                 DragNDropFrameAdapter.register();
