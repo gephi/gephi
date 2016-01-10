@@ -327,10 +327,16 @@ public class ConnectedComponents implements Statistics, LongTask {
         return isDirected;
     }
 
+    /**
+      * @return an unordered array of component sizes
+      */
     public int[] getComponentsSize() {
         return componentsSize;
     }
 
+    /**
+      * @return the index of the largest component in the array returned by getComponentSize()
+      */
     public int getGiantComponent() {
         int[] sizes = getComponentsSize();
         int max = Integer.MIN_VALUE;
