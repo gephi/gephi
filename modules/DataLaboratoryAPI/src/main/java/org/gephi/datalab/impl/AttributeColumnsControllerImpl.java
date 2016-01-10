@@ -667,11 +667,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
             Table edgesTable = graph.getModel().getEdgeTable();
+            Column weightColumn = edgesTable.getColumn("Weight");
+            boolean isDynamicWeight = weightColumn.isDynamic();
 
             String idColumnHeader = null;
             String sourceColumnHeader = null;
             String targetColumnHeader = null;
             String typeColumnHeader = null;
+            String weightColumnHeader = null;
             HashMap<Column, String> columnHeaders = new HashMap<Column, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
             for (int i = 0; i < columnNames.length; i++) {
                 //Separate first id column found from the list to use as id. If more are found later, the will not be in the list and be ignored.
@@ -689,6 +692,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     //Any other existing column:
                     Column column = edgesTable.getColumn(columnNames[i]);
                     columnHeaders.put(column, columnNames[i]);
+                    if(column.equals(weightColumn)){
+                        weightColumnHeader = columnNames[i];
+                    }
                 } else {
                     //New column:
                     Column column = addAttributeColumn(edgesTable, columnNames[i], columnTypes[i]);
@@ -784,7 +790,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 }
 
                 if (edge != null) {//Edge could be created because it does not already exist:
-                    //Assign attributes to the current edge:
+                    //Assign all attributes to the new edge:
                     for (Column column : columnList) {
                         setAttributeValue(reader.get(columnHeaders.get(column)), edge, column);
                     }
@@ -794,14 +800,25 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                         //Not from source to target but undirected and reverse?
                         edge = graph.getEdge(target, source);
                         if (edge != null && edge.isDirected()) {
-                            edge = null;
+                            edge = null;//Cannot use it since it's actually directed
                         }
                     }
-                    
                     if(edge != null){
-                        //Update edge attributes:
-                        for (Column column : columnList) {
-                            setAttributeValue(reader.get(columnHeaders.get(column)), edge, column);
+                        //Increase non dynamic edge weight with specified weight (if specified), else increase by 1:
+                        if(!isDynamicWeight){
+                            if (weightColumnHeader != null) {
+                                String weight = reader.get(weightColumnHeader);
+                                try {
+                                    Float weightFloat = Float.parseFloat(weight);
+                                    edge.setWeight(edge.getWeight() + weightFloat);
+                                } catch (NumberFormatException numberFormatException) {
+                                    //Not valid weight, add 1
+                                    edge.setWeight(edge.getWeight() + 1);
+                                }
+                            } else {
+                                //Add 1 (weight not specified)
+                                edge.setWeight(edge.getWeight() + 1);
+                            }
                         }
                     }
                 }
