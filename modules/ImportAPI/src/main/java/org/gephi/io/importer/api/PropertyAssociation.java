@@ -75,10 +75,7 @@ public final class PropertyAssociation<Property> implements Serializable {
             return true;
         }
         PropertyAssociation foreign = (PropertyAssociation) obj;
-        if (foreign.title.equals(title) && foreign.property.equals(property)) {
-            return true;
-        }
-        return false;
+        return foreign.title.equals(title) && foreign.property.equals(property);
     }
 
     @Override

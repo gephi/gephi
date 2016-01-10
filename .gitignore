@@ -1,3 +1,5 @@
+.idea/
+*.iml
 **/target
 .DS_Store
 keystore.ks

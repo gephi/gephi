@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.io.importer.api;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,6 +64,9 @@ public final class PropertiesAssociations implements Serializable {
     //PropertiesAssociations association
     private final List<PropertyAssociation<NodeProperties>> nodePropertyAssociations = new LinkedList<PropertyAssociation<NodeProperties>>();
     private final List<PropertyAssociation<EdgeProperties>> edgePropertyAssociations = new LinkedList<PropertyAssociation<EdgeProperties>>();
+
+    private final Map<String, PropertiesAssociations<NodeProperties>> titleToNodeProperty = new HashMap<>();
+    private final Map<String, PropertiesAssociations<EdgeProperties>> titleToEdgeProperty = new HashMap<>();
 
     public void addEdgePropertyAssociation(EdgeProperties property, String title) {
         PropertyAssociation<EdgeProperties> association = new PropertyAssociation<EdgeProperties>(property, title);

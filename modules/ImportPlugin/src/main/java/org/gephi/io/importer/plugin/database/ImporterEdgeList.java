@@ -150,13 +150,13 @@ public class ImporterEdgeList implements DatabaseImporter {
         findNodeAttributesColumns(rs);
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
-        int count = 0;
+
         while (rs.next()) {
             String id = null;
             for (int i = 0; i < columnsCount; i++) {
                 String columnName = metaData.getColumnLabel(i + 1);
                 NodeProperties p = properties.getNodeProperty(columnName);
-                if (p.equals(NodeProperties.ID)) {
+                if (NodeProperties.ID.equals(p)) {
                     String ide = rs.getString(i + 1);
                     if (ide != null) {
                         id = ide;
@@ -183,7 +183,6 @@ public class ImporterEdgeList implements DatabaseImporter {
             }
             injectTimeIntervalProperty(node);
             container.addNode(node);
-            ++count;
         }
         rs.close();
         s.close();
@@ -208,13 +207,12 @@ public class ImporterEdgeList implements DatabaseImporter {
         findEdgeAttributesColumns(rs);
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
-        int count = 0;
         while (rs.next()) {
             String id = null;
             for (int i = 0; i < columnsCount; i++) {
                 String columnName = metaData.getColumnLabel(i + 1);
                 EdgeProperties p = properties.getEdgeProperty(columnName);
-                if (p.equals(EdgeProperties.ID)) {
+                if (EdgeProperties.ID.equals(p)) {
                     String ide = rs.getString(i + 1);
                     if (ide != null) {
                         id = ide;
@@ -240,7 +238,6 @@ public class ImporterEdgeList implements DatabaseImporter {
             }
             injectTimeIntervalProperty(edge);
             container.addEdge(edge);
-            ++count;
         }
         rs.close();
         s.close();
