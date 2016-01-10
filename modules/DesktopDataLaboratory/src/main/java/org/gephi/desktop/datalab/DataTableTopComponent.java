@@ -171,7 +171,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private volatile AvailableColumnsModel edgeAvailableColumnsModel;
     
     //Observers for auto-refreshing:
-    private boolean autoRefreshEnabled = true;
+    private volatile boolean autoRefreshEnabled = false;
     private GraphObserver graphObserver;
     private TableObserver nodesTableObserver;
     private TableObserver edgesTableObserver;
@@ -323,11 +323,13 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             @Override
             public void select(Workspace workspace) {
                 activateWorkspace(workspace);
+                setAutoRefreshEnabled(true);
             }
 
             @Override
             public void unselect(Workspace workspace) {
                 deactivateAll();
+                setAutoRefreshEnabled(false);
             }
 
             @Override
@@ -339,11 +341,13 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
                 clearAll();
                 //No more workspaces active, disable the DataTablesEvent listener
                 Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(null);
+                setAutoRefreshEnabled(false);
             }
         });
         
         if (pc.getCurrentWorkspace() != null) {
             activateWorkspace(pc.getCurrentWorkspace());
+            setAutoRefreshEnabled(true);
         }
         
         observersTimer = new java.util.Timer("DataLaboratoryGraphObservers");
