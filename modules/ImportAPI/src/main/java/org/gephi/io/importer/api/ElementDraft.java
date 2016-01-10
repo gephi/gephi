@@ -41,14 +41,15 @@
  */
 package org.gephi.io.importer.api;
 
-import java.awt.Color;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.types.TimeSet;
+
+import java.awt.Color;
 
 /**
  * Draft element, hosted by import containers to represent nodes or edges found
  * when importing.
- * <p>
+ * <p/>
  * The Factory sub-interface defined the methods to create new element
  * instances.
  *
@@ -96,7 +97,7 @@ public interface ElementDraft {
 
     /**
      * Returns the element's id.
-     * <p>
+     * <p/>
      * The element id is unique.
      *
      * @return element's id
@@ -127,7 +128,7 @@ public interface ElementDraft {
 
     /**
      * Returns true if the label is visible.
-     * <p>
+     * <p/>
      * Default value is true.
      *
      * @return true if label is visible, false otherwise
@@ -136,7 +137,7 @@ public interface ElementDraft {
 
     /**
      * Returns the label's size.
-     * <p>
+     * <p/>
      * Default value is -1.
      *
      * @return label size
@@ -153,7 +154,7 @@ public interface ElementDraft {
     /**
      * Sets the <code>value</code> for <code>key</code>.
      *
-     * @param key key
+     * @param key   key
      * @param value value
      */
     public void setValue(String key, Object value);
@@ -162,8 +163,8 @@ public interface ElementDraft {
      * Sets the <code>value</code> for <code>key</code> at the given
      * <code>timestamp</code>.
      *
-     * @param key key
-     * @param value value
+     * @param key       key
+     * @param value     value
      * @param timestamp timestamp
      */
     public void setValue(String key, Object value, double timestamp);
@@ -172,10 +173,10 @@ public interface ElementDraft {
      * Sets the <code>value</code> for <code>key</code> at the given interval
      * <code>[start,end]</code>.
      *
-     * @param key key
+     * @param key   key
      * @param value value
      * @param start interval start
-     * @param end interval end
+     * @param end   interval end
      */
     public void setValue(String key, Object value, double start, double end);
 
@@ -183,8 +184,8 @@ public interface ElementDraft {
      * Sets the <code>value</code> for <code>key</code> at the given
      * <code>dateTime</code>.
      *
-     * @param key key
-     * @param value value
+     * @param key      key
+     * @param value    value
      * @param dateTime dateTime
      */
     public void setValue(String key, Object value, String dateTime);
@@ -193,17 +194,17 @@ public interface ElementDraft {
      * Sets the <code>value</code> for <code>key</code> at the given interval
      * <code>[startDateTime,endDateTime]</code>.
      *
-     * @param key key
-     * @param value value
+     * @param key           key
+     * @param value         value
      * @param startDateTime interval start datetime
-     * @param endDateTime interval end datetime
+     * @param endDateTime   interval end datetime
      */
     public void setValue(String key, Object value, String startDateTime, String endDateTime);
 
     /**
      * Parses and sets the <code>value</code> for <code>key</code>.
      *
-     * @param key key
+     * @param key   key
      * @param value value
      */
     public void parseAndSetValue(String key, String value);
@@ -212,8 +213,8 @@ public interface ElementDraft {
      * Parses and sets the <code>value</code> for <code>key</code> at the given
      * <code>timestamp</code>.
      *
-     * @param key key
-     * @param value value
+     * @param key       key
+     * @param value     value
      * @param timestamp timestamp
      */
     public void parseAndSetValue(String key, String value, double timestamp);
@@ -222,10 +223,10 @@ public interface ElementDraft {
      * Parses and sets the <code>value</code> for <code>key</code> at the given
      * interval <code>[start,end]</code>.
      *
-     * @param key key
+     * @param key   key
      * @param value value
      * @param start interval start
-     * @param end interval end
+     * @param end   interval end
      */
     public void parseAndSetValue(String key, String value, double start, double end);
 
@@ -233,8 +234,8 @@ public interface ElementDraft {
      * Parses and sets the <code>value</code> for <code>key</code> at the given
      * <code>dateTime</code>.
      *
-     * @param key key
-     * @param value value
+     * @param key      key
+     * @param value    value
      * @param dateTime dateTime
      */
     public void parseAndSetValue(String key, String value, String dateTime);
@@ -243,10 +244,10 @@ public interface ElementDraft {
      * Parses and sets the <code>value</code> for <code>key</code> at the given
      * <code>dateTime</code>.
      *
-     * @param key key
-     * @param value value
+     * @param key           key
+     * @param value         value
      * @param startDateTime interval start datetime
-     * @param endDateTime interval end datetime
+     * @param endDateTime   interval end datetime
      */
     public void parseAndSetValue(String key, String value, String startDateTime, String endDateTime);
 
@@ -266,7 +267,7 @@ public interface ElementDraft {
 
     /**
      * Parses and sets this element's color using string components.
-     * <p>
+     * <p/>
      * Components should be numbers between 0 and 255.
      *
      * @param r red component as string
@@ -297,7 +298,7 @@ public interface ElementDraft {
 
     /**
      * Parse and sets this element's color.
-     * <p>
+     * <p/>
      * Color can be an existing Java color (e.g. yellow, blue, cyan) or an octal
      * or hexadecimal color representation (e.g. 0xFF0096, #FF0096).
      *
@@ -328,7 +329,7 @@ public interface ElementDraft {
 
     /**
      * Parses and sets the label's color using string components.
-     * <p>
+     * <p/>
      * Components should be numbers between 0 and 255.
      *
      * @param r red component as string
@@ -359,7 +360,7 @@ public interface ElementDraft {
 
     /**
      * Parses and sets the label's color.
-     * <p>
+     * <p/>
      * Color can be an existing Java color (e.g. yellow, blue, cyan) or an octal
      * or hexadecimal color representation (e.g. 0xFF0096, #FF0096).
      *

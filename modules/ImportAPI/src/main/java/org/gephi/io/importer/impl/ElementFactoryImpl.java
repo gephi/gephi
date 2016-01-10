@@ -41,10 +41,11 @@
  */
 package org.gephi.io.importer.impl;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.io.importer.api.ElementDraft;
 import org.gephi.io.importer.api.Issue;
 import org.openide.util.NbBundle;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ElementFactoryImpl implements ElementDraft.Factory {
 
@@ -58,8 +59,7 @@ public class ElementFactoryImpl implements ElementDraft.Factory {
 
     @Override
     public NodeDraftImpl newNodeDraft() {
-        NodeDraftImpl node = new NodeDraftImpl(container, String.valueOf(NODE_IDS.getAndIncrement()));
-        return node;
+        return new NodeDraftImpl(container, String.valueOf(NODE_IDS.getAndIncrement()));
     }
 
     @Override
@@ -68,14 +68,12 @@ public class ElementFactoryImpl implements ElementDraft.Factory {
             String message = NbBundle.getMessage(ElementFactoryImpl.class, "ElementFactoryException_NullNodeId");
             container.getReport().logIssue(new Issue(message, Issue.Level.CRITICAL));
         }
-        NodeDraftImpl node = new NodeDraftImpl(container, id);
-        return node;
+        return new NodeDraftImpl(container, id);
     }
 
     @Override
     public EdgeDraftImpl newEdgeDraft() {
-        EdgeDraftImpl edge = new EdgeDraftImpl(container, String.valueOf(EDGE_IDS.getAndIncrement()));
-        return edge;
+        return new EdgeDraftImpl(container, String.valueOf(EDGE_IDS.getAndIncrement()));
     }
 
     @Override
@@ -84,7 +82,6 @@ public class ElementFactoryImpl implements ElementDraft.Factory {
             String message = NbBundle.getMessage(ElementFactoryImpl.class, "ElementFactoryException_NullEdgeId");
             container.getReport().logIssue(new Issue(message, Issue.Level.CRITICAL));
         }
-        EdgeDraftImpl edge = new EdgeDraftImpl(container, id);
-        return edge;
+        return new EdgeDraftImpl(container, id);
     }
 }
