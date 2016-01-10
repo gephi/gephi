@@ -43,6 +43,8 @@ package org.gephi.algorithms.shortestpath;
 
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
@@ -86,9 +88,23 @@ public abstract class AbstractShortestPathAlgorithm {
 
     public abstract void compute();
 
-    public abstract Node getPredecessor(Node node);
+    public abstract Map<Node, Edge> getPredecessors();
 
-    public abstract Edge getPredecessorIncoming(Node node);
+    public final Node getPredecessor(Node node) {
+        Edge edge = getPredecessors().get(node);
+        if (edge != null) {
+            if (edge.getSource() != node) {
+                return edge.getSource();
+            } else {
+                return edge.getTarget();
+            }
+        }
+        return null;
+    }
+
+    public final Edge getPredecessorIncoming(Node node) {
+        return getPredecessors().get(node);
+    }
 
     public HashMap<Node, Double> getDistances() {
         return distances;
