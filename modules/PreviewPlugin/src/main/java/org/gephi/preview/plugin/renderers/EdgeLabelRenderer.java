@@ -196,6 +196,11 @@ public class EdgeLabelRenderer implements Renderer {
         Float x = item.getData(LABEL_X);
         Float y = item.getData(LABEL_Y);
 
+        //Skip if empty
+        if (label == null || label.trim().isEmpty()) {
+            return;
+        }
+
         //Outline
         DependantColor outlineDependantColor = properties.getValue(PreviewProperty.EDGE_LABEL_OUTLINE_COLOR);
         Float outlineSize = properties.getFloatValue(PreviewProperty.EDGE_LABEL_OUTLINE_SIZE);

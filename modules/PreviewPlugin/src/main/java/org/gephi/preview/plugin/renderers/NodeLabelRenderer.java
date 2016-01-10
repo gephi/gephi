@@ -160,6 +160,11 @@ public class NodeLabelRenderer implements Renderer {
         Float x = item.getData(NODE_X);
         Float y = item.getData(NODE_Y);
 
+        //Skip if empty
+        if (label == null || label.trim().isEmpty()) {
+            return;
+        }
+
         //Outline
         DependantColor outlineDependantColor = properties.getValue(PreviewProperty.NODE_LABEL_OUTLINE_COLOR);
         Float outlineSize = properties.getFloatValue(PreviewProperty.NODE_LABEL_OUTLINE_SIZE);
