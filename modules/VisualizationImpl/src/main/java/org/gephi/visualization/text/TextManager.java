@@ -48,6 +48,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
@@ -235,8 +236,7 @@ public class TextManager implements VizArchitecture {
         if (selectedColumns == null || selectedColumns.length == 0) {
             txt = element.getLabel();
         } else if (selectedColumns.length == 1) {
-            Object o = element.getAttribute(selectedColumns[0], graph.getView());
-            return o != null ? o.toString() : "";
+            return buildText(graph, element, selectedColumns[0]);
         } else {
             StringBuilder sb = new StringBuilder();
             int i = 0;
@@ -244,12 +244,23 @@ public class TextManager implements VizArchitecture {
                 if (i++ > 0) {
                     sb.append(" - ");
                 }
-                Object val = element.getAttribute(c, graph.getView());
-                sb.append(val != null ? val : "");
+                sb.append(buildText(graph, element, c));
             }
             txt = sb.toString();
         }
         return (txt != null && !txt.isEmpty()) ? txt : null;
+    }
+
+    private String buildText(Graph graph, Element element, Column column) {
+        Object val = element.getAttribute(column, graph.getView());
+        if (val == null) {
+            return "";
+        }
+        if (column.isArray()) {
+            return AttributeUtils.printArray(val);
+        } else {
+            return val.toString();
+        }
     }
 
     //-------------------------------------------------------------------------------------------------

@@ -297,7 +297,13 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             }
             if (col.getDefaultValue() != null) {
                 xmlWriter.writeStartElement(ATTRIBUTE_DEFAULT);
-                xmlWriter.writeCharacters(col.getDefaultValue().toString());
+                String valString;
+                if (col.isArray()) {
+                    valString = AttributeUtils.printArray(col.getDefaultValue());
+                } else {
+                    valString = col.getDefaultValue().toString();
+                }
+                xmlWriter.writeCharacters(valString);
                 xmlWriter.writeEndElement();
             }
             xmlWriter.writeEndElement();
@@ -357,7 +363,13 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             if (val != null) {
                 xmlWriter.writeStartElement(ATTVALUE);
                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
-                xmlWriter.writeAttribute(ATTVALUE_VALUE, val.toString());
+                String valString;
+                if (column.isArray()) {
+                    valString = AttributeUtils.printArray(val);
+                } else {
+                    valString = val.toString();
+                }
+                xmlWriter.writeAttribute(ATTVALUE_VALUE, valString);
                 xmlWriter.writeEndElement();
             }
         } else if (exportDynamic) {
