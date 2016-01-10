@@ -187,7 +187,7 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
                             PDFRenderTargetImpl.fontRegistered = true;
                         }
                     } else {
-                        com.itextpdf.text.Font itextFont = FontFactory.getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
+                        com.itextpdf.text.Font itextFont = FontFactory.getFont(font.getFontName(), font.getSize(), font.getStyle());
                         baseFont = itextFont.getBaseFont();
                     }
 
