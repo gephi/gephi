@@ -58,7 +58,8 @@ public class ProjectInformationImpl implements ProjectInformation {
     public enum Status {
 
         NEW, OPEN, CLOSED, INVALID
-    };
+    }
+
     //Data
     private final Project project;
     private String name;

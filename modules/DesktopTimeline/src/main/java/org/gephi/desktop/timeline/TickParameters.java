@@ -53,7 +53,8 @@ public class TickParameters {
     public enum TickType {
 
         DATE, DOUBLE, START_END
-    };
+    }
+
     private final TickType type;
     private int width, height;
     private int fontSize = 12;

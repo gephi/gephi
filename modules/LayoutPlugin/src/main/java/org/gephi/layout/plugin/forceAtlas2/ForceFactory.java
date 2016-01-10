@@ -56,8 +56,6 @@ public class ForceFactory {
     private ForceFactory() {
     }
 
-    ;
-
     public RepulsionForce buildRepulsion(boolean adjustBySize, double coefficient) {
         if (adjustBySize) {
             return new linRepulsion_antiCollision(coefficient);

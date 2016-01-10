@@ -59,7 +59,8 @@ public class EdgeColor {
     public enum Mode {
 
         SOURCE, TARGET, MIXED, CUSTOM, ORIGINAL
-    };
+    }
+
     private Color customColor;
     private final Mode mode;
 

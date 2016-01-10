@@ -72,7 +72,8 @@ public class ImporterDL implements FileImporter, LongTask {
     private enum Format {
 
         FULLMATRIX, EDGELIST1
-    };
+    }
+
     //Architecture
     private Reader reader;
     private ContainerLoader container;

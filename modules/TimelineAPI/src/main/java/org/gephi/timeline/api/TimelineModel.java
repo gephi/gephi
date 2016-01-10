@@ -69,7 +69,7 @@ public interface TimelineModel {
          * Both interval bounds are moved. The interval size remains unchanged.
          */
         TWO_BOUNDS
-    };
+    }
 
     /**
      * Returns <code>true</code> if the timeline is enabled. When enabled, the timeline
