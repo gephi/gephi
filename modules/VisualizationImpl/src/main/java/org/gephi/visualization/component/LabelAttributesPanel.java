@@ -133,10 +133,10 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
             target = nodeCheckBoxs;
         } else {
             for (Column c : graphController.getGraphModel().getEdgeTable()) {
-                if (c.getOrigin().equals(Origin.DATA)) {
+                if (!c.isProperty()) {
                     availableColumns.add(c);
                 } else if (showProperties) {
-                    if (c.getId().equalsIgnoreCase("label")) {
+                    if (showProperties && c.isProperty() && !c.getId().equals("timeset")) {
                         availableColumns.add(c);
                     }
                 }
