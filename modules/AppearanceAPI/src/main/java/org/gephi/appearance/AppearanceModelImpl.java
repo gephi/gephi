@@ -557,9 +557,7 @@ public class AppearanceModelImpl implements AppearanceModel {
                             partition = new AttributePartitionImpl(column, graph);
                         }
                         partitions.put(getIdCol(column), partition);
-                    }
-                    
-                    if (forcedRanking.contains(id) || isRanking(graph, column)) {
+                    } else if (forcedRanking.contains(id) || (!forcedPartition.contains(id) && isRanking(graph, column))) {
                         if (column.isIndexed()) {
                             ranking = new AttributeRankingImpl(column, getIndex(localScale));
                         } else {
