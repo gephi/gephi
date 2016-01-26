@@ -52,9 +52,8 @@ import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.graph.api.types.TimestampMap;
-import org.gephi.graph.api.types.TimestampSet;
-import org.gephi.graph.impl.GraphStoreConfiguration;
 import org.gephi.utils.StatisticsUtils;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -172,7 +171,6 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Object value;
         double start, end;
-        TimestampMap timeInterval;
         for (Element row : ac.getTableAttributeRows(table)) {
             if (startColumnIndex != -1) {
                 value = row.getAttribute(startColumn);
@@ -214,9 +212,10 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
                 }
             }
             
-            row.addTimestamp(start);
-            row.addTimestamp(end);
+            IntervalSet timeInterval = new IntervalSet(new double[]{start, end});
+            row.setAttribute(timeIntervalColumn, timeInterval);
         }
+        
         return timeIntervalColumn;
     }
 
@@ -236,7 +235,6 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Object value;
         double start, end;
-        TimestampMap timeInterval;
         for (Element row : ac.getTableAttributeRows(table)) {
             if (startColumnIndex != -1) {
                 value = row.getAttribute(startColumn);
@@ -262,8 +260,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
                 }
             }
             
-            row.addTimestamp(start);
-            row.addTimestamp(end);
+            IntervalSet timeInterval = new IntervalSet(new double[]{start, end});
+            row.setAttribute(timeIntervalColumn, timeInterval);
         }
         return timeIntervalColumn;
     }
@@ -440,9 +438,10 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
     /*************Private methods:*************/
     private Column getTimeIntervalColumn(Table table) {
-        Column column = table.getColumn(GraphStoreConfiguration.ELEMENT_TIMESET_INDEX);
+        Column column = table.getColumn("timeset");
         if (column == null) {
-            column = table.addColumn("timestamp", TimestampSet.class, Origin.PROPERTY);
+            //This should not happen with our graphstore usage
+            column = table.addColumn("timeset", "Interval", IntervalSet.class, Origin.PROPERTY, null, true);
         }
         return column;
     }
