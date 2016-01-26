@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module-Localizing-Bundle: org/gephi/preview/api/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.9.0.2
+OpenIDE-Module-Specification-Version: 0.9.0.3
 OpenIDE-Module-Display-Category: Gephi Core
 OpenIDE-Module-Name: Preview API

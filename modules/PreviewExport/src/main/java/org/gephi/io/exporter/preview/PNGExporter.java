@@ -186,7 +186,7 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
         if (transparentBackground) {
             props.putValue(
                     PreviewProperty.BACKGROUND_COLOR,
-                    new Color(255, 255, 255, 0)); //White transparent
+                    null); //Transparent
         }
         props.putValue(PreviewProperty.MARGIN, new Float(margin));
     }
