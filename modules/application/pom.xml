@@ -717,10 +717,10 @@
                                 <configuration>
                                     <target>
                                         <!-- Clean -->
-                                        <delete includeEmptyDirs="true" failonerror="false">
-                                            <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app"/>
-                                            <fileset dir="${project.build.directory}/${gephi.app.title}"/>
-                                            <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}.dmg"/>
+                                        <delete includeEmptyDirs="true" failonerror="false" removeNotFollowedSymlinks="true">
+                                            <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app" followsymlinks="false"/>
+                                            <fileset dir="${project.build.directory}/${gephi.app.title}" followsymlinks="false"/>
+                                            <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}.dmg" followsymlinks="false"/>
                                         </delete>
                                 
                                         <!-- Create folders -->
