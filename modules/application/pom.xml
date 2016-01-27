@@ -722,6 +722,7 @@
                                             <fileset dir="${project.build.directory}/${gephi.app.title}" followsymlinks="false"/>
                                             <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}.dmg" followsymlinks="false"/>
                                         </delete>
+                                        <delete file="${project.build.directory}/${project.artifactId}-${project.version}.dmg" failonerror="false"/>
                                 
                                         <!-- Create folders -->
                                         <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app"/>
