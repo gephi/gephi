@@ -18,7 +18,8 @@ import org.gephi.project.api.Workspace;
  */
 public class LegacyMapHelper {
 
-    protected Map<Integer, String> indexToIds = new HashMap<Integer, String>();
+    protected Map<Integer, String> nodeIndexToIds = new HashMap<Integer, String>();
+    protected Map<Integer, String> edgeIndexToIds = new HashMap<Integer, String>();
     protected Map<Integer, Integer> preToIdMap = new HashMap<Integer, Integer>();
 
     protected static LegacyMapHelper get(Workspace workspace) {

@@ -48,6 +48,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Origin;
 import org.gephi.graph.api.Table;
 import org.gephi.graph.api.types.IntervalBooleanMap;
@@ -275,7 +276,11 @@ public class LegacyAttributePersistenceProvider implements WorkspaceXMLPersisten
                 }
                 table.addColumn(id, title, type, Origin.DATA, defaultVal, true);
             }
-            mapHelper.indexToIds.put(index, id);
+            if (table.getElementClass().equals(Node.class)) {
+                mapHelper.nodeIndexToIds.put(index, id);
+            } else {
+                mapHelper.edgeIndexToIds.put(index, id);
+            }
         }
     }
 }
