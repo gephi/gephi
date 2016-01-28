@@ -42,17 +42,17 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.io.importer.spi;
 
 /**
- * Importer builder specific for {@link SpigotImporter}.
+ * Importer builder specific for {@link WizardImporter}.
  *
  * @author Mathieu Bastian
  */
-public interface SpigotImporterBuilder extends ImporterBuilder {
+public interface WizardImporterBuilder extends ImporterBuilder {
 
     /**
-     * Builds a new spigot importer instance, ready to be used.
+     * Builds a new wizard importer instance, ready to be used.
      *
-     * @return a new spigot importer
+     * @return a new wizard importer
      */
     @Override
-    public SpigotImporter buildImporter();
+    public WizardImporter buildImporter();
 }

@@ -72,7 +72,6 @@ import org.gephi.io.importer.spi.DatabaseImporter;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.io.importer.spi.ImporterUI;
 import org.gephi.io.importer.spi.ImporterWizardUI;
-import org.gephi.io.importer.spi.SpigotImporter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.ProcessorUI;
 import org.gephi.project.api.ProjectController;
@@ -91,6 +90,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.gephi.io.importer.spi.WizardImporter;
 
 /**
  *
@@ -480,7 +480,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     }
 
     @Override
-    public void importSpigot(final SpigotImporter importer) {
+    public void importWizard(final WizardImporter importer) {
         try {
             if (importer == null) {
                 NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
@@ -488,12 +488,12 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 return;
             }
 
-            String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.spigotSource", "");
+            String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.wizardSource", "");
             ImporterUI ui = controller.getUI(importer);
             if (ui != null) {
-                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.spigot.ui.dialog.title", ui.getDisplayName());
+                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.wizard.ui.dialog.title", ui.getDisplayName());
                 JPanel panel = ui.getPanel();
-                ui.setup(new SpigotImporter[]{importer});
+                ui.setup(new WizardImporter[]{importer});
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
                     ValidationPanel vp = (ValidationPanel) panel;
@@ -530,7 +530,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 @Override
                 public void run() {
                     try {
-                        Container container = controller.importSpigot(importer);
+                        Container container = controller.importWizard(importer);
                         if (container != null) {
                             container.setSource(source);
                             finishImport(container);

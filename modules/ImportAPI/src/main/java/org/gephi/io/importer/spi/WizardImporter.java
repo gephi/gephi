@@ -42,11 +42,11 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.io.importer.spi;
 
 /**
- * Importers interface for importing data from spigots. Spigots are more complex
+ * Importers interface for importing data from wizards. Wizards are more complex
  * data source than a simple file or database, for instance web services or
  * directories.
  *
  * @author Mathieu Bastian
  */
-public interface SpigotImporter extends Importer {
+public interface WizardImporter extends Importer {
 }

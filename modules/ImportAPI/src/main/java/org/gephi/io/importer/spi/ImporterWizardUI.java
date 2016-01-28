@@ -49,14 +49,14 @@ import org.openide.WizardDescriptor;
  * Declared in the system as services (i.e. singleton), the role of UI classes
  * is to provide user interface to configure importers and remember last used
  * settings if needed. This service is designed to provide the different panels
- * part of a spigot import wizard.
+ * part of an import wizard.
  * <p>
  * To be recognized by the system, implementations must just add the following
  * annotation:
  * <pre>@ServiceProvider(service=ImporterWizardUI.class)</pre>
  *
  * @author Mathieu Bastian
- * @see SpigotImporter
+ * @see WizardImporter
  */
 public interface ImporterWizardUI {
 
@@ -105,7 +105,7 @@ public interface ImporterWizardUI {
      * @param importer the importer that settings are to be written
      * @param panel the panel that settings are read
      */
-    public void unsetup(SpigotImporter importer, WizardDescriptor.Panel panel);
+    public void unsetup(WizardImporter importer, WizardDescriptor.Panel panel);
 
     /**
      * Returns <code>true</code> if this UI belongs to the given importer.

@@ -8,14 +8,14 @@
             <li>Create a new builder class, which implements:
                 <ul><li>FileImporterBuilder (files)</li>
                     <li>DatabaseImporterBuilder (databases)</li>
-                    <li>SpigotImportBuilder (web and more complex scenarios)</li></ul>
+                    <li>WizardImportBuilder (web and more complex scenarios)</li></ul>
             <li>Add <b>@ServiceProvider</b> annotation to your class to declare
                 you are implementing an Importer service. Put <code>FileImporterBuilder.class</code>
                 as the annotation <b>service</b> parameter for text and XML,
-                <code>SpigotImportBuilder.class</code> for spigots and
+                <code>WizardImportBuilder.class</code> for wizards and
                 <code>DatabaseImporter.class</code> for databases.</li>
             <li>Create a new importer class,which implements <code>FileImporter</code>,
-                <code>DatabaseImport</code> or <code>SpigotImporter</code>.</li>
+                <code>DatabaseImport</code> or <code>WizardImporter</code>.</li>
             <li>In the builder, return a new instance of your importer in the <code>buildImporter()</code> method.</li>
             <li>For settings UI, create a new <code>ImporterUI</code> implementation and add the
                 <b>@ServiceProvider</b> annotation to it.</li>
