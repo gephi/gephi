@@ -127,14 +127,14 @@ public class WizardIterator implements WizardDescriptor.Iterator {
             for (ImporterWizardUI wizardUi : Lookup.getDefault().lookupAll(ImporterWizardUI.class)) {
                 WizardVisualPanel1 visual1 = ((WizardVisualPanel1) current().getComponent());
                 if (visual1.getCurrentCategory().equals(wizardUi.getCategory())
-                        && visual1.getCurrentSpigot().equals(wizardUi.getDisplayName())) {
-                    WizardDescriptor.Panel[] spigotPanels = wizardUi.getPanels();
+                        && visual1.getCurrentWizard().equals(wizardUi.getDisplayName())) {
+                    WizardDescriptor.Panel[] wizardPanels = wizardUi.getPanels();
                     WizardDescriptor.Panel tempFirstPanel = panels[0];
-                    panels = new WizardDescriptor.Panel[spigotPanels.length + 1];
+                    panels = new WizardDescriptor.Panel[wizardPanels.length + 1];
                     panels[0] = tempFirstPanel;
-                    for (int i = 0; i < spigotPanels.length; i++) {
-                        panels[i + 1] = spigotPanels[i];
-                        wizardUi.setup(spigotPanels[i]);
+                    for (int i = 0; i < wizardPanels.length; i++) {
+                        panels[i + 1] = wizardPanels[i];
+                        wizardUi.setup(wizardPanels[i]);
                     }
                     currentWizardUI = wizardUi;
                 }

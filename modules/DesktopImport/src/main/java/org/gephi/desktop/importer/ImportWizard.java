@@ -80,8 +80,8 @@ public final class ImportWizard implements ActionListener {
 
             //Get Importer
             WizardImporter importer = null;
-            for (WizardImporterBuilder spigotBuilder : Lookup.getDefault().lookupAll(WizardImporterBuilder.class)) {
-                WizardImporter im = spigotBuilder.buildImporter();
+            for (WizardImporterBuilder wizardBuilder : Lookup.getDefault().lookupAll(WizardImporterBuilder.class)) {
+                WizardImporter im = wizardBuilder.buildImporter();
                 if (wizardUI.isUIForImporter(im)) {
                     importer = im;
                 }
@@ -97,7 +97,7 @@ public final class ImportWizard implements ActionListener {
             wizardIterator.unsetupPanels(importer);
 
             ImportControllerUI importControllerUI = Lookup.getDefault().lookup(ImportControllerUI.class);
-            importControllerUI.importSpigot(importer);
+            importControllerUI.importWizard(importer);
         }
     }
 }

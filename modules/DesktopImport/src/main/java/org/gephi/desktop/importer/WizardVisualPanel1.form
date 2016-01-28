@@ -36,7 +36,7 @@
                       <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="labelSpigot" min="-2" max="-2" attributes="0"/>
+                              <Component id="labelWizard" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                           <Component id="jScrollPane2" pref="0" max="32767" attributes="0"/>
@@ -54,7 +54,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="labelCategory" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="labelSpigot" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="labelWizard" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -78,7 +78,7 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="labelSpigot">
+    <Component class="javax.swing.JLabel" name="labelWizard">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/desktop/importer/Bundle.properties" key="WizardVisualPanel1.labelWizard.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -115,7 +115,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JList" name="spigotList">
+        <Component class="javax.swing.JList" name="wizardList">
           <Properties>
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="reloadSubType()" type="code"/>
@@ -123,10 +123,10 @@
             <Property name="selectionMode" type="int" value="0"/>
           </Properties>
           <Events>
-            <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="spigotListValueChanged"/>
+            <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="wizardListValueChanged"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="spigotList.setSelectedIndex(0);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wizardList.setSelectedIndex(0);"/>
           </AuxValues>
         </Component>
       </SubComponents>

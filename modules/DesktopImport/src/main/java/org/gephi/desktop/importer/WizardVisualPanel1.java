@@ -73,11 +73,11 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
     private void initComponents() {
 
         labelCategory = new javax.swing.JLabel();
-        labelSpigot = new javax.swing.JLabel();
+        labelWizard = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         categoryList = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
-        spigotList = new javax.swing.JList();
+        wizardList = new javax.swing.JList();
         labelDescription = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         descriptionArea = new javax.swing.JTextArea();
@@ -87,7 +87,7 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
 
         org.openide.awt.Mnemonics.setLocalizedText(labelCategory, org.openide.util.NbBundle.getMessage(WizardVisualPanel1.class, "WizardVisualPanel1.labelCategory.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelSpigot, org.openide.util.NbBundle.getMessage(WizardVisualPanel1.class, "WizardVisualPanel1.labelWizard.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelWizard, org.openide.util.NbBundle.getMessage(WizardVisualPanel1.class, "WizardVisualPanel1.labelWizard.text")); // NOI18N
 
         categoryList.setModel(getCategoryListModel());
         categoryList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -99,15 +99,15 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
         });
         jScrollPane1.setViewportView(categoryList);
 
-        spigotList.setModel(reloadSubType());
-        spigotList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        spigotList.setSelectedIndex(0);
-        spigotList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+        wizardList.setModel(reloadSubType());
+        wizardList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        wizardList.setSelectedIndex(0);
+        wizardList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                spigotListValueChanged(evt);
+                wizardListValueChanged(evt);
             }
         });
-        jScrollPane2.setViewportView(spigotList);
+        jScrollPane2.setViewportView(wizardList);
 
         org.openide.awt.Mnemonics.setLocalizedText(labelDescription, org.openide.util.NbBundle.getMessage(WizardVisualPanel1.class, "WizardVisualPanel1.labelDescription.text")); // NOI18N
 
@@ -130,7 +130,7 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
                         .addGap(55, 55, 55)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(labelSpigot)
+                                .addComponent(labelWizard)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                     .addComponent(labelDescription))
@@ -142,7 +142,7 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelCategory)
-                    .addComponent(labelSpigot))
+                    .addComponent(labelWizard))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
@@ -157,15 +157,15 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
 
     private void categoryListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_categoryListValueChanged
         reloadSubType();
-        if (spigotList.getSelectedValue() == null) {
+        if (wizardList.getSelectedValue() == null) {
             descriptionArea.setText("");
         }
-        spigotList.setSelectedIndex(0);
+        wizardList.setSelectedIndex(0);
     }//GEN-LAST:event_categoryListValueChanged
 
-    private void spigotListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_spigotListValueChanged
+    private void wizardListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wizardListValueChanged
         reloadDescription();
-    }//GEN-LAST:event_spigotListValueChanged
+    }//GEN-LAST:event_wizardListValueChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList categoryList;
     private javax.swing.JTextArea descriptionArea;
@@ -174,16 +174,16 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel labelCategory;
     private javax.swing.JLabel labelDescription;
-    private javax.swing.JLabel labelSpigot;
-    private javax.swing.JList spigotList;
+    private javax.swing.JLabel labelWizard;
+    private javax.swing.JList wizardList;
     // End of variables declaration//GEN-END:variables
 
     public String getCurrentCategory() {
         return categoryList.getSelectedValue().toString();
     }
 
-    public String getCurrentSpigot() {
-        return spigotList.getSelectedValue().toString();
+    public String getCurrentWizard() {
+        return wizardList.getSelectedValue().toString();
     }
 
     private ListModel getCategoryListModel() {
@@ -217,10 +217,10 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
             return;
         }
         String category = categoryList.getSelectedValue().toString();
-        String spigot = spigotList.getSelectedValue().toString();
+        String wizard = wizardList.getSelectedValue().toString();
 
         for (ImporterWizardUI wizardUi : Lookup.getDefault().lookupAll(ImporterWizardUI.class)) {
-            if (category.equals(wizardUi.getCategory()) && spigot.equals(wizardUi.getDisplayName())) {
+            if (category.equals(wizardUi.getCategory()) && wizard.equals(wizardUi.getDisplayName())) {
                 descriptionArea.setText(wizardUi.getDescription());
             }
         }
@@ -228,7 +228,7 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
 
     boolean emptyList() {
         if (categoryList.getSelectedValue() == null
-                || spigotList.getSelectedValue() == null) {
+                || wizardList.getSelectedValue() == null) {
             return true;
         } else {
             return false;

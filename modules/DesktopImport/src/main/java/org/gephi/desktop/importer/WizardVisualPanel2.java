@@ -45,9 +45,6 @@ import javax.swing.JPanel;
 
 public final class WizardVisualPanel2 extends JPanel {
 
-    /**
-     * Creates new form SpigotVisualPanel2
-     */
     public WizardVisualPanel2() {
         initComponents();
     }
