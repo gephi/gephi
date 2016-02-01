@@ -3,7 +3,7 @@
     <name unique="editor"/>
   <kind type="editor"/>
   <state type="joined"/>
-  <bounds x="0" y="0" width="0" height="0"/>
+  <!--<bounds x="0" y="0" width="0" height="0"/>-->
   <frame state="0"/>
     
     <empty-behavior permanent="true"/>

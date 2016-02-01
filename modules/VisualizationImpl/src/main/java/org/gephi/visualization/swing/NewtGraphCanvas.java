@@ -47,7 +47,6 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.Component;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
-import java.awt.Dimension;
 import javax.swing.JPopupMenu;
 import javax.swing.ToolTipManager;
 import org.gephi.ui.utils.UIUtils;
@@ -67,10 +66,11 @@ public class NewtGraphCanvas extends GLAbstractListener {
         glWindow = GLWindow.create(getCaps());
 //        glWindow.setSurfaceScale(new float[]{ScalableSurface.AUTOMAX_PIXELSCALE, ScalableSurface.AUTOMAX_PIXELSCALE});
         glCanvas = new NewtCanvasAWT(glWindow);
+
         super.initDrawable(glWindow);
-        glCanvas.setFocusable(true);
-        glCanvas.setIgnoreRepaint(true);
-        glCanvas.setMinimumSize(new Dimension(0, 0));   //Fix Canvas resize Issue
+//        glCanvas.setFocusable(true);
+//        glCanvas.setIgnoreRepaint(true);
+//        glCanvas.setMinimumSize(new Dimension(0, 0));   //Fix Canvas resize Issue
 
 //        glCanvas.setMinimumSize(new Dimension(0, 0));   //Fix Canvas resize Issue
         //Basic init
@@ -81,10 +81,6 @@ public class NewtGraphCanvas extends GLAbstractListener {
         //False lets the components appear on top of the canvas
         JPopupMenu.setDefaultLightWeightPopupEnabled(false);
         ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false);
-    }
-
-    public GLWindow getWindow() {
-        return glWindow;
     }
 
     @Override

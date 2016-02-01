@@ -149,7 +149,7 @@ public class LegacyAttributeRowsPersistenceProvider implements WorkspaceXMLPersi
                         end = true;
                     }
                     if (!value.isEmpty() && index != null) {
-                        String id = mapHelper.indexToIds.get(index);
+                        String id = table.getElementClass().equals(Node.class) ? mapHelper.nodeIndexToIds.get(index) : mapHelper.edgeIndexToIds.get(index);
                         if (id != null) {
                             Column col = table.getColumn(id);
 

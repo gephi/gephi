@@ -185,22 +185,23 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     @Override
-    public void initialize(Workspace workspace) {
-        WorkspaceInformation workspaceInformation = workspace.getLookup().lookup(WorkspaceInformation.class);
-        tabDataModel.addTab(tabDataModel.size(), new TabData(new WorkspaceComponent(workspace), workspaceIcon,
-                workspaceInformation.getName(),
-                workspaceInformation.getSource()));
-        if (tabDataModel.size() == 1) {
-            tabbedContainer.getSelectionModel().setSelectedIndex(0);
-            SwingUtilities.invokeLater(new Runnable() {
+    public void initialize(final Workspace workspace) {
+        final WorkspaceInformation workspaceInformation = workspace.getLookup().lookup(WorkspaceInformation.class);
+        SwingUtilities.invokeLater(new Runnable() {
 
-                @Override
-                public void run() {
+            @Override
+            public void run() {
+                tabDataModel.addTab(tabDataModel.size(), new TabData(new WorkspaceComponent(workspace), workspaceIcon,
+                        workspaceInformation.getName(),
+                        workspaceInformation.getSource()));
+                if (tabDataModel.size() == 1) {
+                    tabbedContainer.getSelectionModel().setSelectedIndex(0);
+
                     add(tabbedContainer, BorderLayout.CENTER);
                     getParent().revalidate();
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -223,27 +224,28 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
     }
 
     @Override
-    public void close(Workspace workspace) {
-        for (int i = 0; i < tabDataModel.size(); i++) {
-            TabData tabData = tabDataModel.getTab(i);
-            if (((WorkspaceComponent) tabData.getUserObject()).workspace == workspace) {
-                tabDataModel.removeTab(i);
-                break;
-            }
-        }
-        if (tabDataModel.size() == 0) {
-            tabbedContainer.getSelectionModel().clearSelection();
-            SwingUtilities.invokeLater(new Runnable() {
+    public void close(final Workspace workspace) {
+        SwingUtilities.invokeLater(new Runnable() {
 
-                @Override
-                public void run() {
+            @Override
+            public void run() {
+                for (int i = 0; i < tabDataModel.size(); i++) {
+                    TabData tabData = tabDataModel.getTab(i);
+                    if (((WorkspaceComponent) tabData.getUserObject()).workspace == workspace) {
+                        tabDataModel.removeTab(i);
+                        break;
+                    }
+                }
+                if (tabDataModel.size() == 0) {
+                    tabbedContainer.getSelectionModel().clearSelection();
+
                     remove(tabbedContainer);
                     getParent().revalidate();
                 }
-            });
-        }
+            }
+        });
     }
-    
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(WorkspaceInformation.EVENT_RENAME)) {

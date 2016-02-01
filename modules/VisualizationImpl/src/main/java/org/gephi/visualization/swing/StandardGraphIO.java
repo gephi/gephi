@@ -42,10 +42,13 @@
 package org.gephi.visualization.swing;
 
 import com.jogamp.newt.event.MouseEvent;
+import com.jogamp.newt.event.awt.AWTMouseAdapter;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseWheelEvent;
 import org.gephi.lib.gleem.linalg.MathUtil;
 import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.GraphLimits;
@@ -71,6 +74,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     protected VizEventManager vizEventManager;
     protected VizController vizController;
     protected GraphLimits limits;
+    protected AWTMouseAdapter mouseEventsAdapter;
     //Listeners data
     protected float[] rightButtonMoving = {-1f, 0f, 0f};
     protected float[] leftButtonMoving = {-1f, 0f, 0f};
@@ -99,12 +103,22 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     public void startMouseListening() {
         stopMouseListening();
 
-        graphDrawable.window.addMouseListener(this);
+        if (graphDrawable.window != null) {
+            graphDrawable.window.addMouseListener(this);
+        } else {
+            mouseEventsAdapter = new AWTMouseAdapter(this, graphDrawable.drawable);
+            mouseEventsAdapter.addTo(graphDrawable.graphComponent);
+        }
     }
 
     @Override
     public void stopMouseListening() {
-        graphDrawable.window.removeMouseListener(this);
+        if (graphDrawable.window != null) {
+            graphDrawable.window.removeMouseListener(this);
+        } else if (mouseEventsAdapter != null) {
+            mouseEventsAdapter.removeFrom(graphDrawable.graphComponent);
+            mouseEventsAdapter = null;
+        }
     }
 
     @Override
@@ -486,5 +500,52 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     @Override
     public boolean isDragging() {
         return dragging;
+    }
+
+    private class MouseEventsWrapper extends MouseAdapter {
+
+        @Override
+        public void mousePressed(java.awt.event.MouseEvent e) {
+            StandardGraphIO.this.mousePressed(convertMouseEvent(e));
+        }
+
+        @Override
+        public void mouseReleased(java.awt.event.MouseEvent e) {
+            StandardGraphIO.this.mouseReleased(convertMouseEvent(e));
+        }
+
+        @Override
+        public void mouseEntered(java.awt.event.MouseEvent e) {
+            StandardGraphIO.this.mouseEntered(convertMouseEvent(e));
+        }
+
+        @Override
+        public void mouseExited(java.awt.event.MouseEvent e) {
+            StandardGraphIO.this.mouseExited(convertMouseEvent(e));
+        }
+
+        @Override
+        public void mouseMoved(java.awt.event.MouseEvent e) {
+            StandardGraphIO.this.mouseMoved(convertMouseEvent(e));
+        }
+
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent e) {
+            StandardGraphIO.this.mouseClicked(convertMouseEvent(e));
+        }
+
+        @Override
+        public void mouseDragged(java.awt.event.MouseEvent e) {
+            StandardGraphIO.this.mouseDragged(convertMouseEvent(e));
+        }
+
+        @Override
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            StandardGraphIO.this.mouseWheelMoved(convertMouseEvent(e));
+        }
+    }
+
+    private MouseEvent convertMouseEvent(java.awt.event.MouseEvent me) {
+        return new MouseEvent((short) 0, me.getSource(), me.getWhen(), me.getModifiers(), me.getX(), me.getY(), (short) me.getClickCount(), (short) me.getButton(), me instanceof MouseWheelEvent ? new float[]{0, -((MouseWheelEvent) me).getUnitsToScroll()} : null, 1f);
     }
 }

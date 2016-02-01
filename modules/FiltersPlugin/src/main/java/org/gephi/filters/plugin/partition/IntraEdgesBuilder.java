@@ -160,7 +160,7 @@ public class IntraEdgesBuilder implements CategoryBuilder {
 
         @Override
         public String getName() {
-            return NbBundle.getMessage(IntraEdgesBuilder.class, "IntraEdgesBuilder.name") + " (" + partition.getColumn().getTitle() + ")";
+            return NbBundle.getMessage(IntraEdgesBuilder.class, "IntraEdgesBuilder.name") + " (" + column.getTitle() + ")";
         }
 
         @Override
