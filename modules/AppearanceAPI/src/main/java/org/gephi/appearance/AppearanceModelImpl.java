@@ -660,7 +660,11 @@ public class AppearanceModelImpl implements AppearanceModel {
     }
 
     private boolean isPartition(Graph graph, Column column) {
+        double ratio;
         if (column.isDynamic()) {
+            if (!column.isNumber()) {
+                return true;
+            }
             Set<Object> set = new HashSet<Object>();
             boolean hasNullValue = false;
             int elements = 0;
@@ -679,9 +683,11 @@ public class AppearanceModelImpl implements AppearanceModel {
                     }
                 }
             }
-            double ratio = set.size() / (double) elements;
-            return ratio <= 0.9;
+            ratio = set.size() / (double) elements;
         } else if (column.isIndexed()) {
+            if (!column.isNumber()) {
+                return true;
+            }
             Index index;
             if (AttributeUtils.isNodeColumn(column)) {
                 index = graphModel.getNodeIndex(graph.getView());
@@ -690,10 +696,16 @@ public class AppearanceModelImpl implements AppearanceModel {
             }
             int valueCount = index.countValues(column);
             int elementCount = index.countElements(column);
-            double ratio = valueCount / (double) elementCount;
-            return ratio <= 0.9;
+            ratio = valueCount / (double) elementCount;
+        } else {
+            return false;
         }
-        return false;
+        Class typeClass = column.getTypeClass();
+        typeClass = column.isDynamic() ? AttributeUtils.getStaticType(typeClass) : typeClass;
+        if (typeClass.equals(Integer.class) || typeClass.equals(Byte.class) || typeClass.equals(Short.class)) {
+            return ratio <= 0.3;
+        }
+        return ratio <= 0.05;
     }
 
     private boolean isRanking(Graph graph, Column column) {
