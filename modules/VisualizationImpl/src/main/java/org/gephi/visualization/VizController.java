@@ -68,6 +68,7 @@ import org.gephi.visualization.swing.NewtGraphCanvas;
 import org.gephi.visualization.swing.StandardGraphIO;
 import org.gephi.visualization.text.TextManager;
 import org.openide.util.Lookup;
+import org.openide.util.Utilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -120,6 +121,8 @@ public class VizController implements VisualizationController {
 
         if (vizConfig.isUseGLJPanel()) {
             //No more supported
+        } else if (Utilities.isMac()) {
+            drawable = createCanvas();
         } else {
             drawable = createNewtCanvas();
         }

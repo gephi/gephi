@@ -41,15 +41,16 @@
  */
 package org.gephi.visualization.swing;
 
-import com.jogamp.nativewindow.ScalableSurface;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.Component;
-import java.awt.Dimension;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
+import java.awt.BorderLayout;
+import java.awt.Container;
 import javax.swing.JPopupMenu;
 import javax.swing.ToolTipManager;
+import org.gephi.ui.utils.UIUtils;
 
 /**
  *
@@ -63,10 +64,9 @@ public class GraphCanvas extends GLAbstractListener {
     public GraphCanvas() {
         super();
         glCanvas = new GLCanvas(getCaps());
-//        glCanvas.setSurfaceScale(new float[]{ScalableSurface.AUTOMAX_PIXELSCALE, ScalableSurface.AUTOMAX_PIXELSCALE});
+
         super.initDrawable(glCanvas);
-        glCanvas.setMinimumSize(new Dimension(0, 0));   //Fix Canvas resize Issue
-        globalScale = glCanvas.getCurrentSurfaceScale(new float[2])[0];
+//        glCanvas.setMinimumSize(new Dimension(0, 0));   //Fix Canvas resize Issue
 
         //Basic init
         graphComponent = (Component) glCanvas;
@@ -79,7 +79,9 @@ public class GraphCanvas extends GLAbstractListener {
 
     @Override
     protected void init(GL2 gl) {
+        globalScale = glCanvas.getCurrentSurfaceScale(new float[2])[0];
 
+        engine.startDisplay();
     }
 
     @Override
@@ -112,6 +114,18 @@ public class GraphCanvas extends GLAbstractListener {
 
     @Override
     public void reinitWindow() {
+        if (UIUtils.isAquaLookAndFeel()) {
+            // Only used when collapse panel is set visible
+            // Workaround for JOGL bug 1274
+            Container c = graphComponent.getParent();
+            c.remove(graphComponent);
+            c.add(graphComponent, BorderLayout.CENTER);
+        }
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+        glCanvas.destroy();
+    }
 }

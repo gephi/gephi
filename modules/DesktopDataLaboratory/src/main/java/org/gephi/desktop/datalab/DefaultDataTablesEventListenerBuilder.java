@@ -57,29 +57,34 @@ import org.openide.windows.WindowManager;
 
 /**
  * Provides default instance of DataTableTopComponent as DataTablesEventListener
+ *
  * @author Eduardo
  */
-@ServiceProvider(service=DataTablesEventListenerBuilder.class)
-public class DefaultDataTablesEventListenerBuilder implements DataTablesEventListenerBuilder{
+@ServiceProvider(service = DataTablesEventListenerBuilder.class)
+public class DefaultDataTablesEventListenerBuilder implements DataTablesEventListenerBuilder {
 
     @Override
     public DataTablesEventListener getDataTablesEventListener() {
-        final List<DataTableTopComponent> listenerHolder = new ArrayList<DataTableTopComponent>();
-        try {
-            //We have to do this in AWT thread...
-            //There is no support for Futures as far as I know
-            SwingUtilities.invokeAndWait(new Runnable() {
-                @Override
-                public void run() {
-                    listenerHolder.add((DataTableTopComponent) WindowManager.getDefault().findTopComponent("DataTableTopComponent"));
-                }
-            });
-        } catch (InterruptedException ex) {
-            Logger.getLogger("").log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger("").log(Level.SEVERE, null, ex);
+        if (SwingUtilities.isEventDispatchThread()) {
+            return (DataTableTopComponent) WindowManager.getDefault().findTopComponent("DataTableTopComponent");
+        } else {
+            final List<DataTableTopComponent> listenerHolder = new ArrayList<DataTableTopComponent>();
+            try {
+                //We have to do this in AWT thread...
+                //There is no support for Futures as far as I know
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    @Override
+                    public void run() {
+                        listenerHolder.add((DataTableTopComponent) WindowManager.getDefault().findTopComponent("DataTableTopComponent"));
+                    }
+                });
+            } catch (InterruptedException ex) {
+                Logger.getLogger("").log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger("").log(Level.SEVERE, null, ex);
+            }
+
+            return listenerHolder.get(0);
         }
-        
-        return listenerHolder.get(0);
     }
 }
