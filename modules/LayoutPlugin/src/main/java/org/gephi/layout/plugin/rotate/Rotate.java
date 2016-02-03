@@ -54,9 +54,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 @ServiceProvider(service = LayoutBuilder.class)
-public class CounterClockwiseRotate implements LayoutBuilder {
+public class Rotate implements LayoutBuilder {
 
-    private CounterClockwiseRotateLayoutUI ui = new CounterClockwiseRotateLayoutUI();
+    private final RotateLayoutUI ui = new RotateLayoutUI();
 
     @Override
     public Layout buildLayout() {
@@ -65,7 +65,7 @@ public class CounterClockwiseRotate implements LayoutBuilder {
 
     @Override
     public String getName() {
-        return NbBundle.getMessage(CounterClockwiseRotate.class, "counterclockwise.name");
+        return NbBundle.getMessage(Rotate.class, "rotate.name");
     }
 
     @Override
@@ -73,11 +73,11 @@ public class CounterClockwiseRotate implements LayoutBuilder {
         return ui;
     }
 
-    private static class CounterClockwiseRotateLayoutUI implements LayoutUI {
+    private static class RotateLayoutUI implements LayoutUI {
 
         @Override
         public String getDescription() {
-            return NbBundle.getMessage(CounterClockwiseRotate.class, "counterclockwise.description");
+            return NbBundle.getMessage(Rotate.class, "rotate.description");
         }
 
         @Override
