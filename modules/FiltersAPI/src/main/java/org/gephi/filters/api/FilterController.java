@@ -85,10 +85,20 @@ public interface FilterController {
      * Creates a query from <code>builder</code>. The created query is a root
      * query.
      *
-     * @param builder the builder that can create the filter that is to be wrapped in a new query
-     * @return a query that is wrapping <code>filter</code>
+     * @param builder the builder that can create the filter that is to be
+     * wrapped in a new query
+     * @return a query that is wrapping <code>builder</code>
      */
     public Query createQuery(FilterBuilder builder);
+
+    /**
+     * Creates a query from <code>filter</code>. The created query is a root
+     * query.
+     *
+     * @param filter the filter that is to be wrapped in a new query
+     * @return a query that is wrapping <code>filter</code>
+     */
+    public Query createQuery(Filter filter);
 
     /**
      * Adds <code>query</code> as a new query in the system. The query should be
