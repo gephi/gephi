@@ -137,4 +137,9 @@ public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
     public Iterable<ColumnDraft> getColumns() {
         return container.getNodeColumns();
     }
+
+    @Override
+    public String toString() {
+        return id;
+    }
 }

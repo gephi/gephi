@@ -1,6 +1,6 @@
 /*
  Copyright 2008-2010 Gephi
- Authors : Helder Suzuki <heldersuzuki@gephi.org>
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
  Website : http://www.gephi.org
 
  This file is part of Gephi.
@@ -39,65 +39,83 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.layout.plugin.rotate;
+package org.gephi.filters.plugin.edge;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
-import org.gephi.layout.spi.Layout;
-import org.gephi.layout.spi.LayoutBuilder;
-import org.gephi.layout.spi.LayoutUI;
+import org.gephi.filters.api.FilterLibrary;
+import org.gephi.filters.plugin.AbstractFilter;
+import org.gephi.filters.spi.*;
+import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.project.api.Workspace;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Mathieu Bastian
  */
-@ServiceProvider(service = LayoutBuilder.class)
-public class ClockwiseRotate implements LayoutBuilder {
-
-    private ClockwiseRotateLayoutUI ui = new ClockwiseRotateLayoutUI();
+@ServiceProvider(service = FilterBuilder.class)
+public class MutualEdgeBuilder implements FilterBuilder {
 
     @Override
-    public Layout buildLayout() {
-        return new RotateLayout(this, 90);
+    public Category getCategory() {
+        return FilterLibrary.EDGE;
     }
 
     @Override
     public String getName() {
-        return NbBundle.getMessage(ClockwiseRotate.class, "clockwise.name");
+        return NbBundle.getMessage(MutualEdgeBuilder.class, "MutualEdgeBuilder.name");
     }
 
     @Override
-    public LayoutUI getUI() {
-        return ui;
+    public Icon getIcon() {
+        return null;
     }
 
-    private static class ClockwiseRotateLayoutUI implements LayoutUI {
+    @Override
+    public String getDescription() {
+        return NbBundle.getMessage(MutualEdgeBuilder.class, "MutualEdgeBuilder.description");
+    }
 
-        @Override
-        public String getDescription() {
-            return NbBundle.getMessage(ClockwiseRotate.class, "clockwise.description");
+    @Override
+    public Filter getFilter(Workspace workspace) {
+        return new MutualEdgeFilter();
+    }
+
+    @Override
+    public JPanel getPanel(Filter filter) {
+        return null;
+    }
+
+    @Override
+    public void destroy(Filter filter) {
+    }
+
+    public static class MutualEdgeFilter extends AbstractFilter implements EdgeFilter {
+
+        public MutualEdgeFilter() {
+            super(NbBundle.getMessage(MutualEdgeBuilder.class, "MutualEdgeBuilder.name"));
         }
 
         @Override
-        public Icon getIcon() {
-            return null;
+        public boolean init(Graph graph) {
+            return !graph.isUndirected();
         }
 
         @Override
-        public JPanel getSimplePanel(Layout layout) {
-            return null;
+        public boolean evaluate(Graph graph, Edge edge) {
+            if(edge.isDirected()) {
+                DirectedGraph directedGraph = (DirectedGraph)graph;
+                return directedGraph.getMutualEdge(edge) != null;
+            }
+            return false;
         }
 
         @Override
-        public int getQualityRank() {
-            return -1;
-        }
-
-        @Override
-        public int getSpeedRank() {
-            return -1;
+        public void finish() {
         }
     }
 }

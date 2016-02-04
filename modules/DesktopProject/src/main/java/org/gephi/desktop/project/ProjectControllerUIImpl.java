@@ -513,7 +513,10 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         }
     }
 
-    @Override
+    public Project getCurrentProject() {
+        return controller.getCurrentProject();
+    }
+
     public Project newProject() {
         if (closeCurrentProject()) {
             controller.newProject();

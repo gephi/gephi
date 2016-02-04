@@ -67,6 +67,8 @@ public interface ProjectControllerUI {
 
     public Workspace duplicateWorkspace();
 
+    public Project getCurrentProject();
+
     public Project newProject();
 
     public void deleteWorkspace();

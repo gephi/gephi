@@ -97,8 +97,8 @@ public class CollapsePanel extends javax.swing.JPanel {
                 }
                 extendedPanel.setVisible(ext);
 
-                 // Workaround for JOGL bug 1274
-                ((NewtGraphCanvas)VizController.getInstance().getDrawable()).reinitWindow();
+                // Workaround for JOGL bug 1274
+                (VizController.getInstance().getDrawable()).reinitWindow();
             }
         });
         if (!extended) {

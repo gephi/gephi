@@ -482,7 +482,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 if (column.isDynamic()) {
                     if ((!startDate.isEmpty() || !endDate.isEmpty()) && checkTimerepresentationIsInterval()) {
                         if (startOpen || endOpen) {
-                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_" + (element instanceof NodeDraft ? "node" : "edge") + "_open_interval", element.getId()), Issue.Level.WARNING));
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_" + (element instanceof NodeDraft ? "node" : "edge") + "_open_interval", element), Issue.Level.WARNING));
                         }
                         try {
                             element.parseAndSetValue(column.getId(), value, startDate, endDate);
@@ -497,9 +497,19 @@ public class ImporterGEXF implements FileImporter, LongTask {
                         }
                     } else {
                         try {
+                            //Try to parse the whole dynamic type first
                             element.parseAndSetValue(column.getId(), value);
-                        } catch (Exception e) {
-                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_" + (element instanceof NodeDraft ? "node" : "edge") + "attribute_timeset_parseerror", element), Issue.Level.SEVERE));
+                        } catch (Exception e1) {
+                            if (checkTimerepresentationIsInterval()) {
+                                //In order to support old atrribute values without start or end, try to parse a single value with infinite interval instead
+                                try {
+                                    element.parseAndSetValue(column.getId(), value, "-inf", "inf");
+                                } catch (Exception e2) {
+                                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_" + (element instanceof NodeDraft ? "node" : "edge") + "attribute_timeinterval_parseerror", element), Issue.Level.SEVERE));
+                                }
+                            } else {
+                                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_" + (element instanceof NodeDraft ? "node" : "edge") + "attribute_timeset_parseerror", element), Issue.Level.SEVERE));
+                            }
                         }
                     }
                 } else {
@@ -661,18 +671,18 @@ public class ImporterGEXF implements FileImporter, LongTask {
 
         if ((!start.isEmpty() || !end.isEmpty()) && checkTimerepresentationIsInterval()) {
             if (startOpen || endOpen) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_" + (element instanceof NodeDraft ? "node" : "edge") + "_open_interval", element.getId()), Issue.Level.WARNING));
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_" + (element instanceof NodeDraft ? "node" : "edge") + "_open_interval", element), Issue.Level.WARNING));
             }
             try {
                 element.addInterval(start, end);
             } catch (IllegalArgumentException e) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_" + (element instanceof NodeDraft ? "node" : "edge") + "_timeinterval_parseerror", element.getId()), Issue.Level.SEVERE));
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_" + (element instanceof NodeDraft ? "node" : "edge") + "_timeinterval_parseerror", element), Issue.Level.SEVERE));
             }
         } else if (!timestamp.isEmpty() && checkTimerepresentationIsTimestamp()) {
             try {
                 element.addTimestamp(timestamp);
             } catch (IllegalArgumentException e) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_" + (element instanceof NodeDraft ? "node" : "edge") + "_timestamp_parseerror", element.getId()), Issue.Level.SEVERE));
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_" + (element instanceof NodeDraft ? "node" : "edge") + "_timestamp_parseerror", element), Issue.Level.SEVERE));
             }
         }
     }
@@ -760,7 +770,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
             } else if (edgeType.equalsIgnoreCase("directed")) {
                 edge.setDirection(EdgeDirection.DIRECTED);
             } else {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetype", edgeType, edge.getId()), Issue.Level.SEVERE));
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetype", edgeType, edge), Issue.Level.SEVERE));
             }
         }
 
@@ -816,7 +826,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
         if (!spells) {
             if ((!startDate.isEmpty() || !endDate.isEmpty()) && checkTimerepresentationIsInterval()) {
                 if (startOpen || endOpen) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_open_interval", id), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_open_interval", edge), Issue.Level.WARNING));
                 }
                 try {
                     edge.addInterval(startDate, endDate);
@@ -827,19 +837,19 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 try {
                     edge.addIntervals(intervals);
                 } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timeintervals_parseerror", id), Issue.Level.SEVERE));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timeintervals_parseerror", edge), Issue.Level.SEVERE));
                 }
             } else if (!timestamp.isEmpty() && checkTimerepresentationIsTimestamp()) {
                 try {
                     edge.addTimestamp(timestamp);
                 } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timestamp_parseerror", id), Issue.Level.SEVERE));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timestamp_parseerror", edge), Issue.Level.SEVERE));
                 }
             } else if (!timestamps.isEmpty() && checkTimerepresentationIsTimestamp()) {
                 try {
                     edge.addTimestamps(timestamps);
                 } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timestamps_parseerror", id), Issue.Level.SEVERE));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timestamps_parseerror", edge), Issue.Level.SEVERE));
                 }
             }
         }

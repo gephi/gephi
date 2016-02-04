@@ -41,8 +41,10 @@
  */
 package org.gephi.graph;
 
+import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
@@ -78,7 +80,9 @@ public class GraphControllerImpl implements GraphController {
     }
 
     private GraphModel newGraphModel(Workspace workspace) {
-        GraphModel graphModelImpl = GraphModel.Factory.newInstance();
+        Configuration config = new Configuration();
+        config.setTimeRepresentation(TimeRepresentation.INTERVAL);
+        GraphModel graphModelImpl = GraphModel.Factory.newInstance(config);
         workspace.add(graphModelImpl);
         return graphModelImpl;
     }

@@ -107,7 +107,9 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     protected float[] cameraTarget;
     protected double[] draggingMarker = new double[2];//The drag mesure for a moving of 1 to the viewport
     protected Vec3f cameraVector = new Vec3f();
-    protected MouseAdapter graphMouseAdapter;
+    protected MouseAdapter graphMouseAdapterNewt;
+    protected java.awt.event.MouseAdapter graphMouseAdapterCanvas;
+    protected GraphMouseAdapter graphMouseAdapter;
 
     public GLAbstractListener() {
         this.vizController = VizController.getInstance();
@@ -128,51 +130,37 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         cameraTarget = vizController.getVizConfig().getDefaultCameraTarget();
 
         //Mouse events
-        if (window != null && vizController.getVizConfig().isReduceFpsWhenMouseOut()) {
-            final int minVal = vizController.getVizConfig().getReduceFpsWhenMouseOutValue();
-            final int maxVal = 30;
-            graphMouseAdapter = new MouseAdapter() {
-                private float lastTarget = 0.1f;
+        if (vizController.getVizConfig().isReduceFpsWhenMouseOut() || vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
+            graphMouseAdapter = new GraphMouseAdapter();
+            if (window != null) {
+                graphMouseAdapterNewt = new MouseAdapter() {
 
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    if (!scheduler.isAnimating()) {
-                        engine.resumeDisplay();
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        graphMouseAdapter.mouseEntered();
                     }
-                    scheduler.setFps(maxVal);
-                    resetFpsAverage();
-                }
 
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    float fps = getFpsAverage();
-                    float target = (float) (fps / (1. / Math.sqrt(getFpsAverage()) * 10.));
-                    if (fps == 0f) {
-                        target = lastTarget;
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        graphMouseAdapter.mouseExited();
                     }
-                    if (target <= 0.005f) {
-                        engine.pauseDisplay();
-                    } else if (target > minVal) {
-                        target = minVal;
-                    }
-                    lastTarget = target;
-                    scheduler.setFps(target);
-                }
-            };
-            window.addMouseListener(graphMouseAdapter);
-        } else if (window != null && vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
-            graphMouseAdapter = new MouseAdapter() {
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    engine.resumeDisplay();
-                }
+                };
+                window.addMouseListener(graphMouseAdapterNewt);
+            } else {
+                graphMouseAdapterCanvas = new java.awt.event.MouseAdapter() {
 
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    engine.pauseDisplay();
-                }
-            };
-            window.addMouseListener(graphMouseAdapter);
+                    @Override
+                    public void mouseEntered(java.awt.event.MouseEvent e) {
+                        graphMouseAdapter.mouseEntered();
+                    }
+
+                    @Override
+                    public void mouseExited(java.awt.event.MouseEvent e) {
+                        graphMouseAdapter.mouseExited();
+                    }
+                };
+                graphComponent.addMouseListener(graphMouseAdapterCanvas);
+            }
         }
     }
 
@@ -387,14 +375,18 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
             }
 
             resizing = false;
+            
         }
     }
 
     @Override
     public void destroy() {
-        if (graphMouseAdapter != null) {
-            window.removeMouseListener(graphMouseAdapter);
+        if (graphMouseAdapterNewt != null) {
+            window.removeMouseListener(graphMouseAdapterNewt);
+        } else if (graphMouseAdapterCanvas != null) {
+            graphComponent.removeMouseListener(graphMouseAdapterCanvas);
         }
+        graphMouseAdapter = null;
         drawable.destroy();
     }
 
@@ -593,5 +585,44 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     @Override
     public Point getLocationOnScreen() {
         return graphComponent.getLocationOnScreen();
+    }
+
+    private class GraphMouseAdapter {
+
+        final boolean pause = vizController.getVizConfig().isPauseLoopWhenMouseOut();
+        final int minVal = vizController.getVizConfig().getReduceFpsWhenMouseOutValue();
+        final int maxVal = 30;
+        private float lastTarget = 0.1f;
+
+        private void mouseEntered() {
+            if (pause) {
+                engine.resumeDisplay();
+            } else {
+                if (!scheduler.isAnimating()) {
+                    engine.resumeDisplay();
+                }
+                scheduler.setFps(maxVal);
+                resetFpsAverage();
+            }
+        }
+
+        private void mouseExited() {
+            if (pause) {
+                engine.pauseDisplay();
+            } else {
+                float fps = getFpsAverage();
+                float target = (float) (fps / (1. / Math.sqrt(getFpsAverage()) * 10.));
+                if (fps == 0f) {
+                    target = lastTarget;
+                }
+                if (target <= 0.005f) {
+                    engine.pauseDisplay();
+                } else if (target > minVal) {
+                    target = minVal;
+                }
+                lastTarget = target;
+                scheduler.setFps(target);
+            }
+        }
     }
 }

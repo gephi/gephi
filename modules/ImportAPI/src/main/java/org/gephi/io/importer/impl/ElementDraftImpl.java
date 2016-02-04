@@ -220,7 +220,11 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void setValue(String key, Object value) {
-        ColumnDraft column = getColumn(key, value.getClass());
+        Class type = value.getClass();
+        if(AttributeUtils.isDynamicType(type)){
+            type = AttributeUtils.getStaticType(type);
+        }
+        ColumnDraft column = getColumn(key, type);
         try {
             setAttributeValue(column, value);
         } catch (Exception ex) {
@@ -376,7 +380,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
         if (intervalEndDateTime == null || intervalEndDateTime.isEmpty() || "inf".equalsIgnoreCase(intervalEndDateTime) || "infinity".equalsIgnoreCase(intervalEndDateTime)) {
             end = Double.POSITIVE_INFINITY;
         } else {
-            end = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(intervalEndDateTime) : AttributeUtils.parseDateTime(intervalStartDateTime);
+            end = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(intervalEndDateTime) : AttributeUtils.parseDateTime(intervalEndDateTime);
         }
         addInterval(start, end);
     }
@@ -438,6 +442,15 @@ public abstract class ElementDraftImpl implements ElementDraft {
         int index = ((ColumnDraftImpl) column).getIndex();
         value = AttributeUtils.standardizeValue(value);
         Class typeClass = column.getTypeClass();
+        
+        if(column.isDynamic()){
+            if(container.getTimeRepresentation() == TimeRepresentation.INTERVAL){
+                typeClass = AttributeUtils.getIntervalMapType(typeClass);
+            } else {
+                typeClass = AttributeUtils.getTimestampMapType(typeClass);
+            }
+        }
+        
         if (!value.getClass().equals(typeClass)) {
             throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");
         }

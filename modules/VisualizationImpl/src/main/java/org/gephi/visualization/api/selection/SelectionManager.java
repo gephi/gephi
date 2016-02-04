@@ -190,11 +190,10 @@ public class SelectionManager implements VizArchitecture {
     }
 
     public void centerOnNode(Node node) {
-//        Model model = node.getNodeData().getModel();
-//        if (model != null) {
-//            VizController.getInstance().getGraphIO().centerOnCoordinate(model.getObj().x(), model.getObj().y(), model.getObj().z() + model.getObj().getSize() * 8);
-//            engine.getScheduler().requireUpdateVisible();
-//        }
+        if (node != null) {
+            VizController.getInstance().getGraphIO().centerOnCoordinate(node.x(), node.y(), node.z() + node.size()* 8);
+            engine.getScheduler().requireUpdateVisible();
+        }
     }
 
     public void setMouseSelectionDiameter(int mouseSelectionDiameter) {

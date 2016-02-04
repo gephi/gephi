@@ -90,8 +90,8 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         columns.addAll(am.getNodeTable().toList());
         columns.addAll(am.getEdgeTable().toList());
         for (Column c : columns) {
-            if (!c.isProperty() && !c.isArray()) {
-                if (c.getTypeClass().equals(String.class) || c.getTypeClass().equals(TimestampStringMap.class) || c.getTypeClass().equals(IntervalStringMap.class)) {
+            if (!c.isProperty()) {
+                if (c.getTypeClass().equals(String.class) || c.getTypeClass().equals(TimestampStringMap.class) || c.getTypeClass().equals(IntervalStringMap.class) || c.isArray()) {
                     EqualStringFilterBuilder b = new EqualStringFilterBuilder(c);
                     builders.add(b);
                 } else if (AttributeUtils.isNumberType(c.getTypeClass())) {
@@ -155,11 +155,14 @@ public class AttributeEqualBuilder implements CategoryBuilder {
             if (pattern == null) {
                 return true;
             }
-            String val = (String) element.getAttribute(column, graph.getView());
-            if (val != null && useRegex) {
-                return regex.matcher(val).matches();
-            } else if (val != null) {
-                return pattern.equals(val);
+            Object val = element.getAttribute(column, graph.getView());
+            if (val != null) {
+                String valString = column.isArray() ? AttributeUtils.printArray(val) : val.toString();
+                if (useRegex) {
+                    return regex.matcher(valString).matches();
+                } else {
+                    return pattern.equals(valString);
+                }
             }
             return false;
         }

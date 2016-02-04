@@ -194,7 +194,6 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
                 inited = true;
             }
 
-            g2.clearRect(0, 0, width, height);
             g2.setTransform(new AffineTransform());
 
             background = m.getProperties()

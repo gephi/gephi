@@ -95,6 +95,9 @@ public abstract class FunctionImpl implements Function {
             ((SimpleTransformer) transformer).transform(element);
         } else if (isRanking()) {
             Number val = ranking.getValue(element, graph);
+            if (val == null) {
+                throw new NullPointerException("The element with id '" + element.getId() + "' has a null value for ranking");
+            }
             ((RankingTransformer) transformer).transform(element, ranking, interpolator, val);
         } else if (isPartition()) {
             Object val = partition.getValue(element, graph);

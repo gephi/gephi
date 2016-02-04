@@ -84,6 +84,9 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
      */
     public CreateTimeIntervalUI() {
         initComponents();
+        
+        defaultStartDatePicker.setFormats("yyyy-MM-dd");
+        defaultEndDatePicker.setFormats("yyyy-MM-dd");
 
         //Add some common date formats to choose:
         dateFormatComboBox.addItem("yyyy-MM-dd");

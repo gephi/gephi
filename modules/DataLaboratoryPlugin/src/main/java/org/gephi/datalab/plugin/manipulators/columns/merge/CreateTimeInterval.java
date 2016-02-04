@@ -49,13 +49,15 @@ import org.gephi.datalab.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.datalab.plugin.manipulators.columns.merge.ui.CreateTimeIntervalUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.columns.merge.AttributeColumnsMergeStrategy;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.TimeRepresentation;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- * AttributeColumnsMergeStrategy for 1 or 2 columns that uses the column values as dates or numbers for start/end times
- * to create or fill the TimeInterval column for each row.
+ * AttributeColumnsMergeStrategy for 1 or 2 columns that uses the column values as dates or numbers for start/end times to create or fill the TimeInterval column for each row.
+ *
  * @author Eduardo Ramos
  */
 public class CreateTimeInterval implements AttributeColumnsMergeStrategy {
@@ -63,7 +65,7 @@ public class CreateTimeInterval implements AttributeColumnsMergeStrategy {
     private Table table;
     private Column[] columns;
     private Column startColumn, endColumn;
-    private boolean parseNumbers=true;
+    private boolean parseNumbers = true;
     //Number mode:
     private double startNumber, endNumber;
     //Date mode:
@@ -78,10 +80,10 @@ public class CreateTimeInterval implements AttributeColumnsMergeStrategy {
 
     @Override
     public void execute() {
-        AttributeColumnsMergeStrategiesController ac=Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class);
-        if(parseNumbers){
+        AttributeColumnsMergeStrategiesController ac = Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class);
+        if (parseNumbers) {
             ac.mergeNumericColumnsToTimeInterval(table, startColumn, endColumn, startNumber, endNumber);
-        }else{
+        } else {
             ac.mergeDateColumnsToTimeInterval(table, startColumn, endColumn, dateFormat, startDate, endDate);
         }
     }
@@ -98,6 +100,11 @@ public class CreateTimeInterval implements AttributeColumnsMergeStrategy {
 
     @Override
     public boolean canExecute() {
+        TimeRepresentation timeRepresentation = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getConfiguration().getTimeRepresentation();
+        if (timeRepresentation != TimeRepresentation.INTERVAL) {
+            return false;
+        }
+
         return columns.length == 1 || columns.length == 2;
     }
 

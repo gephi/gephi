@@ -152,6 +152,14 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     @Override
+    public Query createQuery(Filter filter) {
+        if (filter instanceof Operator) {
+            return new OperatorQueryImpl((Operator) filter);
+        }
+        return new FilterQueryImpl(null, filter);
+    }
+
+    @Override
     public void add(Query query) {
         AbstractQueryImpl absQuery = ((AbstractQueryImpl) query);
         absQuery = absQuery.getRoot();
