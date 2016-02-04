@@ -143,4 +143,23 @@ public class EdgeDraftImpl extends ElementDraftImpl implements EdgeDraft {
     public Iterable<ColumnDraft> getColumns() {
         return container.getEdgeColumns();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(source.getId());
+        sb.append(" -> ");
+        sb.append(target.getId());
+        
+        sb.append(" (id = ");
+        sb.append(id);
+        
+        if(type != null && !type.toString().isEmpty()){
+            sb.append("; type = ");
+            sb.append(type);
+        }
+        sb.append(")");
+        
+        return sb.toString();
+    }
 }
