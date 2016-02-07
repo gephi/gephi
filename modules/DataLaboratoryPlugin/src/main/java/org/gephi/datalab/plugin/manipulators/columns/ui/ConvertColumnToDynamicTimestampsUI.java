@@ -60,18 +60,16 @@ import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
 /**
- * UI for ConvertColumnToDynamic AttributeColumnsManipulator and for <b>Intervals</b>
+ * UI for ConvertColumnToDynamic AttributeColumnsManipulator and for <b>Timestamps</b>
  *
  * @author Eduardo Ramos
  */
-public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
+public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
     
-    private static final String INTERVAL_START_PREFERENCE = "ConvertColumnToDynamicUI.intervalStart";
-    private static final String INTERVAL_END_PREFERENCE = "ConvertColumnToDynamicUI.intervalEnd";
-    private static final String REPLACE_COLUMN_PREFERENCE = "ConvertColumnToDynamicUI.replaceColumn";
+    private static final String TIMESTAMP_PREFERENCE = "ConvertColumnToDynamicTimestampsUI.intervalStart";
+    private static final String REPLACE_COLUMN_PREFERENCE = "ConvertColumnToDynamicTimestampsUI.replaceColumn";
     
-    private static final String DEFAULT_INTERVAL_START = "-Infinity";
-    private static final String DEFAULT_INTERVAL_END = "Infinity";
+    private static final String DEFAULT_TIMESTAMP = "0";
 
     private ConvertColumnToDynamic manipulator;
     private Table table;
@@ -81,12 +79,11 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
     /**
      * Creates new form DuplicateColumnUI
      */
-    public ConvertColumnToDynamicUI() {
+    public ConvertColumnToDynamicTimestampsUI() {
         initComponents();
 
-        intervalStartText.setText(NbPreferences.forModule(ConvertColumnToDynamicUI.class).get(INTERVAL_START_PREFERENCE, DEFAULT_INTERVAL_START));
-        intervalEndText.setText(NbPreferences.forModule(ConvertColumnToDynamicUI.class).get(INTERVAL_END_PREFERENCE, DEFAULT_INTERVAL_END));
-        replaceColumnCheckbox.setSelected(NbPreferences.forModule(ConvertColumnToDynamicUI.class).getBoolean(REPLACE_COLUMN_PREFERENCE, false));
+        timestampText.setText(NbPreferences.forModule(ConvertColumnToDynamicTimestampsUI.class).get(TIMESTAMP_PREFERENCE, DEFAULT_TIMESTAMP));
+        replaceColumnCheckbox.setSelected(NbPreferences.forModule(ConvertColumnToDynamicTimestampsUI.class).getBoolean(REPLACE_COLUMN_PREFERENCE, false));
     }
 
     private void buildValidationPanel() {
@@ -96,8 +93,7 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
         ValidationGroup group = validationPanel.getValidationGroup();
 
         group.add(titleTextField, new ColumnTitleValidator(table));
-        group.add(intervalStartText, new IntervalBoundValidator());
-        group.add(intervalEndText, new IntervalBoundValidator(intervalStartText));
+        group.add(timestampText, new IntervalBoundValidator());
 
         validationPanel.addChangeListener(new ChangeListener() {
             @Override
@@ -115,27 +111,28 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
 
         buildValidationPanel();
 
-        descriptionLabel.setText(NbBundle.getMessage(ConvertColumnToDynamicUI.class, "ConvertColumnToDynamicUI.descriptionLabel.text", column.getTitle()));
-        titleTextField.setText(NbBundle.getMessage(ConvertColumnToDynamicUI.class, "ConvertColumnToDynamicUI.new.title", column.getTitle()));
+        descriptionLabel.setText(NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicUI.descriptionLabel.text", column.getTitle()));
+        titleTextField.setText(NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicUI.new.title", column.getTitle()));
         
         refreshTitleEnabledState();
     }
 
     @Override
     public void unSetup() {
-        String intervalStart = intervalStartText.getText();
-        String intervalEnd = intervalEndText.getText();
+        String timestampString = timestampText.getText();
         boolean replaceColumn = replaceColumnCheckbox.isSelected();
         
-        NbPreferences.forModule(ConvertColumnToDynamicUI.class).put(INTERVAL_START_PREFERENCE, intervalStart);
-        NbPreferences.forModule(ConvertColumnToDynamicUI.class).put(INTERVAL_END_PREFERENCE, intervalEnd);
-        NbPreferences.forModule(ConvertColumnToDynamicUI.class).putBoolean(REPLACE_COLUMN_PREFERENCE, replaceColumn);
+        NbPreferences.forModule(ConvertColumnToDynamicTimestampsUI.class).put(TIMESTAMP_PREFERENCE, timestampString);
+        NbPreferences.forModule(ConvertColumnToDynamicTimestampsUI.class).putBoolean(REPLACE_COLUMN_PREFERENCE, replaceColumn);
         
         if (!validationPanel.isProblem()) {
             manipulator.setTitle(titleTextField.getText());
             manipulator.setReplaceColumn(replaceColumn);
-            manipulator.setLow(AttributeUtils.parseDateTimeOrTimestamp(intervalStart));
-            manipulator.setHigh(AttributeUtils.parseDateTimeOrTimestamp(intervalEnd));
+            
+            double timestamp = AttributeUtils.parseDateTimeOrTimestamp(timestampString);
+            
+            manipulator.setLow(timestamp);
+            manipulator.setHigh(timestamp);
         }
     }
 
@@ -171,19 +168,17 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
         descriptionLabel = new javax.swing.JLabel();
         replaceColumnCheckbox = new javax.swing.JCheckBox();
         intervalStartLabel = new javax.swing.JLabel();
-        intervalStartText = new javax.swing.JTextField();
-        intervalEndLabel = new javax.swing.JLabel();
-        intervalEndText = new javax.swing.JTextField();
+        timestampText = new javax.swing.JTextField();
 
-        titleLabel.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicUI.class, "ConvertColumnToDynamicUI.titleLabel.text")); // NOI18N
+        titleLabel.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.titleLabel.text")); // NOI18N
 
-        titleTextField.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicUI.class, "ConvertColumnToDynamicUI.titleTextField.text")); // NOI18N
+        titleTextField.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.titleTextField.text")); // NOI18N
 
         descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setText(null);
 
-        replaceColumnCheckbox.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicUI.class, "ConvertColumnToDynamicUI.replaceColumnCheckbox.text")); // NOI18N
-        replaceColumnCheckbox.setToolTipText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicUI.class, "ConvertColumnToDynamicUI.replaceColumnCheckbox.toolTipText")); // NOI18N
+        replaceColumnCheckbox.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.replaceColumnCheckbox.text")); // NOI18N
+        replaceColumnCheckbox.setToolTipText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.replaceColumnCheckbox.toolTipText")); // NOI18N
         replaceColumnCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         replaceColumnCheckbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -191,9 +186,7 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
             }
         });
 
-        intervalStartLabel.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicUI.class, "ConvertColumnToDynamicUI.intervalStartLabel.text")); // NOI18N
-
-        intervalEndLabel.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicUI.class, "ConvertColumnToDynamicUI.intervalEndLabel.text")); // NOI18N
+        intervalStartLabel.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.intervalStartLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -205,18 +198,14 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
                     .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(replaceColumnCheckbox)
-                        .addGap(16, 16, 16)
-                        .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(intervalEndLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(intervalStartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(intervalStartText)
-                            .addComponent(intervalEndText))))
+                        .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(intervalStartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(timestampText)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -225,14 +214,10 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
                 .addContainerGap()
                 .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(intervalStartLabel)
-                    .addComponent(intervalStartText, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(intervalEndLabel)
-                    .addComponent(intervalEndText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                    .addComponent(intervalStartLabel)
+                    .addComponent(timestampText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(titleLabel)
                     .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -244,14 +229,11 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
     private void replaceColumnCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceColumnCheckboxActionPerformed
         refreshTitleEnabledState();
     }//GEN-LAST:event_replaceColumnCheckboxActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JLabel intervalEndLabel;
-    private javax.swing.JTextField intervalEndText;
     private javax.swing.JLabel intervalStartLabel;
-    private javax.swing.JTextField intervalStartText;
     private javax.swing.JCheckBox replaceColumnCheckbox;
+    private javax.swing.JTextField timestampText;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTextField;
     // End of variables declaration//GEN-END:variables

@@ -54,6 +54,7 @@ import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Table;
+import org.gephi.graph.api.TimeRepresentation;
 
 /**
  * <p>This interface defines part of the Data Laboratory API basic actions.</p>
@@ -124,22 +125,24 @@ public interface AttributeColumnsController {
     /**
      * <p>Converts and replaces a table column with a dynamic column preserving original column values.</p>
      * <p>This should be used only in columns where the <code>canConvertColumnToDynamic</code> returns true</p>
-     * <p>The new values have a default interval that uses the low, high, lopen and ropen parameters.</p>
+     * <p>For graphs with {@code INTERVAL} {@link TimeRepresentation}, the new values have a default interval that uses the {@code low} and {@code high} parameters.</p>
+     * <p>For graphs with {@code TIMESTAMP} {@link TimeRepresentation}, the new values have a default timestamp that uses the {@code low} parameter, {@code high} parameter is ignored.</p>
      * @param table Table of the column
      * @param column Column to convert and replace
-     * @param low Low bound for default interval
-     * @param high High bound for default interval
+     * @param low Low bound for default interval or default timestamp
+     * @param high High bound for default interval or ignored for timestamps
      * @return The new column
      */
     Column convertAttributeColumnToDynamic(Table table, Column column, double low, double high);
     
     /**
      * <p>Converts a table column into a new dynamic column preserving original column values. The original column is kept intact</p>
-     * <p>The new values have a default interval that uses the low, high, lopen and ropen parameters.</p>
+     * <p>For graphs with {@code INTERVAL} {@link TimeRepresentation}, the new values have a default interval that uses the {@code low} and {@code high} parameters.</p>
+     * <p>For graphs with {@code TIMESTAMP} {@link TimeRepresentation}, the new values have a default timestamp that uses the {@code low} parameter, {@code high} parameter is ignored.</p>
      * @param table Table of the column
      * @param column Column to convert to dynamic
-     * @param low Low bound for default interval
-     * @param high High bound for default interval
+     * @param low Low bound for default interval or default timestamp
+     * @param high High bound for default interval or ignored for timestamps
      * @param newColumnTitle Title for the new dynamic column
      * @return The new column
      */

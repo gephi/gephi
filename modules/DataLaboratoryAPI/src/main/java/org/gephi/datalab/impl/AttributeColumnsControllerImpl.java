@@ -69,7 +69,9 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.utils.StatisticsUtils;
@@ -156,7 +158,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     private Column convertColumnToDynamic(Table table, Column column, double low, double high, String newColumnTitle) {
         Class oldType = column.getTypeClass();
-        Class<? extends TimestampMap> newType = AttributeUtils.getTimestampMapType(oldType);
+
+        TimeRepresentation timeRepresentation = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getConfiguration().getTimeRepresentation();
+        Class<?> newType;
+        if (timeRepresentation == TimeRepresentation.TIMESTAMP) {
+            newType = AttributeUtils.getTimestampMapType(oldType);
+        } else {
+            newType = AttributeUtils.getIntervalMapType(oldType);
+        }
 
         if (newColumnTitle != null) {
             if (newColumnTitle.equals(column.getTitle())) {
@@ -179,10 +188,18 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             newColumn = table.addColumn(newColumnTitle, newType, column.getOrigin());
         }
 
-        for (int i = 0; i < rows.length; i++) {
-            if (oldValues[i] != null) {
-                rows[i].setAttribute(newColumn, oldValues[i], low);
-                rows[i].setAttribute(newColumn, oldValues[i], high);
+        if (timeRepresentation == TimeRepresentation.TIMESTAMP) {
+            for (int i = 0; i < rows.length; i++) {
+                if (oldValues[i] != null) {
+                    rows[i].setAttribute(newColumn, oldValues[i], low);
+                }
+            }
+        } else {
+            Interval interval = new Interval(low, high);
+            for (int i = 0; i < rows.length; i++) {
+                if (oldValues[i] != null) {
+                    rows[i].setAttribute(newColumn, oldValues[i], interval);
+                }
             }
         }
 
@@ -498,6 +515,15 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     @Override
     public boolean canConvertColumnToDynamic(Column column) {
         if (column.isReadOnly() || AttributeUtils.isDynamicType(column.getTypeClass())) {
+            return false;
+        }
+        
+        try {
+            //Make sure the simple type can actually be part of a dynamic type of intervals/timestamps
+            //For example array types cannot be converted to dynamic
+            AttributeUtils.getIntervalMapType(column.getTypeClass());
+            AttributeUtils.getTimestampMapType(column.getTypeClass());
+        } catch (Exception e) {
             return false;
         }
 

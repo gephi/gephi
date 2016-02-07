@@ -44,6 +44,8 @@ package org.gephi.datalab.utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.TimeRepresentation;
@@ -67,9 +69,11 @@ public class SupportedColumnTypeWrapper implements Comparable<SupportedColumnTyp
 
     @Override
     public String toString() {
-        String name = type.getSimpleName();
-
-        return name;
+        if (AttributeUtils.isArrayType(type)) {
+            return String.format("%s list", type.getComponentType().getSimpleName());
+        } else {
+            return type.getSimpleName();
+        }
     }
 
     public Class<?> getType() {
@@ -142,6 +146,11 @@ public class SupportedColumnTypeWrapper implements Comparable<SupportedColumnTyp
 
         TimeRepresentation timeRepresentation = graphModel.getConfiguration().getTimeRepresentation();
         for (Class<?> type : AttributeUtils.getSupportedTypes()) {
+            if(type.equals(Map.class) || type.equals(List.class) || type.equals(Set.class)){
+                continue;
+                //Not yet supported in Gephi
+            }
+            
             if (AttributeUtils.isStandardizedType(type) && isTypeAvailable(type, timeRepresentation)) {
                 supportedTypesWrappers.add(new SupportedColumnTypeWrapper(type));
             }
