@@ -118,8 +118,10 @@ public class GraphCanvas extends GLAbstractListener {
             // Only used when collapse panel is set visible
             // Workaround for JOGL bug 1274
             Container c = graphComponent.getParent();
-            c.remove(graphComponent);
-            c.add(graphComponent, BorderLayout.CENTER);
+            if (c != null) {
+                c.remove(graphComponent);
+                c.add(graphComponent, BorderLayout.CENTER);
+            }
         }
     }
 
