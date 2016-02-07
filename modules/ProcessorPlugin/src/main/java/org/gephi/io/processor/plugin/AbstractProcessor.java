@@ -108,7 +108,9 @@ public abstract class AbstractProcessor {
         }
         
         if (nodeDraft.getLabel() != null) {
-            node.setLabel(nodeDraft.getLabel());
+            if (node.getLabel() == null || !nodeDraft.isCreatedAuto()) {
+                node.setLabel(nodeDraft.getLabel());
+            }
         }
         
         if (node.getTextProperties() != null) {

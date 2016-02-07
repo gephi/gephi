@@ -125,4 +125,11 @@ public interface NodeDraft extends ElementDraft {
      * @param fixed true if fixed, false otherwise
      */
     public void setFixed(boolean fixed);
+
+    /**
+     * Returns true if this node has been automatically created.
+     *
+     * @return true if automatically created, false otherwise
+     */
+    public boolean isCreatedAuto();
 }

@@ -119,6 +119,7 @@ public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
         return fixed;
     }
 
+    @Override
     public boolean isCreatedAuto() {
         return createdAuto;
     }
