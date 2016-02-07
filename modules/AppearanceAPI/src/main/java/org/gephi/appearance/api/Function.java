@@ -67,9 +67,10 @@ public interface Function {
     /**
      * Returns the transformer associated with this function.
      *
+     * @param <T> transformer class
      * @return transformer
      */
-    public Transformer getTransformer();
+    public <T extends Transformer> T getTransformer();
 
     /**
      * Returns the transformer user interface associated with this function.
