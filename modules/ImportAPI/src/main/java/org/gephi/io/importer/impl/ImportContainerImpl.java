@@ -60,6 +60,8 @@ import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.TimeRepresentation;
+import org.gephi.graph.api.types.TimeMap;
+import org.gephi.graph.api.types.TimeSet;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerLoader;
@@ -814,27 +816,77 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     protected void mergeParallelEdges(EdgeDraftImpl[] sources, EdgeDraftImpl dest) {
-        EdgeWeightMergeStrategy mergeStrategy = parameters.getEdgesMergeStrategy();
-        int count = 1 + sources.length;
-        double sum = dest.getWeight();
-        double min = dest.getWeight();
-        double max = dest.getWeight();
+        Object val = dest.getValue("weight");
+        if (val == null || !(val instanceof TimeMap)) {
+            EdgeWeightMergeStrategy mergeStrategy = parameters.getEdgesMergeStrategy();
+            int count = 1 + sources.length;
+            double sum = dest.getWeight();
+            double min = dest.getWeight();
+            double max = dest.getWeight();
+            for (EdgeDraftImpl edge : sources) {
+                sum += edge.getWeight();
+                min = Math.min(min, edge.getWeight());
+                max = Math.max(max, edge.getWeight());
+            }
+            double result = dest.getWeight();
+            switch (mergeStrategy) {
+                case AVG:
+                    result = sum / count;
+                    break;
+                case MAX:
+                    result = max;
+                    break;
+                case MIN:
+                    result = min;
+                    break;
+                case SUM:
+                    result = sum;
+                    break;
+                default:
+                    break;
+            }
+            dest.setWeight(result);
+        }
+
+        //Add dest to sources for convenience
+        sources = Arrays.copyOf(sources, sources.length + 1);
+        sources[sources.length - 1] = dest;
+
+        //Merge dynamic attributes
+        for (ColumnDraft columnDraft : getEdgeColumns()) {
+            if (columnDraft.isDynamic()) {
+                TimeMap timeMap = null;
+                for (EdgeDraftImpl edge : sources) {
+                    TimeMap t = (TimeMap) edge.getValue(columnDraft.getId());
+                    if (t != null && timeMap == null) {
+                        timeMap = t;
+                    } else if (t != null && timeMap != null) {
+                        for (Object key : t.toKeysArray()) {
+                            timeMap.put(key, t.get(key, null));
+                        }
+                    }
+                }
+                if (timeMap != null) {
+                    dest.setValue(columnDraft.getId(), timeMap);
+                }
+            }
+        }
+
+        //Merge timeset
+        TimeSet timeSet = null;
         for (EdgeDraftImpl edge : sources) {
-            sum += edge.getWeight();
-            min = Math.min(min, edge.getWeight());
-            max = Math.max(max, edge.getWeight());
+            TimeSet t = edge.getTimeSet();
+            if (t != null && timeSet == null) {
+                timeSet = t;
+            } else if (t != null && timeSet != null) {
+                for (Object key : t.toArray()) {
+                    timeSet.add(key);
+                }
+            }
         }
-        double result = dest.getWeight();
-        if (mergeStrategy.equals(EdgeWeightMergeStrategy.AVG)) {
-            result = sum / count;
-        } else if (mergeStrategy.equals(EdgeWeightMergeStrategy.MAX)) {
-            result = max;
-        } else if (mergeStrategy.equals(EdgeWeightMergeStrategy.MIN)) {
-            result = min;
-        } else if (mergeStrategy.equals(EdgeWeightMergeStrategy.SUM)) {
-            result = sum;
+        if (timeSet != null) {
+            dest.timeSet = timeSet;
         }
-        dest.setWeight(result);
     }
 
     protected void mergeDirectedEdges(EdgeDraftImpl source, EdgeDraftImpl dest) {
