@@ -159,13 +159,18 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
             String idString = draftNode.getId();
             Object id = toElementId(elementIdType, idString);
             Node node = graph.getNode(id);
+
+            boolean newNode = false;
             if (node == null) {
                 node = factory.newNode(id);
                 addedNodes++;
+                newNode = true;
             }
             flushToNode(draftNode, node);
 
-            graph.addNode(node);
+            if (newNode) {
+                graph.addNode(node);
+            }
 
             Progress.progress(progressTicket);
         }
@@ -182,6 +187,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
             int edgeType = graphModel.addEdgeType(type);
 
             Edge edge = graph.getEdge(source, target, edgeType);
+            boolean newEdge = false;
             if (edge == null) {
                 switch (container.getEdgeDefault()) {
                     case DIRECTED:
@@ -196,10 +202,13 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
                         break;
                 }
                 addedEdges++;
+                newEdge = true;
             }
             flushToEdge(draftEdge, edge);
 
-            graph.addEdge(edge);
+            if (newEdge) {
+                graph.addEdge(edge);
+            }
 
             Progress.progress(progressTicket);
         }
