@@ -58,7 +58,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import org.gephi.appearance.plugin.RankingElementColorTransformer;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
@@ -126,7 +125,7 @@ public class PaletteManager {
         } else if (colorCount > 300) {
             quality = 2;
         }
-        Color[] cls = PaletteGenerator.generatePalette(colorCount, quality, preset.toArray());
+        Color[] cls = PaletteGenerator.generatePalette(colorCount, quality, preset != null ? preset.toArray() : null);
         return new Palette(cls);
     }
 
