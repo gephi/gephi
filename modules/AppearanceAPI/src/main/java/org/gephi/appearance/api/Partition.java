@@ -117,6 +117,14 @@ public interface Partition {
     public void setColor(Object value, Color color);
 
     /**
+     * Sets the colors for all values. The size of <code>colors</code> must be
+     * equal to <code>size()</code>.
+     *
+     * @param colors colors to set
+     */
+    public void setColors(Color[] colors);
+
+    /**
      * Returns the percentage of elements with the given value.
      *
      * @param value value

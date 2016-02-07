@@ -74,6 +74,18 @@ public abstract class PartitionImpl implements Partition {
         colorMap.put(value, color);
     }
 
+    @Override
+    public void setColors(Color[] colors) {
+        Collection c = getSortedValues();
+        if (c.size() != colors.length) {
+            throw new IllegalArgumentException("The colors size must match the partition size");
+        }
+        int i = 0;
+        for (Object o : c) {
+            setColor(o, colors[i++]);
+        }
+    }
+
     protected abstract void refresh();
 
     @Override
