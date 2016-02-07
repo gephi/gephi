@@ -71,13 +71,10 @@ public class MergeProcessor extends DefaultProcessor implements Processor {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         //Workspace
         if (workspace == null) {
-            workspace = pc.getCurrentWorkspace();
-            if (workspace == null) {
-                //Append mode but no workspace
-                workspace = pc.newWorkspace(pc.getCurrentProject());
-                pc.openWorkspace(workspace);
-            }
+            workspace = pc.newWorkspace(pc.getCurrentProject());
+            pc.openWorkspace(workspace);
         }
+        processConfiguration(containers[0], workspace);
 
         for (ContainerUnloader container : containers) {
             process(container, workspace);
