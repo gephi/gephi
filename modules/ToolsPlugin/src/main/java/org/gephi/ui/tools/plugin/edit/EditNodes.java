@@ -47,6 +47,7 @@ import java.beans.PropertyEditorManager;
 import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.TextProperties;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.ui.tools.plugin.edit.EditWindowUtils.AttributeValueWrapper;
 import org.openide.nodes.AbstractNode;
@@ -58,8 +59,9 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- * PropertySheet that allows to edit one or more nodes. If multiple node edition mode is used at first all values will be shown as blank but will change with the editions and all nodes will be set the
- * values that the user inputs.
+ * PropertySheet that allows to edit one or more nodes. If multiple node edition
+ * mode is used at first all values will be shown as blank but will change with
+ * the editions and all nodes will be set the values that the user inputs.
  *
  * @author Mathieu Bastian
  */
@@ -71,7 +73,8 @@ public class EditNodes extends AbstractNode {
     private final TimeFormat currentTimeFormat = TimeFormat.DOUBLE;
 
     /**
-     * Single node edition mode will always be enabled with this single node constructor
+     * Single node edition mode will always be enabled with this single node
+     * constructor
      *
      * @param node
      */
@@ -83,7 +86,8 @@ public class EditNodes extends AbstractNode {
     }
 
     /**
-     * If the nodes array has more than one element, multiple nodes edition mode will be enabled.
+     * If the nodes array has more than one element, multiple nodes edition mode
+     * will be enabled.
      *
      * @param nodes
      */
@@ -143,14 +147,12 @@ public class EditNodes extends AbstractNode {
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", "setValueAsString");
                     }
-                } else {
-                    //Not editable column, do not provide "set" method:
-                    if (propEditor != null) {//The type can be edited by default:
+                } else //Not editable column, do not provide "set" method:
+                 if (propEditor != null) {//The type can be edited by default:
                         p = new PropertySupport.Reflection(wrap, type, "getValue" + type.getSimpleName(), null);
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", null);
                     }
-                }
                 p.setDisplayName(column.getTitle());
                 p.setName(column.getId());
                 set.put(p);
@@ -193,6 +195,24 @@ public class EditNodes extends AbstractNode {
                 p.setName("color");
                 set.put(p);
 
+                //Label color:
+                p = new PropertySupport.Reflection(nodesWrapper, Color.class, "getLabelsColor", "setLabelsColor");
+                p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.label.color.text"));
+                p.setName("labelcolor");
+                set.put(p);
+
+                //Label size:
+                p = new PropertySupport.Reflection(nodesWrapper, Float.class, "getLabelsSize", "setLabelsSize");
+                p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.label.size.text"));
+                p.setName("labelsize");
+                set.put(p);
+
+                //Label visible:
+                p = new PropertySupport.Reflection(nodesWrapper, Boolean.class, "getLabelsVisible", "setLabelsVisible");
+                p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.label.visible.text"));
+                p.setName("labelvisible");
+                set.put(p);
+
                 return set;
             } else {
                 Node node = nodes[0];
@@ -217,6 +237,26 @@ public class EditNodes extends AbstractNode {
                 p = new PropertySupport.Reflection(nodeWrapper, Color.class, "getNodeColor", "setNodeColor");
                 p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.color.text"));
                 p.setName("color");
+                set.put(p);
+
+                TextProperties textProperties = node.getTextProperties();
+
+                //Label size:
+                p = new PropertySupport.Reflection(textProperties, Float.TYPE, "getSize", "setSize");
+                p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.label.size.text"));
+                p.setName("labelsize");
+                set.put(p);
+
+                //Label color:
+                p = new PropertySupport.Reflection(nodeWrapper, Color.class, "getLabelColor", "setLabelColor");
+                p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.label.color.text"));
+                p.setName("labelcolor");
+                set.put(p);
+
+                //Label visible:
+                p = new PropertySupport.Reflection(textProperties, Boolean.TYPE, "isVisible", "setVisible");
+                p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.label.visible.text"));
+                p.setName("labelvisible");
                 set.put(p);
 
                 return set;
@@ -247,6 +287,22 @@ public class EditNodes extends AbstractNode {
                 node.setAlpha(c.getAlpha() / 255f);
             }
         }
+
+        public Color getLabelColor() {
+            TextProperties textProps = node.getTextProperties();
+            if (textProps.getAlpha() == 0) {
+                return null;//Not specific color for label
+            }
+
+            return textProps.getColor();
+        }
+
+        public void setLabelColor(Color c) {
+            if (c != null) {
+                TextProperties textProps = node.getTextProperties();
+                textProps.setColor(c);
+            }
+        }
     }
 
     public class MultipleNodesPropertiesWrapper {
@@ -262,6 +318,9 @@ public class EditNodes extends AbstractNode {
         private Float nodesZ = null;
         private Float nodesSize = null;
         private Color nodesColor = null;
+        private Color labelsColor = null;
+        private Float labelsSize = null;
+        private Boolean labelsVisible = null;
 
         public Float getNodesX() {
             return nodesX;
@@ -322,10 +381,52 @@ public class EditNodes extends AbstractNode {
                 node.setSize(size);
             }
         }
+
+        public Color getLabelsColor() {
+            return labelsColor;
+        }
+
+        public void setLabelsColor(Color c) {
+            if (c != null) {
+                labelsColor = c;
+                for (Node node : nodes) {
+                    TextProperties textProps = node.getTextProperties();
+                    textProps.setR(c.getRed() / 255f);
+                    textProps.setG(c.getGreen() / 255f);
+                    textProps.setB(c.getBlue() / 255f);
+                    textProps.setAlpha(c.getAlpha() / 255f);
+                }
+            }
+        }
+
+        public Float getLabelsSize() {
+            return labelsSize;
+        }
+
+        public void setLabelsSize(Float size) {
+            labelsSize = size;
+            for (Node node : nodes) {
+                TextProperties textProps = node.getTextProperties();
+                textProps.setSize(size);
+            }
+        }
+
+        public Boolean getLabelsVisible() {
+            return labelsVisible;
+        }
+
+        public void setLabelsVisible(Boolean visible) {
+            labelsVisible = visible;
+            for (Node node : nodes) {
+                TextProperties textProps = node.getTextProperties();
+                textProps.setVisible(visible);
+            }
+        }
     }
 
     /**
-     * Used to build property for each position coordinate (x,y,z) in the same way.
+     * Used to build property for each position coordinate (x,y,z) in the same
+     * way.
      *
      * @return Property for that coordinate
      */
@@ -338,7 +439,8 @@ public class EditNodes extends AbstractNode {
     }
 
     /**
-     * Used to build property for each position coordinate of various nodes (x,y,z) in the same way.
+     * Used to build property for each position coordinate of various nodes
+     * (x,y,z) in the same way.
      *
      * @return Property for that coordinate
      */

@@ -47,6 +47,7 @@ import java.beans.PropertyEditorManager;
 import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.TextProperties;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.ui.tools.plugin.edit.EditWindowUtils.*;
 import org.openide.nodes.AbstractNode;
@@ -58,9 +59,10 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- * PropertySheet that allows to edit one or more edges.
- * If multiple node edition mode is used at first all values will be shown as blank
- * but will change with the editions and all edges will be set the values that the user inputs.
+ * PropertySheet that allows to edit one or more edges. If multiple node edition
+ * mode is used at first all values will be shown as blank but will change with
+ * the editions and all edges will be set the values that the user inputs.
+ *
  * @author Mathieu Bastian
  */
 public class EditEdges extends AbstractNode {
@@ -68,10 +70,12 @@ public class EditEdges extends AbstractNode {
     private PropertySet[] propertySets;
     private final Edge[] edges;
     private final boolean multipleEdges;
-    private TimeFormat currentTimeFormat=TimeFormat.DOUBLE;
+    private TimeFormat currentTimeFormat = TimeFormat.DOUBLE;
 
     /**
-     * Single edge edition mode will always be enabled with this single node constructor
+     * Single edge edition mode will always be enabled with this single node
+     * constructor
+     *
      * @param edge
      */
     public EditEdges(Edge edge) {
@@ -82,7 +86,9 @@ public class EditEdges extends AbstractNode {
     }
 
     /**
-     * If the edges array has more than one element, multiple edges edition mode will be enabled.
+     * If the edges array has more than one element, multiple edges edition mode
+     * will be enabled.
+     *
      * @param edges
      */
     public EditEdges(Edge[] edges) {
@@ -104,6 +110,7 @@ public class EditEdges extends AbstractNode {
 
     /**
      * Prepare set of attributes of the edges.
+     *
      * @return Set of these attributes
      */
     private Sheet.Set prepareEdgesAttributes() {
@@ -121,13 +128,13 @@ public class EditEdges extends AbstractNode {
                 set.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.attributes.text", edges[0].getLabel()));
             }
 
-            Edge row =edges[0];
+            Edge row = edges[0];
             AttributeValueWrapper wrap;
             for (Column column : row.getAttributeColumns()) {
                 if (multipleEdges) {
-                    wrap = new MultipleRowsAttributeValueWrapper(edges, column,currentTimeFormat);
+                    wrap = new MultipleRowsAttributeValueWrapper(edges, column, currentTimeFormat);
                 } else {
-                    wrap = new SingleRowAttributeValueWrapper(edges[0], column,currentTimeFormat);
+                    wrap = new SingleRowAttributeValueWrapper(edges[0], column, currentTimeFormat);
                 }
                 Class<?> type = column.getTypeClass();
                 Property p;
@@ -139,14 +146,12 @@ public class EditEdges extends AbstractNode {
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", "setValueAsString");
                     }
-                } else {
-                    //Not editable column, do not provide "set" method:
-                    if (propEditor != null) {//The type can be edited by default:
+                } else //Not editable column, do not provide "set" method:
+                 if (propEditor != null) {//The type can be edited by default:
                         p = new PropertySupport.Reflection(wrap, type, "getValue" + type.getSimpleName(), null);
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", null);
                     }
-                }
                 p.setDisplayName(column.getTitle());
                 p.setName(column.getId());
                 set.put(p);
@@ -160,6 +165,7 @@ public class EditEdges extends AbstractNode {
 
     /**
      * Prepare set of editable properties of the node(s): size, position.
+     *
      * @return Set of these properties
      */
     private Sheet.Set prepareEdgesProperties() {
@@ -178,6 +184,24 @@ public class EditEdges extends AbstractNode {
                 p.setName("color");
                 set.put(p);
 
+                //Label color:
+                p = new PropertySupport.Reflection(edgesWrapper, Color.class, "getLabelsColor", "setLabelsColor");
+                p.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.label.color.text"));
+                p.setName("labelcolor");
+                set.put(p);
+
+                //Label size:
+                p = new PropertySupport.Reflection(edgesWrapper, Float.class, "getLabelsSize", "setLabelsSize");
+                p.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.label.size.text"));
+                p.setName("labelsize");
+                set.put(p);
+
+                //Label visible:
+                p = new PropertySupport.Reflection(edgesWrapper, Boolean.class, "getLabelsVisible", "setLabelsVisible");
+                p.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.label.visible.text"));
+                p.setName("labelvisible");
+                set.put(p);
+
                 return set;
             } else {
                 Edge edge = edges[0];
@@ -192,6 +216,26 @@ public class EditEdges extends AbstractNode {
                 p = new PropertySupport.Reflection(edgeWrapper, Color.class, "getEdgeColor", "setEdgeColor");
                 p.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.color.text"));
                 p.setName("color");
+                set.put(p);
+
+                TextProperties textProperties = edge.getTextProperties();
+
+                //Label size:
+                p = new PropertySupport.Reflection(textProperties, Float.TYPE, "getSize", "setSize");
+                p.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.label.size.text"));
+                p.setName("labelsize");
+                set.put(p);
+
+                //Label color:
+                p = new PropertySupport.Reflection(edgeWrapper, Color.class, "getLabelColor", "setLabelColor");
+                p.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.label.color.text"));
+                p.setName("labelcolor");
+                set.put(p);
+
+                //Label visible:
+                p = new PropertySupport.Reflection(textProperties, Boolean.TYPE, "isVisible", "setVisible");
+                p.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.label.visible.text"));
+                p.setName("labelvisible");
                 set.put(p);
 
                 return set;
@@ -211,7 +255,7 @@ public class EditEdges extends AbstractNode {
         }
 
         public Color getEdgeColor() {
-            if(edge.r()<0||edge.g()<0||edge.b()<0||edge.alpha()<0){
+            if (edge.alpha() == 0) {
                 return null;//Not specific color for edge
             }
 
@@ -226,9 +270,26 @@ public class EditEdges extends AbstractNode {
                 edge.setAlpha(c.getAlpha() / 255f);
             }
         }
+
+        public Color getLabelColor() {
+            TextProperties textProps = edge.getTextProperties();
+            if (textProps.getAlpha() == 0) {
+                return null;//Not specific color for label
+            }
+
+            return textProps.getColor();
+        }
+
+        public void setLabelColor(Color c) {
+            if (c != null) {
+                TextProperties textProps = edge.getTextProperties();
+                textProps.setColor(c);
+            }
+        }
     }
-    
+
     public class MultipleEdgesPropertiesWrapper {
+
         Edge[] edges;
 
         public MultipleEdgesPropertiesWrapper(Edge[] Edges) {
@@ -236,6 +297,9 @@ public class EditEdges extends AbstractNode {
         }
         //Methods and fields for multiple edges editing:
         private Color edgesColor = null;
+        private Color labelsColor = null;
+        private Float labelsSize = null;
+        private Boolean labelsVisible = null;
 
         public Color getEdgesColor() {
             return edgesColor;
@@ -250,6 +314,47 @@ public class EditEdges extends AbstractNode {
                     edge.setB(c.getBlue() / 255f);
                     edge.setAlpha(c.getAlpha() / 255f);
                 }
+            }
+        }
+
+        public Color getLabelsColor() {
+            return labelsColor;
+        }
+
+        public void setLabelsColor(Color c) {
+            if (c != null) {
+                labelsColor = c;
+                for (Edge edge : edges) {
+                    TextProperties textProps = edge.getTextProperties();
+                    textProps.setR(c.getRed() / 255f);
+                    textProps.setG(c.getGreen() / 255f);
+                    textProps.setB(c.getBlue() / 255f);
+                    textProps.setAlpha(c.getAlpha() / 255f);
+                }
+            }
+        }
+
+        public Float getLabelsSize() {
+            return labelsSize;
+        }
+
+        public void setLabelsSize(Float size) {
+            labelsSize = size;
+            for (Edge edge : edges) {
+                TextProperties textProps = edge.getTextProperties();
+                textProps.setSize(size);
+            }
+        }
+
+        public Boolean getLabelsVisible() {
+            return labelsVisible;
+        }
+
+        public void setLabelsVisible(Boolean visible) {
+            labelsVisible = visible;
+            for (Edge edge : edges) {
+                TextProperties textProps = edge.getTextProperties();
+                textProps.setVisible(visible);
             }
         }
     }
