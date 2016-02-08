@@ -383,7 +383,7 @@ public class AppearanceUIController {
         public GraphChangeObserver(Graph graph, Column column) {
             timer = new Timer("GraphChangeObserver", true);
             graphObserver = graph.getModel().createGraphObserver(graph, false);
-            columnObserver = column != null ? column.createColumnObserver() : null;
+            columnObserver = column != null ? column.createColumnObserver(false) : null;
         }
 
         @Override
