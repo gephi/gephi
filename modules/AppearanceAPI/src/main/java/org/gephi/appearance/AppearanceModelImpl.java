@@ -536,7 +536,7 @@ public class AppearanceModelImpl implements AppearanceModel {
             Set<Column> toRefreshColumns = new HashSet<Column>(forcedColumnsRefresh);
             for (Column column : columns) {
                 if (!columnObservers.containsKey(column)) {
-                    columnObservers.put(column, column.createColumnObserver());
+                    columnObservers.put(column, column.createColumnObserver(false));
                     toRefreshColumns.add(column);
                 } else if (columnObservers.get(column).hasColumnChanged() || graphHasChanged) {
                     toRefreshColumns.add(column);

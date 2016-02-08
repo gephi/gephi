@@ -41,7 +41,6 @@
  */
 package org.gephi.ui.utils;
 
-import java.text.ParseException;
 import javax.swing.text.JTextComponent;
 import org.gephi.graph.api.AttributeUtils;
 import org.netbeans.validation.api.Problems;
@@ -49,14 +48,15 @@ import org.netbeans.validation.api.Validator;
 import org.openide.util.NbBundle;
 
 /**
- * Utils class to validate a string that contains a valid title for a column of
- * a
- * <code>AttributeTable</code>.
+ * Utils class to validate a single timestamp/datetime or an interval of a start and end timestamp/datetime.
  *
  * @author Eduardo Ramos
  */
 public class IntervalBoundValidator implements Validator<String> {
 
+    /**
+     * If not null, interval start <= end is also validated.
+     */
     private JTextComponent intervalStartTextField = null;
 
     public IntervalBoundValidator() {
@@ -69,11 +69,11 @@ public class IntervalBoundValidator implements Validator<String> {
     @Override
     public boolean validate(Problems prblms, String componentName, String value) {
         try {
-            double time = AttributeUtils.parseDateTime(value);
+            double time = AttributeUtils.parseDateTimeOrTimestamp(value);
             if (intervalStartTextField != null) {
                 //Also validate that this (end time) is greater or equal than start time.
                 try {
-                    double startTime = AttributeUtils.parseDateTime(intervalStartTextField.getText());
+                    double startTime = AttributeUtils.parseDateTimeOrTimestamp(intervalStartTextField.getText());
                     if (time < startTime) {
                         prblms.add(NbBundle.getMessage(IntervalBoundValidator.class, "IntervalBoundValidator.invalid.interval.message"));
                         return false;

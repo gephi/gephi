@@ -63,6 +63,7 @@ import org.gephi.desktop.datalab.utils.IntervalMapRenderer;
 import org.gephi.desktop.datalab.utils.TimestampMapRenderer;
 import org.gephi.desktop.datalab.utils.SparkLinesRenderer;
 import org.gephi.desktop.datalab.utils.IntervalSetRenderer;
+import org.gephi.desktop.datalab.utils.TimestampSetRenderer;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.GraphModel;
@@ -71,6 +72,7 @@ import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.graph.api.types.TimestampMap;
+import org.gephi.graph.api.types.TimestampSet;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.joda.time.DateTimeZone;
@@ -91,6 +93,7 @@ public abstract class AbstractElementsDataTable<T extends Element> {
     protected Column[] showingColumns = null;
     protected ElementsDataTableModel<T> model;
     private final IntervalSetRenderer intervalSetRenderer;
+    private final TimestampSetRenderer timestampSetRenderer;
     private final IntervalMapRenderer intervalMapRenderer;
     private final TimestampMapRenderer timestampMapRenderer;
     private final List<AttributeTypesSupportCellEditor> cellEditors = new ArrayList<AttributeTypesSupportCellEditor>();
@@ -108,6 +111,7 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         table.setAutoCreateRowSorter(true);
         sparkLinesRenderers = new ArrayList<SparkLinesRenderer>();
         intervalSetRenderer = new IntervalSetRenderer();
+        timestampSetRenderer = new TimestampSetRenderer();
         intervalMapRenderer = new IntervalMapRenderer();
         timestampMapRenderer = new TimestampMapRenderer();
 
@@ -134,6 +138,9 @@ public abstract class AbstractElementsDataTable<T extends Element> {
             TableCellRenderer typeRenderer = null;
             if (typeClass.equals(IntervalSet.class)) {
                 typeRenderer = intervalSetRenderer;
+            }
+            if (typeClass.equals(TimestampSet.class)) {
+                typeRenderer = timestampSetRenderer;
             }
 
             boolean isNumberType = AttributeUtils.isNumberType(typeClass);
@@ -217,25 +224,8 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         Interval timeBounds = graphModel.getTimeBounds();
         double min = timeBounds != null ? timeBounds.getLow() : Double.NEGATIVE_INFINITY;
         double max = timeBounds != null ? timeBounds.getHigh() : Double.POSITIVE_INFINITY;
-        TimeFormat currentTimeFormat = graphModel.getTimeFormat();
-        DateTimeZone currentTimeZone = graphModel.getTimeZone();
 
-        for (SparkLinesRenderer sparkLinesRenderer : sparkLinesRenderers) {
-            sparkLinesRenderer.setTimeFormat(currentTimeFormat);
-            sparkLinesRenderer.setTimeZone(currentTimeZone);
-        }
-
-        intervalSetRenderer.setTimeFormat(currentTimeFormat);
-        intervalSetRenderer.setTimeZone(currentTimeZone);
-        intervalSetRenderer.setMinMax(min, max);
-        intervalMapRenderer.setTimeFormat(currentTimeFormat);
-        intervalMapRenderer.setTimeZone(currentTimeZone);
-        timestampMapRenderer.setTimeZone(currentTimeZone);
-
-        for (AttributeTypesSupportCellEditor cellEditor : cellEditors) {
-            cellEditor.setTimeFormat(currentTimeFormat);
-            cellEditor.setTimeZone(currentTimeZone);
-        }
+        refreshCellRenderersAndEditorsConfiguration(graphModel, min, max);
 
         refreshingTable = true;
         if (selectedElements == null) {
@@ -258,6 +248,35 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         setElementsSelection(selectedElements);//Keep row selection before refreshing.
         selectedElements = null;
         refreshingTable = false;
+    }
+
+    private void refreshCellRenderersAndEditorsConfiguration(GraphModel graphModel, double min, double max) {
+        TimeFormat currentTimeFormat = graphModel.getTimeFormat();
+        DateTimeZone currentTimeZone = graphModel.getTimeZone();
+        
+        for (SparkLinesRenderer sparkLinesRenderer : sparkLinesRenderers) {
+            sparkLinesRenderer.setTimeFormat(currentTimeFormat);
+            sparkLinesRenderer.setTimeZone(currentTimeZone);
+        }
+        
+        
+        intervalSetRenderer.setTimeFormat(currentTimeFormat);
+        intervalSetRenderer.setTimeZone(currentTimeZone);
+        intervalSetRenderer.setMinMax(min, max);
+        
+        timestampSetRenderer.setTimeFormat(currentTimeFormat);
+        timestampSetRenderer.setTimeZone(currentTimeZone);
+        timestampSetRenderer.setMinMax(min, max);
+        
+        intervalMapRenderer.setTimeFormat(currentTimeFormat);
+        intervalMapRenderer.setTimeZone(currentTimeZone);
+        
+        timestampMapRenderer.setTimeZone(currentTimeZone);
+        
+        for (AttributeTypesSupportCellEditor cellEditor : cellEditors) {
+            cellEditor.setTimeFormat(currentTimeFormat);
+            cellEditor.setTimeZone(currentTimeZone);
+        }
     }
 
     public boolean isRefreshingTable() {
@@ -302,22 +321,15 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         return table.getRowCount() > 0;
     }
 
-    public boolean isDrawSparklines() {
-        return sparkLinesRenderers.get(0).isDrawGraphics();
-    }
-
     public void setDrawSparklines(boolean drawSparklines) {
         for (SparkLinesRenderer sparkLinesRenderer : sparkLinesRenderers) {
             sparkLinesRenderer.setDrawGraphics(drawSparklines);
         }
     }
 
-    public boolean isDrawTimeIntervalGraphics() {
-        return intervalSetRenderer.isDrawGraphics();
-    }
-
     public void setDrawTimeIntervalGraphics(boolean drawTimeIntervalGraphics) {
         intervalSetRenderer.setDrawGraphics(drawTimeIntervalGraphics);
+        timestampSetRenderer.setDrawGraphics(drawTimeIntervalGraphics);
     }
 
     public T getElementFromRow(int row) {
