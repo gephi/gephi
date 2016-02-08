@@ -167,7 +167,7 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
         titleTextField = new javax.swing.JTextField();
         descriptionLabel = new javax.swing.JLabel();
         replaceColumnCheckbox = new javax.swing.JCheckBox();
-        intervalStartLabel = new javax.swing.JLabel();
+        timestampLabel = new javax.swing.JLabel();
         timestampText = new javax.swing.JTextField();
 
         titleLabel.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.titleLabel.text")); // NOI18N
@@ -186,7 +186,7 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
             }
         });
 
-        intervalStartLabel.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.intervalStartLabel.text")); // NOI18N
+        timestampLabel.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.timestampLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -203,7 +203,7 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(intervalStartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(timestampLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(timestampText)))
                 .addContainerGap())
@@ -215,7 +215,7 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
                 .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(intervalStartLabel)
+                    .addComponent(timestampLabel)
                     .addComponent(timestampText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -231,8 +231,8 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
     }//GEN-LAST:event_replaceColumnCheckboxActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JLabel intervalStartLabel;
     private javax.swing.JCheckBox replaceColumnCheckbox;
+    private javax.swing.JLabel timestampLabel;
     private javax.swing.JTextField timestampText;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTextField;

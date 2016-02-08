@@ -28,7 +28,7 @@
                       <Component id="titleTextField" pref="177" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
-                      <Component id="intervalStartLabel" min="-2" pref="108" max="-2" attributes="0"/>
+                      <Component id="timestampLabel" min="-2" pref="108" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="timestampText" max="32767" attributes="0"/>
                   </Group>
@@ -44,7 +44,7 @@
               <Component id="descriptionLabel" min="-2" pref="23" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="intervalStartLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="timestampLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="timestampText" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -95,10 +95,10 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="replaceColumnCheckboxActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="intervalStartLabel">
+    <Component class="javax.swing.JLabel" name="timestampLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalab/plugin/manipulators/columns/ui/Bundle.properties" key="ConvertColumnToDynamicTimestampsUI.intervalStartLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalab/plugin/manipulators/columns/ui/Bundle.properties" key="ConvertColumnToDynamicTimestampsUI.timestampLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
