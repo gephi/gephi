@@ -66,6 +66,7 @@ public final class EditToolTopComponent extends TopComponent {
         setName(NbBundle.getMessage(EditToolTopComponent.class, "CTL_EditToolTopComponent"));
 
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
+        ((PropertySheet)propertySheet).setDescriptionAreaVisible(false);
 
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
 
