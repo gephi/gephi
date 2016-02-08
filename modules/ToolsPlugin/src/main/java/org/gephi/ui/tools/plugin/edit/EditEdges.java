@@ -47,9 +47,11 @@ import java.beans.PropertyEditorManager;
 import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.TextProperties;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.ui.tools.plugin.edit.EditWindowUtils.*;
+import org.joda.time.DateTimeZone;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.PropertySupport;
@@ -70,7 +72,8 @@ public class EditEdges extends AbstractNode {
     private PropertySet[] propertySets;
     private final Edge[] edges;
     private final boolean multipleEdges;
-    private TimeFormat currentTimeFormat = TimeFormat.DOUBLE;
+    private final TimeFormat currentTimeFormat;
+    private final DateTimeZone dateTimeZone;
 
     /**
      * Single edge edition mode will always be enabled with this single node
@@ -83,6 +86,10 @@ public class EditEdges extends AbstractNode {
         this.edges = new Edge[]{edge};
         setName(edge.getLabel());
         multipleEdges = false;
+
+        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+        currentTimeFormat = gc.getGraphModel().getTimeFormat();
+        dateTimeZone = gc.getGraphModel().getTimeZone();
     }
 
     /**
@@ -100,6 +107,10 @@ public class EditEdges extends AbstractNode {
         } else {
             setName(edges[0].getLabel());
         }
+
+        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+        currentTimeFormat = gc.getGraphModel().getTimeFormat();
+        dateTimeZone = gc.getGraphModel().getTimeZone();
     }
 
     @Override
@@ -132,9 +143,9 @@ public class EditEdges extends AbstractNode {
             AttributeValueWrapper wrap;
             for (Column column : row.getAttributeColumns()) {
                 if (multipleEdges) {
-                    wrap = new MultipleRowsAttributeValueWrapper(edges, column, currentTimeFormat);
+                    wrap = new MultipleRowsAttributeValueWrapper(edges, column, currentTimeFormat, dateTimeZone);
                 } else {
-                    wrap = new SingleRowAttributeValueWrapper(edges[0], column, currentTimeFormat);
+                    wrap = new SingleRowAttributeValueWrapper(edges[0], column, currentTimeFormat, dateTimeZone);
                 }
                 Class<?> type = column.getTypeClass();
                 Property p;
@@ -147,11 +158,13 @@ public class EditEdges extends AbstractNode {
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", "setValueAsString");
                     }
                 } else //Not editable column, do not provide "set" method:
-                 if (propEditor != null) {//The type can be edited by default:
+                {
+                    if (propEditor != null) {//The type can be edited by default:
                         p = new PropertySupport.Reflection(wrap, type, "getValue" + type.getSimpleName(), null);
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", null);
                     }
+                }
                 p.setDisplayName(column.getTitle());
                 p.setName(column.getId());
                 set.put(p);

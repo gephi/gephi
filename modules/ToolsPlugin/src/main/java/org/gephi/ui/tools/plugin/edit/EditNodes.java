@@ -46,10 +46,12 @@ import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TextProperties;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.ui.tools.plugin.edit.EditWindowUtils.AttributeValueWrapper;
+import org.joda.time.DateTimeZone;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.PropertySupport;
@@ -70,7 +72,8 @@ public class EditNodes extends AbstractNode {
     private PropertySet[] propertySets;
     private final Node[] nodes;
     private final boolean multipleNodes;
-    private final TimeFormat currentTimeFormat = TimeFormat.DOUBLE;
+    private final TimeFormat currentTimeFormat;
+    private final DateTimeZone dateTimeZone;
 
     /**
      * Single node edition mode will always be enabled with this single node
@@ -83,6 +86,10 @@ public class EditNodes extends AbstractNode {
         this.nodes = new Node[]{node};
         setName(node.getLabel());
         multipleNodes = false;
+
+        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+        currentTimeFormat = gc.getGraphModel().getTimeFormat();
+        dateTimeZone = gc.getGraphModel().getTimeZone();
     }
 
     /**
@@ -100,6 +107,9 @@ public class EditNodes extends AbstractNode {
         } else {
             setName(nodes[0].getLabel());
         }
+        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+        currentTimeFormat = gc.getGraphModel().getTimeFormat();
+        dateTimeZone = gc.getGraphModel().getTimeZone();
     }
 
     @Override
@@ -132,9 +142,9 @@ public class EditNodes extends AbstractNode {
             AttributeValueWrapper wrap;
             for (Column column : row.getAttributeColumns()) {
                 if (multipleNodes) {
-                    wrap = new MultipleRowsAttributeValueWrapper(nodes, column, currentTimeFormat);
+                    wrap = new MultipleRowsAttributeValueWrapper(nodes, column, currentTimeFormat, dateTimeZone);
                 } else {
-                    wrap = new SingleRowAttributeValueWrapper(nodes[0], column, currentTimeFormat);
+                    wrap = new SingleRowAttributeValueWrapper(nodes[0], column, currentTimeFormat, dateTimeZone);
                 }
 
                 Property p;

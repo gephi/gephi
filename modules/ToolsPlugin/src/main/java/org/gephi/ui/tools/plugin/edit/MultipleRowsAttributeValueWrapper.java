@@ -46,6 +46,7 @@ import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.ui.tools.plugin.edit.EditWindowUtils.AttributeValueWrapper;
+import org.joda.time.DateTimeZone;
 
 /**
  *
@@ -57,23 +58,19 @@ public class MultipleRowsAttributeValueWrapper implements AttributeValueWrapper 
     private final Column column;
     private Object value;
     private final TimeFormat currentTimeFormat;
+    private final DateTimeZone dateTimeZone;
 
-    public MultipleRowsAttributeValueWrapper(Element [] rows, Column column, TimeFormat currentTimeFormat) {
+    public MultipleRowsAttributeValueWrapper(Element[] rows, Column column, TimeFormat currentTimeFormat, DateTimeZone dateTimeZone) {
         this.rows = rows;
         this.column = column;
         this.currentTimeFormat = currentTimeFormat;
+        this.dateTimeZone = dateTimeZone;
         this.value = null;
     }
 
     private String convertToStringIfNotNull() {
         if (value != null) {
-//            TODO adapt this
-//            if (value instanceof DynamicType) {
-//                return ((DynamicType) value).toString(currentTimeFormat == DynamicModel.TimeFormat.DOUBLE);
-//            } else {
-//                return value.toString();
-//            }
-            return value.toString();
+            return AttributeUtils.print(value, currentTimeFormat, dateTimeZone);
         } else {
             return null;
         }
