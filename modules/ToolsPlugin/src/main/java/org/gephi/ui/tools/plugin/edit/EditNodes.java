@@ -152,7 +152,7 @@ public class EditNodes extends AbstractNode {
                 PropertyEditor propEditor = PropertyEditorManager.findEditor(type);
                 if (ac.canChangeColumnData(column)) {
                     //Editable column, provide "set" method:
-                    if (propEditor != null) {//The type can be edited by default:
+                    if (propEditor != null && !type.isArray()) {//The type can be edited by default:
                         p = new PropertySupport.Reflection(wrap, type, "getValue" + type.getSimpleName(), "setValue" + type.getSimpleName());
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", "setValueAsString");
