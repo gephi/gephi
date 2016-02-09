@@ -124,8 +124,8 @@ public class DynamicNbNodes implements DynamicStatistics {
 
         int count = graph.getNodeCount();
 
-        graph.setAttribute(NB_NODES, count, interval.getLow());
-        graph.setAttribute(NB_NODES, count, interval.getHigh());
+        graphModel.getGraphVisible().setAttribute(NB_NODES, count, interval.getLow());
+        graphModel.getGraphVisible().setAttribute(NB_NODES, count, interval.getHigh());
 
         counts.put(interval.getLow(), count);
         counts.put(interval.getHigh(), count);

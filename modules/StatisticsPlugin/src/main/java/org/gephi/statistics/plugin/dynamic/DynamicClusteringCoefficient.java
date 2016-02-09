@@ -53,6 +53,8 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.TimeRepresentation;
+import org.gephi.graph.api.types.IntervalDoubleMap;
 import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.plugin.ClusteringCoefficient;
@@ -92,7 +94,7 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
 
     public DynamicClusteringCoefficient() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (graphController != null && graphController.getGraphModel()!= null) {
+        if (graphController != null && graphController.getGraphModel() != null) {
             isDirected = graphController.getGraphModel().isDirected();
         }
     }
@@ -105,10 +107,12 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
 
         //Attributes cols
         if (!averageOnly) {
+            TimeRepresentation tr = graphModel.getConfiguration().getTimeRepresentation();
+
             Table nodeTable = graphModel.getNodeTable();
             dynamicCoefficientColumn = nodeTable.getColumn(DYNAMIC_CLUSTERING_COEFFICIENT);
             if (dynamicCoefficientColumn == null) {
-                dynamicCoefficientColumn = nodeTable.addColumn(DYNAMIC_CLUSTERING_COEFFICIENT, NbBundle.getMessage(DynamicClusteringCoefficient.class, "DynamicClusteringCoefficient.nodecolumn.ClusteringCoefficient"), TimestampDoubleMap.class, null);
+                dynamicCoefficientColumn = nodeTable.addColumn(DYNAMIC_CLUSTERING_COEFFICIENT, NbBundle.getMessage(DynamicClusteringCoefficient.class, "DynamicClusteringCoefficient.nodecolumn.ClusteringCoefficient"), tr.equals(TimeRepresentation.INTERVAL) ? IntervalDoubleMap.class : TimestampDoubleMap.class, null);
             }
         }
     }
@@ -161,6 +165,7 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
         } else {
             graph = graphModel.getUndirectedGraph(window);
         }
+        TimeRepresentation tr = graphModel.getConfiguration().getTimeRepresentation();
 
         graph.readLock();
 
@@ -174,10 +179,17 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
             int i = 0;
             for (Node n : graph.getNodes()) {
                 double coef = coefficients[i++];
-                
-                n.setAttribute(dynamicCoefficientColumn, coef, interval.getLow());
-                n.setAttribute(dynamicCoefficientColumn, coef, interval.getHigh());
-                
+
+                switch (tr) {
+                    case INTERVAL:
+                        n.setAttribute(dynamicCoefficientColumn, coef, new Interval(interval.getLow(), interval.getLow() + tick));
+                        break;
+                    case TIMESTAMP:
+                        n.setAttribute(dynamicCoefficientColumn, coef, interval.getLow());
+                        n.setAttribute(dynamicCoefficientColumn, coef, interval.getHigh());
+                        break;
+                }
+
                 if (cancel) {
                     break;
                 }
@@ -188,8 +200,8 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
 
         //Average
         double avg = clusteringCoefficientStat.getAverageClusteringCoefficient();
-        graph.setAttribute(DYNAMIC_AVG_CLUSTERING_COEFFICIENT, avg, interval.getLow());
-        graph.setAttribute(DYNAMIC_AVG_CLUSTERING_COEFFICIENT, avg, interval.getHigh());
+        graphModel.getGraphVisible().setAttribute(DYNAMIC_AVG_CLUSTERING_COEFFICIENT, avg, interval.getLow());
+        graphModel.getGraphVisible().setAttribute(DYNAMIC_AVG_CLUSTERING_COEFFICIENT, avg, interval.getHigh());
 
         averages.put(interval.getLow(), avg);
         averages.put(interval.getHigh(), avg);

@@ -124,8 +124,8 @@ public class DynamicNbEdges implements DynamicStatistics {
 
         int count = graph.getEdgeCount();
         
-        graph.setAttribute(NB_EDGES, count, interval.getLow());
-        graph.setAttribute(NB_EDGES, count, interval.getHigh());
+        graphModel.getGraphVisible().setAttribute(NB_EDGES, count, interval.getLow());
+        graphModel.getGraphVisible().setAttribute(NB_EDGES, count, interval.getHigh());
 
         counts.put(interval.getLow(), count);
         counts.put(interval.getHigh(), count);
