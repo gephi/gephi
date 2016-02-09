@@ -41,7 +41,6 @@
  */
 package org.gephi.visualization.model.edge;
 
-import java.awt.geom.Rectangle2D;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import org.gephi.graph.api.Edge;
@@ -62,6 +61,8 @@ public abstract class EdgeModel implements Model, TextModel {
     //Id
     protected int octantSourceId;
     protected int octantTargetId;
+    //Color
+    protected final float[] color = new float[4];
 
     public EdgeModel(Edge edge) {
         this.edge = edge;
@@ -100,7 +101,7 @@ public abstract class EdgeModel implements Model, TextModel {
 
     @Override
     public boolean hasCustomTextColor() {
-        return edge.getTextProperties().getAlpha()> 0;
+        return edge.getTextProperties().getAlpha() > 0;
     }
 
     @Override
@@ -172,5 +173,9 @@ public abstract class EdgeModel implements Model, TextModel {
 
     public void setOctantTargetId(int octantTargetId) {
         this.octantTargetId = octantTargetId;
+    }
+
+    public float[] getColor() {
+        return color;
     }
 }

@@ -55,7 +55,7 @@ import org.gephi.visualization.text.TextManager.Renderer;
  */
 public class ObjectColorMode implements ColorMode {
 
-    private VizConfig vizConfig;
+    private final VizConfig vizConfig;
 
     public ObjectColorMode() {
         this.vizConfig = VizController.getInstance().getVizConfig();
@@ -76,22 +76,12 @@ public class ObjectColorMode implements ColorMode {
 
     @Override
     public void textEdgeColor(Renderer renderer, EdgeModel edgeModel) {
-        textColor(renderer, edgeModel, edgeModel.isSelected());
+        float[] cl = edgeModel.getColor();
+        renderer.setColor(cl[0], cl[1], cl[2], cl[3]);
     }
 
     protected void textColor(Renderer renderer, TextModel text, boolean selected) {
-        if (text.hasCustomTextColor()) {
-            if (vizConfig.isLightenNonSelected()) {
-                if (!selected) {
-                    float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
-                    renderer.setColor(text.getTextR(), text.getTextG(), text.getTextB(), lightColorFactor);
-                } else {
-                    renderer.setColor(text.getTextR(), text.getTextG(), text.getTextB(), 1);
-                }
-            } else {
-                renderer.setColor(text.getTextR(), text.getTextG(), text.getTextB(), text.getTextAlpha());
-            }
-        } else if (vizConfig.isLightenNonSelected()) {
+        if (vizConfig.isLightenNonSelected()) {
             if (!selected) {
                 float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
                 renderer.setColor(text.getElementProperties().r(), text.getElementProperties().g(), text.getElementProperties().b(), lightColorFactor);

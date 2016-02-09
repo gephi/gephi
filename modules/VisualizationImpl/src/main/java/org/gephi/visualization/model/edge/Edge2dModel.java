@@ -151,8 +151,16 @@ public class Edge2dModel extends EdgeModel {
             if (vizModel.getConfig().isLightenNonSelected()) {
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
                 a = a - (a - 0.01f) * lightColorFactor;
+                color[0] = r;
+                color[1] = g;
+                color[2] = b;
+                color[3] = a;
                 gl.glColor4f(r, g, b, a);
             } else {
+                color[0] = r;
+                color[1] = g;
+                color[2] = b;
+                color[3] = a;
                 gl.glColor4f(r, g, b, a);
             }
         } else {
@@ -192,6 +200,10 @@ public class Edge2dModel extends EdgeModel {
                 g = Math.min(1, 0.5f * g + 0.5f);
                 b = Math.min(1, 0.5f * b + 0.5f);
             }
+            color[0] = r;
+            color[1] = g;
+            color[2] = b;
+            color[3] = 1f;
             gl.glColor4f(r, g, b, 1f);
         }
 
@@ -262,85 +274,7 @@ public class Edge2dModel extends EdgeModel {
         sideVectorY /= norm;
 
         //Color
-        if (!selec) {
-            float r;
-            float g;
-            float b;
-            float a = edge.alpha();
-            if (a == 0f) {
-                if (vizModel.isEdgeHasUniColor()) {
-                    float[] uni = vizModel.getEdgeUniColor();
-                    r = uni[0];
-                    g = uni[1];
-                    b = uni[2];
-                    a = uni[3];
-                } else if (edge.isDirected()) {
-                    Node source = edge.getSource();
-                    r = source.r();
-                    g = source.g();
-                    b = source.b();
-                    a = source.alpha();
-                } else {
-                    Node source = edge.getSource();
-                    Node target = edge.getTarget();
-
-                    r = (source.r() + target.r()) / 2f;
-                    g = (source.g() + target.g()) / 2f;
-                    b = (source.b() + target.b()) / 2f;
-                    a = (source.alpha() + target.alpha()) / 2f;
-                }
-            } else {
-                g = edge.g();
-                b = edge.b();
-                r = edge.r();
-                a = edge.alpha();
-            }
-            if (vizModel.getConfig().isLightenNonSelected()) {
-                float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
-                a = a - (a - 0.01f) * lightColorFactor;
-                gl.glColor4f(r, g, b, a);
-            } else {
-                gl.glColor4f(r, g, b, a);
-            }
-        } else {
-            float r = 0f;
-            float g = 0f;
-            float b = 0f;
-            if (vizModel.isEdgeSelectionColor()) {
-                if (sourceModel.isSelected() && targetModel.isSelected()) {
-                    float[] both = vizModel.getEdgeBothSelectionColor();
-                    r = both[0];
-                    g = both[1];
-                    b = both[2];
-                } else if (sourceModel.isSelected()) {
-                    float[] out = vizModel.getEdgeOutSelectionColor();
-                    r = out[0];
-                    g = out[1];
-                    b = out[2];
-                } else if (targetModel.isSelected()) {
-                    float[] in = vizModel.getEdgeInSelectionColor();
-                    r = in[0];
-                    g = in[1];
-                    b = in[2];
-                }
-            } else {
-                r = edge.r();
-                g = edge.g();
-                b = edge.b();
-
-                if (edge.alpha() == 0f) {
-                    Node node = sourceModel.isSelected() ? edge.getTarget() : edge.getSource();
-                    r = node.r();
-                    g = node.g();
-                    b = node.b();
-                }
-
-                r = Math.min(1, 0.5f * r + 0.5f);
-                g = Math.min(1, 0.5f * g + 0.5f);
-                b = Math.min(1, 0.5f * b + 0.5f);
-            }
-            gl.glColor4f(r, g, b, 1f);
-        }
+        gl.glColor4f(color[0], color[1], color[2], color[3]);
 
         //Draw the triangle
         gl.glVertex2d(baseX + sideVectorX * arrowWidth, baseY + sideVectorY * arrowWidth);

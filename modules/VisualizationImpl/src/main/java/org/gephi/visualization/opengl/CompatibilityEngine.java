@@ -243,7 +243,7 @@ public class CompatibilityEngine extends AbstractEngine {
                     for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
                         EdgeModel obj = itr.next();
                         if (obj.markTime != markTime) {
-                            if (obj.isSelected() || obj.isTextVisible()) {
+                            if ((obj.isSelected() || obj.isAutoSelected()) && obj.isTextVisible()) {
                                 textManager.getEdgeRenderer().drawTextEdge(obj);
                             }
                             obj.markTime = markTime;

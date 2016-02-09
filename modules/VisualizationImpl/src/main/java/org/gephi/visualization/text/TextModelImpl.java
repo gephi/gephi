@@ -93,7 +93,7 @@ public class TextModelImpl {
         nodeColor = vizConfig.getDefaultNodeLabelColor().getRGBComponents(null);
         edgeColor = vizConfig.getDefaultEdgeLabelColor().getRGBComponents(null);
         selectedOnly = vizConfig.isDefaultShowLabelOnSelectedOnly();
-        colorMode = VizController.getInstance().getTextManager().getColorModes()[0];
+        colorMode = VizController.getInstance().getTextManager().getColorModes()[2];
         sizeMode = VizController.getInstance().getTextManager().getSizeModes()[1];
     }
 
@@ -287,10 +287,12 @@ public class TextModelImpl {
                         edgeSizeFac = true;
                     } else if ("colormode".equalsIgnoreCase(name)) {
                         String colorModeClass = reader.getAttributeValue(null, "class");
-                        if (colorModeClass.equals("UniqueColorMode")) {
-                            colorMode = VizController.getInstance().getTextManager().getColorModes()[0];
+                        if (colorModeClass.equals("TextColorMode")) {
+                            colorMode = VizController.getInstance().getTextManager().getColorModes()[2];
                         } else if (colorModeClass.equals("ObjectColorMode")) {
                             colorMode = VizController.getInstance().getTextManager().getColorModes()[1];
+                        } else {
+                            colorMode = VizController.getInstance().getTextManager().getColorModes()[0];
                         }
                     } else if ("sizemode".equalsIgnoreCase(name)) {
                         String sizeModeClass = reader.getAttributeValue(null, "class");
@@ -402,6 +404,8 @@ public class TextModelImpl {
             writer.writeAttribute("class", "UniqueColorMode");
         } else if (colorMode instanceof ObjectColorMode) {
             writer.writeAttribute("class", "ObjectColorMode");
+        } else if (colorMode instanceof TextColorMode) {
+            writer.writeAttribute("class", "TextColorMode");
         }
         writer.writeEndElement();
 

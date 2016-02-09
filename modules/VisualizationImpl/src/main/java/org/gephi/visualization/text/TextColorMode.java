@@ -48,30 +48,29 @@ import org.gephi.visualization.model.TextModel;
 import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.text.TextManager.Renderer;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class UniqueColorMode implements ColorMode {
+public class TextColorMode implements ColorMode {
 
     private final VizConfig vizConfig;
     private float[] color;
 
-    public UniqueColorMode() {
+    public TextColorMode() {
         this.vizConfig = VizController.getInstance().getVizConfig();
     }
 
     @Override
     public void defaultNodeColor(Renderer renderer) {
         color = VizController.getInstance().getVizModel().getTextModel().nodeColor;
-        renderer.setColor(color[0], color[1], color[2], color[3]);
     }
 
     @Override
     public void defaultEdgeColor(Renderer renderer) {
         color = VizController.getInstance().getVizModel().getTextModel().edgeColor;
-        renderer.setColor(color[0], color[1], color[2], color[3]);
     }
 
     @Override
@@ -85,7 +84,18 @@ public class UniqueColorMode implements ColorMode {
     }
 
     public void textColor(Renderer renderer, TextModel text, boolean selected) {
-        if (vizConfig.isLightenNonSelected()) {
+        if (text.hasCustomTextColor()) {
+            if (vizConfig.isLightenNonSelected()) {
+                if (!selected) {
+                    float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
+                    renderer.setColor(text.getTextR(), text.getTextG(), text.getTextB(), lightColorFactor);
+                } else {
+                    renderer.setColor(text.getTextR(), text.getTextG(), text.getTextB(), 1);
+                }
+            } else {
+                renderer.setColor(text.getTextR(), text.getTextG(), text.getTextB(), text.getTextAlpha());
+            }
+        } else if (vizConfig.isLightenNonSelected()) {
             if (!selected) {
                 float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
                 renderer.setColor(color[0], color[1], color[2], lightColorFactor);
@@ -99,12 +109,12 @@ public class UniqueColorMode implements ColorMode {
 
     @Override
     public String getName() {
-        return "Unique";
+        return NbBundle.getMessage(TextColorMode.class, "TextColorMode.name");
     }
 
     @Override
     public ImageIcon getIcon() {
-        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/UniqueColorMode.png"));
+        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/TextColorMode.png"));
     }
 
     @Override

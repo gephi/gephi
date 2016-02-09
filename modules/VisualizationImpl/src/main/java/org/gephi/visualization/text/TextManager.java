@@ -95,9 +95,10 @@ public class TextManager implements VizArchitecture {
         sizeModes[2] = new ProportionalSizeMode();
 
         //ColorMode init
-        colorModes = new ColorMode[2];
+        colorModes = new ColorMode[3];
         colorModes[0] = new UniqueColorMode();
         colorModes[1] = new ObjectColorMode();
+        colorModes[2] = new TextColorMode();
     }
 
     @Override
