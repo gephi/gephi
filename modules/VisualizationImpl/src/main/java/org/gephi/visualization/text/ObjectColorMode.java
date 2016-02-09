@@ -48,6 +48,7 @@ import org.gephi.visualization.model.TextModel;
 import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.text.TextManager.Renderer;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -95,7 +96,7 @@ public class ObjectColorMode implements ColorMode {
 
     @Override
     public String getName() {
-        return "Object";
+        return NbBundle.getMessage(ObjectColorMode.class, "ObjectColorMode.name");
     }
 
     @Override

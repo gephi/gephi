@@ -48,6 +48,7 @@ import org.gephi.visualization.model.TextModel;
 import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.text.TextManager.Renderer;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -99,7 +100,7 @@ public class UniqueColorMode implements ColorMode {
 
     @Override
     public String getName() {
-        return "Unique";
+        return NbBundle.getMessage(UniqueColorMode.class, "UniqueColorMode.name");
     }
 
     @Override

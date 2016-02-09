@@ -43,6 +43,7 @@ package org.gephi.visualization.text;
 
 import javax.swing.ImageIcon;
 import org.gephi.visualization.model.node.NodeModel;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -68,7 +69,7 @@ public class ScaledSizeMode implements SizeMode {
 
     @Override
     public String getName() {
-        return "Scaled";
+        return NbBundle.getMessage(ScaledSizeMode.class, "ScaledSizeMode.name");
     }
 
     @Override
