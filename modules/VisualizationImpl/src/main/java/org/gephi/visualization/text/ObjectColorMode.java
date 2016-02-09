@@ -71,7 +71,7 @@ public class ObjectColorMode implements ColorMode {
 
     @Override
     public void textNodeColor(Renderer renderer, NodeModel nodeModel) {
-        textColor(renderer, nodeModel, nodeModel.isSelected());
+        textColor(renderer, nodeModel, nodeModel.isSelected() || nodeModel.isHighlight());
     }
 
     @Override
