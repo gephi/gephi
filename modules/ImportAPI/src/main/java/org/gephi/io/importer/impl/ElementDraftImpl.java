@@ -221,7 +221,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void setValue(String key, Object value) {
         Class type = value.getClass();
-        if(AttributeUtils.isDynamicType(type)){
+        if (AttributeUtils.isDynamicType(type)) {
             type = AttributeUtils.getStaticType(type);
         }
         ColumnDraft column = getColumn(key, type);
@@ -283,8 +283,16 @@ public abstract class ElementDraftImpl implements ElementDraft {
         Class typeClass;
         if (column.isDynamic()) {
             if (container.getTimeRepresentation().equals(TimeRepresentation.INTERVAL)) {
+                if (container.getInterval() != null) {
+                    parseAndSetValue(key, value, container.getInterval().getLow(), container.getInterval().getHigh());
+                    return;
+                }
                 typeClass = AttributeUtils.getIntervalMapType(column.getTypeClass());
             } else {
+                if (container.getTimestamp() != null) {
+                    parseAndSetValue(key, value, container.getTimestamp());
+                    return;
+                }
                 typeClass = AttributeUtils.getTimestampMapType(column.getTypeClass());
             }
         } else {
@@ -442,15 +450,15 @@ public abstract class ElementDraftImpl implements ElementDraft {
         int index = ((ColumnDraftImpl) column).getIndex();
         value = AttributeUtils.standardizeValue(value);
         Class typeClass = column.getTypeClass();
-        
-        if(column.isDynamic()){
-            if(container.getTimeRepresentation() == TimeRepresentation.INTERVAL){
+
+        if (column.isDynamic()) {
+            if (container.getTimeRepresentation() == TimeRepresentation.INTERVAL) {
                 typeClass = AttributeUtils.getIntervalMapType(typeClass);
             } else {
                 typeClass = AttributeUtils.getTimestampMapType(typeClass);
             }
         }
-        
+
         if (!value.getClass().equals(typeClass)) {
             throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");
         }

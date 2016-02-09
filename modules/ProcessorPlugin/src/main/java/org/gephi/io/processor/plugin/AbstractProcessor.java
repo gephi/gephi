@@ -190,12 +190,6 @@ public abstract class AbstractProcessor {
                         valMap.put(keys[i], vals[i]);
                     }
                     element.setAttribute(col.getId(), valMap);
-                } else if (col.isDynamic() && (elementDraft.getGraphInterval() != null || elementDraft.getGraphTimestamp() != null)) {
-                    if (elementDraft.getGraphTimestamp() != null) {
-                        element.setAttribute(col.getId(), val, elementDraft.getGraphTimestamp());
-                    } else if (elementDraft.getGraphInterval() != null) {
-                        element.setAttribute(col.getId(), val, elementDraft.getGraphInterval());
-                    }
                 } else {
                     element.setAttribute(col.getId(), val);
                 }

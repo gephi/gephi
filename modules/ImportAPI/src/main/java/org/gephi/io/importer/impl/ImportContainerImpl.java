@@ -562,7 +562,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             }
             this.interval = new Interval(start, end);
         } catch (Exception e) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Interval_Parse_Error", timestamp), Level.SEVERE));
+            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Interval_Parse_Error", "["+startDateTime+","+endDateTime+"]"), Level.SEVERE));
             return;
         }
         report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.GraphInterval", "[" + startDateTime + "," + endDateTime + "]"));
