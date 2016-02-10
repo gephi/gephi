@@ -47,6 +47,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -144,7 +145,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             if (ui != null) {
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
                 JPanel panel = ui.getPanel();
-                ui.setup(new FileImporter[]{importer});
+                FileImporter[] fi = (FileImporter[]) Array.newInstance(importer.getClass(), 1);
+                fi[0] = importer;
+                ui.setup(fi);
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
                     ValidationPanel vp = (ValidationPanel) panel;
@@ -225,7 +228,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 ImporterUI ui = entry.getKey();
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
                 JPanel panel = ui.getPanel();
-                ui.setup(entry.getValue().toArray(new FileImporter[0]));
+                FileImporter[] fi = (FileImporter[]) entry.getValue().toArray((FileImporter[]) Array.newInstance(entry.getValue().get(0).getClass(), 0));
+                ui.setup(fi);
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
                     ValidationPanel vp = (ValidationPanel) panel;
@@ -302,7 +306,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             if (ui != null) {
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
                 JPanel panel = ui.getPanel();
-                ui.setup(new FileImporter[]{importer});
+                FileImporter[] fi = (FileImporter[]) Array.newInstance(importer.getClass(), 1);
+                fi[0] = importer;
+                ui.setup(fi);
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
                     ValidationPanel vp = (ValidationPanel) panel;
@@ -361,7 +367,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
             ImporterUI ui = controller.getUI(importer);
             if (ui != null) {
-                ui.setup(new FileImporter[]{importer});
+                FileImporter[] fi = (FileImporter[]) Array.newInstance(importer.getClass(), 1);
+                fi[0] = importer;
+                ui.setup(fi);
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
                 JPanel panel = ui.getPanel();
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
