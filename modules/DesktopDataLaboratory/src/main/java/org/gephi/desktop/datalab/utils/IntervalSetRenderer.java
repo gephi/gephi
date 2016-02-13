@@ -145,20 +145,11 @@ public class IntervalSetRenderer extends DefaultTableCellRenderer {
         return timeIntervalGraphics.getMax();
     }
 
-    public void setMax(double max) {
-        timeIntervalGraphics.setMax(max);
-    }
-
     public double getMin() {
         return timeIntervalGraphics.getMin();
     }
 
-    public void setMin(double min) {
-        timeIntervalGraphics.setMin(min);
-    }
-
     public void setMinMax(double min, double max) {
-        timeIntervalGraphics.setMin(min);
-        timeIntervalGraphics.setMax(max);
+        timeIntervalGraphics.setMinMax(min, max);
     }
 }

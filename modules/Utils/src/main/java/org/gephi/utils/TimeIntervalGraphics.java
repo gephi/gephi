@@ -186,7 +186,6 @@ public class TimeIntervalGraphics {
         g.translate(1, 0);//Start drawing at pixel 1
 
         width -= 2;//Reduce fill area in 2 pixels for the borders
-        double xTickWidth = (double) width / range;
 
         //Draw time interval filled parts:
         if (range == 0) {//No range, Min=Max
@@ -198,6 +197,8 @@ public class TimeIntervalGraphics {
             g.drawLine(-1, 0, -1, height);
             g.drawLine(width, 0, width, height);
         } else {
+            double xTickWidth = (double) width / range;
+            
             int startPixel, endPixel;
             for (int i = 0; i < starts.length; i++) {
                 g.setColor(fill);
@@ -264,5 +265,17 @@ public class TimeIntervalGraphics {
             return max;
         }
         return d;
+    }
+
+    public void setMinMax(double min, double max) {
+        min = normalize(min);
+        max = normalize(max);
+        if (max < min) {
+            throw new IllegalArgumentException("min should be less or equal than max");
+        }
+        this.min = min;
+        this.max = max;
+        
+        calculateRange();
     }
 }

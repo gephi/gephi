@@ -114,7 +114,7 @@ public abstract class AbstractElementsDataTable<T extends Element> {
         timestampSetRenderer = new TimestampSetRenderer();
         intervalMapRenderer = new IntervalMapRenderer();
         timestampMapRenderer = new TimestampMapRenderer();
-
+        
         prepareCellEditors();
         prepareRenderers();
     }
@@ -222,8 +222,8 @@ public abstract class AbstractElementsDataTable<T extends Element> {
     public void refreshModel(T[] elements, Column[] cols, GraphModel graphModel, DataTablesModel dataTablesModel) {
         showingColumns = cols;
         Interval timeBounds = graphModel.getTimeBounds();
-        double min = timeBounds != null ? timeBounds.getLow() : Double.NEGATIVE_INFINITY;
-        double max = timeBounds != null ? timeBounds.getHigh() : Double.POSITIVE_INFINITY;
+        double min = timeBounds != null ? timeBounds.getLow() : 0;
+        double max = timeBounds != null ? timeBounds.getHigh() : 0;
 
         refreshCellRenderersAndEditorsConfiguration(graphModel, min, max);
 
