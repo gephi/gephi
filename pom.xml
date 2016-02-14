@@ -143,8 +143,8 @@
         <gephi.modules.specification.version>0.9.1</gephi.modules.specification.version>
 
         <!-- Java compilation settings -->
-        <gephi.javac.source>1.6</gephi.javac.source>
-        <gephi.javac.target>1.6</gephi.javac.target>
+        <gephi.javac.source>1.7</gephi.javac.source>
+        <gephi.javac.target>1.7</gephi.javac.target>
         <gephi.javac.xlint>-Xlint:all</gephi.javac.xlint>
         <gephi.javac.debug>true</gephi.javac.debug>
         <gephi.javac.optimize>true</gephi.javac.optimize>
