@@ -140,7 +140,7 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
         } else if (isDecimalType) {
             valueStr = DoubleStringConverter.FORMAT.format(value);
         } else {
-            valueStr = value.toString();
+            valueStr = AttributeUtils.print(value, timeFormat, timeZone);
         }
 
         textField.setBorder(originalBorder);

@@ -45,8 +45,11 @@ import javax.swing.Icon;
 import org.gephi.datalab.plugin.manipulators.rows.merge.ui.JoinWithSeparatorUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.TimeFormat;
+import org.joda.time.DateTimeZone;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -86,12 +89,15 @@ public class JoinWithSeparator implements AttributeRowsMergeStrategy {
         Object value;
         StringBuilder sb;
         final int rowsCount = rows.length;
+        
+        TimeFormat timeFormat = column.getTable().getGraph().getModel().getTimeFormat();
+        DateTimeZone timeZone = column.getTable().getGraph().getModel().getTimeZone();
 
         sb = new StringBuilder();
         for (int i = 0; i < rows.length; i++) {
             value = rows[i].getAttribute(column);
             if (value != null) {
-                sb.append(value.toString());
+                sb.append(AttributeUtils.print(value, timeFormat, timeZone));
                 if (i < rowsCount - 1) {
                     sb.append(separator);
                 }

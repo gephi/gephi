@@ -50,10 +50,13 @@ import org.gephi.datalab.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Origin;
 import org.gephi.graph.api.Table;
+import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.utils.StatisticsUtils;
+import org.joda.time.DateTimeZone;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -86,13 +89,17 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         Object value;
         StringBuilder sb;
         final int columnsCount = columnsToMerge.length;
+        
+        GraphModel graphModel = table.getGraph().getModel();
+        TimeFormat timeFormat = graphModel.getTimeFormat();
+        DateTimeZone timeZone = graphModel.getTimeZone();
 
         for (Element row : ac.getTableAttributeRows(table)) {
             sb = new StringBuilder();
             for (int i = 0; i < columnsCount; i++) {
                 value = row.getAttribute(columnsToMerge[i]);
                 if (value != null) {
-                    sb.append(value.toString());
+                    sb.append(AttributeUtils.print(value, timeFormat, timeZone));
                     if (i < columnsCount - 1) {
                         sb.append(separator);
                     }

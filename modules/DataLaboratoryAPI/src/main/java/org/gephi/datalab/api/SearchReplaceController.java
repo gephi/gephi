@@ -124,7 +124,7 @@ public interface SearchReplaceController {
         public void resetStatus() {
             regionStart = 0;
             startingRow = null;
-            startingRow = null;
+            startingColumn = null;
         }
 
         /**

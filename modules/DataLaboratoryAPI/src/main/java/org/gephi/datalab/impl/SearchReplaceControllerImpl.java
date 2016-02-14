@@ -47,18 +47,22 @@ import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.api.SearchReplaceController;
 import org.gephi.datalab.api.SearchReplaceController.SearchResult;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Table;
+import org.gephi.graph.api.TimeFormat;
+import org.joda.time.DateTimeZone;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Implementation of the SearchReplaceController interface
- * declared in the Data Laboratory API.
+ * Implementation of the SearchReplaceController interface declared in the Data Laboratory API.
+ *
  * @see SearchReplaceController
  * @author Eduardo Ramos
  */
@@ -143,8 +147,14 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
                 attributes = result.getFoundEdge();
                 column = gc.getGraphModel().getEdgeTable().getColumn(result.getFoundColumnIndex());
             }
+
+            GraphModel graphModel = column.getTable().getGraph().getModel();
+            TimeFormat timeFormat = graphModel.getTimeFormat();
+            DateTimeZone timeZone = graphModel.getTimeZone();
+
             value = attributes.getAttribute(column);
-            str = value != null ? value.toString() : "";
+
+            str = value != null ? AttributeUtils.print(value, timeFormat, timeZone) : "";
             StringBuffer sb = new StringBuffer();
 
             //Match and replace the result:
@@ -200,7 +210,10 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         Node row;
         Column column;
         Object value;
-        
+
+        TimeFormat timeFormat = table.getGraph().getModel().getTimeFormat();
+        DateTimeZone timeZone = table.getGraph().getModel().getTimeZone();
+
         for (; rowIndex < nodes.length; rowIndex++) {
             if (!gec.isNodeInGraph(nodes[rowIndex])) {
                 continue;//Make sure node is still in graph when continuing a search
@@ -210,7 +223,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
                 if (searchAllColumns || columnsToSearch.contains(columnIndex)) {
                     column = table.getColumn(columnIndex);
                     value = row.getAttribute(column);
-                    result = matchRegex(value, searchOptions, rowIndex, columnIndex);
+                    result = matchRegex(value, searchOptions, rowIndex, columnIndex, timeFormat, timeZone);
                     if (result != null) {
                         result.setFoundNode(nodes[rowIndex]);
                         return result;
@@ -234,7 +247,10 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         Edge row;
         Column column;
         Object value;
-        
+
+        TimeFormat timeFormat = table.getGraph().getModel().getTimeFormat();
+        DateTimeZone timeZone = table.getGraph().getModel().getTimeZone();
+
         for (; rowIndex < edges.length; rowIndex++) {
             if (!gec.isEdgeInGraph(edges[rowIndex])) {
                 continue;//Make sure edge is still in graph when continuing a search
@@ -244,7 +260,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
                 if (searchAllColumns || columnsToSearch.contains(columnIndex)) {
                     column = table.getColumn(columnIndex);
                     value = row.getAttribute(column);
-                    result = matchRegex(value, searchOptions, rowIndex, columnIndex);
+                    result = matchRegex(value, searchOptions, rowIndex, columnIndex, timeFormat, timeZone);
                     if (result != null) {
                         result.setFoundEdge(edges[rowIndex]);
                         return result;
@@ -258,9 +274,11 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         return result;
     }
 
-    private SearchResult matchRegex(Object value, SearchOptions searchOptions, int rowIndex, int columnIndex) {
+    private SearchResult matchRegex(Object value, SearchOptions searchOptions, int rowIndex, int columnIndex, TimeFormat timeFormat, DateTimeZone timeZone) {
         boolean found;
-        String str = value != null ? value.toString() : "";
+
+        String str = value != null ? AttributeUtils.print(value, timeFormat, timeZone) : "";
+
         Matcher matcher = searchOptions.getRegexPattern().matcher(str);
         if (str.isEmpty()) {
             if (searchOptions.getRegionStart() > 0) {

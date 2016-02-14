@@ -50,16 +50,13 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Table;
 import org.gephi.graph.api.TimeFormat;
-import org.gephi.graph.api.types.IntervalMap;
-import org.gephi.graph.api.types.IntervalSet;
-import org.gephi.graph.api.types.TimestampMap;
-import org.gephi.graph.api.types.TimestampSet;
 import org.joda.time.DateTimeZone;
 import org.openide.util.Lookup;
 
@@ -215,17 +212,7 @@ public class AttributeTableCSVExporter {
                 }
 
                 if (value != null) {
-                    if(value instanceof TimestampSet){
-                        text = ((TimestampSet) value).toString(timeFormat, timeZone);
-                    } else if(value instanceof TimestampMap){
-                        text = ((TimestampMap) value).toString(timeFormat, timeZone);
-                    } else if(value instanceof IntervalSet){
-                        text = ((IntervalSet) value).toString(timeFormat, timeZone);
-                    } else if(value instanceof IntervalMap){
-                        text = ((IntervalMap) value).toString(timeFormat, timeZone);
-                    } else {
-                        text = value.toString();
-                    }
+                    text = AttributeUtils.print(value, timeFormat, timeZone);
                 } else {
                     text = "";
                 }

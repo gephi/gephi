@@ -68,14 +68,17 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Origin;
 import org.gephi.graph.api.Table;
+import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.utils.StatisticsUtils;
+import org.joda.time.DateTimeZone;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -98,13 +101,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         Class targetType = column.getTypeClass();
         if (value != null && !value.getClass().equals(targetType)) {
             try {
-                String stringValue;
-                if (value.getClass().isArray()) {
-                    stringValue = AttributeUtils.printArray(value);
-                } else {
-                    stringValue = value.toString();
-                }
-
+                GraphModel graphModel = column.getTable().getGraph().getModel();
+                
+                String stringValue = AttributeUtils.print(value, graphModel.getTimeFormat(), graphModel.getTimeZone());
                 value = AttributeUtils.parse(stringValue, targetType);//Try to convert to target type from string representation
             } catch (Exception ex) {
                 return false;//Could not parse
@@ -303,10 +302,13 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             }
             Matcher matcher;
             Object value;
+
+            TimeFormat timeFormat = table.getGraph().getModel().getTimeFormat();
+            DateTimeZone timeZone = table.getGraph().getModel().getTimeZone();
             for (Element row : getTableAttributeRows(table)) {
                 value = row.getAttribute(column);
                 if (value != null) {
-                    matcher = pattern.matcher(value.toString());
+                    matcher = pattern.matcher(AttributeUtils.print(value, timeFormat, timeZone));
                 } else {
                     matcher = pattern.matcher("");
                 }
@@ -339,10 +341,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             Matcher matcher;
             Object value;
             ArrayList<String> foundGroups = new ArrayList<>();
+
+            TimeFormat timeFormat = table.getGraph().getModel().getTimeFormat();
+            DateTimeZone timeZone = table.getGraph().getModel().getTimeZone();
+
             for (Element row : getTableAttributeRows(table)) {
                 value = row.getAttribute(column);
                 if (value != null) {
-                    matcher = pattern.matcher(value.toString());
+                    matcher = pattern.matcher(AttributeUtils.print(value, timeFormat, timeZone));
                 } else {
                     matcher = pattern.matcher("");
                 }
@@ -910,10 +916,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
         Object value;
         String strValue;
+        
+        TimeFormat timeFormat = graph.getModel().getTimeFormat();
+        DateTimeZone timeZone = graph.getModel().getTimeZone();
+        
         for (Node node : graph.getNodes().toArray()) {
             value = node.getAttribute(column);
             if (value != null) {
-                strValue = value.toString();
+                strValue = AttributeUtils.print(value, timeFormat, timeZone);
                 if (!caseSensitive) {
                     strValue = strValue.toLowerCase();
                 }
