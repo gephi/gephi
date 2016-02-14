@@ -198,7 +198,10 @@ public class LayoutControllerImpl implements LayoutController {
         @Override
         public boolean cancel() {
             stopRun = true;
-            return true;
+            if (layout instanceof LongTask) {
+                return ((LongTask) layout).cancel();
+            }
+            return false;
         }
 
         @Override
