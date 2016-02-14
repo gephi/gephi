@@ -205,17 +205,23 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
     }
 
     @Override
-    public void select(Workspace workspace) {
-        for (int i = 0; i < tabDataModel.size(); i++) {
-            TabData tabData = tabDataModel.getTab(i);
-            if (((WorkspaceComponent) tabData.getUserObject()).workspace == workspace) {
-                if (tabbedContainer.getSelectionModel().getSelectedIndex() != i) {
-                    tabbedContainer.getSelectionModel().setSelectedIndex(i);
+    public void select(final Workspace workspace) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                for (int i = 0; i < tabDataModel.size(); i++) {
+                    TabData tabData = tabDataModel.getTab(i);
+                    if (((WorkspaceComponent) tabData.getUserObject()).workspace == workspace) {
+                        if (tabbedContainer.getSelectionModel().getSelectedIndex() != i) {
+                            tabbedContainer.getSelectionModel().setSelectedIndex(i);
+                        }
+                        workspace.getLookup().lookup(WorkspaceInformation.class).addChangeListener(WorkspacePanel.this);
+                        break;
+                    }
                 }
-                workspace.getLookup().lookup(WorkspaceInformation.class).addChangeListener(this);
-                break;
             }
-        }
+        });
     }
 
     @Override
