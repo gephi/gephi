@@ -51,13 +51,16 @@ import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.ProgressTicket;
 
 /**
  *
  * @author Mathieu Jacomy
  */
-public class NoverlapLayout extends AbstractLayout implements Layout {
+public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
 
+    protected boolean cancel;
     protected Graph graph;
     private double speed;
     private double ratio;
@@ -75,6 +78,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout {
     public void initAlgo() {
         this.graph = graphModel.getGraphVisible();
         setConverged(false);
+        cancel = false;
     }
 
     @Override
@@ -140,8 +144,8 @@ public class NoverlapLayout extends AbstractLayout implements Layout {
         // But they are not repulsed several times, even if they are in several cells...
         // So we build a relation of proximity between nodes.
         // Build proximities
-        for (int row = 0; row < grid.countRows(); row++) {
-            for (int col = 0; col < grid.countColumns(); col++) {
+        for (int row = 0; row < grid.countRows() && !cancel; row++) {
+            for (int col = 0; col < grid.countColumns() && !cancel; col++) {
                 for (Node n : grid.getContent(row, col)) {
                     NoverlapLayoutData lald = n.getLayoutData();
 
@@ -191,7 +195,12 @@ public class NoverlapLayout extends AbstractLayout implements Layout {
                         layoutData.dy += 0.01 * (0.5 - Math.random());
                     }
                 }
-
+                if (cancel) {
+                    break;
+                }
+            }
+            if (cancel) {
+                break;
             }
         }
 
@@ -273,6 +282,16 @@ public class NoverlapLayout extends AbstractLayout implements Layout {
 
     public void setMargin(Double margin) {
         this.margin = margin;
+    }
+
+    @Override
+    public boolean cancel() {
+        cancel = true;
+        return cancel;
+    }
+
+    @Override
+    public void setProgressTicket(ProgressTicket progressTicket) {
     }
 
     private class SpatialGrid {
