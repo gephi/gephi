@@ -245,7 +245,7 @@ public class PaletteGenerator {
         // Check that a color is valid: it must verify our checkColor condition, but also be in the color space
         return !Double.isNaN(rgb[0]) && rgb[0] >= 0 && rgb[1] >= 0
                 && rgb[2] >= 0 && rgb[0] < 256 && rgb[1] < 256 && rgb[2] < 256
-                && hcl[0] >= filter[0] && hcl[0] <= filter[1]
+                && (filter[0] < filter[1] ? (hcl[0] >= filter[0] && hcl[0] <= filter[1]) : (hcl[0] >= filter[0] || hcl[0] <= filter[1]))
                 && hcl[1] >= filter[2] && hcl[1] <= filter[3]
                 && hcl[2] >= filter[4] && hcl[2] <= filter[5];
     }
