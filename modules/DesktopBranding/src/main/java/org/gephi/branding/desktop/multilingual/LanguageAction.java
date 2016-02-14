@@ -64,6 +64,7 @@ public final class LanguageAction extends CallableSystemAction {
 
         EN_US("en", "English"),
         CS_CS("cs", "Čeština"),
+        DE_DE("de", "Deutsch"),
         ES_ES("es", "Español"),
         FR_FR("fr", "Français"),
         PT_BR("pt", "BR", "Português do Brasil"),
