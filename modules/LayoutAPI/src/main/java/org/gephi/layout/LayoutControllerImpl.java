@@ -41,7 +41,6 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.layout;
 
-import org.gephi.graph.api.GraphController;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutModel;
@@ -70,8 +69,8 @@ public class LayoutControllerImpl implements LayoutController {
 
             @Override
             public void initialize(Workspace workspace) {
-                if(workspace.getLookup().lookup(LayoutModelImpl.class) == null) {
-                    workspace.add(new LayoutModelImpl());
+                if (workspace.getLookup().lookup(LayoutModelImpl.class) == null) {
+                    workspace.add(new LayoutModelImpl(workspace));
                 }
             }
 
@@ -79,7 +78,7 @@ public class LayoutControllerImpl implements LayoutController {
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(LayoutModelImpl.class);
                 if (model == null) {
-                    model = new LayoutModelImpl();
+                    model = new LayoutModelImpl(workspace);
                 }
                 workspace.add(model);
             }
@@ -109,7 +108,7 @@ public class LayoutControllerImpl implements LayoutController {
         if (projectController.getCurrentWorkspace() != null) {
             model = projectController.getCurrentWorkspace().getLookup().lookup(LayoutModelImpl.class);
             if (model == null) {
-                model = new LayoutModelImpl();
+                model = new LayoutModelImpl(projectController.getCurrentWorkspace());
             }
             projectController.getCurrentWorkspace().add(model);
         }

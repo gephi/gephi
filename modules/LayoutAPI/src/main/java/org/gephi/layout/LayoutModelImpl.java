@@ -55,10 +55,12 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.gephi.project.api.Workspace;
 import org.gephi.utils.Serialization;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
@@ -78,10 +80,12 @@ public class LayoutModelImpl implements LayoutModel {
     private final Map<LayoutPropertyKey, Object> savedProperties;
     private Layout selectedLayout;
     private LayoutBuilder selectedBuilder;
+    private Workspace workspace;
     //Util
     private final LongTaskExecutor executor;
 
-    public LayoutModelImpl() {
+    public LayoutModelImpl(Workspace workspace) {
+        this.workspace = workspace;
         listeners = new ArrayList<PropertyChangeListener>();
         savedProperties = new HashMap<LayoutPropertyKey, Object>();
 
@@ -135,8 +139,8 @@ public class LayoutModelImpl implements LayoutModel {
 
     public void injectGraph() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (selectedLayout != null && graphController.getGraphModel() != null) {
-            selectedLayout.setGraphModel(graphController.getGraphModel());
+        if (selectedLayout != null && graphController.getGraphModel(workspace) != null) {
+            selectedLayout.setGraphModel(graphController.getGraphModel(workspace));
         }
     }
 
