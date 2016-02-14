@@ -72,6 +72,7 @@ import org.gephi.appearance.api.PartitionFunction;
 import org.gephi.appearance.plugin.palette.Palette;
 import org.gephi.appearance.plugin.palette.PaletteGenerator;
 import org.gephi.appearance.plugin.palette.PaletteManager;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.ui.appearance.plugin.palette.PaletteGeneratorPanel;
 import org.gephi.ui.components.PaletteIcon;
 import org.gephi.ui.utils.UIUtils;
@@ -162,7 +163,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
         int j = 0;
         for (Object value : values) {
-            String displayName = value == null ? "null" : value.toString();
+            String displayName = value == null ? "null" : value.getClass().isArray() ? AttributeUtils.printArray(value) : value.toString();
             int count = function.getPartition().count(value);
             float percentage = function.getPartition().percentage(value) / 100f;
             model.setValueAt(value, j, 0);

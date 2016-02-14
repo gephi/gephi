@@ -63,20 +63,21 @@ public class Upgrader {
 
     private final static String UPGRADER_LAST_VERSION = "Upgrader_Last_Version";
     private final static List<String> VERSION_TO_CHECK
-            = Arrays.asList(new String[]{"gephi", "gephi08alpha", "gephi07beta", "gephi07alpha"});
+            = Arrays.asList(new String[]{"0.9.0"});
 
     public void upgrade() {
         String currentVersion = getCurrentVersion();
         Logger.getLogger("").log(Level.INFO, "Current Version is {0}", currentVersion);
-        String lastVersion = NbPreferences.root().get(UPGRADER_LAST_VERSION, null);
-        NbPreferences.root().put(UPGRADER_LAST_VERSION, currentVersion);
+
+        String lastVersion = NbPreferences.forModule(Upgrader.class).get(UPGRADER_LAST_VERSION, null);
         if (lastVersion == null || !lastVersion.equals(currentVersion)) {
             File latestPreviousVersion = checkPrevious();
             if (latestPreviousVersion != null && !latestPreviousVersion.getName().replace(".", "").equals(currentVersion)) {
                 File source = new File(latestPreviousVersion, "dev");
                 File dest = new File(System.getProperty("netbeans.user"));
                 if (source.exists() && dest.exists()) {
-                    //Import previous settings
+                    NbPreferences.forModule(Upgrader.class).put(UPGRADER_LAST_VERSION, currentVersion);
+
                     boolean confirm = showUpgradeDialog(latestPreviousVersion);
                     if (confirm) {
                         try {
@@ -132,7 +133,7 @@ public class Upgrader {
 
         if (userDir.exists()) {
             File userHomeFile;
-            if (userDir.getName().equalsIgnoreCase("testuserdir")) {
+            if (userDir.getName().equalsIgnoreCase("userdir")) {
                 userHomeFile = userDir.getParentFile();
             } else {
                 userHomeFile = userDir.getParentFile().getParentFile();

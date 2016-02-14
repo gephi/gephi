@@ -42,24 +42,25 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.ui.upgrader;
 
 import org.openide.modules.ModuleInstall;
+import org.openide.windows.WindowManager;
 
 public class Installer extends ModuleInstall {
 
     @Override
     public void restored() {
-        if (System.getProperty("org.gephi.settingsUpgrder.enabled", "true").equals("true")) {
+        if (System.getProperty("org.gephi.settingsUpgrader.enabled", "true").equals("true")) {
             importSettings();
         }
     }
 
     public void importSettings() {
-//        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                Upgrader upgrader = new Upgrader();
-//                upgrader.upgrade();
-//            }
-//        });
+        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+
+            @Override
+            public void run() {
+                Upgrader upgrader = new Upgrader();
+                upgrader.upgrade();
+            }
+        });
     }
 }
