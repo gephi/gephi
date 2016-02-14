@@ -41,8 +41,8 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.ui.exporter.preview;
 
-import org.gephi.io.exporter.preview.PNGExporter;
 import javax.swing.JPanel;
+import org.gephi.io.exporter.preview.PNGExporter;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
 import org.netbeans.validation.api.ui.ValidationPanel;

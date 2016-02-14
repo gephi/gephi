@@ -48,6 +48,8 @@ import java.awt.event.ActionListener;
 import java.text.MessageFormat;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.io.importer.spi.ImporterWizardUI;
+import org.gephi.io.importer.spi.WizardImporter;
+import org.gephi.io.importer.spi.WizardImporterBuilder;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.WizardDescriptor;
@@ -56,8 +58,6 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.gephi.io.importer.spi.WizardImporter;
-import org.gephi.io.importer.spi.WizardImporterBuilder;
 
 @ActionID(id = "org.gephi.desktop.importer.ImportWizard", category = "File")
 @ActionRegistration(displayName = "#CTL_ImportWizard", iconInMenu = true)

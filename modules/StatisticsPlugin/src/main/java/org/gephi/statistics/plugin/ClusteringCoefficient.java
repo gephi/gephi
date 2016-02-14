@@ -48,14 +48,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
-import org.gephi.statistics.spi.Statistics;
-import org.gephi.graph.api.Node;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.Table;
+import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -64,7 +65,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.gephi.graph.api.NodeIterable;
 import org.openide.util.Lookup;
 
 /**
@@ -255,7 +255,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     public void execute(Graph hgraph) {
         isCanceled = false;
 
-        HashMap<String, Double> resultValues = new HashMap<String, Double>();
+        HashMap<String, Double> resultValues = new HashMap<>();
 
         if (isDirected) {
             avgClusteringCoeff = bruteForce(hgraph);
@@ -302,7 +302,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
     public HashMap<String, Double> computeClusteringCoefficient(Graph hgraph, ArrayWrapper[] currentNetwork,
             int[] currentTriangles, double[] currentNodeClustering, boolean directed) {
-        HashMap<String, Double> resultValues = new HashMap<String, Double>();
+        HashMap<String, Double> resultValues = new HashMap<>();
 
         if (isDirected) {
             double avClusteringCoefficient = bruteForce(hgraph);
@@ -418,7 +418,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     private HashMap<Node, EdgeWrapper> createNeighbourTable(Graph hgraph, Node node, HashMap<Node, Integer> indicies,
             ArrayWrapper[] networks, boolean directed) {
 
-        HashMap<Node, EdgeWrapper> neighborTable = new HashMap<Node, EdgeWrapper>();
+        HashMap<Node, EdgeWrapper> neighborTable = new HashMap<>();
 
         if (!directed) {
             for (Edge edge : hgraph.getEdges(node)) {
@@ -491,7 +491,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     private HashMap<String, Double> computeResultValues(Graph hgraph, ArrayWrapper[] currentNetwork,
             int[] currentTriangles, double[] currentNodeClusterig, boolean directed, int currentProgress) {
         int n = hgraph.getNodeCount();
-        HashMap<String, Double> totalValues = new HashMap<String, Double>();
+        HashMap<String, Double> totalValues = new HashMap<>();
         int numNodesDegreeGreaterThanOne = 0;
         int trianglesNumber = 0;
         double currentClusteringCoefficient = 0;
@@ -525,7 +525,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     private HashMap<String, Double> computeTriangles(Graph hgraph, ArrayWrapper[] currentNetwork, int[] currentTriangles,
             double[] nodeClustering, boolean directed) {
 
-        HashMap<String, Double> resultValues = new HashMap<String, Double>();
+        HashMap<String, Double> resultValues = new HashMap<>();
         int ProgressCount = 0;
         Progress.start(progress, 7 * hgraph.getNodeCount());
 
@@ -538,7 +538,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
          */
         /**
          *         */
-        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<>();
 
         ProgressCount = createIndiciesMapAndInitNetwork(hgraph, indicies, currentNetwork, ProgressCount);
 
@@ -683,7 +683,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     @Override
     public String getReport() {
         //distribution of values
-        Map<Double, Integer> dist = new HashMap<Double, Integer>();
+        Map<Double, Integer> dist = new HashMap<>();
         for (int i = 0; i < N; i++) {
             Double d = nodeClustering[i];
             if (dist.containsKey(d)) {

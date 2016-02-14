@@ -88,7 +88,7 @@ public class ConnectedComponentsNGTest {
         Node n = graph.getNode("0");
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<>();
         indicies.put(n, 0);
         LinkedList<LinkedList<Node>> components = c.computeWeeklyConnectedComponents(graph, indicies);
         assertEquals(components.size(), 1);
@@ -105,7 +105,7 @@ public class ConnectedComponentsNGTest {
         Node n4 = graph.getNode("4");
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<>();
         indicies.put(n0, 0);
         indicies.put(n1, 1);
         indicies.put(n2, 2);

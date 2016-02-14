@@ -81,8 +81,8 @@ public class FilterModelImpl implements FilterModel {
     public FilterModelImpl(Workspace workspace) {
         this.workspace = workspace;
         filterLibraryImpl = new FilterLibraryImpl(workspace);
-        queries = new LinkedList<Query>();
-        listeners = new ArrayList<ChangeListener>();
+        queries = new LinkedList<>();
+        listeners = new ArrayList<>();
         autoRefresh = true;
 
         graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
@@ -249,8 +249,8 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public Query[] getAllQueries() {
-        List<Query> result = new ArrayList<Query>();
-        LinkedList<Query> stack = new LinkedList<Query>();
+        List<Query> result = new ArrayList<>();
+        LinkedList<Query> stack = new LinkedList<>();
         stack.addAll(queries);
         while (!stack.isEmpty()) {
             Query q = stack.pop();

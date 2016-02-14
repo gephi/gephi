@@ -404,7 +404,6 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
      * @return formated title
      */
     private String formatTitle(String s) {
-        System.err.println("Title " + s);
         String res = s.replace("\"", "").replace("\'", "").replace("[", "").replace("]", "").replace(" ", "").replace("#", "");
         if (s.charAt(0) >= '0' && s.charAt(0) <= '9') {
             return ("column" + res);

@@ -41,9 +41,9 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.spi.columns.merge;
 
+import org.gephi.datalab.spi.Manipulator;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Table;
-import org.gephi.datalab.spi.Manipulator;
 
 /**
  * <p>Service for defining strategies for merging attribute columns of a table.</p>

@@ -44,7 +44,6 @@ package org.gephi.statistics.plugin;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
@@ -52,6 +51,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -145,8 +145,8 @@ public class EigenvectorCentrality implements Statistics, LongTask {
 
         Progress.start(progress, numRuns);
 
-        HashMap<Integer, Node> indicies = new HashMap<Integer, Node>();
-        HashMap<Node, Integer> invIndicies = new HashMap<Node, Integer>();
+        HashMap<Integer, Node> indicies = new HashMap<>();
+        HashMap<Node, Integer> invIndicies = new HashMap<>();
         fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
 
         sumChange = calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, isDirected, numRuns);
@@ -269,7 +269,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     @Override
     public String getReport() {
         //distribution of values
-        Map<Double, Integer> dist = new HashMap<Double, Integer>();
+        Map<Double, Integer> dist = new HashMap<>();
         for (int i = 0; i < centralities.length; i++) {
             Double d = centralities[i];
             if (dist.containsKey(d)) {

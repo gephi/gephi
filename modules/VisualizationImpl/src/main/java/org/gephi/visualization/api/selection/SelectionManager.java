@@ -69,7 +69,7 @@ public class SelectionManager implements VizArchitecture {
     private boolean blocked = false;
 
     public SelectionManager() {
-        listeners = new ArrayList<ChangeListener>();
+        listeners = new ArrayList<>();
     }
 
     @Override

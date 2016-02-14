@@ -53,7 +53,6 @@ import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Constructor;
-
 import javax.swing.JColorChooser;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;

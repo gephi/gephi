@@ -54,21 +54,21 @@ import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Node;
+import org.gephi.tools.api.ToolController;
 import org.gephi.tools.spi.MouseClickEventListener;
 import org.gephi.tools.spi.NodeClickEventListener;
+import org.gephi.tools.spi.NodePressAndDraggingEventListener;
 import org.gephi.tools.spi.NodePressingEventListener;
 import org.gephi.tools.spi.Tool;
-import org.gephi.tools.api.ToolController;
-import org.gephi.tools.spi.NodePressAndDraggingEventListener;
 import org.gephi.tools.spi.ToolEventListener;
 import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
 import org.gephi.tools.spi.UnselectToolException;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.selection.SelectionManager;
 import org.gephi.visualization.apiimpl.VizEvent;
 import org.gephi.visualization.apiimpl.VizEvent.Type;
 import org.gephi.visualization.apiimpl.VizEventListener;
-import org.gephi.visualization.api.selection.SelectionManager;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -99,7 +99,7 @@ public class DesktopToolController implements ToolController {
         }
 
         //Connect events
-        ArrayList<ToolEventHandler> handlers = new ArrayList<ToolEventHandler>();
+        ArrayList<ToolEventHandler> handlers = new ArrayList<>();
         for (ToolEventListener toolListener : tool.getListeners()) {
             if (toolListener instanceof NodeClickEventListener) {
                 NodeClickEventHandler h = new NodeClickEventHandler(toolListener);
@@ -160,8 +160,8 @@ public class DesktopToolController implements ToolController {
     public JComponent getToolbar() {
 
         //Get tools ui
-        HashMap<ToolUI, Tool> toolMap = new HashMap<ToolUI, Tool>();
-        List<ToolUI> toolsUI = new ArrayList<ToolUI>();
+        HashMap<ToolUI, Tool> toolMap = new HashMap<>();
+        List<ToolUI> toolsUI = new ArrayList<>();
         for (Tool tool : tools) {
             ToolUI ui = tool.getUI();
             if (ui != null) {

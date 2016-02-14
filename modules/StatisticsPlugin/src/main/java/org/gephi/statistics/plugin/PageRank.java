@@ -44,7 +44,6 @@ package org.gephi.statistics.plugin;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
@@ -52,6 +51,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -282,7 +282,7 @@ public class PageRank implements Statistics, LongTask {
     }
 
     public HashMap<Node, Integer> createIndiciesMap(Graph hgraph) {
-        HashMap<Node, Integer> newIndicies = new HashMap<Node, Integer>();
+        HashMap<Node, Integer> newIndicies = new HashMap<>();
         int index = 0;
         for (Node s : hgraph.getNodes()) {
             newIndicies.put(s, index);
@@ -298,7 +298,7 @@ public class PageRank implements Statistics, LongTask {
     @Override
     public String getReport() {
         //distribution of values
-        Map<Double, Integer> dist = new HashMap<Double, Integer>();
+        Map<Double, Integer> dist = new HashMap<>();
         for (int i = 0; i < pageranks.length; i++) {
             Double d = pageranks[i];
             if (dist.containsKey(d)) {

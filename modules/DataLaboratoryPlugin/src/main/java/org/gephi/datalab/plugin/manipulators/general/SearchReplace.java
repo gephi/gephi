@@ -42,13 +42,13 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.general;
 
 import javax.swing.Icon;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.general.ui.SearchReplaceUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.GeneralActionsManipulator;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.Table;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.ImageUtilities;

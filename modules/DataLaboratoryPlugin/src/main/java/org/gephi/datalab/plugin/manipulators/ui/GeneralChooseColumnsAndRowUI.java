@@ -45,11 +45,11 @@ import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsAndRowChooser;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Node;
@@ -100,7 +100,7 @@ public class GeneralChooseColumnsAndRowUI extends javax.swing.JPanel implements 
     }
 
     public Column[] getChosenColumns() {
-        ArrayList<Column> columnsToClearDataList = new ArrayList<Column>();
+        ArrayList<Column> columnsToClearDataList = new ArrayList<>();
         for (ColumnCheckBox c : columnsCheckBoxes) {
             if (c.isSelected()) {
                 columnsToClearDataList.add(c.getColumn());

@@ -78,7 +78,7 @@ public class NodeLabelBuilder implements ItemBuilder {
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
         Column[] nodeColumns = vizController != null ? vizController.getNodeTextColumns() : null;
 
-        List<Item> items = new ArrayList<Item>();
+        List<Item> items = new ArrayList<>();
         for (Node n : graph.getNodes()) {
             NodeLabelItem labelItem = new NodeLabelItem(n);
             String label = getLabel(n, nodeColumns, graph.getView());

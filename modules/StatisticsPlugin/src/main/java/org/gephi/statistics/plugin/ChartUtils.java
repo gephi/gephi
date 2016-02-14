@@ -100,7 +100,6 @@ public abstract class ChartUtils {
             imageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
             ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
         } catch (IOException e) {
-            System.out.println(e.toString());
         }
         return imageFile;
     }

@@ -64,10 +64,10 @@ public final class FilterUIModel {
 
     public FilterUIModel(Workspace workspace) {
         this.workspace = workspace;
-        listeners = new ArrayList<ChangeListener>();
-        expandedQueryNodes = new ArrayList<Query>();
-        expandedCategoryNodes = new ArrayList<Category>();
-        expandedParametersNodes = new ArrayList<Query>();
+        listeners = new ArrayList<>();
+        expandedQueryNodes = new ArrayList<>();
+        expandedCategoryNodes = new ArrayList<>();
+        expandedParametersNodes = new ArrayList<>();
     }
 
     public Workspace getWorkspace() {

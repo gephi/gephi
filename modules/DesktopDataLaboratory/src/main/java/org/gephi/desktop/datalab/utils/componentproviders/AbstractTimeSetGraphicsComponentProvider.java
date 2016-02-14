@@ -1,9 +1,9 @@
 package org.gephi.desktop.datalab.utils.componentproviders;
 
-import org.gephi.desktop.datalab.utils.GraphModelProvider;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import javax.swing.JLabel;
+import org.gephi.desktop.datalab.utils.GraphModelProvider;
 import org.gephi.graph.api.types.TimeSet;
 import org.gephi.utils.TimeIntervalGraphics;
 import org.jdesktop.swingx.JXTable;

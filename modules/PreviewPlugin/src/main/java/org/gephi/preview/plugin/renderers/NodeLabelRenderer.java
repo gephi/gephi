@@ -129,7 +129,7 @@ public class NodeLabelRenderer implements Renderer {
         }
 
         //Calculate font size and cache fonts
-        fontCache = new HashMap<Integer, Font>();
+        fontCache = new HashMap<>();
         Font font = properties.getFontValue(PreviewProperty.NODE_LABEL_FONT);
         for (Item item : previewModel.getItems(Item.NODE_LABEL)) {
             Float nodeSize = item.getData(NODE_SIZE);

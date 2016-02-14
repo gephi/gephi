@@ -63,7 +63,7 @@ public class JPopupButton extends JButton {
 
     public JPopupButton() {
 
-        items = new ArrayList<JPopupButtonItem>();
+        items = new ArrayList<>();
         addActionListener(new ActionListener() {
 
             @Override

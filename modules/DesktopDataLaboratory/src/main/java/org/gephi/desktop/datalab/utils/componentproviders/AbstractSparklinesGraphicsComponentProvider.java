@@ -1,9 +1,9 @@
 package org.gephi.desktop.datalab.utils.componentproviders;
 
-import org.gephi.desktop.datalab.utils.GraphModelProvider;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import javax.swing.JLabel;
+import org.gephi.desktop.datalab.utils.GraphModelProvider;
 import org.gephi.utils.sparklines.SparklineGraph;
 import org.gephi.utils.sparklines.SparklineParameters;
 import org.jdesktop.swingx.JXTable;

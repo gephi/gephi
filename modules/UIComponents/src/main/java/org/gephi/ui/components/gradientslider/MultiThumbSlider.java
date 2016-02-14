@@ -43,7 +43,6 @@ package org.gephi.ui.components.gradientslider;
 
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;

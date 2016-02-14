@@ -73,6 +73,7 @@ import org.gephi.io.importer.spi.DatabaseImporter;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.io.importer.spi.ImporterUI;
 import org.gephi.io.importer.spi.ImporterWizardUI;
+import org.gephi.io.importer.spi.WizardImporter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.ProcessorUI;
 import org.gephi.project.api.ProjectController;
@@ -91,7 +92,6 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-import org.gephi.io.importer.spi.WizardImporter;
 
 /**
  *
@@ -199,8 +199,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     @Override
     public void importFiles(FileObject[] fileObjects) {
         try {
-            Map<ImporterUI, List<FileImporter>> importerUIs = new HashMap<ImporterUI, List<FileImporter>>();
-            List<FileImporter> importers = new ArrayList<FileImporter>();
+            Map<ImporterUI, List<FileImporter>> importerUIs = new HashMap<>();
+            List<FileImporter> importers = new ArrayList<>();
             for (FileObject fileObject : fileObjects) {
                 FileImporter importer = controller.getFileImporter(FileUtil.toFile(fileObject));
                 if (importer == null) {
@@ -213,7 +213,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 if (ui != null) {
                     List<FileImporter> l = importerUIs.get(ui);
                     if (l == null) {
-                        l = new ArrayList<FileImporter>();
+                        l = new ArrayList<>();
                         importerUIs.put(ui, l);
                     }
                     l.add(importer);
@@ -249,7 +249,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 ui.unsetup(true);
             }
 
-            final List<Container> result = new ArrayList<Container>();
+            final List<Container> result = new ArrayList<>();
             for (int i = 0; i < importers.size(); i++) {
                 final FileImporter importer = importers.get(i);
                 FileObject fileObject = fileObjects[i];

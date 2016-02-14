@@ -339,7 +339,7 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     private void fillIssues(Report report) {
-        final List<Issue> issues = new ArrayList<Issue>();
+        final List<Issue> issues = new ArrayList<>();
         Iterator<Issue> itr = report.getIssues(ISSUES_LIMIT);
         while (itr.hasNext()) {
             issues.add(itr.next());
@@ -485,7 +485,7 @@ public class ReportPanel extends javax.swing.JPanel {
             @Override
             public void run() {
 
-                List<AbstractButton> validButtons = new ArrayList<AbstractButton>();
+                List<AbstractButton> validButtons = new ArrayList<>();
                 for (Enumeration<AbstractButton> enumeration = processorGroup.getElements(); enumeration.hasMoreElements();) {
                     AbstractButton radioButton = enumeration.nextElement();
                     Processor p = (Processor) radioButton.getClientProperty(PROCESSOR_KEY);

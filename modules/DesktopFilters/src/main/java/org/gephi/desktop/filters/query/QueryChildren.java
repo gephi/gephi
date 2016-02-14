@@ -79,7 +79,7 @@ public class QueryChildren extends Children.Array {
 
     @Override
     protected Collection<Node> initCollection() {
-        Collection<Node> nodesChildren = new ArrayList<Node>();
+        Collection<Node> nodesChildren = new ArrayList<>();
         if (query == null && topQuery == null) {
             nodesChildren.add(new HelpNode());
         } else {

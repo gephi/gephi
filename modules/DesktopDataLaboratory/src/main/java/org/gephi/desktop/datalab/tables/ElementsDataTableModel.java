@@ -41,11 +41,11 @@
  */
 package org.gephi.desktop.datalab.tables;
 
-import org.gephi.desktop.datalab.tables.columns.ElementDataColumn;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.table.AbstractTableModel;
+import org.gephi.desktop.datalab.tables.columns.ElementDataColumn;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 

@@ -73,7 +73,7 @@ public class EdgeLabelBuilder implements ItemBuilder {
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
         Column[] edgeColumns = vizController != null ? vizController.getEdgeTextColumns() : null;
 
-        List<Item> items = new ArrayList<Item>();
+        List<Item> items = new ArrayList<>();
         for (Edge e : graph.getEdges()) {
             EdgeLabelItem labelItem = new EdgeLabelItem(e);
             String label = getLabel(e, edgeColumns, graph.getView());

@@ -41,8 +41,6 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.project.spi;
 
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
 
 /**

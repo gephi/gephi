@@ -65,13 +65,13 @@ public class DialogFileFilter extends javax.swing.filechooser.FileFilter
 			Logger.getLogger(DialogFileFilter.class.getName()).throwing(getClass().getName(), "constructor", new NullPointerException("Description cannot be null."));
 		}
 		this.description = description;
-		this.extensions = new ArrayList<String>();
+		this.extensions = new ArrayList<>();
 	}
 
 	@Override
 	public boolean accept(File file)
 	{
-		if(file.isDirectory() || extensions.size()==0) {
+		if(file.isDirectory() || extensions.isEmpty()) {
 			return true;
 		}
 		String fileName = file.getName().toLowerCase();

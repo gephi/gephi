@@ -62,7 +62,7 @@ public class WorkspaceInformationImpl implements WorkspaceInformation {
     private Status status = Status.CLOSED;
     private String source;
     //Lookup
-    private final transient List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+    private final transient List<PropertyChangeListener> listeners = new ArrayList<>();
 
     public WorkspaceInformationImpl(String name) {
         this.name = name;

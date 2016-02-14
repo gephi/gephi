@@ -79,7 +79,7 @@ public class ProjectControllerImpl implements ProjectController {
     public ProjectControllerImpl() {
 
         //Listeners
-        listeners = new ArrayList<WorkspaceListener>();
+        listeners = new ArrayList<>();
         listeners.addAll(Lookup.getDefault().lookupAll(WorkspaceListener.class));
 
         registerNetbeansPropertyEditors();
@@ -91,7 +91,7 @@ public class ProjectControllerImpl implements ProjectController {
      * read project files.
      */
     private void registerNetbeansPropertyEditors() {
-        List<String> list = new ArrayList<String>(Arrays.asList(PropertyEditorManager.getEditorSearchPath()));
+        List<String> list = new ArrayList<>(Arrays.asList(PropertyEditorManager.getEditorSearchPath()));
         if (!list.contains("org.netbeans.beaninfo.editors")) {
             list.add(0, "org.netbeans.beaninfo.editors");//Add first for more preference
             PropertyEditorManager.setEditorSearchPath(list.toArray(new String[list.size()]));

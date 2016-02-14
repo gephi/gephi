@@ -103,7 +103,7 @@ public class ImporterGML implements FileImporter, LongTask {
 
     private ArrayList<Object> parseList(LineNumberReader reader) throws IOException {
 
-        ArrayList<Object> list = new ArrayList<Object>();
+        ArrayList<Object> list = new ArrayList<>();
         char t;
         boolean readString = false;
         String stringBuffer = new String();

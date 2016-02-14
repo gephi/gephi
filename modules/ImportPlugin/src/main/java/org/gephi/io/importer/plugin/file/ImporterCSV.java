@@ -92,7 +92,7 @@ public class ImporterCSV implements FileImporter, LongTask {
     private void importData(LineNumberReader reader) throws Exception {
         Progress.start(progressTicket);        //Progress
 
-        List<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<>();
         for (; reader.ready();) {
             String line = reader.readLine();
             if (line != null && !line.isEmpty()) {
@@ -111,7 +111,7 @@ public class ImporterCSV implements FileImporter, LongTask {
             line0 = line0.substring(1, line0.length());
             lines.remove(0);
             Matcher m = pattern.matcher(line0); //Remove the first ";"
-            List<String> labels = new ArrayList<String>();
+            List<String> labels = new ArrayList<>();
             while (m.find()) {
                 int start = m.start();
                 int end = m.end();

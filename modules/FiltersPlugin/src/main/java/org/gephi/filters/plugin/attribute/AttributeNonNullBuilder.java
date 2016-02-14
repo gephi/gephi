@@ -83,7 +83,7 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
 
     @Override
     public FilterBuilder[] getBuilders(Workspace workspace) {
-        List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
+        List<FilterBuilder> builders = new ArrayList<>();
         GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         for (Column col : am.getNodeTable()) {
             if (!col.isProperty()) {

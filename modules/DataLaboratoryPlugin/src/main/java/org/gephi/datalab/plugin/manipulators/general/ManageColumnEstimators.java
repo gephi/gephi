@@ -100,7 +100,7 @@ public class ManageColumnEstimators implements PluginGeneralActionsManipulator {
             table = graphModel.getEdgeTable();
         }
         
-        List<Column> availableColumns = new ArrayList<Column>();
+        List<Column> availableColumns = new ArrayList<>();
         for (Column column : table) {
             if(TimeMap.class.isAssignableFrom(column.getTypeClass())){
                 availableColumns.add(column);

@@ -42,8 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.timeline;
 
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.openide.util.Lookup;

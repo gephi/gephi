@@ -59,7 +59,7 @@ public abstract class AbstractFilter implements Filter {
 
     public AbstractFilter(String name) {
         this.name = name;
-        this.properties = new ArrayList<FilterProperty>();
+        this.properties = new ArrayList<>();
     }
 
     @Override

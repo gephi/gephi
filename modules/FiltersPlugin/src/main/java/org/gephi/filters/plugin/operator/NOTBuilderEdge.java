@@ -151,7 +151,7 @@ public class NOTBuilderEdge implements FilterBuilder {
             Filter filter = filters[0];
             if (filter instanceof EdgeFilter && ((EdgeFilter) filter).init(graph)) {
                 EdgeFilter edgeFilter = (EdgeFilter) filter;
-                List<Edge> edgesToRemove = new ArrayList<Edge>();
+                List<Edge> edgesToRemove = new ArrayList<>();
                 for (Edge e : graph.getEdges()) {
                     if (edgeFilter.evaluate(graph, e)) {
                         edgesToRemove.add(e);

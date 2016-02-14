@@ -183,7 +183,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
 
     @Override
     public LayoutProperty[] getProperties() {
-        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        List<LayoutProperty> properties = new ArrayList<>();
         final String FRUCHTERMAN_REINGOLD = "Fruchterman Reingold";
 
         try {

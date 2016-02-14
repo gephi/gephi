@@ -60,7 +60,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JComponent;
 import javax.swing.JSlider;
 import javax.swing.UIManager;

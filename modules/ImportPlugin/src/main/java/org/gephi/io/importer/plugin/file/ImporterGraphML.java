@@ -102,8 +102,8 @@ public class ImporterGraphML implements FileImporter, LongTask {
     private ProgressTicket progress;
     private XMLStreamReader xmlReader;
     private final PropertiesAssociations properties = new PropertiesAssociations();
-    private final HashMap<String, NodeProperties> nodePropertiesAttributes = new HashMap<String, NodeProperties>();
-    private final HashMap<String, EdgeProperties> edgePropertiesAttributes = new HashMap<String, EdgeProperties>();
+    private final HashMap<String, NodeProperties> nodePropertiesAttributes = new HashMap<>();
+    private final HashMap<String, EdgeProperties> edgePropertiesAttributes = new HashMap<>();
 
     public ImporterGraphML() {
         //Default node associations
@@ -148,7 +148,6 @@ public class ImporterGraphML implements FileImporter, LongTask {
             inputFactory.setXMLReporter(new XMLReporter() {
                 @Override
                 public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
-                    System.out.println("Error:" + errorType + ", message : " + message);
                 }
             });
             xmlReader = inputFactory.createXMLStreamReader(reader);

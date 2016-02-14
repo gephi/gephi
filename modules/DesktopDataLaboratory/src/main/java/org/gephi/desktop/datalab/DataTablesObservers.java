@@ -70,7 +70,7 @@ public class DataTablesObservers {
     public DataTablesObservers(Workspace workspace) {
         this.workspace = workspace;
         this.graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        this.columnObservers = new HashSet<ColumnObserver>();
+        this.columnObservers = new HashSet<>();
     }
     
     public synchronized void initialize(){

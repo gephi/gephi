@@ -43,12 +43,12 @@ package org.gephi.io.processor.plugin;
 
 import java.awt.Color;
 import org.gephi.graph.api.AttributeUtils;
-import org.gephi.graph.api.Origin;
-import org.gephi.graph.api.Table;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Origin;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.TimeMap;
 import org.gephi.graph.api.types.TimeSet;

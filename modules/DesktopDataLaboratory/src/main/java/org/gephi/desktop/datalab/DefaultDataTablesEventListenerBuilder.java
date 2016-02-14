@@ -65,7 +65,7 @@ public class DefaultDataTablesEventListenerBuilder implements DataTablesEventLis
         if (SwingUtilities.isEventDispatchThread()) {
             return (DataTableTopComponent) WindowManager.getDefault().findTopComponent("DataTableTopComponent");
         } else {
-            final List<DataTableTopComponent> listenerHolder = new ArrayList<DataTableTopComponent>();
+            final List<DataTableTopComponent> listenerHolder = new ArrayList<>();
             try {
                 //We have to do this in AWT thread...
                 //There is no support for Futures as far as I know

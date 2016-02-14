@@ -90,8 +90,8 @@ public class PreviewModelImpl implements PreviewModel {
         } else {
             this.previewController = Lookup.getDefault().lookup(PreviewController.class);
         }
-        typeMap = new HashMap<String, List<Item>>();
-        sourceMap = new HashMap<Object, Object>();
+        typeMap = new HashMap<>();
+        sourceMap = new HashMap<>();
         this.workspace = workspace;
 
         initBasicPropertyEditors();
@@ -120,7 +120,7 @@ public class PreviewModelImpl implements PreviewModel {
     private void initManagedRenderers() {
         Renderer[] registeredRenderers = previewController.getRegisteredRenderers();
 
-        Set<String> replacedRenderers = new HashSet<String>();
+        Set<String> replacedRenderers = new HashSet<>();
 
         managedRenderers = new ManagedRenderer[registeredRenderers.length];
         for (int i = 0; i < registeredRenderers.length; i++) {
@@ -136,7 +136,7 @@ public class PreviewModelImpl implements PreviewModel {
     }
 
     private void prepareManagedListeners() {
-        ArrayList<PreviewMouseListener> listeners = new ArrayList<PreviewMouseListener>();
+        ArrayList<PreviewMouseListener> listeners = new ArrayList<>();
 
         for (PreviewMouseListener listener : Lookup.getDefault().lookupAll(PreviewMouseListener.class)) {
             for (Renderer renderer : getManagedEnabledRenderers()) {
@@ -217,7 +217,7 @@ public class PreviewModelImpl implements PreviewModel {
         //Add to type map
         List<Item> typeList = typeMap.get(type);
         if (typeList == null) {
-            typeList = new ArrayList<Item>(items.length);
+            typeList = new ArrayList<>(items.length);
             typeList.addAll(Arrays.asList(items));
             typeMap.put(type, typeList);
 
@@ -304,12 +304,12 @@ public class PreviewModelImpl implements PreviewModel {
      */
     private void completeManagedRenderersListIfNecessary() {
         if (managedRenderers != null) {
-            Set<String> existing = new HashSet<String>();
+            Set<String> existing = new HashSet<>();
             for (ManagedRenderer mr : managedRenderers) {
                 existing.add(mr.getRenderer().getClass().getName());
             }
 
-            List<ManagedRenderer> completeManagedRenderersList = new ArrayList<ManagedRenderer>();
+            List<ManagedRenderer> completeManagedRenderersList = new ArrayList<>();
             completeManagedRenderersList.addAll(Arrays.asList(managedRenderers));
 
             for (Renderer renderer : previewController.getRegisteredRenderers()) {
@@ -372,7 +372,7 @@ public class PreviewModelImpl implements PreviewModel {
     @Override
     public Renderer[] getManagedEnabledRenderers() {
         if (managedRenderers != null) {
-            ArrayList<Renderer> renderers = new ArrayList<Renderer>();
+            ArrayList<Renderer> renderers = new ArrayList<>();
             for (ManagedRenderer mr : managedRenderers) {
                 if (mr.isEnabled()) {
                     renderers.add(mr.getRenderer());
@@ -445,8 +445,8 @@ public class PreviewModelImpl implements PreviewModel {
         boolean isSimpleValue = false;
         String simpleValueClass = null;
 
-        List<ManagedRenderer> managedRenderersList = new ArrayList<ManagedRenderer>();
-        Map<String, Renderer> availableRenderers = new HashMap<String, Renderer>();
+        List<ManagedRenderer> managedRenderersList = new ArrayList<>();
+        Map<String, Renderer> availableRenderers = new HashMap<>();
         for (Renderer renderer : Lookup.getDefault().lookupAll(Renderer.class)) {
             availableRenderers.put(renderer.getClass().getName(), renderer);
             Class superClass = renderer.getClass().getSuperclass();

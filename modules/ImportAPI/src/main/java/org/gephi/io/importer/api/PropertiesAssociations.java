@@ -61,11 +61,11 @@ public final class PropertiesAssociations implements Serializable {
         R, G, B, COLOR, WEIGHT, ID, LABEL, ALPHA, SOURCE, TARGET, START, END, START_OPEN, END_OPEN
     }
     //PropertiesAssociations association
-    private final List<PropertyAssociation<NodeProperties>> nodePropertyAssociations = new LinkedList<PropertyAssociation<NodeProperties>>();
-    private final List<PropertyAssociation<EdgeProperties>> edgePropertyAssociations = new LinkedList<PropertyAssociation<EdgeProperties>>();
+    private final List<PropertyAssociation<NodeProperties>> nodePropertyAssociations = new LinkedList<>();
+    private final List<PropertyAssociation<EdgeProperties>> edgePropertyAssociations = new LinkedList<>();
 
     public void addEdgePropertyAssociation(EdgeProperties property, String title) {
-        PropertyAssociation<EdgeProperties> association = new PropertyAssociation<EdgeProperties>(property, title);
+        PropertyAssociation<EdgeProperties> association = new PropertyAssociation<>(property, title);
         /*if (edgePropertyAssociations.contains(association)) {
             return;
         }
@@ -82,7 +82,7 @@ public final class PropertiesAssociations implements Serializable {
     }
 
     public void addNodePropertyAssociation(NodeProperties property, String title) {
-        PropertyAssociation<NodeProperties> association = new PropertyAssociation<NodeProperties>(property, title);
+        PropertyAssociation<NodeProperties> association = new PropertyAssociation<>(property, title);
         /*if (nodePropertyAssociations.contains(association)) {
             return;
         }

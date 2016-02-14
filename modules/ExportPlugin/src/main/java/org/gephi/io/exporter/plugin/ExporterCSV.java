@@ -115,7 +115,7 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
         if (list) {
             NodeIterable itr = graph.getNodes();
             for (Node n : itr) {
-                List<Node> neighbours = new ArrayList<Node>();
+                List<Node> neighbours = new ArrayList<>();
                 for (Edge e : graph.getEdges(n)) {
                     if (!e.isDirected() || (e.isDirected() && n == e.getSource())) {
                         Node m = graph.getOpposite(n, e);

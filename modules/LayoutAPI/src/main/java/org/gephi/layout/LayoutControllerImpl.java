@@ -41,15 +41,15 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.layout;
 
-import org.gephi.layout.spi.Layout;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutModel;
+import org.gephi.layout.spi.Layout;
 import org.gephi.project.api.ProjectController;
-import org.gephi.utils.longtask.spi.LongTask;
-import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;

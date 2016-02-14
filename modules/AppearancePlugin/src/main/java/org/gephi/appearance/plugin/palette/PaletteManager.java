@@ -88,12 +88,12 @@ public class PaletteManager {
         nodeName = "recentpartitionpalettes";
         presets = loadPresets();
         defaultPalettes = loadDefaultPalettes();
-        recentPalette = new LinkedList<Palette>();
+        recentPalette = new LinkedList<>();
         retrieve();
     }
 
     public Palette randomPalette(int colorCount) {
-        List<Color> colors = new ArrayList<Color>();
+        List<Color> colors = new ArrayList<>();
 
         Random random = new Random();
         float B = random.nextFloat() * 2 / 5f + 0.6f;
@@ -134,7 +134,7 @@ public class PaletteManager {
     }
 
     public Collection<Palette> getDefaultPalette(int colorCount) {
-        List<Palette> palettes = new ArrayList<Palette>();
+        List<Palette> palettes = new ArrayList<>();
         for (Palette p : defaultPalettes) {
             if (p.size() == colorCount) {
                 palettes.add(p);
@@ -164,7 +164,7 @@ public class PaletteManager {
     }
 
     private List<Preset> loadPresets() {
-        List<Preset> presetList = new ArrayList<Preset>();
+        List<Preset> presetList = new ArrayList<>();
         try {
             LineNumberReader reader = new LineNumberReader(new InputStreamReader(PaletteManager.class.getResourceAsStream("palette_presets.csv")));
             reader.readLine();
@@ -200,9 +200,9 @@ public class PaletteManager {
     private static Collection<Palette> loadPalettes(String fileName) throws IOException {
         LineNumberReader reader = new LineNumberReader(new InputStreamReader(PaletteManager.class.getResourceAsStream(fileName)));
         String line;
-        List<List<Color>> palettes = new ArrayList<List<Color>>();
+        List<List<Color>> palettes = new ArrayList<>();
         while ((line = reader.readLine()) != null) {
-            List<Color> palette = new ArrayList<Color>();
+            List<Color> palette = new ArrayList<>();
             String[] split = line.split(",");
             for (String colorStr : split) {
                 if (!colorStr.isEmpty()) {
@@ -213,7 +213,7 @@ public class PaletteManager {
                 palettes.add(palette);
             }
         }
-        List<Palette> result = new ArrayList<Palette>();
+        List<Palette> result = new ArrayList<>();
         for (List<Color> cls : palettes) {
             Palette plt = new Palette(cls.toArray(new Color[0]));
             result.add(plt);

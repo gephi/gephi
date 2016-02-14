@@ -64,7 +64,7 @@ public abstract class AbstractQueryImpl implements Query {
     protected Graph result;
 
     public AbstractQueryImpl() {
-        this.children = new ArrayList<AbstractQueryImpl>();
+        this.children = new ArrayList<>();
     }
 
     @Override
@@ -132,8 +132,8 @@ public abstract class AbstractQueryImpl implements Query {
     }
 
     public AbstractQueryImpl[] getLeaves() {
-        ArrayList<AbstractQueryImpl> leaves = new ArrayList<AbstractQueryImpl>();
-        Deque<Query> stack = new ArrayDeque<Query>();
+        ArrayList<AbstractQueryImpl> leaves = new ArrayList<>();
+        Deque<Query> stack = new ArrayDeque<>();
         stack.add(this);
         while (!stack.isEmpty()) {
             AbstractQueryImpl query = (AbstractQueryImpl) stack.pop();
@@ -167,8 +167,8 @@ public abstract class AbstractQueryImpl implements Query {
 
     @Override
     public Query[] getQueries(Class<? extends Filter> filterClass) {
-        List<Query> r = new LinkedList<Query>();
-        LinkedList<Query> stack = new LinkedList<Query>();
+        List<Query> r = new LinkedList<>();
+        LinkedList<Query> stack = new LinkedList<>();
         stack.add(this);
         while (!stack.isEmpty()) {
             Query q = stack.pop();
@@ -186,8 +186,8 @@ public abstract class AbstractQueryImpl implements Query {
 
     @Override
     public Query[] getDescendantsAndSelf() {
-        List<Query> r = new LinkedList<Query>();
-        LinkedList<Query> stack = new LinkedList<Query>();
+        List<Query> r = new LinkedList<>();
+        LinkedList<Query> stack = new LinkedList<>();
         stack.add(this);
         while (!stack.isEmpty()) {
             Query q = stack.pop();

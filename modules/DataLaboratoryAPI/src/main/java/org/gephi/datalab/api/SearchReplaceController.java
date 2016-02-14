@@ -44,8 +44,8 @@ package org.gephi.datalab.api;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.datatables.DataTablesController;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -114,7 +114,7 @@ public interface SearchReplaceController {
         private Node[] nodesToSearch;
         private Edge[] edgesToSearch;
         private Integer startingRow = null, startingColumn = null;
-        private HashSet<Integer> columnsToSearch = new HashSet<Integer>();
+        private HashSet<Integer> columnsToSearch = new HashSet<>();
         private boolean loopToBeginning = true;
         private Pattern regexPattern;
         private boolean useRegexReplaceMode = false;

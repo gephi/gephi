@@ -43,16 +43,16 @@ package org.gephi.datalab.impl;
 
 import java.util.Set;
 import java.util.regex.Matcher;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.api.SearchReplaceController;
 import org.gephi.datalab.api.SearchReplaceController.SearchResult;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 

@@ -348,7 +348,7 @@ public class RichTooltip {
      */
     public void addDescriptionSection(String section) {
         if (this.descriptionSections == null) {
-            this.descriptionSections = new LinkedList<String>();
+            this.descriptionSections = new LinkedList<>();
         }
         this.descriptionSections.add(section);
     }
@@ -375,7 +375,7 @@ public class RichTooltip {
      */
     public void addFooterSection(String section) {
         if (this.footerSections == null) {
-            this.footerSections = new LinkedList<String>();
+            this.footerSections = new LinkedList<>();
         }
         this.footerSections.add(section);
     }

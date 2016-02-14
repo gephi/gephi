@@ -43,7 +43,6 @@ package org.gephi.desktop.timeline;
 
 import javax.swing.JComponent;
 import org.gephi.desktop.banner.perspective.spi.BottomComponent;
-import org.gephi.visualization.VizController;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

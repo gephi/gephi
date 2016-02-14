@@ -78,7 +78,7 @@ public class PaletteGenerator {
 
         double[][] kMeans = generateRandomKmeans(colorsCount, random, filter);
 
-        List<double[]> colorSamples = new ArrayList<double[]>();
+        List<double[]> colorSamples = new ArrayList<>();
         if (ultraPrecision) {
             for (double l = 0; l <= 1; l += 0.01) {
                 for (double a = -1; a <= 1; a += 0.05) {
@@ -168,7 +168,7 @@ public class PaletteGenerator {
                     }
                     kMeans[j] = colorSamples.get(closest);
                 }
-                List<double[]> newFreeColorSamples = new ArrayList<double[]>();
+                List<double[]> newFreeColorSamples = new ArrayList<>();
                 for (double[] color : freeColorSamples) {
                     double[] kMean = kMeans[j];
                     if (color[0] != kMean[0]
@@ -203,8 +203,8 @@ public class PaletteGenerator {
     }
 
     private static double[][] sortColors(double[][] colors) {
-        LinkedList<double[]> colorsToSort = new LinkedList<double[]>(Arrays.asList(colors));
-        List<double[]> diffColors = new ArrayList<double[]>();
+        LinkedList<double[]> colorsToSort = new LinkedList<>(Arrays.asList(colors));
+        List<double[]> diffColors = new ArrayList<>();
         diffColors.add(colorsToSort.pop());
         while (colorsToSort.size() > 0) {
             int index = -1;

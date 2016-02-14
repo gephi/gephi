@@ -61,7 +61,7 @@ public class ProjectsImpl implements Projects, Serializable {
     private final AtomicInteger projectIds;
 
     public ProjectsImpl() {
-        projects = new ArrayList<Project>();
+        projects = new ArrayList<>();
         projectIds = new AtomicInteger(1);
     }
 

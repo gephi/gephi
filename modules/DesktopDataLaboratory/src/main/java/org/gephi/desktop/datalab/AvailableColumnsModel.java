@@ -57,8 +57,8 @@ import org.gephi.graph.api.Table;
 public class AvailableColumnsModel {
 
     private static final int MAX_AVAILABLE_COLUMNS = 20;
-    private final Set<Column> availableColumns = new HashSet<Column>();
-    private final Set<Column> allKnownColumns = new HashSet<Column>();
+    private final Set<Column> availableColumns = new HashSet<>();
+    private final Set<Column> allKnownColumns = new HashSet<>();
     private final Table table;
 
     public AvailableColumnsModel(Table table) {
@@ -118,7 +118,7 @@ public class AvailableColumnsModel {
      * @return
      */
     public Column[] getAvailableColumns() {
-        List<Column> availableColumnsList = new ArrayList<Column>();
+        List<Column> availableColumnsList = new ArrayList<>();
         for (Column column : table) {
             if(availableColumns.contains(column)){
                 availableColumnsList.add(column);
@@ -135,7 +135,7 @@ public class AvailableColumnsModel {
      * Syncronizes this AvailableColumnsModel to contain the table current columns, checking for deleted and new columns.
      */
     public synchronized void syncronizeTableColumns() {
-        Set<Column> availableColumnsCopy = new HashSet<Column>(availableColumns);
+        Set<Column> availableColumnsCopy = new HashSet<>(availableColumns);
         
         removeAllColumns();
         

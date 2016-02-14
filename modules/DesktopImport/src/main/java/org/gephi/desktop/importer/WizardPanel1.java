@@ -99,7 +99,7 @@ public class WizardPanel1 implements WizardDescriptor.ValidatingPanel {
 //
 //    public final void removeChangeListener(ChangeListener l) {
 //    }
-    private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1); // or can use ChangeSupport in NB 6.0
+    private final Set<ChangeListener> listeners = new HashSet<>(1); // or can use ChangeSupport in NB 6.0
 
     @Override
     public final void addChangeListener(ChangeListener l) {
@@ -118,7 +118,7 @@ public class WizardPanel1 implements WizardDescriptor.ValidatingPanel {
     protected final void fireChangeEvent() {
         Iterator<ChangeListener> it;
         synchronized (listeners) {
-            it = new HashSet<ChangeListener>(listeners).iterator();
+            it = new HashSet<>(listeners).iterator();
         }
         ChangeEvent ev = new ChangeEvent(this);
         while (it.hasNext()) {

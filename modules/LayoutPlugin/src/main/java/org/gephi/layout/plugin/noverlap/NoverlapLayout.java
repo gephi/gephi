@@ -230,7 +230,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
 
     @Override
     public LayoutProperty[] getProperties() {
-        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        List<LayoutProperty> properties = new ArrayList<>();
         final String NOVERLAP_CATEGORY = "Noverlap";
         try {
             properties.add(LayoutProperty.createProperty(
@@ -299,12 +299,12 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         //Param
         private final int COLUMNS_ROWS = 20;
         //Data
-        private final Map<Cell, List<Node>> data = new HashMap<Cell, List<Node>>();
+        private final Map<Cell, List<Node>> data = new HashMap<>();
 
         public SpatialGrid() {
             for (int row = 0; row < COLUMNS_ROWS; row++) {
                 for (int col = 0; col < COLUMNS_ROWS; col++) {
-                    List<Node> localnodes = new ArrayList<Node>();
+                    List<Node> localnodes = new ArrayList<>();
                     data.put(new Cell(row, col), localnodes);
                 }
             }
@@ -345,10 +345,8 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                     } catch (Exception e) {
                         //e.printStackTrace();
                         if (nxmin < xmin || nxmax > xmax) {
-                            System.err.println("Xerr0r* - " + node.getId() + " - nxmin=" + nxmin + " this.xmin=" + xmin + " nxmax=" + nxmax + " this.xmax=" + xmax);
                         }
                         if (nymin < ymin || nymax > ymax) {
-                            System.err.println("Yerr0r* - " + node.getId() + " - nymin=" + nymin + " this.ymin=" + ymin + " nymax=" + nymax + " this.ymax=" + ymax);
                         }
                     }
                 }

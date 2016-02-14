@@ -131,8 +131,8 @@ public class UNIONBuilder implements FilterBuilder {
 
         @Override
         public Graph filter(Graph graph, Filter[] filters) {
-            List<NodeFilter> nodeFilters = new ArrayList<NodeFilter>();
-            List<EdgeFilter> edgeFilters = new ArrayList<EdgeFilter>();
+            List<NodeFilter> nodeFilters = new ArrayList<>();
+            List<EdgeFilter> edgeFilters = new ArrayList<>();
             for (Filter f : filters) {
                 if (f instanceof NodeFilter) {
                     nodeFilters.add((NodeFilter) f);
@@ -147,7 +147,7 @@ public class UNIONBuilder implements FilterBuilder {
                         itr.remove();
                     }
                 }
-                List<Node> nodesToRemove = new ArrayList<Node>();
+                List<Node> nodesToRemove = new ArrayList<>();
                 for (Node n : graph.getNodes()) {
                     boolean remove = true;
                     for (NodeFilter nf : nodeFilters) {
@@ -174,7 +174,7 @@ public class UNIONBuilder implements FilterBuilder {
                         itr.remove();
                     }
                 }
-                List<Edge> edgesToRemove = new ArrayList<Edge>();
+                List<Edge> edgesToRemove = new ArrayList<>();
                 for (Edge e : graph.getEdges()) {
                     boolean remove = true;
                     for (EdgeFilter ef : edgeFilters) {

@@ -41,8 +41,6 @@
  */
 package org.gephi.desktop.datalab.tables;
 
-import org.gephi.desktop.datalab.tables.columns.ElementDataColumn;
-import org.gephi.desktop.datalab.tables.columns.PropertyDataColumn;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -52,6 +50,8 @@ import javax.swing.event.ListSelectionListener;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.desktop.datalab.DataTablesModel;
+import org.gephi.desktop.datalab.tables.columns.ElementDataColumn;
+import org.gephi.desktop.datalab.tables.columns.PropertyDataColumn;
 import org.gephi.desktop.datalab.tables.popup.NodesPopupAdapter;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -109,7 +109,7 @@ public final class NodesDataTable extends AbstractElementsDataTable<Node> {
     
     
 
-    private final List<PropertyDataColumn<Node>> propertiesColumns = new ArrayList<PropertyDataColumn<Node>>();
+    private final List<PropertyDataColumn<Node>> propertiesColumns = new ArrayList<>();
 
     @Override
     public List<? extends ElementDataColumn<Node>> getFakeDataColumns(GraphModel graphModel, DataTablesModel dataTablesModel) {

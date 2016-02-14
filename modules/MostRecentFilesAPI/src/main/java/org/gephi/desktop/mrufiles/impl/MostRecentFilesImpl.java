@@ -70,7 +70,7 @@ public class MostRecentFilesImpl implements MostRecentFiles {
     public MostRecentFilesImpl() {
         nodeName = "mrufiles";
         maxSize = 9; // default is 9
-        mruFileList = new ArrayList<String>(maxSize);
+        mruFileList = new ArrayList<>(maxSize);
         listenerList = new EventListenerList();
         retrieve();
     }

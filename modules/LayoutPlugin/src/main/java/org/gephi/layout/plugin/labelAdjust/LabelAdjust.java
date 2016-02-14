@@ -109,7 +109,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         ymin = Float.MAX_VALUE;
         ymax = Float.MIN_VALUE;
 
-        List<Node> correctNodes = new ArrayList<Node>();
+        List<Node> correctNodes = new ArrayList<>();
         for (Node n : nodes) {
             float x = n.x();
             float y = n.y();
@@ -269,7 +269,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
 
     @Override
     public LayoutProperty[] getProperties() {
-        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        List<LayoutProperty> properties = new ArrayList<>();
         final String LABELADJUST_CATEGORY = "LabelAdjust";
         try {
             properties.add(LayoutProperty.createProperty(
@@ -319,7 +319,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
             this.index = index;
             this.row = row;
             this.col = col;
-            this.nodes = new ArrayList<Node>();
+            this.nodes = new ArrayList<>();
         }
 
         public List<Node> getNodes() {
@@ -394,7 +394,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
                 return quads[0].getNodes();
             }
 
-            List<Node> adjNodes = new ArrayList<Node>();
+            List<Node> adjNodes = new ArrayList<>();
             int left = Math.max(0, col - 1);
             int top = Math.max(0, row - 1);
             int right = Math.min(COLUMNS - 1, col + 1);

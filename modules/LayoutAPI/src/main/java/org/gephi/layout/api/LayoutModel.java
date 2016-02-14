@@ -41,9 +41,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 */
 package org.gephi.layout.api;
 
+import java.beans.PropertyChangeListener;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
-import java.beans.PropertyChangeListener;
 import org.gephi.project.api.Workspace;
 
 /**

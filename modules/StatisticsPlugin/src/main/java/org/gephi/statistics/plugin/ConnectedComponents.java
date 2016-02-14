@@ -47,7 +47,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
@@ -56,6 +55,7 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -136,12 +136,12 @@ public class ConnectedComponents implements Statistics, LongTask {
 
         int seenCount = 0;
 
-        LinkedList<LinkedList<Node>> components = new LinkedList<LinkedList<Node>>();
+        LinkedList<LinkedList<Node>> components = new LinkedList<>();
         while (seenCount < N) {
             //The search Q
-            LinkedList<Node> Q = new LinkedList<Node>();
+            LinkedList<Node> Q = new LinkedList<>();
             //The component-list
-            LinkedList<Node> component = new LinkedList<Node>();
+            LinkedList<Node> component = new LinkedList<>();
 
             //Seed the seach Q
             NodeIterable iter = graph.getNodes();
@@ -157,7 +157,7 @@ public class ConnectedComponents implements Statistics, LongTask {
             while (!Q.isEmpty()) {
                 if (isCanceled) {
                     graph.readUnlock();
-                    return new LinkedList<LinkedList<Node>>();
+                    return new LinkedList<>();
                 }
                 //Get the next Node and add it to the component list
                 Node u = Q.removeFirst();
@@ -198,7 +198,7 @@ public class ConnectedComponents implements Statistics, LongTask {
     }
 
     public HashMap<Node, Integer> createIndiciesMap(Graph hgraph) {
-        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<>();
         int index = 0;
         for (Node s : hgraph.getNodes()) {
             indicies.put(s, index);
@@ -250,7 +250,7 @@ public class ConnectedComponents implements Statistics, LongTask {
 
     public LinkedList<LinkedList<Node>> top_tarjans(DirectedGraph graph, HashMap<Node, Integer> indicies) {
 
-        LinkedList<LinkedList<Node>> allComponents = new LinkedList<LinkedList<Node>>();
+        LinkedList<LinkedList<Node>> allComponents = new LinkedList<>();
 
         count = 1;
         stronglyCount = 0;
@@ -261,7 +261,7 @@ public class ConnectedComponents implements Statistics, LongTask {
 
         while (true) {
             //The search Q
-            LinkedList<Node> S = new LinkedList<Node>();
+            LinkedList<Node> S = new LinkedList<>();
             //The component-list
             //LinkedList<Node> component = new LinkedList<Node>();
             //Seed the seach Q
@@ -278,7 +278,7 @@ public class ConnectedComponents implements Statistics, LongTask {
                 return allComponents;
             }
 
-            LinkedList<LinkedList<Node>> components = new LinkedList<LinkedList<Node>>();
+            LinkedList<LinkedList<Node>> components = new LinkedList<>();
             components = tarjans(components, S, graph, first, index, low_index, indicies);
             for (LinkedList<Node> component : components) {
                 allComponents.add(component);
@@ -303,7 +303,7 @@ public class ConnectedComponents implements Statistics, LongTask {
                 low_index[id] = Math.min(low_index[id], index[x]);
             }
         }
-        LinkedList<Node> currentComponent = new LinkedList<Node>();
+        LinkedList<Node> currentComponent = new LinkedList<>();
         if (low_index[id] == index[id]) {
             Node v = null;
             while (v != f) {
@@ -365,7 +365,7 @@ public class ConnectedComponents implements Statistics, LongTask {
 
     @Override
     public String getReport() {
-        Map<Integer, Integer> sizeDist = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> sizeDist = new HashMap<>();
         for (int v : componentsSize) {
             if (!sizeDist.containsKey(v)) {
                 sizeDist.put(v, 0);

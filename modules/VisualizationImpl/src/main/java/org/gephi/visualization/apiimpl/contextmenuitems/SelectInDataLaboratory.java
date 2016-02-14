@@ -45,7 +45,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.Icon;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.graph.api.Graph;
-//import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.util.ImageUtilities;

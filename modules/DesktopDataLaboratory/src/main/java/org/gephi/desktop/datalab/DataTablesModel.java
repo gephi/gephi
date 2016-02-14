@@ -41,9 +41,9 @@
  */
 package org.gephi.desktop.datalab;
 
-import org.gephi.graph.api.Table;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Table;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 

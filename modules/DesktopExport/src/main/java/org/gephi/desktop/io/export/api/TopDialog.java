@@ -195,7 +195,7 @@ class TopDialog extends JDialog {
     }
 
     public void updateOptions() {
-        Set<Object> addedOptions = new HashSet<Object>(5);
+        Set<Object> addedOptions = new HashSet<>(5);
         Object[] options = nd.getOptions();
 
         if (options == null) {

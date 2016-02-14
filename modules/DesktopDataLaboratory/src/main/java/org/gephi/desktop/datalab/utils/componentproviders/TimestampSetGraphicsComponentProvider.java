@@ -1,8 +1,8 @@
 package org.gephi.desktop.datalab.utils.componentproviders;
 
 import org.gephi.desktop.datalab.utils.GraphModelProvider;
-import org.gephi.graph.api.types.TimestampSet;
 import org.gephi.graph.api.types.TimeSet;
+import org.gephi.graph.api.types.TimestampSet;
 import org.jdesktop.swingx.JXTable;
 
 /**

@@ -34,8 +34,8 @@ public class IntervalMapSparklinesGraphicsComponentProvider extends AbstractSpar
     public Number[][] getSparklinesXAndYNumbers(Object value) {
         IntervalMap intervalMap = (IntervalMap) value;
 
-        ArrayList<Number> xValues = new ArrayList<Number>();
-        ArrayList<Number> yValues = new ArrayList<Number>();
+        ArrayList<Number> xValues = new ArrayList<>();
+        ArrayList<Number> yValues = new ArrayList<>();
         if (intervalMap == null) {
             return new Number[2][0];
         }

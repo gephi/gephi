@@ -154,9 +154,7 @@ public class Combine implements Runnable {
         for (Node node : nodes) {
             String xStr = formatter.format((double) node.x);
             String yStr = formatter.format((double) node.y);
-            System.out.print("(" + xStr + "-" + yStr + "),");
         }
-        System.out.println();
     }
 
     public float getTotEnergy() {

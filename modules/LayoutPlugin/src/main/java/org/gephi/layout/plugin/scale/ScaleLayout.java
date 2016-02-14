@@ -98,7 +98,7 @@ public class ScaleLayout extends AbstractLayout implements Layout {
 
     @Override
     public LayoutProperty[] getProperties() {
-        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        List<LayoutProperty> properties = new ArrayList<>();
         try {
             properties.add(LayoutProperty.createProperty(
                     this, Double.class,

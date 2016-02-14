@@ -1,14 +1,14 @@
 package org.gephi.visualization.octree;
 
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.glu.GLU;
 import org.gephi.graph.api.Node;
 import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.GraphLimits;
@@ -49,7 +49,7 @@ public class Octree {
         this.garbageQueue = new IntRBTreeSet();
         this.maxDepth = maxDepth;
         this.size = size;
-        this.selectedLeaves = new ArrayList<Octant>();
+        this.selectedLeaves = new ArrayList<>();
         this.nodeIterator = new OctantIterator();
         this.edgeIterator = new EdgeIterator(null);
         this.selectableIterator = new SelectableIterator();
@@ -102,7 +102,7 @@ public class Octree {
     }
 
     public boolean repositionNodes() {
-        List<NodeModel> movedNodes = new ArrayList<NodeModel>();
+        List<NodeModel> movedNodes = new ArrayList<>();
         for (int i = 0; i < length; i++) {
             Octant leaf = leaves[i];
             if (leaf != null) {
@@ -337,7 +337,7 @@ public class Octree {
             gl.glMatrixMode(GL2.GL_MODELVIEW);
 
             //Draw the nodes' cube int the select buffer
-            List<Octant> visibleLeavesList = new ArrayList<Octant>();
+            List<Octant> visibleLeavesList = new ArrayList<>();
             for (Octant n : leaves) {
                 if (n != null && n.visible) {
                     int i = visibleLeavesList.size() + 1;

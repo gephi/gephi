@@ -42,7 +42,6 @@
 package org.gephi.visualization.bridge;
 
 import java.util.Arrays;
-import java.util.List;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.ColumnObserver;
 import org.gephi.graph.api.Edge;

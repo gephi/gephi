@@ -49,12 +49,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.columns.ui.ColumnValuesFrequencyUI;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulatorUI;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.gephi.utils.HTMLEscape;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
@@ -119,7 +119,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
     public String getReportHTML(Table table, Column column, Map<Object, Integer> valuesFrequencies, JFreeChart pieChart, Dimension dimension) {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         int totalValuesCount = ac.getTableRowsCount(table);
-        ArrayList<Object> values = new ArrayList<Object>(valuesFrequencies.keySet());
+        ArrayList<Object> values = new ArrayList<>(valuesFrequencies.keySet());
 
         //Try to sort the values when they are comparable. (All objects of the set will have the same type) and not null:
         if (!values.isEmpty() && values.get(0) instanceof Comparable) {
@@ -201,7 +201,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
     }
 
     public JFreeChart buildPieChart(final Map<Object, Integer> valuesFrequencies) {
-        final ArrayList<Object> values= new ArrayList<Object>(valuesFrequencies.keySet());
+        final ArrayList<Object> values= new ArrayList<>(valuesFrequencies.keySet());
         DefaultPieDataset pieDataset = new DefaultPieDataset();
 
         for (Object value : values) {

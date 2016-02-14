@@ -512,6 +512,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             }
         }
     }
+    @Override
     public Project getCurrentProject() {
         return controller.getCurrentProject();
     }

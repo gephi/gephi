@@ -45,9 +45,9 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import net.miginfocom.swing.MigLayout;
+import org.gephi.datalab.api.datatables.AttributeTableCSVExporter;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Table;
-import org.gephi.datalab.api.datatables.AttributeTableCSVExporter;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
@@ -99,7 +99,7 @@ public class CSVExportUI extends javax.swing.JPanel {
         columnsPanel.removeAll();
         columnsPanel.setLayout(new MigLayout("", "[pref!]"));
         
-        ArrayList<ColumnCheckboxWrapper> columnCheckboxesList = new ArrayList<ColumnCheckboxWrapper>();
+        ArrayList<ColumnCheckboxWrapper> columnCheckboxesList = new ArrayList<>();
         
         //In case of edges table, we need to include fake source, target and type columns:
         if(edgesTable){
@@ -136,7 +136,7 @@ public class CSVExportUI extends javax.swing.JPanel {
     }
 
     public Integer[] getSelectedColumnsIndexes() {
-        ArrayList<Integer> columnsIndexes = new ArrayList<Integer>();
+        ArrayList<Integer> columnsIndexes = new ArrayList<>();
         for (int i = 0; i < columnsCheckBoxes.length; i++) {
             if (columnsCheckBoxes[i].isSelected()) {
                 columnsIndexes.add(columnsCheckBoxes[i].index);

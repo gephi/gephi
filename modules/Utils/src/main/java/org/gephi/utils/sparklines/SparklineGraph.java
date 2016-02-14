@@ -131,7 +131,7 @@ public class SparklineGraph {
         Color highlightMaxColor = parameters.getHighlightMaxColor();
         int width = parameters.getWidth();
         int height = parameters.getHeight();
-        ArrayList<HighlightParameters> highlightsList = new ArrayList<HighlightParameters>();
+        ArrayList<HighlightParameters> highlightsList = new ArrayList<>();
         Color highlightValueColor = parameters.getHighligtValueColor() != null ? parameters.getHighligtValueColor() : SparklineParameters.DEFAULT_HIGHLIGHT_VALUE_COLOR;
         Integer highlightedValueXPosition = parameters.getHighlightedValueXPosition();
         String highlightedValueText = null;

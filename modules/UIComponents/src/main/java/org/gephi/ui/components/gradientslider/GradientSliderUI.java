@@ -56,7 +56,6 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
-
 import javax.swing.JComponent;
 
 /**

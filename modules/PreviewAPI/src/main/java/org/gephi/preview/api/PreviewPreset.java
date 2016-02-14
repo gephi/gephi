@@ -44,8 +44,6 @@ package org.gephi.preview.api;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import org.gephi.preview.presets.DefaultPreset;
 
 /**
  * Read only set of {@link PreviewProperty} values.
@@ -58,7 +56,7 @@ public class PreviewPreset implements Comparable<PreviewPreset> {
     protected final String name;
 
     public PreviewPreset(String name) {
-        properties = new HashMap<String, Object>();
+        properties = new HashMap<>();
         this.name = name;
     }
 

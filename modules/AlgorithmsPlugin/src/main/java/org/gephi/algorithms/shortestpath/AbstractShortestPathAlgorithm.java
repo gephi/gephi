@@ -44,7 +44,6 @@ package org.gephi.algorithms.shortestpath;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
@@ -61,8 +60,8 @@ public abstract class AbstractShortestPathAlgorithm {
 
     public AbstractShortestPathAlgorithm(Node sourceNode) {
         this.sourceNode = sourceNode;
-        colors = new HashMap<Node, Color>();
-        distances = new HashMap<Node, Double>();
+        colors = new HashMap<>();
+        distances = new HashMap<>();
     }
 
     protected boolean relax(Edge edge) {

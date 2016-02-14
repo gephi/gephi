@@ -45,7 +45,6 @@ import javax.swing.JPanel;
 import org.gephi.io.exporter.plugin.ExporterVNA;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
-import org.gephi.io.exporter.spi.GraphExporter;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

@@ -41,8 +41,6 @@
  */
 package org.gephi.desktop.datalab.tables;
 
-import org.gephi.desktop.datalab.tables.columns.ElementDataColumn;
-import org.gephi.desktop.datalab.tables.columns.PropertyDataColumn;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -52,6 +50,8 @@ import javax.swing.event.ListSelectionListener;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.edges.EdgesManipulator;
 import org.gephi.desktop.datalab.DataTablesModel;
+import org.gephi.desktop.datalab.tables.columns.ElementDataColumn;
+import org.gephi.desktop.datalab.tables.columns.PropertyDataColumn;
 import org.gephi.desktop.datalab.tables.popup.EdgesPopupAdapter;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
@@ -176,7 +176,7 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
 
     @Override
     public List<? extends ElementDataColumn<Edge>> getFakeDataColumns(GraphModel graphModel, DataTablesModel dataTablesModel) {
-        ArrayList<PropertyDataColumn<Edge>> propertiesColumns = new ArrayList<PropertyDataColumn<Edge>>();
+        ArrayList<PropertyDataColumn<Edge>> propertiesColumns = new ArrayList<>();
 
         propertiesColumns.add(SOURCE_COLUMN);
         propertiesColumns.add(TARGET_COLUMN);

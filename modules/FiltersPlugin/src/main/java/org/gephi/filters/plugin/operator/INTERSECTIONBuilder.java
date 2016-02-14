@@ -132,8 +132,8 @@ public class INTERSECTIONBuilder implements FilterBuilder {
 
         @Override
         public Graph filter(Graph graph, Filter[] filters) {
-            List<NodeFilter> nodeFilters = new ArrayList<NodeFilter>();
-            List<EdgeFilter> edgeFilters = new ArrayList<EdgeFilter>();
+            List<NodeFilter> nodeFilters = new ArrayList<>();
+            List<EdgeFilter> edgeFilters = new ArrayList<>();
             for (Filter f : filters) {
                 if (f instanceof NodeFilter) {
                     nodeFilters.add((NodeFilter) f);
@@ -148,7 +148,7 @@ public class INTERSECTIONBuilder implements FilterBuilder {
                         itr.remove();
                     }
                 }
-                List<Node> nodesToRemove = new ArrayList<Node>();
+                List<Node> nodesToRemove = new ArrayList<>();
                 for (Node n : graph.getNodes()) {
                     for (NodeFilter nf : nodeFilters) {
                         if (!nf.evaluate(graph, n)) {
@@ -173,7 +173,7 @@ public class INTERSECTIONBuilder implements FilterBuilder {
                         itr.remove();
                     }
                 }
-                List<Edge> edgesToRemove = new ArrayList<Edge>();
+                List<Edge> edgesToRemove = new ArrayList<>();
                 for (Edge e : graph.getEdges()) {
                     for (EdgeFilter ef : edgeFilters) {
                         if (!ef.evaluate(graph, e)) {

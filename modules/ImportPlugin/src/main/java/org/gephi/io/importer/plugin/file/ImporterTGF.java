@@ -93,8 +93,8 @@ public class ImporterTGF implements FileImporter, LongTask {
     private void importData(LineNumberReader reader) throws Exception {
         Progress.start(progressTicket);        //Progress
 
-        List<String> nodes = new ArrayList<String>();
-        List<String> edges = new ArrayList<String>();
+        List<String> nodes = new ArrayList<>();
+        List<String> edges = new ArrayList<>();
         boolean isNode = true;
         for (; reader.ready();) {
             String line = reader.readLine().trim();

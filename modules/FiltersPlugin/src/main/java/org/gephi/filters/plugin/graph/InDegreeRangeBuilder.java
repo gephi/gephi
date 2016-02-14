@@ -129,7 +129,7 @@ public class InDegreeRangeBuilder implements FilterBuilder {
         @Override
         public Number[] getValues(Graph graph) {
             DirectedGraph dgraph = (DirectedGraph) graph;
-            List<Integer> values = new ArrayList<Integer>(dgraph.getNodeCount());
+            List<Integer> values = new ArrayList<>(dgraph.getNodeCount());
             for (Node n : dgraph.getNodes()) {
                 int degree = dgraph.getInDegree(n);
                 values.add(degree);

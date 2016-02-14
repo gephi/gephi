@@ -128,7 +128,7 @@ public class DegreeRangeBuilder implements FilterBuilder {
 
         @Override
         public Number[] getValues(Graph graph) {
-            List<Integer> values = new ArrayList<Integer>(graph.getNodeCount());
+            List<Integer> values = new ArrayList<>(graph.getNodeCount());
             for (Node n : graph.getNodes()) {
                 int degree = graph.getDegree(n);
                 values.add(degree);

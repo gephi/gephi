@@ -50,9 +50,9 @@ import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.io.importer.spi.Importer;
 import org.gephi.io.importer.spi.ImporterUI;
 import org.gephi.io.importer.spi.ImporterWizardUI;
+import org.gephi.io.importer.spi.WizardImporter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.Workspace;
-import org.gephi.io.importer.spi.WizardImporter;
 
 /**
  * Manage and control the import execution low.

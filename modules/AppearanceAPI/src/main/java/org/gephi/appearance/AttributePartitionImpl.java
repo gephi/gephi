@@ -78,7 +78,7 @@ public class AttributePartitionImpl extends PartitionImpl {
         this.column = column;
         this.index = null;
         this.graph = graph;
-        this.parts = new HashMap<Object, Integer>();
+        this.parts = new HashMap<>();
     }
 
     @Override

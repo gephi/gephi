@@ -42,9 +42,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import javax.swing.Icon;
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;

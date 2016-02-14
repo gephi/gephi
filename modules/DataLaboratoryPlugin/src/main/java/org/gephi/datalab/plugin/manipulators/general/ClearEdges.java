@@ -78,7 +78,7 @@ public class ClearEdges implements PluginGeneralActionsManipulator {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
         
-        List<Edge> edges = new ArrayList<Edge>();
+        List<Edge> edges = new ArrayList<>();
         for (Edge edge : graph.getEdges().toArray()) {
             if (edge.isDirected()) {
                 if(deleteDirected){

@@ -253,8 +253,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeAttributes(XMLStreamWriter xmlWriter, Table table) throws Exception {
-        List<Column> staticCols = new ArrayList<Column>();
-        List<Column> dynamicCols = new ArrayList<Column>();
+        List<Column> staticCols = new ArrayList<>();
+        List<Column> dynamicCols = new ArrayList<>();
         String attClass = table.getElementClass().equals(Node.class) ? "node" : "edge";
 
         for (Column col : table) {
@@ -429,7 +429,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeAttValues(XMLStreamWriter xmlWriter, Graph graph, Element element) throws Exception {
-        List<Column> columns = new ArrayList<Column>();
+        List<Column> columns = new ArrayList<>();
         for (Column column : element.getAttributeColumns()) {
             if ((exportAttributes && !column.isProperty()) || (element instanceof Edge && ((Edge) element).hasDynamicWeight() && column.getId().equals("weight"))) {
                 columns.add(column);

@@ -42,7 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.io.importer.api;
 
 import java.io.Serializable;
-
 import org.gephi.io.database.drivers.SQLDriver;
 
 /**

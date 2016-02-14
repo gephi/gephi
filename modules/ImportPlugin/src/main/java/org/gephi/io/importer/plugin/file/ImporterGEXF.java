@@ -136,7 +136,6 @@ public class ImporterGEXF implements FileImporter, LongTask {
             inputFactory.setXMLReporter(new XMLReporter() {
                 @Override
                 public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
-                    System.out.println("Error:" + errorType + ", message : " + message);
                 }
             });
             xmlReader = inputFactory.createXMLStreamReader(reader);

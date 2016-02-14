@@ -66,10 +66,10 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.ElementIterable;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.Index;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphObserver;
+import org.gephi.graph.api.Index;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Table;
 import org.gephi.graph.api.types.TimeMap;
@@ -96,7 +96,7 @@ public class AppearanceModelImpl implements AppearanceModel {
     private final Object functionLock;
     //
     private final FunctionsModel functionsMain;
-    private final Map<Graph, FunctionsModel> functions = new HashMap<Graph, FunctionsModel>();
+    private final Map<Graph, FunctionsModel> functions = new HashMap<>();
     //Forced
     private final Set<String> forcedRanking;
     private final Set<String> forcedPartition;
@@ -110,9 +110,9 @@ public class AppearanceModelImpl implements AppearanceModel {
         this.transformerUIs = initTransformerUIs();
         this.nodeTransformers = initNodeTransformers();
         this.edgeTransformers = initEdgeTransformers();
-        this.forcedPartition = new HashSet<String>();
-        this.forcedRanking = new HashSet<String>();
-        this.forcedColumnsRefresh = new ArrayList<Column>();
+        this.forcedPartition = new HashSet<>();
+        this.forcedRanking = new HashSet<>();
+        this.forcedColumnsRefresh = new ArrayList<>();
 
         //Functions
         functionsMain = new FunctionsModel(graphModel.getGraph());
@@ -444,7 +444,7 @@ public class AppearanceModelImpl implements AppearanceModel {
 
         private List<Function> getFunctions(ElementFunctionsModel model) {
             model.refreshFunctions();
-            List<Function> functions = new ArrayList<Function>();
+            List<Function> functions = new ArrayList<>();
             functions.addAll(model.simpleFunctions.values());
             functions.addAll(model.graphFunctions.values());
             functions.addAll(model.attributeFunctions.values());
@@ -465,13 +465,13 @@ public class AppearanceModelImpl implements AppearanceModel {
 
         protected ElementFunctionsModel(Graph graph) {
             this.graph = graph;
-            simpleFunctions = new HashMap<String, SimpleFunctionImpl>();
-            graphFunctions = new HashMap<String, GraphFunctionImpl>();
-            attributeFunctions = new HashMap<String, AttributeFunctionImpl>();
-            columnObservers = new HashMap<Column, ColumnObserver>();
+            simpleFunctions = new HashMap<>();
+            graphFunctions = new HashMap<>();
+            attributeFunctions = new HashMap<>();
+            columnObservers = new HashMap<>();
             graphObserver = graph.getModel().createGraphObserver(graph, false);
-            partitions = new HashMap<String, PartitionImpl>();
-            rankings = new HashMap<String, RankingImpl>();
+            partitions = new HashMap<>();
+            rankings = new HashMap<>();
 
             // Init simple
             initSimpleFunctions();
@@ -509,7 +509,7 @@ public class AppearanceModelImpl implements AppearanceModel {
         }
 
         private void refreshAttributeFunctions(boolean graphHasChanged) {
-            Set<Column> columns = new HashSet<Column>();
+            Set<Column> columns = new HashSet<>();
             for (Column column : getTable()) {
                 if (!column.isProperty()) {
                     columns.add(column);
@@ -533,7 +533,7 @@ public class AppearanceModelImpl implements AppearanceModel {
             }
 
             //Get columns to be refreshed
-            Set<Column> toRefreshColumns = new HashSet<Column>(forcedColumnsRefresh);
+            Set<Column> toRefreshColumns = new HashSet<>(forcedColumnsRefresh);
             for (Column column : columns) {
                 if (!columnObservers.containsKey(column)) {
                     columnObservers.put(column, column.createColumnObserver(false));
@@ -615,7 +615,7 @@ public class AppearanceModelImpl implements AppearanceModel {
         }
 
         protected List<Transformer> getRankingTransformers() {
-            List<Transformer> res = new ArrayList<Transformer>();
+            List<Transformer> res = new ArrayList<>();
             for (Transformer t : getTransformers()) {
                 if (t instanceof RankingTransformer) {
                     res.add(t);
@@ -625,7 +625,7 @@ public class AppearanceModelImpl implements AppearanceModel {
         }
 
         protected List<Transformer> getPartitionTransformers() {
-            List<Transformer> res = new ArrayList<Transformer>();
+            List<Transformer> res = new ArrayList<>();
             for (Transformer t : getTransformers()) {
                 if (t instanceof PartitionTransformer) {
                     res.add(t);
@@ -665,7 +665,7 @@ public class AppearanceModelImpl implements AppearanceModel {
             if (!column.isNumber()) {
                 return true;
             }
-            Set<Object> set = new HashSet<Object>();
+            Set<Object> set = new HashSet<>();
             boolean hasNullValue = false;
             int elements = 0;
             ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
@@ -741,7 +741,7 @@ public class AppearanceModelImpl implements AppearanceModel {
 
     private Map<Class, TransformerUI> initTransformerUIs() {
         //Index UIs
-        Map<Class, TransformerUI> uis = new HashMap<Class, TransformerUI>();
+        Map<Class, TransformerUI> uis = new HashMap<>();
 
         for (TransformerUI ui : Lookup.getDefault().lookupAll(TransformerUI.class)) {
             Class transformerClass = ui.getTransformerClass();
@@ -757,7 +757,7 @@ public class AppearanceModelImpl implements AppearanceModel {
     }
 
     private List<Transformer> initNodeTransformers() {
-        List<Transformer> res = new ArrayList<Transformer>();
+        List<Transformer> res = new ArrayList<>();
         for (Transformer transformer : Lookup.getDefault().lookupAll(Transformer.class)) {
             if (transformer.isNode()) {
                 res.add(transformer);
@@ -767,7 +767,7 @@ public class AppearanceModelImpl implements AppearanceModel {
     }
 
     private List<Transformer> initEdgeTransformers() {
-        List<Transformer> res = new ArrayList<Transformer>();
+        List<Transformer> res = new ArrayList<>();
         for (Transformer transformer : Lookup.getDefault().lookupAll(Transformer.class)) {
             if (transformer.isEdge()) {
                 res.add(transformer);

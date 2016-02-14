@@ -150,7 +150,7 @@ public class MASKBuilderEdge implements FilterBuilder {
             Graph graph = (Graph) graphs[0];
             Graph mainGraph = graph.getView().getGraphModel().getGraph();
 
-            List<Edge> edgesToKeep = new ArrayList<Edge>();
+            List<Edge> edgesToKeep = new ArrayList<>();
             for (Edge e : mainGraph.getEdges()) {
                 boolean source = graph.contains(e.getSource());
                 boolean target = graph.contains(e.getTarget());

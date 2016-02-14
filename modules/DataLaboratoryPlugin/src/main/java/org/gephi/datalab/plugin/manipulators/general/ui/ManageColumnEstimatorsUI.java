@@ -47,14 +47,13 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.plugin.manipulators.general.ManageColumnEstimators;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.types.TimeMap;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**

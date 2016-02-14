@@ -50,7 +50,7 @@ import org.openide.util.Lookup;
 public class PersistenceProviderUtils {
 
     public static Collection<WorkspacePersistenceProvider> getPersistenceProviders() {
-        Map<String, WorkspacePersistenceProvider> providers = new LinkedHashMap<String, WorkspacePersistenceProvider>();
+        Map<String, WorkspacePersistenceProvider> providers = new LinkedHashMap<>();
 
         for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
             try {

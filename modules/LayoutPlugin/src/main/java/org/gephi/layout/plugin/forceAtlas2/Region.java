@@ -59,16 +59,16 @@ public class Region {
     private double massCenterY;
     private double size;
     private final List<Node> nodes;
-    private final List<Region> subregions = new ArrayList<Region>();
+    private final List<Region> subregions = new ArrayList<>();
 
     public Region(Node[] nodes) {
-        this.nodes = new ArrayList<Node>();
+        this.nodes = new ArrayList<>();
         this.nodes.addAll(Arrays.asList(nodes));
         updateMassAndGeometry();
     }
 
     public Region(ArrayList<Node> nodes) {
-        this.nodes = new ArrayList<Node>(nodes);
+        this.nodes = new ArrayList<>(nodes);
         updateMassAndGeometry();
     }
 
@@ -98,22 +98,22 @@ public class Region {
 
     public synchronized void buildSubRegions() {
         if (nodes.size() > 1) {
-            ArrayList<Node> leftNodes = new ArrayList<Node>();
-            ArrayList<Node> rightNodes = new ArrayList<Node>();
+            ArrayList<Node> leftNodes = new ArrayList<>();
+            ArrayList<Node> rightNodes = new ArrayList<>();
             for (Node n : nodes) {
                 ArrayList<Node> nodesColumn = (n.x() < massCenterX) ? (leftNodes) : (rightNodes);
                 nodesColumn.add(n);
             }
 
-            ArrayList<Node> topleftNodes = new ArrayList<Node>();
-            ArrayList<Node> bottomleftNodes = new ArrayList<Node>();
+            ArrayList<Node> topleftNodes = new ArrayList<>();
+            ArrayList<Node> bottomleftNodes = new ArrayList<>();
             for (Node n : leftNodes) {
                 ArrayList<Node> nodesLine = (n.y() < massCenterY) ? (topleftNodes) : (bottomleftNodes);
                 nodesLine.add(n);
             }
 
-            ArrayList<Node> bottomrightNodes = new ArrayList<Node>();
-            ArrayList<Node> toprightNodes = new ArrayList<Node>();
+            ArrayList<Node> bottomrightNodes = new ArrayList<>();
+            ArrayList<Node> toprightNodes = new ArrayList<>();
             for (Node n : rightNodes) {
                 ArrayList<Node> nodesLine = (n.y() < massCenterY) ? (toprightNodes) : (bottomrightNodes);
                 nodesLine.add(n);
@@ -125,7 +125,7 @@ public class Region {
                     subregions.add(subregion);
                 } else {
                     for (Node n : topleftNodes) {
-                        ArrayList<Node> oneNodeList = new ArrayList<Node>();
+                        ArrayList<Node> oneNodeList = new ArrayList<>();
                         oneNodeList.add(n);
                         Region subregion = new Region(oneNodeList);
                         subregions.add(subregion);
@@ -138,7 +138,7 @@ public class Region {
                     subregions.add(subregion);
                 } else {
                     for (Node n : bottomleftNodes) {
-                        ArrayList<Node> oneNodeList = new ArrayList<Node>();
+                        ArrayList<Node> oneNodeList = new ArrayList<>();
                         oneNodeList.add(n);
                         Region subregion = new Region(oneNodeList);
                         subregions.add(subregion);
@@ -151,7 +151,7 @@ public class Region {
                     subregions.add(subregion);
                 } else {
                     for (Node n : bottomrightNodes) {
-                        ArrayList<Node> oneNodeList = new ArrayList<Node>();
+                        ArrayList<Node> oneNodeList = new ArrayList<>();
                         oneNodeList.add(n);
                         Region subregion = new Region(oneNodeList);
                         subregions.add(subregion);
@@ -164,7 +164,7 @@ public class Region {
                     subregions.add(subregion);
                 } else {
                     for (Node n : toprightNodes) {
-                        ArrayList<Node> oneNodeList = new ArrayList<Node>();
+                        ArrayList<Node> oneNodeList = new ArrayList<>();
                         oneNodeList.add(n);
                         Region subregion = new Region(oneNodeList);
                         subregions.add(subregion);

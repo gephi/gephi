@@ -151,7 +151,7 @@ public class DrawerSettings {
         
         //System.out.println("Generating filters for " + this);
         // filters
-        Map<Key, Object> map = new HashMap<Key, Object>();
+        Map<Key, Object> map = new HashMap<>();
         // bilinear
         map.put(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_BILINEAR);

@@ -64,7 +64,6 @@ import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutProperty;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -76,7 +75,7 @@ import org.w3c.dom.NodeList;
  */
 public class LayoutPresetPersistence {
 
-    private Map<String, List<Preset>> presets = new HashMap<String, List<Preset>>();
+    private Map<String, List<Preset>> presets = new HashMap<>();
 
     public LayoutPresetPersistence() {
         loadPresets();
@@ -166,7 +165,7 @@ public class LayoutPresetPersistence {
     private Preset addPreset(Preset preset) {
         List<Preset> layoutPresets = presets.get(preset.layoutClassName);
         if (layoutPresets == null) {
-            layoutPresets = new ArrayList<Preset>();
+            layoutPresets = new ArrayList<>();
             presets.put(preset.layoutClassName, layoutPresets);
         }
         for (Preset p : layoutPresets) {
@@ -180,8 +179,8 @@ public class LayoutPresetPersistence {
 
     protected static class Preset {
 
-        private List<String> propertyNames = new ArrayList<String>();
-        private List<Object> propertyValues = new ArrayList<Object>();
+        private List<String> propertyNames = new ArrayList<>();
+        private List<Object> propertyValues = new ArrayList<>();
         private String layoutClassName;
         private String name;
 

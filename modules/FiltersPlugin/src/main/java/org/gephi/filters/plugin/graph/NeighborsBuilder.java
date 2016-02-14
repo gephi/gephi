@@ -118,9 +118,9 @@ public class NeighborsBuilder implements FilterBuilder {
 
             Collection<Node> nodes = graph.getNodes().toCollection();
 
-            Set<Node> result = new HashSet<Node>();
+            Set<Node> result = new HashSet<>();
 
-            Set<Node> neighbours = new HashSet<Node>();
+            Set<Node> neighbours = new HashSet<>();
             neighbours.addAll(nodes);
 
             //Put all neighbors into result

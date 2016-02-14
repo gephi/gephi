@@ -239,7 +239,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
     @Override
     public LayoutProperty[] getProperties() {
-        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        List<LayoutProperty> properties = new ArrayList<>();
         final String FORCE_ATLAS = "Force Atlas";
 
         try {

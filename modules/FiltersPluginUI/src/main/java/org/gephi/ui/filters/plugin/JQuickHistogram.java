@@ -72,7 +72,7 @@ public class JQuickHistogram {
     }
 
     public void clear() {
-        data = new ArrayList<Double>();
+        data = new ArrayList<>();
         minValue = Double.MAX_VALUE;
         maxValue = Double.NEGATIVE_INFINITY;
     }

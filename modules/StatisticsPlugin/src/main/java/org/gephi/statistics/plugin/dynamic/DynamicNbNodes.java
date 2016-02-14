@@ -75,7 +75,7 @@ public class DynamicNbNodes implements DynamicStatistics {
     @Override
     public void execute(GraphModel graphModel) {
         this.graphModel = graphModel;
-        this.counts = new HashMap<Double, Integer>();
+        this.counts = new HashMap<>();
     }
 
     @Override

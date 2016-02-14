@@ -77,7 +77,7 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
     }
 
     protected Column[] getColumns() {
-        List<Column> cols = new ArrayList<Column>();
+        List<Column> cols = new ArrayList<>();
         GraphModel model = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         if (model != null) {
             if (editorClass.equals(EditorClass.NODE) || editorClass.equals(EditorClass.NODEEDGE)) {

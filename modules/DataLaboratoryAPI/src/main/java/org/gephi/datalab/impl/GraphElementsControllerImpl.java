@@ -44,15 +44,15 @@ package org.gephi.datalab.impl;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -245,7 +245,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         ac.mergeRowsValues(columns, mergeStrategies, nodes, selectedNode, newNode);
 
-        Set<Node> nodesSet = new HashSet<Node>();
+        Set<Node> nodesSet = new HashSet<>();
         nodesSet.addAll(Arrays.asList(nodes));
 
         //Assign edges to the new node:

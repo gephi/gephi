@@ -85,7 +85,7 @@ public class StandardVizEventManager implements VizEventManager {
         graphIO = VizController.getInstance().getGraphIO();
 
         //Set handlers
-        ArrayList<VizEventTypeHandler> handlersList = new ArrayList<VizEventTypeHandler>();
+        ArrayList<VizEventTypeHandler> handlersList = new ArrayList<>();
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_LEFT_CLICK, false));
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_LEFT_PRESS, false));
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_MIDDLE_CLICK, false));
@@ -280,7 +280,7 @@ public class StandardVizEventManager implements VizEventManager {
         public VizEventTypeHandler(VizEvent.Type type, boolean limitRunning) {
             this.limitRunning = limitRunning;
             this.type = type;
-            this.listeners = new ArrayList<WeakReference<VizEventListener>>();
+            this.listeners = new ArrayList<>();
             runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -291,7 +291,7 @@ public class StandardVizEventManager implements VizEventManager {
         }
 
         protected synchronized void addListener(VizEventListener listener) {
-            WeakReference<VizEventListener> weakListener = new WeakReference<VizEventListener>(listener);
+            WeakReference<VizEventListener> weakListener = new WeakReference<>(listener);
             listeners.add(weakListener);
         }
 

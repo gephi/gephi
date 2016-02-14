@@ -48,7 +48,6 @@ import javax.swing.*;
 import org.gephi.desktop.banner.perspective.spi.BottomComponent;
 import org.gephi.perspective.api.PerspectiveController;
 import org.openide.modules.ModuleInstall;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.windows.WindowManager;
 

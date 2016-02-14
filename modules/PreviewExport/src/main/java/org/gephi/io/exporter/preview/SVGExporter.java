@@ -47,16 +47,15 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.VectorExporter;
-
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.api.SVGTarget;
-import org.gephi.utils.longtask.spi.LongTask;
-import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 

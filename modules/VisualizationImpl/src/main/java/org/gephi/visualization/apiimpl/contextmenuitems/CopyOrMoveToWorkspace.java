@@ -70,7 +70,7 @@ public abstract class CopyOrMoveToWorkspace extends BasicItem implements NodesMa
     public ContextMenuItemManipulator[] getSubItems() {
         if (nodes != null) {
             int i = 0;
-            ArrayList<GraphContextMenuItem> subItems = new ArrayList<GraphContextMenuItem>();
+            ArrayList<GraphContextMenuItem> subItems = new ArrayList<>();
             if (canExecute()) {
                 subItems.add(new CopyOrMoveToWorkspaceSubItem(null, true, 0, 0, isCopy()));//New workspace
                 ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);

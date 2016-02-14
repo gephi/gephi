@@ -1,8 +1,8 @@
 package org.gephi.visualization.octree;
 
-import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.gl2.GLUT;
 import org.gephi.visualization.model.node.NodeModel;
 
 /**

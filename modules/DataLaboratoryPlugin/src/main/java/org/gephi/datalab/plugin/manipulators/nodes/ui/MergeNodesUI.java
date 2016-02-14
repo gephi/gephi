@@ -54,13 +54,13 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.plugin.manipulators.nodes.MergeNodes;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Node;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.util.ImageUtilities;
@@ -154,7 +154,7 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
     }
 
     private List<AttributeRowsMergeStrategy> getColumnAvailableStrategies(Column column) {
-        ArrayList<AttributeRowsMergeStrategy> availableStrategies = new ArrayList<AttributeRowsMergeStrategy>();
+        ArrayList<AttributeRowsMergeStrategy> availableStrategies = new ArrayList<>();
         for (AttributeRowsMergeStrategy strategy : DataLaboratoryHelper.getDefault().getAttributeRowsMergeStrategies()) {
             strategy.setup(nodes, manipulator.getSelectedNode(), column);
             if (strategy.canExecute()) {

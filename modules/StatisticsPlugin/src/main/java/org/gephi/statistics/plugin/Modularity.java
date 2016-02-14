@@ -46,10 +46,10 @@ import java.text.NumberFormat;
 import java.util.*;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Table;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -141,20 +141,20 @@ public class Modularity implements Statistics, LongTask {
         CommunityStructure(Graph hgraph) {
             this.graph = hgraph;
             N = hgraph.getNodeCount();
-            invMap = new HashMap<Integer, Community>();
+            invMap = new HashMap<>();
             nodeConnectionsWeight = new HashMap[N];
             nodeConnectionsCount = new HashMap[N];
             nodeCommunities = new Community[N];
-            map = new HashMap<Node, Integer>();
+            map = new HashMap<>();
             topology = new LinkedList[N];
-            communities = new LinkedList<Community>();
+            communities = new LinkedList<>();
             int index = 0;
             weights = new double[N];
             for (Node node : hgraph.getNodes()) {
                 map.put(node, index);
                 nodeCommunities[index] = new Community(this);
-                nodeConnectionsWeight[index] = new HashMap<Community, Float>();
-                nodeConnectionsCount[index] = new HashMap<Community, Integer>();
+                nodeConnectionsWeight[index] = new HashMap<>();
+                nodeConnectionsCount[index] = new HashMap<>();
                 weights[index] = 0;
                 nodeCommunities[index].seed(index);
                 Community hidden = new Community(structure);
@@ -169,7 +169,7 @@ public class Modularity implements Statistics, LongTask {
 
             for (Node node : hgraph.getNodes()) {
                 int node_index = map.get(node);
-                topology[node_index] = new LinkedList<ModEdge>();
+                topology[node_index] = new LinkedList<>();
 
                 for (Edge edge : hgraph.getEdges(node)) {
                     Node neighbor = hgraph.getOpposite(node, edge);
@@ -350,12 +350,12 @@ public class Modularity implements Statistics, LongTask {
             nodeCommunities = new Community[M];
             nodeConnectionsWeight = new HashMap[M];
             nodeConnectionsCount = new HashMap[M];
-            HashMap<Integer, Community> newInvMap = new HashMap<Integer, Community>();
+            HashMap<Integer, Community> newInvMap = new HashMap<>();
             for (int i = 0; i < communities.size(); i++) {//Community com : mCommunities) {
                 Community com = communities.get(i);
-                nodeConnectionsWeight[index] = new HashMap<Community, Float>();
-                nodeConnectionsCount[index] = new HashMap<Community, Integer>();
-                newTopology[index] = new LinkedList<ModEdge>();
+                nodeConnectionsWeight[index] = new HashMap<>();
+                nodeConnectionsCount[index] = new HashMap<>();
+                newTopology[index] = new LinkedList<>();
                 nodeCommunities[index] = new Community(com);
                 Set<Community> iter = com.connectionsWeight.keySet();
                 double weightSum = 0;
@@ -416,17 +416,17 @@ public class Modularity implements Statistics, LongTask {
 
         public Community(Modularity.Community com) {
             structure = com.structure;
-            connectionsWeight = new HashMap<Modularity.Community, Float>();
-            connectionsCount = new HashMap<Modularity.Community, Integer>();
-            nodes = new LinkedList<Integer>();
+            connectionsWeight = new HashMap<>();
+            connectionsCount = new HashMap<>();
+            nodes = new LinkedList<>();
             //mHidden = pCom.mHidden;
         }
 
         public Community(CommunityStructure structure) {
             this.structure = structure;
-            connectionsWeight = new HashMap<Modularity.Community, Float>();
-            connectionsCount = new HashMap<Modularity.Community, Integer>();
-            nodes = new LinkedList<Integer>();
+            connectionsWeight = new HashMap<>();
+            connectionsCount = new HashMap<>();
+            nodes = new LinkedList<>();
         }
 
         public void seed(int node) {
@@ -443,7 +443,7 @@ public class Modularity implements Statistics, LongTask {
         public boolean remove(int node) {
             boolean result = nodes.remove(new Integer(node));
             weightSum -= structure.weights[node];
-            if (nodes.size() == 0) {
+            if (nodes.isEmpty()) {
                 structure.communities.remove(this);
             }
             return result;
@@ -483,7 +483,7 @@ public class Modularity implements Statistics, LongTask {
         double totalWeight = theStructure.graphWeightSum;
         double[] nodeDegrees = theStructure.weights.clone();
 
-        HashMap<String, Double> results = new HashMap<String, Double>();
+        HashMap<String, Double> results = new HashMap<>();
 
         if (isCanceled) {
             hgraph.readUnlockAll();
@@ -629,7 +629,7 @@ public class Modularity implements Statistics, LongTask {
     @Override
     public String getReport() {
         //Distribution series
-        Map<Integer, Integer> sizeDist = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> sizeDist = new HashMap<>();
         for (Node n : structure.graph.getNodes()) {
             Integer v = (Integer) n.getAttribute(MODULARITY_CLASS);
             if (!sizeDist.containsKey(v)) {

@@ -43,12 +43,12 @@ package org.gephi.datalab.plugin.manipulators.nodes;
 
 import java.util.ArrayList;
 import javax.swing.Icon;
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsAndRowChooser;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralChooseColumnsAndRowUI;
 import org.gephi.datalab.spi.ManipulatorUI;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
@@ -71,7 +71,7 @@ public class CopyNodeDataToOtherNodes extends BasicNodesManipulator implements G
         this.clickedNode = clickedNode;
         this.nodes = nodes;
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        ArrayList<Column> columnsToCopyDataList = new ArrayList<Column>();
+        ArrayList<Column> columnsToCopyDataList = new ArrayList<>();
         for (Column column : Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable()) {
             if (ac.canChangeColumnData(column)) {
                 columnsToCopyDataList.add(column);

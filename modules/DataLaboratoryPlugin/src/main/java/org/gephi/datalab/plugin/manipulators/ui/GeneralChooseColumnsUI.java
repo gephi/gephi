@@ -45,11 +45,11 @@ import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsChooser;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
+import org.gephi.graph.api.Column;
 
 /**
  * UI for GeneralColumnsChooser (ClearNodesData and ClearEdgesData)
@@ -93,7 +93,7 @@ public class GeneralChooseColumnsUI extends javax.swing.JPanel implements Manipu
     }
 
     public Column[] getChosenColumns(){
-        ArrayList<Column> columnsToClearDataList=new ArrayList<Column>();
+        ArrayList<Column> columnsToClearDataList=new ArrayList<>();
         for(ColumnCheckBox c:columnsCheckBoxes){
             if(c.isSelected()){
                 columnsToClearDataList.add(c.getColumn());

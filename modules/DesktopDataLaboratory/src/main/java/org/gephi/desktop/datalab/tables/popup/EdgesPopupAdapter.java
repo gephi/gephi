@@ -8,11 +8,11 @@ package org.gephi.desktop.datalab.tables.popup;
 import java.awt.Point;
 import java.util.List;
 import javax.swing.JPopupMenu;
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.edges.EdgesManipulator;
 import org.gephi.desktop.datalab.tables.AbstractElementsDataTable;
 import org.gephi.desktop.datalab.utils.PopupMenuUtils;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 
 /**

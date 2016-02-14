@@ -88,7 +88,7 @@ public class VizModel {
     protected boolean adjustByText;
     protected float edgeScale;
     //Listener
-    protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+    protected List<PropertyChangeListener> listeners = new ArrayList<>();
     private boolean defaultModel = false;
 
     public VizModel(Workspace workspace) {

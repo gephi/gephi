@@ -68,7 +68,7 @@ public class RecentPalettes {
     public RecentPalettes() {
         nodeName = "recentrankingpalettes";
         maxSize = 14;
-        gradients = new LinkedList<LinearGradient>();
+        gradients = new LinkedList<>();
         retrieve();
     }
 

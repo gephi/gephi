@@ -59,7 +59,7 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
 
     public WorkspaceProviderImpl(ProjectImpl project) {
         this.project = project;
-        workspaces = new ArrayList<Workspace>();
+        workspaces = new ArrayList<>();
     }
 
     public synchronized WorkspaceImpl newWorkspace() {

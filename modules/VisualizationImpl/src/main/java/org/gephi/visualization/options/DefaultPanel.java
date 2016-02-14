@@ -42,7 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.visualization.options;
 
 import com.connectina.swing.fontchooser.JFontChooser;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

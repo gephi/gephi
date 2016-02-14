@@ -158,8 +158,8 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
 
     private void saveAsEdgeList1(boolean useLabels, Graph graph) throws IOException {
 
-        HashMap<Object, String> idToLabel = new HashMap<Object, String>();//systemId to changed label
-        HashSet<String> labelUsed = new HashSet<String>();
+        HashMap<Object, String> idToLabel = new HashMap<>();//systemId to changed label
+        HashSet<String> labelUsed = new HashSet<>();
         //edgelist format forbids equal nodes
         if (useLabels) {
             for (Node node : graph.getNodes()) {
@@ -230,7 +230,7 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
         writer.write("format = fullmatrix\n");
         writer.write("n = " + graph.getNodeCount() + "\n");
 
-        HashMap<Integer, Node> idToNode = new HashMap<Integer, Node>();
+        HashMap<Integer, Node> idToNode = new HashMap<>();
         int idForNode = 0;
         for (Node node : graph.getNodes()) {
             if (useLabels) {

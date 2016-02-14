@@ -45,8 +45,8 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUquadric;
 import org.gephi.graph.api.Edge;
-import org.gephi.visualization.model.Modeler;
 import org.gephi.visualization.model.Model;
+import org.gephi.visualization.model.Modeler;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.opengl.CompatibilityEngine;
 

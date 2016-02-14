@@ -41,8 +41,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 */
 package org.gephi.ui.exporter.plugin;
 
-import org.gephi.io.exporter.plugin.ExporterDL;
 import javax.swing.JPanel;
+import org.gephi.io.exporter.plugin.ExporterDL;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
 import org.openide.util.NbBundle;

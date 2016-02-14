@@ -41,8 +41,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 */
 package org.gephi.io.exporter.spi;
 
-import org.gephi.project.api.Workspace;
-
 /**
  * Exporter interface for exporters that export vector graphics.
  *

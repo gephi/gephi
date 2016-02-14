@@ -188,7 +188,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                 columnCount = headers.length;
 
                 //Check for repeated column names:
-                Set<String> columnNamesSet = new HashSet<String>();
+                Set<String> columnNamesSet = new HashSet<>();
                 hasColumnNamesRepeated = false;
                 hasSourceNodeColumn = false;
                 hasTargetNodeColumn = false;
@@ -212,7 +212,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                     currentColumn++;
                 }
 
-                ArrayList<String[]> records = new ArrayList<String[]>();
+                ArrayList<String[]> records = new ArrayList<>();
                 hasRowsMissingSourcesOrTargets = false;
                 ImportCSVUIWizardAction.Mode mode = getMode();
                 if (columnCount > 0) {

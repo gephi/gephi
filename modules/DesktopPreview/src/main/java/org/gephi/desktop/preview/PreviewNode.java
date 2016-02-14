@@ -81,7 +81,7 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
 
         Set<Renderer> enabledRenderers = null;
         if (controller.getModel()!=null && controller.getModel().getManagedRenderers() != null) {
-            enabledRenderers = new HashSet<Renderer>();
+            enabledRenderers = new HashSet<>();
             for (ManagedRenderer mr : controller.getModel().getManagedRenderers()) {
                 if (mr.isEnabled()) {
                     enabledRenderers.add(mr.getRenderer());
@@ -93,7 +93,7 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
         if (model != null) {
             PreviewProperties properties = model.getProperties();
 
-            Map<String, Sheet.Set> sheetSets = new HashMap<String, Sheet.Set>();
+            Map<String, Sheet.Set> sheetSets = new HashMap<>();
             for (PreviewProperty property : properties.getProperties()) {
                 Object source = property.getSource();
                 boolean propertyEnabled = true;

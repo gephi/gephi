@@ -229,7 +229,7 @@ public class PartitionPanel extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 filter.selectAll();
-                refresh(filter.getPartition(), new HashSet<Object>(filter.getParts()));
+                refresh(filter.getPartition(), new HashSet<>(filter.getParts()));
             }
         });
         popupMenu.add(selectItem);
@@ -239,7 +239,7 @@ public class PartitionPanel extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 filter.unselectAll();
-                refresh(filter.getPartition(), new HashSet<Object>());
+                refresh(filter.getPartition(), new HashSet<>());
             }
         });
         popupMenu.add(unselectItem);

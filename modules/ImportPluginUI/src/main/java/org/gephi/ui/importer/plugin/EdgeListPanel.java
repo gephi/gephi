@@ -50,9 +50,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Logger;
-
 import javax.swing.DefaultComboBoxModel;
-
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import org.gephi.io.database.drivers.SQLDriver;

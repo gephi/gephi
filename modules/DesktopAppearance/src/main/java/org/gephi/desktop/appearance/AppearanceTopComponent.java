@@ -247,7 +247,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                         comboBoxModel.addElement(NO_SELECTION);
                         comboBoxModel.setSelectedItem(NO_SELECTION);
 
-                        List<Function> rows = new ArrayList<Function>();
+                        List<Function> rows = new ArrayList<>();
                         rows.addAll(model.getFunctions());
 
                         Collections.sort(rows, new Comparator<Function>() {

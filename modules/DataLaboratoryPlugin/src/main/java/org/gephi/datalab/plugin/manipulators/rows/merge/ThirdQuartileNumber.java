@@ -43,11 +43,11 @@ package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import java.math.BigDecimal;
 import javax.swing.Icon;
-import org.gephi.graph.api.AttributeUtils;
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.gephi.utils.StatisticsUtils;
 import org.openide.util.Lookup;

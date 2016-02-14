@@ -143,7 +143,7 @@ public class ChartsUtils {
             return null;
         }
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
-        final ArrayList<Number> list = new ArrayList<Number>();
+        final ArrayList<Number> list = new ArrayList<>();
         list.addAll(Arrays.asList(numbers));
 
         final String valuesString = getMessage("ChartsUtils.report.box-plot.values");

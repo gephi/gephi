@@ -88,11 +88,11 @@ public class AppearanceUIModel {
         this.graphController = Lookup.getDefault().lookup(GraphController.class);
 
         //Init maps
-        selectedCategory = new HashMap<String, TransformerCategory>();
-        selectedTransformerUI = new HashMap<String, Map<TransformerCategory, TransformerUI>>();
-        selectedFunction = new HashMap<String, Map<TransformerUI, Function>>();
-        selectedAutoTransformer = new HashMap<String, Map<TransformerCategory, AutoAppyTransformer>>();
-        savedProperties = new HashMap<Function, Map<String, Object>>();
+        selectedCategory = new HashMap<>();
+        selectedTransformerUI = new HashMap<>();
+        selectedFunction = new HashMap<>();
+        selectedAutoTransformer = new HashMap<>();
+        savedProperties = new HashMap<>();
 
         //Init selected
         for (String ec : ELEMENT_CLASSES) {
@@ -103,7 +103,7 @@ public class AppearanceUIModel {
 
     private void initSelectedTransformerUIs(String elementClass) {
         Graph graph = graphController.getGraphModel(appearanceModel.getWorkspace()).getGraph();
-        Map<TransformerCategory, TransformerUI> newMap = new HashMap<TransformerCategory, TransformerUI>();
+        Map<TransformerCategory, TransformerUI> newMap = new HashMap<>();
         for (Function func : elementClass.equals(AppearanceUIController.NODE_ELEMENT) ? appearanceModel.getNodeFunctions(graph) : appearanceModel.getEdgeFunctions(graph)) {
             TransformerUI ui = func.getUI();
             if (ui != null) {
@@ -129,7 +129,7 @@ public class AppearanceUIModel {
     }
 
     private void refreshSelectedFunctions(String elementClass) {
-        Set<Function> functionSet = new HashSet<Function>();
+        Set<Function> functionSet = new HashSet<>();
         Graph graph = graphController.getGraphModel(appearanceModel.getWorkspace()).getGraph();
         for (Function func : elementClass.equals(AppearanceUIController.NODE_ELEMENT) ? appearanceModel.getNodeFunctions(graph) : appearanceModel.getEdgeFunctions(graph)) {
             TransformerUI ui = func.getUI();
@@ -195,7 +195,7 @@ public class AppearanceUIModel {
             Transformer transformer = func.getTransformer();
             Map<String, Object> props = savedProperties.get(func);
             if (props == null) {
-                props = new HashMap<String, Object>();
+                props = new HashMap<>();
                 savedProperties.put(func, new HashMap<String, Object>());
             }
 
@@ -259,7 +259,7 @@ public class AppearanceUIModel {
 
     public Collection<Function> getFunctions() {
         Graph graph = graphController.getGraphModel(appearanceModel.getWorkspace()).getGraph();
-        List<Function> functions = new ArrayList<Function>();
+        List<Function> functions = new ArrayList<>();
         for (Function func : selectedElementClass.equalsIgnoreCase(AppearanceUIController.NODE_ELEMENT) ? appearanceModel.getNodeFunctions(graph) : appearanceModel.getEdgeFunctions(graph)) {
             TransformerUI ui = func.getUI();
             if (ui != null && ui.getDisplayName().equals(getSelectedTransformerUI().getDisplayName())) {
@@ -320,7 +320,7 @@ public class AppearanceUIModel {
     }
 
     private Map<String, Method[]> getProperties(Transformer transformer) {
-        Map<String, Method[]> propertyMethods = new HashMap<String, Method[]>();
+        Map<String, Method[]> propertyMethods = new HashMap<>();
 
         for (Method m : transformer.getClass().getMethods()) {
             String name = m.getName();

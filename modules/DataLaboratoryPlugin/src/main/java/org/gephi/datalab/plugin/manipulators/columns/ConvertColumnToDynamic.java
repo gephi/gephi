@@ -42,14 +42,14 @@
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.columns.ui.ConvertColumnToDynamicTimestampsUI;
 import org.gephi.datalab.plugin.manipulators.columns.ui.ConvertColumnToDynamicUI;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulatorUI;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.TimeRepresentation;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;

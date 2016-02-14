@@ -59,19 +59,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.gephi.graph.api.AttributeUtils;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Origin;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Origin;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.TimestampMap;
@@ -280,7 +280,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     @Override
     public Map<Object, Integer> calculateColumnValuesFrequencies(Table table, Column column) {
-        Map<Object, Integer> valuesFrequencies = new HashMap<Object, Integer>();
+        Map<Object, Integer> valuesFrequencies = new HashMap<>();
         Object value;
         for (Element row : getTableAttributeRows(table)) {
             value = row.getAttribute(column);
@@ -338,7 +338,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             }
             Matcher matcher;
             Object value;
-            ArrayList<String> foundGroups = new ArrayList<String>();
+            ArrayList<String> foundGroups = new ArrayList<>();
             for (Element row : getTableAttributeRows(table)) {
                 value = row.getAttribute(column);
                 if (value != null) {
@@ -555,7 +555,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         boolean isDynamic = AttributeUtils.isDynamicType(type);
         boolean isArray = type.isArray();
 
-        ArrayList<Number> numbers = new ArrayList<Number>();
+        ArrayList<Number> numbers = new ArrayList<>();
         Number number;
         for (Element row : rows) {
             Object value = row.getAttribute(column);
@@ -581,7 +581,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     @Override
     public Number[] getRowNumbers(Element row, Column[] columns) {
-        ArrayList<Number> numbers = new ArrayList<Number>();
+        ArrayList<Number> numbers = new ArrayList<>();
         Number number;
         for (Column column : columns) {
             Class type = column.getTypeClass();
@@ -626,7 +626,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             //Prepare attribute columns for the column names, creating the not already existing columns:
             Table nodesTable = graph.getModel().getNodeTable();
             String idColumn = null;
-            HashMap<Column, String> columnHeaders = new HashMap<Column, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
+            HashMap<Column, String> columnHeaders = new HashMap<>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
             for (int i = 0; i < columnNames.length; i++) {
                 //Separate first id column found from the list to use as id. If more are found later, the will not be in the list and be ignored.
                 if (columnNames[i].equalsIgnoreCase("id")) {
@@ -712,7 +712,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             String targetColumnHeader = null;
             String typeColumnHeader = null;
             String weightColumnHeader = null;
-            HashMap<Column, String> columnHeaders = new HashMap<Column, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
+            HashMap<Column, String> columnHeaders = new HashMap<>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
             for (int i = 0; i < columnNames.length; i++) {
                 //Separate first id column found from the list to use as id. If more are found later, the will not be in the list and be ignored.
                 if (columnNames[i].equalsIgnoreCase("id")) {
@@ -905,7 +905,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     @Override
     public List<List<Node>> detectNodeDuplicatesByColumn(Column column, boolean caseSensitive) {
-        final HashMap<String, List<Node>> valuesMap = new HashMap<String, List<Node>>();
+        final HashMap<String, List<Node>> valuesMap = new HashMap<>();
 
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
         Object value;
@@ -920,14 +920,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (valuesMap.containsKey(strValue)) {
                     valuesMap.get(strValue).add(node);
                 } else {
-                    ArrayList<Node> newGroup = new ArrayList<Node>();
+                    ArrayList<Node> newGroup = new ArrayList<>();
                     newGroup.add(node);
                     valuesMap.put(strValue, newGroup);
                 }
             }
         }
 
-        final List<List<Node>> groupsList = new ArrayList<List<Node>>();
+        final List<List<Node>> groupsList = new ArrayList<>();
         for (List<Node> group : valuesMap.values()) {
             if (group.size() > 1) {
                 groupsList.add(group);
@@ -1007,14 +1007,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         if (TimestampMap.class.isAssignableFrom(type)) {//Timestamp type:
             TimestampMap timestampMap = (TimestampMap) row.getAttribute(column);
             if (timestampMap == null) {
-                return new ArrayList<Number>();
+                return new ArrayList<>();
             }
             Number[] dynamicNumbers = (Number[]) timestampMap.toValuesArray();
             return Arrays.asList(dynamicNumbers);
         } else if (IntervalMap.class.isAssignableFrom(type)) {//Interval type:
             IntervalMap intervalMap = (IntervalMap) row.getAttribute(column);
             if (intervalMap == null) {
-                return new ArrayList<Number>();
+                return new ArrayList<>();
             }
             Number[] dynamicNumbers = (Number[]) intervalMap.toValuesArray();
             return Arrays.asList(dynamicNumbers);
@@ -1031,7 +1031,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
      */
     private List<Number> getArrayNumbers(Object arr) {
         int length = Array.getLength(arr);
-        List<Number> result = new ArrayList<Number>();
+        List<Number> result = new ArrayList<>();
 
         for (int i = 0; i < length; i++) {
             result.add((Number) Array.get(arr, i));

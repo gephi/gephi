@@ -42,13 +42,13 @@
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 import javax.swing.Icon;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.datalab.api.AttributeColumnsMergeStrategiesController.BooleanOperations;
 import org.gephi.datalab.plugin.manipulators.columns.merge.ui.BooleanLogicOperationsUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.columns.merge.AttributeColumnsMergeStrategy;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Table;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;

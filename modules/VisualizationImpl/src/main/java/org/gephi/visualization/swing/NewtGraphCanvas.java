@@ -43,10 +43,10 @@ package org.gephi.visualization.swing;
 
 import com.jogamp.newt.awt.NewtCanvasAWT;
 import com.jogamp.newt.opengl.GLWindow;
-import com.jogamp.opengl.util.gl2.GLUT;
-import java.awt.Component;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.gl2.GLUT;
+import java.awt.Component;
 import javax.swing.JPopupMenu;
 import javax.swing.ToolTipManager;
 import org.gephi.ui.utils.UIUtils;

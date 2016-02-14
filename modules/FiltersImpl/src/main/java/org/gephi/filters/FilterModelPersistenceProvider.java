@@ -49,7 +49,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
-import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.*;
 import org.gephi.graph.api.Graph;
@@ -168,7 +167,7 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
     }
 
     public void readXML(XMLStreamReader reader, FilterModelImpl model) throws XMLStreamException {
-        Map<Integer, Query> idMap = new HashMap<Integer, Query>();
+        Map<Integer, Query> idMap = new HashMap<>();
         boolean end = false;
         while (reader.hasNext() && !end) {
             Integer eventType = reader.next();

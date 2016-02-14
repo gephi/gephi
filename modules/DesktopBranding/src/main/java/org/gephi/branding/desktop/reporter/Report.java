@@ -83,8 +83,8 @@ public class Report {
     private String glRenderer = "";
     private String glVersion = "";
     //Modules
-    private List<String> enabledModules = new ArrayList<String>();
-    private List<String> disabledModules = new ArrayList<String>();
+    private List<String> enabledModules = new ArrayList<>();
+    private List<String> disabledModules = new ArrayList<>();
 
     public Report() {
         Calendar cal = Calendar.getInstance();

@@ -50,12 +50,12 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.columns.merge.AttributeColumnsMergeStrategy;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Table;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
@@ -179,7 +179,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
             return;
         }
         AttributeColumnsMergeStrategy[] strategies = DataLaboratoryHelper.getDefault().getAttributeColumnsMergeStrategies();
-        ArrayList<AttributeColumnsMergeStrategy> availableStrategiesList = new ArrayList<AttributeColumnsMergeStrategy>();
+        ArrayList<AttributeColumnsMergeStrategy> availableStrategiesList = new ArrayList<>();
         for (AttributeColumnsMergeStrategy strategy : strategies) {
             strategy.setup(table, columnsToMerge);
             availableStrategiesList.add(strategy);//Add all but disallow executing the strategies that cannot be executed with given column

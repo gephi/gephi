@@ -41,12 +41,12 @@
  */
 package org.gephi.visualization.swing;
 
-import com.jogamp.opengl.util.gl2.GLUT;
-import java.awt.Component;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import javax.swing.JPopupMenu;
 import javax.swing.ToolTipManager;

@@ -91,7 +91,7 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
 
         private final Document document;
         private float scaleRatio = 1f;
-        private final Map<String, Element> topElements = new HashMap<String, Element>();
+        private final Map<String, Element> topElements = new HashMap<>();
 
         public SVGRenderTargetImpl(CanvasSize cs, boolean scaleStrokes) {
             DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();

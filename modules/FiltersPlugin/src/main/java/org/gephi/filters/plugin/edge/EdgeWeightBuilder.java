@@ -129,7 +129,7 @@ public class EdgeWeightBuilder implements FilterBuilder {
 
         @Override
         public Number[] getValues(Graph graph) {
-            List<Number> values = new ArrayList<Number>();
+            List<Number> values = new ArrayList<>();
             for (Edge e : graph.getEdges()) {
                 double weight = e.getWeight(graph.getView());
                 values.add(weight);

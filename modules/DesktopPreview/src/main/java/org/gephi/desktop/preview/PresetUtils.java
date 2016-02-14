@@ -124,7 +124,7 @@ public class PresetUtils {
 
     public PreviewPreset[] getPresets() {
         if (presets == null) {
-            presets = new ArrayList<PreviewPreset>();
+            presets = new ArrayList<>();
             loadPresets();
         }
         return presets.toArray(new PreviewPreset[0]);
@@ -180,7 +180,7 @@ public class PresetUtils {
         DefaultPreset defaultPreset = new DefaultPreset();//For retrieving property class if it is not in the xml (old serialization)
 
         Element presetE = document.getDocumentElement();
-        Map<String, Object> propertiesMap = new HashMap<String, Object>();
+        Map<String, Object> propertiesMap = new HashMap<>();
         String presetName = presetE.getAttribute("name");
 
         NodeList propertyList = presetE.getElementsByTagName("previewproperty");

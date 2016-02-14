@@ -42,9 +42,9 @@
  */
 package org.gephi.visualization.spi;
 
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
-import org.gephi.datalab.spi.ContextMenuItemManipulator;
 
 /**
  * <b>Please note that the methods offered in this service are the same as Data

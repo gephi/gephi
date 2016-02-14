@@ -48,7 +48,6 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.graph.api.Column;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.api.TimelineModelEvent;

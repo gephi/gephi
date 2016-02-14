@@ -76,7 +76,6 @@ public final class ProgressTicketImpl implements ProgressTicket {
                 handle.finish();
                 finished = true;
             } catch (Exception e) {
-                System.err.println("Progress Handle failed to finish");
             }
         }
     }
@@ -92,7 +91,6 @@ public final class ProgressTicketImpl implements ProgressTicket {
                 handle.finish();
                 finished = true;
             } catch (Exception e) {
-                System.err.println("Progress Handle failed to finish");
             }
             StatusDisplayer.getDefault().setStatusText(finishMessage);
         }

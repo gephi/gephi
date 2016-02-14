@@ -125,17 +125,17 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
-        nodeMap = new Object2IntOpenHashMap<String>();
-        edgeMap = new Object2IntOpenHashMap<String>();
+        nodeMap = new Object2IntOpenHashMap<>();
+        edgeMap = new Object2IntOpenHashMap<>();
         nodeMap.defaultReturnValue(NULL_INDEX);
         edgeMap.defaultReturnValue(NULL_INDEX);
-        nodeList = new ObjectArrayList<NodeDraftImpl>();
-        edgeList = new ObjectArrayList<EdgeDraftImpl>();
+        nodeList = new ObjectArrayList<>();
+        edgeList = new ObjectArrayList<>();
         edgeTypeMap = new Object2IntOpenHashMap();
         edgeTypeSets = new Long2ObjectMap[0];
         factory = new ElementFactoryImpl(this);
-        nodeColumns = new Object2ObjectOpenHashMap<String, ColumnDraft>();
-        edgeColumns = new Object2ObjectOpenHashMap<String, ColumnDraft>();
+        nodeColumns = new Object2ObjectOpenHashMap<>();
+        edgeColumns = new Object2ObjectOpenHashMap<>();
     }
 
     @Override
@@ -406,7 +406,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     @Override
     public Iterable<NodeDraft> getNodes() {
-        return new NullFilterIterable<NodeDraft>(nodeList);
+        return new NullFilterIterable<>(nodeList);
     }
 
     @Override
@@ -416,7 +416,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     @Override
     public Iterable<EdgeDraft> getEdges() {
-        return new NullFilterIterable<EdgeDraft>(edgeList);
+        return new NullFilterIterable<>(edgeList);
     }
 
     @Override
@@ -696,7 +696,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public void closeLoader() {
         //Remove self-loops
         if (!parameters.isSelfLoops() && selfLoops > 0) {
-            List<EdgeDraftImpl> l = new ArrayList<EdgeDraftImpl>();
+            List<EdgeDraftImpl> l = new ArrayList<>();
             for (EdgeDraftImpl e : edgeList) {
                 if (e != null && e.isSelfLoop()) {
                     l.add(e);
@@ -1043,7 +1043,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             Long2ObjectMap[] l = new Long2ObjectMap[type + 1];
             System.arraycopy(edgeTypeSets, 0, l, 0, edgeTypeSets.length);
             edgeTypeSets = l;
-            edgeTypeSets[type] = new Long2ObjectOpenHashMap<int[]>();
+            edgeTypeSets[type] = new Long2ObjectOpenHashMap<>();
         }
     }
 
@@ -1105,7 +1105,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
         @Override
         public Iterator<T> iterator() {
-            return new NullFilterIterator<T>(collection);
+            return new NullFilterIterator<>(collection);
         }
     }
 

@@ -41,8 +41,8 @@
  */
 package org.gephi.desktop.datalab.tables.columns;
 
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 
 /**

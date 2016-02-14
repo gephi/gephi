@@ -157,7 +157,7 @@ public class FiltersExplorer extends BeanTreeView {
         }
 
         public Object[] getChildren(Category category) {
-            Set<Object> cats = new HashSet<Object>();
+            Set<Object> cats = new HashSet<>();
 
             if (category != null && category.equals(QUERIES)) {
                 for (Query q : filterLibrary.getLookup().lookupAll(Query.class)) {

@@ -78,8 +78,8 @@ public class ImporterGDF implements FileImporter, LongTask {
     private ProgressTicket progressTicket;
     private boolean cancel = false;
     //Extract
-    private List<String> nodeLines = new ArrayList<String>();
-    private List<String> edgeLines = new ArrayList<String>();
+    private List<String> nodeLines = new ArrayList<>();
+    private List<String> edgeLines = new ArrayList<>();
     //Matcher
     private final String[] nodeLineStart;
     private final String[] edgeLineStart;

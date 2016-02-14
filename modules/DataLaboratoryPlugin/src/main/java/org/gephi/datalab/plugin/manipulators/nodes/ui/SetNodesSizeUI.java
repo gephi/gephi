@@ -100,13 +100,13 @@ public class SetNodesSizeUI extends javax.swing.JPanel implements ManipulatorUI 
         @Override
         public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
             for (int i = 0; i < str.length(); i++) {
-                if (POSITIVE_FLOAT_ACCEPTED_CHARS.indexOf(String.valueOf(str.charAt(i))) == -1) {
+                if (!POSITIVE_FLOAT_ACCEPTED_CHARS.contains(String.valueOf(str.charAt(i)))) {
                     return;
                 }
             }
 
-            if (str.indexOf(".") != -1) {
-                if (getText(0, getLength()).indexOf(".") != -1) {
+            if (str.contains(".")) {
+                if (getText(0, getLength()).contains(".")) {
                     return;
                 }
             }

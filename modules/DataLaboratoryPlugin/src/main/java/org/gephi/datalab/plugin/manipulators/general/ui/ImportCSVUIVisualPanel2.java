@@ -53,12 +53,12 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.plugin.manipulators.general.ui.ImportCSVUIWizardAction.Mode;
 import org.gephi.datalab.utils.SupportedColumnTypeWrapper;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Table;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -72,8 +72,8 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     private Character separator;
     private File file;
     private ImportCSVUIWizardAction.Mode mode;
-    private final ArrayList<JCheckBox> columnsCheckBoxes = new ArrayList<JCheckBox>();
-    private final ArrayList<JComboBox> columnsComboBoxes = new ArrayList<JComboBox>();
+    private final ArrayList<JCheckBox> columnsCheckBoxes = new ArrayList<>();
+    private final ArrayList<JComboBox> columnsComboBoxes = new ArrayList<>();
     private GraphModel graphModel;
     private Table table;
     private Charset charset;
@@ -229,7 +229,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     }
 
     public String[] getColumnsToImport() {
-        ArrayList<String> columns = new ArrayList<String>();
+        ArrayList<String> columns = new ArrayList<>();
         for (JCheckBox columnCheckBox : columnsCheckBoxes) {
             if (columnCheckBox.isSelected()) {
                 columns.add(columnCheckBox.getText());
@@ -239,7 +239,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     }
 
     public Class[] getColumnsToImportTypes() {
-        ArrayList<Class> types = new ArrayList<Class>();
+        ArrayList<Class> types = new ArrayList<>();
         for (int i = 0; i < columnsCheckBoxes.size(); i++) {
             if (columnsCheckBoxes.get(i).isSelected()) {
                 SupportedColumnTypeWrapper selected = (SupportedColumnTypeWrapper)columnsComboBoxes.get(i).getSelectedItem();

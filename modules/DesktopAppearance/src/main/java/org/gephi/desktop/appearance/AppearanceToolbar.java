@@ -234,7 +234,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
 
     private class CategoryToolbar extends AbstractToolbar {
 
-        private final List<ButtonGroup> buttonGroups = new ArrayList<ButtonGroup>();
+        private final List<ButtonGroup> buttonGroups = new ArrayList<>();
 
         public CategoryToolbar() {
             //Init components
@@ -352,7 +352,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
 
     private class TransformerToolbar extends AbstractToolbar {
 
-        private final List<ButtonGroup> buttonGroups = new ArrayList<ButtonGroup>();
+        private final List<ButtonGroup> buttonGroups = new ArrayList<>();
 
         public TransformerToolbar() {
         }
@@ -376,7 +376,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                     for (TransformerCategory c : controller.getCategories(elmtType)) {
 
                         ButtonGroup buttonGroup = new ButtonGroup();
-                        Map<String, TransformerUI> titles = new LinkedHashMap<String, TransformerUI>();
+                        Map<String, TransformerUI> titles = new LinkedHashMap<>();
                         for (TransformerUI t : controller.getTransformerUIs(elmtType, c)) {
                             titles.put(t.getDisplayName(), t);
                         }
@@ -440,9 +440,9 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         private transient final Set<AbstractButton> controlButtons;
 
         public ControlToolbar() {
-            rankingSouthControls = new HashSet<AbstractButton>();
-            partitionSouthControls = new HashSet<AbstractButton>();
-            controlButtons = new HashSet<AbstractButton>();
+            rankingSouthControls = new HashSet<>();
+            partitionSouthControls = new HashSet<>();
+            controlButtons = new HashSet<>();
         }
 
         public void addRankingButton(AbstractButton btn) {

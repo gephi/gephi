@@ -46,13 +46,13 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.IntervalDoubleMap;
 import org.gephi.graph.api.types.TimestampDoubleMap;
@@ -103,7 +103,7 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
     public void execute(GraphModel graphModel) {
         this.graphModel = graphModel;
         this.isDirected = graphModel.isDirected();
-        this.averages = new HashMap<Double, Double>();
+        this.averages = new HashMap<>();
 
         //Attributes cols
         if (!averageOnly) {

@@ -47,7 +47,6 @@ import java.beans.PropertyChangeListener;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.appearance.api.SimpleFunction;
 import org.gephi.appearance.plugin.AbstractUniqueColorTransformer;
-import org.gephi.appearance.plugin.UniqueElementColorTransformer;
 
 /**
  *

@@ -61,6 +61,8 @@ import org.gephi.io.importer.spi.FileImporterBuilder;
 import org.gephi.io.importer.spi.Importer;
 import org.gephi.io.importer.spi.ImporterUI;
 import org.gephi.io.importer.spi.ImporterWizardUI;
+import org.gephi.io.importer.spi.WizardImporter;
+import org.gephi.io.importer.spi.WizardImporterBuilder;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.Scaler;
 import org.gephi.project.api.Workspace;
@@ -69,8 +71,6 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
-import org.gephi.io.importer.spi.WizardImporter;
-import org.gephi.io.importer.spi.WizardImporterBuilder;
 
 /**
  *
@@ -378,7 +378,7 @@ public class ImportControllerImpl implements ImportController {
 
     @Override
     public FileType[] getFileTypes() {
-        ArrayList<FileType> list = new ArrayList<FileType>();
+        ArrayList<FileType> list = new ArrayList<>();
         for (FileImporterBuilder im : fileImporterBuilders) {
             for (FileType ft : im.getFileTypes()) {
                 list.add(ft);

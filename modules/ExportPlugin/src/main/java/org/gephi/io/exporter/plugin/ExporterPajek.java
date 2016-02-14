@@ -158,7 +158,7 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
 
     private void exportData(Graph graph) throws Exception {
         int max = graph.getNodeCount(), i = 1;
-        HashMap<String, Integer> idx = new HashMap<String, Integer>(3 * max / 2 + 1);
+        HashMap<String, Integer> idx = new HashMap<>(3 * max / 2 + 1);
 
         Progress.start(progressTicket, max);
 

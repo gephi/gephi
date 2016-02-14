@@ -96,7 +96,7 @@ public class PreviewUIControllerImpl implements PreviewUIController {
 
     public PreviewUIControllerImpl() {
         previewController = Lookup.getDefault().lookup(PreviewController.class);
-        listeners = new ArrayList<PropertyChangeListener>();
+        listeners = new ArrayList<>();
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         graphController = Lookup.getDefault().lookup(GraphController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
@@ -261,7 +261,7 @@ public class PreviewUIControllerImpl implements PreviewUIController {
     public void savePreset(String name) {
         if (model != null) {
             PreviewModel previewModel = previewController.getModel();
-            Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> map = new HashMap<>();
             for (PreviewProperty p : previewModel.getProperties().getProperties()) {
                 map.put(p.getName(), p.getValue());
             }

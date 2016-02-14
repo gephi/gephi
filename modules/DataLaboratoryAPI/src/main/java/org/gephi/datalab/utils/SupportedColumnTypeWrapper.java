@@ -142,7 +142,7 @@ public class SupportedColumnTypeWrapper implements Comparable<SupportedColumnTyp
      * @return Ordered column type wrappers list
      */
     public static List<SupportedColumnTypeWrapper> buildOrderedSupportedTypesList(GraphModel graphModel) {
-        List<SupportedColumnTypeWrapper> supportedTypesWrappers = new ArrayList<SupportedColumnTypeWrapper>();
+        List<SupportedColumnTypeWrapper> supportedTypesWrappers = new ArrayList<>();
 
         TimeRepresentation timeRepresentation = graphModel.getConfiguration().getTimeRepresentation();
         for (Class<?> type : AttributeUtils.getSupportedTypes()) {

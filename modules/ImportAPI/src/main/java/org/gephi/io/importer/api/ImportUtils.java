@@ -365,7 +365,7 @@ public final class ImportUtils {
     }
 
     //COLORS
-    private static final Map<String, Integer> COLORS = new HashMap<String, Integer>();
+    private static final Map<String, Integer> COLORS = new HashMap<>();
 
     static {
         COLORS.put("gray30", 0x4D4D4D);

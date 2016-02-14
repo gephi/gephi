@@ -75,9 +75,9 @@ public class StatisticsModelUIImpl implements StatisticsModelUI {
     public StatisticsModelUIImpl(Workspace workspace) {
         this.workspace = workspace;
         runningList = Collections.synchronizedList(new ArrayList<Statistics>());
-        invisibleList = new ArrayList<StatisticsUI>();
-        resultMap = new HashMap<StatisticsUI, String>();
-        listeners = new ArrayList<ChangeListener>();
+        invisibleList = new ArrayList<>();
+        resultMap = new HashMap<>();
+        listeners = new ArrayList<>();
     }
 
     public void addResult(StatisticsUI ui) {

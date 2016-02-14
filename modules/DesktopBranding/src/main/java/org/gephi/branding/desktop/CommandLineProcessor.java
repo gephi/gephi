@@ -80,7 +80,7 @@ public class CommandLineProcessor extends OptionProcessor {
 
     @Override
     protected Set<Option> getOptions() {
-        HashSet<Option> set = new HashSet<Option>();
+        HashSet<Option> set = new HashSet<>();
         set.add(openOption);
         set.add(openOption2);
         return set;
@@ -88,7 +88,7 @@ public class CommandLineProcessor extends OptionProcessor {
 
     @Override
     public void process(Env env, Map values) throws CommandException {
-        List<String> filenameList = new ArrayList<String>();
+        List<String> filenameList = new ArrayList<>();
         Object obj = values.get(openOption);
         if (obj != null) {
             filenameList.addAll(Arrays.asList((String[]) obj));

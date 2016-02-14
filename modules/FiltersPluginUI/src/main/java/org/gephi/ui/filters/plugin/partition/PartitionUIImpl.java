@@ -44,8 +44,6 @@ package org.gephi.ui.filters.plugin.partition;
 import javax.swing.JPanel;
 import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
 import org.gephi.filters.plugin.partition.PartitionUI;
-
-
 import org.openide.util.lookup.ServiceProvider;
 
 /**

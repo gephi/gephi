@@ -92,7 +92,7 @@ public class AutoLayout {
 
     public AutoLayout(long duration, TimeUnit timeUnit) {
         this.duration = TimeUnit.MILLISECONDS.convert(duration, timeUnit);
-        this.layouts = new ArrayList<LayoutScenario>();
+        this.layouts = new ArrayList<>();
     }
 
     public void addLayout(Layout layout, float ratio) {

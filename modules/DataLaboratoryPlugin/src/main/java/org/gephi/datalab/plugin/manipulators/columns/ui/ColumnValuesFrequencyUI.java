@@ -43,13 +43,13 @@ package org.gephi.datalab.plugin.manipulators.columns.ui;
 
 import java.util.Map;
 import javax.swing.JPanel;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.plugin.manipulators.columns.ColumnValuesFrequency;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulatorUI;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Table;
 import org.gephi.ui.components.JFreeChartDialog;
 import org.gephi.ui.components.SimpleHTMLReport;
 import org.jfree.chart.JFreeChart;

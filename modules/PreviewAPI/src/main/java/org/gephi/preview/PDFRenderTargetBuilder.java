@@ -44,7 +44,6 @@ package org.gephi.preview;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
-
 import java.awt.geom.AffineTransform;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.PDFTarget;

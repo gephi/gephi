@@ -130,7 +130,7 @@ public class ImporterVNA implements FileImporter, LongTask {
     }
 
     private void importData(LineNumberReader reader) throws Exception {
-        List<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<>();
         while (reader.ready()) {
             String line = reader.readLine();
             if (line != null && !line.isEmpty()) {
@@ -253,7 +253,7 @@ public class ImporterVNA implements FileImporter, LongTask {
         if (pattern == null) {
             pattern = Pattern.compile("[^\\s\"]+|\"([^\"]*)\"");
         }
-        List<String> tokens = new ArrayList<String>();
+        List<String> tokens = new ArrayList<>();
         Matcher patternMatcher = pattern.matcher(line);
         while (patternMatcher.find()) {
             if ((patternMatcher.group(1)) != null) {

@@ -68,7 +68,7 @@ public class JSqueezeBoxPanel extends JPanel {
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JScrollPane scrollPane;
     private final JPanel scrollPanel = new JPanel();
-    private final Map<JPanel, SnippetPanel> panelMap = new HashMap<JPanel, SnippetPanel>();
+    private final Map<JPanel, SnippetPanel> panelMap = new HashMap<>();
 
     public JSqueezeBoxPanel() {
         setName("JSqueezeBoxPanel"); // NOI18N

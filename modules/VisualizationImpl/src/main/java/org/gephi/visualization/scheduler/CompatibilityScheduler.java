@@ -41,9 +41,9 @@
  */
 package org.gephi.visualization.scheduler;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.GraphDrawable;

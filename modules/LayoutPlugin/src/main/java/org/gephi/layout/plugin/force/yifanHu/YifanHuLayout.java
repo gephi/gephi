@@ -154,7 +154,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
     @Override
     public LayoutProperty[] getProperties() {
-        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        List<LayoutProperty> properties = new ArrayList<>();
         final String YIFANHU_CATEGORY = "Yifan Hu's properties";
         final String BARNESHUT_CATEGORY = "Barnes-Hut's properties";
 

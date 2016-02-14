@@ -63,8 +63,8 @@ import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
-import org.gephi.timeline.api.TimelineModel.PlayMode;
 import org.gephi.timeline.api.*;
+import org.gephi.timeline.api.TimelineModel.PlayMode;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -84,7 +84,7 @@ public class TimelineControllerImpl implements TimelineController {
     private FilterController filterController;
 
     public TimelineControllerImpl() {
-        listeners = new ArrayList<TimelineModelListener>();
+        listeners = new ArrayList<>();
 
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -337,7 +337,7 @@ public class TimelineControllerImpl implements TimelineController {
     @Override
     public String[] getDynamicGraphColumns() {
         if (graphModel != null) {
-            List<String> columns = new ArrayList<String>();
+            List<String> columns = new ArrayList<>();
             for (String k : graphModel.getGraph().getAttributeKeys()) {
                 Object a = graphModel.getGraph().getAttribute(k);
                 if (a instanceof IntervalMap || a instanceof TimestampMap) {

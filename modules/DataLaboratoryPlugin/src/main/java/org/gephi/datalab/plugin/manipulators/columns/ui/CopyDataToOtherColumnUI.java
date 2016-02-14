@@ -43,14 +43,14 @@ package org.gephi.datalab.plugin.manipulators.columns.ui;
 
 import java.util.ArrayList;
 import javax.swing.JPanel;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.plugin.manipulators.columns.CopyDataToOtherColumn;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulatorUI;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Table;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -79,7 +79,7 @@ public class CopyDataToOtherColumnUI extends javax.swing.JPanel implements Attri
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
-        ArrayList<Column> availableColumns = new ArrayList<Column>();
+        ArrayList<Column> availableColumns = new ArrayList<>();
 
         for (Column c : table) {
             if (ac.canChangeColumnData(c) && c != column) {

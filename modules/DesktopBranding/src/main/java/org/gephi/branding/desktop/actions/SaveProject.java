@@ -43,8 +43,6 @@ package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
 import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.gephi.project.api.Project;
-import org.gephi.project.api.ProjectController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;

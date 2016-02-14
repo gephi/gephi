@@ -43,11 +43,10 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.datalab.spi.columns;
 
 import javax.swing.JPanel;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.spi.DialogControls;
-import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Table;
 
 /**
  * <p>UI AttributeColumnsManipulators can provide.</p>

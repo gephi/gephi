@@ -61,7 +61,6 @@ import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.IntervalSet;
-import org.gephi.graph.api.types.TimeSet;
 import org.gephi.graph.api.types.TimestampSet;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
@@ -87,7 +86,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
 
     @Override
     public FilterBuilder[] getBuilders(Workspace workspace) {
-        List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
+        List<FilterBuilder> builders = new ArrayList<>();
         GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         if (am.isDynamic()) {
             builders.add(new DynamicRangeFilterBuilder(am));
@@ -159,7 +158,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         public Graph filter(Graph graph) {
             visibleInterval = new Interval(range.getLowerDouble(), range.getUpperDouble());
 
-            List<Node> toRemoveNodes = new ArrayList<Node>();
+            List<Node> toRemoveNodes = new ArrayList<>();
             for (Node n : graph.getNodes()) {
                 if (!evaluateElement(n)) {
                     toRemoveNodes.add(n);
@@ -167,7 +166,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             }
             graph.removeAllNodes(toRemoveNodes);
 
-            List<Edge> toRemoveEdge = new ArrayList<Edge>();
+            List<Edge> toRemoveEdge = new ArrayList<>();
             for (Edge e : graph.getEdges()) {
                 if (!evaluateElement(e)) {
                     toRemoveEdge.add(e);

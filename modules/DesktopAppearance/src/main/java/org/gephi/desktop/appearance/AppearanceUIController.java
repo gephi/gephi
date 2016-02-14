@@ -163,13 +163,13 @@ public class AppearanceUIController {
 
         listeners = Collections.synchronizedSet(new HashSet<AppearanceUIModelListener>());
 
-        transformers = new HashMap<String, Map<TransformerCategory, Set<TransformerUI>>>();
+        transformers = new HashMap<>();
         for (String ec : ELEMENT_CLASSES) {
             transformers.put(ec, new LinkedHashMap<TransformerCategory, Set<TransformerUI>>());
         }
 
         //Register transformers
-        Map<Class, Transformer> tMap = new HashMap<Class, Transformer>();
+        Map<Class, Transformer> tMap = new HashMap<>();
         for (Transformer t : Lookup.getDefault().lookupAll(Transformer.class)) {
             tMap.put(t.getClass(), t);
         }
@@ -180,7 +180,7 @@ public class AppearanceUIController {
                 if (t.isNode()) {
                     Set<TransformerUI> uis = transformers.get(NODE_ELEMENT).get(c);
                     if (uis == null) {
-                        uis = new LinkedHashSet<TransformerUI>();
+                        uis = new LinkedHashSet<>();
                         transformers.get(NODE_ELEMENT).put(c, uis);
                     }
                     uis.add(ui);
@@ -188,7 +188,7 @@ public class AppearanceUIController {
                 if (t.isEdge()) {
                     Set<TransformerUI> uis = transformers.get(EDGE_ELEMENT).get(c);
                     if (uis == null) {
-                        uis = new LinkedHashSet<TransformerUI>();
+                        uis = new LinkedHashSet<>();
                         transformers.get(EDGE_ELEMENT).put(c, uis);
                     }
                     uis.add(ui);

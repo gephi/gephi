@@ -6,12 +6,12 @@ package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
 import org.gephi.graph.api.DirectedGraph;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.impl.ProjectControllerImpl;
 import org.openide.util.Lookup;

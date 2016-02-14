@@ -48,7 +48,6 @@ import javax.swing.JComponent;
 import javax.swing.UIManager;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.swing.NewtGraphCanvas;
 
 /**
  *

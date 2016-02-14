@@ -41,8 +41,8 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.plugin.manipulators;
 
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.plugin.manipulators.nodes.ClearNodesData;
+import org.gephi.graph.api.Column;
 
 /**
  * Interface in common for choosing columns to manipulate.

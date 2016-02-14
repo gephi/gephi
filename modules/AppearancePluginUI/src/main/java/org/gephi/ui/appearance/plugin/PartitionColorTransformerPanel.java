@@ -112,7 +112,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
 
         values = partition.getSortedValues();
 
-        List<Object> nullColors = new ArrayList<Object>();
+        List<Object> nullColors = new ArrayList<>();
         Color defaultColor = Color.LIGHT_GRAY;
         for (Object val : values) {
             Color c = partition.getColor(val);

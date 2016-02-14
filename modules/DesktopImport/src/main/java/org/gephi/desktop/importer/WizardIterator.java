@@ -46,9 +46,9 @@ import java.util.NoSuchElementException;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.gephi.io.importer.spi.ImporterWizardUI;
+import org.gephi.io.importer.spi.WizardImporter;
 import org.openide.WizardDescriptor;
 import org.openide.util.Lookup;
-import org.gephi.io.importer.spi.WizardImporter;
 
 public class WizardIterator implements WizardDescriptor.Iterator {
 

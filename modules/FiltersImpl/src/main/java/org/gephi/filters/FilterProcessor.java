@@ -56,7 +56,7 @@ public class FilterProcessor {
 
     public Graph process(AbstractQueryImpl query, GraphModel graphModel) {
         graphModel.getGraph().writeLock();
-        List<GraphView> views = new ArrayList<GraphView>();
+        List<GraphView> views = new ArrayList<>();
         query = simplifyQuery(query);
         AbstractQueryImpl[] tree = getTree(query, true);
         for (int i = 0; i < tree.length; i++) {
@@ -88,7 +88,7 @@ public class FilterProcessor {
                 GraphView newView = graphModel.copyView(graphModel.getGraph().getView());
                 views.add(newView);
                 Graph newGraph = graphModel.getGraph(newView);
-                List<Filter> filters = new ArrayList<Filter>();
+                List<Filter> filters = new ArrayList<>();
                 for (int k = 0; k < operatorQuery.getChildrenCount(); k++) {
                     Filter filter = operatorQuery.getChildAt(k).getFilter();
                     if (init(filter, newGraph)) {
@@ -132,7 +132,7 @@ public class FilterProcessor {
 
     private void processNodeFilter(NodeFilter nodeFilter, Graph graph) {
         if (init(nodeFilter, graph)) {
-            List<Node> nodesToRemove = new ArrayList<Node>();
+            List<Node> nodesToRemove = new ArrayList<>();
             for (Node n : graph.getNodes()) {
                 if (!nodeFilter.evaluate(graph, n)) {
                     nodesToRemove.add(n);
@@ -148,7 +148,7 @@ public class FilterProcessor {
 
     private void processEdgeFilter(EdgeFilter edgeFilter, Graph graph) {
         if (init(edgeFilter, graph)) {
-            List<Edge> edgesToRemove = new ArrayList<Edge>();
+            List<Edge> edgesToRemove = new ArrayList<>();
             for (Edge e : graph.getEdges()) {
                 if (!edgeFilter.evaluate(graph, e)) {
                     edgesToRemove.add(e);
@@ -181,7 +181,7 @@ public class FilterProcessor {
     }
 
     private AbstractQueryImpl[] getTree(AbstractQueryImpl query, boolean ignoreSimple) {
-        ArrayList<AbstractQueryImpl> tree = new ArrayList<AbstractQueryImpl>();
+        ArrayList<AbstractQueryImpl> tree = new ArrayList<>();
         int pointer = 0;
         tree.add(query);
         while (pointer < tree.size()) {

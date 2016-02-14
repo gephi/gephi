@@ -46,9 +46,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import org.gephi.io.exporter.spi.ByteExporter;
-import org.gephi.io.exporter.spi.ExporterUI;
-import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.CharacterExporter;
+import org.gephi.io.exporter.spi.Exporter;
+import org.gephi.io.exporter.spi.ExporterUI;
 import org.gephi.project.api.Workspace;
 
 /**

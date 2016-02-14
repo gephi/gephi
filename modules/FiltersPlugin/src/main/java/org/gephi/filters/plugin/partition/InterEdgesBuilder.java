@@ -83,7 +83,7 @@ public class InterEdgesBuilder implements CategoryBuilder {
 
     @Override
     public FilterBuilder[] getBuilders(Workspace workspace) {
-        List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
+        List<FilterBuilder> builders = new ArrayList<>();
         GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         Graph graph = gm.getGraph();
         AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel(workspace);

@@ -70,7 +70,7 @@ public class LayoutNode extends AbstractNode {
     public PropertySet[] getPropertySets() {
         if (propertySets == null) {
             try {
-                Map<String, Sheet.Set> sheetMap = new HashMap<String, Sheet.Set>();
+                Map<String, Sheet.Set> sheetMap = new HashMap<>();
                 for (LayoutProperty layoutProperty : layout.getProperties()) {
                     Sheet.Set set = sheetMap.get(layoutProperty.getCategory());
                     if (set == null) {

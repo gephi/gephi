@@ -137,7 +137,7 @@ public class EdgeTypeBuilder implements FilterBuilder {
         public Collection getEdgeTypeLabels() {
             Graph graph = graphModel.getGraph();
             Object[] labels = graphModel.getEdgeTypeLabels();
-            ArrayList<Object> col = new ArrayList<Object>(labels.length);
+            ArrayList<Object> col = new ArrayList<>(labels.length);
             for (Object l : labels) {
                 if (graph.getEdgeCount(graphModel.getEdgeType(l)) > 0) {
                     col.add(l);

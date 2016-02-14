@@ -114,7 +114,7 @@ public class QuadTree implements Node {
     private void divideTree() {
         float childSize = size / 2;
 
-        children = new ArrayList<QuadTree>();
+        children = new ArrayList<>();
         children.add(new QuadTree(posX + childSize, posY + childSize,
                 childSize, maxLevel - 1));
         children.add(new QuadTree(posX, posY + childSize,

@@ -61,15 +61,15 @@ public class DijkstraShortestPathAlgorithm extends AbstractShortestPathAlgorithm
     public DijkstraShortestPathAlgorithm(Graph graph, Node sourceNode) {
         super(sourceNode);
         this.graph = graph;
-        predecessors = new HashMap<Node, Edge>();
+        predecessors = new HashMap<>();
     }
 
     @Override
     public void compute() {
 
         graph.readLock();
-        Set<Node> unsettledNodes = new HashSet<Node>();
-        Set<Node> settledNodes = new HashSet<Node>();
+        Set<Node> unsettledNodes = new HashSet<>();
+        Set<Node> settledNodes = new HashSet<>();
 
         //Initialize
         for (Node node : graph.getNodes()) {

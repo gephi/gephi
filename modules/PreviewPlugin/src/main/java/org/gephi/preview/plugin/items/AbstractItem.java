@@ -58,7 +58,7 @@ public abstract class AbstractItem implements Item {
     public AbstractItem(Object source, String type) {
         this.type = type;
         this.source = source;
-        this.data = new HashMap<String, Object>();
+        this.data = new HashMap<>();
     }
 
     @Override

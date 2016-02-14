@@ -70,8 +70,6 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.api.datatables.AttributeTableCSVExporter;
 import org.gephi.datalab.api.datatables.DataTablesController;
@@ -87,12 +85,14 @@ import org.gephi.desktop.datalab.general.actions.CSVExportUI;
 import org.gephi.desktop.datalab.general.actions.MergeColumnsUI;
 import org.gephi.desktop.datalab.tables.EdgesDataTable;
 import org.gephi.desktop.datalab.tables.NodesDataTable;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.Workspace;
@@ -158,8 +158,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private boolean useSparklines = false;
     private boolean timeIntervalGraphics = false;
     private boolean showEdgesNodesLabels = false;
-    private Map<Integer, ContextMenuItemManipulator> nodesActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();//For key bindings
-    private Map<Integer, ContextMenuItemManipulator> edgesActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();//For key bindings
+    private Map<Integer, ContextMenuItemManipulator> nodesActionMappings = new HashMap<>();//For key bindings
+    private Map<Integer, ContextMenuItemManipulator> edgesActionMappings = new HashMap<>();//For key bindings
     //Data
     private final ProjectController pc;
     private final GraphController gc;
@@ -178,13 +178,13 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private NodesDataTable nodeTable;
     private EdgesDataTable edgeTable;
     //General actions buttons
-    private ArrayList<JComponent> generalActionsButtons = new ArrayList<JComponent>();
+    private ArrayList<JComponent> generalActionsButtons = new ArrayList<>();
     //States
     private DisplayTable displayTable = DisplayTable.NODE;//Display nodes by default at first.
     private ArrayList previousNodeFilterColumns = new ArrayList();
     private ArrayList previousEdgeFilterColumns = new ArrayList();
-    private Map<DisplayTable, String> filterTextByDisplayTable = new EnumMap<DisplayTable, String>(DisplayTable.class);
-    private Map<DisplayTable, Integer> filterColumnIndexByDisplayTable = new EnumMap<DisplayTable, Integer>(DisplayTable.class);
+    private Map<DisplayTable, String> filterTextByDisplayTable = new EnumMap<>(DisplayTable.class);
+    private Map<DisplayTable, Integer> filterColumnIndexByDisplayTable = new EnumMap<>(DisplayTable.class);
     
     //Refresh executor
     private RefreshOnceHelperThread refreshOnceHelperThread;
@@ -994,7 +994,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             manipulatorButton.setPopupRichTooltip(new RichTooltip(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.RichToolTip.title.text"), acm.getDescription()));
         }
 
-        final ArrayList<Column> availableColumns = new ArrayList<Column>();
+        final ArrayList<Column> availableColumns = new ArrayList<>();
         for (final Column column : columns) {
             if (acm.canManipulateColumn(table, column)) {
                 availableColumns.add(column);

@@ -76,8 +76,8 @@ public class FilterThread extends Thread {
         setDaemon(true);
         this.model = model;
         this.filtering = model.isFiltering();
-        rootQuery = new AtomicReference<AbstractQueryImpl>();
-        modifiersMap = new ConcurrentHashMap<String, PropertyModifier>();
+        rootQuery = new AtomicReference<>();
+        modifiersMap = new ConcurrentHashMap<>();
     }
 
     @Override

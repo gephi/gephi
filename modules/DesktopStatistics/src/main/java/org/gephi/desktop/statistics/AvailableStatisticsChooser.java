@@ -65,7 +65,7 @@ import org.openide.util.Lookup;
 public class AvailableStatisticsChooser extends javax.swing.JPanel {
 
     private final JSqueezeBoxPanel squeezeBoxPanel = new JSqueezeBoxPanel();
-    private final Map<JCheckBox, StatisticsUI> uiMap = new HashMap<JCheckBox, StatisticsUI>();
+    private final Map<JCheckBox, StatisticsUI> uiMap = new HashMap<>();
 
     public AvailableStatisticsChooser() {
         initComponents();
@@ -95,7 +95,7 @@ public class AvailableStatisticsChooser extends javax.swing.JPanel {
             JPanel innerPanel = new JPanel(migLayout);
 
             //Find uis in this category
-            List<StatisticsUI> uis = new ArrayList<StatisticsUI>();
+            List<StatisticsUI> uis = new ArrayList<>();
             for (StatisticsUI sui : statisticsUIs) {
                 if (sui.getCategory().equals(category.getName())) {
                     uis.add(sui);

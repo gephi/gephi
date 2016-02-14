@@ -52,5 +52,5 @@ import org.gephi.layout.plugin.ForceVectorNodeLayoutData;
  */
 public class NoverlapLayoutData extends ForceVectorNodeLayoutData {
 
-    public final List<Node> neighbours = new ArrayList<Node>();
+    public final List<Node> neighbours = new ArrayList<>();
 }

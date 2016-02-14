@@ -145,7 +145,7 @@ public class PreviewControllerImpl implements PreviewController {
         if (!mousePressed) {
             renderers = model.getManagedEnabledRenderers();
         } else {
-            ArrayList<Renderer> renderersList = new ArrayList<Renderer>();
+            ArrayList<Renderer> renderersList = new ArrayList<>();
             for (Renderer renderer : model.getManagedEnabledRenderers()) {
                 //Only mouse responsive renderers will be called while mouse is pressed
                 if (renderer instanceof MouseResponsiveRenderer) {
@@ -308,7 +308,7 @@ public class PreviewControllerImpl implements PreviewController {
     @Override
     public Renderer[] getRegisteredRenderers() {
         if (registeredRenderers == null) {
-            LinkedHashMap<String, Renderer> renderers = new LinkedHashMap<String, Renderer>();
+            LinkedHashMap<String, Renderer> renderers = new LinkedHashMap<>();
             for (Renderer r : Lookup.getDefault().lookupAll(Renderer.class)) {
                 renderers.put(r.getClass().getName(), r);
             }

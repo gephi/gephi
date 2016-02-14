@@ -173,7 +173,6 @@ public class ReportController {
             }
 
             String serverResult = buf.toString();
-            System.err.println("\nResponse from server:\n" + serverResult);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -280,7 +279,6 @@ public class ReportController {
     }
 
     private void logMessageLog(Report report) {
-        System.err.flush();
         System.out.flush();
         String ud = System.getProperty("netbeans.user"); // NOI18N
         if (ud == null || "memory".equals(ud)) { // NOI18N

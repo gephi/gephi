@@ -41,13 +41,13 @@
  */
 package org.gephi.datalab.impl;
 
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.api.datatables.DataTablesEventListener;
 import org.gephi.datalab.api.datatables.DataTablesEventListenerBuilder;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 

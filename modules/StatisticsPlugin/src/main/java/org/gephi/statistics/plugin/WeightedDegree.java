@@ -45,12 +45,12 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.graph.api.Table;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -157,9 +157,9 @@ public class WeightedDegree implements Statistics, LongTask {
     }
 
     private void initializeDegreeDists() {
-        degreeDist = new HashMap<Double, Integer>();
-        inDegreeDist = new HashMap<Double, Integer>();
-        outDegreeDist = new HashMap<Double, Integer>();
+        degreeDist = new HashMap<>();
+        inDegreeDist = new HashMap<>();
+        outDegreeDist = new HashMap<>();
     }
 
     private void initializeAttributeColunms(GraphModel graphModel) {

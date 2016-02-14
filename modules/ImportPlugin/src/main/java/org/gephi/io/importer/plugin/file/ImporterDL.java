@@ -59,7 +59,6 @@ import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -108,7 +107,7 @@ public class ImporterDL implements FileImporter, LongTask {
     private void importData(LineNumberReader reader) throws Exception {
         Progress.start(progressTicket);        //Progress
 
-        List<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<>();
         for (; reader.ready();) {
             String line = reader.readLine();
             if (line != null && !line.isEmpty()) {
@@ -120,7 +119,7 @@ public class ImporterDL implements FileImporter, LongTask {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_firstline"), Issue.Level.CRITICAL));
         }
 
-        headerMap = new HashMap<String, String>();
+        headerMap = new HashMap<>();
         readHeaderLine(lines.get(0).substring(2));
 
         int i = 1;
@@ -166,7 +165,7 @@ public class ImporterDL implements FileImporter, LongTask {
         StringTokenizer firstLineTokenizer = new StringTokenizer(line, " ,;");
         while (firstLineTokenizer.hasMoreTokens()) {
             String tag = firstLineTokenizer.nextToken().toLowerCase();
-            if (tag.indexOf("=") != -1) {
+            if (tag.contains("=")) {
                 headerMap.put(tag.substring(0, tag.indexOf("=")).trim(), tag.substring(tag.indexOf("=") + 1).trim());
             } else {
                 //report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_unknowntag", tag), Issue.Level.WARNING));

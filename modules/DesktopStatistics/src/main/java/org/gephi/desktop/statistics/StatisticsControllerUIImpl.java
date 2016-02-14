@@ -158,7 +158,7 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
 
     public StatisticsUI[] getUI(Statistics statistics) {
         boolean dynamic = false;
-        ArrayList<StatisticsUI> list = new ArrayList<StatisticsUI>();
+        ArrayList<StatisticsUI> list = new ArrayList<>();
         for (StatisticsUI sui : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
             if (sui.getStatisticsClass().equals(statistics.getClass())) {
                 list.add(sui);

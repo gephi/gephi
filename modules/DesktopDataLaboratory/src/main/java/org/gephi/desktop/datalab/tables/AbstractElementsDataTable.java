@@ -41,9 +41,6 @@
  */
 package org.gephi.desktop.datalab.tables;
 
-import org.gephi.desktop.datalab.tables.columns.ElementDataColumn;
-import org.gephi.desktop.datalab.tables.columns.AttributeDataColumn;
-import org.gephi.desktop.datalab.*;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,22 +50,24 @@ import java.util.Objects;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.RowFilter;
 import javax.swing.table.TableCellRenderer;
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.desktop.datalab.*;
 import org.gephi.desktop.datalab.tables.celleditors.AttributeTypesSupportCellEditor;
-import org.gephi.desktop.datalab.utils.stringconverters.ArrayStringConverter;
-import org.gephi.desktop.datalab.utils.stringconverters.DefaultStringRepresentationConverter;
+import org.gephi.desktop.datalab.tables.columns.AttributeDataColumn;
+import org.gephi.desktop.datalab.tables.columns.ElementDataColumn;
 import org.gephi.desktop.datalab.utils.GraphModelProvider;
-import org.gephi.desktop.datalab.utils.componentproviders.IntervalSetGraphicsComponentProvider;
-import org.gephi.desktop.datalab.utils.componentproviders.AbstractSparklinesGraphicsComponentProvider;
 import org.gephi.desktop.datalab.utils.componentproviders.ArraySparklinesGraphicsComponentProvider;
 import org.gephi.desktop.datalab.utils.componentproviders.IntervalMapSparklinesGraphicsComponentProvider;
+import org.gephi.desktop.datalab.utils.componentproviders.IntervalSetGraphicsComponentProvider;
 import org.gephi.desktop.datalab.utils.componentproviders.TimestampMapSparklinesGraphicsComponentProvider;
 import org.gephi.desktop.datalab.utils.componentproviders.TimestampSetGraphicsComponentProvider;
+import org.gephi.desktop.datalab.utils.stringconverters.ArrayStringConverter;
+import org.gephi.desktop.datalab.utils.stringconverters.DefaultStringRepresentationConverter;
 import org.gephi.desktop.datalab.utils.stringconverters.DoubleStringConverter;
 import org.gephi.desktop.datalab.utils.stringconverters.TimeMapStringConverter;
 import org.gephi.desktop.datalab.utils.stringconverters.TimeSetStringConverter;
 import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Interval;
@@ -249,7 +248,7 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
         if (selectedElements == null) {
             selectedElements = getElementsFromSelectedRows();
         }
-        ArrayList<ElementDataColumn<T>> columns = new ArrayList<ElementDataColumn<T>>();
+        ArrayList<ElementDataColumn<T>> columns = new ArrayList<>();
         columns.addAll(getFakeDataColumns(graphModel, dataTablesModel));
 
         for (Column c : cols) {
@@ -257,7 +256,7 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
         }
 
         if (model == null) {
-            model = new ElementsDataTableModel<T>(elements, columns.toArray(new ElementDataColumn[0]));
+            model = new ElementsDataTableModel<>(elements, columns.toArray(new ElementDataColumn[0]));
             table.setModel(model);
         } else {
             model.configure(elements, columns.toArray(new ElementDataColumn[0]));
@@ -294,7 +293,7 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
 
     public void setElementsSelection(List<T> elements) {
         this.selectedElements = elements;//Keep this selection request to be able to do it if the table is first refreshed later.
-        HashSet<T> elementsSet = new HashSet<T>();
+        HashSet<T> elementsSet = new HashSet<>();
         elementsSet.addAll(elements);
         table.clearSelection();
         for (int i = 0; i < table.getRowCount(); i++) {
@@ -340,7 +339,7 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
 
     public List<T> getElementsFromSelectedRows() {
         int[] selectedRows = table.getSelectedRows();
-        List<T> elements = new ArrayList<T>();
+        List<T> elements = new ArrayList<>();
 
         for (int i = 0; i < selectedRows.length; i++) {
             elements.add(getElementFromRow(selectedRows[i]));

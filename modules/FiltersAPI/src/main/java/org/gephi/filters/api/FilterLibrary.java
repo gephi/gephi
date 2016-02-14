@@ -41,11 +41,11 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.filters.api;
 
-import org.gephi.filters.spi.FilterLibraryMask;
-import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
+import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.filters.spi.FilterLibraryMask;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 

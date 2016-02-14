@@ -155,7 +155,7 @@ public class NOTBuilderNode implements FilterBuilder {
             }
             Filter filter = filters[0];
             if (filter instanceof NodeFilter && ((NodeFilter) filter).init(graph)) {
-                List<Node> nodeToRemove = new ArrayList<Node>();
+                List<Node> nodeToRemove = new ArrayList<>();
                 NodeFilter nodeFilter = (NodeFilter) filter;
                 for (Node n : graph.getNodes()) {
                     if (nodeFilter.evaluate(graph, n)) {

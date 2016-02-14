@@ -115,7 +115,7 @@ public class EgoBuilder implements FilterBuilder {
         public Graph filter(Graph graph) {
             String str = pattern.toLowerCase();
 
-            List<Node> nodes = new ArrayList<Node>();
+            List<Node> nodes = new ArrayList<>();
             for (Node n : graph.getNodes()) {
                 if (n.getId().toString().toLowerCase().equals(str)) {
                     nodes.add(n);
@@ -124,9 +124,9 @@ public class EgoBuilder implements FilterBuilder {
                 }
             }
 
-            Set<Node> result = new HashSet<Node>();
+            Set<Node> result = new HashSet<>();
 
-            Set<Node> neighbours = new HashSet<Node>();
+            Set<Node> neighbours = new HashSet<>();
             neighbours.addAll(nodes);
 
             for (int i = 0; i < depth; i++) {

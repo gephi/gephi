@@ -43,8 +43,6 @@ package org.gephi.preview.api;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -84,8 +82,8 @@ public class PreviewProperties {
     private final Map<String, PreviewProperty> properties;
 
     public PreviewProperties() {
-        properties = new LinkedHashMap<String, PreviewProperty>();//Use LinkedHashMap to retrieve properties in insertion order
-        simpleValues = new HashMap<String, Object>();
+        properties = new LinkedHashMap<>();//Use LinkedHashMap to retrieve properties in insertion order
+        simpleValues = new HashMap<>();
     }
 
     /**
@@ -310,7 +308,7 @@ public class PreviewProperties {
      * @return all properties in <code>category</code>
      */
     public PreviewProperty[] getProperties(String category) {
-        List<PreviewProperty> props = new ArrayList<PreviewProperty>();
+        List<PreviewProperty> props = new ArrayList<>();
         for (PreviewProperty p : properties.values()) {
             if (p.getCategory().equals(category)) {
                 props.add(p);
@@ -335,7 +333,7 @@ public class PreviewProperties {
      * @return all properties in <code>source</code>
      */
     public PreviewProperty[] getProperties(Object source) {
-        List<PreviewProperty> props = new ArrayList<PreviewProperty>();
+        List<PreviewProperty> props = new ArrayList<>();
         for (PreviewProperty p : properties.values()) {
             if (p.getSource().equals(source)) {
                 props.add(p);
@@ -350,7 +348,7 @@ public class PreviewProperties {
      * @return all properties with <code>property</code> as a parent property
      */
     public PreviewProperty[] getChildProperties(PreviewProperty property) {
-        List<PreviewProperty> props = new ArrayList<PreviewProperty>();
+        List<PreviewProperty> props = new ArrayList<>();
         for (PreviewProperty p : properties.values()) {
             for (String pn : p.dependencies) {
                 if (pn.equals(property.getName())) {
@@ -367,7 +365,7 @@ public class PreviewProperties {
      * @return all properties <code>property</code> depends on
      */
     public PreviewProperty[] getParentProperties(PreviewProperty property) {
-        List<PreviewProperty> props = new ArrayList<PreviewProperty>();
+        List<PreviewProperty> props = new ArrayList<>();
         for (PreviewProperty p : properties.values()) {
             for (String pn : property.dependencies) {
                 if (pn.equals(p.getName())) {

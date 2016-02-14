@@ -56,8 +56,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.codec.binary.Base64;
-import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.api.StatisticsModel;
+import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.utils.TempDirUtils;
@@ -75,7 +75,7 @@ public class StatisticsModelImpl implements StatisticsModel {
     private final Map<Class, String> reportMap;
 
     public StatisticsModelImpl() {
-        reportMap = new HashMap<Class, String>();
+        reportMap = new HashMap<>();
     }
 
     public void addReport(Statistics statistics) {

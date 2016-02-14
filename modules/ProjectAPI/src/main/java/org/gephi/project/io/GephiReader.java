@@ -112,7 +112,7 @@ public class GephiReader {
             info.invalid();
         }
 
-        Map<String, WorkspaceXMLPersistenceProvider> providers = new LinkedHashMap<String, WorkspaceXMLPersistenceProvider>();
+        Map<String, WorkspaceXMLPersistenceProvider> providers = new LinkedHashMap<>();
         for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
             String id = w.getIdentifier();
             if (id != null && !id.isEmpty() && w instanceof WorkspaceXMLPersistenceProvider) {

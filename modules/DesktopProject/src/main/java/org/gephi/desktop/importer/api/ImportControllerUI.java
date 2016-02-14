@@ -46,8 +46,8 @@ import java.io.Reader;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.spi.DatabaseImporter;
-import org.openide.filesystems.FileObject;
 import org.gephi.io.importer.spi.WizardImporter;
+import org.openide.filesystems.FileObject;
 
 /**
  *

@@ -44,16 +44,16 @@ package org.gephi.datalab.plugin.manipulators.general;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Icon;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.plugin.manipulators.general.ui.MergeNodeDuplicatesUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.PluginGeneralActionsManipulator;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -107,7 +107,7 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
     @Override
     public ManipulatorUI getUI() {
         Table nodeTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
-        List<Column> columnsList = new ArrayList<Column>();
+        List<Column> columnsList = new ArrayList<>();
         for (Column column : nodeTable) {
             if(!column.isReadOnly()){
                 columnsList.add(column);

@@ -47,12 +47,11 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.plugin.database.EdgeListDatabaseImpl;
-import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileLock;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -62,7 +61,7 @@ import org.openide.filesystems.FileUtil;
 public class EdgeListDatabaseManager {
 
     private FileObject databaseConfigurations;
-    private List<Database> edgeListDatabases = new ArrayList<Database>();
+    private List<Database> edgeListDatabases = new ArrayList<>();
 //    private Map<String, EdgeListDatabase> nameToInstance = new HashMap<String, EdgeListDatabase>();
 
     public EdgeListDatabaseManager() {
@@ -74,7 +73,7 @@ public class EdgeListDatabaseManager {
     }
 
     public List<String> getNames() {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (Database db : edgeListDatabases) {
             names.add(db.getName());
         }

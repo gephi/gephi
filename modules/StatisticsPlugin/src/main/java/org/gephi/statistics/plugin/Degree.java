@@ -45,11 +45,11 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.graph.api.Table;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -192,9 +192,9 @@ public class Degree implements Statistics, LongTask {
     }
 
     private void initializeDegreeDists() {
-        inDegreeDist = new HashMap<Integer, Integer>();
-        outDegreeDist = new HashMap<Integer, Integer>();
-        degreeDist = new HashMap<Integer, Integer>();
+        inDegreeDist = new HashMap<>();
+        outDegreeDist = new HashMap<>();
+        degreeDist = new HashMap<>();
     }
 
     private void updateDegreeDists(int inDegree, int outDegree, int degree) {

@@ -41,8 +41,8 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.spi.rows.merge;
 
-import org.gephi.graph.api.Column;
 import org.gephi.datalab.spi.Manipulator;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 
 /**

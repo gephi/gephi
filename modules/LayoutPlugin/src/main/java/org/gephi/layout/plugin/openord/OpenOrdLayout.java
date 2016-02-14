@@ -287,7 +287,7 @@ public class OpenOrdLayout implements Layout, LongTask {
 
     @Override
     public LayoutProperty[] getProperties() {
-        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        List<LayoutProperty> properties = new ArrayList<>();
         final String OPENORD = "OpenOrd";
         final String STAGE = "Stages";
 

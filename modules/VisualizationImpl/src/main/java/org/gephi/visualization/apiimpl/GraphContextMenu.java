@@ -119,7 +119,7 @@ public class GraphContextMenu {
      * @return Array of all GraphContextMenuItem implementations
      */
     public GraphContextMenuItem[] getGraphContextMenuItems() {
-        ArrayList<GraphContextMenuItem> items = new ArrayList<GraphContextMenuItem>();
+        ArrayList<GraphContextMenuItem> items = new ArrayList<>();
         items.addAll(Lookup.getDefault().lookupAll(GraphContextMenuItem.class));
         sortItems(items);
         return items.toArray(new GraphContextMenuItem[0]);

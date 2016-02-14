@@ -61,7 +61,7 @@ public class ColumnSelectionPanel extends JPanel {
     private Map<ColumnSelectionModel, JCheckBox> checkBoxes;
 
     public ColumnSelectionPanel(ColumnSelectionModel[] columns) {
-        checkBoxes = new HashMap<ColumnSelectionModel, JCheckBox>();
+        checkBoxes = new HashMap<>();
         setLayout(new GridBagLayout());
         init(columns);
     }

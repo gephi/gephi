@@ -201,7 +201,7 @@ public class DensityGrid implements Cloneable {
         n.subY = n.y;
         ArrayDeque<Node> deque = bins[yGrid][xGrid];
         if (deque == null) {
-            deque = new ArrayDeque<Node>();
+            deque = new ArrayDeque<>();
             bins[yGrid][xGrid] = deque;
         }
         deque.addLast(n);

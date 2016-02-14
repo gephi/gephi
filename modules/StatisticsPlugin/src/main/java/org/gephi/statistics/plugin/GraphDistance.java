@@ -43,13 +43,12 @@ package org.gephi.statistics.plugin;
 
 import java.io.IOException;
 import java.util.HashMap;
-import org.gephi.statistics.spi.Statistics;
-import org.gephi.graph.api.*;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Stack;
-import org.gephi.graph.api.Table;
+import org.gephi.graph.api.*;
+import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -184,7 +183,7 @@ public class GraphDistance implements Statistics, LongTask {
     public Map<String, double[]> calculateDistanceMetrics(Graph hgraph, HashMap<Node, Integer> indicies, boolean directed, boolean normalized) {
         int n = hgraph.getNodeCount();
 
-        HashMap<String, double[]> metrics = new HashMap<String, double[]>();
+        HashMap<String, double[]> metrics = new HashMap<>();
 
         double[] nodeEccentricity = new double[n];
         double[] nodeBetweenness = new double[n];
@@ -201,7 +200,7 @@ public class GraphDistance implements Statistics, LongTask {
 
         int totalPaths = 0;
         for (Node s : hgraph.getNodes()) {
-            Stack<Node> S = new Stack<Node>();
+            Stack<Node> S = new Stack<>();
 
             LinkedList<Node>[] P = new LinkedList[n];
             double[] theta = new double[n];
@@ -211,7 +210,7 @@ public class GraphDistance implements Statistics, LongTask {
 
             setInitParametetrsForNode(s, P, theta, d, s_index, n);
 
-            LinkedList<Node> Q = new LinkedList<Node>();
+            LinkedList<Node> Q = new LinkedList<>();
             Q.addLast(s);
             while (!Q.isEmpty()) {
                 Node v = Q.removeFirst();
@@ -286,7 +285,7 @@ public class GraphDistance implements Statistics, LongTask {
 
     private void setInitParametetrsForNode(Node s, LinkedList<Node>[] P, double[] theta, int[] d, int index, int n) {
         for (int j = 0; j < n; j++) {
-            P[j] = new LinkedList<Node>();
+            P[j] = new LinkedList<>();
             theta[j] = 0;
             d[j] = -1;
         }
@@ -321,7 +320,7 @@ public class GraphDistance implements Statistics, LongTask {
     }
 
     public  HashMap<Node, Integer> createIndiciesMap(Graph hgraph) {
-        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<>();
         int index = 0;
         for (Node s : hgraph.getNodes()) {
             indicies.put(s, index);
@@ -388,7 +387,7 @@ public class GraphDistance implements Statistics, LongTask {
 
     private String createImageFile(TempDir tempDir, double[] pVals, String pName, String pX, String pY) {
         //distribution of values
-        Map<Double, Integer> dist = new HashMap<Double, Integer>();
+        Map<Double, Integer> dist = new HashMap<>();
         for (int i = 0; i < N; i++) {
             Double d = pVals[i];
             if (dist.containsKey(d)) {

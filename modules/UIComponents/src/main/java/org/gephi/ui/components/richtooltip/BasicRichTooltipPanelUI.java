@@ -105,8 +105,8 @@ class BasicRichTooltipPanelUI extends RichTooltipPanelUI {
 	}
 
 	public BasicRichTooltipPanelUI() {
-		this.descriptionLabels = new ArrayList<JLabel>();
-		this.footerLabels = new ArrayList<JLabel>();
+		this.descriptionLabels = new ArrayList<>();
+		this.footerLabels = new ArrayList<>();
 	}
 
 	/*

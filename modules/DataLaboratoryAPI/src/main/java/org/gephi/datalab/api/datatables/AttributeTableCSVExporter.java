@@ -51,10 +51,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Table;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Table;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.IntervalSet;
@@ -157,7 +157,7 @@ public class AttributeTableCSVExporter {
         DateTimeZone timeZone = graph.getModel().getTimeZone();
 
         if (columnIndexesToExport == null) {
-            List<Integer> columnIndexesToExportList = new ArrayList<Integer>();
+            List<Integer> columnIndexesToExportList = new ArrayList<>();
             
             //Add special columns for edges table:
             if(isEdgeTable){

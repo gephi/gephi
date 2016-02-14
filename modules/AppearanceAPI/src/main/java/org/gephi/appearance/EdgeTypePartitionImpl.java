@@ -71,7 +71,7 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
     @Override
     public Collection getValues() {
         Object[] labels = model.getEdgeTypeLabels();
-        ArrayList<Object> col = new ArrayList<Object>(labels.length);
+        ArrayList<Object> col = new ArrayList<>(labels.length);
         for (Object l : labels) {
             if (!(l == null && graph.getEdgeCount(0) == 0)) {
                 col.add(l);

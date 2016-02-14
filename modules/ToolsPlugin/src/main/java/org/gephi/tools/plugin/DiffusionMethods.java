@@ -56,7 +56,7 @@ public class DiffusionMethods {
 
     public static Node[] getNeighbors(Graph graph, Node[] nodes) {
         graph.readLock();
-        Set<Node> nodeTree = new HashSet<Node>();
+        Set<Node> nodeTree = new HashSet<>();
         for (Node n : nodes) {
             nodeTree.addAll(graph.getNeighbors(n).toCollection());
         }
@@ -70,7 +70,7 @@ public class DiffusionMethods {
 
     public static Node[] getNeighborsOfNeighbors(Graph graph, Node[] nodes) {
         graph.readLock();
-        Set<Node> nodeTree = new HashSet<Node>();
+        Set<Node> nodeTree = new HashSet<>();
         for (Node n : nodes) {
             nodeTree.addAll(graph.getNeighbors(n).toCollection());
         }
@@ -91,7 +91,7 @@ public class DiffusionMethods {
 
     public static Node[] getPredecessors(DirectedGraph graph, Node[] nodes) {
         graph.readLock();
-        Set<Node> nodeTree = new HashSet<Node>();
+        Set<Node> nodeTree = new HashSet<>();
         for (Node n : nodes) {
             nodeTree.addAll(graph.getPredecessors(n).toCollection());
         }
@@ -105,7 +105,7 @@ public class DiffusionMethods {
 
     public static Node[] getSuccessors(DirectedGraph graph, Node[] nodes) {
         graph.readLock();
-        Set<Node> nodeTree = new HashSet<Node>();
+        Set<Node> nodeTree = new HashSet<>();
         for (Node n : nodes) {
             nodeTree.addAll(graph.getSuccessors(n).toCollection());
         }

@@ -55,7 +55,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
@@ -86,8 +85,8 @@ public class LayoutModelImpl implements LayoutModel {
 
     public LayoutModelImpl(Workspace workspace) {
         this.workspace = workspace;
-        listeners = new ArrayList<PropertyChangeListener>();
-        savedProperties = new HashMap<LayoutPropertyKey, Object>();
+        listeners = new ArrayList<>();
+        savedProperties = new HashMap<>();
 
         executor = new LongTaskExecutor(true, "layout", 5);
         executor.setLongTaskListener(new LongTaskListener() {
@@ -197,7 +196,7 @@ public class LayoutModelImpl implements LayoutModel {
     }
 
     public void loadProperties(Layout layout) {
-        List<LayoutPropertyKey> layoutValues = new ArrayList<LayoutPropertyKey>();
+        List<LayoutPropertyKey> layoutValues = new ArrayList<>();
         for (LayoutPropertyKey val : savedProperties.keySet()) {
             if (val.layoutClassName.equals(layout.getClass().getName())) {
                 layoutValues.add(val);

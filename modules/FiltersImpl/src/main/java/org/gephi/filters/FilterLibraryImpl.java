@@ -82,7 +82,7 @@ public class FilterLibraryImpl implements FilterLibrary {
             content.add(catBuilder);
         }
 
-        buildersMap = new HashMap<Class<? extends Filter>, FilterBuilder>();
+        buildersMap = new HashMap<>();
     }
 
     private void buildBuildersMap() {

@@ -90,7 +90,7 @@ public class PartitionBuilder implements CategoryBuilder {
 
     @Override
     public FilterBuilder[] getBuilders(Workspace workspace) {
-        List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
+        List<FilterBuilder> builders = new ArrayList<>();
         GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         Graph graph = gm.getGraph();
         AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel(workspace);
@@ -212,7 +212,7 @@ public class PartitionBuilder implements CategoryBuilder {
         public PartitionFilter(Column column, AppearanceModel model) {
             this.column = column;
             this.appearanceModel = model;
-            parts = new HashSet<Object>();
+            parts = new HashSet<>();
         }
 
         @Override
@@ -262,11 +262,11 @@ public class PartitionBuilder implements CategoryBuilder {
         }
 
         public void unselectAll() {
-            getProperties()[1].setValue(new HashSet<Object>());
+            getProperties()[1].setValue(new HashSet<>());
         }
 
         public void selectAll() {
-            getProperties()[1].setValue(new HashSet<Object>(partition.getValues()));
+            getProperties()[1].setValue(new HashSet<>(partition.getValues()));
         }
 
         @Override

@@ -47,8 +47,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import org.gephi.desktop.banner.perspective.spi.BottomComponent;
 import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder.DynamicRangeFilter;
-//import org.gephi.desktop.perspective.spi.BottomComponent;
-//import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder.DynamicRangeFilter;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 

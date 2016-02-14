@@ -42,7 +42,6 @@
 package org.gephi.appearance;
 
 import java.util.Arrays;
-import org.gephi.appearance.AppearanceModelImpl;
 import org.gephi.appearance.api.Function;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;

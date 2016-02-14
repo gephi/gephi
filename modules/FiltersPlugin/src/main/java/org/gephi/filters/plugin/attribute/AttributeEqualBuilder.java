@@ -84,9 +84,9 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
     @Override
     public FilterBuilder[] getBuilders(Workspace workspace) {
-        List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
+        List<FilterBuilder> builders = new ArrayList<>();
         GraphModel am = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        List<Column> columns = new ArrayList<Column>();
+        List<Column> columns = new ArrayList<>();
         columns.addAll(am.getNodeTable().toList());
         columns.addAll(am.getEdgeTable().toList());
         for (Column c : columns) {
@@ -269,7 +269,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
         @Override
         public Number[] getValues(Graph graph) {
-            List<Number> vals = new ArrayList<Number>();
+            List<Number> vals = new ArrayList<>();
             if (AttributeUtils.isNodeColumn(column)) {
                 for (Element n : graph.getNodes()) {
                     Object val = n.getAttribute(column, graph.getView());

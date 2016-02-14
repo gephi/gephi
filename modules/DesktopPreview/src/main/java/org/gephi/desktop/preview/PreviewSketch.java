@@ -52,9 +52,9 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewMouseEvent;
-import org.gephi.preview.api.G2DTarget;
 import org.gephi.preview.api.Vector;
 import org.openide.util.Lookup;
 

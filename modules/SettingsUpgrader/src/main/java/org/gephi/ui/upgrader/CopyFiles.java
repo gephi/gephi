@@ -64,8 +64,8 @@ public class CopyFiles {
     private File sourceRoot;
     private File targetRoot;
     private EditableProperties currentProperties;
-    private Set<String> includePatterns = new HashSet<String>();
-    private Set<String> excludePatterns = new HashSet<String>();
+    private Set<String> includePatterns = new HashSet<>();
+    private Set<String> excludePatterns = new HashSet<>();
 
     private CopyFiles(File source, File target) {
         this.sourceRoot = source;
@@ -82,14 +82,12 @@ public class CopyFiles {
 
     public static void copyDeep(File source, File target) throws IOException {
         CopyFiles copyFiles = new CopyFiles(source, target);
-        System.out.println("Copying from: " + copyFiles.sourceRoot + "\nto: " + copyFiles.targetRoot);  //NOI18N
         copyFiles.copyFolder(copyFiles.sourceRoot);
     }
 
     private void copyFolder(File sourceFolder) throws IOException {
         File[] srcChildren = sourceFolder.listFiles();
         if (srcChildren == null) {
-            System.err.println(sourceFolder + " is not a directory or is invalid.");  //NOI18N
             return;
         }
         for (File child : srcChildren) {
@@ -109,8 +107,8 @@ public class CopyFiles {
     private void copyFile(File sourceFile) throws IOException {
         String relativePath = getRelativePath(sourceRoot, sourceFile);
         boolean includeFile = false;
-        Set<String> includeKeys = new HashSet<String>();
-        Set<String> excludeKeys = new HashSet<String>();
+        Set<String> includeKeys = new HashSet<>();
+        Set<String> excludeKeys = new HashSet<>();
         for (String pattern : includePatterns) {
             if (pattern.contains("#")) {  //NOI18N
                 includeKeys.addAll(matchingKeys(relativePath, pattern));
@@ -217,7 +215,7 @@ public class CopyFiles {
      * @throws IOException if properties cannot be loaded
      */
     private Set<String> matchingKeys(String relativePath, String propertiesPattern) throws IOException {
-        Set<String> matchingKeys = new HashSet<String>();
+        Set<String> matchingKeys = new HashSet<>();
         String[] patterns = propertiesPattern.split("#", 2);
         String filePattern = patterns[0];
         String keyPattern = patterns[1];
@@ -296,7 +294,7 @@ public class CopyFiles {
      * @return set of single patterns containing just one # (e.g. [filePattern1#keyPattern1, filePattern2#keyPattern2, filePattern3])
      */
     private static Set<String> parsePattern(String pattern) {
-        Set<String> patterns = new HashSet<String>();
+        Set<String> patterns = new HashSet<>();
         if (pattern.contains("#")) {  //NOI18N
             StringBuilder partPattern = new StringBuilder();
             ParserState state = ParserState.START;

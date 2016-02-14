@@ -61,7 +61,6 @@ import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.swing.JComponent;
 
 public class EquationDisplay extends JComponent implements PropertyChangeListener {
@@ -141,7 +140,7 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
         this.majorY = majorY;
         this.minorY = minorY;
 
-        this.equations = new LinkedList<DrawableEquation>();
+        this.equations = new LinkedList<>();
 
         this.formatter = NumberFormat.getInstance();
         this.formatter.setMaximumFractionDigits(2);
