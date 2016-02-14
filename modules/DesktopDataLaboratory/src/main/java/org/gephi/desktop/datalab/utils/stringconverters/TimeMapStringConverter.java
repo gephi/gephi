@@ -39,39 +39,34 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.desktop.datalab.utils;
+package org.gephi.desktop.datalab.utils.stringconverters;
 
-import java.awt.Component;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
+import org.gephi.desktop.datalab.utils.GraphModelProvider;
+import org.gephi.graph.api.types.TimeMap;
+import org.gephi.graph.api.types.TimeSet;
+import org.jdesktop.swingx.renderer.StringValue;
 
 /**
- * TableCellRenderer for representing float/doubles always with the english locale representation, and a limited precision, independently of user language, etc.
+ * SwingX renderer for representing {@link TimeSet} as strings in a table.
  *
  * @author Eduardo Ramos
  */
-public class DoubleRenderer extends DefaultTableCellRenderer {
+public class TimeMapStringConverter implements StringValue {
+    
+    private final GraphModelProvider graphModelProvider;
 
-    /**
-     * Formatter for limiting precision to 6 decimals, avoiding precision errors (epsilon).
-     */
-    public static final DecimalFormat FORMAT = new DecimalFormat("0.0#####");
-    static {
-        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.ENGLISH);
-        symbols.setInfinity("Infinity");
-        FORMAT.setDecimalFormatSymbols(symbols);
+    public TimeMapStringConverter(GraphModelProvider graphModelProvider) {
+        this.graphModelProvider = graphModelProvider;
     }
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        String stringRepresentation = null;
+    public String getString(Object value) {
+        String str = null;
         if (value != null) {
-            stringRepresentation = FORMAT.format(value);
+            TimeMap timeMap = (TimeMap) value;
+            str = timeMap.toString(graphModelProvider.getGraphModel().getTimeFormat(), graphModelProvider.getGraphModel().getTimeZone());
         }
-
-        return super.getTableCellRendererComponent(table, stringRepresentation, isSelected, hasFocus, row, column);
+        
+        return str;
     }
 }

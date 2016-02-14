@@ -39,30 +39,33 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.desktop.datalab.utils;
+package org.gephi.desktop.datalab.utils.stringconverters;
 
-import java.awt.Component;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
-import org.gephi.graph.api.AttributeUtils;
+import org.gephi.desktop.datalab.utils.GraphModelProvider;
+import org.gephi.graph.api.types.TimeSet;
+import org.jdesktop.swingx.renderer.StringValue;
 
 /**
- * TableCellRenderer for representing arrays as strings in a table.
- * Only used for non-numeric arrays. Numeric arrays use the sparklines renderer.
+ * SwingX renderer for representing {@link TimeSet} as strings in a table.
  *
  * @author Eduardo Ramos
  */
-public class ArrayRenderer extends DefaultTableCellRenderer {
-
+public class TimeSetStringConverter implements StringValue {
     
+    private final GraphModelProvider graphModelProvider;
+
+    public TimeSetStringConverter(GraphModelProvider graphModelProvider) {
+        this.graphModelProvider = graphModelProvider;
+    }
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        String stringRepresentation = null;
+    public String getString(Object value) {
+        String str = null;
         if (value != null) {
-            stringRepresentation = AttributeUtils.printArray(value);
+            TimeSet timeSet = (TimeSet) value;
+            str = timeSet.toString(graphModelProvider.getGraphModel().getTimeFormat(), graphModelProvider.getGraphModel().getTimeZone());
         }
         
-        return super.getTableCellRendererComponent(table, stringRepresentation, isSelected, hasFocus, row, column);
+        return str;
     }
 }

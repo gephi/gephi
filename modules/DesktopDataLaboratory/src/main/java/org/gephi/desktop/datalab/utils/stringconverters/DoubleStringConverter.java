@@ -39,27 +39,37 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.desktop.datalab.utils;
+package org.gephi.desktop.datalab.utils.stringconverters;
 
-import java.awt.Component;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+import org.jdesktop.swingx.renderer.StringValue;
 
 /**
- * TableCellRenderer for representing gephi supported types always with the toString representation, independently of user language, etc.
- * Only used for types that don't have any other special renderer. Used for example with primitive wrappers, BigDecimal and BigInteger
+ * SwingX converter for representing float/doubles always with the english locale representation, and a limited precision, independently of user language, etc.
  *
  * @author Eduardo Ramos
  */
-public class DefaultStringRepresentationRenderer extends DefaultTableCellRenderer {
+public class DoubleStringConverter implements StringValue {
+
+    /**
+     * Formatter for limiting precision to 6 decimals, avoiding precision errors (epsilon).
+     */
+    public static final DecimalFormat FORMAT = new DecimalFormat("0.0#####");
+    static {
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.ENGLISH);
+        symbols.setInfinity("Infinity");
+        FORMAT.setDecimalFormatSymbols(symbols);
+    }
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        String stringRepresentation = null;
+    public String getString(Object value) {
+        String str = null;
         if (value != null) {
-            stringRepresentation = value.toString();
+            str = FORMAT.format(value);
         }
         
-        return super.getTableCellRendererComponent(table, stringRepresentation, isSelected, hasFocus, row, column);
+        return str;
     }
 }

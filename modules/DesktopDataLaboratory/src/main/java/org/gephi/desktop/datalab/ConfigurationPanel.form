@@ -21,15 +21,15 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="showEdgesNodesLabelsCheckBox" alignment="0" max="32767" attributes="1"/>
                   <Component id="timeIntervalsGraphicsCheckBox" alignment="0" max="32767" attributes="1"/>
-                  <Component id="useSparklinesCheckBox" pref="301" max="32767" attributes="1"/>
+                  <Component id="useSparklinesCheckBox" pref="321" max="32767" attributes="1"/>
                   <Component id="onlyVisibleCheckBox" alignment="0" max="32767" attributes="1"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="timeFormatLabel" min="-2" pref="96" max="-2" attributes="0"/>
                           <Component id="timeZoneLabel" min="-2" pref="106" max="-2" attributes="0"/>
-                          <Component id="timeRepresentationLabel" alignment="0" min="-2" pref="109" max="-2" attributes="0"/>
+                          <Component id="timeRepresentationLabel" min="-2" pref="132" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="timeRepresentationComboBox" max="32767" attributes="0"/>
                           <Component id="timeFormatComboBox" max="32767" attributes="0"/>
