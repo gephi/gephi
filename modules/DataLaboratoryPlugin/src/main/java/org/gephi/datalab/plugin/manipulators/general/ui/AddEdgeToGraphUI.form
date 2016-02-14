@@ -90,9 +90,6 @@
           <ResourceString bundle="org/gephi/datalab/plugin/manipulators/general/ui/Bundle.properties" key="AddEdgeToGraphUI.directedRadioButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="directedRadioButtonItemStateChanged"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="undirectedRadioButton">
       <Properties>
@@ -103,9 +100,6 @@
           <ResourceString bundle="org/gephi/datalab/plugin/manipulators/general/ui/Bundle.properties" key="AddEdgeToGraphUI.undirectedRadioButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="undirectedRadioButtonItemStateChanged"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="descriptionLabel">
       <Properties>
@@ -120,9 +114,6 @@
           <StringArray count="0"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="sourceNodesComboBoxItemStateChanged"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="sourceNodeLabel">
       <Properties>
@@ -159,9 +150,6 @@
           <StringArray count="0"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="edgeTypeComboBoxActionPerformed"/>
-      </Events>
     </Component>
   </SubComponents>
 </Form>
