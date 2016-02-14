@@ -130,7 +130,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
     }
 
     private boolean canChangeTimeRepresentation(GraphModel graphModel) {
-        if (graphModel.getGraph().getEdgeCount() > 0) {
+        if (graphModel.getGraph().getNodeCount() > 0) {
             return false;//Graph has to be empty
         }
 
