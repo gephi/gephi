@@ -871,3 +871,9 @@ source_file = modules/AlgorithmsPlugin/src/main/resources/org/gephi/algorithms/B
 source_lang = en
 type = PROPERTIES
 
+[gephi.org-gephi-visualization-text]
+file_filter = modules/VisualizationImpl/src/main/resources/org/gephi/visualization/text/Bundle_<lang>.properties
+source_file = modules/VisualizationImpl/src/main/resources/org/gephi/visualization/text/Bundle.properties
+source_lang = en
+type = PROPERTIES
+
