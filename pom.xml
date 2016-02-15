@@ -4,7 +4,7 @@
 
     <groupId>org.gephi</groupId>
     <artifactId>gephi-parent</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>gephi</name>
@@ -140,7 +140,7 @@
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
         
         <!-- Modules specification version, overrides project version -->
-        <gephi.modules.specification.version>0.9.1</gephi.modules.specification.version>
+        <gephi.modules.specification.version>0.9.2</gephi.modules.specification.version>
 
         <!-- Java compilation settings -->
         <gephi.javac.source>1.7</gephi.javac.source>
