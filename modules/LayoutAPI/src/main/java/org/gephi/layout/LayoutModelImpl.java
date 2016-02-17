@@ -55,6 +55,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
@@ -79,7 +80,7 @@ public class LayoutModelImpl implements LayoutModel {
     private final Map<LayoutPropertyKey, Object> savedProperties;
     private Layout selectedLayout;
     private LayoutBuilder selectedBuilder;
-    private Workspace workspace;
+    private final Workspace workspace;
     //Util
     private final LongTaskExecutor executor;
 
@@ -116,6 +117,9 @@ public class LayoutModelImpl implements LayoutModel {
     @Override
     public Layout getLayout(LayoutBuilder layoutBuilder) {
         Layout layout = layoutBuilder.buildLayout();
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        GraphModel graphModel = graphController.getGraphModel(workspace);
+        layout.setGraphModel(graphModel);
         selectedBuilder = layoutBuilder;
         layout.resetPropertiesValues();
         return layout;
