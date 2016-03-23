@@ -233,11 +233,7 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
         HashMap<Integer, Node> idToNode = new HashMap<>();
         int idForNode = 0;
         for (Node node : graph.getNodes()) {
-            if (useLabels) {
-                idToNode.put(idForNode++, node);
-            } else {
-                idToNode.put(idForNode++, node);
-            }
+            idToNode.put(idForNode++, node);
         }
         int maxLengthOfEdgeWeight = 0;
         if (makeSymmetricMatrix) {
