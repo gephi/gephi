@@ -1316,8 +1316,6 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
             if (fc.isDirectorySelectionEnabled() && !fc.isFileSelectionEnabled()) {
                 if(fc.getFileSystemView().isDrive(file)) {
                     return file.getPath();
-                } else {
-                    return file.getPath();
                 }
             } else {
                 return file.getName();
