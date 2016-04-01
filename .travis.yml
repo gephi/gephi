@@ -53,8 +53,8 @@ before_script:
   - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server><server><id>netbeans</id></server></servers></settings>" > ~/settings.xml
 
 script:
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then travis_retry mvn --settings ~/settings.xml -Djava.awt.headless=true -Dkeystore.password=$KEYSTORE_PASSWD -Dgpg.defaultKeyring=false -Dgpg-keyname=1481F619 -Dgpg.passphrase=$GPG_PASSPHRASE -Dgpg.publicKeyring=src/travis/pubring.gpg -Dgpg.secretKeyring=src/travis/secretring.gpg clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,replace-windows-icon,create-exe,create-targz;fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then travis_retry mvn --settings ~/settings.xml -Djava.awt.headless=true -Dkeystore.password=$KEYSTORE_PASSWD -Dgpg.defaultKeyring=false -Dgpg-keyname=1481F619 -Dgpg.passphrase=$GPG_PASSPHRASE -Dgpg.publicKeyring=src/travis/pubring.gpg -Dgpg.secretKeyring=src/travis/secretring.gpg clean deploy -P deployment,create-dmg;fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then travis_retry mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dkeystore.password=$KEYSTORE_PASSWD -Dgpg.defaultKeyring=false -Dgpg-keyname=1481F619 -Dgpg.passphrase=$GPG_PASSPHRASE -Dgpg.publicKeyring=src/travis/pubring.gpg -Dgpg.secretKeyring=src/travis/secretring.gpg clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,replace-windows-icon,create-exe,create-targz;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then travis_retry mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dkeystore.password=$KEYSTORE_PASSWD -Dgpg.defaultKeyring=false -Dgpg-keyname=1481F619 -Dgpg.passphrase=$GPG_PASSPHRASE -Dgpg.publicKeyring=src/travis/pubring.gpg -Dgpg.secretKeyring=src/travis/secretring.gpg clean deploy -P deployment,create-dmg;fi
 
 after_script:
   # Clean OS X keychain
