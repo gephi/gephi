@@ -250,22 +250,33 @@ public class ModularityNGTest {
         undirectedGraph.addNode(node7);
         undirectedGraph.addNode(node8);
 
-        Edge edge12 = graphModel.factory().newEdge(node1, node2, 0, 10.f, false);
+        //Test 3 parallel edges summing weight = 10
+        //Related issue ==> #1419 Getting null pointer error when trying to calculate modularity
+        Edge edge12_1 = graphModel.factory().newEdge(node1, node2, 0, 2.f, false);
+        Edge edge12_2 = graphModel.factory().newEdge(node1, node2, 0, 5.f, false);
+        Edge edge12_3 = graphModel.factory().newEdge(node1, node2, 0, 3.f, false);
+        
         Edge edge23 = graphModel.factory().newEdge(node2, node3, false);
         Edge edge34 = graphModel.factory().newEdge(node3, node4, 0, 10.f, false);
         Edge edge45 = graphModel.factory().newEdge(node4, node5, false);
         Edge edge56 = graphModel.factory().newEdge(node5, node6, 0, 10.f, false);
         Edge edge67 = graphModel.factory().newEdge(node6, node7, false);
-        Edge edge78 = graphModel.factory().newEdge(node7, node8, 0, 10.f, false);
+        
+        //Test 2 parallel edges summing weight = 10
+        Edge edge78_1= graphModel.factory().newEdge(node7, node8, 0, 5.f, false);
+        Edge edge78_2 = graphModel.factory().newEdge(node7, node8, 0, 5.f, false);
         Edge edge81 = graphModel.factory().newEdge(node8, node1, false);
 
-        undirectedGraph.addEdge(edge12);
+        undirectedGraph.addEdge(edge12_1);
+        undirectedGraph.addEdge(edge12_2);
+        undirectedGraph.addEdge(edge12_3);
         undirectedGraph.addEdge(edge23);
         undirectedGraph.addEdge(edge34);
         undirectedGraph.addEdge(edge45);
         undirectedGraph.addEdge(edge56);
         undirectedGraph.addEdge(edge67);
-        undirectedGraph.addEdge(edge78);
+        undirectedGraph.addEdge(edge78_1);
+        undirectedGraph.addEdge(edge78_2);
         undirectedGraph.addEdge(edge81);
 
         UndirectedGraph hgraph = graphModel.getUndirectedGraph();
