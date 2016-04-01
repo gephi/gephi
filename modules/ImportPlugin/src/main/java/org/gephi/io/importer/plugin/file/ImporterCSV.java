@@ -44,6 +44,7 @@ package org.gephi.io.importer.plugin.file;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -126,7 +127,9 @@ public class ImporterCSV implements FileImporter, LongTask {
 
             int size = lines.size();
             if (size != labels.size()) {
-                throw new Exception("Inconsistent number of matrix lines compared to the number of labels.");
+                throw new Exception(
+                        MessageFormat.format("Inconsistent number of matrix lines compared to the number of labels. {0} lines, {1} labels", size, labels.size())
+                );
             }
 
             for (int i = 0; i < size; i++) {
