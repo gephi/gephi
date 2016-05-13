@@ -41,10 +41,6 @@
  */
 package org.gephi.layout.plugin.noverlap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
@@ -53,6 +49,11 @@ import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -86,145 +87,175 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         setConverged(true);
         this.graph = graphModel.getGraphVisible();
         graph.readLock();
-
-        //Reset Layout Data
-        for (Node n : graph.getNodes()) {
-            if (n.getLayoutData() == null || !(n.getLayoutData() instanceof NoverlapLayoutData)) {
-                n.setLayoutData(new NoverlapLayoutData());
+        try
+        {
+            //Reset Layout Data
+            for (Node n : graph.getNodes())
+            {
+                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof NoverlapLayoutData))
+                {
+                    n.setLayoutData(new NoverlapLayoutData());
+                }
+                NoverlapLayoutData layoutData = n.getLayoutData();
+                layoutData.neighbours.clear();
+                layoutData.dx = 0;
+                layoutData.dy = 0;
             }
-            NoverlapLayoutData layoutData = n.getLayoutData();
-            layoutData.neighbours.clear();
-            layoutData.dx = 0;
-            layoutData.dy = 0;
-        }
 
-        // Get xmin, xmax, ymin, ymax
-        this.xmin = Double.MAX_VALUE;
-        this.xmax = Double.MIN_VALUE;
-        this.ymin = Double.MAX_VALUE;
-        this.ymax = Double.MIN_VALUE;
+            // Get xmin, xmax, ymin, ymax
+            this.xmin = Double.MAX_VALUE;
+            this.xmax = Double.MIN_VALUE;
+            this.ymin = Double.MAX_VALUE;
+            this.ymax = Double.MIN_VALUE;
 
-        for (Node n : graph.getNodes()) {
-            float x = n.x();
-            float y = n.y();
-            float radius = n.size();
+            for (Node n : graph.getNodes())
+            {
+                float x = n.x();
+                float y = n.y();
+                float radius = n.size();
 
-            // Get the rectangle occupied by the node
-            double nxmin = x - (radius * ratio + margin);
-            double nxmax = x + (radius * ratio + margin);
-            double nymin = y - (radius * ratio + margin);
-            double nymax = y + (radius * ratio + margin);
+                // Get the rectangle occupied by the node
+                double nxmin = x - (radius * ratio + margin);
+                double nxmax = x + (radius * ratio + margin);
+                double nymin = y - (radius * ratio + margin);
+                double nymax = y + (radius * ratio + margin);
 
-            // Update global boundaries
-            this.xmin = Math.min(this.xmin, nxmin);
-            this.xmax = Math.max(this.xmax, nxmax);
-            this.ymin = Math.min(this.ymin, nymin);
-            this.ymax = Math.max(this.ymax, nymax);
-        }
+                // Update global boundaries
+                this.xmin = Math.min(this.xmin, nxmin);
+                this.xmax = Math.max(this.xmax, nxmax);
+                this.ymin = Math.min(this.ymin, nymin);
+                this.ymax = Math.max(this.ymax, nymax);
+            }
 
-        // Secure the bounds
-        double xwidth = this.xmax - this.xmin;
-        double yheight = this.ymax - this.ymin;
-        double xcenter = (this.xmin + this.xmax) / 2;
-        double ycenter = (this.ymin + this.ymax) / 2;
-        double securityRatio = 1.1;
-        this.xmin = xcenter - securityRatio * xwidth / 2;
-        this.xmax = xcenter + securityRatio * xwidth / 2;
-        this.ymin = ycenter - securityRatio * yheight / 2;
-        this.ymax = ycenter + securityRatio * yheight / 2;
+            // Secure the bounds
+            double xwidth = this.xmax - this.xmin;
+            double yheight = this.ymax - this.ymin;
+            double xcenter = (this.xmin + this.xmax) / 2;
+            double ycenter = (this.ymin + this.ymax) / 2;
+            double securityRatio = 1.1;
+            this.xmin = xcenter - securityRatio * xwidth / 2;
+            this.xmax = xcenter + securityRatio * xwidth / 2;
+            this.ymin = ycenter - securityRatio * yheight / 2;
+            this.ymax = ycenter + securityRatio * yheight / 2;
 
-        SpatialGrid grid = new SpatialGrid();
+            SpatialGrid grid = new SpatialGrid();
 
-        // Put nodes in their boxes
-        for (Node n : graph.getNodes()) {
-            grid.add(n);
-        }
+            // Put nodes in their boxes
+            for (Node n : graph.getNodes())
+            {
+                grid.add(n);
+            }
 
-        // Now we have cells with nodes in it. Nodes that are in the same cell, or in adjacent cells, are tested for repulsion.
-        // But they are not repulsed several times, even if they are in several cells...
-        // So we build a relation of proximity between nodes.
-        // Build proximities
-        for (int row = 0; row < grid.countRows() && !cancel; row++) {
-            for (int col = 0; col < grid.countColumns() && !cancel; col++) {
-                for (Node n : grid.getContent(row, col)) {
-                    NoverlapLayoutData lald = n.getLayoutData();
+            // Now we have cells with nodes in it. Nodes that are in the same cell, or in adjacent cells, are tested for repulsion.
+            // But they are not repulsed several times, even if they are in several cells...
+            // So we build a relation of proximity between nodes.
+            // Build proximities
+            for (int row = 0; row < grid.countRows() && !cancel; row++)
+            {
+                for (int col = 0; col < grid.countColumns() && !cancel; col++)
+                {
+                    for (Node n : grid.getContent(row, col))
+                    {
+                        NoverlapLayoutData lald = n.getLayoutData();
 
-                    // For node n in the box "box"...
-                    // We search nodes that are in the boxes that are adjacent or the same.
-                    for (int row2 = Math.max(0, row - 1); row2 <= Math.min(row + 1, grid.countRows() - 1); row2++) {
-                        for (int col2 = Math.max(0, col - 1); col2 <= Math.min(col + 1, grid.countColumns() - 1); col2++) {
-                            for (Node n2 : grid.getContent(row2, col2)) {
-                                if (n2 != n && !lald.neighbours.contains(n2)) {
-                                    lald.neighbours.add(n2);
+                        // For node n in the box "box"...
+                        // We search nodes that are in the boxes that are adjacent or the same.
+                        for (int row2 = Math.max(0, row - 1); row2 <= Math.min(row + 1, grid.countRows() - 1); row2++)
+                        {
+                            for (int col2 = Math.max(0, col - 1); col2 <= Math.min(col + 1, grid.countColumns() - 1); col2++)
+                            {
+                                for (Node n2 : grid.getContent(row2, col2))
+                                {
+                                    if (n2 != n && !lald.neighbours.contains(n2))
+                                    {
+                                        lald.neighbours.add(n2);
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        }
 
-        // Proximities are built !
-        // Apply repulsion force - along proximities...
-        for (Node n1 : graph.getNodes()) {
-            NoverlapLayoutData lald = n1.getLayoutData();
-            for (Node n2 : lald.neighbours) {
-                float n1x = n1.x();
-                float n1y = n1.y();
-                float n2x = n2.x();
-                float n2y = n2.y();
-                float n1radius = n1.size();
-                float n2radius = n2.size();
+            // Proximities are built !
+            // Apply repulsion force - along proximities...
+            for (Node n1 : graph.getNodes())
+            {
+                NoverlapLayoutData lald = n1.getLayoutData();
+                for (Node n2 : lald.neighbours)
+                {
+                    float n1x = n1.x();
+                    float n1y = n1.y();
+                    float n2x = n2.x();
+                    float n2y = n2.y();
+                    float n1radius = n1.size();
+                    float n2radius = n2.size();
 
-                // Check sizes (spheric)
-                double xDist = n2x - n1x;
-                double yDist = n2y - n1y;
-                double dist = Math.sqrt(xDist * xDist + yDist * yDist);
-                boolean collision = dist < (n1radius * ratio + margin) + (n2radius * ratio + margin);
-                if (collision) {
-                    setConverged(false);
-                    // n1 repulses n2, as strongly as it is big
-                    NoverlapLayoutData layoutData = n2.getLayoutData();
-                    double f = 1. + n1.size();
-                    if (dist > 0) {
-                        layoutData.dx += xDist / dist * f;
-                        layoutData.dy += yDist / dist * f;
-                    } else {
-                        // Same exact position, divide by zero impossible: jitter
-                        layoutData.dx += 0.01 * (0.5 - Math.random());
-                        layoutData.dy += 0.01 * (0.5 - Math.random());
+                    // Check sizes (spheric)
+                    double xDist = n2x - n1x;
+                    double yDist = n2y - n1y;
+                    double dist = Math.sqrt(xDist * xDist + yDist * yDist);
+                    boolean collision = dist < (n1radius * ratio + margin) + (n2radius * ratio + margin);
+                    if (collision)
+                    {
+                        setConverged(false);
+                        // n1 repulses n2, as strongly as it is big
+                        NoverlapLayoutData layoutData = n2.getLayoutData();
+                        double f = 1. + n1.size();
+                        if (dist > 0)
+                        {
+                            layoutData.dx += xDist / dist * f;
+                            layoutData.dy += yDist / dist * f;
+                        }
+                        else
+                        {
+                            // Same exact position, divide by zero impossible: jitter
+                            layoutData.dx += 0.01 * (0.5 - Math.random());
+                            layoutData.dy += 0.01 * (0.5 - Math.random());
+                        }
+                    }
+                    if (cancel)
+                    {
+                        break;
                     }
                 }
-                if (cancel) {
+                if (cancel)
+                {
                     break;
                 }
             }
-            if (cancel) {
-                break;
+
+            // apply forces
+            for (Node n : graph.getNodes())
+            {
+                NoverlapLayoutData layoutData = n.getLayoutData();
+                if (!n.isFixed())
+                {
+                    layoutData.dx *= 0.1 * speed;
+                    layoutData.dy *= 0.1 * speed;
+                    float x = n.x() + layoutData.dx;
+                    float y = n.y() + layoutData.dy;
+
+                    n.setX(x);
+                    n.setY(y);
+                }
             }
+        } finally {
+            graph.readUnlock();
         }
-
-        // apply forces
-        for (Node n : graph.getNodes()) {
-            NoverlapLayoutData layoutData = n.getLayoutData();
-            if (!n.isFixed()) {
-                layoutData.dx *= 0.1 * speed;
-                layoutData.dy *= 0.1 * speed;
-                float x = n.x() + layoutData.dx;
-                float y = n.y() + layoutData.dy;
-
-                n.setX(x);
-                n.setY(y);
-            }
-        }
-
-        graph.readUnlock();
     }
 
     @Override
     public void endAlgo() {
-        for (Node n : graph.getNodes()) {
-            n.setLayoutData(null);
+        graph.readLock();
+        try
+        {
+            for (Node n : graph.getNodes())
+            {
+                n.setLayoutData(null);
+            }
+        } finally {
+            graph.readUnlock();
         }
     }
 
