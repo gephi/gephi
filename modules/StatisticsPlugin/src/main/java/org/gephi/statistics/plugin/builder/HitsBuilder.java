@@ -45,12 +45,13 @@ import org.gephi.statistics.plugin.Hits;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author pjmcswee
  */
-//@ServiceProvider(service = StatisticsBuilder.class)
+@ServiceProvider(service = StatisticsBuilder.class)
 public class HitsBuilder implements StatisticsBuilder {
 
     @Override
