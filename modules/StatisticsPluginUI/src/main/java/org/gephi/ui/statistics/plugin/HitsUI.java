@@ -46,12 +46,13 @@ import org.gephi.statistics.plugin.Hits;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-//@ServiceProvider(service = StatisticsUI.class)
+@ServiceProvider(service = StatisticsUI.class)
 public class HitsUI implements StatisticsUI {
 
     private final StatSettings settings = new StatSettings();
