@@ -41,34 +41,28 @@ Portions Copyrighted 2011 Gephi Consortium.
 */
 package org.gephi.branding.desktop.reporter;
 
+import com.getsentry.raven.Raven;
+import com.getsentry.raven.RavenFactory;
+import com.getsentry.raven.event.Event;
+import com.getsentry.raven.event.EventBuilder;
+import com.getsentry.raven.event.interfaces.ExceptionInterface;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDisplayer;
@@ -85,7 +79,13 @@ import org.w3c.dom.Document;
  */
 public class ReportController {
 
-    private static final String POST_URL = "http://gephi.org/crashreporter/report.php";
+    private static final String POST_URL = "https://d007fbbdeb6241b5b2c542a6bc548cf3:4a1af110df484e838da9243c1496ebe9@app.getsentry.com/85815";
+    
+    private final Raven raven;
+
+    public ReportController() {
+        raven = RavenFactory.ravenInstance(POST_URL);
+    }
 
     public void sendReport(final Report report) {
         Thread thread = new Thread(new Runnable() {
@@ -95,16 +95,14 @@ public class ReportController {
                 ProgressHandle handle = ProgressHandleFactory.createHandle(NbBundle.getMessage(ReportController.class, "ReportController.status.sending"));
                 try {
                     handle.start();
-                    Document doc = buildReportDocument(report);
-                    if (doc != null) {
-                        if (sendDocument(doc)) {
-                            handle.finish();
-                            DialogDisplayer.getDefault().notify(
-                                    new NotifyDescriptor.Message(NbBundle.getMessage(ReportController.class, "ReportController.status.sent"),
-                                    NotifyDescriptor.INFORMATION_MESSAGE));
-                            return;
-                        }
-                    }
+                    
+                    sendSentryReport(report);
+                    
+                    handle.finish();
+                    DialogDisplayer.getDefault().notify(
+                            new NotifyDescriptor.Message(NbBundle.getMessage(ReportController.class, "ReportController.status.sent"),
+                            NotifyDescriptor.INFORMATION_MESSAGE));
+                    return;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -113,8 +111,32 @@ public class ReportController {
                         new NotifyDescriptor.Message(NbBundle.getMessage(ReportController.class, "ReportController.status.failed"),
                         NotifyDescriptor.WARNING_MESSAGE));
             }
+
         }, "Exception Reporter");
         thread.start();
+    }
+    
+    private void sendSentryReport(Report report) {
+        EventBuilder eventBuilder = new EventBuilder().withMessage(report.getThrowable().getMessage())
+                .withLevel(Event.Level.ERROR)
+                .withSentryInterface(new ExceptionInterface(report.getThrowable()))
+                .withRelease(report.getVersion())
+                .withServerName("Gephi Desktop")//Avoid raven looking up 'localhost' as hostname
+                .withExtra("OS", report.getOs())
+                .withExtra("Heap memory usage", report.getHeapMemoryUsage())
+                .withExtra("Non heap memory usage", report.getNonHeapMemoryUsage())
+                .withExtra("Processors", report.getNumberOfProcessors())
+                .withExtra("Screen devices", report.getScreenDevices())
+                .withExtra("Screen size", report.getScreenSize())
+                .withExtra("User description", report.getUserDescription())
+                .withExtra("User email", report.getUserEmail())
+                .withExtra("VM", report.getVm())
+                .withExtra("OpenGL Vendor", report.getGlVendor())
+                .withExtra("OpenGL Renderer", report.getGlRenderer())
+                .withExtra("OpenGL Version", report.getGlVersion())
+                .withExtra("Log", report.getLog());
+        
+        raven.sendEvent(eventBuilder);
     }
 
     public Document buildReportDocument(Report report) {
@@ -128,58 +150,7 @@ public class ReportController {
         //logModules(report);
         return buildXMLDocument(report);
     }
-
-    public boolean sendDocument(Document document) {
-        try {
-            //Get String from Document
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            StringWriter sw = new StringWriter();
-            StreamResult result = new StreamResult(sw);
-            DOMSource source = new DOMSource(document);
-            transformer.transform(source, result);
-            String xmlString = "report=" + URLEncoder.encode(sw.toString(), "UTF-8");
-
-            URL url = new URL(POST_URL);
-            URLConnection con = url.openConnection();
-
-            // specify that we will send output and accept input
-            con.setDoInput(true);
-            con.setDoOutput(true);
-
-            con.setUseCaches(false);
-            con.setDefaultUseCaches(false);
-
-            // tell the web server what we are sending
-            //con.setRequestProperty("Content-Type", "text/xml");
-            //con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-            OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-            writer.write(xmlString);
-            writer.flush();
-            writer.close();
-
-            // reading the response
-            InputStreamReader reader = new InputStreamReader(con.getInputStream());
-
-            StringBuilder buf = new StringBuilder();
-            char[] cbuf = new char[2048];
-            int num;
-
-            while (-1 != (num = reader.read(cbuf))) {
-                buf.append(cbuf, 0, num);
-            }
-
-            String serverResult = buf.toString();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
+    
     private Document buildXMLDocument(Report report) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -247,12 +218,12 @@ public class ReportController {
             LineNumberReader lineNumberReader = new LineNumberReader(new StringReader(output));
             String line;
             while ((line = lineNumberReader.readLine()) != null) {
-                if (line.startsWith("GL_VENDOR:")) {
-                    report.setGlVendor(line.substring(11));
-                } else if (line.startsWith("GL_RENDERER:")) {
-                    report.setGlRenderer(line.substring(13));
-                } else if (line.startsWith("GL_VERSION:")) {
-                    report.setGlVersion(line.substring(12));
+                if (line.contains("GL_VENDOR:")) {
+                    report.setGlVendor(line.replaceFirst(".*GL_VENDOR:", ""));
+                } else if (line.contains("GL_RENDERER:")) {
+                    report.setGlRenderer(line.replaceFirst(".*GL_RENDERER:", ""));
+                } else if (line.contains("GL_VERSION:")) {
+                    report.setGlVersion(line.replaceFirst(".*GL_VERSION:", ""));
                     break;
                 }
             }

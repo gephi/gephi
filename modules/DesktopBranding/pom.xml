@@ -92,6 +92,29 @@
             <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-core-output2</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.getsentry.raven</groupId>
+            <artifactId>raven</artifactId>
+            <version>7.3.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <!-- Raven depends on slf4j-api and needs it to work. So manage with dependency directly -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.7.21</version>
+        </dependency>
     </dependencies>
 
     <build>
