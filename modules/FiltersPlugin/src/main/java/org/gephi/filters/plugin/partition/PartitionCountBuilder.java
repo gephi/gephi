@@ -54,6 +54,7 @@ import org.gephi.filters.plugin.AbstractAttributeFilter;
 import org.gephi.filters.plugin.AbstractAttributeFilterBuilder;
 import org.gephi.filters.plugin.graph.RangeUI;
 import org.gephi.filters.spi.*;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
@@ -126,7 +127,11 @@ public class PartitionCountBuilder implements CategoryBuilder {
 
         @Override
         public PartitionCountFilter getFilter(Workspace workspace) {
-            return new PartitionCountFilter(column, model);
+            if (AttributeUtils.isNodeColumn(column)) {
+                return new PartitionCountFilter.Node(column, model);
+            } else {
+                return new PartitionCountFilter.Edge(column, model);
+            }
         }
 
         @Override
@@ -139,7 +144,7 @@ public class PartitionCountBuilder implements CategoryBuilder {
         }
     }
 
-    public static class PartitionCountFilter extends AbstractAttributeFilter implements RangeFilter {
+    public static abstract class PartitionCountFilter<K extends Element> extends AbstractAttributeFilter<K> implements RangeFilter {
 
         protected AppearanceModel appearanceModel;
         private Range range;
@@ -156,19 +161,10 @@ public class PartitionCountBuilder implements CategoryBuilder {
         }
 
         @Override
-        public boolean init(Graph graph) {
-            partition = appearanceModel.getNodePartition(graph.getModel().getGraph(), column);
-            return partition != null;
-        }
-
-        @Override
         public boolean evaluate(Graph graph, Element element) {
             Object p = partition.getValue(element, graph);
-            if (p != null) {
-                int partCount = partition.count(p);
-                return range.isInRange(partCount);
-            }
-            return false;
+            int partCount = partition.count(p);
+            return range.isInRange(partCount);
         }
 
         @Override
@@ -192,7 +188,7 @@ public class PartitionCountBuilder implements CategoryBuilder {
 
         @Override
         public FilterProperty getRangeProperty() {
-            return properties.get(1);
+            return getProperties()[1];
         }
 
         public Range getRange() {
@@ -201,6 +197,32 @@ public class PartitionCountBuilder implements CategoryBuilder {
 
         public void setRange(Range range) {
             this.range = range;
+        }
+
+        public static class Node extends PartitionCountFilter<org.gephi.graph.api.Node> implements NodeFilter {
+
+            public Node(Column column, AppearanceModel model) {
+                super(column, model);
+            }
+
+            @Override
+            public boolean init(Graph graph) {
+                partition = appearanceModel.getNodePartition(graph.getModel().getGraph(), column);
+                return partition != null;
+            }
+        }
+
+        public static class Edge extends PartitionCountFilter<org.gephi.graph.api.Edge> implements EdgeFilter {
+
+            public Edge(Column column, AppearanceModel model) {
+                super(column, model);
+            }
+
+            @Override
+            public boolean init(Graph graph) {
+                partition = appearanceModel.getEdgePartition(graph.getModel().getGraph(), column);
+                return partition != null;
+            }
         }
     }
 }

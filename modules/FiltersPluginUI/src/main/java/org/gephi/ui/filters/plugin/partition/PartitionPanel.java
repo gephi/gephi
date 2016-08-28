@@ -200,7 +200,7 @@ public class PartitionPanel extends javax.swing.JPanel {
         @Override
         public String toString() {
             String percentageStr = FORMATTER.format(percentage / 100f);
-            return part.toString() + " (" + percentageStr + ")";
+            return (part == null ? "null" : part.toString()) + " (" + percentageStr + ")";
         }
 
         public boolean isEnabled() {
