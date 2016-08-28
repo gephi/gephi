@@ -195,7 +195,7 @@ public class PartitionBuilder implements CategoryBuilder {
 
         @Override
         public boolean init(Graph graph) {
-            partition = appearanceModel.getEdgePartition(graph, column);
+            partition = appearanceModel.getEdgePartition(graph.getModel().getGraph(), column);
             return partition != null;
         }
     }
