@@ -210,6 +210,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.gephi.visualization</publicPackage>
+                        <publicPackage>org.gephi.visualization.text</publicPackage>
                         <publicPackage>org.gephi.visualization.api.initializer</publicPackage>
                         <publicPackage>org.gephi.visualization.api.objects</publicPackage>
                         <publicPackage>org.gephi.visualization.api.selection</publicPackage>
