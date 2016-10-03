@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>uni-konstanz.de.algo</groupId>
+    <artifactId>mdsj</artifactId>
+    <version>0.2</version>
+    <packaging>jar</packaging>
+
+    <name>MDSJ</name>
+    <description>MDSJ – Multidimensional Scaling for Java</description>
+    <url>http://algo.uni-konstanz.de/software/mdsj</url>
+    <inceptionYear>2008</inceptionYear>
+    <licenses>
+        <license>
+            <name>Creative Commons Attribution 3.0 License</name>
+            <url>http://creativecommons.org/licenses/by/3.0/</url>
+            <comments>Citation: "Algorithmics Group. MDSJ: Java Library for Multidimensional Scaling (Version 0.2). Available at http://www.inf.uni-konstanz.de/algo/software/mdsj/. University of Konstanz, 2009."</comments>
+        </license>
+    </licenses>
+    <organization>
+        <name>University of Konstanz</name>
+        <url>http://www.uni-konstanz.de</url>
+    </organization>
+    <developers>
+        <developer>
+            <name>Christian Pich</name>
+            <url>http://www.uni-konstanz.de/grk1042/people/member/pich.php</url>
+        </developer>
+    </developers>
+</project>
