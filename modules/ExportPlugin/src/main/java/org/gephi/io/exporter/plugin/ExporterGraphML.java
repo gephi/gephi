@@ -207,13 +207,6 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         weightKeyE.setAttribute("for", "edge");
         root.appendChild(weightKeyE);
 
-        Element edgeIdKeyE = document.createElement("key");
-        edgeIdKeyE.setAttribute("id", "edgeid");
-        edgeIdKeyE.setAttribute("attr.name", "Edge Id");
-        edgeIdKeyE.setAttribute("attr.type", "string");
-        edgeIdKeyE.setAttribute("for", "edge");
-        root.appendChild(edgeIdKeyE);
-
         if (exportColors) {
             Element colorRKeyE = document.createElement("key");
             colorRKeyE.setAttribute("id", "r");
@@ -437,12 +430,9 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
 
     private Element createEdge(Document document, Edge e, Graph graph) throws Exception {
         Element edgeE = document.createElement("edge");
-
+	edgeE.setAttribute("id", e.getId().toString());
         edgeE.setAttribute("source", e.getSource().getId().toString());
         edgeE.setAttribute("target", e.getTarget().getId().toString());
-
-        Element idE = createEdgeId(document, e);
-        edgeE.appendChild(idE);
 
         //Label
         if (e.getLabel() != null && !e.getLabel().isEmpty()) {
@@ -554,14 +544,6 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         labelE.setTextContent(n.getLabel());
 
         return labelE;
-    }
-
-    private Element createEdgeId(Document document, Edge e) throws Exception {
-        Element idE = document.createElement("data");
-        idE.setAttribute("key", "edgeid");
-        idE.setTextContent(e.getId().toString());
-
-        return idE;
     }
 
     private Element createEdgeWeight(Document document, Edge e, Graph graph) throws Exception {
