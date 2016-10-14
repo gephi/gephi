@@ -83,7 +83,7 @@ Gephi is extensible and lets developers create plug-ins to add new features, or 
 
 The Gephi Toolkit project packages essential Gephi modules (Graph, Layout, Filters, IO…) in a standard Java library which any Java project can use for getting things done. It can be used on a server or command-line tool to do the same things Gephi does but automatically.
 
-- [Download](http://gephi.github.io/toolkit/)
+- [Download](https://gephi.org/toolkit/)
 
 - [GitHub Project](https://github.com/gephi/gephi-toolkit)
 
