@@ -26,7 +26,7 @@ If you run into any trouble or have questions consult our [forum](http://forum.g
 
 ### Stable
 
-- Latest stable release on [gephi.org](https://gephi.github.io/users/download/).
+- Latest stable release on [gephi.org](https://gephi.org/users/download//).
 
 ### Nightly builds
 
