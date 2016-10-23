@@ -253,7 +253,12 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                         Collections.sort(rows, new Comparator<Function>() {
                             @Override
                             public int compare(Function o1, Function o2) {
-                                return o1.getUI().getDisplayName().compareTo(o2.getUI().getDisplayName());
+                                if(o1.isAttribute() && !o2.isAttribute()) {
+                                    return 1;
+                                } else if(!o1.isAttribute() && o2.isAttribute()) {
+                                    return -1;
+                                }
+                                return o1.toString().compareTo(o2.toString());
                             }
                         });
                         for (Function r : rows) {
