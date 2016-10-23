@@ -150,7 +150,7 @@ public class WeightedDegree implements Statistics, LongTask {
             Progress.progress(progress);
         }
 
-        averageWeightedDegree /= graph.getNodeCount();
+        averageWeightedDegree /= (isDirected ? 2.0 : 1.0) * graph.getNodeCount();
 
         return averageWeightedDegree;
 
