@@ -136,7 +136,7 @@ public class WeightedDegree implements Statistics, LongTask {
                 updateDegreeDists(totalInWeight, totalOutWeight, totalWeight);
             } else {
                 for (Edge e : graph.getEdges(n)) {
-                    totalWeight += e.getWeight();
+                    totalWeight += (e.isSelfLoop() ? 2 : 1) * e.getWeight();
                 }
                 n.setAttribute(WDEGREE, totalWeight);
                 updateDegreeDists(totalWeight);
@@ -150,7 +150,7 @@ public class WeightedDegree implements Statistics, LongTask {
             Progress.progress(progress);
         }
 
-        averageWeightedDegree /= (isDirected) ? 2 * graph.getNodeCount() : graph.getNodeCount();
+        averageWeightedDegree /= graph.getNodeCount();
 
         return averageWeightedDegree;
 
