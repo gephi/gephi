@@ -65,10 +65,6 @@ public interface AppearanceController {
      */
     public void setUseLocalScale(boolean useLocalScale);
 
-    public void forceRankingFunction(Function function);
-
-    public void forcePartitionFunction(Function function);
-
     /**
      * Apply the function's transformer. If the function is for nodes all nodes
      * in the visible graph will be transformed. Similarly for edges.

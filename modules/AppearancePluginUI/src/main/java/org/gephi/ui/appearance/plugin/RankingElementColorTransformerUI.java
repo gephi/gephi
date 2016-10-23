@@ -75,7 +75,7 @@ public class RankingElementColorTransformerUI implements TransformerUI {
 
     @Override
     public String getDisplayName() {
-        return NbBundle.getMessage(RankingElementColorTransformerUI.class, "Attribute.name");
+        return NbBundle.getMessage(RankingElementColorTransformerUI.class, "Attribute.ranking.name");
     }
 
     @Override

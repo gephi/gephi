@@ -97,10 +97,6 @@ public class AppearanceModelImpl implements AppearanceModel {
     //
     private final FunctionsModel functionsMain;
     private final Map<Graph, FunctionsModel> functions = new HashMap<>();
-    //Forced
-    private final Set<String> forcedRanking;
-    private final Set<String> forcedPartition;
-    private final List<Column> forcedColumnsRefresh;
 
     public AppearanceModelImpl(Workspace workspace) {
         this.workspace = workspace;
@@ -110,9 +106,6 @@ public class AppearanceModelImpl implements AppearanceModel {
         this.transformerUIs = initTransformerUIs();
         this.nodeTransformers = initNodeTransformers();
         this.edgeTransformers = initEdgeTransformers();
-        this.forcedPartition = new HashSet<>();
-        this.forcedRanking = new HashSet<>();
-        this.forcedColumnsRefresh = new ArrayList<>();
 
         //Functions
         functionsMain = new FunctionsModel(graphModel.getGraph());
@@ -212,26 +205,6 @@ public class AppearanceModelImpl implements AppearanceModel {
                 return m.edgeFunctionsModel.getPartition(column);
             }
             return null;
-        }
-    }
-
-    protected void forceRanking(Function function) {
-        if (function instanceof AttributeFunction) {
-            Column col = ((AttributeFunction) function).getColumn();
-            String id = getIdCol(col);
-            forcedColumnsRefresh.add(col);
-            forcedPartition.remove(id);
-            forcedRanking.add(id);
-        }
-    }
-
-    protected void forcePartition(Function function) {
-        if (function instanceof AttributeFunction) {
-            Column col = ((AttributeFunction) function).getColumn();
-            String id = getIdCol(col);
-            forcedColumnsRefresh.add(col);
-            forcedRanking.remove(id);
-            forcedPartition.add(id);
         }
     }
 
@@ -519,7 +492,7 @@ public class AppearanceModelImpl implements AppearanceModel {
             //Clean
             for (Iterator<Map.Entry<Column, ColumnObserver>> itr = columnObservers.entrySet().iterator(); itr.hasNext();) {
                 Map.Entry<Column, ColumnObserver> entry = itr.next();
-                if (!columns.contains(entry.getKey()) || forcedColumnsRefresh.contains(entry.getKey())) {
+                if (!columns.contains(entry.getKey())) {
                     rankings.remove(getIdCol(entry.getKey()));
                     partitions.remove(getIdCol(entry.getKey()));
                     for (Transformer t : getTransformers()) {
@@ -533,7 +506,7 @@ public class AppearanceModelImpl implements AppearanceModel {
             }
 
             //Get columns to be refreshed
-            Set<Column> toRefreshColumns = new HashSet<>(forcedColumnsRefresh);
+            Set<Column> toRefreshColumns = new HashSet<>();
             for (Column column : columns) {
                 if (!columnObservers.containsKey(column)) {
                     columnObservers.put(column, column.createColumnObserver(false));
@@ -542,22 +515,21 @@ public class AppearanceModelImpl implements AppearanceModel {
                     toRefreshColumns.add(column);
                 }
             }
-            forcedColumnsRefresh.clear();
 
             //Refresh ranking and partitions
             for (Column column : toRefreshColumns) {
                 RankingImpl ranking = rankings.get(getIdCol(column));
                 PartitionImpl partition = partitions.get(getIdCol(column));
                 if (ranking == null && partition == null) {
-                    String id = getIdCol(column);
-                    if (forcedPartition.contains(id) || (!forcedRanking.contains(id) && isPartition(graph, column))) {
+                    if (isPartition(graph, column)) {
                         if (column.isIndexed()) {
                             partition = new AttributePartitionImpl(column, getIndex(false));
                         } else {
                             partition = new AttributePartitionImpl(column, graph);
                         }
                         partitions.put(getIdCol(column), partition);
-                    } else if (forcedRanking.contains(id) || (!forcedPartition.contains(id) && isRanking(graph, column))) {
+                    }
+                    if (isRanking(graph, column)) {
                         if (column.isIndexed()) {
                             ranking = new AttributeRankingImpl(column, getIndex(localScale));
                         } else {
