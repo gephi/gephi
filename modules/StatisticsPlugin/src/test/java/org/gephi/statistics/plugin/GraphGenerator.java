@@ -65,6 +65,18 @@ public class GraphGenerator {
         return graphModel;
     }
 
+    public static GraphModel generateSelfLoopUndirectedGraph(int n) {
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
+        for (int i = 0; i < n; i++) {
+            Node currentNode = graphModel.factory().newNode(((Integer) i).toString());
+            undirectedGraph.addNode(currentNode);
+            Edge currentEdge = graphModel.factory().newEdge(currentNode, currentNode, false);
+            undirectedGraph.addEdge(currentEdge);
+        }
+        return graphModel;
+    }
+
     public static GraphModel generateCompleteUndirectedGraph(int n) {
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
@@ -144,6 +156,18 @@ public class GraphGenerator {
         for (int i = 0; i < n; i++) {
             Node currentNode = graphModel.factory().newNode(((Integer) i).toString());
             directedGraph.addNode(currentNode);
+        }
+        return graphModel;
+    }
+
+    public static GraphModel generateSelfLoopDirectedGraph(int n) {
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        DirectedGraph directedGraph = graphModel.getDirectedGraph();
+        for (int i = 0; i < n; i++) {
+            Node currentNode = graphModel.factory().newNode(((Integer) i).toString());
+            directedGraph.addNode(currentNode);
+            Edge currentEdge = graphModel.factory().newEdge(currentNode, currentNode);
+            directedGraph.addEdge(currentEdge);
         }
         return graphModel;
     }

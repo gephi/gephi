@@ -295,29 +295,27 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                if (model != null) {
-                    if (model.getSelectedFunction() != null) {
-                        enableAutoButton.setEnabled(true);
-                        if (model.getAutoAppyTransformer() != null) {
-                            applyButton.setVisible(false);
-                            enableAutoButton.setSelected(true);
-                            AutoAppyTransformer aat = model.getAutoAppyTransformer();
-                            if (aat.isRunning()) {
-                                autoApplyButton.setVisible(false);
-                                stopAutoApplyButton.setVisible(true);
-                                stopAutoApplyButton.setSelected(true);
-                            } else {
-                                autoApplyButton.setVisible(true);
-                                autoApplyButton.setSelected(false);
-                                stopAutoApplyButton.setVisible(false);
-                            }
-                        } else {
+                if (model != null && model.getSelectedFunction() != null) {
+                    enableAutoButton.setEnabled(true);
+                    if (model.getAutoAppyTransformer() != null) {
+                        applyButton.setVisible(false);
+                        enableAutoButton.setSelected(true);
+                        AutoAppyTransformer aat = model.getAutoAppyTransformer();
+                        if (aat.isRunning()) {
                             autoApplyButton.setVisible(false);
+                            stopAutoApplyButton.setVisible(true);
+                            stopAutoApplyButton.setSelected(true);
+                        } else {
+                            autoApplyButton.setVisible(true);
+                            autoApplyButton.setSelected(false);
                             stopAutoApplyButton.setVisible(false);
-                            enableAutoButton.setSelected(false);
-                            applyButton.setVisible(true);
-                            applyButton.setEnabled(true);
                         }
+                    } else {
+                        autoApplyButton.setVisible(false);
+                        stopAutoApplyButton.setVisible(false);
+                        enableAutoButton.setSelected(false);
+                        applyButton.setVisible(true);
+                        applyButton.setEnabled(true);
                     }
                     localScaleButton.setSelected(model.isLocalScale());
                     return;
