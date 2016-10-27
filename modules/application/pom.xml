@@ -158,6 +158,18 @@
                     <groupId>org.netbeans.external</groupId>
                     <artifactId>org-netbeans-html-ko4j</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.api</groupId>
+                    <artifactId>org-netbeans-spi-quicksearch</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.external</groupId>
+                    <artifactId>org-netbeans-html-xhr4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.api</groupId>
+                    <artifactId>org-netbeans-modules-editor-mimelookup</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
