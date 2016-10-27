@@ -1,5 +1,7 @@
 sudo: false
 language: java
+jdk:
+  - oraclejdk8
 os:
   - linux
   - osx
