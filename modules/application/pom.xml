@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <!-- Parent POM -->
     <parent>
         <groupId>org.gephi</groupId>
@@ -280,7 +280,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>tools-api</artifactId>
-        </dependency>       
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>algorithms-plugin</artifactId>
@@ -465,7 +465,7 @@
 
     <build>
         <plugins>
-            
+
             <!-- Disable the ZIP goal. Also set up the location of the gephi.conf -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -477,7 +477,7 @@
                 <executions>
                     <execution>
                         <id>default-standalone-zip</id>
-                        <phase>none</phase>       
+                        <phase>none</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -492,41 +492,41 @@
             </plugin>
 
             <!-- Copy ressources gephi.conf and Info.plist with filtering (replacing 'project.version' by the actual version -->
-            <plugin> 
-                <artifactId>maven-resources-plugin</artifactId> 
-                <executions> 
-                    <execution> 
-                        <id>generate-app-conf-file</id> 
-                        <phase>generate-resources</phase> 
-                        <goals> 
-                            <goal>copy-resources</goal> 
-                        </goals> 
-                        <configuration> 
-                            <outputDirectory>${basedir}/target/</outputDirectory> 
-                            <resources> 
-                                <resource> 
-                                    <directory>src/main/resources</directory> 
-                                    <includes> 
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-app-conf-file</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <includes>
                                         <include>${brandingToken}.conf</include>
                                         <include>Info.plist</include>
-                                    </includes> 
-                                    <filtering>true</filtering> 
-                                </resource> 
+                                    </includes>
+                                    <filtering>true</filtering>
+                                </resource>
                             </resources>
                             <escapeString>\</escapeString>
-                        </configuration> 
-                    </execution> 
-                </executions> 
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
 
     <profiles>
-        <!-- The deployment profile is built for daily releases. It builds the standalone 
+        <!-- The deployment profile is built for daily releases. It builds the standalone
         zip and the autoupdate site. It can be used with deploy-dmg to include the dmg as well. -->
         <profile>
             <id>deployment</id>
-            
+
             <!-- Localization dependency -->
             <dependencies>
                 <dependency>
@@ -535,7 +535,7 @@
                     <version>${gephi.platform.localization.version}</version>
                 </dependency>
             </dependencies>
-            
+
             <build>
                 <plugins>
                     <!-- Avoid jar goal -->
@@ -551,7 +551,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                    
+
                     <!-- Enable artifact deploy -->
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
@@ -560,7 +560,7 @@
                             <skipNexusStagingDeployMojo>false</skipNexusStagingDeployMojo>
                         </configuration>
                     </plugin>
-                    
+
                     <!-- Permits NbModuleSuite to be run in integration-test phase: -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -710,7 +710,7 @@
                 </plugins>
             </build>
         </profile>
-        
+
         <!-- Profile used along with deployment to create the tar.gz artifact -->
         <profile>
             <id>create-targz</id>
@@ -764,13 +764,13 @@
                 </plugins>
             </build>
         </profile>
-        
+
         <!-- Profile used along with deployment to create the dmg archive -->
         <profile>
             <id>create-dmg</id>
             <build>
                 <plugins>
-                    
+
                     <!-- Create the Mac OS X application bundle and dmg file -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -791,20 +791,20 @@
                                             <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}.dmg" followsymlinks="false"/>
                                         </delete>
                                         <delete file="${project.build.directory}/${project.artifactId}-${project.version}.dmg" failonerror="false"/>
-                                
+
                                         <!-- Create folders -->
                                         <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app"/>
                                         <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS"/>
-                                        
+
                                         <!-- Copy application -->
                                         <copy todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}">
                                             <fileset dir="${project.build.directory}/${brandingToken}"/>
                                         </copy>
-                                
+
                                         <!-- Copy logo and configuration files -->
                                         <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}.icns" file="src/main/app-resources/${brandingToken}.icns" />
                                         <copy tofile="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Info.plist" file="${project.build.directory}/Info.plist"/>
-                                
+
                                         <!-- Move bin/gephi script into MacOS/gephi and modify the script so it founds its resources -->
                                         <move file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/bin/${brandingToken}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS"/>
                                         <replace file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" token="`dirname &quot;$PRG&quot;`" value="`dirname &quot;$PRG&quot;`&quot;/../Resources/gephi/bin&quot;"/>
@@ -820,7 +820,7 @@
                                             <arg line="-O"/>
                                             <arg line="${gephi.bundle.jre.url}/${gephi.bundle.jre.version}.tar.gz"/>
                                         </exec>
-                                        
+
                                         <!-- Unzip archive -->
                                         <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns"/>
                                         <exec dir="${project.build.directory}" executable="tar">
@@ -853,39 +853,39 @@
 
                                         <!-- Codesign JRE -->
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
-                                            <arg value="-fs"/> 
-                                            <arg value="${gephi.codesign.identity}"/> 
-                                            <arg value="-v"/> 
-                                            <arg value="${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/"/> 
+                                            <arg value="-fs"/>
+                                            <arg value="${gephi.codesign.identity}"/>
+                                            <arg value="-v"/>
+                                            <arg value="${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/"/>
                                         </exec>
-            
+
                                         <!-- Codesign app -->
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
-                                            <arg value="-fs"/> 
-                                            <arg value="${gephi.codesign.identity}"/> 
-                                            <arg value="-v"/> 
-                                            <arg value="${gephi.appbundle.name}.app"/> 
+                                            <arg value="-fs"/>
+                                            <arg value="${gephi.codesign.identity}"/>
+                                            <arg value="-v"/>
+                                            <arg value="${gephi.appbundle.name}.app"/>
                                         </exec>
-                                        
-                                        <!-- Create application folder and add Applications dynamic link -->   
+
+                                        <!-- Create application folder and add Applications dynamic link -->
                                         <mkdir dir="${project.build.directory}/${gephi.app.title}"/>
                                         <move file="${project.build.directory}/${gephi.appbundle.name}.app" todir="${project.build.directory}/${gephi.app.title}/" />
                                         <symlink link="${project.build.directory}/${gephi.app.title}/Applications" resource="/Applications" failonerror="false" />
-                                        
-                                        <!-- Create DMG (Mac OS X) --> 
+
+                                        <!-- Create DMG (Mac OS X) -->
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="hdiutil">
-                                            <arg value="create"/> 
-                                            <arg value="-noanyowners"/> 
-                                            <arg value="-imagekey"/> 
-                                            <arg value="zlib-level=9"/> 
-                                            <arg value="-srcfolder"/> 
-                                            <arg value="${project.build.directory}/${gephi.app.title}"/> 
+                                            <arg value="create"/>
+                                            <arg value="-noanyowners"/>
+                                            <arg value="-imagekey"/>
+                                            <arg value="zlib-level=9"/>
+                                            <arg value="-srcfolder"/>
+                                            <arg value="${project.build.directory}/${gephi.app.title}"/>
                                             <arg value="${project.artifactId}-${project.version}.dmg"/>
                                         </exec>
 
-                                        <!-- Create DMG (Linux), only for testing -->  
+                                        <!-- Create DMG (Linux), only for testing -->
                                         <exec dir="${project.build.directory}" os="Linux" executable="genisoimage">
-                                            <arg value="-V"/> 
+                                            <arg value="-V"/>
                                             <arg value="${gephi.appbundle.name}"/>
                                             <arg value="-U"/>
                                             <arg value="-D"/>
@@ -906,7 +906,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                    
+
                     <!-- Attach the final DMG for deployment -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -933,48 +933,49 @@
                 </plugins>
             </build>
         </profile>
-        
+
         <!-- Profile activated for windows release in addition of deployement. Create the installer. -->
         <profile>
             <id>create-exe</id>
             <build>
                 <plugins>
-                    
+
                     <!-- Copy and filter the InnoSetup config file, as well as icons -->
-                    <plugin> 
-                        <artifactId>maven-resources-plugin</artifactId> 
-                        <executions> 
-                            <execution> 
-                                <id>generate-iss-file</id> 
-                                <phase>generate-resources</phase> 
-                                <goals> 
-                                    <goal>copy-resources</goal> 
-                                </goals> 
-                                <configuration> 
-                                    <outputDirectory>${basedir}/target</outputDirectory> 
-                                    <resources> 
-                                        <resource> 
-                                            <directory>src/main/app-resources</directory> 
-                                            <includes> 
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>generate-iss-file</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <escapeString>!!!</escapeString>
+                                    <outputDirectory>${basedir}/target</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/main/app-resources</directory>
+                                            <includes>
                                                 <include>${brandingToken}.iss</include>
-                                            </includes> 
-                                            <filtering>true</filtering> 
+                                            </includes>
+                                            <filtering>true</filtering>
                                         </resource>
-                                        <resource> 
-                                            <directory>src/main/app-resources</directory> 
-                                            <includes> 
+                                        <resource>
+                                            <directory>src/main/app-resources</directory>
+                                            <includes>
                                                 <include>${brandingToken}.ico</include>
                                                 <include>${brandingToken}file128.png</include>
                                                 <include>COPYING.txt</include>
-                                            </includes> 
-                                            <filtering>false</filtering> 
-                                        </resource> 
-                                    </resources> 
-                                </configuration> 
-                            </execution> 
-                        </executions> 
-                    </plugin>   
-                    
+                                            </includes>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                     <!-- Execute InnoSetup with the gephi.iss script -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -990,22 +991,22 @@
                                     <target name="createInstaller" description="Create Windows installer with InnoSetup">
                                         <echo message="Creating windows installer with InnoSetup"/>
                                         <delete file="${project.artifactId}-${project.version}.setup.exe" failonerror="false"/>
-                                        
+
                                         <!-- Windows -->
                                         <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe" osfamily="windows">
-                                            <arg line="/cc &quot;${brandingToken}.iss&quot;" /> 
+                                            <arg line="/cc &quot;${brandingToken}.iss&quot;" />
                                         </exec>
 
                                         <!-- Linux (assuming the right wine configuration) -->
                                         <exec dir="${project.build.directory}" executable="iscc" os="Linux">
-                                            <arg line="${brandingToken}.iss" /> 
+                                            <arg line="${brandingToken}.iss" />
                                         </exec>
                                     </target>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
-                    
+
                     <!-- Attach the final exe installer for deployment -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
