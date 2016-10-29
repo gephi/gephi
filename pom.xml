@@ -156,8 +156,7 @@
         <gephi.javac.fork>true</gephi.javac.fork>
         
         <!-- Testing settings -->
-        <gephi.testng.version>6.9.6</gephi.testng.version>
-        <gephi.junit.version>4.7</gephi.junit.version>
+        <gephi.testng.version>6.9.13.6</gephi.testng.version>
         <gephi.test.maxMemory>768M</gephi.test.maxMemory>
         <gephi.test.reportsDirectory>${project.build.directory}/surefire-reports/plain</gephi.test.reportsDirectory>
         <gephi.test.failureIgnore>${testFailureIgnore}</gephi.test.failureIgnore>
@@ -214,7 +213,7 @@
 
         <gephi.maven-install-plugin.version>2.5.2</gephi.maven-install-plugin.version>
 
-        <gephi.maven-jar-plugin.version>2.6</gephi.maven-jar-plugin.version> <!-- TODO update this replacing the useDefaultManifestFile configuration (not available from 3.0.0) -->
+        <gephi.maven-jar-plugin.version>3.0.2</gephi.maven-jar-plugin.version>
 
         <gephi.maven-jarsigner-plugin.version>1.4</gephi.maven-jarsigner-plugin.version>
 
@@ -780,6 +779,12 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${gephi.maven-jar-plugin.version}</version>
+                    <configuration>
+                        <archive>
+                            <!-- required since nbm-maven-plugin 3.0-->
+                            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        </archive>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -890,24 +895,6 @@
                 </configuration>
             </plugin>
  
-            <!-- JAR Packaging -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <useDefaultManifestFile>true</useDefaultManifestFile> <!-- required since nbm-plugin 3.0-->
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                            <!--<goal>test-jar</goal>-->
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            
             <!-- Skip unit tests in non-deployment or release mode -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

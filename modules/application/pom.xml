@@ -16,6 +16,7 @@
     <name>gephi-app</name>
     
     <properties>
+        <skipJarGoal>false</skipJarGoal>
         <skipCreateTargz>true</skipCreateTargz>
         <skipReplaceWindowsIcon>true</skipReplaceWindowsIcon>
         <skipCreateExe>true</skipCreateExe>
@@ -469,9 +470,26 @@
             <artifactId>ui-library-wrapper</artifactId>
         </dependency>
     </dependencies>
-
+    
+    
     <build>
         <plugins>
+            <!-- Build jar only when not in deployment mode so install does not fail due to no attached artifacts -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration combine.self="override"> <!-- Override for not using the archive - manifestFile from parent pom -->
+                    <skip>${skipJarGoal}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!-- Disable the ZIP goal. Also set up the location of the gephi.conf -->
             <plugin>
@@ -533,6 +551,9 @@
         zip and the autoupdate site. It can be used with deploy-dmg to include the dmg as well. -->
         <profile>
             <id>deployment</id>
+            <properties>
+                <skipJarGoal>true</skipJarGoal>
+            </properties>
 
             <!-- Localization dependency -->
             <dependencies>
@@ -545,20 +566,6 @@
 
             <build>
                 <plugins>
-                    <!-- Avoid jar goal -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>none</phase>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
                     <!-- Enable artifact deploy -->
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
