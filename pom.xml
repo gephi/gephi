@@ -238,7 +238,6 @@
         <gephi.nexus-staging-maven-plugin.version>1.6.7</gephi.nexus-staging-maven-plugin.version>
         
         <gephi.site-maven-plugin.version>0.12</gephi.site-maven-plugin.version>
-
     </properties>
     
     <!-- Maven required version -->
@@ -946,7 +945,6 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <descriptor>src/main/nbm/module.xml</descriptor> <!-- TODO remove these files. Deprecated -->
                     <sourceManifestFile>${project.build.directory}/manifest.mf</sourceManifestFile>
                     <brandingToken>${brandingToken}</brandingToken>
                     <cluster>${brandingToken}</cluster>
