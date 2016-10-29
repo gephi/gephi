@@ -124,7 +124,10 @@
     </developers>
 
     <!-- Properties -->
-    <properties>        
+    <properties>
+        <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+        <gephi.build.timestamp>${maven.build.timestamp}</gephi.build.timestamp>
+        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gephi.maven.requiredVersion>3.2.2</gephi.maven.requiredVersion>
         <netbeans.run.params.ide/>
