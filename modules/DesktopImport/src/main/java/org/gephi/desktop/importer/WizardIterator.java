@@ -76,7 +76,7 @@ public class WizardIterator implements WizardDescriptor.Iterator {
                     JComponent jc = (JComponent) c;
                     // Sets step number of a component
                     // TODO if using org.openide.dialogs >= 7.8, can use WizardDescriptor.PROP_*:
-                    jc.putClientProperty(WizardDescriptor.PROP_CONTENT_SELECTED_INDEX, new Integer(i));
+                    jc.putClientProperty(WizardDescriptor.PROP_CONTENT_SELECTED_INDEX, i);
                     // Sets steps names for a panel
                     jc.putClientProperty("WizardPanel_contentData", steps);
                     // Turn on subtitle creation on each step
@@ -158,7 +158,7 @@ public class WizardIterator implements WizardDescriptor.Iterator {
                 JComponent jc = (JComponent) c;
                 // Sets step number of a component
                 // TODO if using org.openide.dialogs >= 7.8, can use WizardDescriptor.PROP_*:
-                jc.putClientProperty(WizardDescriptor.PROP_CONTENT_SELECTED_INDEX, new Integer(i));
+                jc.putClientProperty(WizardDescriptor.PROP_CONTENT_SELECTED_INDEX, i);
                 // Sets steps names for a panel
                 jc.putClientProperty("WizardPanel_contentData", steps);
                 // Turn on subtitle creation on each step
