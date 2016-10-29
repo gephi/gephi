@@ -14,6 +14,13 @@
     <artifactId>gephi</artifactId>
     <packaging>nbm-application</packaging>
     <name>gephi-app</name>
+    
+    <properties>
+        <skipCreateTargz>true</skipCreateTargz>
+        <skipReplaceWindowsIcon>true</skipReplaceWindowsIcon>
+        <skipCreateExe>true</skipCreateExe>
+        <skipCreateDmg>true</skipCreateDmg>
+    </properties>
 
     <!-- Dependencies -->
     <dependencies>
@@ -573,93 +580,6 @@
                         </configuration>
                     </plugin>
 
-                    <!-- Unpack the localization dependency -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>unpack</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>unpack-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <includeGroupIds>org.netbeans</includeGroupIds>
-                                    <includeArtifactIds>platform-localization</includeArtifactIds>
-                                    <outputDirectory>
-                                        ${project.build.directory}/${brandingToken}
-                                    </outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Profile used along with deployment to create the autoupdate site -->
-        <profile>
-            <id>create-autoupdate</id>
-            <build>
-                <plugins>
-                    <!-- NBM Plugin settings. Enable the autoupdate generation -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>nbm-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>autoupdate</id>
-                                <goals>
-                                    <goal>autoupdate</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/site</outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Profile used along with deployment to create the sources artifact -->
-        <profile>
-            <id>create-sources</id>
-            <build>
-                <plugins>
-                    <!-- Attach parent's sources artifact -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>attach-artifact</goal>
-                                </goals>
-                                <configuration>
-                                    <artifacts>
-                                        <artifact>
-                                            <file>${basedir}/../../target/${brandingToken}-${project.version}-sources.tar.gz</file>
-                                            <type>tar.gz</type>
-                                            <classifier>sources</classifier>
-                                        </artifact>
-                                    </artifacts>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Profile used along with targz and windows exe to replace the windows icon -->
-        <profile>
-            <id>replace-windows-icon</id>
-            <build>
-                <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
@@ -671,6 +591,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
+                                    <skip>${skipReplaceWindowsIcon}</skip>
                                     <!-- Target that replaces the icon for the launcher exe with our own icon. -->
                                     <target name="replaceWindowsLauncherIcon" description="Replace the icon for the Windows launcher exe">
                                         <!-- Windows -->
@@ -705,77 +626,34 @@
                                     </target>
                                 </configuration>
                             </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Profile used along with deployment to create the tar.gz artifact -->
-        <profile>
-            <id>create-targz</id>
-            <build>
-                <plugins>
-                    <!-- Assembler to produce linux's tar.gz -->
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <executions>
+                            
+                            <!-- Execute InnoSetup with the gephi.iss script -->
                             <execution>
-                                <id>linux-assembly</id>
+                                <id>create-windows-installer</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>single</goal>
+                                    <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <tarLongFileMode>gnu</tarLongFileMode>
-                                    <finalName>${brandingToken}-${project.version}</finalName>
-                                    <descriptors>
-                                        <descriptor>src/assemble/linux.xml</descriptor>
-                                    </descriptors>
-                                    <attach>false</attach>
+                                    <skip>${skipCreateExe}</skip>
+                                    <target name="createInstaller" description="Create Windows installer with InnoSetup">
+                                        <echo message="Creating windows installer with InnoSetup"/>
+                                        <delete file="${project.artifactId}-${project.version}.setup.exe" failonerror="false"/>
+
+                                        <!-- Windows -->
+                                        <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe" osfamily="windows">
+                                            <arg line="/cc &quot;${brandingToken}.iss&quot;" />
+                                        </exec>
+
+                                        <!-- Linux (assuming the right wine configuration) -->
+                                        <exec dir="${project.build.directory}" executable="iscc" os="Linux">
+                                            <arg line="${brandingToken}.iss" />
+                                        </exec>
+                                    </target>
                                 </configuration>
                             </execution>
-                        </executions>
-                    </plugin>
-
-                    <!-- Attach tar.gz artifact -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-linux</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>attach-artifact</goal>
-                                </goals>
-                                <configuration>
-                                    <artifacts>
-                                        <artifact>
-                                            <file>${basedir}/target/${brandingToken}-${project.version}-linux.tar.gz</file>
-                                            <type>tar.gz</type>
-                                            <classifier>linux</classifier>
-                                        </artifact>
-                                    </artifacts>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Profile used along with deployment to create the dmg archive -->
-        <profile>
-            <id>create-dmg</id>
-            <build>
-                <plugins>
-
-                    <!-- Create the Mac OS X application bundle and dmg file -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
+                            
+                            <!-- Create the Mac OS X application bundle and dmg file -->
                             <execution>
                                 <id>create-app-bundle</id>
                                 <phase>package</phase>
@@ -783,6 +661,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
+                                    <skip>${skipCreateDmg}</skip>
                                     <target>
                                         <!-- Clean -->
                                         <delete includeEmptyDirs="true" failonerror="false" removeNotFollowedSymlinks="true">
@@ -906,12 +785,73 @@
                             </execution>
                         </executions>
                     </plugin>
+                    
+                    <!-- Assembler to produce linux's tar.gz -->
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>linux-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${skipCreateTargz}</skip>
+                                    <tarLongFileMode>gnu</tarLongFileMode>
+                                    <finalName>${brandingToken}-${project.version}</finalName>
+                                    <descriptors>
+                                        <descriptor>src/assemble/linux.xml</descriptor>
+                                    </descriptors>
+                                    <attach>false</attach>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
 
-                    <!-- Attach the final DMG for deployment -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>build-helper-maven-plugin</artifactId>
                         <executions>
+                            <!-- Attach tar.gz artifact -->
+                            <execution>
+                                <id>attach-linux</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <skipAttach>${skipCreateTargz}</skipAttach>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${basedir}/target/${brandingToken}-${project.version}-linux.tar.gz</file>
+                                            <type>tar.gz</type>
+                                            <classifier>linux</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                            
+                            <!-- Attach the final exe installer for deployment -->
+                            <execution>
+                                <id>attach-exe</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <skipAttach>${skipCreateExe}</skipAttach>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${project.build.directory}/${project.artifactId}-${project.version}.setup.exe</file>
+                                            <type>exe</type>
+                                            <classifier>windows</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                            
+                            <!-- Attach the final DMG for deployment -->
                             <execution>
                                 <id>attach-dmg</id>
                                 <phase>package</phase>
@@ -919,6 +859,7 @@
                                     <goal>attach-artifact</goal>
                                 </goals>
                                 <configuration>
+                                    <skipAttach>${skipCreateDmg}</skipAttach>
                                     <artifacts>
                                         <artifact>
                                             <file>${project.build.directory}/${project.artifactId}-${project.version}.dmg</file>
@@ -934,12 +875,88 @@
             </build>
         </profile>
 
+        <!-- Profile used along with deployment to create the autoupdate site -->
+        <profile>
+            <id>create-autoupdate</id>
+            <build>
+                <plugins>
+                    <!-- NBM Plugin settings. Enable the autoupdate generation -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>nbm-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>autoupdate</id>
+                                <goals>
+                                    <goal>autoupdate</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/site</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile used along with deployment to create the sources artifact -->
+        <profile>
+            <id>create-sources</id>
+            <build>
+                <plugins>
+                    <!-- Attach parent's sources artifact -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${basedir}/../../target/${brandingToken}-${project.version}-sources.tar.gz</file>
+                                            <type>tar.gz</type>
+                                            <classifier>sources</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        
+        <!-- Profile used along with deployment to create the tar.gz artifact -->
+        <profile>
+            <id>create-targz</id>
+            <properties>
+                <skipCreateTargz>false</skipCreateTargz>
+            </properties>
+        </profile>
+        
+        <!-- Profile used along with targz and windows exe to replace the windows icon -->
+        <profile>
+            <id>replace-windows-icon</id>
+            <properties>
+                <skipReplaceWindowsIcon>false</skipReplaceWindowsIcon>
+            </properties>
+        </profile>
+
         <!-- Profile activated for windows release in addition of deployement. Create the installer. -->
         <profile>
             <id>create-exe</id>
+            <properties>
+                <skipCreateExe>false</skipCreateExe>
+            </properties>
             <build>
                 <plugins>
-
                     <!-- Copy and filter the InnoSetup config file, as well as icons -->
                     <plugin>
                         <artifactId>maven-resources-plugin</artifactId>
@@ -975,63 +992,16 @@
                             </execution>
                         </executions>
                     </plugin>
-
-                    <!-- Execute InnoSetup with the gephi.iss script -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>create-windows-installer</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <target name="createInstaller" description="Create Windows installer with InnoSetup">
-                                        <echo message="Creating windows installer with InnoSetup"/>
-                                        <delete file="${project.artifactId}-${project.version}.setup.exe" failonerror="false"/>
-
-                                        <!-- Windows -->
-                                        <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe" osfamily="windows">
-                                            <arg line="/cc &quot;${brandingToken}.iss&quot;" />
-                                        </exec>
-
-                                        <!-- Linux (assuming the right wine configuration) -->
-                                        <exec dir="${project.build.directory}" executable="iscc" os="Linux">
-                                            <arg line="${brandingToken}.iss" />
-                                        </exec>
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <!-- Attach the final exe installer for deployment -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-exe</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>attach-artifact</goal>
-                                </goals>
-                                <configuration>
-                                    <artifacts>
-                                        <artifact>
-                                            <file>${project.build.directory}/${project.artifactId}-${project.version}.setup.exe</file>
-                                            <type>exe</type>
-                                            <classifier>windows</classifier>
-                                        </artifact>
-                                    </artifacts>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
                 </plugins>
             </build>
+        </profile>
+        
+        <!-- Profile used along with deployment to create the dmg archive -->
+        <profile>
+            <id>create-dmg</id>
+            <properties>
+                <skipCreateDmg>false</skipCreateDmg>
+            </properties>
         </profile>
 
         <!-- Profile that pushes the /site folder to GitHub's gh-pages -->
