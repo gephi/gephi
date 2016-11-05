@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -87,13 +88,10 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         setConverged(true);
         this.graph = graphModel.getGraphVisible();
         graph.readLock();
-        try
-        {
+        try {
             //Reset Layout Data
-            for (Node n : graph.getNodes())
-            {
-                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof NoverlapLayoutData))
-                {
+            for (Node n : graph.getNodes()) {
+                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof NoverlapLayoutData)) {
                     n.setLayoutData(new NoverlapLayoutData());
                 }
                 NoverlapLayoutData layoutData = n.getLayoutData();
@@ -108,8 +106,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
             this.ymin = Double.MAX_VALUE;
             this.ymax = Double.MIN_VALUE;
 
-            for (Node n : graph.getNodes())
-            {
+            for (Node n : graph.getNodes()) {
                 float x = n.x();
                 float y = n.y();
                 float radius = n.size();
@@ -141,8 +138,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
             SpatialGrid grid = new SpatialGrid();
 
             // Put nodes in their boxes
-            for (Node n : graph.getNodes())
-            {
+            for (Node n : graph.getNodes()) {
                 grid.add(n);
             }
 
@@ -150,24 +146,17 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
             // But they are not repulsed several times, even if they are in several cells...
             // So we build a relation of proximity between nodes.
             // Build proximities
-            for (int row = 0; row < grid.countRows() && !cancel; row++)
-            {
-                for (int col = 0; col < grid.countColumns() && !cancel; col++)
-                {
-                    for (Node n : grid.getContent(row, col))
-                    {
+            for (int row = 0; row < grid.countRows() && !cancel; row++) {
+                for (int col = 0; col < grid.countColumns() && !cancel; col++) {
+                    for (Node n : grid.getContent(row, col)) {
                         NoverlapLayoutData lald = n.getLayoutData();
 
                         // For node n in the box "box"...
                         // We search nodes that are in the boxes that are adjacent or the same.
-                        for (int row2 = Math.max(0, row - 1); row2 <= Math.min(row + 1, grid.countRows() - 1); row2++)
-                        {
-                            for (int col2 = Math.max(0, col - 1); col2 <= Math.min(col + 1, grid.countColumns() - 1); col2++)
-                            {
-                                for (Node n2 : grid.getContent(row2, col2))
-                                {
-                                    if (n2 != n && !lald.neighbours.contains(n2))
-                                    {
+                        for (int row2 = Math.max(0, row - 1); row2 <= Math.min(row + 1, grid.countRows() - 1); row2++) {
+                            for (int col2 = Math.max(0, col - 1); col2 <= Math.min(col + 1, grid.countColumns() - 1); col2++) {
+                                for (Node n2 : grid.getContent(row2, col2)) {
+                                    if (n2 != n && !lald.neighbours.contains(n2)) {
                                         lald.neighbours.add(n2);
                                     }
                                 }
@@ -179,11 +168,9 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
 
             // Proximities are built !
             // Apply repulsion force - along proximities...
-            for (Node n1 : graph.getNodes())
-            {
+            for (Node n1 : graph.getNodes()) {
                 NoverlapLayoutData lald = n1.getLayoutData();
-                for (Node n2 : lald.neighbours)
-                {
+                for (Node n2 : lald.neighbours) {
                     float n1x = n1.x();
                     float n1y = n1.y();
                     float n2x = n2.x();
@@ -196,41 +183,33 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                     double yDist = n2y - n1y;
                     double dist = Math.sqrt(xDist * xDist + yDist * yDist);
                     boolean collision = dist < (n1radius * ratio + margin) + (n2radius * ratio + margin);
-                    if (collision)
-                    {
+                    if (collision) {
                         setConverged(false);
                         // n1 repulses n2, as strongly as it is big
                         NoverlapLayoutData layoutData = n2.getLayoutData();
                         double f = 1. + n1.size();
-                        if (dist > 0)
-                        {
+                        if (dist > 0) {
                             layoutData.dx += xDist / dist * f;
                             layoutData.dy += yDist / dist * f;
-                        }
-                        else
-                        {
+                        } else {
                             // Same exact position, divide by zero impossible: jitter
                             layoutData.dx += 0.01 * (0.5 - Math.random());
                             layoutData.dy += 0.01 * (0.5 - Math.random());
                         }
                     }
-                    if (cancel)
-                    {
+                    if (cancel) {
                         break;
                     }
                 }
-                if (cancel)
-                {
+                if (cancel) {
                     break;
                 }
             }
 
             // apply forces
-            for (Node n : graph.getNodes())
-            {
+            for (Node n : graph.getNodes()) {
                 NoverlapLayoutData layoutData = n.getLayoutData();
-                if (!n.isFixed())
-                {
+                if (!n.isFixed()) {
                     layoutData.dx *= 0.1 * speed;
                     layoutData.dy *= 0.1 * speed;
                     float x = n.x() + layoutData.dx;
@@ -248,10 +227,8 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
     @Override
     public void endAlgo() {
         graph.readLock();
-        try
-        {
-            for (Node n : graph.getNodes())
-            {
+        try {
+            for (Node n : graph.getNodes()) {
                 n.setLayoutData(null);
             }
         } finally {
@@ -267,19 +244,19 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
             properties.add(LayoutProperty.createProperty(
                     this, Double.class, "speed", NOVERLAP_CATEGORY, "speed", "getSpeed", "setSpeed"));
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
         try {
             properties.add(LayoutProperty.createProperty(
                     this, Double.class, "ratio", NOVERLAP_CATEGORY, "ratio", "getRatio", "setRatio"));
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
         try {
             properties.add(LayoutProperty.createProperty(
                     this, Double.class, "margin", NOVERLAP_CATEGORY, "margin", "getMargin", "setMargin"));
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
         return properties.toArray(new LayoutProperty[0]);
     }
@@ -374,7 +351,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                     try {
                         data.get(new Cell(row, col)).add(node);
                     } catch (Exception e) {
-                        //e.printStackTrace();
+                        //Exceptions.printStackTrace(e);
                         if (nxmin < xmin || nxmax > xmax) {
                         }
                         if (nymin < ymin || nymax > ymax) {

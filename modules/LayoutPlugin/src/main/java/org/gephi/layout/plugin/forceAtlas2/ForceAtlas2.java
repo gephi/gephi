@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.openide.util.Exceptions;
 
 /**
  * ForceAtlas 2 Layout, manages each step of the computations.
@@ -99,15 +100,12 @@ public class ForceAtlas2 implements Layout {
         graph = graphModel.getGraphVisible();
 
         graph.readLock();
-        try
-        {
+        try {
             Node[] nodes = graph.getNodes().toArray();
 
             // Initialise layout data
-            for (Node n : nodes)
-            {
-                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceAtlas2LayoutData))
-                {
+            for (Node n : nodes) {
+                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceAtlas2LayoutData)) {
                     ForceAtlas2LayoutData nLayout = new ForceAtlas2LayoutData();
                     n.setLayoutData(nLayout);
                 }
@@ -135,16 +133,13 @@ public class ForceAtlas2 implements Layout {
         graph = graphModel.getGraphVisible();
 
         graph.readLock();
-        try
-        {
+        try {
             Node[] nodes = graph.getNodes().toArray();
             Edge[] edges = graph.getEdges().toArray();
 
             // Initialise layout data
-            for (Node n : nodes)
-            {
-                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceAtlas2LayoutData))
-                {
+            for (Node n : nodes) {
+                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceAtlas2LayoutData)) {
                     ForceAtlas2LayoutData nLayout = new ForceAtlas2LayoutData();
                     n.setLayoutData(nLayout);
                 }
@@ -157,18 +152,15 @@ public class ForceAtlas2 implements Layout {
             }
 
             // If Barnes Hut active, initialize root region
-            if (isBarnesHutOptimize())
-            {
+            if (isBarnesHutOptimize()) {
                 rootRegion = new Region(nodes);
                 rootRegion.buildSubRegions();
             }
 
             // If outboundAttractionDistribution active, compensate.
-            if (isOutboundAttractionDistribution())
-            {
+            if (isOutboundAttractionDistribution()) {
                 outboundAttCompensation = 0;
-                for (Node n : nodes)
-                {
+                for (Node n : nodes) {
                     ForceAtlas2LayoutData nLayout = n.getLayoutData();
                     outboundAttCompensation += nLayout.mass;
                 }
@@ -182,45 +174,32 @@ public class ForceAtlas2 implements Layout {
             int taskCount = 8 * currentThreadCount;  // The threadPool Executor Service will manage the fetching of tasks and threads.
             // We make more tasks than threads because some tasks may need more time to compute.
             ArrayList<Future> threads = new ArrayList();
-            for (int t = taskCount; t > 0; t--)
-            {
+            for (int t = taskCount; t > 0; t--) {
                 int from = (int) Math.floor(nodes.length * (t - 1) / taskCount);
                 int to = (int) Math.floor(nodes.length * t / taskCount);
                 Future future = pool.submit(new NodesThread(nodes, from, to, isBarnesHutOptimize(), getBarnesHutTheta(), getGravity(), (isStrongGravityMode()) ? (ForceFactory.builder.getStrongGravity(getScalingRatio())) : (Repulsion), getScalingRatio(), rootRegion, Repulsion));
                 threads.add(future);
             }
-            for (Future future : threads)
-            {
-                try
-                {
+            for (Future future : threads) {
+                try {
                     future.get();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     throw new RuntimeException("Unable to layout " + this.getClass().getSimpleName() + ".", e);
                 }
             }
 
             // Attraction
             AttractionForce Attraction = ForceFactory.builder.buildAttraction(isLinLogMode(), isOutboundAttractionDistribution(), isAdjustSizes(), 1 * ((isOutboundAttractionDistribution()) ? (outboundAttCompensation) : (1)));
-            if (getEdgeWeightInfluence() == 0)
-            {
-                for (Edge e : edges)
-                {
+            if (getEdgeWeightInfluence() == 0) {
+                for (Edge e : edges) {
                     Attraction.apply(e.getSource(), e.getTarget(), 1);
                 }
-            }
-            else if (getEdgeWeightInfluence() == 1)
-            {
-                for (Edge e : edges)
-                {
+            } else if (getEdgeWeightInfluence() == 1) {
+                for (Edge e : edges) {
                     Attraction.apply(e.getSource(), e.getTarget(), e.getWeight());
                 }
-            }
-            else
-            {
-                for (Edge e : edges)
-                {
+            } else {
+                for (Edge e : edges) {
                     Attraction.apply(e.getSource(), e.getTarget(), Math.pow(e.getWeight(), getEdgeWeightInfluence()));
                 }
             }
@@ -228,11 +207,9 @@ public class ForceAtlas2 implements Layout {
             // Auto adjust speed
             double totalSwinging = 0d;  // How much irregular movement
             double totalEffectiveTraction = 0d;  // Hom much useful movement
-            for (Node n : nodes)
-            {
+            for (Node n : nodes) {
                 ForceAtlas2LayoutData nLayout = n.getLayoutData();
-                if (!n.isFixed())
-                {
+                if (!n.isFixed()) {
                     double swinging = Math.sqrt(Math.pow(nLayout.old_dx - nLayout.dx, 2) + Math.pow(nLayout.old_dy - nLayout.dy, 2));
                     totalSwinging += nLayout.mass * swinging;   // If the node has a burst change of direction, then it's not converging.
                     totalEffectiveTraction += nLayout.mass * 0.5 * Math.sqrt(Math.pow(nLayout.old_dx + nLayout.dx, 2) + Math.pow(nLayout.old_dy + nLayout.dy, 2));
@@ -250,10 +227,8 @@ public class ForceAtlas2 implements Layout {
             double minSpeedEfficiency = 0.05;
 
             // Protection against erratic behavior
-            if (totalSwinging / totalEffectiveTraction > 2.0)
-            {
-                if (speedEfficiency > minSpeedEfficiency)
-                {
+            if (totalSwinging / totalEffectiveTraction > 2.0) {
+                if (speedEfficiency > minSpeedEfficiency) {
                     speedEfficiency *= 0.5;
                 }
                 jt = Math.max(jt, jitterTolerance);
@@ -263,15 +238,11 @@ public class ForceAtlas2 implements Layout {
 
             // Speed efficiency is how the speed really corresponds to the swinging vs. convergence tradeoff
             // We adjust it slowly and carefully
-            if (totalSwinging > jt * totalEffectiveTraction)
-            {
-                if (speedEfficiency > minSpeedEfficiency)
-                {
+            if (totalSwinging > jt * totalEffectiveTraction) {
+                if (speedEfficiency > minSpeedEfficiency) {
                     speedEfficiency *= 0.7;
                 }
-            }
-            else if (speed < 1000)
-            {
+            } else if (speed < 1000) {
                 speedEfficiency *= 1.3;
             }
 
@@ -280,14 +251,11 @@ public class ForceAtlas2 implements Layout {
             speed = speed + Math.min(targetSpeed - speed, maxRise * speed);
 
             // Apply forces
-            if (isAdjustSizes())
-            {
+            if (isAdjustSizes()) {
                 // If nodes overlap prevention is active, it's not possible to trust the swinging mesure.
-                for (Node n : nodes)
-                {
+                for (Node n : nodes) {
                     ForceAtlas2LayoutData nLayout = n.getLayoutData();
-                    if (!n.isFixed())
-                    {
+                    if (!n.isFixed()) {
 
                         // Adaptive auto-speed: the speed of each node is lowered
                         // when the node swings.
@@ -304,14 +272,10 @@ public class ForceAtlas2 implements Layout {
                         n.setY((float) y);
                     }
                 }
-            }
-            else
-            {
-                for (Node n : nodes)
-                {
+            } else {
+                for (Node n : nodes) {
                     ForceAtlas2LayoutData nLayout = n.getLayoutData();
-                    if (!n.isFixed())
-                    {
+                    if (!n.isFixed()) {
 
                         // Adaptive auto-speed: the speed of each node is lowered
                         // when the node swings.
@@ -340,10 +304,8 @@ public class ForceAtlas2 implements Layout {
     @Override
     public void endAlgo() {
         graph.readLock();
-        try
-        {
-            for (Node n : graph.getNodes())
-            {
+        try {
+            for (Node n : graph.getNodes()) {
                 n.setLayoutData(null);
             }
             pool.shutdown();
@@ -450,7 +412,7 @@ public class ForceAtlas2 implements Layout {
                     "getThreadsCount", "setThreadsCount"));
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
 
         return properties.toArray(new LayoutProperty[0]);

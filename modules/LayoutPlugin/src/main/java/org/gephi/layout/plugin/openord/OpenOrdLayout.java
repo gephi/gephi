@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.layout.plugin.openord;
 
 import gnu.trove.TIntFloatHashMap;
@@ -57,6 +57,7 @@ import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -112,141 +113,144 @@ public class OpenOrdLayout implements Layout, LongTask {
         //Get graph
         graph = graphModel.getUndirectedGraphVisible();
         graph.readLock();
-        int numNodes = graph.getNodeCount();
+        try {
+            int numNodes = graph.getNodeCount();
 
-        //Prepare data structure - nodes and neighbors map
-        Node[] nodes = new Node[numNodes];
-        TIntFloatHashMap[] neighbors = new TIntFloatHashMap[numNodes];
-        TIntHashingStrategy hashingStrategy = new TIntHashingStrategy() {
+            //Prepare data structure - nodes and neighbors map
+            Node[] nodes = new Node[numNodes];
+            TIntFloatHashMap[] neighbors = new TIntFloatHashMap[numNodes];
+            TIntHashingStrategy hashingStrategy = new TIntHashingStrategy() {
 
-            @Override
-            public int computeHashCode(int i) {
-                return i;
-            }
-        };
-
-        //Load nodes and edges
-        TIntIntHashMap idMap = new TIntIntHashMap(numNodes, 1f);
-        org.gephi.graph.api.Node[] graphNodes = graph.getNodes().toArray();
-        for (int i = 0; i < numNodes; i++) {
-            org.gephi.graph.api.Node n = graphNodes[i];
-            nodes[i] = new Node(i);
-            nodes[i].x = n.x();
-            nodes[i].y = n.y();
-            nodes[i].fixed = n.isFixed();
-            OpenOrdLayoutData layoutData = new OpenOrdLayoutData(i);
-            n.setLayoutData(layoutData);
-            idMap.put(n.getStoreId(), i);
-        }
-        float highestSimilarity = Float.NEGATIVE_INFINITY;
-        for (Edge e : graph.getEdges()) {
-            int source = idMap.get(e.getSource().getStoreId());
-            int target = idMap.get(e.getTarget().getStoreId());
-            if (source != target) {        //No self-loop
-                float weight = (float)e.getWeight();
-                if (neighbors[source] == null) {
-                    neighbors[source] = new TIntFloatHashMap(hashingStrategy);
+                @Override
+                public int computeHashCode(int i) {
+                    return i;
                 }
-                if (neighbors[target] == null) {
-                    neighbors[target] = new TIntFloatHashMap(hashingStrategy);
+            };
+
+            //Load nodes and edges
+            TIntIntHashMap idMap = new TIntIntHashMap(numNodes, 1f);
+            org.gephi.graph.api.Node[] graphNodes = graph.getNodes().toArray();
+            for (int i = 0; i < numNodes; i++) {
+                org.gephi.graph.api.Node n = graphNodes[i];
+                nodes[i] = new Node(i);
+                nodes[i].x = n.x();
+                nodes[i].y = n.y();
+                nodes[i].fixed = n.isFixed();
+                OpenOrdLayoutData layoutData = new OpenOrdLayoutData(i);
+                n.setLayoutData(layoutData);
+                idMap.put(n.getStoreId(), i);
+            }
+            float highestSimilarity = Float.NEGATIVE_INFINITY;
+            for (Edge e : graph.getEdges()) {
+                int source = idMap.get(e.getSource().getStoreId());
+                int target = idMap.get(e.getTarget().getStoreId());
+                if (source != target) {        //No self-loop
+                    float weight = (float) e.getWeight();
+                    if (neighbors[source] == null) {
+                        neighbors[source] = new TIntFloatHashMap(hashingStrategy);
+                    }
+                    if (neighbors[target] == null) {
+                        neighbors[target] = new TIntFloatHashMap(hashingStrategy);
+                    }
+                    neighbors[source].put(target, weight);
+                    neighbors[target].put(source, weight);
+                    highestSimilarity = Math.max(highestSimilarity, weight);
                 }
-                neighbors[source].put(target, weight);
-                neighbors[target].put(source, weight);
-                highestSimilarity = Math.max(highestSimilarity, weight);
             }
-        }
 
-        //Reset position
-        boolean someFixed = false;
-        for (Node n : nodes) {
-            if (!n.fixed) {
-                n.x = 0;
-                n.y = 0;
-            } else {
-                someFixed = true;
-            }
-        }
-
-        //Recenter fixed nodes and rescale to fit into grid
-        if (someFixed) {
-            float minX = Float.POSITIVE_INFINITY;
-            float maxX = Float.NEGATIVE_INFINITY;
-            float minY = Float.POSITIVE_INFINITY;
-            float maxY = Float.NEGATIVE_INFINITY;
+            //Reset position
+            boolean someFixed = false;
             for (Node n : nodes) {
-                if (n.fixed) {
-                    minX = Math.min(minX, n.x);
-                    maxX = Math.max(maxX, n.x);
-                    minY = Math.min(minY, n.y);
-                    maxY = Math.max(maxY, n.y);
+                if (!n.fixed) {
+                    n.x = 0;
+                    n.y = 0;
+                } else {
+                    someFixed = true;
                 }
             }
-            float shiftX = minX + (maxX - minX) / 2f;
-            float shiftY = minY + (maxY - minY) / 2f;
-            float ratio = Math.min(DensityGrid.getViewSize() / (maxX - minX), DensityGrid.getViewSize() / (maxY - minY));
-            ratio = Math.min(1f, ratio);
-            for (Node n : nodes) {
-                if (n.fixed) {
-                    n.x = (float) (n.x - shiftX) * ratio;
-                    n.y = (float) (n.y - shiftY) * ratio;
+
+            //Recenter fixed nodes and rescale to fit into grid
+            if (someFixed) {
+                float minX = Float.POSITIVE_INFINITY;
+                float maxX = Float.NEGATIVE_INFINITY;
+                float minY = Float.POSITIVE_INFINITY;
+                float maxY = Float.NEGATIVE_INFINITY;
+                for (Node n : nodes) {
+                    if (n.fixed) {
+                        minX = Math.min(minX, n.x);
+                        maxX = Math.max(maxX, n.x);
+                        minY = Math.min(minY, n.y);
+                        maxY = Math.max(maxY, n.y);
+                    }
                 }
-            }
-        }
-
-        //Init control and workers
-        control = new Control();
-        combine = new Combine(this);
-        barrier = new CyclicBarrier(numThreads, combine);
-        control.setEdgeCut(edgeCut);
-        control.setRealParm(realTime);
-        control.setProgressTicket(progressTicket);
-        control.initParams(param, numIterations);
-        control.setNumNodes(numNodes);
-        control.setHighestSimilarity(highestSimilarity);
-
-        workers = new Worker[numThreads];
-        for (int i = 0; i < numThreads; ++i) {
-            workers[i] = new Worker(i, numThreads, barrier);
-            workers[i].setRandom(new Random(randSeed));
-            control.initWorker(workers[i]);
-        }
-
-        //Load workers with data
-        //Deep copy of all nodes positions
-        //Deep copy of a partition of all neighbors for each workers
-        for (Worker w : workers) {
-            Node[] nodesCopy = new Node[nodes.length];
-            for (int i = 0; i < nodes.length; i++) {
-                nodesCopy[i] = nodes[i].clone();
-            }
-            TIntFloatHashMap[] neighborsCopy = new TIntFloatHashMap[numNodes];
-            for (int i = 0; i < neighbors.length; i++) {
-                if (i % numThreads == w.getId() && neighbors[i] != null) {
-                    int neighborsCount = neighbors[i].size();
-                    neighborsCopy[i] = new TIntFloatHashMap(neighborsCount, 1f, hashingStrategy);
-                    for (TIntFloatIterator itr = neighbors[i].iterator(); itr.hasNext();) {
-                        itr.advance();
-                        float weight = normalizeWeight(itr.value(), highestSimilarity);
-                        neighborsCopy[i].put(itr.key(), weight);
+                float shiftX = minX + (maxX - minX) / 2f;
+                float shiftY = minY + (maxY - minY) / 2f;
+                float ratio = Math.min(DensityGrid.getViewSize() / (maxX - minX), DensityGrid.getViewSize() / (maxY - minY));
+                ratio = Math.min(1f, ratio);
+                for (Node n : nodes) {
+                    if (n.fixed) {
+                        n.x = (float) (n.x - shiftX) * ratio;
+                        n.y = (float) (n.y - shiftY) * ratio;
                     }
                 }
             }
-            w.setPositions(nodesCopy);
-            w.setNeighbors(neighborsCopy);
-        }
 
-        //Add real nodes
-        for (Node n : nodes) {
-            if (n.fixed) {
-                for (Worker w : workers) {
-                    w.getDensityGrid().add(n, w.isFineDensity());
+            //Init control and workers
+            control = new Control();
+            combine = new Combine(this);
+            barrier = new CyclicBarrier(numThreads, combine);
+            control.setEdgeCut(edgeCut);
+            control.setRealParm(realTime);
+            control.setProgressTicket(progressTicket);
+            control.initParams(param, numIterations);
+            control.setNumNodes(numNodes);
+            control.setHighestSimilarity(highestSimilarity);
+
+            workers = new Worker[numThreads];
+            for (int i = 0; i < numThreads; ++i) {
+                workers[i] = new Worker(i, numThreads, barrier);
+                workers[i].setRandom(new Random(randSeed));
+                control.initWorker(workers[i]);
+            }
+
+            //Load workers with data
+            //Deep copy of all nodes positions
+            //Deep copy of a partition of all neighbors for each workers
+            for (Worker w : workers) {
+                Node[] nodesCopy = new Node[nodes.length];
+                for (int i = 0; i < nodes.length; i++) {
+                    nodesCopy[i] = nodes[i].clone();
+                }
+                TIntFloatHashMap[] neighborsCopy = new TIntFloatHashMap[numNodes];
+                for (int i = 0; i < neighbors.length; i++) {
+                    if (i % numThreads == w.getId() && neighbors[i] != null) {
+                        int neighborsCount = neighbors[i].size();
+                        neighborsCopy[i] = new TIntFloatHashMap(neighborsCount, 1f, hashingStrategy);
+                        for (TIntFloatIterator itr = neighbors[i].iterator(); itr.hasNext();) {
+                            itr.advance();
+                            float weight = normalizeWeight(itr.value(), highestSimilarity);
+                            neighborsCopy[i].put(itr.key(), weight);
+                        }
+                    }
+                }
+                w.setPositions(nodesCopy);
+                w.setNeighbors(neighborsCopy);
+            }
+
+            //Add real nodes
+            for (Node n : nodes) {
+                if (n.fixed) {
+                    for (Worker w : workers) {
+                        w.getDensityGrid().add(n, w.isFineDensity());
+                    }
                 }
             }
-        }
-        graph.readUnlock();
 
-        running = true;
-        firstIteration = true;
+            running = true;
+            firstIteration = true;
+        } finally {
+            graph.readUnlock();
+        }
     }
 
     @Override
@@ -354,7 +358,7 @@ public class OpenOrdLayout implements Layout, LongTask {
                     "getSimmerStage", "setSimmerStage"));
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
 
         return properties.toArray(new LayoutProperty[0]);

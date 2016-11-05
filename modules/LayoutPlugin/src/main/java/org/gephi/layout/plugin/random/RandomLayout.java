@@ -50,6 +50,7 @@ import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -77,11 +78,16 @@ public class RandomLayout extends AbstractLayout implements Layout {
     @Override
     public void goAlgo() {
         graph = graphModel.getGraphVisible();
-        for (Node n : graph.getNodes()) {
-            n.setX((float) (-size / 2 + size * random.nextDouble()));
-            n.setY((float) (-size / 2 + size * random.nextDouble()));
+        graph.readLock();
+        try {
+            for (Node n : graph.getNodes()) {
+                n.setX((float) (-size / 2 + size * random.nextDouble()));
+                n.setY((float) (-size / 2 + size * random.nextDouble()));
+            }
+            converged = true;
+        } finally {
+            graph.readUnlock();
         }
-        converged = true;
     }
 
     @Override
@@ -106,7 +112,7 @@ public class RandomLayout extends AbstractLayout implements Layout {
                     NbBundle.getMessage(getClass(), "Random.spaceSize.desc"),
                     "getSize", "setSize"));
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
         return properties.toArray(new LayoutProperty[0]);
     }

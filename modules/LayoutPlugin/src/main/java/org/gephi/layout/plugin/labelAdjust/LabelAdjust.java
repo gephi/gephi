@@ -50,6 +50,7 @@ import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -90,101 +91,103 @@ public class LabelAdjust extends AbstractLayout implements Layout {
     public void goAlgo() {
         this.graph = graphModel.getGraphVisible();
         graph.readLock();
-        Node[] nodes = graph.getNodes().toArray();
 
-        //Reset Layout Data
-        for (Node n : nodes) {
-            if (n.getLayoutData() == null || !(n.getLayoutData() instanceof LabelAdjustLayoutData)) {
-                n.setLayoutData(new LabelAdjustLayoutData());
-            }
-            LabelAdjustLayoutData layoutData = n.getLayoutData();
-            layoutData.freeze = 0;
-            layoutData.dx = 0;
-            layoutData.dy = 0;
-        }
+        try {
+            Node[] nodes = graph.getNodes().toArray();
 
-        // Get xmin, xmax, ymin, ymax
-        xmin = Float.MAX_VALUE;
-        xmax = Float.MIN_VALUE;
-        ymin = Float.MAX_VALUE;
-        ymax = Float.MIN_VALUE;
-
-        List<Node> correctNodes = new ArrayList<>();
-        for (Node n : nodes) {
-            float x = n.x();
-            float y = n.y();
-            TextProperties t = n.getTextProperties();
-            float w = t.getWidth();
-            float h = t.getHeight();
-            float radius = n.size() / 2f;
-
-            if (w > 0 && h > 0) {
-                // Get the rectangle occupied by the node (size + label)
-                float nxmin = Math.min(x - w / 2, x - radius);
-                float nxmax = Math.max(x + w / 2, x + radius);
-                float nymin = Math.min(y - h / 2, y - radius);
-                float nymax = Math.max(y + h / 2, y + radius);
-
-                // Update global boundaries
-                xmin = Math.min(this.xmin, nxmin);
-                xmax = Math.max(this.xmax, nxmax);
-                ymin = Math.min(this.ymin, nymin);
-                ymax = Math.max(this.ymax, nymax);
-
-                correctNodes.add(n);
-            }
-        }
-
-        if (correctNodes.isEmpty() || xmin == xmax || ymin == ymax) {
-            graph.readUnlock();
-            return;
-        }
-
-        long timeStamp = 1;
-        boolean someCollision = false;
-
-        //Add all nodes in the quadtree
-        QuadTree quadTree = new QuadTree(correctNodes.size(), (xmax - xmin) / (ymax - ymin));
-        for (Node n : correctNodes) {
-            quadTree.add(n);
-        }
-
-        //Compute repulsion - with neighbours in the 8 quadnodes around the node
-        for (Node n : correctNodes) {
-            timeStamp++;
-            LabelAdjustLayoutData layoutData = n.getLayoutData();
-            QuadNode quad = quadTree.getQuadNode(layoutData.labelAdjustQuadNode);
-
-            //Repulse with adjacent quad - but only one per pair of nodes, timestamp is guaranteeing that
-            for (Node neighbour : quadTree.getAdjacentNodes(quad.row, quad.col)) {
-                LabelAdjustLayoutData neighborLayoutData = neighbour.getLayoutData();
-                if (neighbour != n && neighborLayoutData.freeze < timeStamp) {
-                    boolean collision = repulse(n, neighbour);
-                    someCollision = someCollision || collision;
+            //Reset Layout Data
+            for (Node n : nodes) {
+                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof LabelAdjustLayoutData)) {
+                    n.setLayoutData(new LabelAdjustLayoutData());
                 }
-                neighborLayoutData.freeze = timeStamp; //Use the existing freeze float variable to set timestamp
-            }
-        }
-
-        if (!someCollision) {
-            setConverged(true);
-        } else {
-            // apply forces
-            for (Node n : correctNodes) {
                 LabelAdjustLayoutData layoutData = n.getLayoutData();
-                if (!n.isFixed()) {
-                    layoutData.dx *= speed;
-                    layoutData.dy *= speed;
-                    float x = n.x() + layoutData.dx;
-                    float y = n.y() + layoutData.dy;
+                layoutData.freeze = 0;
+                layoutData.dx = 0;
+                layoutData.dy = 0;
+            }
 
-                    n.setX(x);
-                    n.setY(y);
+            // Get xmin, xmax, ymin, ymax
+            xmin = Float.MAX_VALUE;
+            xmax = Float.MIN_VALUE;
+            ymin = Float.MAX_VALUE;
+            ymax = Float.MIN_VALUE;
+
+            List<Node> correctNodes = new ArrayList<>();
+            for (Node n : nodes) {
+                float x = n.x();
+                float y = n.y();
+                TextProperties t = n.getTextProperties();
+                float w = t.getWidth();
+                float h = t.getHeight();
+                float radius = n.size() / 2f;
+
+                if (w > 0 && h > 0) {
+                    // Get the rectangle occupied by the node (size + label)
+                    float nxmin = Math.min(x - w / 2, x - radius);
+                    float nxmax = Math.max(x + w / 2, x + radius);
+                    float nymin = Math.min(y - h / 2, y - radius);
+                    float nymax = Math.max(y + h / 2, y + radius);
+
+                    // Update global boundaries
+                    xmin = Math.min(this.xmin, nxmin);
+                    xmax = Math.max(this.xmax, nxmax);
+                    ymin = Math.min(this.ymin, nymin);
+                    ymax = Math.max(this.ymax, nymax);
+
+                    correctNodes.add(n);
                 }
             }
-        }
 
-        graph.readUnlock();
+            if (correctNodes.isEmpty() || xmin == xmax || ymin == ymax) {
+                return;
+            }
+
+            long timeStamp = 1;
+            boolean someCollision = false;
+
+            //Add all nodes in the quadtree
+            QuadTree quadTree = new QuadTree(correctNodes.size(), (xmax - xmin) / (ymax - ymin));
+            for (Node n : correctNodes) {
+                quadTree.add(n);
+            }
+
+            //Compute repulsion - with neighbours in the 8 quadnodes around the node
+            for (Node n : correctNodes) {
+                timeStamp++;
+                LabelAdjustLayoutData layoutData = n.getLayoutData();
+                QuadNode quad = quadTree.getQuadNode(layoutData.labelAdjustQuadNode);
+
+                //Repulse with adjacent quad - but only one per pair of nodes, timestamp is guaranteeing that
+                for (Node neighbour : quadTree.getAdjacentNodes(quad.row, quad.col)) {
+                    LabelAdjustLayoutData neighborLayoutData = neighbour.getLayoutData();
+                    if (neighbour != n && neighborLayoutData.freeze < timeStamp) {
+                        boolean collision = repulse(n, neighbour);
+                        someCollision = someCollision || collision;
+                    }
+                    neighborLayoutData.freeze = timeStamp; //Use the existing freeze float variable to set timestamp
+                }
+            }
+
+            if (!someCollision) {
+                setConverged(true);
+            } else {
+                // apply forces
+                for (Node n : correctNodes) {
+                    LabelAdjustLayoutData layoutData = n.getLayoutData();
+                    if (!n.isFixed()) {
+                        layoutData.dx *= speed;
+                        layoutData.dy *= speed;
+                        float x = n.x() + layoutData.dx;
+                        float y = n.y() + layoutData.dy;
+
+                        n.setX(x);
+                        n.setY(y);
+                    }
+                }
+            }
+        } finally {
+            graph.readUnlock();
+        }
     }
 
     private boolean repulse(Node n1, Node n2) {
@@ -287,7 +290,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
                     NbBundle.getMessage(getClass(), "LabelAdjust.adjustBySize.desc"),
                     "isAdjustBySize", "setAdjustBySize"));
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
         return properties.toArray(new LayoutProperty[0]);
     }

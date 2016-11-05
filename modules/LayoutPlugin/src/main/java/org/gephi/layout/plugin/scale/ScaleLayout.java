@@ -49,6 +49,7 @@ import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -74,22 +75,27 @@ public class ScaleLayout extends AbstractLayout implements Layout {
     @Override
     public void goAlgo() {
         graph = graphModel.getGraphVisible();
-        double xMean = 0, yMean = 0;
-        for (Node n : graph.getNodes()) {
-            xMean += n.x();
-            yMean += n.y();
-        }
-        xMean /= graph.getNodeCount();
-        yMean /= graph.getNodeCount();
+        graph.readLock();
+        try {
+            double xMean = 0, yMean = 0;
+            for (Node n : graph.getNodes()) {
+                xMean += n.x();
+                yMean += n.y();
+            }
+            xMean /= graph.getNodeCount();
+            yMean /= graph.getNodeCount();
 
-        for (Node n : graph.getNodes()) {
-            double dx = (n.x() - xMean) * getScale();
-            double dy = (n.y() - yMean) * getScale();
+            for (Node n : graph.getNodes()) {
+                double dx = (n.x() - xMean) * getScale();
+                double dy = (n.y() - yMean) * getScale();
 
-            n.setX((float) (xMean + dx));
-            n.setY((float) (yMean + dy));
+                n.setX((float) (xMean + dx));
+                n.setY((float) (yMean + dy));
+            }
+            setConverged(true);
+        } finally {
+            graph.readUnlock();
         }
-        setConverged(true);
     }
 
     @Override
@@ -108,7 +114,7 @@ public class ScaleLayout extends AbstractLayout implements Layout {
                     NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.desc"),
                     "getScale", "setScale"));
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
         return properties.toArray(new LayoutProperty[0]);
     }

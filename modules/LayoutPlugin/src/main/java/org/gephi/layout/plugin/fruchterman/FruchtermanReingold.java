@@ -53,6 +53,7 @@ import org.openide.util.NbBundle;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -88,15 +89,12 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
     public void goAlgo() {
         this.graph = graphModel.getGraphVisible();
         graph.readLock();
-        try
-        {
+        try {
             Node[] nodes = graph.getNodes().toArray();
             Edge[] edges = graph.getEdges().toArray();
 
-            for (Node n : nodes)
-            {
-                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceVectorNodeLayoutData))
-                {
+            for (Node n : nodes) {
+                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceVectorNodeLayoutData)) {
                     n.setLayoutData(new ForceVectorNodeLayoutData());
                 }
                 ForceVectorNodeLayoutData layoutData = n.getLayoutData();
@@ -107,18 +105,14 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
             float maxDisplace = (float) (Math.sqrt(AREA_MULTIPLICATOR * area) / 10f);                    // Déplacement limite : on peut le calibrer...
             float k = (float) Math.sqrt((AREA_MULTIPLICATOR * area) / (1f + nodes.length));        // La variable k, l'idée principale du layout.
 
-            for (Node N1 : nodes)
-            {
-                for (Node N2 : nodes)
-                {    // On fait toutes les paires de noeuds
-                    if (N1 != N2)
-                    {
+            for (Node N1 : nodes) {
+                for (Node N2 : nodes) {    // On fait toutes les paires de noeuds
+                    if (N1 != N2) {
                         float xDist = N1.x() - N2.x();    // distance en x entre les deux noeuds
                         float yDist = N1.y() - N2.y();
                         float dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);    // distance tout court
 
-                        if (dist > 0)
-                        {
+                        if (dist > 0) {
                             float repulsiveF = k * k / dist;            // Force de répulsion
                             ForceVectorNodeLayoutData layoutData = N1.getLayoutData();
                             layoutData.dx += xDist / dist * repulsiveF;        // on l'applique...
@@ -127,8 +121,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
                     }
                 }
             }
-            for (Edge E : edges)
-            {
+            for (Edge E : edges) {
                 // Idem, pour tous les noeuds on applique la force d'attraction
 
                 Node Nf = E.getSource();
@@ -140,8 +133,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
 
                 float attractiveF = dist * dist / k;
 
-                if (dist > 0)
-                {
+                if (dist > 0) {
                     ForceVectorNodeLayoutData sourceLayoutData = Nf.getLayoutData();
                     ForceVectorNodeLayoutData targetLayoutData = Nt.getLayoutData();
                     sourceLayoutData.dx -= xDist / dist * attractiveF;
@@ -151,8 +143,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
                 }
             }
             // gravity
-            for (Node n : nodes)
-            {
+            for (Node n : nodes) {
                 ForceVectorNodeLayoutData layoutData = n.getLayoutData();
                 float d = (float) Math.sqrt(n.x() * n.x() + n.y() * n.y());
                 float gf = 0.01f * k * (float) gravity * d;
@@ -160,22 +151,19 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
                 layoutData.dy -= gf * n.y() / d;
             }
             // speed
-            for (Node n : nodes)
-            {
+            for (Node n : nodes) {
                 ForceVectorNodeLayoutData layoutData = n.getLayoutData();
                 layoutData.dx *= speed / SPEED_DIVISOR;
                 layoutData.dy *= speed / SPEED_DIVISOR;
             }
-            for (Node n : nodes)
-            {
+            for (Node n : nodes) {
                 // Maintenant on applique le déplacement calculé sur les noeuds.
                 // nb : le déplacement à chaque passe "instantanné" correspond à la force : c'est une sorte d'accélération.
                 ForceVectorNodeLayoutData layoutData = n.getLayoutData();
                 float xDist = layoutData.dx;
                 float yDist = layoutData.dy;
                 float dist = (float) Math.sqrt(layoutData.dx * layoutData.dx + layoutData.dy * layoutData.dy);
-                if (dist > 0 && !n.isFixed())
-                {
+                if (dist > 0 && !n.isFixed()) {
                     float limitedDist = Math.min(maxDisplace * ((float) speed / SPEED_DIVISOR), dist);
                     n.setX(n.x() + xDist / dist * limitedDist);
                     n.setY(n.y() + yDist / dist * limitedDist);
@@ -189,10 +177,8 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
     @Override
     public void endAlgo() {
         graph.readLock();
-        try
-        {
-            for (Node n : graph.getNodes())
-            {
+        try {
+            for (Node n : graph.getNodes()) {
                 n.setLayoutData(null);
             }
         } finally {
@@ -233,7 +219,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
                     NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.speed.desc"),
                     "getSpeed", "setSpeed"));
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
 
         return properties.toArray(new LayoutProperty[0]);

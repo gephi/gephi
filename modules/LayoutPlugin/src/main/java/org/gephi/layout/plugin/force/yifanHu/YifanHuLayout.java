@@ -58,6 +58,7 @@ import org.openide.util.NbBundle;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.openide.util.Exceptions;
 
 /**
  * Hu's basic algorithm
@@ -218,7 +219,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
                     NbBundle.getMessage(getClass(), "YifanHu.theta.desc"),
                     "getBarnesHutTheta", "setBarnesHutTheta"));
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
 
         return properties.toArray(new LayoutProperty[0]);
@@ -231,11 +232,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         }
         graph = graphModel.getGraphVisible();
         graph.readLock();
-        try
-        {
+        try {
             energy = Float.POSITIVE_INFINITY;
-            for (Node n : graph.getNodes())
-            {
+            for (Node n : graph.getNodes()) {
                 n.setLayoutData(new ForceVector());
             }
             progress = 0;
@@ -249,10 +248,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     @Override
     public void endAlgo() {
         graph.readLock();
-        try
-        {
-            for (Node n : graph.getNodes())
-            {
+        try {
+            for (Node n : graph.getNodes()) {
                 n.setLayoutData(null);
             }
         } finally {
@@ -264,13 +261,10 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     public void goAlgo() {
         graph = graphModel.getGraphVisible();
         graph.readLock();
-        try
-        {
+        try {
             Node[] nodes = graph.getNodes().toArray();
-            for (Node n : nodes)
-            {
-                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceVector))
-                {
+            for (Node n : nodes) {
+                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceVector)) {
                     n.setLayoutData(new ForceVector());
                 }
             }
@@ -282,8 +276,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             //        double springEnergy = 0; ///////////////////////
             BarnesHut barnes = new BarnesHut(getNodeForce());
             barnes.setTheta(getBarnesHutTheta());
-            for (Node node : nodes)
-            {
+            for (Node node : nodes) {
                 ForceVector layoutData = node.getLayoutData();
 
                 ForceVector f = barnes.calculateForce(node, tree);
@@ -292,11 +285,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             }
 
             // Apply edge forces.
-
-            for (Edge e : graph.getEdges())
-            {
-                if (!e.getSource().equals(e.getTarget()))
-                {
+            for (Edge e : graph.getEdges()) {
+                if (!e.getSource().equals(e.getTarget())) {
                     Node n1 = e.getSource();
                     Node n2 = e.getTarget();
                     ForceVector f1 = n1.getLayoutData();
@@ -312,8 +302,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             energy0 = energy;
             energy = 0;
             double maxForce = 1;
-            for (Node n : nodes)
-            {
+            for (Node n : nodes) {
                 ForceVector force = n.getLayoutData();
 
                 energy += force.getNorm();
@@ -321,10 +310,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             }
 
             // Apply displacements on nodes.
-            for (Node n : nodes)
-            {
-                if (!n.isFixed())
-                {
+            for (Node n : nodes) {
+                if (!n.isFixed()) {
                     ForceVector force = n.getLayoutData();
 
                     force.multiply((float) (1.0 / maxForce));

@@ -48,6 +48,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutProperty;
 import org.openide.nodes.Node.Property;
+import org.openide.util.Exceptions;
 
 /**
  * Class to build layout scenario that runs for a certain duration. Multiple
@@ -283,7 +284,7 @@ public class AutoLayout {
                 }
                 return property.getValue();
             } catch (Exception e) {
-                e.printStackTrace();
+                Exceptions.printStackTrace(e);
             }
             return null;
         }
