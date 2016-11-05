@@ -41,8 +41,6 @@
  */
 package org.gephi.layout.plugin.force.yifanHu;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
@@ -57,6 +55,10 @@ import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 import org.openide.util.NbBundle;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.openide.util.Exceptions;
 
 /**
  * Hu's basic algorithm
@@ -217,7 +219,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
                     NbBundle.getMessage(getClass(), "YifanHu.theta.desc"),
                     "getBarnesHutTheta", "setBarnesHutTheta"));
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
 
         return properties.toArray(new LayoutProperty[0]);
@@ -229,19 +231,29 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             return;
         }
         graph = graphModel.getGraphVisible();
-        energy = Float.POSITIVE_INFINITY;
-        for (Node n : graph.getNodes()) {
-            n.setLayoutData(new ForceVector());
+        graph.readLock();
+        try {
+            energy = Float.POSITIVE_INFINITY;
+            for (Node n : graph.getNodes()) {
+                n.setLayoutData(new ForceVector());
+            }
+            progress = 0;
+            setConverged(false);
+            setStep(initialStep);
+        } finally {
+            graph.readUnlock();
         }
-        progress = 0;
-        setConverged(false);
-        setStep(initialStep);
     }
 
     @Override
     public void endAlgo() {
-        for (Node n : graph.getNodes()) {
-            n.setLayoutData(null);
+        graph.readLock();
+        try {
+            for (Node n : graph.getNodes()) {
+                n.setLayoutData(null);
+            }
+        } finally {
+            graph.readUnlock();
         }
     }
 
@@ -249,68 +261,67 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     public void goAlgo() {
         graph = graphModel.getGraphVisible();
         graph.readLock();
-        Node[] nodes = graph.getNodes().toArray();
-        for (Node n : nodes) {
-            if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceVector)) {
-                n.setLayoutData(new ForceVector());
+        try {
+            Node[] nodes = graph.getNodes().toArray();
+            for (Node n : nodes) {
+                if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceVector)) {
+                    n.setLayoutData(new ForceVector());
+                }
             }
-        }
 
-        // Evaluates n^2 inter node forces using BarnesHut.
-        QuadTree tree = QuadTree.buildTree(graph, getQuadTreeMaxLevel());
+            // Evaluates n^2 inter node forces using BarnesHut.
+            QuadTree tree = QuadTree.buildTree(graph, getQuadTreeMaxLevel());
 
-//        double electricEnergy = 0; ///////////////////////
-//        double springEnergy = 0; ///////////////////////
-        BarnesHut barnes = new BarnesHut(getNodeForce());
-        barnes.setTheta(getBarnesHutTheta());
-        for (Node node : nodes) {
-            ForceVector layoutData = node.getLayoutData();
+            //        double electricEnergy = 0; ///////////////////////
+            //        double springEnergy = 0; ///////////////////////
+            BarnesHut barnes = new BarnesHut(getNodeForce());
+            barnes.setTheta(getBarnesHutTheta());
+            for (Node node : nodes) {
+                ForceVector layoutData = node.getLayoutData();
 
-            ForceVector f = barnes.calculateForce(node, tree);
-            layoutData.add(f);
-//            electricEnergy += f.getEnergy();
-        }
-
-        // Apply edge forces.
-
-        for (Edge e : graph.getEdges()) {
-            if (!e.getSource().equals(e.getTarget())) {
-                Node n1 = e.getSource();
-                Node n2 = e.getTarget();
-                ForceVector f1 = n1.getLayoutData();
-                ForceVector f2 = n2.getLayoutData();
-
-                ForceVector f = getEdgeForce().calculateForce(n1, n2);
-                f1.add(f);
-                f2.subtract(f);
+                ForceVector f = barnes.calculateForce(node, tree);
+                layoutData.add(f);
+                //            electricEnergy += f.getEnergy();
             }
-        }
 
-        // Calculate energy and max force.
-        energy0 = energy;
-        energy = 0;
-        double maxForce = 1;
-        for (Node n : nodes) {
-            ForceVector force = n.getLayoutData();
+            // Apply edge forces.
+            for (Edge e : graph.getEdges()) {
+                if (!e.getSource().equals(e.getTarget())) {
+                    Node n1 = e.getSource();
+                    Node n2 = e.getTarget();
+                    ForceVector f1 = n1.getLayoutData();
+                    ForceVector f2 = n2.getLayoutData();
 
-            energy += force.getNorm();
-            maxForce = Math.max(maxForce, force.getNorm());
-        }
+                    ForceVector f = getEdgeForce().calculateForce(n1, n2);
+                    f1.add(f);
+                    f2.subtract(f);
+                }
+            }
 
-        // Apply displacements on nodes.
-        for (Node n : nodes) {
-            if (!n.isFixed()) {
+            // Calculate energy and max force.
+            energy0 = energy;
+            energy = 0;
+            double maxForce = 1;
+            for (Node n : nodes) {
                 ForceVector force = n.getLayoutData();
 
-                force.multiply((float) (1.0 / maxForce));
-                getDisplacement().moveNode(n, force);
+                energy += force.getNorm();
+                maxForce = Math.max(maxForce, force.getNorm());
             }
+
+            // Apply displacements on nodes.
+            for (Node n : nodes) {
+                if (!n.isFixed()) {
+                    ForceVector force = n.getLayoutData();
+
+                    force.multiply((float) (1.0 / maxForce));
+                    getDisplacement().moveNode(n, force);
+                }
+            }
+            postAlgo();
+        } finally {
+            graph.readUnlock();
         }
-        postAlgo();
-//        springEnergy = energy - electricEnergy;
-//        System.out.println("electric: " + electricEnergy + "    spring: " + springEnergy);
-//        System.out.println("energy0 = " + energy0 + "   energy = " + energy);
-        graph.readUnlock();
     }
 
 

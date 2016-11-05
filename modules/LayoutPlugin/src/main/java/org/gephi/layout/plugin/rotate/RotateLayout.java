@@ -49,6 +49,7 @@ import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -74,19 +75,24 @@ public class RotateLayout extends AbstractLayout implements Layout {
     @Override
     public void goAlgo() {
         graph = graphModel.getGraphVisible();
-        double sin = Math.sin(-getAngle() * Math.PI / 180);
-        double cos = Math.cos(-getAngle() * Math.PI / 180);
-        double px = 0f;
-        double py = 0f;
+        graph.readLock();
+        try {
+            double sin = Math.sin(-getAngle() * Math.PI / 180);
+            double cos = Math.cos(-getAngle() * Math.PI / 180);
+            double px = 0f;
+            double py = 0f;
 
-        for (Node n : graph.getNodes()) {
-            double dx = n.x() - px;
-            double dy = n.y() - py;
+            for (Node n : graph.getNodes()) {
+                double dx = n.x() - px;
+                double dy = n.y() - py;
 
-            n.setX((float) (px + dx * cos - dy * sin));
-            n.setY((float) (py + dy * cos + dx * sin));
+                n.setX((float) (px + dx * cos - dy * sin));
+                n.setY((float) (py + dy * cos + dx * sin));
+            }
+            setConverged(true);
+        } finally {
+            graph.readUnlock();
         }
-        setConverged(true);
     }
 
     @Override
@@ -109,7 +115,7 @@ public class RotateLayout extends AbstractLayout implements Layout {
                     NbBundle.getMessage(getClass(), "rotate.angle.desc"),
                     "getAngle", "setAngle"));
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
         return properties.toArray(new LayoutProperty[0]);
     }
