@@ -41,6 +41,7 @@
  */
 package org.gephi.datalab.plugin.manipulators.general.ui;
 
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import org.gephi.datalab.plugin.manipulators.general.AddEdgeToGraph;
 import org.gephi.datalab.spi.DialogControls;
@@ -49,6 +50,8 @@ import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
 /**
@@ -61,7 +64,7 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
     private AddEdgeToGraph manipulator;
     private Node[] nodes;
     private Graph graph;
-    private DialogControls dialogControls;
+    private Workspace workspace;
 
     /**
      * Creates new form AddEdgeToGraphUI
@@ -73,7 +76,6 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
     @Override
     public void setup(Manipulator m, DialogControls dialogControls) {
         this.manipulator = (AddEdgeToGraph) m;
-        this.dialogControls = dialogControls;
         if (manipulator.isDirected()) {
             directedRadioButton.setSelected(true);
         } else {
@@ -83,34 +85,63 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
         nodes = graph.getNodes().toArray();
 
+        workspace = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace();
+
         for (Node n : nodes) {
             sourceNodesComboBox.addItem(n.getId() + " - " + n.getLabel());
             targetNodesComboBox.addItem(n.getId() + " - " + n.getLabel());
         }
 
-        Node selectedSource = manipulator.getSource();
-        if (selectedSource != null) {
-            for (int i = 0; i < nodes.length; i++) {
-                if (nodes[i] == selectedSource) {
-                    sourceNodesComboBox.setSelectedIndex(i);
-                }
-            }
+        SelectedOptions selectedOptions = workspace.getLookup().lookup(SelectedOptions.class);
+        if (selectedOptions != null) {
+            setNodeComboBoxSelection(sourceNodesComboBox, selectedOptions.source);
+            setNodeComboBoxSelection(targetNodesComboBox, selectedOptions.target);
+            edgeTypeComboBox.setSelectedItem(selectedOptions.edgeType);
+        } else {
+            workspace.add(new SelectedOptions());
         }
 
         refreshAvailableEdgeTypes();
-        
+
         dialogControls.setOkButtonEnabled(nodes.length > 0);
+    }
+
+    private void setNodeComboBoxSelection(JComboBox comboBox, Node node) {
+        if (node != null) {
+            for (int i = 0; i < nodes.length; i++) {
+                if (nodes[i] == node) {//Make sure the node is still in the graph
+                    comboBox.setSelectedIndex(i);
+                }
+            }
+        }
     }
 
     @Override
     public void unSetup() {
-        manipulator.setDirected(directedRadioButton.isSelected());
-        if (targetNodesComboBox.getSelectedIndex() != -1) {
-            manipulator.setSource(nodes[sourceNodesComboBox.getSelectedIndex()]);
-            manipulator.setTarget(nodes[targetNodesComboBox.getSelectedIndex()]);
-            String edgeType = getSelectedEdgeType();
-            manipulator.setEdgeTypeLabel(edgeType);
+        Object edgeType = getSelectedEdgeType();
+        boolean directed = directedRadioButton.isSelected();
+        Node source = null;
+        Node target = null;
+
+        if (sourceNodesComboBox.getSelectedIndex() != -1) {
+            source = nodes[sourceNodesComboBox.getSelectedIndex()];
         }
+
+        if (targetNodesComboBox.getSelectedIndex() != -1) {
+            target = nodes[targetNodesComboBox.getSelectedIndex()];
+        }
+
+        manipulator.setDirected(directed);
+        manipulator.setEdgeTypeLabel(edgeType);
+        manipulator.setSource(source);
+        manipulator.setTarget(target);
+
+        SelectedOptions selectedOptions = workspace.getLookup().lookup(SelectedOptions.class);
+
+        selectedOptions.directed = directed;
+        selectedOptions.edgeType = edgeType;
+        selectedOptions.source = source;
+        selectedOptions.target = target;
     }
 
     @Override
@@ -140,6 +171,17 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
     private void refreshAvailableEdgeTypes() {
         for (Object edgeType : graph.getModel().getEdgeTypeLabels()) {
             edgeTypeComboBox.addItem(edgeType);
+        }
+    }
+
+    private class SelectedOptions {
+
+        private Node source;
+        private Node target;
+        private Object edgeType;
+        private boolean directed = false;
+
+        public SelectedOptions() {
         }
     }
 
