@@ -20,7 +20,7 @@ public class LegacyMapHelper {
 
     protected Map<Integer, String> nodeIndexToIds = new HashMap<>();
     protected Map<Integer, String> edgeIndexToIds = new HashMap<>();
-    protected Map<Integer, Integer> preToIdMap = new HashMap<>();
+    protected Map<String, String> preToIdMap = new HashMap<>();
 
     protected static LegacyMapHelper get(Workspace workspace) {
         LegacyMapHelper lh = workspace.getLookup().lookup(LegacyMapHelper.class);
@@ -35,8 +35,6 @@ public class LegacyMapHelper {
         GraphModel gm = workspace.getLookup().lookup(GraphModel.class);
         if (gm == null) {
             Configuration configuration = new Configuration();
-            configuration.setNodeIdType(Integer.class);
-            configuration.setEdgeIdType(Integer.class);
             configuration.setTimeRepresentation(TimeRepresentation.INTERVAL);
 
             gm = GraphModel.Factory.newInstance(configuration);

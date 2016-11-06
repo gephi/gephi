@@ -100,11 +100,11 @@ public class LegacyDataPersistenceProvider implements WorkspaceXMLPersistencePro
             if (eventType.equals(XMLEvent.START_ELEMENT)) {
                 String name = reader.getLocalName();
                 if (ELEMENT_NODEDATA.equalsIgnoreCase(name)) {
-                    Node node = graph.getNode(helper.preToIdMap.get(Integer.parseInt(reader.getAttributeValue(null, "nodepre"))));
+                    Node node = graph.getNode(helper.preToIdMap.get(reader.getAttributeValue(null, "nodepre")));
                     readNodeData(reader, node);
                 } else if (ELEMENT_EDGEDATA.equalsIgnoreCase(name)) {
-                    Node source = graph.getNode(helper.preToIdMap.get(Integer.parseInt(reader.getAttributeValue(null, "sourcepre"))));
-                    Node target = graph.getNode(helper.preToIdMap.get(Integer.parseInt(reader.getAttributeValue(null, "targetpre"))));
+                    Node source = graph.getNode(helper.preToIdMap.get(reader.getAttributeValue(null, "sourcepre")));
+                    Node target = graph.getNode(helper.preToIdMap.get(reader.getAttributeValue(null, "targetpre")));
                     Edge edge = graph.getEdge(source, target, 0);
                     readEdgeData(reader, edge);
                 }
