@@ -531,9 +531,9 @@ public class AppearanceModelImpl implements AppearanceModel {
                     }
                     if (isRanking(graph, column)) {
                         if (column.isIndexed()) {
-                            ranking = new AttributeRankingImpl(column, getIndex(localScale));
+                            ranking = new AttributeRankingImpl(column, graph, getIndex(localScale));
                         } else {
-                            ranking = new AttributeRankingImpl(column, graph);
+                            ranking = new AttributeRankingImpl(column, graph, null);
                         }
                         rankings.put(getIdCol(column), ranking);
                     }
@@ -685,7 +685,7 @@ public class AppearanceModelImpl implements AppearanceModel {
                     return true;
                 }
             }
-        } else if (!column.isDynamic() && column.isIndexed() && column.isNumber()) {
+        } else if (!column.isDynamic() && !column.isArray() && column.isIndexed() && column.isNumber()) {
             Index index;
             if (AttributeUtils.isNodeColumn(column)) {
                 index = localScale ? graphModel.getNodeIndex(graph.getView()) : graphModel.getNodeIndex();

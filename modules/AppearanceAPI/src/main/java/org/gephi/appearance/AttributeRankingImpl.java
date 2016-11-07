@@ -24,23 +24,16 @@ public class AttributeRankingImpl extends RankingImpl {
     protected final Column column;
     protected final Graph graph;
 
-    public AttributeRankingImpl(Column column, Index index) {
-        super();
-        this.column = column;
-        this.index = index;
-        this.graph = null;
-    }
-
-    public AttributeRankingImpl(Column column, Graph graph) {
+    public AttributeRankingImpl(Column column, Graph graph, Index index) {
         super();
         this.column = column;
         this.graph = graph;
-        this.index = null;
+        this.index = index;
     }
 
     @Override
     protected void refresh() {
-        if (index != null) {
+        if (index != null && index.isSortable(column)) {
             min = index.getMinValue(column);
             max = index.getMaxValue(column);
         } else {
