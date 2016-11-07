@@ -41,6 +41,8 @@
  */
 package org.gephi.appearance;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.spi.PartitionTransformer;
@@ -96,7 +98,8 @@ public abstract class FunctionImpl implements Function {
         } else if (isRanking()) {
             Number val = ranking.getValue(element, graph);
             if (val == null) {
-                throw new NullPointerException("The element with id '" + element.getId() + "' has a null value for ranking");
+                Logger.getLogger("").log(Level.WARNING, "The element with id ''{0}'' has a null value for ranking. Using 0 instead", element.getId());
+                val = 0;
             }
             ((RankingTransformer) transformer).transform(element, ranking, interpolator, val);
         } else if (isPartition()) {

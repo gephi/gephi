@@ -104,12 +104,12 @@ public class LegacyAttributeRowsPersistenceProvider implements WorkspaceXMLPersi
                 case XMLStreamReader.START_ELEMENT:
                     String name = reader.getLocalName();
                     if (ELEMENT_NODE_ROW.equalsIgnoreCase(name)) {
-                        int id = Integer.parseInt(reader.getAttributeValue(null, "for"));
+                        String id = reader.getAttributeValue(null, "for");
                         Node node = graph.getNode(id);
 
                         readRow(reader, node, graphModel.getNodeTable(), mapHelper);
                     } else if (ELEMENT_EDGE_ROW.equalsIgnoreCase(name)) {
-                        int id = Integer.parseInt(reader.getAttributeValue(null, "for"));
+                        String id = reader.getAttributeValue(null, "for");
                         Edge edge = graph.getEdge(id);
 
                         readRow(reader, edge, graphModel.getEdgeTable(), mapHelper);

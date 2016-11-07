@@ -115,8 +115,8 @@ public class LegacyGraphPersistenceProvider implements WorkspaceXMLPersistencePr
                 case XMLStreamReader.START_ELEMENT:
                     String name = reader.getLocalName();
                     if (ELEMENT_TREESTRUCTURE_NODE.equalsIgnoreCase(name)) {
-                        int id = Integer.parseInt(reader.getAttributeValue(null, "id"));
-                        int pre = Integer.parseInt(reader.getAttributeValue(null, "pre"));
+                        String id = reader.getAttributeValue(null, "id");
+                        String pre = reader.getAttributeValue(null, "pre");
                         mapHelper.preToIdMap.put(pre, id);
 
                         Node node = factory.newNode(id);
@@ -142,28 +142,31 @@ public class LegacyGraphPersistenceProvider implements WorkspaceXMLPersistencePr
 
             switch (type) {
                 case XMLStreamReader.START_ELEMENT:
-                    String name = reader.getLocalName();
-
-                    Integer source = 0;
-                    Integer target = 0;
-                    Integer id = 0;
+                    String source = null;
+                    String target = null;
+                    String id = null;
                     Boolean directed = false;
                     Float weight = 0f;
 
                     for (int i = 0; i < reader.getAttributeCount(); i++) {
                         String attName = reader.getAttributeName(i).getLocalPart();
                         if ("id".equalsIgnoreCase(attName)) {
-                            id = Integer.parseInt(reader.getAttributeValue(i));
+                            id = reader.getAttributeValue(i);
                         } else if ("source".equalsIgnoreCase(attName)) {
-                            source = Integer.parseInt(reader.getAttributeValue(i));
+                            source = reader.getAttributeValue(i);
                         } else if ("target".equalsIgnoreCase(attName)) {
-                            target = Integer.parseInt(reader.getAttributeValue(i));
+                            target = reader.getAttributeValue(i);
                         } else if ("directed".equalsIgnoreCase(attName)) {
                             directed = Boolean.parseBoolean(reader.getAttributeValue(i));
                         } else if ("weight".equalsIgnoreCase(attName)) {
                             weight = Float.parseFloat(reader.getAttributeValue(i));
                         }
                     }
+
+                    if (source == null || target == null || id == null) {
+                        throw new IllegalArgumentException("source, target or id cannot be null");
+                    }
+
                     Node srcNode = graph.getNode(mapHelper.preToIdMap.get(source));
                     Node destNode = graph.getNode(mapHelper.preToIdMap.get(target));
 

@@ -137,7 +137,7 @@
         <netbeans.version>RELEASE82</netbeans.version>
         
         <!-- Graphstore version -->
-        <graphstore.version>0.5.3</graphstore.version>
+        <graphstore.version>0.5.4</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
@@ -390,6 +390,11 @@
                 <artifactId>org-netbeans-modules-nbjunit</artifactId>
                 <version>${netbeans.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>graphstore</artifactId>
+                <version>${graphstore.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
