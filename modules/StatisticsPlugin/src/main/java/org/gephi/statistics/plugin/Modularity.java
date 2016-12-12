@@ -168,6 +168,8 @@ public class Modularity implements Statistics, LongTask {
                 }
             }
 
+            int[] edgeTypes = graph.getModel().getEdgeTypes();
+            
             for (Node node : graph.getNodes()) {
                 int node_index = map.get(node);
                 topology[node_index] = new ArrayList<>();
@@ -181,11 +183,13 @@ public class Modularity implements Statistics, LongTask {
                     float weight = 0;
 
                     //Sum all parallel edges weight:
-                    for (Edge edge : graph.getEdges(node, neighbor)) {
-                        if (useWeight) {
-                            weight += edge.getWeight(graph.getView());
-                        } else {
-                            weight += 1;
+                    for (int edgeType : edgeTypes) {
+                        for (Edge edge : graph.getEdges(node, neighbor, edgeType)) {
+                            if (useWeight) {
+                                weight += edge.getWeight(graph.getView());
+                            } else {
+                                weight += 1;
+                            }
                         }
                     }
 
@@ -474,21 +478,23 @@ public class Modularity implements Statistics, LongTask {
 
         graph.readLock();
 
-        structure = new Modularity.CommunityStructure(graph);
-        int[] comStructure = new int[graph.getNodeCount()];
+        try {
+            structure = new Modularity.CommunityStructure(graph);
+            int[] comStructure = new int[graph.getNodeCount()];
 
-        if (graph.getNodeCount() > 0) {//Fixes issue #713 Modularity Calculation Throws Exception On Empty Graph
-            HashMap<String, Double> computedModularityMetrics = computeModularity(graph, structure, comStructure, resolution, isRandomized, useWeight);
-            modularity = computedModularityMetrics.get("modularity");
-            modularityResolution = computedModularityMetrics.get("modularityResolution");
-        } else {
-            modularity = 0;
-            modularityResolution = 0;
+            if (graph.getNodeCount() > 0) {//Fixes issue #713 Modularity Calculation Throws Exception On Empty Graph
+                HashMap<String, Double> computedModularityMetrics = computeModularity(graph, structure, comStructure, resolution, isRandomized, useWeight);
+                modularity = computedModularityMetrics.get("modularity");
+                modularityResolution = computedModularityMetrics.get("modularityResolution");
+            } else {
+                modularity = 0;
+                modularityResolution = 0;
+            }
+
+            saveValues(comStructure, graph, structure);
+        } finally {
+            graph.readUnlock();
         }
-
-        saveValues(comStructure, graph, structure);
-
-        graph.readUnlock();
     }
 
     protected HashMap<String, Double> computeModularity(Graph graph, CommunityStructure theStructure, int[] comStructure,

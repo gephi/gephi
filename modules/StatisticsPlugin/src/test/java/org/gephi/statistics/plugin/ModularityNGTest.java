@@ -251,10 +251,10 @@ public class ModularityNGTest {
         undirectedGraph.addNode(node8);
 
         //Test 3 parallel edges summing weight = 10
-        //Related issue ==> #1419 Getting null pointer error when trying to calculate modularity
-        Edge edge12_1 = graphModel.factory().newEdge(node1, node2, 0, 2.f, false);
-        Edge edge12_2 = graphModel.factory().newEdge(node1, node2, 0, 5.f, false);
-        Edge edge12_3 = graphModel.factory().newEdge(node1, node2, 0, 3.f, false);
+        //Related issues ==> #1419 Getting null pointer error when trying to calculate modularity; #1526 NullPointerException on Modularity Statistics with gexf with kind / parallel nodes
+        Edge edge12_1 = graphModel.factory().newEdge(node1, node2, 1, 2.f, false);
+        Edge edge12_2 = graphModel.factory().newEdge(node1, node2, 2, 5.f, false);
+        Edge edge12_3 = graphModel.factory().newEdge(node1, node2, 2, 3.f, false);
         
         Edge edge23 = graphModel.factory().newEdge(node2, node3, false);
         Edge edge34 = graphModel.factory().newEdge(node3, node4, 0, 10.f, false);
