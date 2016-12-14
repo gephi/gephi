@@ -260,7 +260,7 @@ public class DataBridge implements VizArchitecture {
         graphModel = controller.getGraphModel();
         if (graphModel != null) {
             graph = graphModel.getGraphVisible();
-            graph.readLock();
+            graph.writeLock();
         }
 
         try {
@@ -273,6 +273,7 @@ public class DataBridge implements VizArchitecture {
         } finally {
             if (graphModel != null) {
                 graph.readUnlockAll();
+                graph.writeUnlock();
             }
         }
 
