@@ -272,7 +272,7 @@ public class DataBridge implements VizArchitecture {
             }
         } finally {
             if (graphModel != null) {
-                graphModel.getGraph().readUnlockAll();
+                graph.readUnlockAll();
                 graph.writeUnlock();
             }
         }
