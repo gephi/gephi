@@ -79,10 +79,15 @@ public class ContextRefreshThread extends TimerTask {
 
     @Override
     public void run() {
-
-        initObserver();
-        if (observer.hasGraphChanged()) {
-            listener.run();
+        graphModel.getGraph().writeLock();
+        try {
+            initObserver();
+            if (observer.hasGraphChanged()) {
+                listener.run();
+            }
+        } finally {
+            graphModel.getGraph().writeUnlock();
+            graphModel.getGraph().readUnlockAll();
         }
     }
 

@@ -97,10 +97,11 @@ public class WeightedDegree implements Statistics, LongTask {
         initializeAttributeColunms(graph.getModel());
 
         graph.readLock();
-
-        avgWDegree = calculateAverageWeightedDegree(graph, isDirected, true);
-
-        graph.readUnlockAll();
+        try {
+            avgWDegree = calculateAverageWeightedDegree(graph, isDirected, true);
+        } finally {
+            graph.readUnlockAll();
+        }
     }
 
     public double calculateAverageWeightedDegree(Graph graph, boolean isDirected, boolean updateAttributes) {
@@ -201,7 +202,7 @@ public class WeightedDegree implements Statistics, LongTask {
 
     @Override
     public String getReport() {
-        String report = "";
+        String report;
 
         if (isDirected) {
             report = getDirectedReport();

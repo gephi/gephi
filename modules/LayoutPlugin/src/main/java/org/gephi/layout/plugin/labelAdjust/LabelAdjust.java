@@ -91,7 +91,6 @@ public class LabelAdjust extends AbstractLayout implements Layout {
     public void goAlgo() {
         this.graph = graphModel.getGraphVisible();
         graph.readLock();
-
         try {
             Node[] nodes = graph.getNodes().toArray();
 
@@ -186,7 +185,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
                 }
             }
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 

@@ -114,18 +114,19 @@ public class Hits implements Statistics, LongTask {
         initializeAttributeColunms(graph.getModel());
 
         graph.readLock();
+        try {
+            int N = graph.getNodeCount();
+            authority = new double[N];
+            hubs = new double[N];
 
-        int N = graph.getNodeCount();
-        authority = new double[N];
-        hubs = new double[N];
+            Map<Node, Integer> indices = createIndicesMap(graph);
 
-        Map<Node, Integer> indices = createIndicesMap(graph);
+            calculateHits(graph, hubs, authority, indices, !useUndirected, epsilon);
 
-        calculateHits(graph, hubs, authority, indices, !useUndirected, epsilon);
-
-        saveCalculatedValues(indices, authority, hubs);
-
-        graph.readUnlockAll();
+            saveCalculatedValues(indices, authority, hubs);
+        } finally {
+            graph.readUnlockAll();
+        }
     }
 
     public void calculateHits(Graph graph, double[] hubValues, double[] authorityValues, Map<Node, Integer> indices, boolean isDirected, double eps) {
@@ -180,7 +181,7 @@ public class Hits implements Statistics, LongTask {
                 edge_iter = graph.getEdges(q);
             }
             for (Edge edge : edge_iter) {
-                if(!edge.isSelfLoop()){
+                if (!edge.isSelfLoop()) {
                     Node p = graph.getOpposite(q, edge);
                     auth += hubValues[indices.get(p)];
                 }
@@ -212,14 +213,14 @@ public class Hits implements Statistics, LongTask {
                 edge_iter = graph.getEdges(p);
             }
             for (Edge edge : edge_iter) {
-                if(!edge.isSelfLoop()){
+                if (!edge.isSelfLoop()) {
                     Node r = graph.getOpposite(p, edge);
                     hub += authValues[indices.get(r)];
                 }
             }
 
             newValues[indices.get(p)] = hub;
-            
+
             norm += hub * hub;
             if (isCanceled) {
                 return;

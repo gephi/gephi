@@ -249,7 +249,7 @@ public class OpenOrdLayout implements Layout, LongTask {
             running = true;
             firstIteration = true;
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 

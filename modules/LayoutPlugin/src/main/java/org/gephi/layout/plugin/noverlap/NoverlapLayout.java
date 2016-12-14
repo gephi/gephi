@@ -220,7 +220,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                 }
             }
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 
@@ -232,7 +232,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                 n.setLayoutData(null);
             }
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 

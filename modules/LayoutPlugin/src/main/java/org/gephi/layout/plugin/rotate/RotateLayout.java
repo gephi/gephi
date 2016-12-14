@@ -91,7 +91,7 @@ public class RotateLayout extends AbstractLayout implements Layout {
             }
             setConverged(true);
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 

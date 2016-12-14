@@ -470,15 +470,19 @@ public class AppearanceModelImpl implements AppearanceModel {
 
         protected void refreshFunctions() {
             graph.readLock();
-            boolean graphHasChanged = graphObserver.isNew() || graphObserver.hasGraphChanged();
-            if (graphHasChanged) {
-                if (graphObserver.isNew()) {
-                    graphObserver.hasGraphChanged();
+
+            try {
+                boolean graphHasChanged = graphObserver.isNew() || graphObserver.hasGraphChanged();
+                if (graphHasChanged) {
+                    if (graphObserver.isNew()) {
+                        graphObserver.hasGraphChanged();
+                    }
+                    refreshGraphFunctions();
                 }
-                refreshGraphFunctions();
+                refreshAttributeFunctions(graphHasChanged);
+            } finally {
+                graph.readUnlock();
             }
-            refreshAttributeFunctions(graphHasChanged);
-            graph.readUnlock();
         }
 
         private void refreshAttributeFunctions(boolean graphHasChanged) {

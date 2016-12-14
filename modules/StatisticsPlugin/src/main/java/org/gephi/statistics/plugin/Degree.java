@@ -111,11 +111,13 @@ public class Degree implements Statistics, LongTask {
 
         graph.readLock();
 
-        avgDegree = calculateAverageDegree(graph, isDirected, true);
+        try {
+            avgDegree = calculateAverageDegree(graph, isDirected, true);
 
-        graph.setAttribute(AVERAGE_DEGREE, avgDegree);
-
-        graph.readUnlockAll();
+            graph.setAttribute(AVERAGE_DEGREE, avgDegree);
+        } finally {
+            graph.readUnlockAll();
+        }
     }
 
     protected int calculateInDegree(DirectedGraph directedGraph, Node n) {
@@ -171,7 +173,7 @@ public class Degree implements Statistics, LongTask {
             Progress.progress(progress);
         }
 
-        averageDegree /=  (isDirected ? 2.0 : 1.0) * graph.getNodeCount();
+        averageDegree /= (isDirected ? 2.0 : 1.0) * graph.getNodeCount();
 
         return averageDegree;
     }

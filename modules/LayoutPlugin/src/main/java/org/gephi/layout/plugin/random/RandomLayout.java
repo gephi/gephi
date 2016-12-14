@@ -86,7 +86,7 @@ public class RandomLayout extends AbstractLayout implements Layout {
             }
             converged = true;
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 

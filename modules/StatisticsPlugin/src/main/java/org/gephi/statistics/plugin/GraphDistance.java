@@ -63,8 +63,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
- * Ref: Ulrik Brandes, A Faster Algorithm for Betweenness Centrality, in Journal
- * of Mathematical Sociology 25(2):163-177, (2001)
+ * Ref: Ulrik Brandes, A Faster Algorithm for Betweenness Centrality, in Journal of Mathematical Sociology 25(2):163-177, (2001)
  *
  * @author pjmcswee
  * @author Jonny Wray
@@ -76,38 +75,48 @@ public class GraphDistance implements Statistics, LongTask {
     public static final String HARMONIC_CLOSENESS = "harmonicclosnesscentrality";
     public static final String ECCENTRICITY = "eccentricity";
     /**
-     *      */
+     *
+     */
     private double[] betweenness;
     /**
-     *      */
+     *
+     */
     private double[] closeness;
     private double[] harmonicCloseness;
     /**
-     *      */
+     *
+     */
     private double[] eccentricity;
     /**
-     *      */
+     *
+     */
     private int diameter;
     private int radius;
     /**
-     *      */
+     *
+     */
     private double avgDist;
     /**
-     *      */
+     *
+     */
     private int N;
     /**
-     *      */
+     *
+     */
     private boolean isDirected;
     /**
-     *      */
+     *
+     */
     private ProgressTicket progress;
     /**
-     *      */
+     *
+     */
     private boolean isCanceled;
     private boolean isNormalized;
 
     /**
      * Gets the average shortest path length in the network
+     *
      * @return average shortest path length for all nodes
      */
     public double getPathLength() {
@@ -146,7 +155,7 @@ public class GraphDistance implements Statistics, LongTask {
     public void execute(GraphModel graphModel) {
         isDirected = graphModel.isDirected();
 
-        Graph graph = null;
+        Graph graph;
         if (isDirected) {
             graph = graphModel.getDirectedGraphVisible();
         } else {
@@ -155,33 +164,35 @@ public class GraphDistance implements Statistics, LongTask {
         execute(graph);
     }
 
-    public void execute(Graph hgraph) {
+    public void execute(Graph graph) {
         isCanceled = false;
 
-        initializeAttributeColunms(hgraph.getModel());
+        initializeAttributeColunms(graph.getModel());
 
-        hgraph.readLock();
+        graph.readLock();
+        try {
+            N = graph.getNodeCount();
 
-        N = hgraph.getNodeCount();
+            initializeStartValues();
 
-        initializeStartValues();
+            HashMap<Node, Integer> indicies = createIndiciesMap(graph);
 
-        HashMap<Node, Integer> indicies = createIndiciesMap(hgraph);
+            Map<String, double[]> metrics = calculateDistanceMetrics(graph, indicies, isDirected, isNormalized);
 
-        Map<String, double[]> metrics = calculateDistanceMetrics(hgraph, indicies, isDirected, isNormalized);
+            eccentricity = metrics.get(ECCENTRICITY);
+            closeness = metrics.get(CLOSENESS);
+            harmonicCloseness = metrics.get(HARMONIC_CLOSENESS);
+            betweenness = metrics.get(BETWEENNESS);
 
-        eccentricity = metrics.get(ECCENTRICITY);
-        closeness = metrics.get(CLOSENESS);
-        harmonicCloseness = metrics.get(HARMONIC_CLOSENESS);
-        betweenness = metrics.get(BETWEENNESS);
+            saveCalculatedValues(graph, indicies, eccentricity, betweenness, closeness, harmonicCloseness);
+        } finally {
+            graph.readUnlock();
+        }
 
-        saveCalculatedValues(hgraph, indicies, eccentricity, betweenness, closeness, harmonicCloseness);
-
-        hgraph.readUnlock();
     }
 
-    public Map<String, double[]> calculateDistanceMetrics(Graph hgraph, HashMap<Node, Integer> indicies, boolean directed, boolean normalized) {
-        int n = hgraph.getNodeCount();
+    public Map<String, double[]> calculateDistanceMetrics(Graph graph, HashMap<Node, Integer> indicies, boolean directed, boolean normalized) {
+        int n = graph.getNodeCount();
 
         HashMap<String, double[]> metrics = new HashMap<>();
 
@@ -195,11 +206,11 @@ public class GraphDistance implements Statistics, LongTask {
         metrics.put(HARMONIC_CLOSENESS, nodeHarmonicCloseness);
         metrics.put(BETWEENNESS, nodeBetweenness);
 
-        Progress.start(progress, hgraph.getNodeCount());
+        Progress.start(progress, graph.getNodeCount());
         int count = 0;
 
         int totalPaths = 0;
-        for (Node s : hgraph.getNodes()) {
+        for (Node s : graph.getNodes()) {
             Stack<Node> S = new Stack<>();
 
             LinkedList<Node>[] P = new LinkedList[n];
@@ -217,10 +228,10 @@ public class GraphDistance implements Statistics, LongTask {
                 S.push(v);
                 int v_index = indicies.get(v);
 
-                EdgeIterable edgeIter = getEdgeIter(hgraph, v, directed);
+                EdgeIterable edgeIter = getEdgeIter(graph, v, directed);
 
                 for (Edge edge : edgeIter) {
-                    Node reachable = hgraph.getOpposite(v, edge);
+                    Node reachable = graph.getOpposite(v, edge);
 
                     int r_index = indicies.get(reachable);
                     if (d[r_index] < 0) {
@@ -270,7 +281,6 @@ public class GraphDistance implements Statistics, LongTask {
             }
             count++;
             if (isCanceled) {
-                hgraph.readUnlockAll();
                 return metrics;
             }
             Progress.progress(progress, count);
@@ -278,7 +288,7 @@ public class GraphDistance implements Statistics, LongTask {
 
         avgDist /= totalPaths;//mN * (mN - 1.0f);
 
-        calculateCorrection(hgraph, indicies, nodeBetweenness, directed, normalized);
+        calculateCorrection(graph, indicies, nodeBetweenness, directed, normalized);
 
         return metrics;
     }
@@ -293,12 +303,12 @@ public class GraphDistance implements Statistics, LongTask {
         d[index] = 0;
     }
 
-    private EdgeIterable getEdgeIter(Graph hgraph, Node v, boolean directed) {
-        EdgeIterable edgeIter = null;
+    private EdgeIterable getEdgeIter(Graph graph, Node v, boolean directed) {
+        EdgeIterable edgeIter;
         if (directed) {
-            edgeIter = ((DirectedGraph) hgraph).getOutEdges(v);
+            edgeIter = ((DirectedGraph) graph).getOutEdges(v);
         } else {
-            edgeIter = hgraph.getEdges(v);
+            edgeIter = graph.getEdges(v);
         }
         return edgeIter;
     }
@@ -319,10 +329,10 @@ public class GraphDistance implements Statistics, LongTask {
         }
     }
 
-    public  HashMap<Node, Integer> createIndiciesMap(Graph hgraph) {
+    public HashMap<Node, Integer> createIndiciesMap(Graph graph) {
         HashMap<Node, Integer> indicies = new HashMap<>();
         int index = 0;
-        for (Node s : hgraph.getNodes()) {
+        for (Node s : graph.getNodes()) {
             indicies.put(s, index);
             index++;
         }
@@ -339,12 +349,12 @@ public class GraphDistance implements Statistics, LongTask {
         radius = Integer.MAX_VALUE;
     }
 
-    private void calculateCorrection(Graph hgraph, HashMap<Node, Integer> indicies,
-                                     double[] nodeBetweenness, boolean directed, boolean normalized) {
+    private void calculateCorrection(Graph graph, HashMap<Node, Integer> indicies,
+            double[] nodeBetweenness, boolean directed, boolean normalized) {
 
-        int n = hgraph.getNodeCount();
+        int n = graph.getNodeCount();
 
-        for (Node s : hgraph.getNodes()) {
+        for (Node s : graph.getNodes()) {
 
             int s_index = indicies.get(s);
 
@@ -357,9 +367,9 @@ public class GraphDistance implements Statistics, LongTask {
         }
     }
 
-    private void saveCalculatedValues(Graph hgraph, HashMap<Node, Integer> indicies,
-                                      double[] nodeEccentricity, double[] nodeBetweenness, double[] nodeCloseness, double[] nodeHarmonicCloseness) {
-        for (Node s : hgraph.getNodes()) {
+    private void saveCalculatedValues(Graph graph, HashMap<Node, Integer> indicies,
+            double[] nodeEccentricity, double[] nodeBetweenness, double[] nodeCloseness, double[] nodeHarmonicCloseness) {
+        for (Node s : graph.getNodes()) {
             int s_index = indicies.get(s);
 
             s.setAttribute(ECCENTRICITY, nodeEccentricity[s_index]);
@@ -428,12 +438,13 @@ public class GraphDistance implements Statistics, LongTask {
         String htmlIMG1 = "";
         String htmlIMG2 = "";
         String htmlIMG3 = "";
+        String htmlIMG4 = "";
         try {
             TempDir tempDir = TempDirUtils.createTempDir();
             htmlIMG1 = createImageFile(tempDir, betweenness, "Betweenness Centrality Distribution", "Value", "Count");
             htmlIMG2 = createImageFile(tempDir, closeness, "Closeness Centrality Distribution", "Value", "Count");
-            htmlIMG2 = createImageFile(tempDir, harmonicCloseness, "Harmonic Closeness Centrality Distribution", "Value", "Count");
-            htmlIMG3 = createImageFile(tempDir, eccentricity, "Eccentricity Distribution", "Value", "Count");
+            htmlIMG3 = createImageFile(tempDir, harmonicCloseness, "Harmonic Closeness Centrality Distribution", "Value", "Count");
+            htmlIMG4 = createImageFile(tempDir, eccentricity, "Eccentricity Distribution", "Value", "Count");
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -449,7 +460,8 @@ public class GraphDistance implements Statistics, LongTask {
                 + "Average Path length: " + avgDist + "<br />"
                 + htmlIMG1 + "<br /><br />"
                 + htmlIMG2 + "<br /><br />"
-                + htmlIMG3
+                + htmlIMG3 + "<br /><br />"
+                + htmlIMG4
                 + "<br /><br />" + "<h2> Algorithm: </h2>"
                 + "Ulrik Brandes, <i>A Faster Algorithm for Betweenness Centrality</i>, in Journal of Mathematical Sociology 25(2):163-177, (2001)<br />"
                 + "</BODY> </HTML>";

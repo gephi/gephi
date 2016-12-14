@@ -477,7 +477,6 @@ public class Modularity implements Statistics, LongTask {
         isCanceled = false;
 
         graph.readLock();
-
         try {
             structure = new Modularity.CommunityStructure(graph);
             int[] comStructure = new int[graph.getNodeCount()];
@@ -509,7 +508,6 @@ public class Modularity implements Statistics, LongTask {
         HashMap<String, Double> results = new HashMap<>();
 
         if (isCanceled) {
-            graph.readUnlockAll();
             return results;
         }
         boolean someChange = true;
@@ -531,13 +529,11 @@ public class Modularity implements Statistics, LongTask {
                         localChange = true;
                     }
                     if (isCanceled) {
-                        graph.readUnlockAll();
                         return results;
                     }
                 }
                 someChange = localChange || someChange;
                 if (isCanceled) {
-                    graph.readUnlockAll();
                     return results;
                 }
             }

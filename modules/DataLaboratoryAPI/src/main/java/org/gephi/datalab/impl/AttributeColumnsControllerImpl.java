@@ -628,6 +628,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
 
         CsvReader reader = null;
+        graph.writeLock();
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
             Table nodesTable = graph.getModel().getNodeTable();
@@ -666,9 +667,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     if (id == null || id.isEmpty()) {
                         node = gec.createNode(null, graph);//id null or empty, assign one
                     } else {
-                        graph.readLock();
                         node = graph.getNode(id);
-                        graph.readUnlock();
                         if (node != null) {//Node with that id already in graph
                             if (assignNewNodeIds) {
                                 node = gec.createNode(null, graph);
@@ -690,6 +689,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
+            graph.readUnlockAll();
+            graph.writeUnlock();
+            
             if (reader != null) {
                 reader.close();
             }
@@ -707,6 +709,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
 
         CsvReader reader = null;
+        graph.writeLock();
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
             Table edgesTable = graph.getModel().getEdgeTable();
@@ -773,9 +776,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     continue;//No correct source and target ids were provided, ignore row
                 }
 
-                graph.readLock();
                 source = graph.getNode(sourceId);
-                graph.readUnlock();
 
                 if (source == null) {
                     if (createNewNodes) {//Create new nodes when they don't exist already and option is enabled
@@ -787,9 +788,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     }
                 }
 
-                graph.readLock();
                 target = graph.getNode(targetId);
-                graph.readUnlock();
 
                 if (target == null) {
                     if (createNewNodes) {//Create new nodes when they don't exist already and option is enabled
@@ -871,6 +870,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         } catch (IOException ex) {
             Logger.getLogger("").log(Level.SEVERE, null, ex);
         } finally {
+            graph.readUnlockAll();
+            graph.writeUnlock();
+            
             if (reader != null) {
                 reader.close();
             }

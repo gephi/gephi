@@ -82,14 +82,14 @@ public class ModularityNGTest {
     @Test
     public void testTwoConnectedNodesModularity() {
         GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(2);
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         Modularity mod = new Modularity();
 
-        Modularity.CommunityStructure theStructure = mod.new CommunityStructure(hgraph);
-        int[] comStructure = new int[hgraph.getNodeCount()];
+        Modularity.CommunityStructure theStructure = mod.new CommunityStructure(graph);
+        int[] comStructure = new int[graph.getNodeCount()];
 
-        HashMap<String, Double> modularityValues = mod.computeModularity(hgraph, theStructure, comStructure,
+        HashMap<String, Double> modularityValues = mod.computeModularity(graph, theStructure, comStructure,
                 1., true, false);
 
         double modValue = modularityValues.get("modularity");
@@ -103,14 +103,14 @@ public class ModularityNGTest {
     @Test
     public void testGraphWithouLinksModularity() {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(5);
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         Modularity mod = new Modularity();
 
-        Modularity.CommunityStructure theStructure = mod.new CommunityStructure(hgraph);
-        int[] comStructure = new int[hgraph.getNodeCount()];
+        Modularity.CommunityStructure theStructure = mod.new CommunityStructure(graph);
+        int[] comStructure = new int[graph.getNodeCount()];
 
-        HashMap<String, Double> modularityValues = mod.computeModularity(hgraph, theStructure, comStructure,
+        HashMap<String, Double> modularityValues = mod.computeModularity(graph, theStructure, comStructure,
                 1., true, false);
 
         double modValue = modularityValues.get("modularity");
@@ -279,13 +279,13 @@ public class ModularityNGTest {
         undirectedGraph.addEdge(edge78_2);
         undirectedGraph.addEdge(edge81);
 
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
         Modularity mod = new Modularity();
 
-        Modularity.CommunityStructure theStructure = mod.new CommunityStructure(hgraph);
-        int[] comStructure = new int[hgraph.getNodeCount()];
+        Modularity.CommunityStructure theStructure = mod.new CommunityStructure(graph);
+        int[] comStructure = new int[graph.getNodeCount()];
 
-        HashMap<String, Double> modularityValues = mod.computeModularity(hgraph, theStructure, comStructure,
+        HashMap<String, Double> modularityValues = mod.computeModularity(graph, theStructure, comStructure,
                 1., true, true);
 
         int class1 = comStructure[0];

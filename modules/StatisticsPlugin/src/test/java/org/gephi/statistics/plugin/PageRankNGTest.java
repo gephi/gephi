@@ -84,17 +84,17 @@ public class PageRankNGTest {
     public void testOneNodePageRank() {
         pc.newProject();
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         PageRank pr = new PageRank();
 
         double[] pageRank;
 
-        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(graph);
 
-        pageRank = pr.calculatePagerank(hgraph, indicies, false, false, 0.001, 0.85);
+        pageRank = pr.calculatePagerank(graph, indicies, false, false, 0.001, 0.85);
 
-        Node n1 = hgraph.getNode("0");
+        Node n1 = graph.getNode("0");
         int index = indicies.get(n1);
         double pr1 = pageRank[index];
 
@@ -105,17 +105,17 @@ public class PageRankNGTest {
     public void testTwoConnectedNodesPageRank() {
         pc.newProject();
         GraphModel graphModel = GraphGenerator.generatePathUndirectedGraph(2);
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         PageRank pr = new PageRank();
 
         double[] pageRank;
 
-        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(graph);
 
-        pageRank = pr.calculatePagerank(hgraph, indicies, false, false, 0.001, 0.85);
+        pageRank = pr.calculatePagerank(graph, indicies, false, false, 0.001, 0.85);
 
-        Node n2 = hgraph.getNode("1");
+        Node n2 = graph.getNode("1");
         int index = indicies.get(n2);
         double pr2 = pageRank[index];
 
@@ -126,18 +126,18 @@ public class PageRankNGTest {
     public void testNullGraphPageRank() {
         pc.newProject();
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(5);
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         PageRank pr = new PageRank();
 
         double[] pageRank;
 
-        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(graph);
 
-        pageRank = pr.calculatePagerank(hgraph, indicies, false, false, 0.001, 0.85);
+        pageRank = pr.calculatePagerank(graph, indicies, false, false, 0.001, 0.85);
 
-        Node n1 = hgraph.getNode("0");
-        Node n4 = hgraph.getNode("3");
+        Node n1 = graph.getNode("0");
+        Node n4 = graph.getNode("3");
         int index1 = indicies.get(n1);
         int index4 = indicies.get(n4);
         double pr1 = pageRank[index1];
@@ -155,17 +155,17 @@ public class PageRankNGTest {
     public void testCompleteGraphPageRank() {
         pc.newProject();
         GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(5);
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         PageRank pr = new PageRank();
 
         double[] pageRank;
 
-        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(graph);
 
-        pageRank = pr.calculatePagerank(hgraph, indicies, false, false, 0.001, 0.85);
+        pageRank = pr.calculatePagerank(graph, indicies, false, false, 0.001, 0.85);
 
-        Node n2 = hgraph.getNode("2");
+        Node n2 = graph.getNode("2");
         int index2 = indicies.get(n2);
         double pr2 = pageRank[index2];
         double res = 0.2d;
@@ -178,17 +178,17 @@ public class PageRankNGTest {
     public void testCyclicGraphPageRank() {
         pc.newProject();
         GraphModel graphModel = GraphGenerator.generateCyclicUndirectedGraph(6);
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         PageRank pr = new PageRank();
 
         double[] pageRank;
 
-        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(graph);
 
-        pageRank = pr.calculatePagerank(hgraph, indicies, false, false, 0.001, 0.6);
+        pageRank = pr.calculatePagerank(graph, indicies, false, false, 0.001, 0.6);
 
-        Node n4 = hgraph.getNode("3");
+        Node n4 = graph.getNode("3");
         int index4 = indicies.get(n4);
         double pr4 = pageRank[index4];
         double res = 0.1667;
@@ -201,22 +201,22 @@ public class PageRankNGTest {
     public void testStarGraphPageRank() {
         pc.newProject();
         GraphModel graphModel = GraphGenerator.generateStarUndirectedGraph(5);
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         PageRank pr = new PageRank();
 
         double[] pageRank;
 
-        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(graph);
 
-        pageRank = pr.calculatePagerank(hgraph, indicies, false, false, 0.001, 0.6);
+        pageRank = pr.calculatePagerank(graph, indicies, false, false, 0.001, 0.6);
 
-        Node n1 = hgraph.getNode("0");
-        Node n2 = hgraph.getNode("1");
-        Node n3 = hgraph.getNode("2");
-        Node n4 = hgraph.getNode("3");
-        Node n5 = hgraph.getNode("4");
-        Node n6 = hgraph.getNode("5");
+        Node n1 = graph.getNode("0");
+        Node n2 = graph.getNode("1");
+        Node n3 = graph.getNode("2");
+        Node n4 = graph.getNode("3");
+        Node n5 = graph.getNode("4");
+        Node n6 = graph.getNode("5");
 
         int index1 = indicies.get(n1);
         int index2 = indicies.get(n2);
@@ -246,20 +246,20 @@ public class PageRankNGTest {
     public void testPathDirectedGraphPageRank() {
         pc.newProject();
         GraphModel graphModel = GraphGenerator.generatePathDirectedGraph(4);
-        DirectedGraph hgraph = graphModel.getDirectedGraph();
+        DirectedGraph graph = graphModel.getDirectedGraph();
 
         PageRank pr = new PageRank();
 
         double[] pageRank;
 
-        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(graph);
 
-        pageRank = pr.calculatePagerank(hgraph, indicies, true, false, 0.001, 0.85);
+        pageRank = pr.calculatePagerank(graph, indicies, true, false, 0.001, 0.85);
 
-        Node n1 = hgraph.getNode("0");
-        Node n2 = hgraph.getNode("1");
-        Node n3 = hgraph.getNode("2");
-        Node n4 = hgraph.getNode("3");
+        Node n1 = graph.getNode("0");
+        Node n2 = graph.getNode("1");
+        Node n3 = graph.getNode("2");
+        Node n4 = graph.getNode("3");
 
         int index1 = indicies.get(n1);
         int index2 = indicies.get(n2);
@@ -284,17 +284,17 @@ public class PageRankNGTest {
     public void testCyclicDirectedGraphPageRank() {
         pc.newProject();
         GraphModel graphModel = GraphGenerator.generateCyclicDirectedGraph(5);
-        DirectedGraph hgraph = graphModel.getDirectedGraph();
+        DirectedGraph graph = graphModel.getDirectedGraph();
 
         PageRank pr = new PageRank();
 
         double[] pageRank;
 
-        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(graph);
 
-        pageRank = pr.calculatePagerank(hgraph, indicies, true, false, 0.001, 0.85);
+        pageRank = pr.calculatePagerank(graph, indicies, true, false, 0.001, 0.85);
 
-        Node n3 = hgraph.getNode("2");
+        Node n3 = graph.getNode("2");
 
         int index3 = indicies.get(n3);
 
@@ -357,14 +357,14 @@ public class PageRankNGTest {
         directedGraph.addEdge(edge89);
         directedGraph.addEdge(edge91);
 
-        DirectedGraph hgraph = graphModel.getDirectedGraph();
+        DirectedGraph graph = graphModel.getDirectedGraph();
         PageRank pr = new PageRank();
 
         double[] pageRank;
 
-        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(graph);
 
-        pageRank = pr.calculatePagerank(hgraph, indicies, true, false, 0.001, 0.85);
+        pageRank = pr.calculatePagerank(graph, indicies, true, false, 0.001, 0.85);
 
         int index1 = indicies.get(node1);
         int index2 = indicies.get(node2);
@@ -393,19 +393,19 @@ public class PageRankNGTest {
             directedGraph.addEdge(currentEdge);
         }
 
-        DirectedGraph hgraph = graphModel.getDirectedGraph();
+        DirectedGraph graph = graphModel.getDirectedGraph();
         PageRank pr = new PageRank();
 
         double[] pageRank;
 
-        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(graph);
 
-        pageRank = pr.calculatePagerank(hgraph, indicies, true, false, 0.001, 0.85);
+        pageRank = pr.calculatePagerank(graph, indicies, true, false, 0.001, 0.85);
 
-        Node n1 = hgraph.getNode("0");
-        Node n2 = hgraph.getNode("1");
-        Node n3 = hgraph.getNode("2");
-        Node n5 = hgraph.getNode("4");
+        Node n1 = graph.getNode("0");
+        Node n2 = graph.getNode("1");
+        Node n3 = graph.getNode("2");
+        Node n5 = graph.getNode("4");
 
         int index1 = indicies.get(n1);
         int index2 = indicies.get(n2);
@@ -459,14 +459,14 @@ public class PageRankNGTest {
         undirectedGraph.addEdge(edge56);
         undirectedGraph.addEdge(edge61);
 
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
         PageRank pr = new PageRank();
 
         double[] pageRank;
 
-        HashMap<Node, Integer> indicies = pr.createIndiciesMap(hgraph);
+        HashMap<Node, Integer> indicies = pr.createIndiciesMap(graph);
 
-        pageRank = pr.calculatePagerank(hgraph, indicies, false, true, 0.001, 0.85);
+        pageRank = pr.calculatePagerank(graph, indicies, false, true, 0.001, 0.85);
 
         int index1 = indicies.get(node1);
         int index2 = indicies.get(node2);

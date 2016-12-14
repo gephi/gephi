@@ -76,7 +76,8 @@ import org.openide.util.lookup.ServiceProviders;
  * @author Mathieu Bastian
  */
 @ServiceProviders({
-    @ServiceProvider(service = FilterController.class),
+    @ServiceProvider(service = FilterController.class)
+    ,
     @ServiceProvider(service = PropertyExecutor.class)})
 public class FilterControllerImpl implements FilterController, PropertyExecutor {
 
@@ -317,14 +318,19 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         if (edgeCol == null) {
             edgeCol = result.getModel().getEdgeTable().addColumn("filter_" + title, title, Boolean.class, Origin.DATA, Boolean.FALSE, false);
         }
-        result.readLock();
-        for (Node n : result.getNodes()) {
-            n.setAttribute(nodeCol, Boolean.TRUE);
+
+        result.writeLock();
+        try {
+            for (Node n : result.getNodes()) {
+                n.setAttribute(nodeCol, Boolean.TRUE);
+            }
+            for (Edge e : result.getEdges()) {
+                e.setAttribute(edgeCol, Boolean.TRUE);
+            }
+        } finally {
+            result.readUnlockAll();
+            result.writeUnlock();
         }
-        for (Edge e : result.getEdges()) {
-            e.setAttribute(edgeCol, Boolean.TRUE);
-        }
-        result.readUnlock();
         //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToColumn.status", title));
     }
 
@@ -380,16 +386,21 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             result = (Graph) processor.process((AbstractQueryImpl) query, model.getGraphModel());
         }
         Graph fullGraph = model.getGraphModel().getGraph();
-        fullGraph.readLock();
-        for (Node n : fullGraph.getNodes()) {
-            boolean inView = result.contains(n);
-            n.getTextProperties().setVisible(inView);
+        
+        fullGraph.writeLock();
+        try {
+            for (Node n : fullGraph.getNodes()) {
+                boolean inView = result.contains(n);
+                n.getTextProperties().setVisible(inView);
+            }
+            for (Edge e : fullGraph.getEdges()) {
+                boolean inView = result.contains(e);
+                e.getTextProperties().setVisible(inView);
+            }
+        } finally {
+            fullGraph.readUnlockAll();
+            fullGraph.writeUnlock();
         }
-        for (Edge e : fullGraph.getEdges()) {
-            boolean inView = result.contains(e);
-            e.getTextProperties().setVisible(inView);
-        }
-        fullGraph.readUnlock();
     }
 
     @Override
@@ -430,7 +441,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 return;
             }
             AbstractQueryImpl rootQuery = ((AbstractQueryImpl) query).getRoot();
-            FilterThread filterThread = null;
+            FilterThread filterThread;
             if ((filterThread = model.getFilterThread()) != null && model.getCurrentQuery() == rootQuery) {
                 if (Thread.currentThread().equals(filterThread)) {
                     //Called inside of the thread, in init for instance. Update normally.

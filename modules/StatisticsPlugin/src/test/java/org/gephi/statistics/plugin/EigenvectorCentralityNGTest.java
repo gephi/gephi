@@ -83,7 +83,7 @@ public class EigenvectorCentralityNGTest {
     @Test
     public void testOneNodeEigenvectorCentrality() {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         EigenvectorCentrality ec = new EigenvectorCentrality();
 
@@ -92,11 +92,11 @@ public class EigenvectorCentralityNGTest {
         HashMap<Integer, Node> indicies = new HashMap();
         HashMap<Node, Integer> invIndicies = new HashMap();
 
-        ec.fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
+        ec.fillIndiciesMaps(graph, centralities, indicies, invIndicies);
 
-        ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, false, 100);
+        ec.calculateEigenvectorCentrality(graph, centralities, indicies, invIndicies, false, 100);
 
-        Node n1 = hgraph.getNode("0");
+        Node n1 = graph.getNode("0");
         int index = invIndicies.get(n1);
         double ec1 = centralities[index];
 
@@ -106,7 +106,7 @@ public class EigenvectorCentralityNGTest {
     @Test
     public void testTwoConnectedNodesEigenvectorCentrality() {
         GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(2);
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         EigenvectorCentrality ec = new EigenvectorCentrality();
 
@@ -115,11 +115,11 @@ public class EigenvectorCentralityNGTest {
         HashMap<Integer, Node> indicies = new HashMap();
         HashMap<Node, Integer> invIndicies = new HashMap();
 
-        ec.fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
+        ec.fillIndiciesMaps(graph, centralities, indicies, invIndicies);
 
-        ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, false, 100);
+        ec.calculateEigenvectorCentrality(graph, centralities, indicies, invIndicies, false, 100);
 
-        Node n1 = hgraph.getNode("0");
+        Node n1 = graph.getNode("0");
         int index = invIndicies.get(n1);
         double ec1 = centralities[index];
 
@@ -129,7 +129,7 @@ public class EigenvectorCentralityNGTest {
     @Test
     public void testNullGraphEigenvectorCentrality() {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(5);
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         EigenvectorCentrality ec = new EigenvectorCentrality();
         ec.setDirected(false);
@@ -139,11 +139,11 @@ public class EigenvectorCentralityNGTest {
         HashMap<Integer, Node> indicies = new HashMap();
         HashMap<Node, Integer> invIndicies = new HashMap();
 
-        ec.fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
+        ec.fillIndiciesMaps(graph, centralities, indicies, invIndicies);
 
-        ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, false, 100);
+        ec.calculateEigenvectorCentrality(graph, centralities, indicies, invIndicies, false, 100);
 
-        Node n2 = hgraph.getNode("1");
+        Node n2 = graph.getNode("1");
         int index = invIndicies.get(n2);
         double ec2 = centralities[index];
 
@@ -153,7 +153,7 @@ public class EigenvectorCentralityNGTest {
     @Test
     public void testCompleteUndirectedGraphEigenvectorCentrality() {
         GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(5);
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         EigenvectorCentrality ec = new EigenvectorCentrality();
         ec.setDirected(false);
@@ -163,12 +163,12 @@ public class EigenvectorCentralityNGTest {
         HashMap<Integer, Node> indicies = new HashMap();
         HashMap<Node, Integer> invIndicies = new HashMap();
 
-        ec.fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
+        ec.fillIndiciesMaps(graph, centralities, indicies, invIndicies);
 
-        ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, false, 100);
+        ec.calculateEigenvectorCentrality(graph, centralities, indicies, invIndicies, false, 100);
 
-        Node n1 = hgraph.getNode("0");
-        Node n3 = hgraph.getNode("2");
+        Node n1 = graph.getNode("0");
+        Node n3 = graph.getNode("2");
         int index1 = invIndicies.get(n1);
         int index3 = invIndicies.get(n3);
         double ec1 = centralities[index1];
@@ -205,7 +205,7 @@ public class EigenvectorCentralityNGTest {
         undirectedGraph.addEdge(edge13);
         undirectedGraph.addEdge(edge24);
 
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
         EigenvectorCentrality ec = new EigenvectorCentrality();
 
         double[] centralities = new double[4];
@@ -213,9 +213,9 @@ public class EigenvectorCentralityNGTest {
         HashMap<Integer, Node> indicies = new HashMap();
         HashMap<Node, Integer> invIndicies = new HashMap();
 
-        ec.fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
+        ec.fillIndiciesMaps(graph, centralities, indicies, invIndicies);
 
-        ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, false, 100);
+        ec.calculateEigenvectorCentrality(graph, centralities, indicies, invIndicies, false, 100);
 
         int index1 = invIndicies.get(node1);
         int index2 = invIndicies.get(node2);
@@ -256,7 +256,7 @@ public class EigenvectorCentralityNGTest {
         undirectedGraph.addEdge(edge34);
         undirectedGraph.addEdge(edge45);
 
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
         EigenvectorCentrality ec = new EigenvectorCentrality();
 
         double[] centralities = new double[5];
@@ -264,9 +264,9 @@ public class EigenvectorCentralityNGTest {
         HashMap<Integer, Node> indicies = new HashMap();
         HashMap<Node, Integer> invIndicies = new HashMap();
 
-        ec.fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
+        ec.fillIndiciesMaps(graph, centralities, indicies, invIndicies);
 
-        ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, false, 100);
+        ec.calculateEigenvectorCentrality(graph, centralities, indicies, invIndicies, false, 100);
 
         int index2 = invIndicies.get(node2);
         int index3 = invIndicies.get(node3);
@@ -305,7 +305,7 @@ public class EigenvectorCentralityNGTest {
         undirectedGraph.addEdge(edge23);
         undirectedGraph.addEdge(edge33);
 
-        UndirectedGraph hgraph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
         EigenvectorCentrality ec = new EigenvectorCentrality();
 
         double[] centralities = new double[3];
@@ -313,9 +313,9 @@ public class EigenvectorCentralityNGTest {
         HashMap<Integer, Node> indicies = new HashMap();
         HashMap<Node, Integer> invIndicies = new HashMap();
 
-        ec.fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
+        ec.fillIndiciesMaps(graph, centralities, indicies, invIndicies);
 
-        ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, false, 100);
+        ec.calculateEigenvectorCentrality(graph, centralities, indicies, invIndicies, false, 100);
 
         int index1 = invIndicies.get(node1);
         int index2 = invIndicies.get(node2);
@@ -328,7 +328,7 @@ public class EigenvectorCentralityNGTest {
     @Test
     public void testCyclicDirectedGraphEigenvectorCentrality() {
         GraphModel graphModel = GraphGenerator.generateCyclicDirectedGraph(3);
-        DirectedGraph hgraph = graphModel.getDirectedGraph();
+        DirectedGraph graph = graphModel.getDirectedGraph();
 
         EigenvectorCentrality ec = new EigenvectorCentrality();
 
@@ -337,11 +337,11 @@ public class EigenvectorCentralityNGTest {
         HashMap<Integer, Node> indicies = new HashMap();
         HashMap<Node, Integer> invIndicies = new HashMap();
 
-        ec.fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
+        ec.fillIndiciesMaps(graph, centralities, indicies, invIndicies);
 
-        ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, true, 100);
+        ec.calculateEigenvectorCentrality(graph, centralities, indicies, invIndicies, true, 100);
 
-        Node n1 = hgraph.getNode("0");
+        Node n1 = graph.getNode("0");
         int index1 = invIndicies.get(n1);
         double ec1 = centralities[index1];
 
@@ -378,7 +378,7 @@ public class EigenvectorCentralityNGTest {
         directedGraph.addEdge(edge42);
         directedGraph.addEdge(edge54);
 
-        DirectedGraph hgraph = graphModel.getDirectedGraph();
+        DirectedGraph graph = graphModel.getDirectedGraph();
         EigenvectorCentrality ec = new EigenvectorCentrality();
 
         double[] centralities = new double[5];
@@ -386,9 +386,9 @@ public class EigenvectorCentralityNGTest {
         HashMap<Integer, Node> indicies = new HashMap();
         HashMap<Node, Integer> invIndicies = new HashMap();
 
-        ec.fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
+        ec.fillIndiciesMaps(graph, centralities, indicies, invIndicies);
 
-        ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, true, 1000);
+        ec.calculateEigenvectorCentrality(graph, centralities, indicies, invIndicies, true, 1000);
 
         int index1 = invIndicies.get(node1);
         int index2 = invIndicies.get(node2);
@@ -424,7 +424,7 @@ public class EigenvectorCentralityNGTest {
             directedGraph.addEdge(currentEdge);
         }
 
-        DirectedGraph hgraph = graphModel.getDirectedGraph();
+        DirectedGraph graph = graphModel.getDirectedGraph();
         EigenvectorCentrality ec = new EigenvectorCentrality();
 
         double[] centralities = new double[6];
@@ -432,12 +432,12 @@ public class EigenvectorCentralityNGTest {
         HashMap<Integer, Node> indicies = new HashMap();
         HashMap<Node, Integer> invIndicies = new HashMap();
 
-        ec.fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
+        ec.fillIndiciesMaps(graph, centralities, indicies, invIndicies);
 
-        ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, true, 100);
+        ec.calculateEigenvectorCentrality(graph, centralities, indicies, invIndicies, true, 100);
 
-        Node n1 = hgraph.getNode("0");
-        Node n2 = hgraph.getNode("1");
+        Node n1 = graph.getNode("0");
+        Node n2 = graph.getNode("1");
         int index1 = invIndicies.get(n1);
         int index2 = invIndicies.get(n2);
         double ec1 = centralities[index1];
@@ -450,7 +450,7 @@ public class EigenvectorCentralityNGTest {
     @Test
     public void testPathDirectedGraphEigenvectorCentrality() {
         GraphModel graphModel = GraphGenerator.generatePathDirectedGraph(4);
-        DirectedGraph hgraph = graphModel.getDirectedGraph();
+        DirectedGraph graph = graphModel.getDirectedGraph();
 
         EigenvectorCentrality ec = new EigenvectorCentrality();
 
@@ -459,12 +459,12 @@ public class EigenvectorCentralityNGTest {
         HashMap<Integer, Node> indicies = new HashMap();
         HashMap<Node, Integer> invIndicies = new HashMap();
 
-        ec.fillIndiciesMaps(hgraph, centralities, indicies, invIndicies);
+        ec.fillIndiciesMaps(graph, centralities, indicies, invIndicies);
 
-        ec.calculateEigenvectorCentrality(hgraph, centralities, indicies, invIndicies, true, 100);
+        ec.calculateEigenvectorCentrality(graph, centralities, indicies, invIndicies, true, 100);
 
-        Node n1 = hgraph.getNode("0");
-        Node n4 = hgraph.getNode("3");
+        Node n1 = graph.getNode("0");
+        Node n4 = graph.getNode("3");
         int index1 = invIndicies.get(n1);
         int index4 = invIndicies.get(n4);
         double ec1 = centralities[index1];

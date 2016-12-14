@@ -99,14 +99,15 @@ public class ConnectedComponents implements Statistics, LongTask {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraphVisible();
 
         undirectedGraph.readLock();
-
-        weaklyConnected(undirectedGraph);
-        if (isDirected) {
-            DirectedGraph directedGraph = graphModel.getDirectedGraphVisible();
-            stronglyConnected(directedGraph, graphModel);
+        try {
+            weaklyConnected(undirectedGraph);
+            if (isDirected) {
+                DirectedGraph directedGraph = graphModel.getDirectedGraphVisible();
+                stronglyConnected(directedGraph, graphModel);
+            }
+        } finally {
+            undirectedGraph.readUnlock();
         }
-
-        undirectedGraph.readUnlock();
     }
 
     public void weaklyConnected(UndirectedGraph graph) {
@@ -156,7 +157,6 @@ public class ConnectedComponents implements Statistics, LongTask {
             //While there are more nodes to search
             while (!Q.isEmpty()) {
                 if (isCanceled) {
-                    graph.readUnlock();
                     return new LinkedList<>();
                 }
                 //Get the next Node and add it to the component list
@@ -197,10 +197,10 @@ public class ConnectedComponents implements Statistics, LongTask {
         return componentCol;
     }
 
-    public HashMap<Node, Integer> createIndiciesMap(Graph hgraph) {
+    public HashMap<Node, Integer> createIndiciesMap(Graph graph) {
         HashMap<Node, Integer> indicies = new HashMap<>();
         int index = 0;
-        for (Node s : hgraph.getNodes()) {
+        for (Node s : graph.getNodes()) {
             indicies.put(s, index);
             index++;
         }
@@ -233,15 +233,15 @@ public class ConnectedComponents implements Statistics, LongTask {
         return componentCol;
     }
 
-    public void stronglyConnected(DirectedGraph hgraph, GraphModel graphModel) {
+    public void stronglyConnected(DirectedGraph graph, GraphModel graphModel) {
         count = 1;
         stronglyCount = 0;
 
         Column componentCol = initializeStronglyConnectedColumn(graphModel);
 
-        HashMap<Node, Integer> indicies = createIndiciesMap(hgraph);
+        HashMap<Node, Integer> indicies = createIndiciesMap(graph);
 
-        LinkedList<LinkedList<Node>> components = top_tarjans(hgraph, indicies);
+        LinkedList<LinkedList<Node>> components = top_tarjans(graph, indicies);
 
         saveComputedComponents(components, componentCol);
 
