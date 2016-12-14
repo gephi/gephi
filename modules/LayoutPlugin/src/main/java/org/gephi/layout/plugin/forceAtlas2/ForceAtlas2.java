@@ -120,7 +120,7 @@ public class ForceAtlas2 implements Layout {
             pool = Executors.newFixedThreadPool(threadCount);
             currentThreadCount = threadCount;
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 
@@ -292,7 +292,7 @@ public class ForceAtlas2 implements Layout {
                 }
             }
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 
@@ -310,7 +310,7 @@ public class ForceAtlas2 implements Layout {
             }
             pool.shutdown();
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 

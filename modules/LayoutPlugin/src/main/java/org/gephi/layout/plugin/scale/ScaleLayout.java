@@ -94,7 +94,7 @@ public class ScaleLayout extends AbstractLayout implements Layout {
             }
             setConverged(true);
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 

@@ -55,79 +55,86 @@ import org.gephi.graph.api.*;
 public class FilterProcessor {
 
     public Graph process(AbstractQueryImpl query, GraphModel graphModel) {
-        graphModel.getGraph().writeLock();
-        List<GraphView> views = new ArrayList<>();
-        query = simplifyQuery(query);
-        AbstractQueryImpl[] tree = getTree(query, true);
-        for (int i = 0; i < tree.length; i++) {
-            AbstractQueryImpl q = tree[tree.length - i - 1];
-            Graph[] input = new Graph[0];
-            if (q.getChildrenCount() > 0) {
-                input = new Graph[q.getChildrenCount()];
-                for (int j = 0; j < input.length; j++) {
-                    input[j] = q.getChildAt(j).getResult();
+        Graph graph = graphModel.getGraph();
+
+        graph.writeLock();
+        try {
+            List<GraphView> views = new ArrayList<>();
+            query = simplifyQuery(query);
+            AbstractQueryImpl[] tree = getTree(query, true);
+            for (int i = 0; i < tree.length; i++) {
+                AbstractQueryImpl q = tree[tree.length - i - 1];
+                Graph[] input;
+                if (q.getChildrenCount() > 0) {
+                    input = new Graph[q.getChildrenCount()];
+                    for (int j = 0; j < input.length; j++) {
+                        input[j] = q.getChildAt(j).getResult();
+                    }
+                } else {
+                    //Leaves
+                    GraphView newView = graphModel.copyView(graphModel.getGraph().getView());
+                    views.add(newView);
+                    input = new Graph[]{graphModel.getGraph(newView)};    //duplicate root
                 }
-            } else {
-                //Leaves
-                GraphView newView = graphModel.copyView(graphModel.getGraph().getView());
-                views.add(newView);
-                input = new Graph[]{graphModel.getGraph(newView)};    //duplicate root
-            }
-            //PROCESS
-            if (q instanceof OperatorQueryImpl && !((OperatorQueryImpl) q).isSimple()) {
-                OperatorQueryImpl operatorQuery = (OperatorQueryImpl) q;
-                Operator op = (Operator) operatorQuery.getFilter();
-                Subgraph[] inputSG = new Subgraph[input.length];
-                for (int j = 0; j < inputSG.length; j++) {
-                    inputSG[j] = (Subgraph) input[j];
-                }
-                q.setResult(op.filter(inputSG));
-            } else if (q instanceof OperatorQueryImpl && ((OperatorQueryImpl) q).isSimple()) {
-                OperatorQueryImpl operatorQuery = (OperatorQueryImpl) q;
-                Operator op = (Operator) operatorQuery.getFilter();
-                GraphView newView = graphModel.copyView(graphModel.getGraph().getView());
-                views.add(newView);
-                Graph newGraph = graphModel.getGraph(newView);
-                List<Filter> filters = new ArrayList<>();
-                for (int k = 0; k < operatorQuery.getChildrenCount(); k++) {
-                    Filter filter = operatorQuery.getChildAt(k).getFilter();
-                    if (init(filter, newGraph)) {
-                        filters.add(filter);
+                //PROCESS
+                if (q instanceof OperatorQueryImpl && !((OperatorQueryImpl) q).isSimple()) {
+                    OperatorQueryImpl operatorQuery = (OperatorQueryImpl) q;
+                    Operator op = (Operator) operatorQuery.getFilter();
+                    Subgraph[] inputSG = new Subgraph[input.length];
+                    for (int j = 0; j < inputSG.length; j++) {
+                        inputSG[j] = (Subgraph) input[j];
+                    }
+                    q.setResult(op.filter(inputSG));
+                } else if (q instanceof OperatorQueryImpl && ((OperatorQueryImpl) q).isSimple()) {
+                    OperatorQueryImpl operatorQuery = (OperatorQueryImpl) q;
+                    Operator op = (Operator) operatorQuery.getFilter();
+                    GraphView newView = graphModel.copyView(graphModel.getGraph().getView());
+                    views.add(newView);
+                    Graph newGraph = graphModel.getGraph(newView);
+                    List<Filter> filters = new ArrayList<>();
+                    for (int k = 0; k < operatorQuery.getChildrenCount(); k++) {
+                        Filter filter = operatorQuery.getChildAt(k).getFilter();
+                        if (init(filter, newGraph)) {
+                            filters.add(filter);
+                        }
+                    }
+                    q.setResult(op.filter(newGraph, filters.toArray(new Filter[0])));
+                } else {
+                    FilterQueryImpl filterQuery = (FilterQueryImpl) q;
+                    Filter filter = filterQuery.getFilter();
+                    if (filter instanceof NodeFilter && filter instanceof EdgeFilter) {
+                        processNodeFilter((NodeFilter) filter, input[0]);
+                        processEdgeFilter((EdgeFilter) filter, input[0]);
+                        q.setResult(input[0]);
+                    } else if (filter instanceof NodeFilter) {
+                        processNodeFilter((NodeFilter) filter, input[0]);
+                        q.setResult(input[0]);
+                    } else if (filter instanceof EdgeFilter) {
+                        processEdgeFilter((EdgeFilter) filter, input[0]);
+                        q.setResult(input[0]);
+                    } else if (filter instanceof ComplexFilter) {
+                        ComplexFilter cf = (ComplexFilter) filter;
+                        q.setResult(cf.filter(input[0]));
+                    } else {
+                        q.setResult(input[0]);  //Put input as result, the filter don't do anything
                     }
                 }
-                q.setResult(op.filter(newGraph, filters.toArray(new Filter[0])));
-            } else {
-                FilterQueryImpl filterQuery = (FilterQueryImpl) q;
-                Filter filter = filterQuery.getFilter();
-                if (filter instanceof NodeFilter && filter instanceof EdgeFilter) {
-                    processNodeFilter((NodeFilter) filter, input[0]);
-                    processEdgeFilter((EdgeFilter) filter, input[0]);
-                    q.setResult(input[0]);
-                } else if (filter instanceof NodeFilter) {
-                    processNodeFilter((NodeFilter) filter, input[0]);
-                    q.setResult(input[0]);
-                } else if (filter instanceof EdgeFilter) {
-                    processEdgeFilter((EdgeFilter) filter, input[0]);
-                    q.setResult(input[0]);
-                } else if (filter instanceof ComplexFilter) {
-                    ComplexFilter cf = (ComplexFilter) filter;
-                    q.setResult(cf.filter(input[0]));
-                } else {
-                    q.setResult(input[0]);  //Put input as result, the filter don't do anything
+            }
+            Graph finalResult = tree[0].result;
+
+            //Destroy intermediate views
+            GraphView finalView = finalResult.getView();
+            for (GraphView v : views) {
+                if (v != finalView && !v.isMainView()) {
+                    graphModel.destroyView(v);
                 }
             }
-        }
-        Graph finalResult = tree[0].result;
 
-        //Destroy intermediate views
-        GraphView finalView = finalResult.getView();
-        for (GraphView v : views) {
-            if (v != finalView && !v.isMainView()) {
-                graphModel.destroyView(v);
-            }
+            return finalResult;
+        } finally {
+            graph.readUnlockAll();
+            graph.writeUnlock();
         }
-        graphModel.getGraph().writeUnlock();
-        return finalResult;
     }
 
     private void processNodeFilter(NodeFilter nodeFilter, Graph graph) {

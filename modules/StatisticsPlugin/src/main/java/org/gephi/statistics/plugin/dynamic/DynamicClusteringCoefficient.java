@@ -159,7 +159,7 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
 
     @Override
     public void loop(GraphView window, Interval interval) {
-        Graph graph = null;
+        Graph graph;
         if (isDirected) {
             graph = graphModel.getDirectedGraph(window);
         } else {
@@ -168,35 +168,37 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
         TimeRepresentation tr = graphModel.getConfiguration().getTimeRepresentation();
 
         graph.readLock();
+        
+        try {
+            clusteringCoefficientStat = new ClusteringCoefficient();
+            clusteringCoefficientStat.setDirected(isDirected);
+            clusteringCoefficientStat.triangles(graph);
 
-        clusteringCoefficientStat = new ClusteringCoefficient();
-        clusteringCoefficientStat.setDirected(isDirected);
-        clusteringCoefficientStat.triangles(graph);
+            //Columns
+            if (!averageOnly) {
+                double[] coefficients = clusteringCoefficientStat.getCoefficientReuslts();
+                int i = 0;
+                for (Node n : graph.getNodes()) {
+                    double coef = coefficients[i++];
 
-        //Columns
-        if (!averageOnly) {
-            double[] coefficients = clusteringCoefficientStat.getCoefficientReuslts();
-            int i = 0;
-            for (Node n : graph.getNodes()) {
-                double coef = coefficients[i++];
+                    switch (tr) {
+                        case INTERVAL:
+                            n.setAttribute(dynamicCoefficientColumn, coef, new Interval(interval.getLow(), interval.getLow() + tick));
+                            break;
+                        case TIMESTAMP:
+                            n.setAttribute(dynamicCoefficientColumn, coef, interval.getLow());
+                            n.setAttribute(dynamicCoefficientColumn, coef, interval.getHigh());
+                            break;
+                    }
 
-                switch (tr) {
-                    case INTERVAL:
-                        n.setAttribute(dynamicCoefficientColumn, coef, new Interval(interval.getLow(), interval.getLow() + tick));
+                    if (cancel) {
                         break;
-                    case TIMESTAMP:
-                        n.setAttribute(dynamicCoefficientColumn, coef, interval.getLow());
-                        n.setAttribute(dynamicCoefficientColumn, coef, interval.getHigh());
-                        break;
-                }
-
-                if (cancel) {
-                    break;
+                    }
                 }
             }
+        } finally {
+            graph.readUnlockAll();
         }
-
-        graph.readUnlockAll();
 
         //Average
         double avg = clusteringCoefficientStat.getAverageClusteringCoefficient();

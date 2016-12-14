@@ -226,7 +226,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                 }
             }
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 
@@ -238,7 +238,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                 n.setLayoutData(null);
             }
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 

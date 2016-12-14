@@ -198,39 +198,40 @@ public class StatisticsControllerImpl implements StatisticsController {
             Graph graph = graphModel.getGraphVisible();
 
             graph.writeLock();
+            try {
+                GraphView view = graphModel.createView();
+                Subgraph g = graphModel.getGraph(view);
 
-            GraphView view = graphModel.createView();
-            Subgraph g = graphModel.getGraph(view);
-
-            TimeIndex<Node> nodeIndex = graphModel.getNodeTimeIndex(currentView);
-            if (Double.isInfinite(nodeIndex.getMinTimestamp()) && Double.isInfinite(nodeIndex.getMaxTimestamp())) {
-                for (Node node : graph.getNodes()) {
-                    g.addNode(node);
-                }
-            } else {
-                for (Node node : nodeIndex.get(new Interval(low, high))) {
-                    g.addNode(node);
-                }
-            }
-
-            TimeIndex<Edge> edgeIndex = graphModel.getEdgeTimeIndex(currentView);
-            if (Double.isInfinite(edgeIndex.getMinTimestamp()) && Double.isInfinite(edgeIndex.getMaxTimestamp())) {
-                for (Edge edge : graph.getEdges()) {
-                    if (g.contains(edge.getSource()) && g.contains(edge.getTarget())) {
-                        g.addEdge(edge);
+                TimeIndex<Node> nodeIndex = graphModel.getNodeTimeIndex(currentView);
+                if (Double.isInfinite(nodeIndex.getMinTimestamp()) && Double.isInfinite(nodeIndex.getMaxTimestamp())) {
+                    for (Node node : graph.getNodes()) {
+                        g.addNode(node);
+                    }
+                } else {
+                    for (Node node : nodeIndex.get(new Interval(low, high))) {
+                        g.addNode(node);
                     }
                 }
-            } else {
-                for (Edge edge : edgeIndex.get(new Interval(low, high))) {
-                    if (g.contains(edge.getSource()) && g.contains(edge.getTarget())) {
-                        g.addEdge(edge);
+
+                TimeIndex<Edge> edgeIndex = graphModel.getEdgeTimeIndex(currentView);
+                if (Double.isInfinite(edgeIndex.getMinTimestamp()) && Double.isInfinite(edgeIndex.getMaxTimestamp())) {
+                    for (Edge edge : graph.getEdges()) {
+                        if (g.contains(edge.getSource()) && g.contains(edge.getTarget())) {
+                            g.addEdge(edge);
+                        }
+                    }
+                } else {
+                    for (Edge edge : edgeIndex.get(new Interval(low, high))) {
+                        if (g.contains(edge.getSource()) && g.contains(edge.getTarget())) {
+                            g.addEdge(edge);
+                        }
                     }
                 }
+                
+                statistics.loop(g.getView(), new Interval(low, high));
+            } finally {
+                graph.writeUnlock();
             }
-
-            graph.writeUnlock();
-
-            statistics.loop(g.getView(), new Interval(low, high));
 
             //Cancelled?
             if (dynamicLongTask != null && dynamicLongTask.isCancelled()) {

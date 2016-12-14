@@ -330,19 +330,13 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     @Override
     public int getNodesCount() {
         Graph graph = getCurrentGraph();
-        graph.readLock();
-        int nodesCount = graph.getNodeCount();
-        graph.readUnlock();
-        return nodesCount;
+        return graph.getNodeCount();
     }
 
     @Override
     public int getEdgesCount() {
         Graph graph = getCurrentGraph();
-        graph.readLock();
-        int edgesCount = graph.getEdgeCount();
-        graph.readUnlock();
-        return edgesCount;
+        return graph.getEdgeCount();
     }
 
     @Override

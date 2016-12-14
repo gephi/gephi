@@ -241,7 +241,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             setConverged(false);
             setStep(initialStep);
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 
@@ -253,7 +253,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
                 n.setLayoutData(null);
             }
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 
@@ -320,7 +320,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             }
             postAlgo();
         } finally {
-            graph.readUnlock();
+            graph.readUnlockAll();
         }
     }
 

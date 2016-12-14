@@ -242,33 +242,33 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     public void execute(GraphModel graphModel) {
         isDirected = graphModel.isDirected();
 
-        Graph hgraph = null;
+        Graph graph = null;
         if (isDirected) {
-            hgraph = graphModel.getDirectedGraphVisible();
+            graph = graphModel.getDirectedGraphVisible();
         } else {
-            hgraph = graphModel.getUndirectedGraphVisible();
+            graph = graphModel.getUndirectedGraphVisible();
         }
 
-        execute(hgraph);
+        execute(graph);
     }
 
-    public void execute(Graph hgraph) {
+    public void execute(Graph graph) {
         isCanceled = false;
 
         HashMap<String, Double> resultValues = new HashMap<>();
 
         if (isDirected) {
-            avgClusteringCoeff = bruteForce(hgraph);
+            avgClusteringCoeff = bruteForce(graph);
         } else {
-            initStartValues(hgraph);
-            resultValues = computeTriangles(hgraph, network, triangles, nodeClustering, isDirected);
+            initStartValues(graph);
+            resultValues = computeTriangles(graph, network, triangles, nodeClustering, isDirected);
             totalTriangles = resultValues.get("triangles").intValue();
             avgClusteringCoeff = resultValues.get("clusteringCoefficient");
 
         }
 
         //Set results in columns
-        Table nodeTable = hgraph.getModel().getNodeTable();
+        Table nodeTable = graph.getModel().getNodeTable();
         Column clusteringCol = nodeTable.getColumn(CLUSTERING_COEFF);
         if (clusteringCol == null) {
             clusteringCol = nodeTable.addColumn(CLUSTERING_COEFF, "Clustering Coefficient", Double.class, new Double(0));
@@ -292,41 +292,41 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
     }
 
-    public void triangles(Graph hgraph) {
-        initStartValues(hgraph);
-        HashMap<String, Double> resultValues = computeTriangles(hgraph, network, triangles,
+    public void triangles(Graph graph) {
+        initStartValues(graph);
+        HashMap<String, Double> resultValues = computeTriangles(graph, network, triangles,
                 nodeClustering, isDirected);
         totalTriangles = resultValues.get("triangles").intValue();
         avgClusteringCoeff = resultValues.get("clusteringCoefficient");
     }
 
-    public HashMap<String, Double> computeClusteringCoefficient(Graph hgraph, ArrayWrapper[] currentNetwork,
+    public HashMap<String, Double> computeClusteringCoefficient(Graph graph, ArrayWrapper[] currentNetwork,
             int[] currentTriangles, double[] currentNodeClustering, boolean directed) {
         HashMap<String, Double> resultValues = new HashMap<>();
 
         if (isDirected) {
-            double avClusteringCoefficient = bruteForce(hgraph);
+            double avClusteringCoefficient = bruteForce(graph);
             resultValues.put("clusteringCoefficient", avClusteringCoefficient);
             return resultValues;
         } else {
-            initStartValues(hgraph);
-            resultValues = computeTriangles(hgraph, currentNetwork, currentTriangles, currentNodeClustering, directed);
+            initStartValues(graph);
+            resultValues = computeTriangles(graph, currentNetwork, currentTriangles, currentNodeClustering, directed);
             return resultValues;
 
         }
     }
 
-    public void initStartValues(Graph hgraph) {
-        N = hgraph.getNodeCount();
+    public void initStartValues(Graph graph) {
+        N = graph.getNodeCount();
         K = (int) Math.sqrt(N);
         nodeClustering = new double[N];
         network = new ArrayWrapper[N];
         triangles = new int[N];
     }
 
-    public int createIndiciesMapAndInitNetwork(Graph hgraph, HashMap<Node, Integer> indicies, ArrayWrapper[] networks, int currentProgress) {
+    public int createIndiciesMapAndInitNetwork(Graph graph, HashMap<Node, Integer> indicies, ArrayWrapper[] networks, int currentProgress) {
         int index = 0;
-        for (Node s : hgraph.getNodes()) {
+        for (Node s : graph.getNodes()) {
             indicies.put(s, index);
             networks[index] = new ArrayWrapper();
             index++;
@@ -415,22 +415,22 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
     }
 
-    private HashMap<Node, EdgeWrapper> createNeighbourTable(Graph hgraph, Node node, HashMap<Node, Integer> indicies,
+    private HashMap<Node, EdgeWrapper> createNeighbourTable(Graph graph, Node node, HashMap<Node, Integer> indicies,
             ArrayWrapper[] networks, boolean directed) {
 
         HashMap<Node, EdgeWrapper> neighborTable = new HashMap<>();
 
         if (!directed) {
-            for (Edge edge : hgraph.getEdges(node)) {
-                Node neighbor = hgraph.getOpposite(node, edge);
+            for (Edge edge : graph.getEdges(node)) {
+                Node neighbor = graph.getOpposite(node, edge);
                 neighborTable.put(neighbor, new EdgeWrapper(1, networks[indicies.get(neighbor)]));
             }
         } else {
-            for (Node neighbor : ((DirectedGraph) hgraph).getPredecessors(node)) {
+            for (Node neighbor : ((DirectedGraph) graph).getPredecessors(node)) {
                 neighborTable.put(neighbor, new EdgeWrapper(1, networks[indicies.get(neighbor)]));
             }
 
-            for (Edge out : ((DirectedGraph) hgraph).getOutEdges(node)) {
+            for (Edge out : ((DirectedGraph) graph).getOutEdges(node)) {
                 Node neighbor = out.getTarget();
                 EdgeWrapper ew = neighborTable.get(neighbor);
                 if (ew == null) {
@@ -468,8 +468,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         return currentProgress;
     }
 
-    private int computeRemainingTrianles(Graph hgraph, ArrayWrapper[] currentNetwork, int[] currentTriangles, int currentProgress) {
-        int n = hgraph.getNodeCount();
+    private int computeRemainingTrianles(Graph graph, ArrayWrapper[] currentNetwork, int[] currentTriangles, int currentProgress) {
+        int n = graph.getNodeCount();
         int k = (int) Math.sqrt(n);
         for (int v = n - 1; (v >= 0) && (v >= k); v--) {
             for (int i = closest_in_array(currentNetwork, v); i >= 0; i--) {
@@ -481,16 +481,15 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             Progress.progress(progress, ++currentProgress);
 
             if (isCanceled) {
-                hgraph.readUnlockAll();
                 return currentProgress;
             }
         }
         return currentProgress;
     }
 
-    private HashMap<String, Double> computeResultValues(Graph hgraph, ArrayWrapper[] currentNetwork,
+    private HashMap<String, Double> computeResultValues(Graph graph, ArrayWrapper[] currentNetwork,
             int[] currentTriangles, double[] currentNodeClusterig, boolean directed, int currentProgress) {
-        int n = hgraph.getNodeCount();
+        int n = graph.getNodeCount();
         HashMap<String, Double> totalValues = new HashMap<>();
         int numNodesDegreeGreaterThanOne = 0;
         int trianglesNumber = 0;
@@ -510,7 +509,6 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             Progress.progress(progress, ++currentProgress);
 
             if (isCanceled) {
-                hgraph.readUnlockAll();
                 return totalValues;
             }
         }
@@ -522,124 +520,127 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         return totalValues;
     }
 
-    private HashMap<String, Double> computeTriangles(Graph hgraph, ArrayWrapper[] currentNetwork, int[] currentTriangles,
+    private HashMap<String, Double> computeTriangles(Graph graph, ArrayWrapper[] currentNetwork, int[] currentTriangles,
             double[] nodeClustering, boolean directed) {
 
         HashMap<String, Double> resultValues = new HashMap<>();
         int ProgressCount = 0;
-        Progress.start(progress, 7 * hgraph.getNodeCount());
+        Progress.start(progress, 7 * graph.getNodeCount());
 
-        hgraph.readLock();
+        graph.readLock();
+        try {
+            int n = graph.getNodeCount();
 
-        int n = hgraph.getNodeCount();
+            /**
+             * Create network for processing
+             */
+            /**
+             *         */
+            HashMap<Node, Integer> indicies = new HashMap<>();
 
-        /**
-         * Create network for processing
-         */
-        /**
-         *         */
-        HashMap<Node, Integer> indicies = new HashMap<>();
+            ProgressCount = createIndiciesMapAndInitNetwork(graph, indicies, currentNetwork, ProgressCount);
 
-        ProgressCount = createIndiciesMapAndInitNetwork(hgraph, indicies, currentNetwork, ProgressCount);
+            int index = 0;
+            for (Node node : graph.getNodes()) {
+                HashMap<Node, EdgeWrapper> neighborTable = createNeighbourTable(graph, node, indicies, currentNetwork, directed);
 
-        int index = 0;
-        for (Node node : hgraph.getNodes()) {
-            HashMap<Node, EdgeWrapper> neighborTable = createNeighbourTable(hgraph, node, indicies, currentNetwork, directed);
+                EdgeWrapper[] edges = getEdges(neighborTable);
+                currentNetwork[index].node = node;
+                currentNetwork[index].setArray(edges);
+                index++;
+                Progress.progress(progress, ++ProgressCount);
 
-            EdgeWrapper[] edges = getEdges(neighborTable);
-            currentNetwork[index].node = node;
-            currentNetwork[index].setArray(edges);
-            index++;
-            Progress.progress(progress, ++ProgressCount);
-
-            if (isCanceled) {
-                hgraph.readUnlockAll();
-                return resultValues;
+                if (isCanceled) {
+                    return resultValues;
+                }
             }
+
+            ProgressCount = processNetwork(currentNetwork, ProgressCount);
+
+            int k = (int) Math.sqrt(n);
+
+            for (int v = 0; v < k && v < n; v++) {
+                newVertex(currentNetwork, currentTriangles, v, n);
+                Progress.progress(progress, ++ProgressCount);
+            }
+
+            /* remaining links */
+            ProgressCount = computeRemainingTrianles(graph, currentNetwork, currentTriangles, ProgressCount);
+
+            resultValues = computeResultValues(graph, currentNetwork, currentTriangles, nodeClustering, directed, ProgressCount);
+        } finally {
+            graph.readUnlock();
         }
 
-        ProgressCount = processNetwork(currentNetwork, ProgressCount);
-
-        int k = (int) Math.sqrt(n);
-
-        for (int v = 0; v < k && v < n; v++) {
-            newVertex(currentNetwork, currentTriangles, v, n);
-            Progress.progress(progress, ++ProgressCount);
-        }
-
-        /* remaining links */
-        ProgressCount = computeRemainingTrianles(hgraph, currentNetwork, currentTriangles, ProgressCount);
-
-        resultValues = computeResultValues(hgraph, currentNetwork, currentTriangles, nodeClustering, directed, ProgressCount);
-
-        hgraph.readUnlock();
         return resultValues;
     }
 
-    private double bruteForce(Graph hgraph) {
+    private double bruteForce(Graph graph) {
         //The atrributes computed by the statistics
-        Column clusteringColumn = initializeAttributeColunms(hgraph.getModel());
+        Column clusteringColumn = initializeAttributeColunms(graph.getModel());
 
         float totalCC = 0;
 
-        hgraph.readLock();
+        graph.readLock();
+        
+        try {
+            Progress.start(progress, graph.getNodeCount());
+            int node_count = 0;
+            for (Node node : graph.getNodes()) {
+                float nodeClusteringCoefficient = computeNodeClusteringCoefficient(graph, node, isDirected);
 
-        Progress.start(progress, hgraph.getNodeCount());
-        int node_count = 0;
-        for (Node node : hgraph.getNodes()) {
-            float nodeClusteringCoefficient = computeNodeClusteringCoefficient(hgraph, node, isDirected);
+                if (nodeClusteringCoefficient > -1) {
 
-            if (nodeClusteringCoefficient > -1) {
+                    saveCalculatedValue(node, clusteringColumn, nodeClusteringCoefficient);
 
-                saveCalculatedValue(node, clusteringColumn, nodeClusteringCoefficient);
+                    totalCC += nodeClusteringCoefficient;
+                }
 
-                totalCC += nodeClusteringCoefficient;
+                if (isCanceled) {
+                    break;
+                }
+
+                node_count++;
+                Progress.progress(progress, node_count);
+
             }
-
-            if (isCanceled) {
-                break;
-            }
-
-            node_count++;
-            Progress.progress(progress, node_count);
-
+            double clusteringCoeff = totalCC / graph.getNodeCount();
+            
+            return clusteringCoeff;
+        } finally {
+            graph.readUnlockAll();
         }
-        double clusteringCoeff = totalCC / hgraph.getNodeCount();
-
-        hgraph.readUnlockAll();
-
-        return clusteringCoeff;
     }
 
-    private float increaseCCifNesessary(Graph hgraph, Node neighbor1, Node neighbor2, boolean directed, float nodeCC) {
+    private float increaseCCifNesessary(Graph graph, Node neighbor1, Node neighbor2, boolean directed, float nodeCC) {
         if (neighbor1 == neighbor2) {
             return nodeCC;
         }
         if (directed) {
-            if (hgraph.isAdjacent(neighbor1, neighbor2)) {
+            if (graph.isAdjacent(neighbor1, neighbor2)) {
                 nodeCC++;
             }
-            if (hgraph.isAdjacent(neighbor2, neighbor1)) {
+            if (graph.isAdjacent(neighbor2, neighbor1)) {
                 nodeCC++;
             }
         } else {
-            if (hgraph.isAdjacent(neighbor1, neighbor2)) {
+            if (graph.isAdjacent(neighbor1, neighbor2)) {
                 nodeCC++;
             }
         }
         return nodeCC;
     }
 
-    private float computeNodeClusteringCoefficient(Graph hgraph, Node node, boolean directed) {
+    private float computeNodeClusteringCoefficient(Graph graph, Node node, boolean directed) {
         float nodeCC = 0;
         int neighborhood = 0;
-        NodeIterable neighbors1 = hgraph.getNeighbors(node);
+        NodeIterable neighbors1 = graph.getNeighbors(node);
         for (Node neighbor1 : neighbors1) {
             neighborhood++;
-            NodeIterable neighbors2 = hgraph.getNeighbors(node);
+            NodeIterable neighbors2 = graph.getNeighbors(node);
 
             for (Node neighbor2 : neighbors2) {
-                nodeCC = increaseCCifNesessary(hgraph, neighbor1, neighbor2, directed, nodeCC);
+                nodeCC = increaseCCifNesessary(graph, neighbor1, neighbor2, directed, nodeCC);
             }
         }
         nodeCC /= 2.0;
