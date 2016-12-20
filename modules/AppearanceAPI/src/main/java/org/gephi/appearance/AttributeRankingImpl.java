@@ -38,32 +38,53 @@ public class AttributeRankingImpl extends RankingImpl {
             max = index.getMaxValue(column);
         } else {
             ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
-            double minN = Double.POSITIVE_INFINITY;
-            double maxN = Double.NEGATIVE_INFINITY;
-            for (Element el : iterable) {
-                if (column.isDynamic()) {
-                    TimeMap timeMap = (TimeMap) el.getAttribute(column);
-                    if (timeMap != null) {
-                        Number numMin = (Number) timeMap.get(graph.getView().getTimeInterval(), Estimator.MIN);
-                        Number numMax = (Number) timeMap.get(graph.getView().getTimeInterval(), Estimator.MAX);
-                        if (numMin.doubleValue() < minN) {
-                            min = numMin;
-                        }
-                        if (numMax.doubleValue() > maxN) {
-                            max = numMax;
-                        }
-                    }
-                } else {
-                    Number num = (Number) el.getAttribute(column);
-                    if (num.doubleValue() < minN) {
-                        min = num;
-                    }
-                    if (num.doubleValue() > maxN) {
-                        max = num;
-                    }
+
+            if (column.isDynamic()) {
+                refreshDynamic(iterable);
+            } else {
+                refreshNotIndexed(iterable);
+            }
+        }
+    }
+
+    protected void refreshDynamic(ElementIterable<? extends Element> iterable) {
+        double minN = Double.POSITIVE_INFINITY;
+        double maxN = Double.NEGATIVE_INFINITY;
+
+        for (Element el : iterable) {
+            TimeMap timeMap = (TimeMap) el.getAttribute(column);
+            if (timeMap != null) {
+                double numMin = ((Number) timeMap.get(graph.getView().getTimeInterval(), Estimator.MIN)).doubleValue();
+                double numMax = ((Number) timeMap.get(graph.getView().getTimeInterval(), Estimator.MAX)).doubleValue();
+                if (numMin < minN) {
+                    minN = numMin;
+                }
+                if (numMax > maxN) {
+                    maxN = numMax;
                 }
             }
         }
+
+        min = minN;
+        max = maxN;
+    }
+
+    protected void refreshNotIndexed(ElementIterable<? extends Element> iterable) {
+        double minN = Double.POSITIVE_INFINITY;
+        double maxN = Double.NEGATIVE_INFINITY;
+
+        for (Element el : iterable) {
+            double num = ((Number) el.getAttribute(column)).doubleValue();
+            if (num < minN) {
+                minN = num;
+            }
+            if (num > maxN) {
+                maxN = num;
+            }
+        }
+
+        min = minN;
+        max = maxN;
     }
 
     @Override
