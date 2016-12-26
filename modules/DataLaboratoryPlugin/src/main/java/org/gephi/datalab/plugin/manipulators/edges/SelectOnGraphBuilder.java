@@ -39,69 +39,22 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.datalab.plugin.manipulators.nodes;
+package org.gephi.datalab.plugin.manipulators.edges;
 
-import javax.swing.Icon;
-import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.graph.api.Node;
-import org.gephi.visualization.VizController;
-import org.openide.util.ImageUtilities;
-import org.openide.util.NbBundle;
+import org.gephi.datalab.spi.edges.EdgesManipulator;
+import org.gephi.datalab.spi.edges.EdgesManipulatorBuilder;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Nodes manipulator that centers the graph view to show a node and selects one or more nodes.
+ * Builder for SelectOnGraph nodes manipulator.
  *
  * @author Eduardo Ramos
  */
-public class SelectOnGraph extends BasicNodesManipulator {
-
-    private Node[] nodes;
-    private Node clickedNode;
-
+@ServiceProvider(service = EdgesManipulatorBuilder.class)
+public class SelectOnGraphBuilder implements EdgesManipulatorBuilder {
+    
     @Override
-    public void setup(Node[] nodes, Node clickedNode) {
-        this.nodes = nodes;
-        this.clickedNode = clickedNode;
-    }
-
-    @Override
-    public void execute() {
-        VizController.getInstance().getSelectionManager().selectNodes(nodes);
-        VizController.getInstance().getSelectionManager().centerOnNode(clickedNode);
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(SelectOnGraph.class, "SelectOnGraph.name");
-    }
-
-    @Override
-    public String getDescription() {
-        return "";
-    }
-
-    @Override
-    public boolean canExecute() {
-        return true;
-    }
-
-    @Override
-    public ManipulatorUI getUI() {
-        return null;
-    }
-
-    @Override
-    public int getType() {
-        return 100;
-    }
-
-    @Override
-    public int getPosition() {
-        return 0;
-    }
-
-    @Override
-    public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/magnifier--arrow.png", true);
+    public EdgesManipulator getEdgesManipulator() {
+        return new SelectOnGraph();
     }
 }

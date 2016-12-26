@@ -39,35 +39,35 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.datalab.plugin.manipulators.nodes;
+package org.gephi.datalab.plugin.manipulators.edges;
 
 import javax.swing.Icon;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Edge;
 import org.gephi.visualization.VizController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
- * Nodes manipulator that centers the graph view to show a node and selects one or more nodes.
+ * Nodes manipulator that selects edges in the graph overview.
  *
  * @author Eduardo Ramos
  */
-public class SelectOnGraph extends BasicNodesManipulator {
+public class SelectOnGraph extends BasicEdgesManipulator {
 
-    private Node[] nodes;
-    private Node clickedNode;
+    private Edge[] edges;
+    private Edge clickedEdge;
 
     @Override
-    public void setup(Node[] nodes, Node clickedNode) {
-        this.nodes = nodes;
-        this.clickedNode = clickedNode;
+    public void setup(Edge[] nodes, Edge clickedEdge) {
+        this.edges = nodes;
+        this.clickedEdge = clickedEdge;
     }
 
     @Override
     public void execute() {
-        VizController.getInstance().getSelectionManager().selectNodes(nodes);
-        VizController.getInstance().getSelectionManager().centerOnNode(clickedNode);
+        VizController.getInstance().getSelectionManager().selectEdges(edges);
+        VizController.getInstance().getSelectionManager().centerOnNode(clickedEdge.getSource());
     }
 
     @Override

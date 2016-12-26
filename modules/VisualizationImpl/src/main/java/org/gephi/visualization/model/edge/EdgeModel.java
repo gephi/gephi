@@ -83,10 +83,12 @@ public abstract class EdgeModel implements Model, TextModel {
         return edge;
     }
 
+    @Override
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
 
+    @Override
     public boolean isSelected() {
         return selected;
     }

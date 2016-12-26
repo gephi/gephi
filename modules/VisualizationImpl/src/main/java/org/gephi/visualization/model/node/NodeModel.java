@@ -134,10 +134,12 @@ public abstract class NodeModel implements Model, TextModel {
         return node.y();
     }
 
+    @Override
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
 
+    @Override
     public boolean isSelected() {
         return selected;
     }
