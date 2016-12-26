@@ -42,6 +42,7 @@
 package org.gephi.visualization.api.selection;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -50,6 +51,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
+import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.opengl.AbstractEngine;
 
 /**
@@ -262,5 +264,17 @@ public class SelectionManager implements VizArchitecture {
         for (ChangeListener l : listeners) {
             l.stateChanged(evt);
         }
+    }
+
+    public List<Node> getSelectedNodes(){
+        List<Node> nodes = new ArrayList<>();
+        Iterator<NodeModel> iterator = engine.getOctree().getNodeIterator();
+        while(iterator.hasNext()){
+            NodeModel model = iterator.next();
+            if(model.isSelected()){
+                nodes.add(model.getNode());
+            }
+        }
+        return nodes;
     }
 }
