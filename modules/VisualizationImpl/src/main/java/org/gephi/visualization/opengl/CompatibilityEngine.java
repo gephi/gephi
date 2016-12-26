@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.apiimpl.Scheduler;
@@ -461,6 +462,18 @@ public class CompatibilityEngine extends AbstractEngine {
             NodeModel nodeModel = itr.next();
             if (nodeModel.isSelected()) {
                 selected.add(nodeModel);
+            }
+        }
+        return selected;
+    }
+
+    @Override
+    public List<Node> getSelectedUnderlyingNodes() {
+        List<Node> selected = new ArrayList<>();
+        for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext();) {
+            NodeModel nodeModel = itr.next();
+            if (nodeModel.isSelected()) {
+                selected.add(nodeModel.getNode());
             }
         }
         return selected;

@@ -46,6 +46,7 @@ import com.jogamp.opengl.glu.GLU;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import org.gephi.graph.api.Node;
 import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -69,7 +70,7 @@ import org.gephi.visualization.text.TextManager;
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractEngine implements Engine, VizArchitecture {
+ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     //Enums
     public enum Limits {
@@ -164,6 +165,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected abstract void stopAnimating();
 
     public abstract List<NodeModel> getSelectedNodes();
+    
+    public abstract List<Node> getSelectedUnderlyingNodes();
 
 //    public abstract Model[] getSelectedObjects(int modelClass);
 //    public abstract void selectNodes(NodeModel obj);

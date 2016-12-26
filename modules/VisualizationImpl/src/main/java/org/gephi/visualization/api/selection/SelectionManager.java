@@ -145,6 +145,10 @@ public class SelectionManager implements VizArchitecture {
         engine.resetSelection();
     }
 
+    public List<Node> getSelectedNodes() {
+        return engine.getSelectedUnderlyingNodes();
+    }
+
     public void selectNode(Node node) {
         if (!isCustomSelection()) {
             setCustomSelection();
