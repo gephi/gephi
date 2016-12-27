@@ -4,6 +4,6 @@ OpenIDE-Module-Layer: org/gephi/visualization/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/visualization/Bundle.properties
 OpenIDE-Module-Install: org/gephi/visualization/Installer.class
 OpenIDE-Module-Hide-Classpath-Packages: javax.media.openGL2.**, com.sun.openGL2.**, com.sun.gluegen.runtime.**
-OpenIDE-Module-Specification-Version: 0.9.1.1
+OpenIDE-Module-Specification-Version: 0.9.1.2
 OpenIDE-Module-Display-Category: Gephi Core
 OpenIDE-Module-Name: Visualization Module
