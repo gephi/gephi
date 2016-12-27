@@ -772,7 +772,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 targetId = reader.get(targetColumnHeader);
 
                 if (sourceId == null || sourceId.trim().isEmpty() || targetId == null || targetId.trim().isEmpty()) {
-                    Logger.getLogger("").log(Level.WARNING, "Ignoring record {0} due to empty source and/or target node ids", recordNumber);
+                    Logger.getLogger("").log(Level.WARNING, "Ignoring record number {0} due to empty source and/or target node ids", recordNumber);
                     continue;//No correct source and target ids were provided, ignore row
                 }
 

@@ -58,6 +58,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.netbeans.validation.api.Problems;
+import org.netbeans.validation.api.Severity;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
@@ -155,8 +156,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                             if (hasRowsMissingSourcesOrTargets()) {
                                 prblms.add(NbBundle.getMessage(ImportCSVUIVisualPanel1.class, 
                                     "ImportCSVUIVisualPanel1.validation.edges.empty-sources-or-targets"
-                                ));
-                                return false;
+                                ), Severity.WARNING);
                             }
                             return true;
                         }
@@ -362,7 +362,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
     }
 
     public boolean isCSVValid() {
-        return isValidFile() && hasColumns() && !hasColumnNamesRepeated && areValidColumnsForTable() &&!hasRowsMissingSourcesOrTargets();
+        return isValidFile() && hasColumns() && !hasColumnNamesRepeated && areValidColumnsForTable();
     }
 
     public boolean hasRowsMissingSourcesOrTargets() {

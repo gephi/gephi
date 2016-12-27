@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module-Localizing-Bundle: org/gephi/datalab/plugin/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.9.1.1
+OpenIDE-Module-Specification-Version: 0.9.1.2
 OpenIDE-Module-Display-Category: Plugin
 OpenIDE-Module-Name: Data Laboratory Plugin
