@@ -248,19 +248,19 @@ public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
                             File selectedFile = new File(chooser.getCurrentDirectory(), getDefaultFileName() + ".png");
                             chooser.setSelectedFile(selectedFile);
                             int returnFile = chooser.showSaveDialog(null);
-                            if (returnFile != JFileChooser.APPROVE_OPTION) {
-                                return;
+                            if (returnFile == JFileChooser.APPROVE_OPTION) {
+                                ScreenshotMaker.this.file = chooser.getSelectedFile();
+
+                                if (!ScreenshotMaker.this.file.getPath().endsWith(".png")) {
+                                    ScreenshotMaker.this.file = new File(ScreenshotMaker.this.file.getPath() + ".png");
+                                }
+
+                                //Save last path
+                                defaultDirectory = ScreenshotMaker.this.file.getParentFile().getAbsolutePath();
+                                NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, defaultDirectory);
+                            } else {
+                                ScreenshotMaker.this.file = null;
                             }
-                            ScreenshotMaker.this.file = chooser.getSelectedFile();
-
-                            if (!ScreenshotMaker.this.file.getPath().endsWith(".png")) {
-                                ScreenshotMaker.this.file = new File(ScreenshotMaker.this.file.getPath() + ".png");
-                            }
-
-                            //Save last path
-                            defaultDirectory = ScreenshotMaker.this.file.getParentFile().getAbsolutePath();
-                            NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, defaultDirectory);
-
                         } else {
                             ScreenshotMaker.this.file = new File(defaultDirectory, getDefaultFileName() + ".png");
                         }
