@@ -760,7 +760,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
             int recordNumber = 0;
             while (reader.readRecord()) {
-                String id;
+                String id = null;
                 Edge edge = null;
                 String sourceId, targetId;
                 Node source, target;
@@ -815,20 +815,19 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 //Prepare the correct edge to assign the attributes:
                 if (idColumnHeader != null) {
                     id = reader.get(idColumnHeader);
-                    if (id == null || id.isEmpty()) {
+                    if (id == null || id.trim().isEmpty()) {
                         edge = gec.createEdge(source, target, directed);//id null or empty, assign one
                     } else {
                         Edge edgeById = graph.getEdge(id);
 
                         if (edgeById == null) {
-                            edge = gec.createEdge(id, source, target, directed);
-                        }
-                        if (edge == null) {//Edge with that id already in graph
-                            edge = gec.createEdge(source, target, directed);
+                            edge = gec.createEdge(id, source, target, directed);//Create edge because no edge with that id exists
                         }
                     }
                 } else {
-                    edge = gec.createEdge(source, target, directed);
+                    if (findEdge(graph, null, source, target, directed) == null) {//Only create if it does not exist
+                        edge = gec.createEdge(source, target, directed);
+                    }
                 }
 
                 if (edge != null) {//Edge could be created because it does not already exist:
@@ -837,15 +836,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                         setAttributeValue(reader.get(columnHeaders.get(column)), edge, column);
                     }
                 } else {
-                    edge = graph.getEdge(source, target);
-                    if (edge == null && !directed) {
-                        //Not from source to target but undirected and reverse?
-                        edge = graph.getEdge(target, source);
-                    }
-                    
-                    if (edge != null && edge.isDirected() != directed) {
-                        edge = null;//Cannot use it since directedness is different
-                    }
+                    edge = findEdge(graph, id, source, target, directed);
 
                     if (edge != null) {
                         //Increase non dynamic edge weight with specified weight (if specified), else increase by 1:
@@ -873,8 +864,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     } else {
                         Logger.getLogger("").log(
                                 Level.WARNING,
-                                "Could not add edge [source = {0}, target = {1}, directed = {2}] to the graph and could not find the existing edge to add its weight",
-                                new Object[]{source.getId(), target.getId(), directed}
+                                "Could not add edge [id = {0}, source = {1}, target = {2}, directed = {3}] to the graph and could not find the existing edge to add its weight. Skipping edge",
+                                new Object[]{id, source.getId(), target.getId(), directed}
                         );
                     }
                 }
@@ -891,6 +882,79 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 reader.close();
             }
         }
+    }
+
+    /**
+     * Finds the same edge (same source, target, and directedness) in the graph. If directed = false (undirected), it finds the reversed undirected edge too.
+     *
+     * @param graph Graph
+     * @param id Optional id, to enforce the edge id to match too
+     * @param source Source node
+     * @param target Target node
+     * @param directed Directedness of the edge to find
+     * @return The found edge or null if not found
+     */
+    private Edge findEdge(Graph graph, String id, Node source, Node target, boolean directed) {
+        Edge edge = null;
+        if (id != null) {
+            //Try to find same edge with same id, if the id is provided:
+            edge = graph.getEdge(id);
+
+            boolean sameEdgeDefinition = true;
+
+            if (edge.isDirected() != directed) {
+                sameEdgeDefinition = false;
+            } else {
+                if (directed) {
+                    if (edge.getSource() != source || edge.getTarget() != target) {
+                        sameEdgeDefinition = false;
+                    }
+                } else {
+                    if (edge.getSource() == source) {
+                        if (edge.getTarget() != target) {
+                            sameEdgeDefinition = false;
+                        }
+                    } else if (edge.getTarget() == source) {
+                        if (edge.getSource() != target) {
+                            sameEdgeDefinition = false;
+                        }
+                    } else {
+                        //Edge data is different even when the id coincides:
+                        sameEdgeDefinition = false;
+                    }
+                }
+            }
+
+            if (!sameEdgeDefinition) {
+                Logger.getLogger("").log(
+                        Level.WARNING,
+                        "Found edge with correct id = {0} but different definition (wanted = [source = {1}, target = {2}, directed = {3}]; found = [source = {4}, target = {5}, directed = {6}]). Cannot use this edge",
+                        new Object[]{
+                            id,
+                            source.getId(), target.getId(), directed,
+                            edge.getSource().getId(), edge.getTarget().getId(), edge.isDirected()
+                        }
+                );
+                //Edge data is different even when the id coincides:
+                edge = null;
+            }
+        } else {
+            //Find a similar edge with any id:
+            if (edge == null) {
+                edge = graph.getEdge(source, target);
+            }
+
+            if (edge == null && !directed) {
+                //Not from source to target but undirected and reverse?
+                edge = graph.getEdge(target, source);
+            }
+
+            if (edge != null && edge.isDirected() != directed) {
+                edge = null;//Cannot use it since directedness is different
+            }
+        }
+
+        return edge;
     }
 
     @Override

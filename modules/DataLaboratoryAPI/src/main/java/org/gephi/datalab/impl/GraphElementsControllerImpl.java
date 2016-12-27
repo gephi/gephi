@@ -158,8 +158,8 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         } catch (Exception e) {
             Logger.getLogger("").log(
                     Level.SEVERE, 
-                    "Error when adding edge [source = {0}, target = {1}, directed = {2}, typeLabel = {3}] to the graph. Exception message: {4}",
-                    new Object[]{source.getId(), target.getId(), directed, typeLabel, e.getMessage()}
+                    "Error when adding edge [id = {0}, source = {1}, target = {2}, directed = {3}, typeLabel = {4}] to the graph. Exception message: {5}",
+                    new Object[]{id, source.getId(), target.getId(), directed, typeLabel, e.getMessage()}
             );
         }
         return null;
