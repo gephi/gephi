@@ -102,7 +102,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         if (value != null && !value.getClass().equals(targetType)) {
             try {
                 GraphModel graphModel = column.getTable().getGraph().getModel();
-                
+
                 String stringValue = AttributeUtils.print(value, graphModel.getTimeFormat(), graphModel.getTimeZone());
                 value = AttributeUtils.parse(stringValue, targetType);//Try to convert to target type from string representation
             } catch (Exception ex) {
@@ -691,7 +691,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         } finally {
             graph.readUnlockAll();
             graph.writeUnlock();
-            
+
             if (reader != null) {
                 reader.close();
             }
@@ -838,13 +838,15 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     }
                 } else {
                     edge = graph.getEdge(source, target);
-                    if (edge == null) {
+                    if (edge == null && !directed) {
                         //Not from source to target but undirected and reverse?
                         edge = graph.getEdge(target, source);
-                        if (edge != null && edge.isDirected()) {
-                            edge = null;//Cannot use it since it's actually directed
-                        }
                     }
+                    
+                    if (edge != null && edge.isDirected() != directed) {
+                        edge = null;//Cannot use it since directedness is different
+                    }
+
                     if (edge != null) {
                         //Increase non dynamic edge weight with specified weight (if specified), else increase by 1:
                         if (!isDynamicWeight) {
@@ -856,12 +858,24 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                                 } catch (NumberFormatException numberFormatException) {
                                     //Not valid weight, add 1
                                     edge.setWeight(edge.getWeight() + 1);
+
+                                    Logger.getLogger("").log(
+                                            Level.WARNING,
+                                            "Could not parse weight {0}, adding 1",
+                                            weight
+                                    );
                                 }
                             } else {
                                 //Add 1 (weight not specified)
                                 edge.setWeight(edge.getWeight() + 1);
                             }
                         }
+                    } else {
+                        Logger.getLogger("").log(
+                                Level.WARNING,
+                                "Could not add edge [source = {0}, target = {1}, directed = {2}] to the graph and could not find the existing edge to add its weight",
+                                new Object[]{source.getId(), target.getId(), directed}
+                        );
                     }
                 }
             }
@@ -872,7 +886,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         } finally {
             graph.readUnlockAll();
             graph.writeUnlock();
-            
+
             if (reader != null) {
                 reader.close();
             }
@@ -918,10 +932,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
         Object value;
         String strValue;
-        
+
         TimeFormat timeFormat = graph.getModel().getTimeFormat();
         DateTimeZone timeZone = graph.getModel().getTimeZone();
-        
+
         for (Node node : graph.getNodes().toArray()) {
             value = node.getAttribute(column);
             if (value != null) {
