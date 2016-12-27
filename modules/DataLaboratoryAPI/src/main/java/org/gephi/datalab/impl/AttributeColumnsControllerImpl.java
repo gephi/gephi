@@ -102,7 +102,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         if (value != null && !value.getClass().equals(targetType)) {
             try {
                 GraphModel graphModel = column.getTable().getGraph().getModel();
-                
+
                 String stringValue = AttributeUtils.print(value, graphModel.getTimeFormat(), graphModel.getTimeZone());
                 value = AttributeUtils.parse(stringValue, targetType);//Try to convert to target type from string representation
             } catch (Exception ex) {
@@ -691,7 +691,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         } finally {
             graph.readUnlockAll();
             graph.writeUnlock();
-            
+
             if (reader != null) {
                 reader.close();
             }
@@ -760,7 +760,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
             int recordNumber = 0;
             while (reader.readRecord()) {
-                String id;
+                String id = null;
                 Edge edge = null;
                 String sourceId, targetId;
                 Node source, target;
@@ -772,7 +772,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 targetId = reader.get(targetColumnHeader);
 
                 if (sourceId == null || sourceId.trim().isEmpty() || targetId == null || targetId.trim().isEmpty()) {
-                    Logger.getLogger("").log(Level.WARNING, "Ignoring record {0} due to empty source and/or target node ids", recordNumber);
+                    Logger.getLogger("").log(Level.WARNING, "Ignoring record number {0} due to empty source and/or target node ids", recordNumber);
                     continue;//No correct source and target ids were provided, ignore row
                 }
 
@@ -815,20 +815,19 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 //Prepare the correct edge to assign the attributes:
                 if (idColumnHeader != null) {
                     id = reader.get(idColumnHeader);
-                    if (id == null || id.isEmpty()) {
+                    if (id == null || id.trim().isEmpty()) {
                         edge = gec.createEdge(source, target, directed);//id null or empty, assign one
                     } else {
                         Edge edgeById = graph.getEdge(id);
 
                         if (edgeById == null) {
-                            edge = gec.createEdge(id, source, target, directed);
-                        }
-                        if (edge == null) {//Edge with that id already in graph
-                            edge = gec.createEdge(source, target, directed);
+                            edge = gec.createEdge(id, source, target, directed);//Create edge because no edge with that id exists
                         }
                     }
                 } else {
-                    edge = gec.createEdge(source, target, directed);
+                    if (findEdge(graph, null, source, target, directed) == null) {//Only create if it does not exist
+                        edge = gec.createEdge(source, target, directed);
+                    }
                 }
 
                 if (edge != null) {//Edge could be created because it does not already exist:
@@ -837,14 +836,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                         setAttributeValue(reader.get(columnHeaders.get(column)), edge, column);
                     }
                 } else {
-                    edge = graph.getEdge(source, target);
-                    if (edge == null) {
-                        //Not from source to target but undirected and reverse?
-                        edge = graph.getEdge(target, source);
-                        if (edge != null && edge.isDirected()) {
-                            edge = null;//Cannot use it since it's actually directed
-                        }
-                    }
+                    edge = findEdge(graph, id, source, target, directed);
+
                     if (edge != null) {
                         //Increase non dynamic edge weight with specified weight (if specified), else increase by 1:
                         if (!isDynamicWeight) {
@@ -856,12 +849,24 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                                 } catch (NumberFormatException numberFormatException) {
                                     //Not valid weight, add 1
                                     edge.setWeight(edge.getWeight() + 1);
+
+                                    Logger.getLogger("").log(
+                                            Level.WARNING,
+                                            "Could not parse weight {0}, adding 1",
+                                            weight
+                                    );
                                 }
                             } else {
                                 //Add 1 (weight not specified)
                                 edge.setWeight(edge.getWeight() + 1);
                             }
                         }
+                    } else {
+                        Logger.getLogger("").log(
+                                Level.WARNING,
+                                "Could not add edge [id = {0}, source = {1}, target = {2}, directed = {3}] to the graph and could not find the existing edge to add its weight. Skipping edge",
+                                new Object[]{id, source.getId(), target.getId(), directed}
+                        );
                     }
                 }
             }
@@ -872,11 +877,84 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         } finally {
             graph.readUnlockAll();
             graph.writeUnlock();
-            
+
             if (reader != null) {
                 reader.close();
             }
         }
+    }
+
+    /**
+     * Finds the same edge (same source, target, and directedness) in the graph. If directed = false (undirected), it finds the reversed undirected edge too.
+     *
+     * @param graph Graph
+     * @param id Optional id, to enforce the edge id to match too
+     * @param source Source node
+     * @param target Target node
+     * @param directed Directedness of the edge to find
+     * @return The found edge or null if not found
+     */
+    private Edge findEdge(Graph graph, String id, Node source, Node target, boolean directed) {
+        Edge edge = null;
+        if (id != null) {
+            //Try to find same edge with same id, if the id is provided:
+            edge = graph.getEdge(id);
+
+            boolean sameEdgeDefinition = true;
+
+            if (edge.isDirected() != directed) {
+                sameEdgeDefinition = false;
+            } else {
+                if (directed) {
+                    if (edge.getSource() != source || edge.getTarget() != target) {
+                        sameEdgeDefinition = false;
+                    }
+                } else {
+                    if (edge.getSource() == source) {
+                        if (edge.getTarget() != target) {
+                            sameEdgeDefinition = false;
+                        }
+                    } else if (edge.getTarget() == source) {
+                        if (edge.getSource() != target) {
+                            sameEdgeDefinition = false;
+                        }
+                    } else {
+                        //Edge data is different even when the id coincides:
+                        sameEdgeDefinition = false;
+                    }
+                }
+            }
+
+            if (!sameEdgeDefinition) {
+                Logger.getLogger("").log(
+                        Level.WARNING,
+                        "Found edge with correct id = {0} but different definition (wanted = [source = {1}, target = {2}, directed = {3}]; found = [source = {4}, target = {5}, directed = {6}]). Cannot use this edge",
+                        new Object[]{
+                            id,
+                            source.getId(), target.getId(), directed,
+                            edge.getSource().getId(), edge.getTarget().getId(), edge.isDirected()
+                        }
+                );
+                //Edge data is different even when the id coincides:
+                edge = null;
+            }
+        } else {
+            //Find a similar edge with any id:
+            if (edge == null) {
+                edge = graph.getEdge(source, target);
+            }
+
+            if (edge == null && !directed) {
+                //Not from source to target but undirected and reverse?
+                edge = graph.getEdge(target, source);
+            }
+
+            if (edge != null && edge.isDirected() != directed) {
+                edge = null;//Cannot use it since directedness is different
+            }
+        }
+
+        return edge;
     }
 
     @Override
@@ -918,10 +996,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
         Object value;
         String strValue;
-        
+
         TimeFormat timeFormat = graph.getModel().getTimeFormat();
         DateTimeZone timeZone = graph.getModel().getTimeZone();
-        
+
         for (Node node : graph.getNodes().toArray()) {
             value = node.getAttribute(column);
             if (value != null) {

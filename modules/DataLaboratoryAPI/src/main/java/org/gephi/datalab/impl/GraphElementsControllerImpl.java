@@ -44,6 +44,8 @@ package org.gephi.datalab.impl;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
@@ -148,22 +150,19 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     
     @Override
     public Edge createEdge(String id, Node source, Node target, boolean directed, Object typeLabel, Graph graph) {
-        Edge newEdge;
-        if (directed) {
-            newEdge = buildEdge(graph, id, source, target, true, typeLabel);
+        Edge newEdge = buildEdge(graph, id, source, target, directed, typeLabel);
+        try {
             if (graph.addEdge(newEdge)) {//The edge will be created if it does not already exist.
                 return newEdge;
-            } else {
-                return null;
             }
-        } else {
-            newEdge = buildEdge(graph, id, source, target, false, typeLabel);
-            if (graph.addEdge(newEdge)) {//The edge will be created if it does not already exist.
-                return newEdge;
-            } else {
-                return null;
-            }
+        } catch (Exception e) {
+            Logger.getLogger("").log(
+                    Level.SEVERE, 
+                    "Error when adding edge [id = {0}, source = {1}, target = {2}, directed = {3}, typeLabel = {4}] to the graph. Exception message: {5}",
+                    new Object[]{id, source.getId(), target.getId(), directed, typeLabel, e.getMessage()}
+            );
         }
+        return null;
     }
 
     @Override
