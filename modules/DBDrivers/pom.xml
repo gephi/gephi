@@ -19,17 +19,17 @@
        <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.8.11.1</version>
+            <version>3.15.1</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.36</version>
+            <version>6.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.4-1202-jdbc42</version>
+            <version>9.4.1212.jre7</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
