@@ -41,10 +41,9 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.layout.plugin.openord;
 
-import gnu.trove.TIntFloatHashMap;
-import gnu.trove.TIntFloatIterator;
-import gnu.trove.TIntHashingStrategy;
-import gnu.trove.TIntIntHashMap;
+import gnu.trove.iterator.TIntFloatIterator;
+import gnu.trove.map.hash.TIntFloatHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -119,13 +118,6 @@ public class OpenOrdLayout implements Layout, LongTask {
             //Prepare data structure - nodes and neighbors map
             Node[] nodes = new Node[numNodes];
             TIntFloatHashMap[] neighbors = new TIntFloatHashMap[numNodes];
-            TIntHashingStrategy hashingStrategy = new TIntHashingStrategy() {
-
-                @Override
-                public int computeHashCode(int i) {
-                    return i;
-                }
-            };
 
             //Load nodes and edges
             TIntIntHashMap idMap = new TIntIntHashMap(numNodes, 1f);
@@ -147,10 +139,10 @@ public class OpenOrdLayout implements Layout, LongTask {
                 if (source != target) {        //No self-loop
                     float weight = (float) e.getWeight();
                     if (neighbors[source] == null) {
-                        neighbors[source] = new TIntFloatHashMap(hashingStrategy);
+                        neighbors[source] = new TIntFloatHashMap();
                     }
                     if (neighbors[target] == null) {
-                        neighbors[target] = new TIntFloatHashMap(hashingStrategy);
+                        neighbors[target] = new TIntFloatHashMap();
                     }
                     neighbors[source].put(target, weight);
                     neighbors[target].put(source, weight);
@@ -225,7 +217,7 @@ public class OpenOrdLayout implements Layout, LongTask {
                 for (int i = 0; i < neighbors.length; i++) {
                     if (i % numThreads == w.getId() && neighbors[i] != null) {
                         int neighborsCount = neighbors[i].size();
-                        neighborsCopy[i] = new TIntFloatHashMap(neighborsCount, 1f, hashingStrategy);
+                        neighborsCopy[i] = new TIntFloatHashMap(neighborsCount, 1f);
                         for (TIntFloatIterator itr = neighbors[i].iterator(); itr.hasNext();) {
                             itr.advance();
                             float weight = normalizeWeight(itr.value(), highestSimilarity);
