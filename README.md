@@ -1,6 +1,7 @@
 # Gephi - The Open Graph Viz Platform
 
 [![Build Status](https://travis-ci.org/gephi/gephi.svg?branch=master)](https://travis-ci.org/gephi/gephi)
+[![Dependency Status](https://www.versioneye.com/java/org.gephi:gephi/badge?style=flat-square)](https://www.versioneye.com/java/org.gephi:gephi)
 
 [Gephi](http://gephi.org) is an award-winning open-source platform for visualizing and manipulating large graphs. It runs on Windows, Mac OS X and Linux. Localization is available in French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese and Czech.
 
