@@ -57,6 +57,7 @@ before_script:
 script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then travis_retry mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.defaultKeyring=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring=src/travis/pubring.gpg -Dgpg.secretKeyring=src/travis/secretring.gpg clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,replace-windows-icon,create-exe,create-targz;fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then travis_retry mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.defaultKeyring=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring=src/travis/pubring.gpg -Dgpg.secretKeyring=src/travis/secretring.gpg clean deploy -P deployment,create-dmg;fi
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then mvn versioneye:update; fi
 
 after_script:
   # Clean OS X keychain
