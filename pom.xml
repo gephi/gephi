@@ -201,7 +201,7 @@
 
         <gephi.maven-clean-plugin.version>3.0.0</gephi.maven-clean-plugin.version>
 
-        <gephi.maven-compiler-plugin.version>3.6.0</gephi.maven-compiler-plugin.version>
+        <gephi.maven-compiler-plugin.version>3.6.1</gephi.maven-compiler-plugin.version>
 
         <gephi.maven-dependency-plugin.version>3.0.0</gephi.maven-dependency-plugin.version>
 
@@ -223,9 +223,9 @@
 
         <gephi.maven-release-plugin.version>2.5.3</gephi.maven-release-plugin.version>
 
-        <gephi.maven-resources-plugin.version>3.0.1</gephi.maven-resources-plugin.version>
+        <gephi.maven-resources-plugin.version>3.0.2</gephi.maven-resources-plugin.version>
 
-        <gephi.maven-site-plugin.version>3.5.1</gephi.maven-site-plugin.version>
+        <gephi.maven-site-plugin.version>3.6</gephi.maven-site-plugin.version>
 
         <gephi.maven-source-plugin.version>3.0.1</gephi.maven-source-plugin.version>
 
