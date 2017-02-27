@@ -137,7 +137,7 @@
         <netbeans.version>RELEASE82</netbeans.version>
         
         <!-- Graphstore version -->
-        <graphstore.version>0.5.5</graphstore.version>
+        <graphstore.version>0.5.6</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
@@ -231,13 +231,13 @@
 
         <gephi.maven-surefire-plugin.version>2.19.1</gephi.maven-surefire-plugin.version>
 
-        <gephi.build-helper-maven-plugin.version>1.12</gephi.build-helper-maven-plugin.version>
+        <gephi.build-helper-maven-plugin.version>3.0.0</gephi.build-helper-maven-plugin.version>
 
         <gephi.nbm-maven-plugin.version>4.1</gephi.nbm-maven-plugin.version>
         
         <gephi.wagon-maven-plugin.version>1.0</gephi.wagon-maven-plugin.version>  
         
-        <gephi.nexus-staging-maven-plugin.version>1.6.7</gephi.nexus-staging-maven-plugin.version>
+        <gephi.nexus-staging-maven-plugin.version>1.6.8</gephi.nexus-staging-maven-plugin.version>
         
         <gephi.site-maven-plugin.version>0.12</gephi.site-maven-plugin.version>
         
