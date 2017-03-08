@@ -156,7 +156,7 @@
         <gephi.javac.fork>true</gephi.javac.fork>
         
         <!-- Testing settings -->
-        <gephi.testng.version>6.10</gephi.testng.version>
+        <gephi.testng.version>6.11</gephi.testng.version>
         <gephi.test.maxMemory>768M</gephi.test.maxMemory>
         <gephi.test.reportsDirectory>${project.build.directory}/surefire-reports/plain</gephi.test.reportsDirectory>
         <gephi.test.failureIgnore>${testFailureIgnore}</gephi.test.failureIgnore>
@@ -192,6 +192,11 @@
         
         <!-- GitHub site-plugin authentification -->
         <github.global.server>github</github.global.server>
+        
+        <!--==== Dependency Versions ==================================================================================-->
+        
+        <gephi.slf4j.version>1.7.24</gephi.slf4j.version>
+        <gephi.sentry.raven.version>7.8.3</gephi.sentry.raven.version>
         
         <!--==== Plugin Versions ==================================================================================-->
 
@@ -752,6 +757,27 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>ui-library-wrapper</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${gephi.slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-jdk14</artifactId>
+                <version>${gephi.slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.getsentry.raven</groupId>
+                <artifactId>raven</artifactId>
+                <version>${gephi.sentry.raven.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>
