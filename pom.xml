@@ -195,7 +195,7 @@
         
         <!--==== Dependency Versions ==================================================================================-->
         
-        <gephi.slf4j.version>1.7.24</gephi.slf4j.version>
+        <gephi.slf4j.version>1.7.25</gephi.slf4j.version>
         <gephi.sentry.raven.version>7.8.5</gephi.sentry.raven.version>
         
         <!--==== Plugin Versions ==================================================================================-->
