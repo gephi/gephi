@@ -59,7 +59,7 @@
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
-            <version>5.5.10</version>
+            <version>5.5.11</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>

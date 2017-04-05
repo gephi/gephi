@@ -196,7 +196,7 @@
         <!--==== Dependency Versions ==================================================================================-->
         
         <gephi.slf4j.version>1.7.25</gephi.slf4j.version>
-        <gephi.sentry.raven.version>7.8.5</gephi.sentry.raven.version>
+        <gephi.sentry.raven.version>7.8.6</gephi.sentry.raven.version>
         
         <!--==== Plugin Versions ==================================================================================-->
 
@@ -246,7 +246,7 @@
         
         <gephi.site-maven-plugin.version>0.12</gephi.site-maven-plugin.version>
         
-        <versioneye-maven-plugin.version>3.11.1</versioneye-maven-plugin.version>
+        <versioneye-maven-plugin.version>3.11.2</versioneye-maven-plugin.version>
     </properties>
     
     <!-- Maven required version -->
