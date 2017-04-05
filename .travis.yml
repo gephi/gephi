@@ -5,8 +5,7 @@ matrix:
     - os: linux
       jdk: oraclejdk8
     - os: osx
-      osx_image: xcode7.3
-
+      osx_image: xcode8.1
 branches:
   only:
     - master
