@@ -5,7 +5,7 @@ matrix:
     - os: linux
       jdk: oraclejdk8
     - os: osx
-      osx_image: xcode8.1
+      osx_image: xcode7.3
 branches:
   only:
     - master
@@ -37,6 +37,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./src/travis/add-key.sh;fi
 
   # GPG install
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update && brew unlink gnupg && brew install gpg;fi
   - openssl aes-256-cbc -k "$GPG_PUBRING_ENCRYPTION" -in src/travis/pubring.gpg.enc -d -a -out src/travis/pubring.gpg
   - openssl aes-256-cbc -k "$GPG_SECRETRING_ENCRYPTION" -in src/travis/secretring.gpg.enc -d -a -out src/travis/secretring.gpg
 
