@@ -37,7 +37,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./src/travis/add-key.sh;fi
 
   # GPG install
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update && brew unlink gnupg && brew install gnupg@2.0 && echo 'export PATH="/usr/local/opt/gnupg@2.0/bin:$PATH"' >> ~/.bash_profile && echo 'alias gpg="gpg2"' >> ~/.bash_profile;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update && brew unlink gnupg && brew install gnupg@2.0 && echo 'export PATH="/usr/local/opt/gnupg@2.0/bin:$PATH"' >> ~/.bash_profile && ls -la /usr/local/opt/gnupg@2.0/bin && echo 'alias gpg="gpg2"' >> ~/.bash_profile;fi
   - openssl aes-256-cbc -k "$GPG_PUBRING_ENCRYPTION" -in src/travis/pubring.gpg.enc -d -a -out src/travis/pubring.gpg
   - openssl aes-256-cbc -k "$GPG_SECRETRING_ENCRYPTION" -in src/travis/secretring.gpg.enc -d -a -out src/travis/secretring.gpg
 
