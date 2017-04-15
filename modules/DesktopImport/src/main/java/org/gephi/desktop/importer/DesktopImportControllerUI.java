@@ -41,6 +41,7 @@
  */
 package org.gephi.desktop.importer;
 
+import java.awt.Dialog;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -50,6 +51,7 @@ import java.io.Reader;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +70,7 @@ import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.ImportController;
+import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.DatabaseImporter;
 import org.gephi.io.importer.spi.FileImporter;
@@ -78,6 +81,7 @@ import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.ProcessorUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -85,12 +89,14 @@ import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.WizardDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.io.ReaderInputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -128,86 +134,84 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
     @Override
     public void importFile(FileObject fileObject) {
-        try {
-            final FileImporter importer = controller.getFileImporter(FileUtil.toFile(fileObject));
-            if (importer == null) {
-                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(msg);
-                return;
-            }
-
-            //MRU
-            MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
-            mostRecentFiles.addFile(fileObject.getPath());
-
-            ImporterUI ui = controller.getUI(importer);
-            if (ui != null) {
-                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
-                JPanel panel = ui.getPanel();
-                FileImporter[] fi = (FileImporter[]) Array.newInstance(importer.getClass(), 1);
-                fi[0] = importer;
-                ui.setup(fi);
-                final DialogDescriptor dd = new DialogDescriptor(panel, title);
-                if (panel instanceof ValidationPanel) {
-                    ValidationPanel vp = (ValidationPanel) panel;
-                    vp.addChangeListener(new ChangeListener() {
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                        }
-                    });
-                }
-
-                Object result = DialogDisplayer.getDefault().notify(dd);
-                if (!result.equals(NotifyDescriptor.OK_OPTION)) {
-                    ui.unsetup(false);
-                    return;
-                }
-                ui.unsetup(true);
-            }
-
-            LongTask task = null;
-            if (importer instanceof LongTask) {
-                task = (LongTask) importer;
-            }
-
-            //Execute task
-            fileObject = getArchivedFile(fileObject);
-            final String containerSource = fileObject.getNameExt();
-            final InputStream stream = fileObject.getInputStream();
-            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
-            executor.execute(task, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Container container = controller.importFile(stream, importer);
-                        if (container != null) {
-                            container.setSource(containerSource);
-                            finishImport(container);
-                        }
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-            }, taskName, errorHandler);
-        } catch (Exception ex) {
-            Logger.getLogger("").log(Level.WARNING, "", ex);
-        }
+        importFiles(new FileObject[]{fileObject});
     }
 
     @Override
     public void importFiles(FileObject[] fileObjects) {
+        MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
+
+        Reader[] readers = new Reader[fileObjects.length];
+        FileImporter[] importers = new FileImporter[fileObjects.length];
         try {
-            Map<ImporterUI, List<FileImporter>> importerUIs = new HashMap<>();
-            List<FileImporter> importers = new ArrayList<>();
-            for (FileObject fileObject : fileObjects) {
-                FileImporter importer = controller.getFileImporter(FileUtil.toFile(fileObject));
-                if (importer == null) {
+            for (int i = 0; i < fileObjects.length; i++) {
+                FileObject fileObject = fileObjects[i];
+                fileObject = ImportUtils.getArchivedFile(fileObject);
+
+                importers[i] = controller.getFileImporter(FileUtil.toFile(fileObject));
+
+                if (importers[i] == null) {
                     NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
                     DialogDisplayer.getDefault().notify(msg);
                     return;
                 }
-                importers.add(importer);
+
+                readers[i] = ImportUtils.getTextReader(fileObject);
+
+                //MRU
+                mostRecentFiles.addFile(fileObject.getPath());
+            }
+
+            importFiles(readers, importers, fileObjects);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void importStream(final InputStream stream, String importerName) {
+        final FileImporter importer = controller.getFileImporter(importerName);
+        if (importer == null) {
+            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
+            DialogDisplayer.getDefault().notify(msg);
+            return;
+        }
+
+        try {
+            Reader reader = ImportUtils.getTextReader(stream);
+            importFile(reader, importer);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void importFile(final Reader reader, String importerName) {
+        final FileImporter importer = controller.getFileImporter(importerName);
+        if (importer == null) {
+            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
+            DialogDisplayer.getDefault().notify(msg);
+            return;
+        }
+
+        importFile(reader, importer);
+    }
+
+    private void importFile(final Reader reader, final FileImporter importer) {
+        importFiles(new Reader[]{reader}, new FileImporter[]{importer});
+    }
+
+    private void importFiles(final Reader[] readers, final FileImporter[] importers) {
+        importFiles(readers, importers, null);
+    }
+
+    private void importFiles(final Reader[] readers, final FileImporter[] importers, FileObject[] fileObjects) {
+        try {
+            File[] files = new File[readers.length];
+
+            Map<ImporterUI, List<FileImporter>> importerUIs = new HashMap<>();
+            for (int i = 0; i < importers.length; i++) {
+                FileImporter importer = importers[i];
                 ImporterUI ui = controller.getUI(importer);
                 if (ui != null) {
                     List<FileImporter> l = importerUIs.get(ui);
@@ -218,203 +222,133 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                     l.add(importer);
                 }
 
-                //MRU
-                MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
-                mostRecentFiles.addFile(fileObject.getPath());
+                if (importer instanceof FileImporter.FileAware) {
+                    try (Reader reader = readers[i]) {
+                        File file;
+                        if (fileObjects != null) {
+                            file = FileUtil.toFile(fileObjects[i]);
+                        } else {
+                            //There is no source file but the importer needs it, create temporary copy:
+                            file = TempDirUtils.createTempDir().createFile("file_copy_" + i);
+                            try (FileOutputStream fos = new FileOutputStream(file)) {
+                                FileUtil.copy(new ReaderInputStream(reader, "UTF-8"), fos);
+                            }
+                        }
+
+                        files[i] = file;
+                        ((FileImporter.FileAware) importer).setFile(file);
+                    }
+                }
             }
 
             for (Map.Entry<ImporterUI, List<FileImporter>> entry : importerUIs.entrySet()) {
                 ImporterUI ui = entry.getKey();
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
                 JPanel panel = ui.getPanel();
+
                 FileImporter[] fi = (FileImporter[]) entry.getValue().toArray((FileImporter[]) Array.newInstance(entry.getValue().get(0).getClass(), 0));
                 ui.setup(fi);
-                final DialogDescriptor dd = new DialogDescriptor(panel, title);
-                if (panel instanceof ValidationPanel) {
-                    ValidationPanel vp = (ValidationPanel) panel;
-                    vp.addChangeListener(new ChangeListener() {
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                        }
-                    });
+
+                if (panel != null) {
+                    final DialogDescriptor dd = new DialogDescriptor(panel, title);
+                    if (panel instanceof ValidationPanel) {
+                        ValidationPanel vp = (ValidationPanel) panel;
+                        vp.addChangeListener(new ChangeListener() {
+                            @Override
+                            public void stateChanged(ChangeEvent e) {
+                                dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                            }
+                        });
+                    }
+
+                    Object result = DialogDisplayer.getDefault().notify(dd);
+                    if (!result.equals(NotifyDescriptor.OK_OPTION)) {
+                        ui.unsetup(false);
+                        return;
+                    }
                 }
 
-                Object result = DialogDisplayer.getDefault().notify(dd);
-                if (!result.equals(NotifyDescriptor.OK_OPTION)) {
-                    ui.unsetup(false);
-                    return;
+                if (ui instanceof ImporterUI.WithWizard) {
+                    boolean finishedOk = showWizard(ui, ((ImporterUI.WithWizard) ui).getWizardDescriptor());
+                    if (!finishedOk) {
+                        ui.unsetup(false);
+                        return;
+                    }
                 }
+
                 ui.unsetup(true);
             }
 
-            final List<Container> result = new ArrayList<>();
-            for (int i = 0; i < importers.size(); i++) {
-                final FileImporter importer = importers.get(i);
-                FileObject fileObject = fileObjects[i];
-                LongTask task = null;
-                if (importer instanceof LongTask) {
-                    task = (LongTask) importer;
-                }
-
-                //Execute task
-                fileObject = getArchivedFile(fileObject);
-                final String containerSource = fileObject.getNameExt();
-                final InputStream stream = fileObject.getInputStream();
-                String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
-                executor.execute(task, new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Container container = controller.importFile(stream, importer);
-                            if (container != null) {
-                                container.setSource(containerSource);
-                                result.add(container);
-                            }
-                        } catch (Exception ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    }
-                }, taskName, errorHandler);
+            final List<Container> results = new ArrayList<>();
+            for (int i = 0; i < importers.length; i++) {
+                doImport(results, readers[i], files[i], importers[i]);
             }
+
             executor.execute(null, new Runnable() {
 
                 @Override
                 public void run() {
-                    if (!result.isEmpty()) {
-                        finishImport(result.toArray(new Container[0]));
+                    if (!results.isEmpty()) {
+                        finishImport(results.toArray(new Container[0]));
                     }
                 }
             });
         } catch (Exception ex) {
-            Logger.getLogger("").log(Level.WARNING, "", ex);
+            Exceptions.printStackTrace(ex);
         }
     }
 
-    @Override
-    public void importStream(final InputStream stream, String importerName) {
-        try {
-            final FileImporter importer = controller.getFileImporter(importerName);
-            if (importer == null) {
-                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(msg);
-                return;
-            }
-
-            ImporterUI ui = controller.getUI(importer);
-            if (ui != null) {
-                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
-                JPanel panel = ui.getPanel();
-                FileImporter[] fi = (FileImporter[]) Array.newInstance(importer.getClass(), 1);
-                fi[0] = importer;
-                ui.setup(fi);
-                final DialogDescriptor dd = new DialogDescriptor(panel, title);
-                if (panel instanceof ValidationPanel) {
-                    ValidationPanel vp = (ValidationPanel) panel;
-                    vp.addChangeListener(new ChangeListener() {
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                        }
-                    });
-                }
-
-                Object result = DialogDisplayer.getDefault().notify(dd);
-                if (!result.equals(NotifyDescriptor.OK_OPTION)) {
-                    ui.unsetup(false);
-                    return;
-                }
-                ui.unsetup(true);
-            }
-
-            LongTask task = null;
-            if (importer instanceof LongTask) {
-                task = (LongTask) importer;
-            }
-
-            //Execute task
-            final String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource", importerName);
-            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
-            executor.execute(task, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Container container = controller.importFile(stream, importer);
-                        if (container != null) {
-                            container.setSource(containerSource);
-                            finishImport(container);
-                        }
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-            }, taskName, errorHandler);
-        } catch (Exception ex) {
-            Logger.getLogger("").log(Level.WARNING, "", ex);
+    private void doImport(final List<Container> results, final Reader reader, final File file, final FileImporter importer) {
+        LongTask task = null;
+        if (importer instanceof LongTask) {
+            task = (LongTask) importer;
         }
+
+        if (file == null && reader == null) {
+            throw new NullPointerException("Null file and reader!");
+        }
+
+        if (importer == null) {
+            throw new NullPointerException("Null importer!");
+        }
+
+        //Execute task
+        final String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource", importer.getClass().getSimpleName());
+        String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
+        executor.execute(task, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Container container;
+                    if (importer instanceof FileImporter.FileAware && file != null) {
+                        container = controller.importFile(file, importer);
+                    } else {
+                        container = controller.importFile(reader, importer);
+                    }
+
+                    if (container != null) {
+                        container.setSource(containerSource);
+                        results.add(container);
+                    }
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }, taskName, errorHandler);
     }
 
-    @Override
-    public void importFile(final Reader reader, String importerName) {
-        try {
-            final FileImporter importer = controller.getFileImporter(importerName);
-            if (importer == null) {
-                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(msg);
-                return;
-            }
-
-            ImporterUI ui = controller.getUI(importer);
-            if (ui != null) {
-                FileImporter[] fi = (FileImporter[]) Array.newInstance(importer.getClass(), 1);
-                fi[0] = importer;
-                ui.setup(fi);
-                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
-                JPanel panel = ui.getPanel();
-                final DialogDescriptor dd = new DialogDescriptor(panel, title);
-                if (panel instanceof ValidationPanel) {
-                    ValidationPanel vp = (ValidationPanel) panel;
-                    vp.addChangeListener(new ChangeListener() {
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                        }
-                    });
-                }
-
-                Object result = DialogDisplayer.getDefault().notify(dd);
-                if (!result.equals(NotifyDescriptor.OK_OPTION)) {
-                    ui.unsetup(false);
-                    return;
-                }
-                ui.unsetup(true);
-            }
-
-            LongTask task = null;
-            if (importer instanceof LongTask) {
-                task = (LongTask) importer;
-            }
-
-            //Execute task
-            final String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource", importerName);
-            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
-            executor.execute(task, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Container container = controller.importFile(reader, importer);
-                        if (container != null) {
-                            container.setSource(containerSource);
-                            finishImport(container);
-                        }
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-            }, taskName, errorHandler);
-        } catch (Exception ex) {
-            Logger.getLogger("").log(Level.WARNING, "", ex);
+    private boolean showWizard(ImporterUI importer, WizardDescriptor wizardDescriptor) {
+        if (wizardDescriptor == null) {
+            return true;//Nothing to show
         }
+
+        wizardDescriptor.setTitleFormat(new MessageFormat("{0} ({1})"));
+        wizardDescriptor.setTitle(importer.getDisplayName());
+        Dialog dialog = DialogDisplayer.getDefault().createDialog(wizardDescriptor);
+        dialog.setVisible(true);
+        dialog.toFront();
+
+        return wizardDescriptor.getValue() == WizardDescriptor.FINISH_OPTION;
     }
 
     @Override
@@ -627,18 +561,33 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         }
                     });
                 }
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (InvocationTargetException ex) {
+            } catch (InterruptedException | InvocationTargetException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
+
         if (validResult.isResult()) {
             controller.process(containers, processor, workspace);
+
+            Report report = processor.getReport();
+            if (report != null && !report.isEmpty()) {
+                showProcessorIssues(report);
+            }
 
             //StatusLine notify
             StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.status.multiImportSuccess", containers.length));
         }
+    }
+
+    private void showProcessorIssues(Report report) {
+        ProcessorIssuesReportPanel issuesReport = new ProcessorIssuesReportPanel();
+        issuesReport.setData(report);
+
+        DialogDescriptor dd = new DialogDescriptor(issuesReport, NbBundle.getMessage(DesktopImportControllerUI.class, "ProcessorIssuesReportPanel.title"));
+        dd.setOptions(new Object[]{NbBundle.getMessage(DesktopImportControllerUI.class, "ProcessorIssuesReportPanel.close")});
+
+        DialogDisplayer.getDefault().notify(dd);
+        issuesReport.destroy();
     }
 
     private static class ValidResult {
@@ -654,60 +603,6 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         }
     }
 
-    private FileObject getArchivedFile(FileObject fileObject) {
-        // ZIP and JAR archives
-        if (FileUtil.isArchiveFile(fileObject)) {
-            try {
-                fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
-            } catch (Exception e) {
-                throw new RuntimeException("The archive can't be opened, be sure it has no password and contains a single file, without folders");
-            }
-        } else { // GZ or BZIP2 archives
-            boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
-            boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
-            if (isGz || isBzip) {
-                try {
-                    String[] splittedFileName = fileObject.getName().split("\\.");
-                    if (splittedFileName.length < 2) {
-                        return fileObject;
-                    }
-
-                    String fileExt1 = splittedFileName[splittedFileName.length - 1];
-                    String fileExt2 = splittedFileName[splittedFileName.length - 2];
-
-                    File tempFile = null;
-                    if (fileExt1.equalsIgnoreCase("tar")) {
-                        String fname = fileObject.getName().replaceAll("\\.tar$", "");
-                        fname = fname.replace(fileExt2, "");
-                        tempFile = File.createTempFile(fname, "." + fileExt2);
-                        // Untar & unzip
-                        if (isGz) {
-                            tempFile = getGzFile(fileObject, tempFile, true);
-                        } else {
-                            tempFile = getBzipFile(fileObject, tempFile, true);
-                        }
-                    } else {
-                        String fname = fileObject.getName();
-                        fname = fname.replace(fileExt1, "");
-                        tempFile = File.createTempFile(fname, "." + fileExt1);
-                        // Unzip
-                        if (isGz) {
-                            tempFile = getGzFile(fileObject, tempFile, false);
-                        } else {
-                            tempFile = getBzipFile(fileObject, tempFile, false);
-                        }
-                    }
-                    tempFile.deleteOnExit();
-                    tempFile = FileUtil.normalizeFile(tempFile);
-                    fileObject = FileUtil.toFileObject(tempFile);
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
-        }
-        return fileObject;
-    }
-
     @Override
     public ImportController getImportController() {
         return controller;
@@ -720,158 +615,5 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
         }
         return null;
-    }
-
-    /**
-     * Uncompress a Bzip2 file.
-     */
-    private static File getBzipFile(FileObject in, File out, boolean isTar) throws IOException {
-
-        // Stream buffer
-        final int BUFF_SIZE = 8192;
-        final byte[] buffer = new byte[BUFF_SIZE];
-
-        BZip2CompressorInputStream inputStream = null;
-        FileOutputStream outStream = null;
-
-        try {
-            FileInputStream is = new FileInputStream(in.getPath());
-            inputStream = new BZip2CompressorInputStream(is);
-            outStream = new FileOutputStream(out.getAbsolutePath());
-
-            if (isTar) {
-                // Read Tar header
-                int remainingBytes = readTarHeader(inputStream);
-
-                // Read content
-                ByteBuffer bb = ByteBuffer.allocateDirect(4 * BUFF_SIZE);
-                byte[] tmpCache = new byte[BUFF_SIZE];
-                int nRead, nGet;
-                while ((nRead = inputStream.read(tmpCache)) != -1) {
-                    if (nRead == 0) {
-                        continue;
-                    }
-                    bb.put(tmpCache);
-                    bb.position(0);
-                    bb.limit(nRead);
-                    while (bb.hasRemaining() && remainingBytes > 0) {
-                        nGet = Math.min(bb.remaining(), BUFF_SIZE);
-                        nGet = Math.min(nGet, remainingBytes);
-                        bb.get(buffer, 0, nGet);
-                        outStream.write(buffer, 0, nGet);
-                        remainingBytes -= nGet;
-                    }
-                    bb.clear();
-                }
-            } else {
-                int len;
-                while ((len = inputStream.read(buffer)) > 0) {
-                    outStream.write(buffer, 0, len);
-                }
-            }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-            if (outStream != null) {
-                outStream.close();
-            }
-        }
-
-        return out;
-    }
-
-    /**
-     * Uncompress a GZIP file.
-     */
-    private static File getGzFile(FileObject in, File out, boolean isTar) throws IOException {
-
-        // Stream buffer
-        final int BUFF_SIZE = 8192;
-        final byte[] buffer = new byte[BUFF_SIZE];
-
-        GZIPInputStream inputStream = null;
-        FileOutputStream outStream = null;
-
-        try {
-            inputStream = new GZIPInputStream(new FileInputStream(in.getPath()));
-            outStream = new FileOutputStream(out);
-
-            if (isTar) {
-                // Read Tar header
-                int remainingBytes = readTarHeader(inputStream);
-
-                // Read content
-                ByteBuffer bb = ByteBuffer.allocateDirect(4 * BUFF_SIZE);
-                byte[] tmpCache = new byte[BUFF_SIZE];
-                int nRead, nGet;
-                while ((nRead = inputStream.read(tmpCache)) != -1) {
-                    if (nRead == 0) {
-                        continue;
-                    }
-                    bb.put(tmpCache);
-                    bb.position(0);
-                    bb.limit(nRead);
-                    while (bb.hasRemaining() && remainingBytes > 0) {
-                        nGet = Math.min(bb.remaining(), BUFF_SIZE);
-                        nGet = Math.min(nGet, remainingBytes);
-                        bb.get(buffer, 0, nGet);
-                        outStream.write(buffer, 0, nGet);
-                        remainingBytes -= nGet;
-                    }
-                    bb.clear();
-                }
-            } else {
-                int len;
-                while ((len = inputStream.read(buffer)) > 0) {
-                    outStream.write(buffer, 0, len);
-                }
-            }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-            if (outStream != null) {
-                outStream.close();
-            }
-        }
-
-        return out;
-    }
-
-    private static int readTarHeader(InputStream inputStream) throws IOException {
-        // Tar bytes
-        final int FILE_SIZE_OFFSET = 124;
-        final int FILE_SIZE_LENGTH = 12;
-        final int HEADER_LENGTH = 512;
-
-        ignoreBytes(inputStream, FILE_SIZE_OFFSET);
-        String fileSizeLengthOctalString = readString(inputStream, FILE_SIZE_LENGTH).trim();
-        final int fileSize = Integer.parseInt(fileSizeLengthOctalString, 8);
-
-        ignoreBytes(inputStream, HEADER_LENGTH - (FILE_SIZE_OFFSET + FILE_SIZE_LENGTH));
-
-        return fileSize;
-    }
-
-    private static void ignoreBytes(InputStream inputStream, int numberOfBytes) throws IOException {
-        for (int counter = 0; counter < numberOfBytes; counter++) {
-            inputStream.read();
-        }
-    }
-
-    private static String readString(InputStream inputStream, int numberOfBytes) throws IOException {
-        return new String(readBytes(inputStream, numberOfBytes));
-    }
-
-    private static byte[] readBytes(InputStream inputStream, int numberOfBytes) throws IOException {
-        byte[] readBytes = new byte[numberOfBytes];
-        inputStream.read(readBytes);
-
-        return readBytes;
     }
 }

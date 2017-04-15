@@ -43,6 +43,7 @@ package org.gephi.io.processor.spi;
 
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.ImportController;
+import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.Importer;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.progress.ProgressTicket;
@@ -98,4 +99,10 @@ public interface Processor {
      * @param progressTicket progress ticket
      */
     public void setProgressTicket(ProgressTicket progressTicket);
+    
+    /**
+     * Returns the report of the processor after processing is done, with possible warnings and errors.
+     * @return Processor report after processing
+     */
+    public Report getReport();
 }

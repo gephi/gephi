@@ -67,6 +67,7 @@ public final class Report {
     //File
     private final File file;
     private Writer writer;
+    private boolean empty = true;
 
     public Report() {
         File f = null;
@@ -78,6 +79,10 @@ public final class Report {
         } finally {
             file = f;
         }
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 
     /**
@@ -115,6 +120,7 @@ public final class Report {
                 writer = new Writer(file);
             }
             writer.append(new ReportEntry(message));
+            empty = false;
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -138,6 +144,7 @@ public final class Report {
             for (; r.hasNext();) {
                 ReportEntry re = r.next();
                 writer.append(re);
+                empty = false;
             }
         } catch (IOException ex) {
             if (r != null) {
@@ -163,6 +170,7 @@ public final class Report {
                 writer = new Writer(file);
             }
             writer.append(new ReportEntry(issue));
+            empty = false;
 
             if (issue.getLevel().toInteger() >= exceptionLevel.toInteger()) {
                 writer.close();

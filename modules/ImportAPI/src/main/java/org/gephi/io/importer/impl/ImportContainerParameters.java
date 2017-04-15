@@ -41,7 +41,7 @@
  */
 package org.gephi.io.importer.impl;
 
-import org.gephi.io.importer.api.EdgeWeightMergeStrategy;
+import org.gephi.io.importer.api.EdgeMergeStrategy;
 
 /**
  *
@@ -55,7 +55,7 @@ public class ImportContainerParameters {
     protected boolean autoScale = true;
     protected boolean sortNodesBySize = true;
     protected boolean fillLabelWithId = true;
-    protected EdgeWeightMergeStrategy edgesMergeStrategy = EdgeWeightMergeStrategy.SUM;
+    protected EdgeMergeStrategy edgesMergeStrategy = EdgeMergeStrategy.SUM;
     protected boolean mergeParallelEdgesAttributes = true;
     protected boolean duplicateWithLabels = false;
 
@@ -67,7 +67,7 @@ public class ImportContainerParameters {
         this.autoNode = autoNode;
     }
 
-    public EdgeWeightMergeStrategy getEdgesMergeStrategy() {
+    public EdgeMergeStrategy getEdgesMergeStrategy() {
         return edgesMergeStrategy;
     }
 
@@ -127,7 +127,7 @@ public class ImportContainerParameters {
         this.mergeParallelEdgesAttributes = mergeParallelEdgesAttributes;
     }
 
-    public void setEdgesMergeStrategy(EdgeWeightMergeStrategy edgesMergeStrategy) {
+    public void setEdgesMergeStrategy(EdgeMergeStrategy edgesMergeStrategy) {
         this.edgesMergeStrategy = edgesMergeStrategy;
     }
 }

@@ -399,6 +399,12 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
+                <groupId>org.netbeans.modules</groupId>
+                <artifactId>org-netbeans-modules-masterfs</artifactId>
+                <version>${netbeans.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>graphstore</artifactId>
                 <version>${graphstore.version}</version>
@@ -951,6 +957,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <skipTests>true</skipTests>
+                    <trimStackTrace>false</trimStackTrace>                                                              
                 </configuration>
             </plugin>
             
@@ -1034,6 +1041,22 @@
     
     <!-- Profiles -->
     <profiles>
+        <profile>
+            <id>enableTests</id>
+            
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
         <!-- Profile for nighly builds and releases -->
         <profile>
             <id>deployment</id>

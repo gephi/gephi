@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.io.importer.spi;
 
 import javax.swing.JPanel;
+import org.openide.WizardDescriptor;
 
 /**
  * Define importer settings user interface.
@@ -58,6 +59,17 @@ import javax.swing.JPanel;
  * @see Importer
  */
 public interface ImporterUI {
+    
+    /**
+     * Optional interface to implement for {@link ImporterUI} classes that need a Wizard
+     */
+    public interface WithWizard {
+        /**
+         * Used to retreive the wizard descriptor for the Importer UI.
+         * @return Wizard descriptor for the UI
+         */
+        public WizardDescriptor getWizardDescriptor();
+    }
 
     /**
      * Link the UI to the importers and therefore to settings values. This

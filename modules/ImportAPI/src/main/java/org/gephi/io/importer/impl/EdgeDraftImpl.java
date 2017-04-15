@@ -150,16 +150,20 @@ public class EdgeDraftImpl extends ElementDraftImpl implements EdgeDraft {
         sb.append(source.getId());
         sb.append(" -> ");
         sb.append(target.getId());
-        
+
         sb.append(" (id = ");
         sb.append(id);
-        
-        if(type != null && !type.toString().isEmpty()){
+
+        if (type != null && !type.toString().isEmpty()) {
             sb.append("; type = ");
             sb.append(type);
         }
         sb.append(")");
-        
+
+        if (direction != null) {
+            sb.append(" direction = " + direction.name());
+        }
+
         return sb.toString();
     }
 }

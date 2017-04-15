@@ -140,4 +140,9 @@ public final class Issue {
     public Throwable getThrowable() {
         return throwable;
     }
+
+    @Override
+    public String toString() {
+        return "Issue{" + "message=" + message + ", level=" + level + '}';
+    }
 }

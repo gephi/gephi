@@ -1,0 +1,6 @@
+Source,Target,Type,Label,timeset,Weight
+1,2,Directed,,,1
+3,4,Directed,,,2
+1,2,Directed,,,5
+2,3,Directed,,,2
+1,2,Directed,,,1.5

@@ -119,6 +119,8 @@ public interface ContainerUnloader {
     public boolean allowParallelEdges();
 
     public boolean isAutoScale();
+    
+    public boolean isFillLabelWithId();
 
-    public EdgeWeightMergeStrategy getEdgesMergeStrategy();
+    public EdgeMergeStrategy getEdgesMergeStrategy();
 }

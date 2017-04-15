@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.io.exporter.plugin;
 
 import org.gephi.io.exporter.api.FileType;
@@ -61,7 +61,7 @@ public class ExporterBuilderCSV implements GraphFileExporterBuilder {
 
     @Override
     public FileType[] getFileTypes() {
-        FileType ft = new FileType(".csv", NbBundle.getMessage(ExporterBuilderCSV.class, "fileType_CSV_Name"));
+        FileType ft = new FileType(new String[]{".csv", ".edges"}, NbBundle.getMessage(ExporterBuilderCSV.class, "fileType_CSV_Name"));
         return new FileType[]{ft};
     }
 

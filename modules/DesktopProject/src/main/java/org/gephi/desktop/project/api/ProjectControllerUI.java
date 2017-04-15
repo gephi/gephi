@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.project.api;
 
 import java.io.File;
+import org.gephi.io.importer.spi.FileImporterBuilder;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Workspace;
 
@@ -61,6 +62,8 @@ public interface ProjectControllerUI {
 
     public void projectProperties();
 
+    public void openFile(FileImporterBuilder[] builders);
+    
     public void openFile();
 
     public Workspace newWorkspace();

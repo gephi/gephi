@@ -1,0 +1,3 @@
+id,label,source,target,kind,type,weight
+1,1,1,2,8,directed,2
+2,2.0,2,1,1,undirected,2

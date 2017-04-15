@@ -45,7 +45,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.general.GeneralActionsManipulator;
-import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.Lookup;
@@ -64,15 +63,9 @@ public class ImportSpreadsheet implements ActionListener {
         GeneralActionsManipulator m = dlh.getGeneralActionsManipulatorByName("ImportCSV");
 
         if (m != null) {
-            ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
-            if (pc.getCurrentProject() == null) {
-                pc.newProject();//Make sure to have an active project for import
-            }
-
             dlh.executeManipulator(m);
         } else {
             throw new UnsupportedOperationException();
         }
     }
-
 }

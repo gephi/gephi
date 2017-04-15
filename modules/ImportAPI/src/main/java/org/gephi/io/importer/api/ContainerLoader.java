@@ -291,6 +291,8 @@ public interface ContainerLoader {
     public void setAllowParallelEdge(boolean value);
 
     public void setAutoScale(boolean autoscale);
+    
+    public void setFillLabelWithId(boolean value);
 
-    public void setEdgesMergeStrategy(EdgeWeightMergeStrategy edgesMergeStrategy);
+    public void setEdgesMergeStrategy(EdgeMergeStrategy edgesMergeStrategy);
 }

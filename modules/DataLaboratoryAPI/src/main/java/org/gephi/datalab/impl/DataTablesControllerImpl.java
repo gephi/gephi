@@ -176,9 +176,9 @@ public class DataTablesControllerImpl implements DataTablesController {
     }
 
     @Override
-    public void exportCurrentTable(ExportMode exportMode) {
+    public void exportCurrentTable() {
         if (listener != null) {
-            listener.exportCurrentTable(exportMode);
+            listener.exportCurrentTable();
         }
     }
 

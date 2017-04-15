@@ -220,8 +220,12 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void setValue(String key, Object value) {
+        if (value == null) {
+            throw new NullPointerException("Value can't be null");
+        }
+
         Class type = value.getClass();
-        if (AttributeUtils.isDynamicType(type)) {
+        if (AttributeUtils.isDynamicType(type) && !TimeSet.class.isAssignableFrom(type)) {
             type = AttributeUtils.getStaticType(type);
         }
         ColumnDraft column = getColumn(key, type);
@@ -448,10 +452,13 @@ public abstract class ElementDraftImpl implements ElementDraft {
     //UTILITY
     protected void setAttributeValue(ColumnDraft column, Object value) throws Exception {
         int index = ((ColumnDraftImpl) column).getIndex();
-        value = AttributeUtils.standardizeValue(value);
         Class typeClass = column.getTypeClass();
 
-        if (column.isDynamic()) {
+        if (!(value instanceof TimeSet)) {
+            value = AttributeUtils.standardizeValue(value);
+        }
+        
+        if (column.isDynamic() && !TimeSet.class.isAssignableFrom(typeClass)) {
             if (container.getTimeRepresentation() == TimeRepresentation.INTERVAL) {
                 typeClass = AttributeUtils.getIntervalMapType(typeClass);
             } else {
@@ -462,11 +469,13 @@ public abstract class ElementDraftImpl implements ElementDraft {
         if (!value.getClass().equals(typeClass)) {
             throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");
         }
+
         if (index >= attributes.length) {
             Object[] newArray = new Object[index + 1];
             System.arraycopy(attributes, 0, newArray, 0, attributes.length);
             attributes = newArray;
         }
+
         attributes[index] = value;
     }
 

@@ -41,25 +41,49 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.plugin.manipulators.general;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Icon;
-import org.gephi.datalab.plugin.manipulators.general.ui.ImportCSVUIWizardAction;
+import javax.swing.SwingUtilities;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.GeneralActionsManipulator;
+import org.gephi.desktop.project.api.ProjectControllerUI;
+import org.gephi.io.importer.spi.FileImporterBuilder;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * GeneralActionsManipulator shows a wizard UI for importing a CSV file to nodes/edges table.
+ * GeneralActionsManipulator that shows a wizard UI for importing a CSV/Excel file to nodes/edges table.
+ *
  * @author Eduardo Ramos
  */
-@ServiceProvider(service=GeneralActionsManipulator.class)
-public class ImportCSV implements GeneralActionsManipulator{
+@ServiceProvider(service = GeneralActionsManipulator.class)
+public class ImportCSV implements GeneralActionsManipulator {
+
+    private final ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
+    private final FileImporterBuilder[] spreadsheetImporterBuilders;
+
+    public ImportCSV() {
+        List<FileImporterBuilder> list = new ArrayList<>();
+        for (FileImporterBuilder builder : Lookup.getDefault().lookupAll(FileImporterBuilder.class)) {
+            if (builder.getName().startsWith("spreadsheet")) {
+                list.add(builder);
+            }
+        }
+
+        spreadsheetImporterBuilders = list.toArray(new FileImporterBuilder[0]);
+    }
 
     @Override
     public void execute() {
-        Lookup.getDefault().lookup(ImportCSVUIWizardAction.class).performAction();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                pc.openFile(spreadsheetImporterBuilders);
+            }
+        });
     }
 
     @Override

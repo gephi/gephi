@@ -55,7 +55,7 @@ import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.Workspace;
 
 /**
- * Manage and control the import execution low.
+ * Manage and control the import execution flow.
  * <p>
  * This controller is a singleton and can therefore be found in Lookup:
  * <pre>ImportController ic = Lookup.getDefault().lookup(ImportController.class);</pre>
@@ -70,7 +70,7 @@ public interface ImportController {
     public Container importFile(Reader reader, FileImporter importer);
 
     public Container importFile(InputStream stream, FileImporter importer);
-
+    
     public Container importWizard(WizardImporter importer);
 
     public FileImporter getFileImporter(File file);
