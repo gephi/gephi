@@ -115,7 +115,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
             @Override
             public void stateChanged(ChangeEvent e) {
                 int cam = (int) VizController.getInstance().getVizModel().getCameraDistance();
-                if (zoomSlider.getValue() != cam && cam < zoomSlider.getMaximum()) {
+                if (zoomSlider.getValue() != cam && cam <= zoomSlider.getMaximum()) {
                     GraphIO io = VizController.getInstance().getGraphIO();
                     io.setCameraDistance(zoomSlider.getValue());
                 }
