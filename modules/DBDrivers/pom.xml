@@ -16,7 +16,7 @@
     <name>DBDrivers</name>
 
     <dependencies>
-       <dependency>
+        <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.16.1</version>
@@ -30,6 +30,17 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.0.0.jre7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>6.1.0.jre7</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.microsoft.azure</groupId>
+                    <artifactId>azure-keyvault</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
