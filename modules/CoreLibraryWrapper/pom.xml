@@ -68,15 +68,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.xmlgraphics</groupId>
-                    <artifactId>batik-js</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.xmlgraphics</groupId>
                     <artifactId>batik-svggen</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.xmlgraphics</groupId>
-                    <artifactId>fop</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>xml-apis</groupId>
@@ -87,6 +79,16 @@
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-constants</artifactId>
+            <version>1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-i18n</artifactId>
+            <version>1.9</version>
         </dependency>
     </dependencies>
 
