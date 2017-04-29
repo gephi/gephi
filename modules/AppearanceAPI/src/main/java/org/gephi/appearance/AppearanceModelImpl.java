@@ -178,6 +178,7 @@ public class AppearanceModelImpl implements AppearanceModel {
 
     @Override
     public Partition getNodePartition(Graph graph, Column column) {
+        refreshFunctions(graph);
         synchronized (functionLock) {
             FunctionsModel m;
             if (graph.getView().isMainView()) {
@@ -194,6 +195,7 @@ public class AppearanceModelImpl implements AppearanceModel {
 
     @Override
     public Partition getEdgePartition(Graph graph, Column column) {
+        refreshFunctions(graph);
         synchronized (functionLock) {
             FunctionsModel m;
             if (graph.getView().isMainView()) {
@@ -210,7 +212,6 @@ public class AppearanceModelImpl implements AppearanceModel {
 
     private FunctionsModel refreshFunctions(Graph graph) {
         synchronized (functionLock) {
-
             FunctionsModel m;
             if (graph.getView().isMainView()) {
                 m = functionsMain;

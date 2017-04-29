@@ -101,3 +101,6 @@ keystore.ks
 /modules/DesktopAppearance/target/
 /modules/branding/src/main/nbm-branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties
 /modules/branding/src/main/nbm-branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
+
+*.iml
+.idea/
