@@ -41,7 +41,9 @@
  */
 package org.gephi.desktop.datalab.tables;
 
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -49,7 +51,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.RowFilter;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.desktop.datalab.*;
 import org.gephi.desktop.datalab.tables.celleditors.AttributeTypesSupportCellEditor;
@@ -79,6 +83,7 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -262,6 +267,9 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
             model.configure(elements, columns.toArray(new ElementDataColumn[0]));
         }
 
+        TableHeaderWithTooltip headerWithTooltips = new TableHeaderWithTooltip(table.getColumnModel(), columns);
+        table.setTableHeader(headerWithTooltips);
+
         setElementsSelection(selectedElements);//Keep row selection before refreshing.
         selectedElements = null;
         refreshingTable = false;
@@ -346,5 +354,30 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
         }
 
         return elements;
+    }
+
+    private class TableHeaderWithTooltip extends JTableHeader {
+
+        private final List<ElementDataColumn<T>> columns;
+
+        public TableHeaderWithTooltip(TableColumnModel columnModel, List<ElementDataColumn<T>> columns) {
+            super(columnModel);
+            this.columns = columns;
+        }
+
+        @Override
+        public String getToolTipText(MouseEvent e) {
+            Point p = e.getPoint();
+            int index = columnModel.getColumnIndexAtX(p.x);
+            int realIndex = columnModel.getColumn(index).getModelIndex();
+
+            if (realIndex < columns.size()) {
+                String id = columns.get(realIndex).getColumn().getId();
+
+                return NbBundle.getMessage(AbstractElementsDataTable.class, "AbstractElementsDataTable.column.tooltip", id);
+            } else {
+                return null;
+            }
+        }
     }
 }
