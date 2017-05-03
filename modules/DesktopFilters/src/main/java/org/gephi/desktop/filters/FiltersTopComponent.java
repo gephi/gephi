@@ -42,7 +42,7 @@
 package org.gephi.desktop.filters;
 
 import java.awt.BorderLayout;
-import org.gephi.filters.api.FilterController;
+import java.util.TimerTask;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -56,15 +56,15 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.filters//Filters//EN",
-autostore = false)
+        autostore = false)
 @TopComponent.Description(preferredID = "FiltersTopComponent",
-iconBase = "org/gephi/desktop/filters/resources/small.png",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        iconBase = "org/gephi/desktop/filters/resources/small.png",
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "filtersmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.filters.FiltersTopComponent")
 @ActionReference(path = "Menu/Window", position = 400)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_FiltersTopComponent",
-preferredID = "FiltersTopComponent")
+        preferredID = "FiltersTopComponent")
 public final class FiltersTopComponent extends TopComponent {
 
     private static FiltersTopComponent instance;
@@ -74,7 +74,11 @@ public final class FiltersTopComponent extends TopComponent {
     private final FiltersPanel panel;
     //Models
     private FilterModel filterModel;
+    private WorkspaceColumnsObservers observers;
     private FilterUIModel uiModel;
+    
+    private static final long AUTO_REFRESH_RATE_MILLISECONDS = 3000;
+    private java.util.Timer observersTimer;
 
     public FiltersTopComponent() {
         initComponents();
@@ -87,7 +91,6 @@ public final class FiltersTopComponent extends TopComponent {
         add(panel, BorderLayout.CENTER);
 
         //Model management
-        FilterController controller = Lookup.getDefault().lookup(FilterController.class);
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
 
@@ -98,17 +101,13 @@ public final class FiltersTopComponent extends TopComponent {
 
             @Override
             public void select(Workspace workspace) {
-                filterModel = workspace.getLookup().lookup(FilterModel.class);
-                uiModel = workspace.getLookup().lookup(FilterUIModel.class);
-                if (uiModel == null) {
-                    uiModel = new FilterUIModel(workspace);
-                    workspace.add(uiModel);
-                }
+                activateWorkspace(workspace);
                 refreshModel();
             }
 
             @Override
             public void unselect(Workspace workspace) {
+                observers.destroy();
             }
 
             @Override
@@ -119,19 +118,33 @@ public final class FiltersTopComponent extends TopComponent {
             public void disable() {
                 filterModel = null;
                 uiModel = null;
+                observers = null;
                 refreshModel();
             }
         });
+
         if (pc.getCurrentWorkspace() != null) {
             Workspace workspace = pc.getCurrentWorkspace();
-            filterModel = workspace.getLookup().lookup(FilterModel.class);
-            uiModel = workspace.getLookup().lookup(FilterUIModel.class);
-            if (uiModel == null) {
-                uiModel = new FilterUIModel(workspace);
-                workspace.add(uiModel);
-            }
+            activateWorkspace(workspace);
         }
         refreshModel();
+        
+        initEvents();
+    }
+
+    private void activateWorkspace(Workspace workspace) {
+        filterModel = workspace.getLookup().lookup(FilterModel.class);
+        uiModel = workspace.getLookup().lookup(FilterUIModel.class);
+        if (uiModel == null) {
+            uiModel = new FilterUIModel(workspace);
+            workspace.add(uiModel);
+        }
+
+        observers = workspace.getLookup().lookup(WorkspaceColumnsObservers.class);
+        if (observers == null) {
+            workspace.add(observers = new WorkspaceColumnsObservers(workspace));
+        }
+        observers.initialize();
     }
 
     private void refreshModel() {
@@ -141,11 +154,25 @@ public final class FiltersTopComponent extends TopComponent {
     public FilterUIModel getUiModel() {
         return uiModel;
     }
+    
+    private void initEvents() {
+        observersTimer = new java.util.Timer("DataLaboratoryGraphObservers");
+        observersTimer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                if(observers != null) {
+                    if(observers.hasChanges()) {
+                        refreshModel();
+                    }
+                }
+            }
+        }
+        , 0, AUTO_REFRESH_RATE_MILLISECONDS);//Check graph and tables for changes every 100 ms
+    }
 
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
