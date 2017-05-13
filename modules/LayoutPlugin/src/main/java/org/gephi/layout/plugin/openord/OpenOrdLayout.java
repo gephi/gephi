@@ -52,6 +52,8 @@ import java.util.concurrent.CyclicBarrier;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.Interval;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
@@ -113,6 +115,9 @@ public class OpenOrdLayout implements Layout, LongTask {
         //Get graph
         graph = graphModel.getUndirectedGraphVisible();
         graph.readLock();
+        boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
+        Interval interval = graph.getView().getTimeInterval();
+
         try {
             int numNodes = graph.getNodeCount();
 
@@ -145,7 +150,7 @@ public class OpenOrdLayout implements Layout, LongTask {
                 int source = idMap.get(e.getSource().getStoreId());
                 int target = idMap.get(e.getTarget().getStoreId());
                 if (source != target) {        //No self-loop
-                    float weight = (float) e.getWeight();
+                    float weight = (float) (isDynamicWeight ? e.getWeight(interval) : e.getWeight());
                     if (neighbors[source] == null) {
                         neighbors[source] = new TIntFloatHashMap(hashingStrategy);
                     }
