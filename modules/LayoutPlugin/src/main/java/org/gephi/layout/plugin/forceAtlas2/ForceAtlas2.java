@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.gephi.graph.api.Interval;
 import org.openide.util.Exceptions;
 
 /**
@@ -123,6 +124,15 @@ public class ForceAtlas2 implements Layout {
             graph.readUnlockAll();
         }
     }
+    
+    private double getEdgeWeight(Edge edge, boolean isDynamicWeight, Interval interval) {
+        if (isDynamicWeight) {
+            return edge.getWeight(interval);
+        } else {
+            return edge.getWeight();
+        }
+    }
+
 
     @Override
     public void goAlgo() {
@@ -131,8 +141,10 @@ public class ForceAtlas2 implements Layout {
             return;
         }
         graph = graphModel.getGraphVisible();
-
         graph.readLock();
+        boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
+        Interval interval = graph.getView().getTimeInterval();
+        
         try {
             Node[] nodes = graph.getNodes().toArray();
             Edge[] edges = graph.getEdges().toArray();
@@ -196,11 +208,11 @@ public class ForceAtlas2 implements Layout {
                 }
             } else if (getEdgeWeightInfluence() == 1) {
                 for (Edge e : edges) {
-                    Attraction.apply(e.getSource(), e.getTarget(), e.getWeight());
+                    Attraction.apply(e.getSource(), e.getTarget(), getEdgeWeight(e, isDynamicWeight, interval));
                 }
             } else {
                 for (Edge e : edges) {
-                    Attraction.apply(e.getSource(), e.getTarget(), Math.pow(e.getWeight(), getEdgeWeightInfluence()));
+                    Attraction.apply(e.getSource(), e.getTarget(), Math.pow(getEdgeWeight(e, isDynamicWeight, interval), getEdgeWeightInfluence()));
                 }
             }
 

@@ -382,7 +382,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 if (timeMap != null) {
                     for (Interval interval : timeMap.toKeysArray()) {
                         if (!exportVisible || interval.compareTo(visibleInterval) == 0) {
-                            Object value = timeMap.get(interval, null);
+                            final Object defaultValue = null;
+                            final Object value = timeMap.get(interval, defaultValue);
                             if (value != null) {
                                 xmlWriter.writeStartElement(ATTVALUE);
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
@@ -405,7 +406,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 if (timeMap != null) {
                     for (Double timestamp : timeMap.toKeysArray()) {
                         if (!exportVisible || visibleInterval.compareTo(timestamp) == 0) {
-                            Object value = timeMap.get(timestamp, null);
+                            final Object defaultValue = null;
+                            final Object value = timeMap.get(timestamp, defaultValue);
                             if (value != null) {
                                 xmlWriter.writeStartElement(ATTVALUE);
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
