@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Localizing-Bundle: org/gephi/graph/api/Bundle.properties
 AutoUpdate-Essential-Module: true
-OpenIDE-Module-Specification-Version: 0.9.1.2
+OpenIDE-Module-Specification-Version: 0.9.1.3
 OpenIDE-Module-Display-Category: Gephi Core
 OpenIDE-Module-Name: Graph API
