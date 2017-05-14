@@ -41,6 +41,7 @@
  */
 package org.gephi.project.io;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -321,7 +322,7 @@ public class LoadTask implements LongTask, Runnable {
             InputStream is = null;
             DataInputStream stream = null;
             try {
-                is = zipFile.getInputStream(entry);
+                is = new BufferedInputStream(zipFile.getInputStream(entry));
                 stream = new DataInputStream(is);
                 persistenceProvider.readBytes(stream, workspace);
             } finally {

@@ -67,6 +67,8 @@ public class GraphPersistenceProvider implements WorkspaceBytesPersistenceProvid
         }
     }
 
+    private static final int GRAPHSTORE_SERIALIZATION_GRAPHMODEL_CONFIG_ID = 205;
+    
     @Override
     public void readBytes(DataInputStream stream, Workspace workspace) {
         GraphModel model = workspace.getLookup().lookup(GraphModel.class);
@@ -74,7 +76,18 @@ public class GraphPersistenceProvider implements WorkspaceBytesPersistenceProvid
             throw new IllegalStateException("The graphModel wasn't null");
         }
         try {
-            model = GraphModel.Serialization.read(stream);
+            //Detect if the serialized graphstore declares its own version:
+            stream.mark(1);
+            int firstFieldType = stream.readUnsignedByte();
+            stream.reset();
+            
+            if (firstFieldType == GRAPHSTORE_SERIALIZATION_GRAPHMODEL_CONFIG_ID) {
+                //Old graphstore, from Gephi 0.9.0
+                model = GraphModel.Serialization.readWithoutVersionHeader(stream, 0.0f /* no version, first was 0.4*/);//Previous to version header existing at all
+            } else {
+                model = GraphModel.Serialization.read(stream);
+            }
+
             workspace.add(model);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
