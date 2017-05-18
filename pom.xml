@@ -208,7 +208,7 @@
 
         <gephi.maven-compiler-plugin.version>3.6.1</gephi.maven-compiler-plugin.version>
 
-        <gephi.maven-dependency-plugin.version>3.0.0</gephi.maven-dependency-plugin.version>
+        <gephi.maven-dependency-plugin.version>3.0.1</gephi.maven-dependency-plugin.version>
 
         <gephi.maven-deploy-plugin.version>2.8.2</gephi.maven-deploy-plugin.version>
 
