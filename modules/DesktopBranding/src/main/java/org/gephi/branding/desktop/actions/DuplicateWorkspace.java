@@ -52,12 +52,12 @@ public class DuplicateWorkspace extends SystemAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Lookup.getDefault().lookup(ProjectControllerUI.class).newWorkspace();
+        Lookup.getDefault().lookup(ProjectControllerUI.class).duplicateWorkspace();
     }
 
     @Override
     public boolean isEnabled() {
-        return Lookup.getDefault().lookup(ProjectControllerUI.class).canNewWorkspace();
+        return Lookup.getDefault().lookup(ProjectControllerUI.class).canDuplicateWorkspace();
     }
 
     @Override
