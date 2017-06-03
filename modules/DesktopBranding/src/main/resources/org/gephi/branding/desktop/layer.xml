@@ -98,6 +98,10 @@
                 <attr name="originalFile" stringvalue="Actions/Workspace/org-gephi-branding-desktop-actions-RenameWorkspace.instance"/>
                 <attr name="position" intvalue="2800"/>
             </file>
+            <file name="org-gephi-branding-desktop-actions-DuplicateWorkspace.instance">
+                <attr name="originalFile" stringvalue="Actions/Workspace/org-gephi-branding-desktop-actions-DuplicateWorkspace.instance"/>
+                <attr name="position" intvalue="2900"/>
+            </file>
         </folder>
         <file name="GoTo_hidden"/>
         <!--folder name="Tools_hidden" /-->
