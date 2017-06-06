@@ -92,6 +92,25 @@ public class ForceAtlas2 implements Layout {
         this.layoutBuilder = layoutBuilder;
         this.threadCount = Math.min(4, Math.max(1, Runtime.getRuntime().availableProcessors() - 1));
     }
+    
+        private double getMinWeight(Edge[] edges) {
+        
+        double minWeight = 999999;
+         for(Edge e : edges){
+            if(minWeight > e.getWeight())
+            {
+                minWeight = e.getWeight();
+            }
+
+        }
+         
+        //Negative Check
+        if(minWeight > 0)
+            minWeight = 0;
+        
+        return minWeight;
+   
+    }
 
     @Override
     public void initAlgo() {
@@ -125,11 +144,11 @@ public class ForceAtlas2 implements Layout {
         }
     }
     
-    private double getEdgeWeight(Edge edge, boolean isDynamicWeight, Interval interval) {
+    private double getEdgeWeight(Edge edge, boolean isDynamicWeight, Interval interval, double minWeight) {
         if (isDynamicWeight) {
-            return edge.getWeight(interval);
+            return edge.getWeight(interval)-(minWeight - 1);
         } else {
-            return edge.getWeight();
+            return edge.getWeight()-(minWeight - 1);
         }
     }
 
@@ -145,9 +164,13 @@ public class ForceAtlas2 implements Layout {
         boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
         Interval interval = graph.getView().getTimeInterval();
         
+
+        
         try {
             Node[] nodes = graph.getNodes().toArray();
             Edge[] edges = graph.getEdges().toArray();
+            double minWeight = getMinWeight(edges);
+
 
             // Initialise layout data
             for (Node n : nodes) {
@@ -208,11 +231,11 @@ public class ForceAtlas2 implements Layout {
                 }
             } else if (getEdgeWeightInfluence() == 1) {
                 for (Edge e : edges) {
-                    Attraction.apply(e.getSource(), e.getTarget(), getEdgeWeight(e, isDynamicWeight, interval));
+                    Attraction.apply(e.getSource(), e.getTarget(), getEdgeWeight(e, isDynamicWeight, interval, minWeight));
                 }
             } else {
                 for (Edge e : edges) {
-                    Attraction.apply(e.getSource(), e.getTarget(), Math.pow(getEdgeWeight(e, isDynamicWeight, interval), getEdgeWeightInfluence()));
+                    Attraction.apply(e.getSource(), e.getTarget(), Math.pow(getEdgeWeight(e, isDynamicWeight, interval, minWeight), getEdgeWeightInfluence()));
                 }
             }
 
