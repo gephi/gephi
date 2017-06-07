@@ -246,7 +246,7 @@
         
         <gephi.site-maven-plugin.version>0.12</gephi.site-maven-plugin.version>
         
-        <versioneye-maven-plugin.version>3.11.2</versioneye-maven-plugin.version>
+        <versioneye-maven-plugin.version>3.11.4</versioneye-maven-plugin.version>
     </properties>
     
     <!-- Maven required version -->
