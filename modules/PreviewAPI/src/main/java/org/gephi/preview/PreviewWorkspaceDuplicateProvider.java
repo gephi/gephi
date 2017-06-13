@@ -41,10 +41,9 @@
  */
 package org.gephi.preview;
 
-import java.util.Map.Entry;
-import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.PreviewProperty;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspaceDuplicateProvider;
 import org.openide.util.Lookup;
@@ -58,17 +57,13 @@ import org.openide.util.lookup.ServiceProvider;
 public class PreviewWorkspaceDuplicateProvider implements WorkspaceDuplicateProvider{
 
     @Override
-    public void duplicate(Workspace source, Workspace destination) {
-        PreviewController previewController=Lookup.getDefault().lookup(PreviewController.class);
-        PreviewModel sourceModel=previewController.getModel(source);
-        PreviewModel destModel=previewController.getModel(destination);
+    public void duplicate(Workspace source, Workspace destination) {      
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         
-        destModel.setManagedRenderers(sourceModel.getManagedRenderers());
-        for(PreviewProperty property:sourceModel.getProperties().getProperties()){
-            destModel.getProperties().putValue(property.getName(), property.getValue());
-        }
-        for(Entry<String,Object> property:sourceModel.getProperties().getSimpleValues()){
-            destModel.getProperties().putValue(property.getKey(), property.getValue());
-        }
-    }    
+        GraphModel currentGraphModel = graphController.getGraphModel(source);
+        Graph graph = currentGraphModel.getGraph();
+        
+        GraphModel newGraphModel = graphController.getGraphModel(destination);
+        newGraphModel.bridge().copyNodes(graph.getNodes().toArray());
+    }
 }
