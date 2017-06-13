@@ -67,7 +67,7 @@ public class DuplicateWorkspace extends SystemAction {
 
     @Override
     public String getName() {
-        return NbBundle.getMessage(NewWorkspace.class, "CTL_DuplicateWorkspace");
+        return NbBundle.getMessage(DuplicateWorkspace.class, "CTL_DuplicateWorkspace");
     }
 
     @Override
