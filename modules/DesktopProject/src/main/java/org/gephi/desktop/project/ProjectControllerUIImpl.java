@@ -44,7 +44,9 @@ package org.gephi.desktop.project;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -63,6 +65,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceProvider;
+import org.gephi.project.spi.MergeWorkspacesUI;
 import org.gephi.project.spi.ProjectPropertiesUI;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
@@ -426,7 +429,13 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     @Override
     public void mergeWorkspaces(){
         Project project = controller.getCurrentProject();
-        //MergeWorkspacesUI mergeUI =  Lookup.getDefault().lookup(MergeWorkspacesUI.class);
+        MergeWorkspacesUI mergeUI =  Lookup.getDefault().lookup(MergeWorkspacesUI.class);
+        if(mergeUI != null){
+            JPanel panel = mergeUI.getPanel();
+            mergeUI.setup(project);
+            
+            
+        }
         
     }
 
