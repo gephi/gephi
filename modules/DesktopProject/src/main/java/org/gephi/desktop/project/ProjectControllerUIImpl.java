@@ -422,6 +422,13 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         newProject = true;
         openFile = true;
     }
+    
+    @Override
+    public void mergeWorkspaces(){
+        Project project = controller.getCurrentProject();
+        //MergeWorkspacesUI mergeUI =  Lookup.getDefault().lookup(MergeWorkspacesUI.class);
+        
+    }
 
     @Override
     public void projectProperties() {

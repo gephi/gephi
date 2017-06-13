@@ -2,6 +2,7 @@ package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
 import org.gephi.desktop.project.api.ProjectControllerUI;
+import org.gephi.ui.merge.ProjectPropertiesEditor;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -11,7 +12,8 @@ public class MergeWorkspaces extends SystemAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Lookup.getDefault().lookup(ProjectControllerUI.class).duplicateWorkspace();
+        ProjectPropertiesEditor pe;
+        Lookup.getDefault().lookup(ProjectControllerUI.class).mergeWorkspaces();
     }
 
     @Override

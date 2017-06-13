@@ -39,66 +39,36 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
-package org.gephi.desktop.project.api;
+package org.gephi.ui.merge;
 
-import java.io.File;
-import org.gephi.io.importer.spi.FileImporterBuilder;
+import javax.swing.JPanel;
 import org.gephi.project.api.Project;
-import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.ProjectPropertiesUI;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface ProjectControllerUI {
+@ServiceProvider(service = ProjectPropertiesUI.class)
+public class ProjectPropertiesUIImpl implements ProjectPropertiesUI {
 
-    public void saveProject();
+    private ProjectPropertiesEditor panel;
 
-    public void saveAsProject();
+    @Override
+    public JPanel getPanel() {
+        panel = new ProjectPropertiesEditor();
+        return panel;
+    }
 
-    public void openProject(File file);
+    @Override
+    public void setup(Project project) {
+        panel.load(project);
+    }
 
-    public void renameProject(final String name);
-
-    public void projectProperties();
-    
-    public void mergeWorkspaces();
-
-    public void openFile(FileImporterBuilder[] builders);
-    
-    public void openFile();
-
-    public Workspace newWorkspace();
-
-    public Workspace duplicateWorkspace();
-
-    public Project getCurrentProject();
-
-    public Project newProject();
-
-    public void deleteWorkspace();
-
-    public void closeProject();
-
-    public void renameWorkspace(final String name);
-
-    public boolean canNewProject();
-
-    public boolean canCloseProject();
-
-    public boolean canOpenFile();
-
-    public boolean canSave();
-
-    public boolean canSaveAs();
-
-    public boolean canNewWorkspace();
-
-    public boolean canDuplicateWorkspace();
-
-    public boolean canDeleteWorkspace();
-
-    public boolean canRenameWorkspace();
-
-    public boolean canProjectProperties();
+    @Override
+    public void unsetup(Project project) {
+        panel.save(project);
+        panel = null;
+    }
 }
