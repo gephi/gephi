@@ -27,7 +27,6 @@ public class MergeWorkspacesUIImpl implements MergeWorkspacesUI{
     
     @Override
     public void setup(Project project){
-        panel.load(project);
     }
     
     @Override

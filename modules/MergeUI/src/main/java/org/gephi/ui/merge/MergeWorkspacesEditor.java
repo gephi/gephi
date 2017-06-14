@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ArrayList;
-import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
@@ -22,7 +21,7 @@ import org.openide.util.Lookup;
  */
 public class MergeWorkspacesEditor extends javax.swing.JPanel {
     
-    private List<Workspace> notCurrentWorkspaces = new ArrayList<>();
+    private final List<Workspace> notCurrentWorkspaces = new ArrayList<>();
     private Workspace selectedWorkspace;
     /**
      * Creates new form NewJPanel
@@ -30,11 +29,16 @@ public class MergeWorkspacesEditor extends javax.swing.JPanel {
     public MergeWorkspacesEditor() {
         initComponents();
     }
-
-    public void load(Project project){
+    
+    private void setSelectedWorkspace(String workspaceName){
+        for(Workspace workspace : notCurrentWorkspaces){
+            if(workspace.getLookup().lookup(WorkspaceInformation.class).getName().equals(workspaceName))
+                selectedWorkspace = workspace;
+        }
     }
     
-    public void something(Project project){
+    public Workspace getSelectedWorkspace(){
+        return selectedWorkspace; 
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -93,22 +97,10 @@ public class MergeWorkspacesEditor extends javax.swing.JPanel {
 
         workspaceList.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                setSelectedWorkspace(workspaceList.getSelectedItem());
+                setSelectedWorkspace(workspaceList.getSelectedItem().toString());
             }
         });
     }// </editor-fold>//GEN-END:initComponents
-
-    private void setSelectedWorkspace(String workspaceName){
-        for(Workspace workspace : notCurrentWorkspaces){
-            if(workspace.getLookup().lookup(WorkspaceInformation.class).getName().equals(workspaceName))
-                selectedWorkspace = workspace;
-        }
-    }
-    
-    public Workspace getSelectedWorkspace(){
-        return selectedWorkspace;
-    }
-    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel selectText;
