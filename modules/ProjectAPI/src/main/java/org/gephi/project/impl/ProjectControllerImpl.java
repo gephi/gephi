@@ -183,6 +183,7 @@ public class ProjectControllerImpl implements ProjectController {
 
         //Event
         fireWorkspaceEvent(EventType.INITIALIZE, workspace);
+        //Lookup.getDefault().lookup(ProjectControllerUI.class).checkMergeWorkspaces();
         return workspace;
     }
 
@@ -209,7 +210,7 @@ public class ProjectControllerImpl implements ProjectController {
                 openWorkspace(toSelectWorkspace);
             }
         }
-
+        //Lookup.getDefault().lookup(ProjectControllerUI.class).checkMergeWorkspaces();
     }
 
     public void openProject(Project project) {

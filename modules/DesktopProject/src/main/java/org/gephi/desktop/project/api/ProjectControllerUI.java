@@ -103,4 +103,6 @@ public interface ProjectControllerUI {
     public boolean canProjectProperties();
     
     public boolean canMergeWorkspaces();
+    
+    public void checkMergeWorkspaces();
 }

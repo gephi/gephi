@@ -412,6 +412,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         deleteWorkspace = false;
         duplicateWorkspace = false;
         renameWorkspace = false;
+        mergeWorkspaces = false;
     }
 
     private void unlockProjectActions() {
@@ -426,8 +427,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 duplicateWorkspace = true;
                 renameWorkspace = true;
             }
-            if (controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces().length > 1)
-                mergeWorkspaces = true;
         }
         openProject = true;
         newProject = true;
@@ -611,7 +610,9 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
     @Override
     public Workspace newWorkspace() {
-        return controller.newWorkspace(controller.getCurrentProject());
+        Workspace workspace = controller.newWorkspace(controller.getCurrentProject());
+        checkMergeWorkspaces();
+        return workspace;
     }
 
     @Override
@@ -627,7 +628,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             deleteWorkspace = false;
             duplicateWorkspace = false;
             renameWorkspace = false;
-
             //Title bar
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
@@ -640,6 +640,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             });
         }
         controller.deleteWorkspace(controller.getCurrentWorkspace());
+        checkMergeWorkspaces();
     }
 
     @Override
@@ -650,5 +651,10 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     @Override
     public Workspace duplicateWorkspace() {
         return controller.duplicateWorkspace(controller.getCurrentWorkspace());
+    }
+    
+    @Override
+    public void checkMergeWorkspaces() {
+        mergeWorkspaces = (controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces().length > 1) ? true : false;
     }
 }
