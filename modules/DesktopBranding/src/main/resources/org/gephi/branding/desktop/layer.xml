@@ -101,6 +101,7 @@
             <file name="org-gephi-branding-desktop-actions-DuplicateWorkspace.instance">
                 <attr name="originalFile" stringvalue="Actions/Workspace/org-gephi-branding-desktop-actions-DuplicateWorkspace.instance"/>
                 <attr name="position" intvalue="2900"/>
+            </file>
             <file name="org-gephi-branding-desktop-actions-MergeWorkspaces.instance">
                 <attr name="originalFile" stringvalue="Actions/Workspace/org-gephi-branding-desktop-actions-MergeWorkspaces.instance"/>
                 <attr name="position" intvalue="3200"/>
