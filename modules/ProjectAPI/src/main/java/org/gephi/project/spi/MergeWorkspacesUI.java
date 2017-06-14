@@ -10,13 +10,11 @@ import org.gephi.project.api.Project;
 
 /**
  *
- * @author root
+ * @author Alex
  */
 public interface MergeWorkspacesUI { 
     
     public JPanel getPanel();
-
-    public void setup(Project project);
-
-    public void unsetup(Project project);
+    
+    public void mergeWorkspaces(JPanel panel);
 }

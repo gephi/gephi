@@ -428,15 +428,15 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     
     @Override
     public void mergeWorkspaces(){
-        Project project = controller.getCurrentProject();
         MergeWorkspacesUI mergeUI =  Lookup.getDefault().lookup(MergeWorkspacesUI.class);
         if(mergeUI != null){
             JPanel panel = mergeUI.getPanel();
-            mergeUI.setup(project);
-            
-            
+            DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(ProjectControllerUIImpl.class, "MergeWorkspaces_dialog_title"));
+            Object result = DialogDisplayer.getDefault().notify(dd);
+            if(result == NotifyDescriptor.OK_OPTION){
+                mergeUI.mergeWorkspaces(panel);
+            }
         }
-        
     }
 
     @Override

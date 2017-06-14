@@ -22,7 +22,7 @@ import org.openide.util.Lookup;
 public class MergeWorkspacesEditor extends javax.swing.JPanel {
     
     private final List<Workspace> notCurrentWorkspaces = new ArrayList<>();
-    private Workspace selectedWorkspace;
+    private Workspace currentWorkspace, selectedWorkspace;
     /**
      * Creates new form NewJPanel
      */
@@ -32,13 +32,19 @@ public class MergeWorkspacesEditor extends javax.swing.JPanel {
     
     private void setSelectedWorkspace(String workspaceName){
         for(Workspace workspace : notCurrentWorkspaces){
-            if(workspace.getLookup().lookup(WorkspaceInformation.class).getName().equals(workspaceName))
+            if(workspace.getLookup().lookup(WorkspaceInformation.class).getName().equals(workspaceName)){
                 selectedWorkspace = workspace;
+                return;
+            }
         }
     }
     
     public Workspace getSelectedWorkspace(){
         return selectedWorkspace; 
+    }
+    
+    public Workspace getCurrentWorkspace(){
+        return currentWorkspace;
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -53,7 +59,8 @@ public class MergeWorkspacesEditor extends javax.swing.JPanel {
         selectText = new javax.swing.JLabel();
 
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace currentWorkspace = projectController.getCurrentWorkspace();
+        currentWorkspace = projectController.getCurrentWorkspace();
+
         WorkspaceProvider wsProvider = projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class);
         Workspace[] workspaces = wsProvider.getWorkspaces();
 
