@@ -17,11 +17,19 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = MergeWorkspacesUI.class)
 public class MergeWorkspacesUIImpl implements MergeWorkspacesUI{
     
+    private MergeWorkspacesEditor panel;
+    
+    @Override
     public JPanel getPanel(){
-        return null;
+        panel = new MergeWorkspacesEditor();
+        return panel;
     }
-
-    public void setup(Project project){}
-
+    
+    @Override
+    public void setup(Project project){
+        panel.load(project);
+    }
+    
+    @Override
     public void unsetup(Project project){}
 }
