@@ -101,4 +101,6 @@ public interface ProjectControllerUI {
     public boolean canRenameWorkspace();
 
     public boolean canProjectProperties();
+    
+    public boolean canMergeWorkspaces();
 }

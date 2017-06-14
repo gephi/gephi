@@ -16,7 +16,7 @@ public class MergeWorkspaces extends SystemAction {
 
     @Override
     public boolean isEnabled() {
-        return Lookup.getDefault().lookup(ProjectControllerUI.class).canDuplicateWorkspace();
+        return Lookup.getDefault().lookup(ProjectControllerUI.class).canMergeWorkspaces();
     }
 
     @Override

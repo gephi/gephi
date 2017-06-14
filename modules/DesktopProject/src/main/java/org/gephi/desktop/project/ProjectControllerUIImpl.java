@@ -103,6 +103,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     private boolean deleteWorkspace = false;
     private boolean duplicateWorkspace = false;
     private boolean renameWorkspace = false;
+    private boolean mergeWorkspaces = false;
     //Project
     private final ProjectController controller;
     private final ImportControllerUI importControllerUI;
@@ -394,6 +395,11 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     public boolean canProjectProperties() {
         return projectProperties;
     }
+    
+    @Override
+    public boolean canMergeWorkspaces() {
+        return mergeWorkspaces;
+    }
 
     private void lockProjectActions() {
         saveProject = false;
@@ -420,6 +426,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 duplicateWorkspace = true;
                 renameWorkspace = true;
             }
+            if (controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces().length > 1)
+                mergeWorkspaces = true;
         }
         openProject = true;
         newProject = true;
