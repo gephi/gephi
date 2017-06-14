@@ -5,14 +5,25 @@
  */
 package org.gephi.ui.merge;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.ArrayList;
 import org.gephi.project.api.Project;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceInformation;
+import org.gephi.project.api.WorkspaceProvider;
+import org.openide.util.Lookup;
 
 /**
  *
  * @author Alex
  */
 public class MergeWorkspacesEditor extends javax.swing.JPanel {
-
+    
+    private List<Workspace> notCurrentWorkspaces = new ArrayList<>();
+    private Workspace selectedWorkspace;
     /**
      * Creates new form NewJPanel
      */
@@ -34,81 +45,72 @@ public class MergeWorkspacesEditor extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mergePanel = new javax.swing.JPanel();
         workspaceList = new javax.swing.JComboBox<>();
         selectText = new javax.swing.JLabel();
-        cancelButton = new javax.swing.JButton();
-        okButton = new javax.swing.JButton();
 
-        workspaceList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+        Workspace currentWorkspace = projectController.getCurrentWorkspace();
+        WorkspaceProvider wsProvider = projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class);
+        Workspace[] workspaces = wsProvider.getWorkspaces();
+
+        for(Workspace workspace : workspaces){
+            if(currentWorkspace != workspace)
+            notCurrentWorkspaces.add(workspace);
+        }
+
+        selectedWorkspace = notCurrentWorkspaces.get(0);
+
+        String[] wpNames = new String[notCurrentWorkspaces.size()];
+
+        for(int i = 0; i < notCurrentWorkspaces.size(); i++){
+            wpNames[i] = notCurrentWorkspaces.get(i).getLookup().lookup(WorkspaceInformation.class).getName();
+        }
+
+        workspaceList.setModel(new javax.swing.DefaultComboBoxModel<>(wpNames));
 
         selectText.setText(org.openide.util.NbBundle.getMessage(MergeWorkspacesEditor.class, "MergeWorkspacesEditor.selectText.text")); // NOI18N
-
-        cancelButton.setText(org.openide.util.NbBundle.getMessage(MergeWorkspacesEditor.class, "MergeWorkspacesEditor.cancelButton.text")); // NOI18N
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelButtonActionPerformed(evt);
-            }
-        });
-
-        okButton.setText(org.openide.util.NbBundle.getMessage(MergeWorkspacesEditor.class, "MergeWorkspacesEditor.okButton.text")); // NOI18N
-
-        javax.swing.GroupLayout mergePanelLayout = new javax.swing.GroupLayout(mergePanel);
-        mergePanel.setLayout(mergePanelLayout);
-        mergePanelLayout.setHorizontalGroup(
-            mergePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mergePanelLayout.createSequentialGroup()
-                .addContainerGap(80, Short.MAX_VALUE)
-                .addGroup(mergePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(workspaceList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(selectText, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE))
-                .addGap(82, 82, 82))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mergePanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cancelButton))
-        );
-        mergePanelLayout.setVerticalGroup(
-            mergePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mergePanelLayout.createSequentialGroup()
-                .addContainerGap(105, Short.MAX_VALUE)
-                .addComponent(selectText)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(workspaceList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(105, 105, 105)
-                .addGroup(mergePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton)
-                    .addComponent(okButton)))
-        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(mergePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(77, 77, 77)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(selectText, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
+                    .addComponent(workspaceList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(mergePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(27, Short.MAX_VALUE)
+                .addComponent(selectText)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(workspaceList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(41, 41, 41))
         );
+
+        workspaceList.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                setSelectedWorkspace(workspaceList.getSelectedItem());
+            }
+        });
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cancelButtonActionPerformed
-
-
+    private void setSelectedWorkspace(String workspaceName){
+        for(Workspace workspace : notCurrentWorkspaces){
+            if(workspace.getLookup().lookup(WorkspaceInformation.class).getName().equals(workspaceName))
+                selectedWorkspace = workspace;
+        }
+    }
+    
+    public Workspace getSelectedWorkspace(){
+        return selectedWorkspace;
+    }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cancelButton;
-    private javax.swing.JPanel mergePanel;
-    private javax.swing.JButton okButton;
     private javax.swing.JLabel selectText;
     private javax.swing.JComboBox<String> workspaceList;
     // End of variables declaration//GEN-END:variables
