@@ -50,6 +50,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
@@ -120,6 +121,8 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
                         TabData tabData = tabDataModel.getTab(tabActionEvent.getTabIndex());
                         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
                         pc.deleteWorkspace(((WorkspaceComponent) tabData.getUserObject()).workspace);
+                        ProjectControllerUI projectControllerUI = Lookup.getDefault().lookup(ProjectControllerUI.class);
+                        projectControllerUI.checkMergeWorkspaces();
                     }
                     tabActionEvent.consume();
                 } else if (tabActionEvent.getActionCommand().equals(TabbedContainer.COMMAND_SELECT)) {

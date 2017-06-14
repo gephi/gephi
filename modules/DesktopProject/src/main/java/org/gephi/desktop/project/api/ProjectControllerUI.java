@@ -61,6 +61,8 @@ public interface ProjectControllerUI {
     public void renameProject(final String name);
 
     public void projectProperties();
+    
+    public void mergeWorkspaces();
 
     public void openFile(FileImporterBuilder[] builders);
     
@@ -99,4 +101,8 @@ public interface ProjectControllerUI {
     public boolean canRenameWorkspace();
 
     public boolean canProjectProperties();
+    
+    public boolean canMergeWorkspaces();
+    
+    public void checkMergeWorkspaces();
 }

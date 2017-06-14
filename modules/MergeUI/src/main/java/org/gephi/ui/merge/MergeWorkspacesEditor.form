@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="selectText" pref="218" max="32767" attributes="0"/>
+                  <Component id="workspaceList" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace pref="97" max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace pref="27" max="32767" attributes="0"/>
+              <Component id="selectText" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="workspaceList" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="javax.swing.JComboBox" name="workspaceList">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="workspaceList.addActionListener(new ActionListener(){&#xa;    public void actionPerformed(ActionEvent e){&#xa;        setSelectedWorkspace(workspaceList.getSelectedItem().toString());&#xa;    }&#xa;});"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);&#xa;currentWorkspace = projectController.getCurrentWorkspace();&#xa;&#xa;WorkspaceProvider wsProvider = projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class);&#xa;Workspace[] workspaces = wsProvider.getWorkspaces();&#xa;&#xa;for(Workspace workspace : workspaces){&#xa;    if(currentWorkspace != workspace)&#xa;        notCurrentWorkspaces.add(workspace);&#xa;}&#xa;&#xa;selectedWorkspace = notCurrentWorkspaces.get(0);&#xa;&#xa;String[] wpNames = new String[notCurrentWorkspaces.size()];&#xa;&#xa;for(int i = 0; i &lt; notCurrentWorkspaces.size(); i++){&#xa;        wpNames[i] = notCurrentWorkspaces.get(i).getLookup().lookup(WorkspaceInformation.class).getName();&#xa;}&#xa;&#xa;workspaceList.setModel(new javax.swing.DefaultComboBoxModel&lt;&gt;(wpNames));"/>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="selectText">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/ui/merge/Bundle.properties" key="MergeWorkspacesEditor.selectText.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+  </SubComponents>
+</Form>

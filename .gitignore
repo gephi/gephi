@@ -104,3 +104,5 @@ keystore.ks
 
 *.iml
 .idea/
+/modules/MergeUI/nbproject/private/
+/modules/MergeUI/nbproject/
