@@ -402,7 +402,7 @@ public class ConnectedComponents implements Statistics, LongTask {
                 + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
                 + "Number of Weakly Connected Components: " + componentCount + "<br>"
-                + (isDirected ? "Number of Stronlgy Connected Components: " + stronglyCount + "<br>" : "")
+                + (isDirected ? "Number of Strongly Connected Components: " + stronglyCount + "<br>" : "")
                 + "<br /><br />" + imageFile
                 + "<br />" + "<h2> Algorithm: </h2>"
                 + "Robert Tarjan, <i>Depth-First Search and Linear Graph Algorithms</i>, in SIAM Journal on Computing 1 (2): 146–160 (1972)<br />"
