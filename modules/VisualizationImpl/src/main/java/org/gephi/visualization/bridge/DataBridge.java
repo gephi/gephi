@@ -100,6 +100,36 @@ public class DataBridge implements VizArchitecture {
         this.textManager = VizController.getInstance().getTextManager();
     }
 
+    public synchronized NodeModel[] getNodeModelsForNodes(Node[] n) {
+        if (n == null) {
+            return null;
+        }
+
+        NodeModel[] models = new NodeModel[n.length];
+
+        for (int i = 0; i < n.length; i++) {
+            int storeId = n[i].getStoreId();
+            models[i] = storeId < nodes.length ? nodes[n[i].getStoreId()] : null;
+        }
+
+        return models;
+    }
+
+    public synchronized EdgeModel[] getEdgeModelsForEdges(Edge[] e) {
+        if (e == null) {
+            return null;
+        }
+        
+        EdgeModel[] models = new EdgeModel[e.length];
+
+        for (int i = 0; i < e.length; i++) {
+            int storeId = e[i].getStoreId();
+            models[i] = storeId < edges.length ? edges[e[i].getStoreId()] : null;
+        }
+
+        return models;
+    }
+
     public synchronized boolean updateWorld() {
         boolean force = false;
 

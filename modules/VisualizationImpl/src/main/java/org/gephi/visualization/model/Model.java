@@ -11,4 +11,8 @@ import org.gephi.visualization.VizModel;
 public interface Model {
 
     public void display(GL2 gl, GLU glu, VizModel model);
+    
+    public void setSelected(boolean selected);
+    
+    public boolean isSelected();
 }

@@ -74,7 +74,7 @@ public class TempDirUtils {
 
     public static class TempDir {
 
-        private File tempDir;
+        private final File tempDir;
 
         private TempDir(File tempDir) {
             this.tempDir = tempDir;
@@ -84,6 +84,10 @@ public class TempDirUtils {
             File file =  new File(tempDir, fileName);
             file.deleteOnExit();
             return file;
+        }
+
+        public File getTempDir() {
+            return tempDir;
         }
     }
 }

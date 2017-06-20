@@ -101,6 +101,14 @@ public class PreviewProperty {
      * 100 means opaque.
      */
     public static final String NODE_OPACITY = "node.opacity";
+
+    /**
+     * Node <code>Boolean</code> property indicating whether or not to use the
+     * opacity value defined as part of the Node color. If true, NODE_OPACITY will
+     * be ignored.
+     */
+    public static final String NODE_PER_NODE_OPACITY = "node.per.node.opacity";
+
     //Constants edges
     /**
      * Edge <code>Boolean</code> property defining whether to show edges.

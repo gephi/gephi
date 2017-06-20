@@ -144,9 +144,9 @@ public class Edge2dModel extends EdgeModel {
                     a = (source.alpha() + target.alpha()) / 2f;
                 }
             } else {
+                r = edge.r();
                 g = edge.g();
                 b = edge.b();
-                r = edge.r();
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();

@@ -4,13 +4,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.1</version>
+        <version>0.9.2-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>desktop-import</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.2-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>DesktopImport</name>
@@ -43,6 +43,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>utils-longtask</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>utils</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>

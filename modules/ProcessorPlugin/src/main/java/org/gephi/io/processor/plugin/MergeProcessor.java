@@ -80,10 +80,6 @@ public class MergeProcessor extends DefaultProcessor implements Processor {
             process(container, workspace);
         }
 
-        //Clean
-        workspace = null;
-        graphModel = null;
-        containers = null;
-        progressTicket = null;
+        clean();
     }
 }

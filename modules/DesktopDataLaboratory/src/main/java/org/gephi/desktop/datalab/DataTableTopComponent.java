@@ -48,22 +48,17 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -71,7 +66,6 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.gephi.datalab.api.DataLaboratoryHelper;
-import org.gephi.datalab.api.datatables.AttributeTableCSVExporter;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.api.datatables.DataTablesEventListener;
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
@@ -81,29 +75,26 @@ import org.gephi.datalab.spi.general.GeneralActionsManipulator;
 import org.gephi.datalab.spi.general.PluginGeneralActionsManipulator;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.desktop.datalab.general.actions.AddColumnUI;
-import org.gephi.desktop.datalab.general.actions.CSVExportUI;
 import org.gephi.desktop.datalab.general.actions.MergeColumnsUI;
 import org.gephi.desktop.datalab.tables.EdgesDataTable;
 import org.gephi.desktop.datalab.tables.NodesDataTable;
+import org.gephi.desktop.datalab.utils.GraphFileExporterBuilderDecorator;
+import org.gephi.desktop.io.export.api.GraphFileExporterUI;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Table;
+import org.gephi.io.exporter.plugin.ExporterSpreadsheet;
+import org.gephi.io.exporter.spi.GraphFileExporterBuilder;
 import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceInformation;
 import org.gephi.project.api.WorkspaceListener;
-import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.ui.components.BusyUtils;
 import org.gephi.ui.components.WrapLayout;
-import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.ui.utils.UIUtils;
-import org.gephi.utils.JTableCSVExporter;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -851,69 +842,19 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     }
 
     @Override
-    public void exportCurrentTable(ExportMode exportMode) {
-        Table table;
-        String fileName = prepareTableExportFileName();
-        boolean edgesTable;
+    public void exportCurrentTable() {
+        ExporterSpreadsheet.ExportTable currentTable = isEdgeTableMode() ? ExporterSpreadsheet.ExportTable.EDGES : ExporterSpreadsheet.ExportTable.NODES;
 
-        if (isShowingNodesTable()) {
-            table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
-            edgesTable = false;
-            fileName += " [Nodes]";
-        } else {
-            table = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getEdgeTable();
-            edgesTable = true;
-            fileName += " [Edges]";
-        }
-        fileName += ".csv";
+        GraphFileExporterUI fileExporterUI = new GraphFileExporterUI();
 
-        switch (exportMode) {
-            case CSV:
-                showCSVExportUI(table, edgesTable, fileName);
-                break;
-        }
-    }
-
-    private String prepareTableExportFileName() {
-        String fileName = null;
-        ProjectInformation projectInfo = pc.getCurrentProject().getLookup().lookup(ProjectInformation.class);
-        if (projectInfo.hasFile()) {
-            fileName = removeFileNameExtension(projectInfo.getFileName());
-        }
-        WorkspaceProvider wp = pc.getCurrentProject().getLookup().lookup(WorkspaceProvider.class);
-        if (wp.getWorkspaces().length > 1 || fileName == null) {
-            if (fileName != null) {
-                fileName += " - ";
-            } else {
-                fileName = "";
-            }
-
-            WorkspaceInformation workspaceInfo = pc.getCurrentWorkspace().getLookup().lookup(WorkspaceInformation.class);
-            if (workspaceInfo.hasSource()) {
-                fileName += removeFileNameExtension(workspaceInfo.getSource());
-            } else {
-                fileName += workspaceInfo.getName();
+        List<GraphFileExporterBuilder> builders = new ArrayList<>();
+        for (GraphFileExporterBuilder builder : Lookup.getDefault().lookupAll(GraphFileExporterBuilder.class)) {
+            if (builder.getName().toLowerCase().startsWith("spreadsheet")) {
+                builders.add(new GraphFileExporterBuilderDecorator(builder, currentTable));
             }
         }
 
-        return fileName;
-    }
-
-    private String removeFileNameExtension(String fileName) {
-        int extensionIndex = fileName.lastIndexOf(".");
-        if (extensionIndex != -1) {
-            fileName = fileName.substring(0, extensionIndex);
-        }
-        return fileName;
-    }
-
-    private void showCSVExportUI(Table table, boolean edgesTable, String fileName) {
-        CSVExportUI csvUI = new CSVExportUI(table, edgesTable);
-        DialogDescriptor dd = new DialogDescriptor(csvUI, csvUI.getDisplayName());
-        if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION)) {
-            DataTableTopComponent.exportTableAsCSV(this, this.visibleOnly, table, edgesTable, csvUI.getSelectedSeparator(), csvUI.getSelectedCharset(), csvUI.getSelectedColumnsIndexes(), fileName);
-        }
-        csvUI.unSetup();
+        fileExporterUI.action(builders.toArray(new GraphFileExporterBuilder[0]));
     }
 
     /**
@@ -1581,68 +1522,4 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
     }
-
-    /**
-     * <p>Exports a AttributeTable to a CSV file showing first a dialog to select the
-     * file to write.</p>
-     *
-     * @param parent Parent window
-     * @param visibleOnly Show only visible graph
-     * @param table Table to export
-     * @param separator Separator to use for separating values of a row in the
-     * CSV file. If null ',' will be used.
-     * @param charset Charset encoding for the file
-     * @param columnsToExport Indicates the indexes of the columns to export.
-     * All columns will be exported if null
-     */
-    public static void exportTableAsCSV(JComponent parent, boolean visibleOnly, Table table, boolean edgesTable, Character separator, Charset charset, Integer[] columnsToExport, String fileName) {
-        //Validate that at least 1 column is selected:
-        if(columnsToExport.length < 1){
-            return;
-        }
-        
-        String lastPath = NbPreferences.forModule(JTableCSVExporter.class).get(LAST_PATH, null);
-        final JFileChooser chooser = new JFileChooser(lastPath);
-        chooser.setAcceptAllFileFilterUsed(false);
-        DialogFileFilter dialogFileFilter = new DialogFileFilter(NbBundle.getMessage(DataTableTopComponent.class, "TableCSVExporter.filechooser.csvDescription"));
-        dialogFileFilter.addExtension("csv");
-        chooser.addChoosableFileFilter(dialogFileFilter);
-        File selectedFile = new File(chooser.getCurrentDirectory(), fileName);
-        chooser.setSelectedFile(selectedFile);
-        int returnFile = chooser.showSaveDialog(null);
-        if (returnFile != JFileChooser.APPROVE_OPTION) {
-            return;
-        }
-        File file = chooser.getSelectedFile();
-
-        if (!file.getPath().endsWith(".csv")) {
-            file = new File(file.getPath() + ".csv");
-        }
-
-        //Save last path
-        String defaultDirectory = file.getParentFile().getAbsolutePath();
-        NbPreferences.forModule(JTableCSVExporter.class).put(LAST_PATH, defaultDirectory);
-        try {
-            Element[] rows;
-            Graph graph;
-            if (visibleOnly) {
-                graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraphVisible();
-            } else {
-                graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
-            }
-
-            if(edgesTable){
-                rows = graph.getEdges().toArray();
-            }else{
-                rows = graph.getNodes().toArray();
-            }
-            
-            AttributeTableCSVExporter.writeCSVFile(graph, table, file, separator, charset, columnsToExport, rows);
-            JOptionPane.showMessageDialog(parent, NbBundle.getMessage(DataTableTopComponent.class, "TableCSVExporter.dialog.success"));
-        } catch (Exception ex) {
-            Logger.getLogger("").log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(parent, NbBundle.getMessage(DataTableTopComponent.class, "TableCSVExporter.dialog.error"), NbBundle.getMessage(DataTableTopComponent.class, "TableCSVExporter.dialog.error.title"), JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    private static final String LAST_PATH = "TableCSVExporter_Save_Last_Path";
 }

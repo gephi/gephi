@@ -4,22 +4,22 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.1</version>
+        <version>0.9.2-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>ui-library-wrapper</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.2-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>UILibraryWrapper</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.pushingpixels</groupId>
+            <groupId>com.github.insubstantial</groupId>
             <artifactId>flamingo</artifactId>
-            <version>5.0-gephi</version>
+            <version>7.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.xmlgraphics</groupId>
@@ -57,7 +57,7 @@
         <dependency>
             <groupId>net.java.dev</groupId>
             <artifactId>colorchooser</artifactId>
-            <version>1.0</version>
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>

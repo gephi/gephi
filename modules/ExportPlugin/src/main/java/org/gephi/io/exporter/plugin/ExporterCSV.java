@@ -43,9 +43,13 @@ package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -72,6 +76,16 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportVisible;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
+
+    /**
+     * Formatter for limiting precision to 6 decimals, avoiding precision errors (epsilon).
+     */
+    private static final DecimalFormat FORMAT = new DecimalFormat("0.######");
+
+    static {
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.ENGLISH);
+        FORMAT.setDecimalFormatSymbols(symbols);
+    }
 
     @Override
     public boolean execute() {
@@ -144,8 +158,8 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
                 writeMatrixNode(n, true);
                 for (int j = 0; j < nodes.length; j++) {
                     Node m = nodes[j];
-                    Edge e = graph.getEdge(n, m);
-                    writeEdge(e, j < nodes.length - 1);
+                    EdgeIterable edges = graph.getEdges(n, m);
+                    writeEdge(edges, j < nodes.length - 1);
                 }
                 Progress.progress(progressTicket);
                 writer.append(EOL);
@@ -155,24 +169,28 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
         Progress.finish(progressTicket);
     }
 
-    private void writeEdge(Edge edge, boolean writeSeparator) throws IOException {
-        if (edge != null) {
-            if (edgeWeight) {
-                writer.append(Double.toString(edge.getWeight()));
-            } else {
-                writer.append(Double.toString(1.0));
-            }
-            if (writeSeparator) {
-                writer.append(SEPARATOR);
-            }
+    private void writeEdge(EdgeIterable edges, boolean writeSeparator) throws IOException {
+        float weight = 0;
+        boolean anyEdge = false;
+        for (Edge edge : edges) {
+            anyEdge = true;
+            weight += edge.getWeight();
+        }
 
+        if (anyEdge) {
+            if (edgeWeight) {
+                writer.append(FORMAT.format(weight));
+            } else {
+                writer.append(FORMAT.format(1.0));
+            }
         } else {
             if (writeZero) {
                 writer.append("0");
             }
-            if (writeSeparator) {
-                writer.append(SEPARATOR);
-            }
+        }
+
+        if (writeSeparator) {
+            writer.append(SEPARATOR);
         }
     }
 

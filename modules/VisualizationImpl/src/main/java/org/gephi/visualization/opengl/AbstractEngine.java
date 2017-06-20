@@ -46,6 +46,8 @@ import com.jogamp.opengl.glu.GLU;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
 import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -57,6 +59,8 @@ import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.visualization.bridge.DataBridge;
+import org.gephi.visualization.model.Model;
+import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.edge.EdgeModeler;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.model.node.NodeModeler;
@@ -64,8 +68,7 @@ import org.gephi.visualization.octree.Octree;
 import org.gephi.visualization.text.TextManager;
 
 /**
- * Abstract graphic engine. Real graphic engines inherit from this class and can
- * use the common functionalities.
+ * Abstract graphic engine. Real graphic engines inherit from this class and can use the common functionalities.
  *
  * @author Mathieu Bastian
  */
@@ -165,9 +168,16 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract List<NodeModel> getSelectedNodes();
 
-//    public abstract Model[] getSelectedObjects(int modelClass);
-//    public abstract void selectNodes(NodeModel obj);
-//    public abstract void selectObject(NodeModel[] objs);
+    public abstract List<Node> getSelectedUnderlyingNodes();
+
+    public abstract List<EdgeModel> getSelectedEdges();
+
+    public abstract List<Edge> getSelectedUnderlyingEdges();
+
+    public abstract void selectObject(Model obj);
+
+    public abstract void selectObject(Model[] objs);
+
     public abstract void resetSelection();
 
     public void reinit() {
@@ -292,5 +302,13 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
                 textManager.initArchitecture();
             }
         }
+    }
+    
+    public NodeModel[] getNodeModelsForNodes(Node[] nodes) {
+        return dataBridge.getNodeModelsForNodes(nodes);
+    }
+
+    public EdgeModel[] getEdgeModelsForEdges(Edge[] edges) {
+        return dataBridge.getEdgeModelsForEdges(edges);
     }
 }

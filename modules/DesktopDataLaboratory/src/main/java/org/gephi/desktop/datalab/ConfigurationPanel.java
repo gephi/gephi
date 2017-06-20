@@ -44,12 +44,14 @@ package org.gephi.desktop.datalab;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.TimeRepresentation;
+import org.gephi.ui.utils.TimeFormatWrapper;
+import org.gephi.ui.utils.TimeRepresentationWrapper;
+import org.gephi.ui.utils.TimeZoneWrapper;
 import org.joda.time.DateTimeZone;
 import org.openide.util.NbBundle;
 
@@ -80,7 +82,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                graphModel.setTimeFormat(((TimeFormatWrapper) timeFormatComboBox.getSelectedItem()).timeFormat);
+                graphModel.setTimeFormat(((TimeFormatWrapper) timeFormatComboBox.getSelectedItem()).getTimeFormat());
                 dataTableTopComponent.refreshCurrentTable();
             }
         });
@@ -101,7 +103,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                TimeZone selected = ((TimeZoneWrapper) timeZoneComboBox.getSelectedItem()).timeZone;
+                TimeZone selected = ((TimeZoneWrapper) timeZoneComboBox.getSelectedItem()).getTimeZone();
                 graphModel.setTimeZone(DateTimeZone.forTimeZone(selected));
                 dataTableTopComponent.refreshCurrentTable();
             }
@@ -119,7 +121,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Configuration c = graphModel.getConfiguration();
-                    c.setTimeRepresentation(((TimeRepresentationWrapper) timeRepresentationComboBox.getSelectedItem()).timeRepresentation);
+                    c.setTimeRepresentation(((TimeRepresentationWrapper) timeRepresentationComboBox.getSelectedItem()).getTimeRepresentation());
                     graphModel.setConfiguration(c);
                 }
             });
@@ -156,139 +158,6 @@ public class ConfigurationPanel extends javax.swing.JPanel {
         long currentTimestamp = System.currentTimeMillis();
         for (String id : TimeZone.getAvailableIDs()) {
             timeZoneComboBox.addItem(new TimeZoneWrapper(TimeZone.getTimeZone(id), currentTimestamp));
-        }
-    }
-
-    class TimeFormatWrapper {
-
-        private final TimeFormat timeFormat;
-
-        public TimeFormatWrapper(TimeFormat timeFormat) {
-            this.timeFormat = timeFormat;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 53 * hash + (this.timeFormat != null ? this.timeFormat.hashCode() : 0);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final TimeFormatWrapper other = (TimeFormatWrapper) obj;
-            if (this.timeFormat != other.timeFormat) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            return NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeFormat." + timeFormat.name());
-        }
-    }
-
-    class TimeRepresentationWrapper {
-
-        private final TimeRepresentation timeRepresentation;
-
-        public TimeRepresentationWrapper(TimeRepresentation timeRepresentation) {
-            this.timeRepresentation = timeRepresentation;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 3;
-            hash = 41 * hash + (this.timeRepresentation != null ? this.timeRepresentation.hashCode() : 0);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final TimeRepresentationWrapper other = (TimeRepresentationWrapper) obj;
-            if (this.timeRepresentation != other.timeRepresentation) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            return NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeRepresentation." + timeRepresentation.name());
-        }
-    }
-
-    class TimeZoneWrapper {
-
-        private final TimeZone timeZone;
-        private final long currentTimestamp;
-
-        public TimeZoneWrapper(TimeZone timeZone, long currentTimestamp) {
-            this.timeZone = timeZone;
-            this.currentTimestamp = currentTimestamp;
-        }
-
-        private String getTimeZoneText() {
-            int offset = timeZone.getOffset(currentTimestamp);
-            long hours = TimeUnit.MILLISECONDS.toHours(offset);
-            long minutes = TimeUnit.MILLISECONDS.toMinutes(offset)
-                    - TimeUnit.HOURS.toMinutes(hours);
-            minutes = Math.abs(minutes);
-
-            if (hours >= 0) {
-                return String.format("%s (GMT+%d:%02d)", timeZone.getID(), hours, minutes);
-            } else {
-                return String.format("%s (GMT%d:%02d)", timeZone.getID(), hours, minutes);
-            }
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 5;
-            hash = 97 * hash + (this.timeZone != null ? this.timeZone.hashCode() : 0);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final TimeZoneWrapper other = (TimeZoneWrapper) obj;
-            if (this.timeZone != other.timeZone && (this.timeZone == null || !this.timeZone.equals(other.timeZone))) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            return getTimeZoneText();
         }
     }
 

@@ -41,6 +41,7 @@
  */
 package org.gephi.io.processor.plugin;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.gephi.graph.api.Configuration;
@@ -56,7 +57,9 @@ import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.EdgeMergeStrategy;
 import org.gephi.io.importer.api.ElementIdType;
+import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
@@ -67,13 +70,12 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Processor 'Add full graph' that unloads the complete container into the
- * workspace.
+ * Processor 'Add full graph' that unloads the complete container into the workspace.
  *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Processor.class, position = 10)
-public class DefaultProcessor extends AbstractProcessor implements Processor {
+public class DefaultProcessor extends AbstractProcessor {
 
     @Override
     public String getDisplayName() {
@@ -101,11 +103,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
 
         process(container, workspace);
 
-        //Clean
-        workspace = null;
-        graphModel = null;
-        containers = null;
-        progressTicket = null;
+        clean();
     }
 
     protected void processConfiguration(ContainerUnloader container, Workspace workspace) {
@@ -128,7 +126,21 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
             }
         }
 
-        graphController.getGraphModel(workspace).setConfiguration(configuration);
+        GraphConfigurationWrapper originalConfig = new GraphConfigurationWrapper(graphController.getGraphModel(workspace).getConfiguration());
+        GraphConfigurationWrapper newConfig = new GraphConfigurationWrapper(configuration);
+
+        if (!originalConfig.equals(newConfig)) {
+            try {
+                graphController.getGraphModel(workspace).setConfiguration(configuration);
+            } catch (Exception e) {
+                String message = NbBundle.getMessage(
+                        DefaultProcessor.class, "DefaultProcessor.error.configurationChangeForbidden",
+                        new GraphConfigurationWrapper(graphController.getGraphModel(workspace).getConfiguration()).toString(),
+                        new GraphConfigurationWrapper(configuration).toString()
+                );
+                report.logIssue(new Issue(message, Issue.Level.SEVERE));
+            }
+        }
     }
 
     protected void process(ContainerUnloader container, Workspace workspace) {
@@ -166,7 +178,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
                 addedNodes++;
                 newNode = true;
             }
-            flushToNode(draftNode, node);
+            flushToNode(container, draftNode, node);
 
             if (newNode) {
                 graph.addNode(node);
@@ -174,6 +186,8 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
 
             Progress.progress(progressTicket);
         }
+
+        final EdgeMergeStrategy edgesMergeStrategy = containers[0].getEdgesMergeStrategy();
 
         //Create all edges and push to data structure
         for (EdgeDraft draftEdge : container.getEdges()) {
@@ -186,25 +200,58 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
             Object type = draftEdge.getType();
             int edgeType = graphModel.addEdgeType(type);
 
-            Edge edge = graph.getEdge(source, target, edgeType);
-            boolean newEdge = false;
-            if (edge == null) {
-                switch (container.getEdgeDefault()) {
-                    case DIRECTED:
-                        edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), true);
-                        break;
-                    case UNDIRECTED:
-                        edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), false);
-                        break;
-                    case MIXED:
-                        boolean directed = draftEdge.getDirection() == null || !draftEdge.getDirection().equals(EdgeDirection.UNDIRECTED);
-                        edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), directed);
-                        break;
-                }
-                addedEdges++;
-                newEdge = true;
+            boolean createDirected = true;
+            switch (container.getEdgeDefault()) {
+                case DIRECTED:
+                    createDirected = true;
+                    break;
+                case UNDIRECTED:
+                    createDirected = false;
+                    break;
+                case MIXED:
+                    createDirected = draftEdge.getDirection() != EdgeDirection.UNDIRECTED;
+                    draftEdge.setDirection(createDirected ? EdgeDirection.DIRECTED : EdgeDirection.UNDIRECTED);
+                    break;
             }
-            flushToEdge(draftEdge, edge);
+
+            Edge edge = graph.getEdge(source, target, edgeType);
+
+            //Undirected and directed edges are incompatible, check for them or we could get an exception:
+            boolean canCreateEdge = true;
+            if (edge == null) {
+                if (createDirected) {
+                    //The edge may exist with opposite source-target but undirected. In that case we can't create a directed one:
+                    edge = graph.getEdge(target, source, edgeType);
+
+                    if (edge != null && edge.isDirected()) {
+                        edge = null;//Actually it's directed so we can create the opposite directed edge
+                    }
+                } else {
+                    edge = graph.getEdge(target, source, edgeType);
+                }
+
+                if (edge != null) {
+                    canCreateEdge = false;
+                }
+            }
+
+            if (canCreateEdge && edgesMergeStrategy == EdgeMergeStrategy.NO_MERGE) {
+                edge = null;//Force create, no merge
+            }
+
+            boolean newEdge = edge == null;
+            if (newEdge) {
+                if (!graph.hasEdge(id)) {
+                    edge = factory.newEdge(id, source, target, edgeType, draftEdge.getWeight(), createDirected);
+                } else {
+                    //The id is already in use by a different edge, generate a new id:
+                    edge = factory.newEdge(source, target, edgeType, draftEdge.getWeight(), createDirected);
+                }
+
+                addedEdges++;
+            }
+
+            flushToEdge(container, draftEdge, edge, newEdge);
 
             if (newEdge) {
                 graph.addEdge(edge);
@@ -241,5 +288,74 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
                 break;
         }
         return id;
+    }
+
+    private class GraphConfigurationWrapper {
+
+        private final Class nodeIdType;
+        private final Class edgeIdType;
+        private final Class edgeLabelType;
+        private final Class edgeWeightType;
+        private final Boolean edgeWeightColumn;
+        private final TimeRepresentation timeRepresentation;
+
+        public GraphConfigurationWrapper(Configuration configuration) {
+            nodeIdType = configuration.getNodeIdType();
+            edgeIdType = configuration.getEdgeIdType();
+            edgeLabelType = configuration.getEdgeLabelType();
+            edgeWeightType = configuration.getEdgeWeightType();
+            edgeWeightColumn = configuration.getEdgeWeightColumn();
+            timeRepresentation = configuration.getTimeRepresentation();
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 19 * hash + Objects.hashCode(this.nodeIdType);
+            hash = 19 * hash + Objects.hashCode(this.edgeIdType);
+            hash = 19 * hash + Objects.hashCode(this.edgeLabelType);
+            hash = 19 * hash + Objects.hashCode(this.edgeWeightType);
+            hash = 19 * hash + Objects.hashCode(this.edgeWeightColumn);
+            hash = 19 * hash + Objects.hashCode(this.timeRepresentation);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final GraphConfigurationWrapper other = (GraphConfigurationWrapper) obj;
+            if (!Objects.equals(this.nodeIdType, other.nodeIdType)) {
+                return false;
+            }
+            if (!Objects.equals(this.edgeIdType, other.edgeIdType)) {
+                return false;
+            }
+            if (!Objects.equals(this.edgeLabelType, other.edgeLabelType)) {
+                return false;
+            }
+            if (!Objects.equals(this.edgeWeightType, other.edgeWeightType)) {
+                return false;
+            }
+            if (!Objects.equals(this.edgeWeightColumn, other.edgeWeightColumn)) {
+                return false;
+            }
+            if (this.timeRepresentation != other.timeRepresentation) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return "GraphConfigurationWrapper{" + "nodeIdType=" + nodeIdType + ", edgeIdType=" + edgeIdType + ", edgeLabelType=" + edgeLabelType + ", edgeWeightType=" + edgeWeightType + ", edgeWeightColumn=" + edgeWeightColumn + ", timeRepresentation=" + timeRepresentation + '}';
+        }
     }
 }

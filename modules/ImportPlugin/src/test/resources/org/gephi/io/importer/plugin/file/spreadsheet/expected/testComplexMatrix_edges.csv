@@ -1,0 +1,651 @@
+Source,Target,Type,Label,timeset,Weight
+Bruno Pellaud,Christian Van Singer,Directed,,,24
+Bruno Pellaud,Christoph Brutschin,Directed,,,4
+Bruno Pellaud,Christophe Darbellay,Directed,,,4
+Bruno Pellaud,Doris Leuthard,Directed,,,80
+Bruno Pellaud,Eric Nussbaumer,Directed,,,12
+Bruno Pellaud,George Piller,Directed,,,4
+Bruno Pellaud,Greenpeace,Directed,,,8
+Bruno Pellaud,Hans Grunder,Directed,,,4
+Bruno Pellaud,Jacqueline Fehr,Directed,,,4
+Bruno Pellaud,Jacques Bourgeois,Directed,,,4
+Bruno Pellaud,Jean-François Rime,Directed,,,4
+Bruno Pellaud,Jean-Marc Cavedon,Directed,,,8
+Bruno Pellaud,Jean-Marie Brom,Directed,,,8
+Bruno Pellaud,Jean-Pierre Bommer,Directed,,,4
+Bruno Pellaud,Jean-Pierre Graber,Directed,,,16
+Bruno Pellaud,Marianne Binder,Directed,,,4
+Bruno Pellaud,Miriam Behrens,Directed,,,4
+Bruno Pellaud,Pascal Gentinetta,Directed,,,12
+Bruno Pellaud,Roger Nordmann,Directed,,,12
+Bruno Pellaud,Rolf Buettiker,Directed,,,28
+Bruno Pellaud,Sofia Majnoni,Directed,,,8
+Bruno Pellaud,Ueli Leuenberger,Directed,,,4
+Bruno Pellaud,Ueli Maurer,Directed,,,20
+Bruno Pellaud,Walter Steinmann,Directed,,,16
+Bruno Pellaud,les Amis de la Terre,Directed,,,4
+Christian Van Singer,Bruno Pellaud,Directed,,,24
+Christian Van Singer,Christoph Brutschin,Directed,,,6
+Christian Van Singer,Christophe Darbellay,Directed,,,6
+Christian Van Singer,Doris Leuthard,Directed,,,120
+Christian Van Singer,Eric Nussbaumer,Directed,,,18
+Christian Van Singer,George Piller,Directed,,,6
+Christian Van Singer,Greenpeace,Directed,,,12
+Christian Van Singer,Hans Grunder,Directed,,,6
+Christian Van Singer,Jacqueline Fehr,Directed,,,6
+Christian Van Singer,Jacques Bourgeois,Directed,,,6
+Christian Van Singer,Jean-François Rime,Directed,,,6
+Christian Van Singer,Jean-Marc Cavedon,Directed,,,12
+Christian Van Singer,Jean-Marie Brom,Directed,,,12
+Christian Van Singer,Jean-Pierre Bommer,Directed,,,6
+Christian Van Singer,Jean-Pierre Graber,Directed,,,24
+Christian Van Singer,Marianne Binder,Directed,,,6
+Christian Van Singer,Miriam Behrens,Directed,,,6
+Christian Van Singer,Pascal Gentinetta,Directed,,,18
+Christian Van Singer,Roger Nordmann,Directed,,,18
+Christian Van Singer,Rolf Buettiker,Directed,,,42
+Christian Van Singer,Sofia Majnoni,Directed,,,12
+Christian Van Singer,Ueli Leuenberger,Directed,,,6
+Christian Van Singer,Ueli Maurer,Directed,,,30
+Christian Van Singer,Walter Steinmann,Directed,,,24
+Christian Van Singer,les Amis de la Terre,Directed,,,6
+Christoph Brutschin,Bruno Pellaud,Directed,,,4
+Christoph Brutschin,Christian Van Singer,Directed,,,6
+Christoph Brutschin,Christophe Darbellay,Directed,,,1
+Christoph Brutschin,Doris Leuthard,Directed,,,20
+Christoph Brutschin,Eric Nussbaumer,Directed,,,3
+Christoph Brutschin,George Piller,Directed,,,1
+Christoph Brutschin,Greenpeace,Directed,,,2
+Christoph Brutschin,Hans Grunder,Directed,,,1
+Christoph Brutschin,Jacqueline Fehr,Directed,,,1
+Christoph Brutschin,Jacques Bourgeois,Directed,,,1
+Christoph Brutschin,Jean-François Rime,Directed,,,1
+Christoph Brutschin,Jean-Marc Cavedon,Directed,,,2
+Christoph Brutschin,Jean-Marie Brom,Directed,,,2
+Christoph Brutschin,Jean-Pierre Bommer,Directed,,,1
+Christoph Brutschin,Jean-Pierre Graber,Directed,,,4
+Christoph Brutschin,Marianne Binder,Directed,,,1
+Christoph Brutschin,Miriam Behrens,Directed,,,1
+Christoph Brutschin,Pascal Gentinetta,Directed,,,3
+Christoph Brutschin,Roger Nordmann,Directed,,,3
+Christoph Brutschin,Rolf Buettiker,Directed,,,7
+Christoph Brutschin,Sofia Majnoni,Directed,,,2
+Christoph Brutschin,Ueli Leuenberger,Directed,,,1
+Christoph Brutschin,Ueli Maurer,Directed,,,5
+Christoph Brutschin,Walter Steinmann,Directed,,,4
+Christoph Brutschin,les Amis de la Terre,Directed,,,1
+Christophe Darbellay,Bruno Pellaud,Directed,,,4
+Christophe Darbellay,Christian Van Singer,Directed,,,6
+Christophe Darbellay,Christoph Brutschin,Directed,,,1
+Christophe Darbellay,Doris Leuthard,Directed,,,20
+Christophe Darbellay,Eric Nussbaumer,Directed,,,3
+Christophe Darbellay,George Piller,Directed,,,1
+Christophe Darbellay,Greenpeace,Directed,,,2
+Christophe Darbellay,Hans Grunder,Directed,,,1
+Christophe Darbellay,Jacqueline Fehr,Directed,,,1
+Christophe Darbellay,Jacques Bourgeois,Directed,,,1
+Christophe Darbellay,Jean-François Rime,Directed,,,1
+Christophe Darbellay,Jean-Marc Cavedon,Directed,,,2
+Christophe Darbellay,Jean-Marie Brom,Directed,,,2
+Christophe Darbellay,Jean-Pierre Bommer,Directed,,,1
+Christophe Darbellay,Jean-Pierre Graber,Directed,,,4
+Christophe Darbellay,Marianne Binder,Directed,,,1
+Christophe Darbellay,Miriam Behrens,Directed,,,1
+Christophe Darbellay,Pascal Gentinetta,Directed,,,3
+Christophe Darbellay,Roger Nordmann,Directed,,,3
+Christophe Darbellay,Rolf Buettiker,Directed,,,7
+Christophe Darbellay,Sofia Majnoni,Directed,,,2
+Christophe Darbellay,Ueli Leuenberger,Directed,,,1
+Christophe Darbellay,Ueli Maurer,Directed,,,5
+Christophe Darbellay,Walter Steinmann,Directed,,,4
+Christophe Darbellay,les Amis de la Terre,Directed,,,1
+Doris Leuthard,Bruno Pellaud,Directed,,,80
+Doris Leuthard,Christian Van Singer,Directed,,,120
+Doris Leuthard,Christoph Brutschin,Directed,,,20
+Doris Leuthard,Christophe Darbellay,Directed,,,20
+Doris Leuthard,Eric Nussbaumer,Directed,,,60
+Doris Leuthard,George Piller,Directed,,,20
+Doris Leuthard,Greenpeace,Directed,,,40
+Doris Leuthard,Hans Grunder,Directed,,,20
+Doris Leuthard,Jacqueline Fehr,Directed,,,20
+Doris Leuthard,Jacques Bourgeois,Directed,,,20
+Doris Leuthard,Jean-François Rime,Directed,,,20
+Doris Leuthard,Jean-Marc Cavedon,Directed,,,40
+Doris Leuthard,Jean-Marie Brom,Directed,,,40
+Doris Leuthard,Jean-Pierre Bommer,Directed,,,20
+Doris Leuthard,Jean-Pierre Graber,Directed,,,80
+Doris Leuthard,Marianne Binder,Directed,,,20
+Doris Leuthard,Miriam Behrens,Directed,,,20
+Doris Leuthard,Pascal Gentinetta,Directed,,,60
+Doris Leuthard,Roger Nordmann,Directed,,,60
+Doris Leuthard,Rolf Buettiker,Directed,,,140
+Doris Leuthard,Sofia Majnoni,Directed,,,40
+Doris Leuthard,Ueli Leuenberger,Directed,,,20
+Doris Leuthard,Ueli Maurer,Directed,,,100
+Doris Leuthard,Walter Steinmann,Directed,,,80
+Doris Leuthard,les Amis de la Terre,Directed,,,20
+Eric Nussbaumer,Bruno Pellaud,Directed,,,12
+Eric Nussbaumer,Christian Van Singer,Directed,,,18
+Eric Nussbaumer,Christoph Brutschin,Directed,,,3
+Eric Nussbaumer,Christophe Darbellay,Directed,,,3
+Eric Nussbaumer,Doris Leuthard,Directed,,,60
+Eric Nussbaumer,George Piller,Directed,,,3
+Eric Nussbaumer,Greenpeace,Directed,,,6
+Eric Nussbaumer,Hans Grunder,Directed,,,3
+Eric Nussbaumer,Jacqueline Fehr,Directed,,,3
+Eric Nussbaumer,Jacques Bourgeois,Directed,,,3
+Eric Nussbaumer,Jean-François Rime,Directed,,,3
+Eric Nussbaumer,Jean-Marc Cavedon,Directed,,,6
+Eric Nussbaumer,Jean-Marie Brom,Directed,,,6
+Eric Nussbaumer,Jean-Pierre Bommer,Directed,,,3
+Eric Nussbaumer,Jean-Pierre Graber,Directed,,,12
+Eric Nussbaumer,Marianne Binder,Directed,,,3
+Eric Nussbaumer,Miriam Behrens,Directed,,,3
+Eric Nussbaumer,Pascal Gentinetta,Directed,,,9
+Eric Nussbaumer,Roger Nordmann,Directed,,,9
+Eric Nussbaumer,Rolf Buettiker,Directed,,,21
+Eric Nussbaumer,Sofia Majnoni,Directed,,,6
+Eric Nussbaumer,Ueli Leuenberger,Directed,,,3
+Eric Nussbaumer,Ueli Maurer,Directed,,,15
+Eric Nussbaumer,Walter Steinmann,Directed,,,12
+Eric Nussbaumer,les Amis de la Terre,Directed,,,3
+George Piller,Bruno Pellaud,Directed,,,4
+George Piller,Christian Van Singer,Directed,,,6
+George Piller,Christoph Brutschin,Directed,,,1
+George Piller,Christophe Darbellay,Directed,,,1
+George Piller,Doris Leuthard,Directed,,,20
+George Piller,Eric Nussbaumer,Directed,,,3
+George Piller,Greenpeace,Directed,,,2
+George Piller,Hans Grunder,Directed,,,1
+George Piller,Jacqueline Fehr,Directed,,,1
+George Piller,Jacques Bourgeois,Directed,,,1
+George Piller,Jean-François Rime,Directed,,,1
+George Piller,Jean-Marc Cavedon,Directed,,,2
+George Piller,Jean-Marie Brom,Directed,,,2
+George Piller,Jean-Pierre Bommer,Directed,,,1
+George Piller,Jean-Pierre Graber,Directed,,,4
+George Piller,Marianne Binder,Directed,,,1
+George Piller,Miriam Behrens,Directed,,,1
+George Piller,Pascal Gentinetta,Directed,,,3
+George Piller,Roger Nordmann,Directed,,,3
+George Piller,Rolf Buettiker,Directed,,,7
+George Piller,Sofia Majnoni,Directed,,,2
+George Piller,Ueli Leuenberger,Directed,,,1
+George Piller,Ueli Maurer,Directed,,,5
+George Piller,Walter Steinmann,Directed,,,4
+George Piller,les Amis de la Terre,Directed,,,1
+Greenpeace,Bruno Pellaud,Directed,,,8
+Greenpeace,Christian Van Singer,Directed,,,12
+Greenpeace,Christoph Brutschin,Directed,,,2
+Greenpeace,Christophe Darbellay,Directed,,,2
+Greenpeace,Doris Leuthard,Directed,,,40
+Greenpeace,Eric Nussbaumer,Directed,,,6
+Greenpeace,George Piller,Directed,,,2
+Greenpeace,Hans Grunder,Directed,,,2
+Greenpeace,Jacqueline Fehr,Directed,,,2
+Greenpeace,Jacques Bourgeois,Directed,,,2
+Greenpeace,Jean-François Rime,Directed,,,2
+Greenpeace,Jean-Marc Cavedon,Directed,,,4
+Greenpeace,Jean-Marie Brom,Directed,,,4
+Greenpeace,Jean-Pierre Bommer,Directed,,,2
+Greenpeace,Jean-Pierre Graber,Directed,,,8
+Greenpeace,Marianne Binder,Directed,,,2
+Greenpeace,Miriam Behrens,Directed,,,2
+Greenpeace,Pascal Gentinetta,Directed,,,6
+Greenpeace,Roger Nordmann,Directed,,,6
+Greenpeace,Rolf Buettiker,Directed,,,14
+Greenpeace,Sofia Majnoni,Directed,,,4
+Greenpeace,Ueli Leuenberger,Directed,,,2
+Greenpeace,Ueli Maurer,Directed,,,10
+Greenpeace,Walter Steinmann,Directed,,,8
+Greenpeace,les Amis de la Terre,Directed,,,2
+Hans Grunder,Bruno Pellaud,Directed,,,4
+Hans Grunder,Christian Van Singer,Directed,,,6
+Hans Grunder,Christoph Brutschin,Directed,,,1
+Hans Grunder,Christophe Darbellay,Directed,,,1
+Hans Grunder,Doris Leuthard,Directed,,,20
+Hans Grunder,Eric Nussbaumer,Directed,,,3
+Hans Grunder,George Piller,Directed,,,1
+Hans Grunder,Greenpeace,Directed,,,2
+Hans Grunder,Jacqueline Fehr,Directed,,,1
+Hans Grunder,Jacques Bourgeois,Directed,,,1
+Hans Grunder,Jean-François Rime,Directed,,,1
+Hans Grunder,Jean-Marc Cavedon,Directed,,,2
+Hans Grunder,Jean-Marie Brom,Directed,,,2
+Hans Grunder,Jean-Pierre Bommer,Directed,,,1
+Hans Grunder,Jean-Pierre Graber,Directed,,,4
+Hans Grunder,Marianne Binder,Directed,,,1
+Hans Grunder,Miriam Behrens,Directed,,,1
+Hans Grunder,Pascal Gentinetta,Directed,,,3
+Hans Grunder,Roger Nordmann,Directed,,,3
+Hans Grunder,Rolf Buettiker,Directed,,,7
+Hans Grunder,Sofia Majnoni,Directed,,,2
+Hans Grunder,Ueli Leuenberger,Directed,,,1
+Hans Grunder,Ueli Maurer,Directed,,,5
+Hans Grunder,Walter Steinmann,Directed,,,4
+Hans Grunder,les Amis de la Terre,Directed,,,1
+Jacqueline Fehr,Bruno Pellaud,Directed,,,4
+Jacqueline Fehr,Christian Van Singer,Directed,,,6
+Jacqueline Fehr,Christoph Brutschin,Directed,,,1
+Jacqueline Fehr,Christophe Darbellay,Directed,,,1
+Jacqueline Fehr,Doris Leuthard,Directed,,,20
+Jacqueline Fehr,Eric Nussbaumer,Directed,,,3
+Jacqueline Fehr,George Piller,Directed,,,1
+Jacqueline Fehr,Greenpeace,Directed,,,2
+Jacqueline Fehr,Hans Grunder,Directed,,,1
+Jacqueline Fehr,Jacques Bourgeois,Directed,,,1
+Jacqueline Fehr,Jean-François Rime,Directed,,,1
+Jacqueline Fehr,Jean-Marc Cavedon,Directed,,,2
+Jacqueline Fehr,Jean-Marie Brom,Directed,,,2
+Jacqueline Fehr,Jean-Pierre Bommer,Directed,,,1
+Jacqueline Fehr,Jean-Pierre Graber,Directed,,,4
+Jacqueline Fehr,Marianne Binder,Directed,,,1
+Jacqueline Fehr,Miriam Behrens,Directed,,,1
+Jacqueline Fehr,Pascal Gentinetta,Directed,,,3
+Jacqueline Fehr,Roger Nordmann,Directed,,,3
+Jacqueline Fehr,Rolf Buettiker,Directed,,,7
+Jacqueline Fehr,Sofia Majnoni,Directed,,,2
+Jacqueline Fehr,Ueli Leuenberger,Directed,,,1
+Jacqueline Fehr,Ueli Maurer,Directed,,,5
+Jacqueline Fehr,Walter Steinmann,Directed,,,4
+Jacqueline Fehr,les Amis de la Terre,Directed,,,1
+Jacques Bourgeois,Bruno Pellaud,Directed,,,4
+Jacques Bourgeois,Christian Van Singer,Directed,,,6
+Jacques Bourgeois,Christoph Brutschin,Directed,,,1
+Jacques Bourgeois,Christophe Darbellay,Directed,,,1
+Jacques Bourgeois,Doris Leuthard,Directed,,,20
+Jacques Bourgeois,Eric Nussbaumer,Directed,,,3
+Jacques Bourgeois,George Piller,Directed,,,1
+Jacques Bourgeois,Greenpeace,Directed,,,2
+Jacques Bourgeois,Hans Grunder,Directed,,,1
+Jacques Bourgeois,Jacqueline Fehr,Directed,,,1
+Jacques Bourgeois,Jean-François Rime,Directed,,,1
+Jacques Bourgeois,Jean-Marc Cavedon,Directed,,,2
+Jacques Bourgeois,Jean-Marie Brom,Directed,,,2
+Jacques Bourgeois,Jean-Pierre Bommer,Directed,,,1
+Jacques Bourgeois,Jean-Pierre Graber,Directed,,,4
+Jacques Bourgeois,Marianne Binder,Directed,,,1
+Jacques Bourgeois,Miriam Behrens,Directed,,,1
+Jacques Bourgeois,Pascal Gentinetta,Directed,,,3
+Jacques Bourgeois,Roger Nordmann,Directed,,,3
+Jacques Bourgeois,Rolf Buettiker,Directed,,,7
+Jacques Bourgeois,Sofia Majnoni,Directed,,,2
+Jacques Bourgeois,Ueli Leuenberger,Directed,,,1
+Jacques Bourgeois,Ueli Maurer,Directed,,,5
+Jacques Bourgeois,Walter Steinmann,Directed,,,4
+Jacques Bourgeois,les Amis de la Terre,Directed,,,1
+Jean-François Rime,Bruno Pellaud,Directed,,,4
+Jean-François Rime,Christian Van Singer,Directed,,,6
+Jean-François Rime,Christoph Brutschin,Directed,,,1
+Jean-François Rime,Christophe Darbellay,Directed,,,1
+Jean-François Rime,Doris Leuthard,Directed,,,20
+Jean-François Rime,Eric Nussbaumer,Directed,,,3
+Jean-François Rime,George Piller,Directed,,,1
+Jean-François Rime,Greenpeace,Directed,,,2
+Jean-François Rime,Hans Grunder,Directed,,,1
+Jean-François Rime,Jacqueline Fehr,Directed,,,1
+Jean-François Rime,Jacques Bourgeois,Directed,,,1
+Jean-François Rime,Jean-Marc Cavedon,Directed,,,2
+Jean-François Rime,Jean-Marie Brom,Directed,,,2
+Jean-François Rime,Jean-Pierre Bommer,Directed,,,1
+Jean-François Rime,Jean-Pierre Graber,Directed,,,4
+Jean-François Rime,Marianne Binder,Directed,,,1
+Jean-François Rime,Miriam Behrens,Directed,,,1
+Jean-François Rime,Pascal Gentinetta,Directed,,,3
+Jean-François Rime,Roger Nordmann,Directed,,,3
+Jean-François Rime,Rolf Buettiker,Directed,,,7
+Jean-François Rime,Sofia Majnoni,Directed,,,2
+Jean-François Rime,Ueli Leuenberger,Directed,,,1
+Jean-François Rime,Ueli Maurer,Directed,,,5
+Jean-François Rime,Walter Steinmann,Directed,,,4
+Jean-François Rime,les Amis de la Terre,Directed,,,1
+Jean-Marc Cavedon,Bruno Pellaud,Directed,,,8
+Jean-Marc Cavedon,Christian Van Singer,Directed,,,12
+Jean-Marc Cavedon,Christoph Brutschin,Directed,,,2
+Jean-Marc Cavedon,Christophe Darbellay,Directed,,,2
+Jean-Marc Cavedon,Doris Leuthard,Directed,,,40
+Jean-Marc Cavedon,Eric Nussbaumer,Directed,,,6
+Jean-Marc Cavedon,George Piller,Directed,,,2
+Jean-Marc Cavedon,Greenpeace,Directed,,,4
+Jean-Marc Cavedon,Hans Grunder,Directed,,,2
+Jean-Marc Cavedon,Jacqueline Fehr,Directed,,,2
+Jean-Marc Cavedon,Jacques Bourgeois,Directed,,,2
+Jean-Marc Cavedon,Jean-François Rime,Directed,,,2
+Jean-Marc Cavedon,Jean-Marie Brom,Directed,,,4
+Jean-Marc Cavedon,Jean-Pierre Bommer,Directed,,,2
+Jean-Marc Cavedon,Jean-Pierre Graber,Directed,,,8
+Jean-Marc Cavedon,Marianne Binder,Directed,,,2
+Jean-Marc Cavedon,Miriam Behrens,Directed,,,2
+Jean-Marc Cavedon,Pascal Gentinetta,Directed,,,6
+Jean-Marc Cavedon,Roger Nordmann,Directed,,,6
+Jean-Marc Cavedon,Rolf Buettiker,Directed,,,14
+Jean-Marc Cavedon,Sofia Majnoni,Directed,,,4
+Jean-Marc Cavedon,Ueli Leuenberger,Directed,,,2
+Jean-Marc Cavedon,Ueli Maurer,Directed,,,10
+Jean-Marc Cavedon,Walter Steinmann,Directed,,,8
+Jean-Marc Cavedon,les Amis de la Terre,Directed,,,2
+Jean-Marie Brom,Bruno Pellaud,Directed,,,8
+Jean-Marie Brom,Christian Van Singer,Directed,,,12
+Jean-Marie Brom,Christoph Brutschin,Directed,,,2
+Jean-Marie Brom,Christophe Darbellay,Directed,,,2
+Jean-Marie Brom,Doris Leuthard,Directed,,,40
+Jean-Marie Brom,Eric Nussbaumer,Directed,,,6
+Jean-Marie Brom,George Piller,Directed,,,2
+Jean-Marie Brom,Greenpeace,Directed,,,4
+Jean-Marie Brom,Hans Grunder,Directed,,,2
+Jean-Marie Brom,Jacqueline Fehr,Directed,,,2
+Jean-Marie Brom,Jacques Bourgeois,Directed,,,2
+Jean-Marie Brom,Jean-François Rime,Directed,,,2
+Jean-Marie Brom,Jean-Marc Cavedon,Directed,,,4
+Jean-Marie Brom,Jean-Pierre Bommer,Directed,,,2
+Jean-Marie Brom,Jean-Pierre Graber,Directed,,,8
+Jean-Marie Brom,Marianne Binder,Directed,,,2
+Jean-Marie Brom,Miriam Behrens,Directed,,,2
+Jean-Marie Brom,Pascal Gentinetta,Directed,,,6
+Jean-Marie Brom,Roger Nordmann,Directed,,,6
+Jean-Marie Brom,Rolf Buettiker,Directed,,,14
+Jean-Marie Brom,Sofia Majnoni,Directed,,,4
+Jean-Marie Brom,Ueli Leuenberger,Directed,,,2
+Jean-Marie Brom,Ueli Maurer,Directed,,,10
+Jean-Marie Brom,Walter Steinmann,Directed,,,8
+Jean-Marie Brom,les Amis de la Terre,Directed,,,2
+Jean-Pierre Bommer,Bruno Pellaud,Directed,,,4
+Jean-Pierre Bommer,Christian Van Singer,Directed,,,6
+Jean-Pierre Bommer,Christoph Brutschin,Directed,,,1
+Jean-Pierre Bommer,Christophe Darbellay,Directed,,,1
+Jean-Pierre Bommer,Doris Leuthard,Directed,,,20
+Jean-Pierre Bommer,Eric Nussbaumer,Directed,,,3
+Jean-Pierre Bommer,George Piller,Directed,,,1
+Jean-Pierre Bommer,Greenpeace,Directed,,,2
+Jean-Pierre Bommer,Hans Grunder,Directed,,,1
+Jean-Pierre Bommer,Jacqueline Fehr,Directed,,,1
+Jean-Pierre Bommer,Jacques Bourgeois,Directed,,,1
+Jean-Pierre Bommer,Jean-François Rime,Directed,,,1
+Jean-Pierre Bommer,Jean-Marc Cavedon,Directed,,,2
+Jean-Pierre Bommer,Jean-Marie Brom,Directed,,,2
+Jean-Pierre Bommer,Jean-Pierre Graber,Directed,,,4
+Jean-Pierre Bommer,Marianne Binder,Directed,,,1
+Jean-Pierre Bommer,Miriam Behrens,Directed,,,1
+Jean-Pierre Bommer,Pascal Gentinetta,Directed,,,3
+Jean-Pierre Bommer,Roger Nordmann,Directed,,,3
+Jean-Pierre Bommer,Rolf Buettiker,Directed,,,7
+Jean-Pierre Bommer,Sofia Majnoni,Directed,,,2
+Jean-Pierre Bommer,Ueli Leuenberger,Directed,,,1
+Jean-Pierre Bommer,Ueli Maurer,Directed,,,5
+Jean-Pierre Bommer,Walter Steinmann,Directed,,,4
+Jean-Pierre Bommer,les Amis de la Terre,Directed,,,1
+Jean-Pierre Graber,Bruno Pellaud,Directed,,,16
+Jean-Pierre Graber,Christian Van Singer,Directed,,,24
+Jean-Pierre Graber,Christoph Brutschin,Directed,,,4
+Jean-Pierre Graber,Christophe Darbellay,Directed,,,4
+Jean-Pierre Graber,Doris Leuthard,Directed,,,80
+Jean-Pierre Graber,Eric Nussbaumer,Directed,,,12
+Jean-Pierre Graber,George Piller,Directed,,,4
+Jean-Pierre Graber,Greenpeace,Directed,,,8
+Jean-Pierre Graber,Hans Grunder,Directed,,,4
+Jean-Pierre Graber,Jacqueline Fehr,Directed,,,4
+Jean-Pierre Graber,Jacques Bourgeois,Directed,,,4
+Jean-Pierre Graber,Jean-François Rime,Directed,,,4
+Jean-Pierre Graber,Jean-Marc Cavedon,Directed,,,8
+Jean-Pierre Graber,Jean-Marie Brom,Directed,,,8
+Jean-Pierre Graber,Jean-Pierre Bommer,Directed,,,4
+Jean-Pierre Graber,Marianne Binder,Directed,,,4
+Jean-Pierre Graber,Miriam Behrens,Directed,,,4
+Jean-Pierre Graber,Pascal Gentinetta,Directed,,,12
+Jean-Pierre Graber,Roger Nordmann,Directed,,,12
+Jean-Pierre Graber,Rolf Buettiker,Directed,,,28
+Jean-Pierre Graber,Sofia Majnoni,Directed,,,8
+Jean-Pierre Graber,Ueli Leuenberger,Directed,,,4
+Jean-Pierre Graber,Ueli Maurer,Directed,,,20
+Jean-Pierre Graber,Walter Steinmann,Directed,,,16
+Jean-Pierre Graber,les Amis de la Terre,Directed,,,4
+Marianne Binder,Bruno Pellaud,Directed,,,4
+Marianne Binder,Christian Van Singer,Directed,,,6
+Marianne Binder,Christoph Brutschin,Directed,,,1
+Marianne Binder,Christophe Darbellay,Directed,,,1
+Marianne Binder,Doris Leuthard,Directed,,,20
+Marianne Binder,Eric Nussbaumer,Directed,,,3
+Marianne Binder,George Piller,Directed,,,1
+Marianne Binder,Greenpeace,Directed,,,2
+Marianne Binder,Hans Grunder,Directed,,,1
+Marianne Binder,Jacqueline Fehr,Directed,,,1
+Marianne Binder,Jacques Bourgeois,Directed,,,1
+Marianne Binder,Jean-François Rime,Directed,,,1
+Marianne Binder,Jean-Marc Cavedon,Directed,,,2
+Marianne Binder,Jean-Marie Brom,Directed,,,2
+Marianne Binder,Jean-Pierre Bommer,Directed,,,1
+Marianne Binder,Jean-Pierre Graber,Directed,,,4
+Marianne Binder,Miriam Behrens,Directed,,,1
+Marianne Binder,Pascal Gentinetta,Directed,,,3
+Marianne Binder,Roger Nordmann,Directed,,,3
+Marianne Binder,Rolf Buettiker,Directed,,,7
+Marianne Binder,Sofia Majnoni,Directed,,,2
+Marianne Binder,Ueli Leuenberger,Directed,,,1
+Marianne Binder,Ueli Maurer,Directed,,,5
+Marianne Binder,Walter Steinmann,Directed,,,4
+Marianne Binder,les Amis de la Terre,Directed,,,1
+Miriam Behrens,Bruno Pellaud,Directed,,,4
+Miriam Behrens,Christian Van Singer,Directed,,,6
+Miriam Behrens,Christoph Brutschin,Directed,,,1
+Miriam Behrens,Christophe Darbellay,Directed,,,1
+Miriam Behrens,Doris Leuthard,Directed,,,20
+Miriam Behrens,Eric Nussbaumer,Directed,,,3
+Miriam Behrens,George Piller,Directed,,,1
+Miriam Behrens,Greenpeace,Directed,,,2
+Miriam Behrens,Hans Grunder,Directed,,,1
+Miriam Behrens,Jacqueline Fehr,Directed,,,1
+Miriam Behrens,Jacques Bourgeois,Directed,,,1
+Miriam Behrens,Jean-François Rime,Directed,,,1
+Miriam Behrens,Jean-Marc Cavedon,Directed,,,2
+Miriam Behrens,Jean-Marie Brom,Directed,,,2
+Miriam Behrens,Jean-Pierre Bommer,Directed,,,1
+Miriam Behrens,Jean-Pierre Graber,Directed,,,4
+Miriam Behrens,Marianne Binder,Directed,,,1
+Miriam Behrens,Pascal Gentinetta,Directed,,,3
+Miriam Behrens,Roger Nordmann,Directed,,,3
+Miriam Behrens,Rolf Buettiker,Directed,,,7
+Miriam Behrens,Sofia Majnoni,Directed,,,2
+Miriam Behrens,Ueli Leuenberger,Directed,,,1
+Miriam Behrens,Ueli Maurer,Directed,,,5
+Miriam Behrens,Walter Steinmann,Directed,,,4
+Miriam Behrens,les Amis de la Terre,Directed,,,1
+Pascal Gentinetta,Bruno Pellaud,Directed,,,12
+Pascal Gentinetta,Christian Van Singer,Directed,,,18
+Pascal Gentinetta,Christoph Brutschin,Directed,,,3
+Pascal Gentinetta,Christophe Darbellay,Directed,,,3
+Pascal Gentinetta,Doris Leuthard,Directed,,,60
+Pascal Gentinetta,Eric Nussbaumer,Directed,,,9
+Pascal Gentinetta,George Piller,Directed,,,3
+Pascal Gentinetta,Greenpeace,Directed,,,6
+Pascal Gentinetta,Hans Grunder,Directed,,,3
+Pascal Gentinetta,Jacqueline Fehr,Directed,,,3
+Pascal Gentinetta,Jacques Bourgeois,Directed,,,3
+Pascal Gentinetta,Jean-François Rime,Directed,,,3
+Pascal Gentinetta,Jean-Marc Cavedon,Directed,,,6
+Pascal Gentinetta,Jean-Marie Brom,Directed,,,6
+Pascal Gentinetta,Jean-Pierre Bommer,Directed,,,3
+Pascal Gentinetta,Jean-Pierre Graber,Directed,,,12
+Pascal Gentinetta,Marianne Binder,Directed,,,3
+Pascal Gentinetta,Miriam Behrens,Directed,,,3
+Pascal Gentinetta,Roger Nordmann,Directed,,,9
+Pascal Gentinetta,Rolf Buettiker,Directed,,,21
+Pascal Gentinetta,Sofia Majnoni,Directed,,,6
+Pascal Gentinetta,Ueli Leuenberger,Directed,,,3
+Pascal Gentinetta,Ueli Maurer,Directed,,,15
+Pascal Gentinetta,Walter Steinmann,Directed,,,12
+Pascal Gentinetta,les Amis de la Terre,Directed,,,3
+Roger Nordmann,Bruno Pellaud,Directed,,,12
+Roger Nordmann,Christian Van Singer,Directed,,,18
+Roger Nordmann,Christoph Brutschin,Directed,,,3
+Roger Nordmann,Christophe Darbellay,Directed,,,3
+Roger Nordmann,Doris Leuthard,Directed,,,60
+Roger Nordmann,Eric Nussbaumer,Directed,,,9
+Roger Nordmann,George Piller,Directed,,,3
+Roger Nordmann,Greenpeace,Directed,,,6
+Roger Nordmann,Hans Grunder,Directed,,,3
+Roger Nordmann,Jacqueline Fehr,Directed,,,3
+Roger Nordmann,Jacques Bourgeois,Directed,,,3
+Roger Nordmann,Jean-François Rime,Directed,,,3
+Roger Nordmann,Jean-Marc Cavedon,Directed,,,6
+Roger Nordmann,Jean-Marie Brom,Directed,,,6
+Roger Nordmann,Jean-Pierre Bommer,Directed,,,3
+Roger Nordmann,Jean-Pierre Graber,Directed,,,12
+Roger Nordmann,Marianne Binder,Directed,,,3
+Roger Nordmann,Miriam Behrens,Directed,,,3
+Roger Nordmann,Pascal Gentinetta,Directed,,,9
+Roger Nordmann,Rolf Buettiker,Directed,,,21
+Roger Nordmann,Sofia Majnoni,Directed,,,6
+Roger Nordmann,Ueli Leuenberger,Directed,,,3
+Roger Nordmann,Ueli Maurer,Directed,,,15
+Roger Nordmann,Walter Steinmann,Directed,,,12
+Roger Nordmann,les Amis de la Terre,Directed,,,3
+Rolf Buettiker,Bruno Pellaud,Directed,,,28
+Rolf Buettiker,Christian Van Singer,Directed,,,42
+Rolf Buettiker,Christoph Brutschin,Directed,,,7
+Rolf Buettiker,Christophe Darbellay,Directed,,,7
+Rolf Buettiker,Doris Leuthard,Directed,,,140
+Rolf Buettiker,Eric Nussbaumer,Directed,,,21
+Rolf Buettiker,George Piller,Directed,,,7
+Rolf Buettiker,Greenpeace,Directed,,,14
+Rolf Buettiker,Hans Grunder,Directed,,,7
+Rolf Buettiker,Jacqueline Fehr,Directed,,,7
+Rolf Buettiker,Jacques Bourgeois,Directed,,,7
+Rolf Buettiker,Jean-François Rime,Directed,,,7
+Rolf Buettiker,Jean-Marc Cavedon,Directed,,,14
+Rolf Buettiker,Jean-Marie Brom,Directed,,,14
+Rolf Buettiker,Jean-Pierre Bommer,Directed,,,7
+Rolf Buettiker,Jean-Pierre Graber,Directed,,,28
+Rolf Buettiker,Marianne Binder,Directed,,,7
+Rolf Buettiker,Miriam Behrens,Directed,,,7
+Rolf Buettiker,Pascal Gentinetta,Directed,,,21
+Rolf Buettiker,Roger Nordmann,Directed,,,21
+Rolf Buettiker,Sofia Majnoni,Directed,,,14
+Rolf Buettiker,Ueli Leuenberger,Directed,,,7
+Rolf Buettiker,Ueli Maurer,Directed,,,35
+Rolf Buettiker,Walter Steinmann,Directed,,,28
+Rolf Buettiker,les Amis de la Terre,Directed,,,7
+Sofia Majnoni,Bruno Pellaud,Directed,,,8
+Sofia Majnoni,Christian Van Singer,Directed,,,12
+Sofia Majnoni,Christoph Brutschin,Directed,,,2
+Sofia Majnoni,Christophe Darbellay,Directed,,,2
+Sofia Majnoni,Doris Leuthard,Directed,,,40
+Sofia Majnoni,Eric Nussbaumer,Directed,,,6
+Sofia Majnoni,George Piller,Directed,,,2
+Sofia Majnoni,Greenpeace,Directed,,,4
+Sofia Majnoni,Hans Grunder,Directed,,,2
+Sofia Majnoni,Jacqueline Fehr,Directed,,,2
+Sofia Majnoni,Jacques Bourgeois,Directed,,,2
+Sofia Majnoni,Jean-François Rime,Directed,,,2
+Sofia Majnoni,Jean-Marc Cavedon,Directed,,,4
+Sofia Majnoni,Jean-Marie Brom,Directed,,,4
+Sofia Majnoni,Jean-Pierre Bommer,Directed,,,2
+Sofia Majnoni,Jean-Pierre Graber,Directed,,,8
+Sofia Majnoni,Marianne Binder,Directed,,,2
+Sofia Majnoni,Miriam Behrens,Directed,,,2
+Sofia Majnoni,Pascal Gentinetta,Directed,,,6
+Sofia Majnoni,Roger Nordmann,Directed,,,6
+Sofia Majnoni,Rolf Buettiker,Directed,,,14
+Sofia Majnoni,Ueli Leuenberger,Directed,,,2
+Sofia Majnoni,Ueli Maurer,Directed,,,10
+Sofia Majnoni,Walter Steinmann,Directed,,,8
+Sofia Majnoni,les Amis de la Terre,Directed,,,2
+Ueli Leuenberger,Bruno Pellaud,Directed,,,4
+Ueli Leuenberger,Christian Van Singer,Directed,,,6
+Ueli Leuenberger,Christoph Brutschin,Directed,,,1
+Ueli Leuenberger,Christophe Darbellay,Directed,,,1
+Ueli Leuenberger,Doris Leuthard,Directed,,,20
+Ueli Leuenberger,Eric Nussbaumer,Directed,,,3
+Ueli Leuenberger,George Piller,Directed,,,1
+Ueli Leuenberger,Greenpeace,Directed,,,2
+Ueli Leuenberger,Hans Grunder,Directed,,,1
+Ueli Leuenberger,Jacqueline Fehr,Directed,,,1
+Ueli Leuenberger,Jacques Bourgeois,Directed,,,1
+Ueli Leuenberger,Jean-François Rime,Directed,,,1
+Ueli Leuenberger,Jean-Marc Cavedon,Directed,,,2
+Ueli Leuenberger,Jean-Marie Brom,Directed,,,2
+Ueli Leuenberger,Jean-Pierre Bommer,Directed,,,1
+Ueli Leuenberger,Jean-Pierre Graber,Directed,,,4
+Ueli Leuenberger,Marianne Binder,Directed,,,1
+Ueli Leuenberger,Miriam Behrens,Directed,,,1
+Ueli Leuenberger,Pascal Gentinetta,Directed,,,3
+Ueli Leuenberger,Roger Nordmann,Directed,,,3
+Ueli Leuenberger,Rolf Buettiker,Directed,,,7
+Ueli Leuenberger,Sofia Majnoni,Directed,,,2
+Ueli Leuenberger,Ueli Maurer,Directed,,,5
+Ueli Leuenberger,Walter Steinmann,Directed,,,4
+Ueli Leuenberger,les Amis de la Terre,Directed,,,1
+Ueli Maurer,Bruno Pellaud,Directed,,,20
+Ueli Maurer,Christian Van Singer,Directed,,,30
+Ueli Maurer,Christoph Brutschin,Directed,,,5
+Ueli Maurer,Christophe Darbellay,Directed,,,5
+Ueli Maurer,Doris Leuthard,Directed,,,100
+Ueli Maurer,Eric Nussbaumer,Directed,,,15
+Ueli Maurer,George Piller,Directed,,,5
+Ueli Maurer,Greenpeace,Directed,,,10
+Ueli Maurer,Hans Grunder,Directed,,,5
+Ueli Maurer,Jacqueline Fehr,Directed,,,5
+Ueli Maurer,Jacques Bourgeois,Directed,,,5
+Ueli Maurer,Jean-François Rime,Directed,,,5
+Ueli Maurer,Jean-Marc Cavedon,Directed,,,10
+Ueli Maurer,Jean-Marie Brom,Directed,,,10
+Ueli Maurer,Jean-Pierre Bommer,Directed,,,5
+Ueli Maurer,Jean-Pierre Graber,Directed,,,20
+Ueli Maurer,Marianne Binder,Directed,,,5
+Ueli Maurer,Miriam Behrens,Directed,,,5
+Ueli Maurer,Pascal Gentinetta,Directed,,,15
+Ueli Maurer,Roger Nordmann,Directed,,,15
+Ueli Maurer,Rolf Buettiker,Directed,,,35
+Ueli Maurer,Sofia Majnoni,Directed,,,10
+Ueli Maurer,Ueli Leuenberger,Directed,,,5
+Ueli Maurer,Walter Steinmann,Directed,,,20
+Ueli Maurer,les Amis de la Terre,Directed,,,5
+Walter Steinmann,Bruno Pellaud,Directed,,,16
+Walter Steinmann,Christian Van Singer,Directed,,,24
+Walter Steinmann,Christoph Brutschin,Directed,,,4
+Walter Steinmann,Christophe Darbellay,Directed,,,4
+Walter Steinmann,Doris Leuthard,Directed,,,80
+Walter Steinmann,Eric Nussbaumer,Directed,,,12
+Walter Steinmann,George Piller,Directed,,,4
+Walter Steinmann,Greenpeace,Directed,,,8
+Walter Steinmann,Hans Grunder,Directed,,,4
+Walter Steinmann,Jacqueline Fehr,Directed,,,4
+Walter Steinmann,Jacques Bourgeois,Directed,,,4
+Walter Steinmann,Jean-François Rime,Directed,,,4
+Walter Steinmann,Jean-Marc Cavedon,Directed,,,8
+Walter Steinmann,Jean-Marie Brom,Directed,,,8
+Walter Steinmann,Jean-Pierre Bommer,Directed,,,4
+Walter Steinmann,Jean-Pierre Graber,Directed,,,16
+Walter Steinmann,Marianne Binder,Directed,,,4
+Walter Steinmann,Miriam Behrens,Directed,,,4
+Walter Steinmann,Pascal Gentinetta,Directed,,,12
+Walter Steinmann,Roger Nordmann,Directed,,,12
+Walter Steinmann,Rolf Buettiker,Directed,,,28
+Walter Steinmann,Sofia Majnoni,Directed,,,8
+Walter Steinmann,Ueli Leuenberger,Directed,,,4
+Walter Steinmann,Ueli Maurer,Directed,,,20
+Walter Steinmann,les Amis de la Terre,Directed,,,4
+les Amis de la Terre,Bruno Pellaud,Directed,,,4
+les Amis de la Terre,Christian Van Singer,Directed,,,6
+les Amis de la Terre,Christoph Brutschin,Directed,,,1
+les Amis de la Terre,Christophe Darbellay,Directed,,,1
+les Amis de la Terre,Doris Leuthard,Directed,,,20
+les Amis de la Terre,Eric Nussbaumer,Directed,,,3
+les Amis de la Terre,George Piller,Directed,,,1
+les Amis de la Terre,Greenpeace,Directed,,,2
+les Amis de la Terre,Hans Grunder,Directed,,,1
+les Amis de la Terre,Jacqueline Fehr,Directed,,,1
+les Amis de la Terre,Jacques Bourgeois,Directed,,,1
+les Amis de la Terre,Jean-François Rime,Directed,,,1
+les Amis de la Terre,Jean-Marc Cavedon,Directed,,,2
+les Amis de la Terre,Jean-Marie Brom,Directed,,,2
+les Amis de la Terre,Jean-Pierre Bommer,Directed,,,1
+les Amis de la Terre,Jean-Pierre Graber,Directed,,,4
+les Amis de la Terre,Marianne Binder,Directed,,,1
+les Amis de la Terre,Miriam Behrens,Directed,,,1
+les Amis de la Terre,Pascal Gentinetta,Directed,,,3
+les Amis de la Terre,Roger Nordmann,Directed,,,3
+les Amis de la Terre,Rolf Buettiker,Directed,,,7
+les Amis de la Terre,Sofia Majnoni,Directed,,,2
+les Amis de la Terre,Ueli Leuenberger,Directed,,,1
+les Amis de la Terre,Ueli Maurer,Directed,,,5
+les Amis de la Terre,Walter Steinmann,Directed,,,4

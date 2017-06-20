@@ -49,20 +49,25 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
- * Nodes manipulator that centers the graph view to show a node.
+ * Nodes manipulator that centers the graph view to show a node and selects one or more nodes.
+ *
  * @author Eduardo Ramos
  */
 public class SelectOnGraph extends BasicNodesManipulator {
-    private Node node;
+
+    private Node[] nodes;
+    private Node clickedNode;
 
     @Override
     public void setup(Node[] nodes, Node clickedNode) {
-        this.node=clickedNode;
+        this.nodes = nodes;
+        this.clickedNode = clickedNode;
     }
 
     @Override
     public void execute() {
-        VizController.getInstance().getSelectionManager().centerOnNode(node);
+        VizController.getInstance().getSelectionManager().selectNodes(nodes);
+        VizController.getInstance().getSelectionManager().centerOnNode(clickedNode);
     }
 
     @Override

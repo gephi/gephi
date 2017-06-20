@@ -49,9 +49,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.apiimpl.Scheduler;
+import org.gephi.visualization.model.Model;
 import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.edge.EdgeModeler;
 import org.gephi.visualization.model.node.NodeModel;
@@ -301,6 +304,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (vizConfig.isSelectionEnable() && rectangleSelection && !customSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
             //rectangle.setBlocking(false);
+            resetEdgesSelection();
 
             //Select with click
             boolean someSelection = false;
@@ -466,110 +470,81 @@ public class CompatibilityEngine extends AbstractEngine {
         return selected;
     }
 
-//    @Override
-//    public ModelImpl[] getSelectedObjects(int modelClass) {
-//        return selectedObjects[modelClasses[modelClass].getSelectionId()].toArray(new ModelImpl[0]);
-//    }
-//    @Override
-//    public void selectObject(Model obj) {
-//        ModelImpl modl = (ModelImpl) obj;
-//        if (!customSelection) {
-//            vizConfig.setRectangleSelection(false);
-//            customSelection = true;
-//            configChanged = true;
-//            //Reset
-//            for (ModelClass objClass : selectableClasses) {
-//                for (Iterator<ModelImpl> itr = selectedObjects[objClass.getSelectionId()].iterator(); itr.hasNext();) {
-//                    ModelImpl o = itr.next();
-//                    itr.remove();
-//                    o.setSelected(false);
-//                }
-//            }
-//            anySelected = true;
-//            //Force highlight
-//            if (vizController.getVizModel().isLightenNonSelectedAuto()) {
-//
-//                if (vizConfig.isLightenNonSelectedAnimation()) {
-//                    //Start animation
-//                    lightenAnimationDelta = 0.07f;
-//                    vizConfig.setLightenNonSelected(true);
-//                } else {
-//                    vizConfig.setLightenNonSelected(true);
-//                }
-//            }
-//        }
-//        modl.setSelected(true);
-//        if (modl.getObj() instanceof NodeData) {
-//            selectedObjects[modelClasses[AbstractEngine.CLASS_NODE].getSelectionId()].add(modl);
-//        }
-//
-//        forceSelectRefresh(modelClasses[AbstractEngine.CLASS_EDGE].getClassId());
-//    }
-//    @Override
-//    public void selectObject(Model[] objs) {
-//        if (!customSelection) {
-//            vizConfig.setRectangleSelection(false);
-//            customSelection = true;
-//            configChanged = true;
-//            //Reset
-//            for (ModelClass objClass : selectableClasses) {
-//                for (Iterator<ModelImpl> itr = selectedObjects[objClass.getSelectionId()].iterator(); itr.hasNext();) {
-//                    ModelImpl o = itr.next();
-//                    itr.remove();
-//                    o.setSelected(false);
-//                }
-//            }
-//            anySelected = true;
-//            //Force highlight
-//            if (vizController.getVizModel().isLightenNonSelectedAuto()) {
-//
-//                if (vizConfig.isLightenNonSelectedAnimation()) {
-//                    //Start animation
-//                    lightenAnimationDelta = 0.07f;
-//                    vizConfig.setLightenNonSelected(true);
-//                } else {
-//                    vizConfig.setLightenNonSelected(true);
-//                }
-//            }
-//        } else {
-//            //Reset
-//            for (ModelClass objClass : selectableClasses) {
-//                for (Iterator<ModelImpl> itr = selectedObjects[objClass.getSelectionId()].iterator(); itr.hasNext();) {
-//                    ModelImpl o = itr.next();
-//                    itr.remove();
-//                    o.setSelected(false);
-//                }
-//            }
-//
-//            for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(modelClasses[AbstractEngine.CLASS_EDGE].getClassId()); itr.hasNext();) {
-//                ModelImpl obj = itr.next();
-//                obj.setSelected(false);
-//            }
-//        }
-//        for (Model r : objs) {
-//            if (r != null) {
-//                ModelImpl mdl = (ModelImpl) r;
-//                mdl.setSelected(true);
-//                if (mdl.getObj() instanceof NodeData) {
-//                    selectedObjects[modelClasses[AbstractEngine.CLASS_NODE].getSelectionId()].add(mdl);
-//                } else if (mdl.getObj() instanceof EdgeData) {
-//                    selectedObjects[modelClasses[AbstractEngine.CLASS_EDGE].getSelectionId()].add(mdl);
-//                }
-//            }
-//        }
-//
-//    }
-    public void forceSelectRefresh(int selectedClass) {
-//        for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(selectedClass); itr.hasNext();) {
-//            ModelImpl obj = itr.next();
-//            if (isUnderMouse(obj)) {
-//                if (!obj.isSelected()) {
-//                    //New selected
-//                    obj.setSelected(true);
-//                    selectedObjects[selectedClass].add(obj);
-//                }
-//            }
-//        }
+    @Override
+    public List<EdgeModel> getSelectedEdges() {
+        List<EdgeModel> selected = new ArrayList<>();
+        for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
+            EdgeModel edgeModel = itr.next();
+            if (edgeModel.isSelected()) {
+                selected.add(edgeModel);
+            }
+        }
+        return selected;
+    }
+
+    @Override
+    public List<Node> getSelectedUnderlyingNodes() {
+        List<Node> selected = new ArrayList<>();
+        for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext();) {
+            NodeModel nodeModel = itr.next();
+            if (nodeModel.isSelected()) {
+                selected.add(nodeModel.getNode());
+            }
+        }
+        return selected;
+    }
+
+    @Override
+    public List<Edge> getSelectedUnderlyingEdges() {
+        List<Edge> selected = new ArrayList<>();
+        for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
+            EdgeModel edgeModel = itr.next();
+            if (edgeModel.isSelected()) {
+                selected.add(edgeModel.getEdge());
+            }
+        }
+        return selected;
+    }
+
+    @Override
+    public void selectObject(Model modl) {
+        selectObject(new Model[]{modl});
+    }
+
+    @Override
+    public void selectObject(Model[] objs) {
+        resetSelection();
+
+        if (objs != null) {
+            if (!customSelection) {
+                vizConfig.setRectangleSelection(false);
+                customSelection = true;
+                configChanged = true;
+
+                forceHighlight();
+            }
+            
+            for (Model mdl : objs) {
+                if (mdl != null) {
+                    mdl.setSelected(true);
+                    anySelected = true;
+                }
+            }
+        }
+    }
+
+    private void forceHighlight() {
+        //Force highlight
+        if (vizController.getVizModel().isLightenNonSelectedAuto()) {
+
+            if (vizConfig.isLightenNonSelectedAnimation()) {
+                //Start animation
+                lightenAnimationDelta = 0.07f;
+                vizConfig.setLightenNonSelected(true);
+            } else {
+                vizConfig.setLightenNonSelected(true);
+            }
+        }
     }
 
     @Override
@@ -577,9 +552,21 @@ public class CompatibilityEngine extends AbstractEngine {
         customSelection = false;
         configChanged = true;
         anySelected = false;
-//        for (ModelClass objClass : selectableClasses) {
-//            selectedObjects[objClass.getSelectionId()].clear();
-//        }
+        
+        resetNodesSelection();
+        resetEdgesSelection();
+    }
+    
+    private void resetNodesSelection(){
+        for (NodeModel selectedNode : getSelectedNodes()) {
+            selectedNode.setSelected(false);
+        }
+    }
+    
+    private void resetEdgesSelection(){
+        for (EdgeModel selectedEdge : getSelectedEdges()) {
+            selectedEdge.setSelected(false);
+        }
     }
 
     @Override

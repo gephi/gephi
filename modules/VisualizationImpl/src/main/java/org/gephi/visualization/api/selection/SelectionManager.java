@@ -50,6 +50,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
+import org.gephi.visualization.model.Model;
 import org.gephi.visualization.opengl.AbstractEngine;
 
 /**
@@ -145,53 +146,39 @@ public class SelectionManager implements VizArchitecture {
         engine.resetSelection();
     }
 
+    public List<Node> getSelectedNodes() {
+        return engine.getSelectedUnderlyingNodes();
+    }
+
     public void selectNode(Node node) {
-        if (!isCustomSelection()) {
-            setCustomSelection();
-        }
-//        if (node.getNodeData().getModel() != null) {
-//            engine.selectObject(node.getNodeData().getModel());
-//        }
+        selectNodes(new Node[]{node});
     }
 
     public void selectEdge(Edge edge) {
-        if (!isCustomSelection()) {
-            setCustomSelection();
-        }
-//        if (edge.getEdgeData().getModel() != null) {
-//            engine.selectObject(edge.getEdgeData().getModel());
-//        }
+        selectEdges(new Edge[]{edge});
     }
 
     public void selectNodes(Node[] nodes) {
-        if (nodes == null) {
-            resetSelection();
-            return;
-        }
         if (!isCustomSelection()) {
             setCustomSelection();
         }
-//        Model[] models = new Model[nodes.length];
-        for (int i = 0; i < nodes.length; i++) {
-//            models[i] = nodes[i].getNodeData().getModel();
-        }
-//        engine.selectObject(models);
+        
+        Model[] models = engine.getNodeModelsForNodes(nodes);
+        engine.selectObject(models);
     }
 
     public void selectEdges(Edge[] edges) {
         if (!isCustomSelection()) {
             setCustomSelection();
         }
-        for (Edge e : edges) {
-//            if (e.getEdgeData().getModel() != null) {
-//                engine.selectObject(e.getEdgeData().getModel());
-//            }
-        }
+        
+        Model[] models = engine.getEdgeModelsForEdges(edges);
+        engine.selectObject(models);
     }
 
     public void centerOnNode(Node node) {
         if (node != null) {
-            VizController.getInstance().getGraphIO().centerOnCoordinate(node.x(), node.y(), node.z() + node.size()* 8);
+            VizController.getInstance().getGraphIO().centerOnCoordinate(node.x(), node.y(), node.z() + node.size() * 8);
             engine.getScheduler().requireUpdateVisible();
         }
     }

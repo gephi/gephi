@@ -42,6 +42,9 @@
 package org.gephi.desktop.project;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -49,10 +52,12 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileFilter;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.FileType;
+import org.gephi.io.importer.spi.FileImporterBuilder;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
@@ -96,13 +101,15 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     private boolean duplicateWorkspace = false;
     private boolean renameWorkspace = false;
     //Project
-    private ProjectController controller;
+    private final ProjectController controller;
+    private final ImportControllerUI importControllerUI;
     //Utilities
     private final LongTaskExecutor longTaskExecutor;
 
     public ProjectControllerUIImpl() {
 
         controller = Lookup.getDefault().lookup(ProjectController.class);
+        importControllerUI = Lookup.getDefault().lookup(ImportControllerUI.class);
 
         //Project IO executor
         longTaskExecutor = new LongTaskExecutor(true, "Project IO");
@@ -433,6 +440,49 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
     @Override
     public void openFile() {
+        openFile(null);
+    }
+
+    @Override
+    public void openFile(FileImporterBuilder[] builders) {
+        List<FileFilter> filters = new ArrayList<>();
+
+        DialogFileFilter graphFilter = new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_graphfilter"));
+
+        List<FileType> fileTypes;
+        if (builders != null) {
+            fileTypes = new ArrayList<>();
+
+            for (FileImporterBuilder builder : builders) {
+                fileTypes.addAll(Arrays.asList(builder.getFileTypes()));
+            }
+        } else {
+            DialogFileFilter gephiFilter = new DialogFileFilter(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject_filechooser_filter"));
+            gephiFilter.addExtension(".gephi");
+            
+            filters.add(gephiFilter);
+            
+            graphFilter.addExtension(".gephi");
+            fileTypes = Arrays.asList(importControllerUI.getImportController().getFileTypes());
+        }
+
+        for (FileType fileType : fileTypes) {
+            DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
+            dialogFileFilter.addExtensions(fileType.getExtensions());
+            filters.add(dialogFileFilter);
+
+            graphFilter.addExtensions(fileType.getExtensions());
+        }
+        DialogFileFilter zipFileFilter = new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_zipfilter"));
+        zipFileFilter.addExtensions(new String[]{".zip", ".gz", ".bz2"});
+
+        filters.add(graphFilter);
+        filters.add(zipFileFilter);
+
+        openFile(filters.toArray(new FileFilter[0]), graphFilter);
+    }
+
+    private void openFile(FileFilter[] fileFilters, FileFilter initialFilter) {
         final String LAST_PATH = "OpenFile_Last_Path";
         final String LAST_PATH_DEFAULT = "OpenFile_Last_Path_Default";
 
@@ -443,25 +493,14 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         //Init dialog
         final JFileChooser chooser = new JFileChooser(lastPath);
         chooser.setMultiSelectionEnabled(true);
-        DialogFileFilter gephiFilter = new DialogFileFilter(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject_filechooser_filter"));
-        gephiFilter.addExtension(".gephi");
 
-        DialogFileFilter graphFilter = new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_graphfilter"));
-        graphFilter.addExtension(".gephi");
-
-        ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
-        for (FileType fileType : importController.getImportController().getFileTypes()) {
-            DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
-            dialogFileFilter.addExtensions(fileType.getExtensions());
-            chooser.addChoosableFileFilter(dialogFileFilter);
-
-            graphFilter.addExtensions(fileType.getExtensions());
+        for (FileFilter fileFilter : fileFilters) {
+            chooser.addChoosableFileFilter(fileFilter);
         }
-        DialogFileFilter zipFileFilter = new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_zipfilter"));
-        zipFileFilter.addExtensions(new String[]{".zip", ".gz", ".bz2"});
-        chooser.addChoosableFileFilter(zipFileFilter);
-        chooser.addChoosableFileFilter(gephiFilter);
-        chooser.addChoosableFileFilter(graphFilter);
+
+        if (initialFilter != null) {
+            chooser.setFileFilter(initialFilter);
+        }
 
         //Open dialog
         int returnFile = chooser.showOpenDialog(null);
@@ -508,10 +547,11 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 }
             } else {
                 //Import
-                importController.importFiles(fileObjects);
+                importControllerUI.importFiles(fileObjects);
             }
         }
     }
+
     @Override
     public Project getCurrentProject() {
         return controller.getCurrentProject();

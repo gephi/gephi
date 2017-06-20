@@ -1,6 +1,8 @@
 # Gephi - The Open Graph Viz Platform
 
 [![Build Status](https://travis-ci.org/gephi/gephi.svg?branch=master)](https://travis-ci.org/gephi/gephi)
+[![Dependency Status](https://www.versioneye.com/user/projects/5891dedd45c80c0016cae662/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5891dedd45c80c0016cae662?child=summary)
+[![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.9.1/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.9.1)
 
 [Gephi](http://gephi.org) is an award-winning open-source platform for visualizing and manipulating large graphs. It runs on Windows, Mac OS X and Linux. Localization is available in French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese and Czech.
 
@@ -26,25 +28,25 @@ If you run into any trouble or have questions consult our [forum](http://forum.g
 
 ### Stable
 
-- Latest stable release on [gephi.org](https://gephi.github.io/users/download/).
+- Latest stable release on [gephi.org](https://gephi.org/users/download//).
 
 ### Nightly builds
 
-Current version is 0.9.1-SNAPSHOT
+Current version is 0.9.2-SNAPSHOT
 
-- [gephi-0.9.1-SNAPSHOT-windows.exe](http://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.1-SNAPSHOT&c=windows&p=exe) (Windows)
+- [gephi-0.9.2-SNAPSHOT-windows.exe](http://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.2-SNAPSHOT&c=windows&p=exe) (Windows)
 
-- [gephi-0.9.1-SNAPSHOT-macos.dmg](http://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.1-SNAPSHOT&c=macos&p=dmg) (Mac OS X)
+- [gephi-0.9.2-SNAPSHOT-macos.dmg](http://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.2-SNAPSHOT&c=macos&p=dmg) (Mac OS X)
 
-- [gephi-0.9.1-SNAPSHOT-linux.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.1-SNAPSHOT&c=linux&p=tar.gz) (Linux)
+- [gephi-0.9.2-SNAPSHOT-linux.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.2-SNAPSHOT&c=linux&p=tar.gz) (Linux)
 
-- [gephi-0.9.1-SNAPSHOT-sources.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.1-SNAPSHOT&c=sources&p=tar.gz) (Sources)
+- [gephi-0.9.2-SNAPSHOT-sources.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.2-SNAPSHOT&c=sources&p=tar.gz) (Sources)
 
 ## Developer Introduction
 
 Gephi is developed in Java and uses OpenGL for its visualization engine. Built on the top of Netbeans Platform, it follows a loosely-coupled, modular architecture philosophy. Gephi is split into modules, which depend on other modules through well-written APIs. Plugins can reuse existing APIs, create new services and even replace a default implementation with a new one.
 
-Consult the [**Javadoc**](http://gephi.github.io/gephi/0.9.0/apidocs/index.html) for an overview of the APIs.
+Consult the [**Javadoc**](http://gephi.github.io/gephi/0.9.1/apidocs/index.html) for an overview of the APIs.
 
 ### Requirements
 
@@ -83,7 +85,7 @@ Gephi is extensible and lets developers create plug-ins to add new features, or 
 
 The Gephi Toolkit project packages essential Gephi modules (Graph, Layout, Filters, IO…) in a standard Java library which any Java project can use for getting things done. It can be used on a server or command-line tool to do the same things Gephi does but automatically.
 
-- [Download](http://gephi.github.io/toolkit/)
+- [Download](https://gephi.org/toolkit/)
 
 - [GitHub Project](https://github.com/gephi/gephi-toolkit)
 

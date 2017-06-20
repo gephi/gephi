@@ -45,12 +45,12 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.gephi.preview.api.CanvasSize;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.RenderTarget;
@@ -96,9 +96,9 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
         public SVGRenderTargetImpl(CanvasSize cs, boolean scaleStrokes) {
             DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
             DocumentType doctype = impl.createDocumentType(
+                    "svg",
                     "-//W3C//DTD SVG 1.1//EN",
-                    "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd",
-                    "");
+                    "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd");
             document = impl.createDocument(SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", doctype);
 
             // initializes CSS and SVG specific DOM interfaces

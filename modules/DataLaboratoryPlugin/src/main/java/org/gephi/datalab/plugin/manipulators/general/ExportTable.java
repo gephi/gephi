@@ -51,7 +51,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * GeneralActionsManipulator that exports a table to CSV.
+ * GeneralActionsManipulator that exports a table to a spreadsheet file.
  * @author Eduardo Ramos
  */
 @ServiceProvider(service=GeneralActionsManipulator.class)
@@ -60,7 +60,7 @@ public class ExportTable implements GeneralActionsManipulator {
     @Override
     public void execute() {
         DataTablesController dtc=Lookup.getDefault().lookup(DataTablesController.class);
-        dtc.exportCurrentTable(DataTablesController.ExportMode.CSV);
+        dtc.exportCurrentTable();
     }
 
     @Override

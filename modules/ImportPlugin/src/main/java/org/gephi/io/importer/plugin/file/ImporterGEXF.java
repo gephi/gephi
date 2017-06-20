@@ -169,8 +169,11 @@ public class ImporterGEXF implements FileImporter, LongTask {
             throw new RuntimeException(e);
         } finally {
             try {
-                xmlReader.close();
+                if (xmlReader != null) {
+                    xmlReader.close();
+                }
             } catch (XMLStreamException e) {
+                //NOOP
             }
         }
         Progress.finish(progress);

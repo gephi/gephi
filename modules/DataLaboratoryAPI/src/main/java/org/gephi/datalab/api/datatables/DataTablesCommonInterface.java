@@ -162,14 +162,8 @@ interface DataTablesCommonInterface {
      */
     void setShowEdgesNodesLabels(boolean showEdgesNodesLabels);
 
-    public enum ExportMode {
-
-        CSV
-    }
-
     /**
      * Requests to exports current table being shown as a file.
-     * @param exportMode <code>ExportMode</code> - CSV only for now
      */
-    void exportCurrentTable(ExportMode exportMode);
+    void exportCurrentTable();
 }

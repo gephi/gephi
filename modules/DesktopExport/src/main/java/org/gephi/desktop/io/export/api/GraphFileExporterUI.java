@@ -52,6 +52,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -102,8 +103,17 @@ public final class GraphFileExporterUI implements ExporterClassUI {
 
     @Override
     public void action() {
+        action(Lookup.getDefault().lookupAll(GraphFileExporterBuilder.class).toArray(new GraphFileExporterBuilder[0]));
+    }
+
+    public void action(GraphFileExporterBuilder exporterBuilder) {
+        action(new GraphFileExporterBuilder[]{exporterBuilder});
+    }
+
+    public void action(final GraphFileExporterBuilder[] exporterBuilders) {
         final String LAST_PATH = "GraphFileExporterUI_Last_Path";
         final String LAST_PATH_DEFAULT = "GraphFileExporterUI_Last_Path_Default";
+        final String LAST_FILE_FILTER = "GraphFileExporterUI_Last_File_Filter";
 
         final ExportControllerUI exportController = Lookup.getDefault().lookup(ExportControllerUI.class);
         if (exportController == null) {
@@ -113,6 +123,7 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         //Get last directory
         String lastPathDefault = NbPreferences.forModule(GraphFileExporterUI.class).get(LAST_PATH_DEFAULT, null);
         String lastPath = NbPreferences.forModule(GraphFileExporterUI.class).get(LAST_PATH, lastPathDefault);
+        String lastFileFilterString = NbPreferences.forModule(GraphFileExporterUI.class).get(LAST_FILE_FILTER, null);
 
         //Options panel
         FlowLayout layout = new FlowLayout(FlowLayout.RIGHT);
@@ -177,8 +188,11 @@ public final class GraphFileExporterUI implements ExporterClassUI {
             public void propertyChange(PropertyChangeEvent evt) {
                 DialogFileFilter fileFilter = (DialogFileFilter) evt.getNewValue();
 
+                //Save last file filter
+                NbPreferences.forModule(GraphFileExporterUI.class).put(LAST_FILE_FILTER, fileFilter.getExtensions().toString());
+
                 //Options panel enabling
-                selectedBuilder = getExporter(fileFilter);
+                selectedBuilder = getExporter(exporterBuilders, fileFilter);
                 if (selectedBuilder != null) {
                     selectedExporter = selectedBuilder.buildExporter();
                 }
@@ -212,20 +226,36 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         });
 
         //File filters
-        DialogFileFilter defaultFilter = null;
-        for (GraphFileExporterBuilder graphFileExporter : Lookup.getDefault().lookupAll(GraphFileExporterBuilder.class)) {
+        DialogFileFilter defaultFileFilter = null;
+        DialogFileFilter lastFileFilter = null;
+
+        for (GraphFileExporterBuilder graphFileExporter : exporterBuilders) {
             for (FileType fileType : graphFileExporter.getFileTypes()) {
                 DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
                 dialogFileFilter.addExtensions(fileType.getExtensions());
-                if (defaultFilter == null) {
-                    defaultFilter = dialogFileFilter;
+                if (defaultFileFilter == null) {
+                    defaultFileFilter = dialogFileFilter;
                 }
+
+                if (lastFileFilterString != null) {
+                    if (dialogFileFilter.getExtensions().toString().equals(lastFileFilterString)) {
+                        lastFileFilter = dialogFileFilter;
+                    }
+                }
+
                 chooser.addChoosableFileFilter(dialogFileFilter);
             }
         }
+
         chooser.setAcceptAllFileFilterUsed(false);
-        chooser.setFileFilter(defaultFilter);
-        selectedFile = new File(chooser.getCurrentDirectory(), "Untitled" + defaultFilter.getExtensions().get(0));
+
+        if (lastFileFilter != null) {
+            defaultFileFilter = lastFileFilter;
+        }
+        
+        chooser.setFileFilter(defaultFileFilter);
+
+        selectedFile = new File(chooser.getCurrentDirectory(), "Untitled" + defaultFileFilter.getExtensions().get(0));
         chooser.setSelectedFile(selectedFile);
 
         //Show
@@ -279,9 +309,9 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         return true;
     }
 
-    private GraphFileExporterBuilder getExporter(DialogFileFilter fileFilter) {
+    private GraphFileExporterBuilder getExporter(GraphFileExporterBuilder[] exporterBuilders, DialogFileFilter fileFilter) {
         //Find fileFilter
-        for (GraphFileExporterBuilder graphFileExporter : Lookup.getDefault().lookupAll(GraphFileExporterBuilder.class)) {
+        for (GraphFileExporterBuilder graphFileExporter : exporterBuilders) {
             for (FileType fileType : graphFileExporter.getFileTypes()) {
                 DialogFileFilter tempFilter = new DialogFileFilter(fileType.getName());
                 tempFilter.addExtensions(fileType.getExtensions());

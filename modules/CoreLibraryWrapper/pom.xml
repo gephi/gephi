@@ -4,13 +4,13 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.9.1</version>
+        <version>0.9.2-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
     <artifactId>core-library-wrapper</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.2-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>CoreLibraryWrapper</name>
@@ -24,32 +24,32 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.6</version>
+            <version>1.10</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.1</version>
+            <version>1.14</version>
         </dependency>
         <dependency>
-            <groupId>jfree</groupId>
+            <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.0.13</version>
+            <version>1.0.19</version>
         </dependency>
         <dependency>
-            <groupId>gnu.trove</groupId>
-            <artifactId>trove</artifactId>
-            <version>2.1.0</version>
+            <groupId>net.sf.trove4j</groupId>
+            <artifactId>trove4j</artifactId>
+            <version>3.0.3</version>
         </dependency>
         <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
-            <version>1.0</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>22.0</version>
         </dependency>
         <dependency>
-            <groupId>net.sourceforge.javacsv</groupId>
-            <artifactId>javacsv</artifactId>
-            <version>2.0</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.4</version>
         </dependency>
         <dependency>
             <artifactId>xml-apis-ext</artifactId>
@@ -59,24 +59,16 @@
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
-            <version>5.2.0</version>
+            <version>5.5.11</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-transcoder</artifactId>
-            <version>1.7</version>
+            <version>1.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.xmlgraphics</groupId>
-                    <artifactId>batik-js</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.xmlgraphics</groupId>
                     <artifactId>batik-svggen</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.xmlgraphics</groupId>
-                    <artifactId>fop</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>xml-apis</groupId>
@@ -87,6 +79,16 @@
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-constants</artifactId>
+            <version>1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-i18n</artifactId>
+            <version>1.9</version>
         </dependency>
     </dependencies>
 
@@ -103,7 +105,7 @@
                         <publicPackage>org.jfree.*</publicPackage>
                         <publicPackage>com.google.common.*</publicPackage>
                         <publicPackage>gnu.trove.*</publicPackage>
-                        <publicPackage>com.csvreader</publicPackage>
+                        <publicPackage>org.apache.commons.csv.*</publicPackage>
                         <publicPackage>javax.xml.*</publicPackage>
                         <publicPackage>org.w3c.*</publicPackage>
                         <publicPackage>com.itextpdf.text.*</publicPackage>

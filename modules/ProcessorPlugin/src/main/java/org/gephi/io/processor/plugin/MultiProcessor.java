@@ -79,10 +79,6 @@ public class MultiProcessor extends DefaultProcessor implements Processor {
             workspace = null;
         }
 
-        //Clean
-        workspace = null;
-        graphModel = null;
-        containers = null;
-        progressTicket = null;
+        clean();
     }
 }
