@@ -108,7 +108,6 @@ public class ImporterGraphML implements FileImporter, LongTask {
     public ImporterGraphML() {
         //Default node associations
         properties.addNodePropertyAssociation(NodeProperties.LABEL, "label");
-        properties.addNodePropertyAssociation(NodeProperties.LABEL, "d3");  // Default node label used by yEd from yworks.com.
         properties.addNodePropertyAssociation(NodeProperties.X, "x");
         properties.addNodePropertyAssociation(NodeProperties.Y, "y");
         properties.addNodePropertyAssociation(NodeProperties.X, "xpos");
@@ -123,7 +122,6 @@ public class ImporterGraphML implements FileImporter, LongTask {
         //Default edge associations
         properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "label");
         properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "edgelabel");
-        properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "d7");  // Default edge label used by yEd from yworks.com.
         properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "weight");
         properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "Edge Weight");
         properties.addEdgePropertyAssociation(EdgeProperties.ID, "id");
@@ -132,6 +130,9 @@ public class ImporterGraphML implements FileImporter, LongTask {
         properties.addEdgePropertyAssociation(EdgeProperties.G, "g");
         properties.addEdgePropertyAssociation(EdgeProperties.B, "b");
         properties.addEdgePropertyAssociation(EdgeProperties.COLOR, "color");
+
+        nodePropertiesAttributes.put("d3", NodeProperties.LABEL);// Default node label used by yEd from yworks.com.
+        edgePropertiesAttributes.put("d7", EdgeProperties.LABEL);// Default edge label used by yEd from yworks.com.
     }
 
     @Override
@@ -672,7 +673,9 @@ public class ImporterGraphML implements FileImporter, LongTask {
                 column = container.addNodeColumn(id, attributeType);
                 column.setTitle(title);
                 report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_nodeattribute", title, attributeType.getCanonicalName()));
-            } else if ("edge".equalsIgnoreCase(forStr) || "all".equalsIgnoreCase(forStr)) {
+            }
+
+            if ("edge".equalsIgnoreCase(forStr) || "all".equalsIgnoreCase(forStr)) {
                 if (container.getEdgeColumn(id) != null) {
                     report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributecolumn_exist", id));
                     return;
