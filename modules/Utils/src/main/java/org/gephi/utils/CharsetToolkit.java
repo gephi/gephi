@@ -18,6 +18,10 @@ package org.gephi.utils;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 /**
  * Utility class to guess the encoding of a given text file.
@@ -170,6 +174,23 @@ public class CharsetToolkit {
         }
         if (hasUTF16BEBom()) {
             return Charset.forName("UTF-16BE");
+        }
+        
+        if (hasXMLHeader()) {
+            try {
+                XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(buffer));
+                String encoding = xmlStreamReader.getCharacterEncodingScheme();
+
+                if (encoding != null) {
+                    Charset xmlCharset = Charset.forName(encoding.trim().toUpperCase());
+                    
+                    Logger.getLogger("").log(Level.INFO, "Detected encoding {0} in XML file", xmlCharset.name());
+                    return xmlCharset;
+                }
+            } catch (Exception ex) {
+                //Could not find charset, keep normal process
+                Logger.getLogger("").log(Level.WARNING, ex.getMessage());
+            }
         }
 
         // if a byte has its most significant bit set, the file is in UTF-8 or in the default encoding
@@ -407,5 +428,11 @@ public class CharsetToolkit {
     public static Charset[] getAvailableCharsets() {
         Collection collection = Charset.availableCharsets().values();
         return (Charset[]) collection.toArray(new Charset[collection.size()]);
+    }
+
+    private boolean hasXMLHeader() {
+        String header = new String(buffer, 0, 256).toLowerCase();
+        
+        return header.contains("<?xml") && header.contains("encoding");
     }
 }
