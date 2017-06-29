@@ -45,8 +45,8 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import java.util.ArrayList;
@@ -132,8 +132,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         edgeTypeMap = new Object2IntOpenHashMap();
         edgeTypeSets = new Long2ObjectMap[0];
         factory = new ElementFactoryImpl(this);
-        nodeColumns = new Object2ObjectOpenHashMap<>();
-        edgeColumns = new Object2ObjectOpenHashMap<>();
+        nodeColumns = new Object2ObjectLinkedOpenHashMap<>();
+        edgeColumns = new Object2ObjectLinkedOpenHashMap<>();
     }
 
     @Override
