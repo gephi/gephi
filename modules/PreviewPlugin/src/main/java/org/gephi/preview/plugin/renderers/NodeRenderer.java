@@ -155,7 +155,7 @@ public class NodeRenderer implements Renderer {
         }
 
         Element nodeElem = target.createElement("circle");
-        nodeElem.setAttribute("class", node.getId().toString());
+        nodeElem.setAttribute("class", SVGUtils.idAsClassAttribute(node.getId()));
         nodeElem.setAttribute("cx", x.toString());
         nodeElem.setAttribute("cy", y.toString());
         nodeElem.setAttribute("r", size.toString());

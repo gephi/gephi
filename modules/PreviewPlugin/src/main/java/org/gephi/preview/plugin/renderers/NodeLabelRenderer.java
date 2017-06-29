@@ -257,7 +257,7 @@ public class NodeLabelRenderer implements Renderer {
         if (outlineSize > 0) {
             Text labelTextOutline = target.createTextNode(label);
             Element outlineElem = target.createElement("text");
-            outlineElem.setAttribute("class", node.getId().toString());
+            outlineElem.setAttribute("class", SVGUtils.idAsClassAttribute(node.getId()));
             outlineElem.setAttribute("x", String.valueOf(x));
             outlineElem.setAttribute("y", String.valueOf(y));
             outlineElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
@@ -278,7 +278,7 @@ public class NodeLabelRenderer implements Renderer {
         }
 
         Element labelElem = target.createElement("text");
-        labelElem.setAttribute("class", node.getId().toString());
+        labelElem.setAttribute("class", SVGUtils.idAsClassAttribute(node.getId()));
         labelElem.setAttribute("x", String.valueOf(x));
         labelElem.setAttribute("y", String.valueOf(y));
         labelElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");

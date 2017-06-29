@@ -159,7 +159,7 @@ public class EdgeRenderer implements Renderer {
             if (!(Boolean) item.getData(EdgeItem.SELF_LOOP)) {
                 final float edgeRadius
                         = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
-                
+
                 boolean isDirected = (Boolean) item.getData(EdgeItem.DIRECTED);
                 if (isDirected
                         || edgeRadius > 0F) {
@@ -172,22 +172,20 @@ public class EdgeRenderer implements Renderer {
                     if (arrowSize < 0F) {
                         arrowSize = 0F;
                     }
-                    
+
                     final float arrowRadiusSize = isDirected ? arrowSize * weight.floatValue() : 0f;
-                    
+
                     final float targetRadius = -(edgeRadius
                             + (Float) targetItem.getData(NodeItem.SIZE) / 2f
                             + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f //We have to divide by 2 because the border stroke is not only an outline but also draws the other half of the curve inside the node
-                            + arrowRadiusSize
-                            );
+                            + arrowRadiusSize);
                     item.setData(TARGET_RADIUS, targetRadius);
-                    
+
                     //Source
                     final Item sourceItem = (Item) item.getData(SOURCE);
                     final float sourceRadius = -(edgeRadius
                             + (Float) sourceItem.getData(NodeItem.SIZE) / 2f
-                            + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f
-                            );
+                            + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f);
                     item.setData(SOURCE_RADIUS, sourceRadius);
                 }
             }
@@ -340,8 +338,9 @@ public class EdgeRenderer implements Renderer {
                 final Element edgeElem = svgTarget.createElement("path");
                 edgeElem.setAttribute("class", String.format(
                         "%s %s",
-                        ((Node) h.sourceItem.getSource()).getId(),
-                        ((Node) h.targetItem.getSource()).getId()));
+                        SVGUtils.idAsClassAttribute(((Node) h.sourceItem.getSource()).getId()),
+                        SVGUtils.idAsClassAttribute(((Node) h.targetItem.getSource()).getId())
+                ));
                 edgeElem.setAttribute("d", String.format(
                         Locale.ENGLISH,
                         "M %f,%f L %f,%f",
@@ -472,8 +471,9 @@ public class EdgeRenderer implements Renderer {
                 final Element edgeElem = svgTarget.createElement("path");
                 edgeElem.setAttribute("class", String.format(
                         "%s %s",
-                        ((Node) h.sourceItem.getSource()).getId(),
-                        ((Node) h.targetItem.getSource()).getId()));
+                        SVGUtils.idAsClassAttribute(((Node) h.sourceItem.getSource()).getId()),
+                        SVGUtils.idAsClassAttribute(((Node) h.targetItem.getSource()).getId())
+                ));
                 edgeElem.setAttribute("d", String.format(
                         Locale.ENGLISH,
                         "M %f,%f C %f,%f %f,%f %f,%f",
@@ -611,7 +611,7 @@ public class EdgeRenderer implements Renderer {
                         Locale.ENGLISH,
                         "M %f,%f C %f,%f %f,%f %f,%f",
                         h.x, h.y, h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x, h.y));
-                selfLoopElem.setAttribute("class", h.node.getId().toString());
+                selfLoopElem.setAttribute("class", SVGUtils.idAsClassAttribute(h.node.getId()));
                 selfLoopElem.setAttribute(
                         "stroke",
                         svgTarget.toHexString(color));

@@ -101,8 +101,9 @@ public class ArrowRenderer implements Renderer {
                     h.p1.x, h.p1.y, h.p2.x, h.p2.y, h.p3.x, h.p3.y));
             arrowElem.setAttribute("class", String.format(
                     "%s %s",
-                    ((Node) h.sourceItem.getSource()).getId(),
-                    ((Node) h.targetItem.getSource()).getId()));
+                    SVGUtils.idAsClassAttribute(((Node) h.sourceItem.getSource()).getId()),
+                    SVGUtils.idAsClassAttribute(((Node) h.targetItem.getSource()).getId())
+            ));
             arrowElem.setAttribute("fill", svgTarget.toHexString(color));
             arrowElem.setAttribute("fill-opacity", (color.getAlpha() / 255f) + "");
             arrowElem.setAttribute("stroke", "none");

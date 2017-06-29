@@ -266,7 +266,7 @@ public class EdgeLabelRenderer implements Renderer {
         if (outlineSize > 0) {
             Text labelTextOutline = target.createTextNode(label);
             Element outlineElem = target.createElement("text");
-            outlineElem.setAttribute("class", edge.getId().toString());
+            outlineElem.setAttribute("class", SVGUtils.idAsClassAttribute(edge.getId()));
             outlineElem.setAttribute("x", String.valueOf(x));
             outlineElem.setAttribute("y", String.valueOf(y));
             outlineElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
@@ -283,7 +283,7 @@ public class EdgeLabelRenderer implements Renderer {
         }
 
         Element labelElem = target.createElement("text");
-        labelElem.setAttribute("class", edge.getId().toString());
+        labelElem.setAttribute("class", SVGUtils.idAsClassAttribute(edge.getId()));
         labelElem.setAttribute("x", x + "");
         labelElem.setAttribute("y", y + "");
         labelElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
