@@ -431,7 +431,7 @@ public class CharsetToolkit {
     }
 
     private boolean hasXMLHeader() {
-        String header = new String(buffer, 0, 256).toLowerCase();
+        String header = new String(buffer, 0, Math.min(256, buffer.length)).toLowerCase();
         
         return header.contains("<?xml") && header.contains("encoding");
     }
