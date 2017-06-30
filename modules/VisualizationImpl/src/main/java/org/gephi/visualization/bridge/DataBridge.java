@@ -119,7 +119,7 @@ public class DataBridge implements VizArchitecture {
         if (e == null) {
             return null;
         }
-        
+
         EdgeModel[] models = new EdgeModel[e.length];
 
         for (int i = 0; i < e.length; i++) {
@@ -133,25 +133,29 @@ public class DataBridge implements VizArchitecture {
     public synchronized boolean updateWorld() {
         boolean force = false;
 
+        boolean visibleViewChanged = false;
         if (graphModel != null) {
-            graphModel.getGraph().writeLock();
-        }
-        try {
-            if ((observer != null && observer.isDestroyed()) || (graphModel != null && graph.getView() != graphModel.getVisibleView())) {
-                if (observer != null && !observer.isDestroyed()) {
-                    observer.destroy();
-                }
-                observer = null;
-
-                if (graphModel != null) {
-                    graph = graphModel.getGraphVisible();
-                    observer = graphModel.createGraphObserver(graph, false);
-                    force = true;
-                }
-            }
-        } finally {
-            if (graphModel != null) {
+            graphModel.getGraph().readLock();
+            try {
+                visibleViewChanged = graph.getView() != graphModel.getVisibleView();
+            } finally {
                 graphModel.getGraph().readUnlockAll();
+            }
+        }
+
+        if (visibleViewChanged || (observer != null && observer.isDestroyed())) {
+            if (observer != null && !observer.isDestroyed()) {
+                observer.destroy();
+            }
+
+            observer = null;
+
+            graphModel.getGraph().writeLock();
+            try {
+                graph = graphModel.getGraphVisible();
+                observer = graphModel.createGraphObserver(graph, false);
+                force = true;
+            } finally {
                 graphModel.getGraph().writeUnlock();
             }
         }
