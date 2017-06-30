@@ -127,8 +127,11 @@ public class RangePanel extends javax.swing.JPanel {
 
                         @Override
                         public void run() {
-                            rangeSlider.setRange(new JRangeSliderPanel.Range(
-                                    rangeSlider, range.getMinimum(), range.getMaximum(), range.getLowerBound(), range.getUpperBound()));
+                            rangeSlider.setRange(
+                                    JRangeSliderPanel.Range.build(
+                                            rangeSlider, range.getMinimum(), range.getMaximum(), range.getLowerBound(), range.getUpperBound()
+                                    )
+                            );
                         }
                     });
                     setupHistogram(rangeFilter, range);
