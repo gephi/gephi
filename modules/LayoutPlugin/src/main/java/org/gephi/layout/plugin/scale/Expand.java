@@ -56,16 +56,16 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = LayoutBuilder.class)
 public class Expand implements LayoutBuilder {
 
-    private ExpandLayoutUI ui = new ExpandLayoutUI();
-
+    private final ExpandLayoutUI ui = new ExpandLayoutUI();
+    
     @Override
     public String getName() {
         return NbBundle.getMessage(Expand.class, "expand.name");
     }
 
     @Override
-    public ScaleLayout buildLayout() {
-        return new ScaleLayout(this, 1.2);
+    public ExpandLayout buildLayout() {
+        return new ExpandLayout(this, 1.2);
     }
 
     @Override

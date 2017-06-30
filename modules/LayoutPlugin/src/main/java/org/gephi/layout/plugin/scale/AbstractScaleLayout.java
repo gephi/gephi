@@ -57,12 +57,12 @@ import org.openide.util.NbBundle;
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
-public class ScaleLayout extends AbstractLayout implements Layout {
+public abstract class AbstractScaleLayout extends AbstractLayout implements Layout {
 
     private double scale;
     private Graph graph;
 
-    public ScaleLayout(LayoutBuilder layoutBuilder, double scale) {
+    public AbstractScaleLayout(LayoutBuilder layoutBuilder, double scale) {
         super(layoutBuilder);
         this.scale = scale;
     }

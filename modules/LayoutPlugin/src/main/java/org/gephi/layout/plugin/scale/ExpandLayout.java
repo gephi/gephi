@@ -1,13 +1,13 @@
 /*
- Copyright 2008-2010 Gephi
- Authors : Helder Suzuki <heldersuzuki@gephi.org>
+ Copyright 2008-2017 Gephi
+ Authors : Eduardo Ramos <eduramiba@gmail.com>
  Website : http://www.gephi.org
 
  This file is part of Gephi.
 
  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
- Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2017 Gephi Consortium. All rights reserved.
 
  The contents of this file are subject to the terms of either the GNU
  General Public License Version 3 only ("GPL") or the Common
@@ -37,67 +37,16 @@
 
  Contributor(s):
 
- Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2017 Gephi Consortium.
  */
 package org.gephi.layout.plugin.scale;
 
-import javax.swing.Icon;
-import javax.swing.JPanel;
-import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
-import org.gephi.layout.spi.LayoutUI;
-import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
-/**
- *
- * @author Helder Suzuki <heldersuzuki@gephi.org>>
- */
-@ServiceProvider(service = LayoutBuilder.class)
-public class Contract implements LayoutBuilder {
-
-    private final ContractLayoutUI ui = new ContractLayoutUI();
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(Contract.class, "contract.name");
+public class ExpandLayout extends AbstractScaleLayout {
+    
+    public ExpandLayout(LayoutBuilder layoutBuilder, double scale) {
+        super(layoutBuilder, scale);
     }
-
-    @Override
-    public ContractLayout buildLayout() {
-        return new ContractLayout(this, 0.8);
-    }
-
-    @Override
-    public LayoutUI getUI() {
-        return ui;
-    }
-
-    private static class ContractLayoutUI implements LayoutUI {
-
-        @Override
-        public String getDescription() {
-            return NbBundle.getMessage(Contract.class, "contract.description");
-        }
-
-        @Override
-        public Icon getIcon() {
-            return null;
-        }
-
-        @Override
-        public JPanel getSimplePanel(Layout layout) {
-            return null;
-        }
-
-        @Override
-        public int getQualityRank() {
-            return -1;
-        }
-
-        @Override
-        public int getSpeedRank() {
-            return -1;
-        }
-    }
+    
 }
