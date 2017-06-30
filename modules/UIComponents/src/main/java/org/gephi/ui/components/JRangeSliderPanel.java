@@ -41,10 +41,9 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.ui.components;
 
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.event.ChangeEvent;
@@ -63,19 +62,22 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
     private String upperBound = "N/A";
     private Range range;
 
-    /** Creates new form JRangeSliderPanel */
+    /**
+     * Creates new form JRangeSliderPanel
+     */
     public JRangeSliderPanel() {
         initComponents();
         ((JRangeSlider) rangeSlider).setUpperValue(1000);
         rangeSlider.setOpaque(false);
         lowerBoundTextField.setOpaque(false);
+        lowerBoundTextField.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         upperBoundTextField.setOpaque(false);
+        upperBoundTextField.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         lowerBoundTextField.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                lowerBoundTextField.setEnabled(true);
                 lowerBoundTextField.selectAll();
             }
         });
@@ -93,21 +95,13 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
                     lowerBound = lowerBoundTextField.getText();
                 }
                 refreshBoundTexts();
-                lowerBoundTextField.setEnabled(false);
-            }
-        });
-        lowerBoundTextField.addFocusListener(new FocusAdapter() {
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                lowerBoundTextField.setEnabled(false);
+                JRangeSliderPanel.this.requestFocusInWindow();
             }
         });
         upperBoundTextField.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                upperBoundTextField.setEnabled(true);
                 upperBoundTextField.selectAll();
             }
         });
@@ -125,14 +119,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
                     upperBound = upperBoundTextField.getText();
                 }
                 refreshBoundTexts();
-                upperBoundTextField.setEnabled(false);
-            }
-        });
-        upperBoundTextField.addFocusListener(new FocusAdapter() {
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                upperBoundTextField.setEnabled(false);
+                JRangeSliderPanel.this.requestFocusInWindow();
             }
         });
 
@@ -213,7 +200,6 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
 
         lowerBoundTextField.setText(org.openide.util.NbBundle.getMessage(JRangeSliderPanel.class, "JRangeSliderPanel.lowerBoundTextField.text")); // NOI18N
         lowerBoundTextField.setBorder(null);
-        lowerBoundTextField.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -225,7 +211,6 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
         upperBoundTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         upperBoundTextField.setText(org.openide.util.NbBundle.getMessage(JRangeSliderPanel.class, "JRangeSliderPanel.upperBoundTextField.text")); // NOI18N
         upperBoundTextField.setBorder(null);
-        upperBoundTextField.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -243,15 +228,15 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
 
     public static class Range {
 
-        private JRangeSliderPanel slider;
-        private Object min;
-        private Object max;
-        private Object lowerBound;
-        private Object upperBound;
+        private final JRangeSliderPanel slider;
+        private Number min;
+        private Number max;
+        private Number lowerBound;
+        private Number upperBound;
         private int sliderLowValue = -1;
         private int sliderUpValue = -1;
 
-        public Range(JRangeSliderPanel slider, Object min, Object max) {
+        public Range(JRangeSliderPanel slider, Number min, Number max) {
             this.slider = slider;
             this.min = min;
             this.max = max;
@@ -259,7 +244,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             this.upperBound = max;
         }
 
-        public Range(JRangeSliderPanel slider, Object min, Object max, Object lowerBound, Object upperBound) {
+        public Range(JRangeSliderPanel slider, Number min, Number max, Number lowerBound, Number upperBound) {
             this.slider = slider;
             this.min = min;
             this.max = max;
@@ -267,11 +252,11 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             this.upperBound = upperBound;
         }
 
-        public Object getLowerBound() {
+        public Number getLowerBound() {
             return lowerBound;
         }
 
-        public Object getUpperBound() {
+        public Number getUpperBound() {
             return upperBound;
         }
 
@@ -400,8 +385,6 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             sliderLowValue = (int) (normalizedLow * SLIDER_MAXIMUM);
             sliderUpValue = (int) (normalizedUp * SLIDER_MAXIMUM);
             slider.getSlider().setValues(sliderLowValue, sliderUpValue);
-//            slider.getSlider().setUpperValue(sliderUpValue);
-//            slider.getSlider().setValue(sliderLowValue);
         }
 
         private void refreshBounds() {
