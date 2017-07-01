@@ -82,20 +82,46 @@ public class ConnectedComponentsNGTest {
     }
 
     @Test
-    public void testComputeOneNodeWeeklyConnectedComponents() {
+    public void testComputeOneNodeWeaklyConnectedComponents() {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
         UndirectedGraph graph = graphModel.getUndirectedGraph();
         Node n = graph.getNode("0");
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = new HashMap<>();
-        indicies.put(n, 0);
-        LinkedList<LinkedList<Node>> components = c.computeWeeklyConnectedComponents(graph, indicies);
+        HashMap<Node, Integer> indices = new HashMap<>();
+        indices.put(n, 0);
+        LinkedList<LinkedList<Node>> components = c.computeWeaklyConnectedComponents(graph, indices);
         assertEquals(components.size(), 1);
+    }
+    
+    @Test
+    public void testComputeSelfLoopNodeAndIsolatedNodeWeaklyConnectedComponents() {
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
+        Node node1 = graphModel.factory().newNode("0");
+        Node node2 = graphModel.factory().newNode("1");
+        Node node3 = graphModel.factory().newNode("2");
+        undirectedGraph.addNode(node1);
+        undirectedGraph.addNode(node2);
+        undirectedGraph.addNode(node3);
+        Edge edge11 = graphModel.factory().newEdge(node1, node1, false);
+        Edge edge12 = graphModel.factory().newEdge(node1, node2, false);
+        undirectedGraph.addEdge(edge11);
+        undirectedGraph.addEdge(edge12);
+
+        ConnectedComponents c = new ConnectedComponents();
+        HashMap<Node, Integer> indices = new HashMap<>();
+        
+        indices.put(node1, 0);
+        indices.put(node2, 1);
+        indices.put(node3, 2);
+        
+        LinkedList<LinkedList<Node>> components = c.computeWeaklyConnectedComponents(undirectedGraph, indices);
+        assertEquals(components.size(), 2);
     }
 
     @Test
-    public void testNullGraphWeeklyConnectedComponents() {
+    public void testNullGraphWeaklyConnectedComponents() {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(5);
         UndirectedGraph graph = graphModel.getUndirectedGraph();
         Node n0 = graph.getNode("0");
@@ -105,18 +131,18 @@ public class ConnectedComponentsNGTest {
         Node n4 = graph.getNode("4");
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = new HashMap<>();
-        indicies.put(n0, 0);
-        indicies.put(n1, 1);
-        indicies.put(n2, 2);
-        indicies.put(n3, 3);
-        indicies.put(n4, 4);
-        LinkedList<LinkedList<Node>> components = c.computeWeeklyConnectedComponents(graph, indicies);
+        HashMap<Node, Integer> indices = new HashMap<>();
+        indices.put(n0, 0);
+        indices.put(n1, 1);
+        indices.put(n2, 2);
+        indices.put(n3, 3);
+        indices.put(n4, 4);
+        LinkedList<LinkedList<Node>> components = c.computeWeaklyConnectedComponents(graph, indices);
         assertEquals(components.size(), 5);
     }
 
     @Test
-    public void testComputeBarbellGraphWeeklyConnectedComponents() {
+    public void testComputeBarbellGraphWeaklyConnectedComponents() {
         GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(4);
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node[] nodes = new Node[4];
@@ -136,8 +162,8 @@ public class ConnectedComponentsNGTest {
         UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = c.createIndiciesMap(graph);
-        LinkedList<LinkedList<Node>> components = c.computeWeeklyConnectedComponents(graph, indicies);
+        HashMap<Node, Integer> indices = c.createIndicesMap(graph);
+        LinkedList<LinkedList<Node>> components = c.computeWeaklyConnectedComponents(graph, indices);
         assertEquals(components.size(), 1);
     }
 
@@ -175,8 +201,8 @@ public class ConnectedComponentsNGTest {
         UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = c.createIndiciesMap(graph);
-        LinkedList<LinkedList<Node>> components = c.computeWeeklyConnectedComponents(graph, indicies);
+        HashMap<Node, Integer> indices = c.createIndicesMap(graph);
+        LinkedList<LinkedList<Node>> components = c.computeWeaklyConnectedComponents(graph, indices);
         assertEquals(components.size(), 1);
     }
 
@@ -218,8 +244,8 @@ public class ConnectedComponentsNGTest {
         UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = c.createIndiciesMap(graph);
-        LinkedList<LinkedList<Node>> components = c.computeWeeklyConnectedComponents(graph, indicies);
+        HashMap<Node, Integer> indices = c.createIndicesMap(graph);
+        LinkedList<LinkedList<Node>> components = c.computeWeaklyConnectedComponents(graph, indices);
 
         int componentNumber3 = c.getComponentNumber(components, node3);
         int componentNumber4 = c.getComponentNumber(components, node4);
@@ -237,8 +263,8 @@ public class ConnectedComponentsNGTest {
         DirectedGraph graph = graphModel.getDirectedGraph();
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = c.createIndiciesMap(graph);
-        LinkedList<LinkedList<Node>> components = c.top_tarjans(graph, indicies);
+        HashMap<Node, Integer> indices = c.createIndicesMap(graph);
+        LinkedList<LinkedList<Node>> components = c.top_tarjans(graph, indices);
         assertEquals(components.size(), 4);
     }
 
@@ -248,8 +274,8 @@ public class ConnectedComponentsNGTest {
         DirectedGraph graph = graphModel.getDirectedGraph();
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = c.createIndiciesMap(graph);
-        LinkedList<LinkedList<Node>> components = c.top_tarjans(graph, indicies);
+        HashMap<Node, Integer> indices = c.createIndicesMap(graph);
+        LinkedList<LinkedList<Node>> components = c.top_tarjans(graph, indices);
         assertEquals(components.size(), 1);
     }
 
@@ -287,8 +313,8 @@ public class ConnectedComponentsNGTest {
         DirectedGraph graph = graphModel.getDirectedGraph();
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = c.createIndiciesMap(graph);
-        LinkedList<LinkedList<Node>> components = c.top_tarjans(graph, indicies);
+        HashMap<Node, Integer> indices = c.createIndicesMap(graph);
+        LinkedList<LinkedList<Node>> components = c.top_tarjans(graph, indices);
         assertEquals(components.size(), 1);
     }
 
@@ -324,9 +350,9 @@ public class ConnectedComponentsNGTest {
         DirectedGraph graph = graphModel.getDirectedGraph();
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = c.createIndiciesMap(graph);
-        LinkedList<LinkedList<Node>> weeklyConnectedComponents = c.computeWeeklyConnectedComponents(graph, indicies);
-        LinkedList<LinkedList<Node>> stronglyConnectedComponents = c.top_tarjans(graph, indicies);
+        HashMap<Node, Integer> indices = c.createIndicesMap(graph);
+        LinkedList<LinkedList<Node>> weeklyConnectedComponents = c.computeWeaklyConnectedComponents(graph, indices);
+        LinkedList<LinkedList<Node>> stronglyConnectedComponents = c.top_tarjans(graph, indices);
         int componentNumber1 = c.getComponentNumber(stronglyConnectedComponents, node1);
         int componentNumber3 = c.getComponentNumber(stronglyConnectedComponents, node3);
         int componentNumber4 = c.getComponentNumber(stronglyConnectedComponents, node4);
@@ -380,8 +406,8 @@ public class ConnectedComponentsNGTest {
         DirectedGraph graph = graphModel.getDirectedGraph();
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = c.createIndiciesMap(graph);
-        LinkedList<LinkedList<Node>> stronglyConnectedComponents = c.top_tarjans(graph, indicies);
+        HashMap<Node, Integer> indices = c.createIndicesMap(graph);
+        LinkedList<LinkedList<Node>> stronglyConnectedComponents = c.top_tarjans(graph, indices);
 
         assertEquals(stronglyConnectedComponents.size(), 6);
     }
@@ -428,8 +454,8 @@ public class ConnectedComponentsNGTest {
         DirectedGraph graph = graphModel.getDirectedGraph();
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = c.createIndiciesMap(graph);
-        LinkedList<LinkedList<Node>> stronglyConnectedComponents = c.top_tarjans(graph, indicies);
+        HashMap<Node, Integer> indices = c.createIndicesMap(graph);
+        LinkedList<LinkedList<Node>> stronglyConnectedComponents = c.top_tarjans(graph, indices);
 
         int componentNumber1 = c.getComponentNumber(stronglyConnectedComponents, node1);
         int componentNumber5 = c.getComponentNumber(stronglyConnectedComponents, node5);
@@ -476,8 +502,8 @@ public class ConnectedComponentsNGTest {
         UndirectedGraph graph = graphModel.getUndirectedGraph();
 
         ConnectedComponents c = new ConnectedComponents();
-        HashMap<Node, Integer> indicies = c.createIndiciesMap(graph);
-        LinkedList<LinkedList<Node>> components = c.computeWeeklyConnectedComponents(graph, indicies);
+        HashMap<Node, Integer> indices = c.createIndicesMap(graph);
+        LinkedList<LinkedList<Node>> components = c.computeWeaklyConnectedComponents(graph, indices);
         c.fillComponentSizeList(components);
 
         int giantComponent = c.getGiantComponent();
