@@ -107,6 +107,7 @@ public class ImporterDOT implements FileImporter, LongTask {
     protected void setSyntax(StreamTokenizer tk) {
         tk.resetSyntax();
         tk.eolIsSignificant(false);
+        tk.commentChar('#');
         tk.slashStarComments(true);
         tk.slashSlashComments(true);
         tk.whitespaceChars(0, ' ');
