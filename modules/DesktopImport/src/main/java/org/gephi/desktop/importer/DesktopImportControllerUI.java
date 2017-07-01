@@ -43,14 +43,12 @@ package org.gephi.desktop.importer;
 
 import java.awt.Dialog;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.ByteBuffer;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,12 +56,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.desktop.project.api.ProjectControllerUI;
@@ -148,7 +144,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 FileObject fileObject = fileObjects[i];
                 fileObject = ImportUtils.getArchivedFile(fileObject);
 
-                importers[i] = controller.getFileImporter(FileUtil.toFile(fileObject));
+                importers[i] = controller.getFileImporter(fileObject);
 
                 if (importers[i] == null) {
                     NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);

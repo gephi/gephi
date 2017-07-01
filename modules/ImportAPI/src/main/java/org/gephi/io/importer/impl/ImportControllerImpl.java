@@ -105,13 +105,24 @@ public class ImportControllerImpl implements ImportController {
 
     @Override
     public FileImporter getFileImporter(File file) {
-        FileObject fileObject = FileUtil.toFileObject(file);
-        fileObject = ImportUtils.getArchivedFile(fileObject);   //Unzip and return content file
-        FileImporterBuilder builder = getMatchingImporter(fileObject);
-        if (fileObject != null && builder != null) {
-            FileImporter fi = builder.buildImporter();
-            return fi;
+        if (file != null) {
+            return getFileImporter(FileUtil.toFileObject(file));
         }
+
+        return null;
+    }
+
+    @Override
+    public FileImporter getFileImporter(FileObject fileObject) {
+        if (fileObject != null) {
+            fileObject = ImportUtils.getArchivedFile(fileObject);   //Unzip and return content file
+            FileImporterBuilder builder = getMatchingImporter(fileObject);
+            if (fileObject != null && builder != null) {
+                FileImporter fi = builder.buildImporter();
+                return fi;
+            }
+        }
+        
         return null;
     }
 

@@ -479,7 +479,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         filters.add(graphFilter);
         filters.add(zipFileFilter);
 
-        openFile(filters.toArray(new FileFilter[0]), graphFilter);
+        openFile(filters.toArray(new FileFilter[0]), null);
     }
 
     private void openFile(FileFilter[] fileFilters, FileFilter initialFilter) {

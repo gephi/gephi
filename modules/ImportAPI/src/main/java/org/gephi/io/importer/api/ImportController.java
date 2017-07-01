@@ -53,6 +53,7 @@ import org.gephi.io.importer.spi.ImporterWizardUI;
 import org.gephi.io.importer.spi.WizardImporter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.Workspace;
+import org.openide.filesystems.FileObject;
 
 /**
  * Manage and control the import execution flow.
@@ -73,6 +74,8 @@ public interface ImportController {
     
     public Container importWizard(WizardImporter importer);
 
+    public FileImporter getFileImporter(FileObject fileObject);
+    
     public FileImporter getFileImporter(File file);
 
     public FileImporter getFileImporter(String importerName);

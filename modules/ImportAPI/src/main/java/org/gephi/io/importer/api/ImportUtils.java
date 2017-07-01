@@ -221,7 +221,8 @@ public final class ImportUtils {
 
         // ZIP and JAR archives
         if (FileUtil.isArchiveFile(fileObject)) {
-            fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
+            FileObject[] children = FileUtil.getArchiveRoot(fileObject).getChildren();
+            fileObject = children.length > 0 ? children[0] : null;
         } else { // GZ or BZIP2 archives
             boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
             boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
@@ -265,6 +266,7 @@ public final class ImportUtils {
                 }
             }
         }
+        
         return fileObject;
     }
 
