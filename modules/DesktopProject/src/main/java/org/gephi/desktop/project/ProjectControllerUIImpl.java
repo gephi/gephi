@@ -42,6 +42,7 @@
 package org.gephi.desktop.project;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -183,38 +184,39 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         String lastPathDefault = NbPreferences.forModule(ProjectControllerUIImpl.class).get(LAST_PATH_DEFAULT, null);
         String lastPath = NbPreferences.forModule(ProjectControllerUIImpl.class).get(LAST_PATH, lastPathDefault);
 
+        File lastPathDir = null;
+        if (lastPath != null) {
+            lastPathDir = new File(lastPath).getParentFile();
+            while (lastPathDir != null && !lastPathDir.exists()) {
+                lastPathDir = lastPathDir.getParentFile();
+            }
+        }
+
         //File chooser
-        final JFileChooser chooser = new JFileChooser(lastPath);
+        final JFileChooser chooser = new JFileChooser(lastPathDir) {
+            @Override
+            public void approveSelection() {
+                if (canExport(this)) {
+                    super.approveSelection();
+                }
+            }
+        };
         chooser.addChoosableFileFilter(filter);
+
+        if (lastPathDir != null && lastPathDir.exists() && lastPathDir.isDirectory()) {
+            chooser.setSelectedFile(new File(lastPath));
+        }
+
         int returnFile = chooser.showSaveDialog(null);
         if (returnFile == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
+            file = FileUtil.normalizeFile(file);
 
             //Save last path
             NbPreferences.forModule(ProjectControllerUIImpl.class).put(LAST_PATH, file.getAbsolutePath());
 
             //File management
             try {
-                if (!file.getPath().endsWith(".gephi")) {
-                    file = new File(file.getPath() + ".gephi");
-                }
-                if (!file.exists()) {
-                    if (!file.createNewFile()) {
-                        String failMsg = NbBundle.getMessage(
-                                ProjectControllerUIImpl.class,
-                                "SaveAsProject_SaveFailed", new Object[]{file.getPath()});
-                        JOptionPane.showMessageDialog(null, failMsg);
-                        return;
-                    }
-                } else {
-                    String overwriteMsg = NbBundle.getMessage(
-                            ProjectControllerUIImpl.class,
-                            "SaveAsProject_Overwrite", new Object[]{file.getPath()});
-                    if (JOptionPane.showConfirmDialog(null, overwriteMsg) != JOptionPane.OK_OPTION) {
-                        return;
-                    }
-                }
-                file = FileUtil.normalizeFile(file);
                 final String SaveAsFileName = file.getName();
                 //File exist now, Save project
                 Project project = controller.getCurrentProject();
@@ -235,6 +237,40 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 Logger.getLogger("").log(Level.WARNING, "", e);
             }
         }
+    }
+
+    private boolean canExport(JFileChooser chooser) {
+        File file = chooser.getSelectedFile();
+
+        if (!file.getPath().endsWith(".gephi")) {
+            file = new File(file.getPath() + ".gephi");
+            chooser.setSelectedFile(file);
+        }
+
+        try {
+            if (!file.exists()) {
+                if (!file.createNewFile()) {
+                    String failMsg = NbBundle.getMessage(
+                            ProjectControllerUIImpl.class,
+                            "SaveAsProject_SaveFailed", new Object[]{file.getPath()});
+                    JOptionPane.showMessageDialog(null, failMsg);
+                    return false;
+                }
+            } else {
+                String overwriteMsg = NbBundle.getMessage(
+                        ProjectControllerUIImpl.class,
+                        "SaveAsProject_Overwrite", new Object[]{file.getPath()});
+                if (JOptionPane.showConfirmDialog(null, overwriteMsg) != JOptionPane.OK_OPTION) {
+                    return false;
+                }
+            }
+        } catch (IOException ex) {
+            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+            DialogDisplayer.getDefault().notifyLater(msg);
+            return false;
+        }
+
+        return true;
     }
 
     public boolean closeCurrentProject() {
@@ -459,9 +495,9 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         } else {
             DialogFileFilter gephiFilter = new DialogFileFilter(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject_filechooser_filter"));
             gephiFilter.addExtension(".gephi");
-            
+
             filters.add(gephiFilter);
-            
+
             graphFilter.addExtension(".gephi");
             fileTypes = Arrays.asList(importControllerUI.getImportController().getFileTypes());
         }

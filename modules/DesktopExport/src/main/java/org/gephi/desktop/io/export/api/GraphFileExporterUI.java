@@ -156,8 +156,16 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         graphSettings.setVisibleOnlyGraph(visibleOnlyGraph);
         southPanel.add(graphSettings, BorderLayout.CENTER);
 
+        File lastPathDir = null;
+        if (lastPath != null) {
+            lastPathDir = new File(lastPath).getParentFile();
+            while (lastPathDir != null && !lastPathDir.exists()) {
+                lastPathDir = lastPathDir.getParentFile();
+            }
+        }
+
         //Optionable file chooser
-        final JFileChooser chooser = new JFileChooser(lastPath) {
+        final JFileChooser chooser = new JFileChooser(lastPathDir) {
 
             @Override
             protected JDialog createDialog(Component parent) throws HeadlessException {
@@ -252,10 +260,13 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         if (lastFileFilter != null) {
             defaultFileFilter = lastFileFilter;
         }
-        
+
         chooser.setFileFilter(defaultFileFilter);
 
         selectedFile = new File(chooser.getCurrentDirectory(), "Untitled" + defaultFileFilter.getExtensions().get(0));
+        if (lastPathDir != null && lastPathDir.exists() && lastPathDir.isDirectory()) {
+            selectedFile = new File(lastPath);
+        }
         chooser.setSelectedFile(selectedFile);
 
         //Show
