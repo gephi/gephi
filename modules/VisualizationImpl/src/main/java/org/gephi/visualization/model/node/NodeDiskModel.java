@@ -74,7 +74,7 @@ public class NodeDiskModel extends NodeModel {
 
         if (!selec) {
             if (vizModel.getConfig().isLightenNonSelected()) {
-                float[] lightColor = vizModel.getConfig().getLightenNonSelectedColor();
+                float[] lightColor = vizModel.getBackgroundColorComponents();
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
                 float r = node.r();
                 float g = node.g();

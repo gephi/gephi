@@ -51,7 +51,6 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.glu.GLU;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.nio.DoubleBuffer;
@@ -223,8 +222,8 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         gl.glClearDepth(1.0f);
 
         //Background
-        Color backgroundColor = vizController.getVizModel().getBackgroundColor();
-        gl.glClearColor(backgroundColor.getRed() / 255f, backgroundColor.getGreen() / 255f, backgroundColor.getBlue() / 255f, 1f);
+        float[] backgroundColor = vizController.getVizModel().getBackgroundColorComponents();
+        gl.glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1f);
 
         //Blending
         if (vizController.getVizConfig().isBlending()) {

@@ -88,7 +88,6 @@ public class VizConfig {
     public static final String REDUCE_FPS_MOUSE_OUT = "VizConfig.reduceFpsWhenMouseOut";
     public static final String REDUCE_FPS_MOUSE_OUT_VALUE = "VizConfig.reduceFpsWhenMouseOutValue";
     public static final String PAUSE_LOOP_MOUSE_OUT = "VizConfig.pauseLoopWhenMouseOut";
-    public static final String HIGHTLIGHT_COLOR = "VizConfig.lightenNonSelectedColor";
     public static final String HIGHTLIGHT_ANIMATION = "VizConfig.lightenNonSelectedAnimation";
     public static final String NODE_SELECTED_UNIQUE_COLOR = "VizConfig.uniColorSelectedColor";
     public static final String NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR = "VizConfig.uniColorSelectedNeigborColor";
@@ -200,7 +199,6 @@ public class VizConfig {
     protected boolean pauseLoopWhenMouseOut = NbPreferences.forModule(VizConfig.class).getBoolean(PAUSE_LOOP_MOUSE_OUT, DEFAULT_PAUSE_LOOP_MOUSE_OUT);
     protected boolean showArrows = true;        //Overriden in Engine
     protected boolean lightenNonSelected = false;        //Overriden in Engine
-    protected float[] lightenNonSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(HIGHTLIGHT_COLOR, ColorUtils.encode(DEFAULT_HIGHTLIGHT_COLOR))).getRGBColorComponents(null);
     protected boolean lightenNonSelectedAnimation = NbPreferences.forModule(VizConfig.class).getBoolean(HIGHTLIGHT_ANIMATION, DEFAULT_HIGHTLIGHT_ANIMATION);
     protected float lightenNonSelectedFactor = 0.5f;        //Overriden in Engine
     protected float[] uniColorSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(NODE_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_SELECTED_UNIQUE_COLOR))).getRGBColorComponents(null);
@@ -351,10 +349,6 @@ public class VizConfig {
 
     public boolean isLightenNonSelectedAnimation() {
         return lightenNonSelectedAnimation;
-    }
-
-    public float[] getLightenNonSelectedColor() {
-        return lightenNonSelectedColor;
     }
 
     public float getLightenNonSelectedFactor() {

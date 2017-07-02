@@ -47,7 +47,6 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLDrawableFactory;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.util.TileRendererBase;
-import java.awt.Color;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.swing.GLAbstractListener;
 import org.gephi.visualization.text.TextManager;
@@ -99,8 +98,8 @@ public class OffscreenCanvas extends GLAbstractListener implements TileRendererB
         super.initConfig(gl);
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
-        Color backgroundColor = vizController.getVizModel().getBackgroundColor();
-        gl.glClearColor(backgroundColor.getRed() / 255f, backgroundColor.getGreen() / 255f, backgroundColor.getBlue() / 255f, transparentBackground ? 0f : 1f);
+        float[] backgroundColor = vizController.getVizModel().getBackgroundColorComponents();
+        gl.glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], transparentBackground ? 0f : 1f);
     }
 
     @Override
@@ -108,8 +107,8 @@ public class OffscreenCanvas extends GLAbstractListener implements TileRendererB
         GL2 gl = drawable.getGL().getGL2();
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
-        Color backgroundColor = vizController.getVizModel().getBackgroundColor();
-        gl.glClearColor(backgroundColor.getRed() / 255f, backgroundColor.getGreen() / 255f, backgroundColor.getBlue() / 255f, transparentBackground ? 0f : 1f);
+        float[] backgroundColor = vizController.getVizModel().getBackgroundColorComponents();
+        gl.glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], transparentBackground ? 0f : 1f);
 
         engine.display(gl, GLU);
     }

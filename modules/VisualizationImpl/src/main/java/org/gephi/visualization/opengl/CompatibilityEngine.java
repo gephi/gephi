@@ -44,7 +44,6 @@ package org.gephi.visualization.opengl;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUquadric;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -125,8 +124,8 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         if (backgroundChanged) {
-            Color backgroundColor = vizController.getVizModel().getBackgroundColor();
-            gl.glClearColor(backgroundColor.getRed() / 255f, backgroundColor.getGreen() / 255f, backgroundColor.getBlue() / 255f, 1f);
+            float[] backgroundColor = vizController.getVizModel().getBackgroundColorComponents();
+            gl.glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1f);
             gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
             backgroundChanged = false;
         }

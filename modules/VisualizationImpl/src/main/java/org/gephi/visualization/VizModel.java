@@ -74,6 +74,7 @@ public class VizModel {
     protected float[] cameraTarget;
     protected TextModelImpl textModel;
     protected Color backgroundColor;
+    protected float[] backgroundColorComponents = new float[4];
     protected boolean showEdges;
     protected boolean lightenNonSelectedAuto;
     protected boolean autoSelectNeighbor;
@@ -137,6 +138,7 @@ public class VizModel {
         cameraTarget = Arrays.copyOf(config.getDefaultCameraTarget(), 3);
         textModel = new TextModelImpl();
         backgroundColor = config.getDefaultBackgroundColor();
+        backgroundColorComponents = backgroundColor.getRGBComponents(backgroundColorComponents);
 
         showEdges = config.isDefaultShowEdges();
         lightenNonSelectedAuto = config.isDefaultLightenNonSelectedAuto();
@@ -164,6 +166,10 @@ public class VizModel {
 
     public Color getBackgroundColor() {
         return backgroundColor;
+    }
+    
+    public float[] getBackgroundColorComponents() {
+        return backgroundColorComponents;
     }
 
     public float[] getCameraPosition() {
@@ -239,6 +245,7 @@ public class VizModel {
 
     public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
+        this.backgroundColorComponents = backgroundColor.getRGBComponents(this.backgroundColorComponents);
         fireProperyChange("backgroundColor", null, backgroundColor);
     }
 
