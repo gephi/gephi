@@ -593,7 +593,6 @@ public class EdgeRenderer implements Renderer {
             final Helper h = new Helper(item);
             final Color color = getColor(item, properties);
 
-            //FIXME: This still won't draw a curve (draws a line) in any of the targets and I don't know why
             if (target instanceof G2DTarget) {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
                 graphics.setStroke(new BasicStroke(getThickness(item)));
