@@ -805,7 +805,7 @@
                                     <goal>single</goal>
                                 </goals>
                                 <configuration>
-                                    <skip>${skipCreateTargz}</skip>
+                                    <skipAssembly>${skipCreateTargz}</skipAssembly>
                                     <tarLongFileMode>gnu</tarLongFileMode>
                                     <finalName>${brandingToken}-${project.version}</finalName>
                                     <descriptors>
