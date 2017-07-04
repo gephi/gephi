@@ -93,7 +93,6 @@ public class ConnectedComponents implements Statistics, LongTask {
 
     @Override
     public void execute(GraphModel graphModel) {
-        isDirected = graphModel.isDirected();
         isCanceled = false;
 
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraphVisible();

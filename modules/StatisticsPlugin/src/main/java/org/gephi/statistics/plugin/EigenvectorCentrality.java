@@ -121,7 +121,6 @@ public class EigenvectorCentrality implements Statistics, LongTask {
      */
     @Override
     public void execute(GraphModel graphModel) {
-        isDirected = graphModel.isDirected();
         isCanceled = false;
 
         Graph graph;
