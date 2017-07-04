@@ -240,9 +240,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
     @Override
     public void execute(GraphModel graphModel) {
-        isDirected = graphModel.isDirected();
-
-        Graph graph = null;
+        Graph graph;
         if (isDirected) {
             graph = graphModel.getDirectedGraphVisible();
         } else {
@@ -255,7 +253,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     public void execute(Graph graph) {
         isCanceled = false;
 
-        HashMap<String, Double> resultValues = new HashMap<>();
+        HashMap<String, Double> resultValues;
 
         if (isDirected) {
             avgClusteringCoeff = bruteForce(graph);
@@ -271,14 +269,14 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         Table nodeTable = graph.getModel().getNodeTable();
         Column clusteringCol = nodeTable.getColumn(CLUSTERING_COEFF);
         if (clusteringCol == null) {
-            clusteringCol = nodeTable.addColumn(CLUSTERING_COEFF, "Clustering Coefficient", Double.class, new Double(0));
+            clusteringCol = nodeTable.addColumn(CLUSTERING_COEFF, "Clustering Coefficient", Double.class, 0.0);
         }
 
         Column triCount = null;
         if (!isDirected) {
             triCount = nodeTable.getColumn("Triangles");
             if (triCount == null) {
-                triCount = nodeTable.addColumn("Triangles", "Number of triangles", Integer.class, new Integer(0));
+                triCount = nodeTable.addColumn("Triangles", "Number of triangles", Integer.class, 0);
             }
         }
 
@@ -304,7 +302,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             int[] currentTriangles, double[] currentNodeClustering, boolean directed) {
         HashMap<String, Double> resultValues = new HashMap<>();
 
-        if (isDirected) {
+        if (directed) {
             double avClusteringCoefficient = bruteForce(graph);
             resultValues.put("clusteringCoefficient", avClusteringCoefficient);
             return resultValues;

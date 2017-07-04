@@ -153,8 +153,6 @@ public class GraphDistance implements Statistics, LongTask {
      */
     @Override
     public void execute(GraphModel graphModel) {
-        isDirected = graphModel.isDirected();
-
         Graph graph;
         if (isDirected) {
             graph = graphModel.getDirectedGraphVisible();
