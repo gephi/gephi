@@ -42,6 +42,7 @@
 package org.gephi.desktop.preview;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,11 +57,13 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.presets.DefaultPreset;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -95,9 +98,12 @@ public class PresetUtils {
             if (folder == null) {
                 folder = FileUtil.getConfigRoot().createFolder("previewpresets");
             }
-            FileObject presetFile = folder.getFileObject(preset.getName(), "xml");
+
+            String filename = DigestUtils.sha1Hex(preset.getName());//Safe filename
+            
+            FileObject presetFile = folder.getFileObject(filename, "xml");
             if (presetFile == null) {
-                presetFile = folder.createData(preset.getName(), "xml");
+                presetFile = folder.createData(filename, "xml");
             }
 
             //Create doc
@@ -111,14 +117,16 @@ public class PresetUtils {
             writeXML(document, preset);
 
             //Write XML file
-            Source source = new DOMSource(document);
-            Result result = new StreamResult(FileUtil.toFile(presetFile));
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.transform(source, result);
-        } catch (Exception e) {
-            e.printStackTrace();
+            try (OutputStream outputStream = presetFile.getOutputStream()) {
+                Source source = new DOMSource(document);
+                Result result = new StreamResult(outputStream);
+                Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                transformer.transform(source, result);
+            }
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
         }
     }
 
@@ -135,15 +143,14 @@ public class PresetUtils {
         if (folder != null) {
             for (FileObject child : folder.getChildren()) {
                 if (child.isValid() && child.hasExt("xml")) {
-                    try {
-                        InputStream stream = child.getInputStream();
+                    try (InputStream stream = child.getInputStream()) {
                         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                         DocumentBuilder builder = factory.newDocumentBuilder();
                         Document document = builder.parse(stream);
                         PreviewPreset preset = readXML(document);
                         addPreset(preset);
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        Exceptions.printStackTrace(ex);
                     }
                 }
             }
@@ -169,8 +176,8 @@ public class PresetUtils {
                         presetE.appendChild(propertyE);
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                Exceptions.printStackTrace(ex);
             }
         }
         doc.appendChild(presetE);
@@ -195,8 +202,8 @@ public class PresetUtils {
                 if (valueClassName != null) {
                     try {
                         valueClass = Class.forName(valueClassName);
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                    } catch (ClassNotFoundException ex) {
+                        Exceptions.printStackTrace(ex);
                     }
                 } else {
                     Object defaultValue = defaultPreset.getProperties().get(name);
