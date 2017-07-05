@@ -41,15 +41,6 @@
  */
 package org.gephi.io.importer.plugin.database;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.sql.Types;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.importer.api.ColumnDraft;
@@ -65,8 +56,17 @@ import org.gephi.io.importer.api.PropertiesAssociations.NodeProperties;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.DatabaseImporter;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.sql.Types;
+
 /**
- *
  * @author Mathieu Bastian
  */
 public class ImporterEdgeList implements DatabaseImporter {
@@ -78,6 +78,9 @@ public class ImporterEdgeList implements DatabaseImporter {
     //TempData
     private String timeIntervalStart;
     private String timeIntervalEnd;
+
+    private NodeColumns nodeColumns = new NodeColumns();
+    private EdgeColumns edgeColumns = new EdgeColumns();
 
     @Override
     public boolean execute(ContainerLoader container) {
@@ -150,24 +153,11 @@ public class ImporterEdgeList implements DatabaseImporter {
         findNodeAttributesColumns(rs);
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
+
+        int idColumn = nodeColumns.findIdIndex(metaData, properties);
+
         while (rs.next()) {
-            String id = null;
-            for (int i = 0; i < columnsCount; i++) {
-                String columnName = metaData.getColumnLabel(i + 1);
-                NodeProperties p = properties.getNodeProperty(columnName);
-                if (p != null && p.equals(NodeProperties.ID)) {
-                    String ide = rs.getString(i + 1);
-                    if (ide != null) {
-                        id = ide;
-                    }
-                }
-            }
-            NodeDraft node;
-            if (id != null) {
-                node = factory.newNodeDraft(id);
-            } else {
-                node = factory.newNodeDraft();
-            }
+            final NodeDraft node = nodeColumns.getNodeDraft(factory, rs, idColumn);
 
             for (int i = 0; i < columnsCount; i++) {
                 String columnName = metaData.getColumnLabel(i + 1);
@@ -206,24 +196,12 @@ public class ImporterEdgeList implements DatabaseImporter {
         findEdgeAttributesColumns(rs);
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
+
+        int idColumn = edgeColumns.findIdIndex(metaData, properties);
+
         while (rs.next()) {
-            String id = null;
-            for (int i = 0; i < columnsCount; i++) {
-                String columnName = metaData.getColumnLabel(i + 1);
-                EdgeProperties p = properties.getEdgeProperty(columnName);
-                if (p != null && p.equals(EdgeProperties.ID)) {
-                    String ide = rs.getString(i + 1);
-                    if (ide != null) {
-                        id = ide;
-                    }
-                }
-            }
-            EdgeDraft edge;
-            if (id != null) {
-                edge = factory.newEdgeDraft(id);
-            } else {
-                edge = factory.newEdgeDraft();
-            }
+            EdgeDraft edge = edgeColumns.getEdgeDraft(factory, rs, idColumn);
+
             for (int i = 0; i < columnsCount; i++) {
                 String columnName = metaData.getColumnLabel(i + 1);
                 EdgeProperties p = properties.getEdgeProperty(columnName);
