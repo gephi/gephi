@@ -371,7 +371,7 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
             int index = columnModel.getColumnIndexAtX(p.x);
             int realIndex = columnModel.getColumn(index).getModelIndex();
 
-            if (realIndex < columns.size()) {
+            if (realIndex < columns.size() && columns.get(realIndex).getColumn() != null) {
                 String id = columns.get(realIndex).getColumn().getId();
 
                 return NbBundle.getMessage(AbstractElementsDataTable.class, "AbstractElementsDataTable.column.tooltip", id);
