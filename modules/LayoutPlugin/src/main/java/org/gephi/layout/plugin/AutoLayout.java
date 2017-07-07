@@ -307,7 +307,7 @@ public class AutoLayout {
 
         @Override
         public Object getValue(float ratio) {
-            while (thresholds[currentIndex] < ratio && currentIndex < thresholds.length) {
+            while (currentIndex < thresholds.length && thresholds[currentIndex] < ratio) {
                 currentIndex++;
             }
             return value[currentIndex];
@@ -333,13 +333,13 @@ public class AutoLayout {
 
         @Override
         public Object getValue(float ratio) {
-            while (thresholds[currentIndex] < ratio && currentIndex < thresholds.length) {
+            while (currentIndex < thresholds.length && thresholds[currentIndex] < ratio) {
                 currentIndex++;
             }
             if (currentIndex > 0) {
                 float r = 1 / (thresholds[currentIndex] - thresholds[currentIndex - 1]);
                 ratio = ((ratio - thresholds[currentIndex - 1]) * r);
-                return new Double(value[currentIndex - 1].doubleValue() + (value[currentIndex].doubleValue() - value[currentIndex - 1].doubleValue()) * ratio);
+                return value[currentIndex - 1].doubleValue() + (value[currentIndex].doubleValue() - value[currentIndex - 1].doubleValue()) * ratio;
             }
             return value[currentIndex];
         }
