@@ -81,7 +81,7 @@ public class EdgePencil implements Tool {
 
     public EdgePencil() {
         //Default settings
-        color = Color.BLACK;
+        color = Color.GRAY;
         weight = 1f;
 
         //Add workspace listener for updating edge pencil panel options and status
