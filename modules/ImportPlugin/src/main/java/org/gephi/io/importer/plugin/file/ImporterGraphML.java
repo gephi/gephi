@@ -355,7 +355,6 @@ public class ImporterGraphML implements FileImporter, LongTask {
                 } catch (Exception e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue", fore, node, prop.toString()), Issue.Level.SEVERE));
                 }
-                return;
             }
 
             //Data attribute value
@@ -511,7 +510,6 @@ public class ImporterGraphML implements FileImporter, LongTask {
                 } catch (Exception e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue", fore, edge, prop.toString()), Issue.Level.SEVERE));
                 }
-                return;
             }
 
             //Data attribute value
@@ -567,6 +565,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
                     property = true;
                 }
             }
+            
             if (property) {
                 return;
             }
