@@ -56,12 +56,14 @@ import org.openide.util.Lookup;
 
 /**
  * Class for managing observers of a workspace to automatically refresh data tables.
+ *
  * @author Eduardo Ramos
  */
 public class DataTablesObservers {
+
     private final Workspace workspace;
     private final GraphModel graphModel;
-    
+
     private GraphObserver graphObserver;
     private TableObserver nodesTableObserver;
     private TableObserver edgesTableObserver;
@@ -72,78 +74,77 @@ public class DataTablesObservers {
         this.graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
         this.columnObservers = new HashSet<>();
     }
-    
-    public synchronized void initialize(){
-        if(graphObserver != null){
+
+    public synchronized void initialize() {
+        if (graphObserver != null) {
             return;
         }
-        
+
         graphObserver = graphModel.createGraphObserver(graphModel.getGraph(), false);
         nodesTableObserver = graphModel.getNodeTable().createTableObserver(true);
         edgesTableObserver = graphModel.getEdgeTable().createTableObserver(true);
-        
+
         for (Column column : graphModel.getNodeTable()) {
             createColumnObserver(column);
         }
-        for (Column column : graphModel.getEdgeTable()){
+        for (Column column : graphModel.getEdgeTable()) {
             createColumnObserver(column);
         }
+        
+        workspace.add(new LatestVisibleView(graphModel.getVisibleView()));
     }
-    
-    public synchronized void destroy(){
-        if(graphObserver != null){
+
+    public synchronized void destroy() {
+        if (graphObserver != null) {
             graphObserver.destroy();
             graphObserver = null;
         }
-        if(nodesTableObserver != null){
+        if (nodesTableObserver != null) {
             nodesTableObserver.destroy();
             nodesTableObserver = null;
         }
-        if(edgesTableObserver != null){
+        if (edgesTableObserver != null) {
             edgesTableObserver.destroy();
             edgesTableObserver = null;
         }
-        
+
         for (ColumnObserver columnObserver : columnObservers) {
             columnObserver.destroy();
         }
         columnObservers.clear();
     }
-    
-    public boolean hasChanges(){
-        if(graphObserver == null){
+
+    public boolean hasChanges() {
+        if (graphObserver == null) {
             return false;//Not initialized
         }
-        
+
         boolean hasChanges = graphObserver.hasGraphChanged();
         hasChanges = processTableObseverChanges(nodesTableObserver) || hasChanges;
         hasChanges = processTableObseverChanges(edgesTableObserver) || hasChanges;
-        
+
         LatestVisibleView latestVisibleView = workspace.getLookup().lookup(LatestVisibleView.class);
 
-        if(latestVisibleView != null){
-            workspace.remove(latestVisibleView);
-            if(latestVisibleView.getView().isDestroyed()){
-                hasChanges = true;
-            }
+        if (latestVisibleView.getView() != graphModel.getVisibleView()) {
+            latestVisibleView.setView(graphModel.getVisibleView());
+            hasChanges = true;
         }
-        workspace.add(new LatestVisibleView(graphModel.getVisibleView()));
-        
-        if(!hasChanges){
+
+        if (!hasChanges) {
             for (ColumnObserver columnObserver : columnObservers) {
-                if(columnObserver.hasColumnChanged()){
+                if (columnObserver.hasColumnChanged()) {
                     hasChanges = true;
                     break;
                 }
             }
         }
-        
+
         return hasChanges;
     }
-    
-    private boolean processTableObseverChanges(TableObserver observer){
+
+    private boolean processTableObseverChanges(TableObserver observer) {
         boolean hasChanges = false;
-        if(observer.hasTableChanged()){
+        if (observer.hasTableChanged()) {
             hasChanges = true;
             TableDiff diff = observer.getDiff();
             for (Column addedColumn : diff.getAddedColumns()) {
@@ -151,14 +152,14 @@ public class DataTablesObservers {
             }
             for (Column removedColumn : diff.getRemovedColumns()) {
                 for (ColumnObserver columnObserver : columnObservers.toArray(new ColumnObserver[0])) {
-                    if(columnObserver.getColumn() == removedColumn){
+                    if (columnObserver.getColumn() == removedColumn) {
                         columnObserver.destroy();
                         columnObservers.remove(columnObserver);
                     }
                 }
             }
         }
-        
+
         return hasChanges;
     }
 
@@ -166,12 +167,13 @@ public class DataTablesObservers {
         ColumnObserver observer = column.createColumnObserver(false);
         columnObservers.add(observer);
     }
-    
+
     /**
      * Used only for detecting changes in graph filters (visible view).
      */
     class LatestVisibleView {
-        private final GraphView view;
+
+        private GraphView view;
 
         public LatestVisibleView(GraphView view) {
             this.view = view;
@@ -179,6 +181,10 @@ public class DataTablesObservers {
 
         public GraphView getView() {
             return view;
+        }
+
+        private void setView(GraphView view) {
+            this.view = view;
         }
     }
 }

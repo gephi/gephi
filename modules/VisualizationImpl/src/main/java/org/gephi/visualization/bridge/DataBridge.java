@@ -83,10 +83,12 @@ public class DataBridge implements VizArchitecture {
     private VizConfig vizConfig;
     private TextModelImpl textModel;
     protected GraphLimits limits;
+
     //Graph
     protected GraphModel graphModel;
     protected Graph graph;
     protected GraphObserver observer;
+
     //Data
     protected NodeModel[] nodes;
     protected EdgeModel[] edges;
@@ -278,14 +280,16 @@ public class DataBridge implements VizArchitecture {
                 return true;
             }
 
-            boolean nodeC = false, edgeC = false;
             for (ColumnObserver c : nodeColumnObservers) {
-                nodeC = nodeC | c.hasColumnChanged();
+                if (c.hasColumnChanged()) {
+                    return true;
+                }
             }
             for (ColumnObserver c : edgeColumnObservers) {
-                edgeC = edgeC | c.hasColumnChanged();
+                if (c.hasColumnChanged()) {
+                    return true;
+                }
             }
-            return nodeC || edgeC;
         }
         return false;
     }
@@ -367,7 +371,11 @@ public class DataBridge implements VizArchitecture {
             }
             edgeColumnObservers = null;
         }
-        Column[] edgeColumns = textModelImpl.getEdgeTextColumns();
+
+        Column[] edgeTextColumns = textModelImpl.getEdgeTextColumns();
+        Column[] edgeColumns = Arrays.copyOf(edgeTextColumns, edgeTextColumns.length + 1);
+        edgeColumns[edgeColumns.length - 1] = graphModel.getEdgeTable().getColumn("weight");//Make sure to always observe weight changes
+
         edgeColumnHashCode = Arrays.hashCode(edgeColumns);
         edgeColumnObservers = new ColumnObserver[edgeColumns.length];
         for (int i = 0; i < edgeColumns.length; i++) {
