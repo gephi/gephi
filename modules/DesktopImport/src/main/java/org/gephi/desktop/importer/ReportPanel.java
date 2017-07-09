@@ -135,11 +135,9 @@ public class ReportPanel extends javax.swing.JPanel {
         autoscaleCheckbox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    boolean s = autoscaleCheckbox.isSelected();
-                    for (Container container : containers) {
-                        container.getLoader().setAutoScale(s);
-                    }
+                boolean s = autoscaleCheckbox.isSelected();
+                for (Container container : containers) {
+                    container.getLoader().setAutoScale(s);
                 }
             }
         });
@@ -147,11 +145,9 @@ public class ReportPanel extends javax.swing.JPanel {
         createMissingNodesCheckbox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    boolean s = createMissingNodesCheckbox.isSelected();
-                    for (Container container : containers) {
-                        container.getLoader().setAllowAutoNode(s);
-                    }
+                boolean s = createMissingNodesCheckbox.isSelected();
+                for (Container container : containers) {
+                    container.getLoader().setAllowAutoNode(s);
                 }
             }
         });
@@ -178,11 +174,9 @@ public class ReportPanel extends javax.swing.JPanel {
         selfLoopCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    boolean s = selfLoopCheckBox.isSelected();
-                    for (Container container : containers) {
-                        container.getLoader().setAllowSelfLoop(s);
-                    }
+                boolean s = selfLoopCheckBox.isSelected();
+                for (Container container : containers) {
+                    container.getLoader().setAllowSelfLoop(s);
                 }
             }
         });
