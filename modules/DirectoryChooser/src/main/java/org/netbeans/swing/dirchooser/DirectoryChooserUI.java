@@ -433,7 +433,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
         
         // disable TAB focus transfer, we need it for completion
         Set<AWTKeyStroke> tKeys = filenameTextField.getFocusTraversalKeys(java.awt.KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
-        Set<AWTKeyStroke> newTKeys = new HashSet<AWTKeyStroke>(tKeys);
+        Set<AWTKeyStroke> newTKeys = new HashSet<>(tKeys);
         newTKeys.remove(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, 0));
         // #107305: enable at least Ctrl+TAB if we have TAB for completion
         newTKeys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, KeyEvent.CTRL_DOWN_MASK));
@@ -941,9 +941,9 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
             
             RequestProcessor.getDefault().post(new Runnable() {
                 DirectoryNode node;
-                ArrayList<File> list = new ArrayList<File>();
+                ArrayList<File> list = new ArrayList<>();
                 int cannotDelete;
-                ArrayList<DirectoryNode> nodes2Remove = new ArrayList<DirectoryNode>(nodePath.length);
+                ArrayList<DirectoryNode> nodes2Remove = new ArrayList<>(nodePath.length);
 
                 @Override
                 public void run() {
@@ -1026,7 +1026,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
     }
     
     public Vector<File> buildList(String text, File[] children) {
-        Vector<File> files = new Vector<File>(children.length);
+        Vector<File> files = new Vector<>(children.length);
         
         for(int i = children.length - 1; i >= 0; i--) {
             File completion = children[i];
@@ -1794,7 +1794,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
      * Data model for a type-face selection combo-box.
      */
     private class DirectoryComboBoxModel extends AbstractListModel implements ComboBoxModel {
-        Vector<File> directories = new Vector<File>();
+        Vector<File> directories = new Vector<>();
         int[] depths = null;
         File selectedDirectory = null;
         JFileChooser chooser = getFileChooser();
@@ -1843,7 +1843,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
             // create File instances of each directory leading up to the top
             File sf = getShellFolderForFile(canonical);
             File f = sf;
-            Vector<File> path = new Vector<File>(10);
+            Vector<File> path = new Vector<>(10);
 
             
             /*
@@ -2144,7 +2144,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
         }
         
         private File[] getSelectedNodes(TreePath[] paths) {
-            Vector<File> files = new Vector<File>();
+            Vector<File> files = new Vector<>();
             for(int i = 0; i < paths.length; i++) {
                 File file = ((DirectoryNode)paths[i].getLastPathComponent()).getFile();
                 if(file.isDirectory()
@@ -2400,8 +2400,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
                 } else {
                     // second phase, in EQ thread, invoked from first phase
                     int count = node.getChildCount();
-                    Map<String,DirectoryNode> currentFiles =
-                        new HashMap<String,DirectoryNode>( );
+                    Map<String,DirectoryNode> currentFiles = new HashMap<>();
                     for( int i=0; i< count ; i++ ){
                         TreeNode child = node.getChildAt(i);
                         if ( child instanceof DirectoryNode ){
@@ -2410,7 +2409,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
                         }
                     }
 
-                    Set<String> realCloned = new HashSet<String>( realDirs );
+                    Set<String> realCloned = new HashSet<>(realDirs);
                     if ( realCloned.removeAll( currentFiles.keySet()) ){
                         // Handle added folders
                         for ( String name : realCloned ){
@@ -2418,7 +2417,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
                             model.insertNodeInto( added, node, node.getChildCount());
                         }
                     }
-                    Set<String> currentNames = new HashSet<String>( currentFiles.keySet());
+                    Set<String> currentNames = new HashSet<>(currentFiles.keySet());
                     if ( currentNames.removeAll( realDirs )){
                         // Handle deleted folders
                         for ( String name : currentNames ){
