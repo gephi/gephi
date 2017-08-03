@@ -49,6 +49,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -150,7 +151,9 @@ public class Modularity implements Statistics, LongTask {
             communities = new ArrayList<>();
             int index = 0;
             weights = new double[N];
-            for (Node node : graph.getNodes()) {
+            
+            NodeIterable nodesIterable = graph.getNodes();
+            for (Node node : nodesIterable) {
                 map.put(node, index);
                 nodeCommunities[index] = new Community(this);
 
@@ -164,13 +167,15 @@ public class Modularity implements Statistics, LongTask {
                 communities.add(nodeCommunities[index]);
                 index++;
                 if (isCanceled) {
+                    nodesIterable.doBreak();
                     return;
                 }
             }
-
+            
             int[] edgeTypes = graph.getModel().getEdgeTypes();
             
-            for (Node node : graph.getNodes()) {
+            nodesIterable = graph.getNodes();
+            for (Node node : nodesIterable) {
                 int node_index = map.get(node);
                 topology[node_index] = new ArrayList<>();
 
@@ -217,6 +222,7 @@ public class Modularity implements Statistics, LongTask {
                 }
 
                 if (isCanceled) {
+                    nodesIterable.doBreak();
                     return;
                 }
             }

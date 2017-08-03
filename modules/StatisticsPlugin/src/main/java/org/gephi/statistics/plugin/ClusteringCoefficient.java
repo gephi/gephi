@@ -539,7 +539,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             ProgressCount = createIndiciesMapAndInitNetwork(graph, indicies, currentNetwork, ProgressCount);
 
             int index = 0;
-            for (Node node : graph.getNodes()) {
+            NodeIterable nodesIterable = graph.getNodes();
+            for (Node node : nodesIterable) {
                 HashMap<Node, EdgeWrapper> neighborTable = createNeighbourTable(graph, node, indicies, currentNetwork, directed);
 
                 EdgeWrapper[] edges = getEdges(neighborTable);
@@ -549,6 +550,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                 Progress.progress(progress, ++ProgressCount);
 
                 if (isCanceled) {
+                    nodesIterable.doBreak();
                     return resultValues;
                 }
             }
@@ -584,7 +586,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         try {
             Progress.start(progress, graph.getNodeCount());
             int node_count = 0;
-            for (Node node : graph.getNodes()) {
+            NodeIterable nodesIterable = graph.getNodes();
+            for (Node node : nodesIterable) {
                 float nodeClusteringCoefficient = computeNodeClusteringCoefficient(graph, node, isDirected);
 
                 if (nodeClusteringCoefficient > -1) {
@@ -595,6 +598,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                 }
 
                 if (isCanceled) {
+                    nodesIterable.doBreak();
                     break;
                 }
 

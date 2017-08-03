@@ -51,6 +51,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Table;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.spi.Statistics;
@@ -190,7 +191,8 @@ public class PageRank implements Statistics, LongTask {
     private double calculateR(Graph graph, double[] pagerankValues, HashMap<Node, Integer> indicies, boolean directed, double prob) {
         int N = graph.getNodeCount();
         double r = 0;
-        for (Node s : graph.getNodes()) {
+        NodeIterable nodesIterable = graph.getNodes();
+        for (Node s : nodesIterable) {
             int s_index = indicies.get(s);
             boolean out;
             if (directed) {
@@ -205,6 +207,7 @@ public class PageRank implements Statistics, LongTask {
                 r += (pagerankValues[s_index] / N);
             }
             if (isCanceled) {
+                nodesIterable.doBreak();
                 return r;
             }
         }
@@ -255,7 +258,8 @@ public class PageRank implements Statistics, LongTask {
             double r = calculateR(graph, pagerankValues, indicies, directed, prob);
 
             boolean done = true;
-            for (Node s : graph.getNodes()) {
+            NodeIterable nodesIterable = graph.getNodes();
+            for (Node s : nodesIterable) {
                 int s_index = indicies.get(s);
                 temp[s_index] = updateValueForNode(graph, s, pagerankValues, weights, indicies, directed, useWeights, r, prob);
 
@@ -264,6 +268,7 @@ public class PageRank implements Statistics, LongTask {
                 }
 
                 if (isCanceled) {
+                    nodesIterable.doBreak();
                     return pagerankValues;
                 }
 

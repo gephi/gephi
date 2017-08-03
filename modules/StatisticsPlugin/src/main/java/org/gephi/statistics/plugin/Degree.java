@@ -49,6 +49,7 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -143,7 +144,8 @@ public class Degree implements Statistics, LongTask {
 
         Progress.start(progress, graph.getNodeCount());
 
-        for (Node n : graph.getNodes()) {
+        NodeIterable nodesIterable = graph.getNodes();
+        for (Node n : nodesIterable) {
             int inDegree = 0;
             int outDegree = 0;
             int degree = 0;
@@ -168,6 +170,7 @@ public class Degree implements Statistics, LongTask {
             averageDegree += degree;
 
             if (isCanceled) {
+                nodesIterable.doBreak();
                 break;
             }
             Progress.progress(progress);
