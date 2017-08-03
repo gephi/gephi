@@ -132,8 +132,8 @@ public class FilterProcessor {
 
             return finalResult;
         } finally {
-            graph.readUnlockAll();
             graph.writeUnlock();
+            graph.readUnlockAll();
         }
     }
 

@@ -159,6 +159,7 @@ public class DataBridge implements VizArchitecture {
                 force = true;
             } finally {
                 graphModel.getGraph().writeUnlock();
+                graphModel.getGraph().readUnlockAll();
             }
         }
 
@@ -310,8 +311,8 @@ public class DataBridge implements VizArchitecture {
             }
         } finally {
             if (graphModel != null) {
-                graph.readUnlockAll();
                 graph.writeUnlock();
+                graph.readUnlockAll();
             }
         }
 

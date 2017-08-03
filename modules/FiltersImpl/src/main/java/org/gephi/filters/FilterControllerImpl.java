@@ -328,8 +328,8 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 e.setAttribute(edgeCol, Boolean.TRUE);
             }
         } finally {
-            result.readUnlockAll();
             result.writeUnlock();
+            result.readUnlockAll();
         }
         //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToColumn.status", title));
     }
@@ -398,8 +398,8 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 e.getTextProperties().setVisible(inView);
             }
         } finally {
-            fullGraph.readUnlockAll();
             fullGraph.writeUnlock();
+            fullGraph.readUnlockAll();
         }
     }
 

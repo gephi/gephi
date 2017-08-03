@@ -231,6 +231,7 @@ public class StatisticsControllerImpl implements StatisticsController {
                 statistics.loop(g.getView(), new Interval(low, high));
             } finally {
                 graph.writeUnlock();
+                graph.readUnlockAll();
             }
 
             //Cancelled?
