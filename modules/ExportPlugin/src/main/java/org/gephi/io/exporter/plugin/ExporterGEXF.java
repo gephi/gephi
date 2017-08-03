@@ -601,6 +601,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.writeEndElement();
             Progress.progress(progress);
             if (cancel) {
+                edgeIterable.doBreak();
                 break;
             }
         }

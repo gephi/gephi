@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Node;
 
 /**
@@ -92,8 +93,10 @@ public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgori
             }
 
             //Check for negative-weight cycles
-            for (Edge edge : graph.getEdges()) {
+            EdgeIterable edgesIterable = graph.getEdges();
+            for (Edge edge : edgesIterable) {
                 if (distances.get(edge.getSource()) + edgeWeight(edge) < distances.get(edge.getTarget())) {
+                    edgesIterable.doBreak();
                     throw new RuntimeException("The Graph contains a negative-weighted cycle");
                 }
             }

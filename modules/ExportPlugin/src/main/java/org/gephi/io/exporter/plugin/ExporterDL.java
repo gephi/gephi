@@ -184,12 +184,13 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
         writer.write("labels embedded:\n");
         writer.write("data:\n");
         
-        Iterator<Edge> edgeIterator = graph.getEdges().iterator();
-        while (edgeIterator.hasNext()) {
+        EdgeIterable edgesIterable = graph.getEdges();
+        for (Edge edge : edgesIterable) {
             if (cancel) {
+                edgesIterable.doBreak();
                 break;
             }
-            Edge edge = edgeIterator.next();
+            
             double weight = edge.getWeight(graph.getView());
 
             if (useLabels) {

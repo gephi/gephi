@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.gephi.graph.api.NodeIterable;
 import org.openide.util.Exceptions;
 
 /**
@@ -168,7 +169,8 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
 
             // Proximities are built !
             // Apply repulsion force - along proximities...
-            for (Node n1 : graph.getNodes()) {
+            NodeIterable nodesIterable = graph.getNodes();
+            for (Node n1 : nodesIterable) {
                 NoverlapLayoutData lald = n1.getLayoutData();
                 for (Node n2 : lald.neighbours) {
                     float n1x = n1.x();
@@ -202,6 +204,7 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                     }
                 }
                 if (cancel) {
+                    nodesIterable.doBreak();
                     break;
                 }
             }
