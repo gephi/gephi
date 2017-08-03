@@ -199,6 +199,10 @@ public abstract class AbstractProcessor implements Processor {
                 continue;//The column might be not present, for cases when it cannot be added due to time representation mismatch, etc
             }
 
+            if (column.isReadOnly()) {
+                continue;
+            }
+
             Class columnDraftTypeClass = columnDraft.getTypeClass();
             if (columnDraft.isDynamic() && !AttributeUtils.isDynamicType(columnDraftTypeClass)) {
                 if (container.getTimeRepresentation() == TimeRepresentation.INTERVAL) {

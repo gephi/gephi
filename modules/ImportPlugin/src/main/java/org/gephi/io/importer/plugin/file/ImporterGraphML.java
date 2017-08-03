@@ -108,11 +108,13 @@ public class ImporterGraphML implements FileImporter, LongTask {
     public ImporterGraphML() {
         //Default node associations
         properties.addNodePropertyAssociation(NodeProperties.LABEL, "label");
+        properties.addNodePropertyAssociation(NodeProperties.LABEL, "nodelabel");
         properties.addNodePropertyAssociation(NodeProperties.X, "x");
         properties.addNodePropertyAssociation(NodeProperties.Y, "y");
+        properties.addNodePropertyAssociation(NodeProperties.Z, "z");
         properties.addNodePropertyAssociation(NodeProperties.X, "xpos");
         properties.addNodePropertyAssociation(NodeProperties.Y, "ypos");
-        properties.addNodePropertyAssociation(NodeProperties.Z, "z");
+        properties.addNodePropertyAssociation(NodeProperties.Z, "zpos");
         properties.addNodePropertyAssociation(NodeProperties.SIZE, "size");
         properties.addNodePropertyAssociation(NodeProperties.R, "r");
         properties.addNodePropertyAssociation(NodeProperties.G, "g");
@@ -124,8 +126,6 @@ public class ImporterGraphML implements FileImporter, LongTask {
         properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "edgelabel");
         properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "weight");
         properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "Edge Weight");
-        properties.addEdgePropertyAssociation(EdgeProperties.ID, "id");
-        properties.addEdgePropertyAssociation(EdgeProperties.ID, "edgeid");
         properties.addEdgePropertyAssociation(EdgeProperties.R, "r");
         properties.addEdgePropertyAssociation(EdgeProperties.G, "g");
         properties.addEdgePropertyAssociation(EdgeProperties.B, "b");
