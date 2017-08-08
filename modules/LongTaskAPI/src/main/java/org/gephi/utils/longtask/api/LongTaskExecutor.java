@@ -272,7 +272,7 @@ public final class LongTaskExecutor {
             currentTask = this;
             try {
                 runnable.run();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LongTaskErrorHandler err = errorHandler;
                 finished(this);
                 if (progress != null) {

@@ -46,11 +46,10 @@ import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -72,14 +71,7 @@ public class DesktopExportController implements ExportControllerUI {
 
             @Override
             public void fatalError(Throwable t) {
-                t.printStackTrace();
-                String message = t.getCause().getMessage();
-                if (message == null || message.isEmpty()) {
-                    message = t.getMessage();
-                }
-                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(message, NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(msg);
-                //Logger.getLogger("").log(Level.WARNING, "", t.getCause());
+                Exceptions.printStackTrace(t);
             }
         };
         executor = new LongTaskExecutor(true, "Exporter", 10);

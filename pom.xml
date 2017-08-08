@@ -206,7 +206,7 @@
 
         <gephi.maven-clean-plugin.version>3.0.0</gephi.maven-clean-plugin.version>
 
-        <gephi.maven-compiler-plugin.version>3.6.1</gephi.maven-compiler-plugin.version>
+        <gephi.maven-compiler-plugin.version>3.6.2</gephi.maven-compiler-plugin.version>
 
         <gephi.maven-dependency-plugin.version>3.0.1</gephi.maven-dependency-plugin.version>
 
@@ -751,6 +751,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-filters</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>batik-wrapper</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1370,6 +1375,7 @@
         <module>modules/VisualizationAPI</module>
         <module>modules/VisualizationImpl</module>
         <module>modules/WelcomeScreen</module>
+        <module>modules/BatikWrapper</module>
         <module>modules/CoreLibraryWrapper</module>
         <module>modules/UILibraryWrapper</module>
     </modules>

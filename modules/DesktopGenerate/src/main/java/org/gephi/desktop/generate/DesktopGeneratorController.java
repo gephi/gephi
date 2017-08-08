@@ -62,6 +62,7 @@ import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -120,7 +121,7 @@ public class DesktopGeneratorController implements GeneratorController {
 
             @Override
             public void fatalError(Throwable t) {
-                Logger.getLogger("").log(Level.SEVERE, "", t.getCause() != null ? t.getCause() : t);
+                Exceptions.printStackTrace(t);
             }
         };
 

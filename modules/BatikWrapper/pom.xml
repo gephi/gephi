@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>gephi-parent</artifactId>
+        <groupId>org.gephi</groupId>
+        <version>0.9.2-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
+    </parent>
+
+    <groupId>org.gephi</groupId>
+    <artifactId>batik-wrapper</artifactId>
+    <version>0.9.2-SNAPSHOT</version>
+    <packaging>nbm</packaging>
+
+    <name>BatikWrapper</name>
+    
+    <!-- 
+        Batik in its own module wrapper because some dependencies define classes 
+        in packages such as org.w3c and javax.xml and Netbeans dependency system will complain in transitive dependencies 
+    -->
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-transcoder</artifactId>
+            <version>1.9.1</version>
+            <exclusions>
+                <!-- Avoid including a copy of javax.xml and org.w3c classes -->
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+                <!-- See https://issues.apache.org/jira/browse/BATIK-1197 Non optional dependencies on jython and rhino added in 1.9.1 -->
+                <!-- Also jython includes another copy of javax.xml and org.w3c classes... -->
+                <exclusion>
+                    <groupId>org.python</groupId>
+                    <artifactId>jython</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mozilla</groupId>
+                    <artifactId>rhino</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>org.apache.commons.logging.*</publicPackage>
+                        <publicPackage>javax.xml.*</publicPackage>
+                        <publicPackage>org.w3c.*</publicPackage>
+                        <publicPackage>org.apache.batik.*</publicPackage>
+                        <publicPackage>org.apache.xpath.*</publicPackage>
+                        <publicPackage>org.apache.xalan.*</publicPackage>
+                        <publicPackage>org.apache.xml.*</publicPackage>
+                        <publicPackage>org.xml.sax.*</publicPackage>
+                    </publicPackages>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
