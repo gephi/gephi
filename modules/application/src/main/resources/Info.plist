@@ -3,13 +3,13 @@
     <dict>
 
         <key>CFBundleName</key>
-        <string>Gephi</string>
+        <string>${gephi.appbundle.name}</string>
     
         <key>CFBundleVersion</key>
         <string>${project.version}</string>
     
         <key>CFBundleExecutable</key>
-        <string>gephi</string>
+        <string>${brandingToken}</string>
     
         <key>CFBundlePackageType</key>
         <string>APPL</string>
@@ -24,10 +24,10 @@
         <string>6.0</string>
     
         <key>CFBundleIdentifier</key>
-        <string>org.gephi</string>
+        <string>${project.groupId}</string>
     
         <key>CFBundleIconFile</key>
-        <string>gephi.icns</string>
+        <string>${brandingToken}.icns</string>
     
         <key>NSHighResolutionCapable</key> 
         <true/>

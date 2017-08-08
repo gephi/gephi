@@ -694,7 +694,7 @@
 
                                         <!-- Move bin/gephi script into MacOS/gephi and modify the script so it founds its resources -->
                                         <move file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/bin/${brandingToken}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS"/>
-                                        <replace file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" token="`dirname &quot;$PRG&quot;`" value="`dirname &quot;$PRG&quot;`&quot;/../Resources/gephi/bin&quot;"/>
+                                        <replace file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" token="`dirname &quot;$PRG&quot;`" value="`dirname &quot;$PRG&quot;`&quot;/../Resources/${brandingToken}/bin&quot;"/>
                                         <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" perm="ugo+rx"/>
 
                                         <!-- Download and untar JRE -->
@@ -713,14 +713,14 @@
                                         <exec dir="${project.build.directory}" executable="tar">
                                             <arg line="-zxf"/>
                                             <arg line="${gephi.bundle.jre.version}.tar.gz"/>
-                                            <arg line="-C ${gephi.appbundle.name}.app/Contents/PlugIns"/>
+                                            <arg line="-C &quot;${gephi.appbundle.name}.app/Contents/PlugIns&quot;"/>
                                         </exec>
 
                                         <!-- Remove quarantine bit set recursively on JRE -->
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="xattr">
                                             <arg line="-rd"/>
                                             <arg line="com.apple.quarantine"/>
-                                            <arg line="${gephi.appbundle.name}.app/Contents/PlugIns"/>
+                                            <arg line="&quot;${gephi.appbundle.name}.app/Contents/PlugIns&quot;"/>
                                         </exec>
 
                                         <!-- Get the JRE folder name -->
