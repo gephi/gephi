@@ -60,15 +60,6 @@ public class EdgeLabelBuilder implements ItemBuilder {
 
     @Override
     public Item[] getItems(Graph graph) {
-
-        boolean useTextData = false;
-        for (Edge e : graph.getEdges()) {
-            TextProperties textData = e.getTextProperties();
-            if (textData != null && textData.getText() != null && !textData.getText().isEmpty()) {
-                useTextData = true;
-            }
-        }
-
         //Build text
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
         Column[] edgeColumns = vizController != null ? vizController.getEdgeTextColumns() : null;
@@ -79,7 +70,7 @@ public class EdgeLabelBuilder implements ItemBuilder {
             String label = getLabel(e, edgeColumns, graph.getView());
             labelItem.setData(EdgeLabelItem.LABEL, label);
             TextProperties textData = e.getTextProperties();
-            if (textData != null && useTextData) {
+            if (textData != null) {
                 if (textData.getAlpha() != 0) {
                     labelItem.setData(EdgeLabelItem.COLOR, textData.getColor());
                 }
@@ -87,7 +78,7 @@ public class EdgeLabelBuilder implements ItemBuilder {
 //                labelItem.setData(EdgeLabelItem.HEIGHT, textData.getHeight());
                 labelItem.setData(EdgeLabelItem.SIZE, textData.getSize());
                 labelItem.setData(EdgeLabelItem.VISIBLE, textData.isVisible());
-                if (textData.isVisible() && textData.getText() != null && !textData.getText().isEmpty()) {
+                if (textData.isVisible()) {
                     items.add(labelItem);
                 }
             } else if (label != null && !label.isEmpty()) {

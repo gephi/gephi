@@ -65,15 +65,6 @@ public class NodeLabelBuilder implements ItemBuilder {
 
     @Override
     public Item[] getItems(Graph graph) {
-
-        boolean useTextData = false;
-        for (Node n : graph.getNodes()) {
-            TextProperties textData = n.getTextProperties();
-            if (textData != null && textData.getText() != null && !textData.getText().isEmpty()) {
-                useTextData = true;
-            }
-        }
-
         //Build text
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
         Column[] nodeColumns = vizController != null ? vizController.getNodeTextColumns() : null;
@@ -84,7 +75,7 @@ public class NodeLabelBuilder implements ItemBuilder {
             String label = getLabel(n, nodeColumns, graph.getView());
             labelItem.setData(NodeLabelItem.LABEL, label);
             TextProperties textData = n.getTextProperties();
-            if (textData != null && useTextData) {
+            if (textData != null) {
                 if (textData.getR() != -1) {
                     labelItem.setData(NodeLabelItem.COLOR, new Color((int) (textData.getR() * 255),
                             (int) (textData.getG() * 255),
@@ -95,7 +86,7 @@ public class NodeLabelBuilder implements ItemBuilder {
 //                labelItem.setData(NodeLabelItem.HEIGHT, textData.getHeight());
                 labelItem.setData(NodeLabelItem.SIZE, textData.getSize());
                 labelItem.setData(NodeLabelItem.VISIBLE, textData.isVisible());
-                labelItem.setData(NodeLabelItem.LABEL, textData.getText());
+                labelItem.setData(NodeLabelItem.LABEL, label);
                 if (textData.isVisible() && label != null && !label.isEmpty()) {
                     items.add(labelItem);
                 }
