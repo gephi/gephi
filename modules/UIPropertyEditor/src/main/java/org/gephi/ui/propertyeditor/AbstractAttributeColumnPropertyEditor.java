@@ -158,7 +158,9 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
     }
 
     public boolean isNumberColumn(Column column) {
-        return AttributeUtils.isSimpleType(column.getTypeClass()) && AttributeUtils.isNumberType(column.getTypeClass());
+        return AttributeUtils.isNumberType(column.getTypeClass())
+                && !AttributeUtils.isArrayType(column.getTypeClass())
+                && !AttributeUtils.isDynamicType(column.getTypeClass());
     }
 
     public boolean isStringColumn(Column column) {
