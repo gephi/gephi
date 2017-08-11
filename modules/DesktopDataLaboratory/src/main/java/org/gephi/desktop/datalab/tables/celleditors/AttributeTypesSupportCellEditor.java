@@ -137,8 +137,6 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
             valueStr = ((IntervalMap) value).toString(timeFormat, timeZone);
         } else if (isArrayType) {
             valueStr = AttributeUtils.printArray(value);
-        } else if (isDecimalType) {
-            valueStr = DoubleStringConverter.FORMAT.format(value);
         } else {
             valueStr = AttributeUtils.print(value, timeFormat, timeZone);
         }
