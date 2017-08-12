@@ -145,7 +145,7 @@ public class VizConfig {
     public static final int DEFAULT_OCTREE_DEPTH = 5;
     public static final int DEFAULT_OCTREE_WIDTH = 50000;
     public static final boolean DEFAULT_CLEAN_DELETED_MODELS = true;
-    public static final boolean DEFAULT_LABEL_MIPMAP = true;
+    public static final boolean DEFAULT_LABEL_MIPMAP = false;//Disabled since it works bad with Intel GPUs. See https://github.com/gephi/gephi/issues/1494 (Some label characters fade away when zooming out)
     public static final boolean DEFAULT_LABEL_ANTIALIASED = true;
     public static final boolean DEFAULT_LABEL_FRACTIONAL_METRICS = true;
     public static final boolean DEFAULT_VIZBAR = true;
