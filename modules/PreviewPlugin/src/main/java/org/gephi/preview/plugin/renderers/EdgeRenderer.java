@@ -59,6 +59,7 @@ import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.EdgeColor;
+import org.gephi.utils.NumberUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
@@ -82,6 +83,8 @@ public class EdgeRenderer implements Renderer {
     protected boolean defaultShowEdges = true;
     protected float defaultThickness = 1;
     protected boolean defaultRescaleWeight = true;
+    protected float defaultRescaleWeightMin = 0.1f;
+    protected float defaultRescaleWeightMax = 1.0f;
     protected EdgeColor defaultColor = new EdgeColor(EdgeColor.Mode.MIXED);
     protected boolean defaultEdgeCurved = true;
     protected float defaultBezierCurviness = 0.2f;
@@ -134,24 +137,53 @@ public class EdgeRenderer implements Renderer {
         //Rescale weight if necessary - and avoid negative weights
         final boolean rescaleWeight = properties.getBooleanValue(
                 PreviewProperty.EDGE_RESCALE_WEIGHT);
-        for (final Item item : edgeItems) {
-            double weight = (Double) item.getData(EdgeItem.WEIGHT);
 
-            //Rescale weight
-            if (rescaleWeight) {
-                if (!Double.isInfinite(minWeight)
-                        && !Double.isInfinite(maxWeight)
-                        && maxWeight != minWeight) {
-                    final double ratio = 1.0 / (maxWeight - minWeight);
-                    weight = (weight - minWeight) * ratio;
-                }
-            } else if (minWeight <= 0) {
-                //Avoid negative weight
-                weight += Math.abs(minWeight) + 1;
+        if (rescaleWeight) {
+            final double weightDiff = maxWeight - minWeight;
+            double minRescaledWeight = properties.getFloatValue(PreviewProperty.EDGE_RESCALE_WEIGHT_MIN);
+            double maxRescaledWeight = properties.getFloatValue(PreviewProperty.EDGE_RESCALE_WEIGHT_MAX);
+
+            if(minRescaledWeight < 0){
+                minRescaledWeight = defaultRescaleWeightMin;
+                properties.putValue(PreviewProperty.EDGE_RESCALE_WEIGHT_MIN, defaultRescaleWeightMin);
             }
-            //Multiply by thickness
-            weight *= properties.getFloatValue(PreviewProperty.EDGE_THICKNESS);
-            item.setData(EdgeItem.WEIGHT, weight);
+            
+            if (maxRescaledWeight < 0) {
+                maxRescaledWeight = defaultRescaleWeightMax;
+                properties.putValue(PreviewProperty.EDGE_RESCALE_WEIGHT_MAX, defaultRescaleWeightMax);
+            }
+
+            if (minRescaledWeight > maxRescaledWeight) {
+                minRescaledWeight = maxRescaledWeight;
+            }
+            
+            final double rescaledWeightsDiff = maxRescaledWeight - minRescaledWeight;
+
+            if (!Double.isInfinite(minWeight)
+                    && !Double.isInfinite(maxWeight)
+                    && !NumberUtils.equalsEpsilon(maxWeight, minWeight)) {
+                for (final Item item : edgeItems) {
+                    double weight = (Double) item.getData(EdgeItem.WEIGHT);
+                    weight = rescaledWeightsDiff * (weight - minWeight) / weightDiff + minRescaledWeight;
+                    setEdgeWeight(weight, properties, item);
+                }
+            } else {
+                for (final Item item : edgeItems) {
+                    setEdgeWeight(1.0, properties, item);
+                }
+            }
+        } else {
+            for (final Item item : edgeItems) {
+                double weight = (Double) item.getData(EdgeItem.WEIGHT);
+
+                if (minWeight <= 0) {
+                    //Avoid negative weight
+                    weight += Math.abs(minWeight) + 1;
+                }
+
+                //Multiply by thickness
+                setEdgeWeight(weight, properties, item);
+            }
         }
 
         //Radius
@@ -190,6 +222,12 @@ public class EdgeRenderer implements Renderer {
                 }
             }
         }
+    }
+
+    private void setEdgeWeight(double weight, final PreviewProperties properties, final Item item) {
+        //Multiply by thickness
+        weight *= properties.getFloatValue(PreviewProperty.EDGE_THICKNESS);
+        item.setData(EdgeItem.WEIGHT, weight);
     }
 
     @Override
@@ -232,6 +270,14 @@ public class EdgeRenderer implements Renderer {
             NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.displayName"),
             NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.description"),
             PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultRescaleWeight),
+            PreviewProperty.createProperty(this, PreviewProperty.EDGE_RESCALE_WEIGHT_MIN, Float.class,
+            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.min.displayName"),
+            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.min.description"),
+            PreviewProperty.CATEGORY_EDGES, PreviewProperty.EDGE_RESCALE_WEIGHT).setValue(defaultRescaleWeightMin),
+            PreviewProperty.createProperty(this, PreviewProperty.EDGE_RESCALE_WEIGHT_MAX, Float.class,
+            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.max.displayName"),
+            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.max.description"),
+            PreviewProperty.CATEGORY_EDGES, PreviewProperty.EDGE_RESCALE_WEIGHT).setValue(defaultRescaleWeightMax),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_COLOR, EdgeColor.class,
             NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.color.displayName"),
             NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.color.description"),

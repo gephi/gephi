@@ -140,6 +140,14 @@ public class PreviewProperty {
      */
     public static final String EDGE_RESCALE_WEIGHT = "edge.rescale-weight";
     /**
+     * Edge <code>float</code> property defining the minimum weight when edge weight rescaling is enabled.
+     */
+    public static final String EDGE_RESCALE_WEIGHT_MIN = "edge.rescale-weight.min";
+    /**
+     * Edge <code>float</code> property defining the minimum weight when edge weight rescaling is enabled.
+     */
+    public static final String EDGE_RESCALE_WEIGHT_MAX = "edge.rescale-weight.max";
+    /**
      * Edge <code>Float</code> property defining an extra distance between the node
      * and the edge.
      */

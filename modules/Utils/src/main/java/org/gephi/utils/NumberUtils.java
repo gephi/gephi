@@ -49,6 +49,7 @@ import java.lang.reflect.Method;
  * @author Eduardo Ramos
  */
 public class NumberUtils {
+
     public static <T extends Number> T parseNumber(String str, Class<T> type) throws UnsupportedOperationException {
         try {
             /*
@@ -73,5 +74,15 @@ public class NumberUtils {
             throw new UnsupportedOperationException("Cannot convert string to "
                     + type.getName());
         }
+    }
+
+    public static final double EPS = 1e-5;
+
+    public static boolean equalsEpsilon(double a, double b) {
+        return equals(a, b, EPS);
+    }
+
+    public static boolean equals(double a, double b, double epsilon) {
+        return a == b ? true : Math.abs(a - b) < epsilon;
     }
 }
