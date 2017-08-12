@@ -93,6 +93,10 @@
             <artifactId>org-netbeans-core-output2</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-awt</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.getsentry.raven</groupId>
             <artifactId>raven</artifactId>
             <exclusions>
