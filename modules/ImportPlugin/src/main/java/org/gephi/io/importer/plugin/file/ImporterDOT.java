@@ -54,6 +54,7 @@ import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.FileImporter;
+import org.gephi.utils.StreamTokenizerWithMultilineLiterals;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -98,13 +99,13 @@ public class ImporterDOT implements FileImporter, LongTask {
     private void importData(LineNumberReader reader) throws Exception {
 
         Progress.start(progressTicket);
-        StreamTokenizer streamTokenizer = new StreamTokenizer(reader);
+        StreamTokenizerWithMultilineLiterals streamTokenizer = new StreamTokenizerWithMultilineLiterals(reader);
         setSyntax(streamTokenizer);
 
         graph(streamTokenizer);
     }
 
-    protected void setSyntax(StreamTokenizer tk) {
+    protected void setSyntax(StreamTokenizerWithMultilineLiterals tk) {
         tk.resetSyntax();
         tk.eolIsSignificant(false);
         tk.commentChar('#');
@@ -126,7 +127,7 @@ public class ImporterDOT implements FileImporter, LongTask {
         tk.ordinaryChar('=');
     }
 
-    protected void graph(StreamTokenizer streamTokenizer) throws Exception {
+    protected void graph(StreamTokenizerWithMultilineLiterals streamTokenizer) throws Exception {
         boolean found = false;
         while (streamTokenizer.nextToken() != StreamTokenizer.TT_EOF) {
             if (streamTokenizer.ttype == StreamTokenizer.TT_WORD) {
@@ -154,14 +155,14 @@ public class ImporterDOT implements FileImporter, LongTask {
         }
     }
 
-    protected void stmtList(StreamTokenizer streamTokenizer) throws Exception {
+    protected void stmtList(StreamTokenizerWithMultilineLiterals streamTokenizer) throws Exception {
         do {
             streamTokenizer.nextToken();
             stmt(streamTokenizer);
         } while (streamTokenizer.ttype != StreamTokenizer.TT_EOF);
     }
 
-    protected void stmt(StreamTokenizer streamTokenizer) throws Exception {
+    protected void stmt(StreamTokenizerWithMultilineLiterals streamTokenizer) throws Exception {
         //tk.nextToken();
 
         if (streamTokenizer.sval == null || streamTokenizer.sval.equalsIgnoreCase("graph") || streamTokenizer.sval.equalsIgnoreCase("node")
@@ -183,7 +184,7 @@ public class ImporterDOT implements FileImporter, LongTask {
         }
     }
 
-    protected String nodeID(StreamTokenizer streamTokenizer) {
+    protected String nodeID(StreamTokenizerWithMultilineLiterals streamTokenizer) {
         if (streamTokenizer.ttype == '"' || streamTokenizer.ttype == StreamTokenizer.TT_WORD || (streamTokenizer.ttype >= 'a' && streamTokenizer.ttype <= 'z')
                 || (streamTokenizer.ttype >= 'A' && streamTokenizer.ttype <= 'Z')) {
             return streamTokenizer.sval;
@@ -201,7 +202,7 @@ public class ImporterDOT implements FileImporter, LongTask {
         return container.getNode(id);
     }
 
-    protected Color parseColor(StreamTokenizer streamTokenizer) throws Exception {
+    protected Color parseColor(StreamTokenizerWithMultilineLiterals streamTokenizer) throws Exception {
         if (streamTokenizer.ttype == '#') {
             streamTokenizer.nextToken();
             return new Color(Integer.parseInt(streamTokenizer.sval, 16), true);
@@ -225,7 +226,7 @@ public class ImporterDOT implements FileImporter, LongTask {
         }
     }
 
-    protected void nodeAttributes(StreamTokenizer streamTokenizer, final NodeDraft nodeDraft) throws Exception {
+    protected void nodeAttributes(StreamTokenizerWithMultilineLiterals streamTokenizer, final NodeDraft nodeDraft) throws Exception {
         streamTokenizer.nextToken();
 
         if (streamTokenizer.ttype == ']' || streamTokenizer.ttype == StreamTokenizer.TT_EOF) {
@@ -320,7 +321,7 @@ public class ImporterDOT implements FileImporter, LongTask {
         nodeAttributes(streamTokenizer, nodeDraft);
     }
 
-    protected void edgeStructure(StreamTokenizer streamTokenizer, final NodeDraft nodeDraft) throws Exception {
+    protected void edgeStructure(StreamTokenizerWithMultilineLiterals streamTokenizer, final NodeDraft nodeDraft) throws Exception {
         streamTokenizer.nextToken();
 
         EdgeDraft edge = null;
@@ -363,7 +364,7 @@ public class ImporterDOT implements FileImporter, LongTask {
         }
     }
 
-    protected void edgeAttributes(StreamTokenizer streamTokenizer, final EdgeDraft edge) throws Exception {
+    protected void edgeAttributes(StreamTokenizerWithMultilineLiterals streamTokenizer, final EdgeDraft edge) throws Exception {
         streamTokenizer.nextToken();
 
         if (streamTokenizer.ttype == ']' || streamTokenizer.ttype == StreamTokenizer.TT_EOF) {
