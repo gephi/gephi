@@ -42,7 +42,6 @@ Portions Copyrighted 2016 Gephi Consortium.
 package org.gephi.io.importer.plugin.file.spreadsheet;
 
 import java.io.File;
-import org.gephi.io.importer.plugin.file.spreadsheet.process.SpreadsheetNodesConfiguration;
 import org.gephi.io.importer.plugin.file.spreadsheet.process.ImportNodesProcess;
 import org.gephi.io.importer.plugin.file.spreadsheet.process.AbstractImportProcess;
 import java.io.IOException;
@@ -76,7 +75,6 @@ import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.plugin.file.spreadsheet.process.ImportAdjacencyListProcess;
 import org.gephi.io.importer.plugin.file.spreadsheet.process.ImportEdgesProcess;
 import org.gephi.io.importer.plugin.file.spreadsheet.process.ImportMatrixProcess;
-import org.gephi.io.importer.plugin.file.spreadsheet.process.SpreadsheetEdgesConfiguration;
 import org.gephi.io.importer.plugin.file.spreadsheet.process.SpreadsheetGeneralConfiguration;
 import org.gephi.io.importer.plugin.file.spreadsheet.process.SpreadsheetGeneralConfiguration.Mode;
 import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetParser;
@@ -107,10 +105,6 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
     //General configuration:
     protected final SpreadsheetGeneralConfiguration generalConfig = new SpreadsheetGeneralConfiguration();
 
-    //Specific table configuration:
-    protected final SpreadsheetNodesConfiguration nodesConfiguration = new SpreadsheetNodesConfiguration();
-    protected final SpreadsheetEdgesConfiguration edgesConfiguration = new SpreadsheetEdgesConfiguration();
-
     @Override
     public boolean execute(ContainerLoader container) {
         this.container = container;
@@ -122,10 +116,10 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
         try (SheetParser parser = createParser()) {
             switch (getMode()) {
                 case NODES_TABLE:
-                    importer = new ImportNodesProcess(generalConfig, nodesConfiguration, parser, container, progressTicket);
+                    importer = new ImportNodesProcess(generalConfig, parser, container, progressTicket);
                     break;
                 case EDGES_TABLE:
-                    importer = new ImportEdgesProcess(generalConfig, edgesConfiguration, parser, container, progressTicket);
+                    importer = new ImportEdgesProcess(generalConfig, parser, container, progressTicket);
                     break;
                 case ADJACENCY_LIST:
                     importer = new ImportAdjacencyListProcess(generalConfig, container, progressTicket, parser);
@@ -449,21 +443,5 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
 
     public void setColumnClass(String column, Class clazz) {
         generalConfig.setColumnClass(column, clazz);
-    }
-
-    public SpreadsheetNodesConfiguration getNodesConfiguration() {
-        return nodesConfiguration;
-    }
-
-    public SpreadsheetEdgesConfiguration getEdgesConfiguration() {
-        return edgesConfiguration;
-    }
-
-    public void setNodesConfiguration(SpreadsheetNodesConfiguration nodesConfig) {
-        this.nodesConfiguration.setup(nodesConfig);
-    }
-
-    public void setEdgesConfiguration(SpreadsheetEdgesConfiguration edgesConfig) {
-        this.edgesConfiguration.setup(edgesConfig);
     }
 }

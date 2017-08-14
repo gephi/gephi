@@ -67,12 +67,8 @@ public class ImportEdgesProcess extends AbstractImportProcess {
     public static final String EDGE_ID = "id";
     public static final String EDGE_LABEL = "label";
 
-    private final SpreadsheetEdgesConfiguration config;
-
-    public ImportEdgesProcess(SpreadsheetGeneralConfiguration generalConfig, SpreadsheetEdgesConfiguration config, SheetParser parser, ContainerLoader container, ProgressTicket progressTicket) throws IOException {
+    public ImportEdgesProcess(SpreadsheetGeneralConfiguration generalConfig, SheetParser parser, ContainerLoader container, ProgressTicket progressTicket) throws IOException {
         super(generalConfig, container, progressTicket, parser);
-        this.config = config;
-
         init();
     }
 
@@ -86,8 +82,6 @@ public class ImportEdgesProcess extends AbstractImportProcess {
 
     @Override
     public boolean execute() {
-        final boolean createMissingNodes = config.isCreateMissingNodes();
-
         setupColumnsIndexesAndFindSpecialColumns(Arrays.asList(EDGE_SOURCE, EDGE_TARGET, EDGE_TYPE, EDGE_KIND, EDGE_ID, EDGE_LABEL), generalConfig.getColumnsClasses());
 
         Integer sourceColumnIndex = specialColumnsIndexMap.get(EDGE_SOURCE);
@@ -149,14 +143,12 @@ public class ImportEdgesProcess extends AbstractImportProcess {
                 continue;
             }
 
-            if (!container.nodeExists(source) && !createMissingNodes) {
-                logWarning(getMessage("ImportEdgesProcess.warning.missingSourceNode", source));
-                continue;
+            if (!container.nodeExists(source)) {
+                container.addNode(container.factory().newNodeDraft(source));
             }
 
-            if (!container.nodeExists(target) && !createMissingNodes) {
-                logWarning(getMessage("ImportEdgesProcess.warning.missingTargetNode", target));
-                continue;
+            if (!container.nodeExists(target)) {
+                container.addNode(container.factory().newNodeDraft(target));
             }
 
             edge.setSource(container.getNode(source));

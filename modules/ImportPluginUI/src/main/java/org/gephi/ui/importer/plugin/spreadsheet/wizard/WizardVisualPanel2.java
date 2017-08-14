@@ -70,10 +70,6 @@ public final class WizardVisualPanel2 extends JPanel {
     private JComboBox timeRepresentationComboBox = new JComboBox();
     private final ArrayList<JCheckBox> columnsCheckBoxes = new ArrayList<>();
     private final ArrayList<JComboBox> columnsComboBoxes = new ArrayList<>();
-    //Nodes table settings:
-    private JCheckBox assignNewNodeIds;
-    //Edges table settings:
-    private JCheckBox createMissingNodes;
 
     private final AbstractImporterSpreadsheet importer;
 
@@ -101,15 +97,6 @@ public final class WizardVisualPanel2 extends JPanel {
         });
     }
 
-    public void unSetup() {
-        if (assignNewNodeIds != null) {
-            NbPreferences.forModule(WizardVisualPanel1CSV.class).putBoolean(ASSIGN_NEW_NODES_IDS_SAVED_PREFERENCES, assignNewNodeIds.isSelected());
-        }
-        if (createMissingNodes != null) {
-            NbPreferences.forModule(WizardVisualPanel1CSV.class).putBoolean(CREATE_NEW_NODES_SAVED_PREFERENCES, createMissingNodes.isSelected());
-        }
-    }
-
     public void reloadSettings() {
         JPanel settingsPanel = new JPanel();
         settingsPanel.setLayout(new MigLayout("fillx"));
@@ -117,18 +104,7 @@ public final class WizardVisualPanel2 extends JPanel {
 
         settingsPanel.add(new JSeparator(), "growx, wrap");
 
-        switch (importer.getMode()) {
-            case NODES_TABLE:
-                loadColumns(settingsPanel);
-                settingsPanel.add(new JSeparator(), "growx, wrap");
-                loadNodesTableSettings(settingsPanel);
-                break;
-            case EDGES_TABLE:
-                loadColumns(settingsPanel);
-                settingsPanel.add(new JSeparator(), "growx, wrap");
-                loadEdgesTableSettings(settingsPanel);
-                break;
-        }
+        loadColumns(settingsPanel);
 
         scroll.setViewportView(settingsPanel);
         wizard2.fireChangeEvent();//Enable/disable finish button
@@ -205,24 +181,6 @@ public final class WizardVisualPanel2 extends JPanel {
         comboBox.setSelectedItem(selection);
     }
 
-    private void loadNodesTableSettings(JPanel settingsPanel) {
-        //Create assignNewNodeIds checkbox and set its selection with saved preferences or true by default:
-        assignNewNodeIds = new JCheckBox(getMessage("WizardVisualPanel2.nodes.assign-ids-checkbox"),
-                NbPreferences.forModule(WizardVisualPanel1CSV.class)
-                        .getBoolean(ASSIGN_NEW_NODES_IDS_SAVED_PREFERENCES, false));//False => by default update nodes instead of creating new ones
-
-        settingsPanel.add(assignNewNodeIds, "wrap");
-    }
-
-    private void loadEdgesTableSettings(JPanel settingsPanel) {
-        //Create createNewNodes checkbox and set its selection with saved preferences or true by default:
-        createMissingNodes = new JCheckBox(getMessage("WizardVisualPanel2.edges.create-new-nodes-checkbox"),
-                NbPreferences.forModule(WizardVisualPanel1CSV.class)
-                        .getBoolean(CREATE_NEW_NODES_SAVED_PREFERENCES, true));//True => by default create missing nodes
-
-        settingsPanel.add(createMissingNodes, "wrap");
-    }
-
     public TimeRepresentation getSelectedTimeRepresentation() {
         return ((TimeRepresentationWrapper) timeRepresentationComboBox.getSelectedItem()).getTimeRepresentation();
     }
@@ -255,15 +213,7 @@ public final class WizardVisualPanel2 extends JPanel {
         }
         return types.toArray(new Class[0]);
     }
-
-    public boolean getAssignNewNodeIds() {
-        return assignNewNodeIds != null ? assignNewNodeIds.isSelected() : false;
-    }
-
-    public boolean getCreateMissingNodes() {
-        return createMissingNodes != null ? createMissingNodes.isSelected() : false;
-    }
-
+    
     @Override
     public String getName() {
         return NbBundle.getMessage(WizardVisualPanel2.class, "WizardVisualPanel2.name");
