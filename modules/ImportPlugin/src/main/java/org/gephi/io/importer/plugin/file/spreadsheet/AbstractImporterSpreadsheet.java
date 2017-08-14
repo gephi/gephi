@@ -240,16 +240,16 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
                 BigInteger.class,
                 Double.class,
                 BigDecimal.class,
-                IntervalSet.class,
-                TimestampSet.class,
                 IntervalIntegerMap.class,
                 IntervalLongMap.class,
                 IntervalDoubleMap.class,
                 IntervalStringMap.class,
+                IntervalSet.class,
                 TimestampIntegerMap.class,
                 TimestampLongMap.class,
                 TimestampDoubleMap.class,
-                TimestampStringMap.class
+                TimestampStringMap.class,
+                TimestampSet.class
             });
 
             //Initialize:

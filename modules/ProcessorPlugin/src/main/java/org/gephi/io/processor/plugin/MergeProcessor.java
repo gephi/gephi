@@ -64,22 +64,24 @@ public class MergeProcessor extends DefaultProcessor implements Processor {
 
     @Override
     public void process() {
-        if (containers.length <= 1) {
-            throw new RuntimeException("This processor can only handle multiple containers");
-        }
+        try{
+            if (containers.length <= 1) {
+                throw new RuntimeException("This processor can only handle multiple containers");
+            }
 
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        //Workspace
-        if (workspace == null) {
-            workspace = pc.newWorkspace(pc.getCurrentProject());
-            pc.openWorkspace(workspace);
-        }
-        processConfiguration(containers[0], workspace);
+            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            //Workspace
+            if (workspace == null) {
+                workspace = pc.newWorkspace(pc.getCurrentProject());
+                pc.openWorkspace(workspace);
+            }
+            processConfiguration(containers[0], workspace);
 
-        for (ContainerUnloader container : containers) {
-            process(container, workspace);
+            for (ContainerUnloader container : containers) {
+                process(container, workspace);
+            }
+        } finally {
+            clean();
         }
-
-        clean();
     }
 }

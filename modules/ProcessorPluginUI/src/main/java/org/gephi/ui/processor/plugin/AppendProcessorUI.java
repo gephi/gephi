@@ -73,6 +73,6 @@ public class AppendProcessorUI implements ProcessorUI {
 
     @Override
     public boolean isValid(Container[] containers) {
-        return containers.length == 1;
+        return true;//Always available
     }
 }

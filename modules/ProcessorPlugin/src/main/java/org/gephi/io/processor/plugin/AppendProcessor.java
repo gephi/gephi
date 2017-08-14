@@ -49,9 +49,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Processor 'Append graph' that tries to find in the current workspace nodes
- * and edges in the container to only append new elements. It uses elements' id
- * to do the matching.
+ * Processor 'Append graph' that tries to find in the current workspace nodes and edges in the container to only append new elements. It uses elements' id to do the matching.
  *
  * @author Mathieu Bastian
  */
@@ -65,28 +63,30 @@ public class AppendProcessor extends DefaultProcessor implements Processor {
 
     @Override
     public void process() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        if (containers.length > 1) {
-            throw new RuntimeException("This processor can only handle single containers");
-        }
-        ContainerUnloader container = containers[0];
-
-        //Workspace
-        if (workspace == null) {
-            workspace = pc.getCurrentWorkspace();
+        try {
+            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            //Workspace
             if (workspace == null) {
-                //Append mode but no workspace
-                workspace = pc.newWorkspace(pc.getCurrentProject());
-                pc.openWorkspace(workspace);
-                processConfiguration(container, workspace);
+                workspace = pc.getCurrentWorkspace();
             }
-        }
-        if (container.getSource() != null) {
-            pc.setSource(workspace, container.getSource());
-        }
 
-        process(container, workspace);
+            if (workspace != null) {
+                pc.openWorkspace(workspace);
+            } else {
+                workspace = pc.newWorkspace(pc.getCurrentProject());
+            }
+            
+            for (ContainerUnloader container : containers) {
+                processConfiguration(container, workspace);
 
-        clean();
+                if (container.getSource() != null) {
+                    pc.setSource(workspace, container.getSource());
+                }
+
+                process(container, workspace);
+            }
+        } finally {
+            clean();
+        }
     }
 }

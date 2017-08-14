@@ -84,26 +84,28 @@ public class DefaultProcessor extends AbstractProcessor {
 
     @Override
     public void process() {
-        if (containers.length > 1) {
-            throw new RuntimeException("This processor can only handle single containers");
+        try {
+            if (containers.length > 1) {
+                throw new RuntimeException("This processor can only handle single containers");
+            }
+            ContainerUnloader container = containers[0];
+
+            //Workspace
+            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            if (workspace == null) {
+                workspace = pc.newWorkspace(pc.getCurrentProject());
+                pc.openWorkspace(workspace);
+            }
+            processConfiguration(container, workspace);
+
+            if (container.getSource() != null) {
+                pc.setSource(workspace, container.getSource());
+            }
+
+            process(container, workspace);
+        } finally {
+            clean();
         }
-        ContainerUnloader container = containers[0];
-
-        //Workspace
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        if (workspace == null) {
-            workspace = pc.newWorkspace(pc.getCurrentProject());
-            pc.openWorkspace(workspace);
-        }
-        processConfiguration(container, workspace);
-
-        if (container.getSource() != null) {
-            pc.setSource(workspace, container.getSource());
-        }
-
-        process(container, workspace);
-
-        clean();
     }
 
     protected void processConfiguration(ContainerUnloader container, Workspace workspace) {
