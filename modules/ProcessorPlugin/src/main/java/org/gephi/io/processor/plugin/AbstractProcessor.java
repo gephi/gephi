@@ -85,6 +85,7 @@ public abstract class AbstractProcessor implements Processor {
 
     private final Set<Column> columnsTypeMismatchAlreadyWarned = new HashSet<>();
     protected Report report = new Report();
+    protected Report reportAfterDone = new Report();
     private final Object2IntOpenHashMap<Edge> edgeCountForAverage = new Object2IntOpenHashMap<>();
 
     protected void clean() {
@@ -93,6 +94,8 @@ public abstract class AbstractProcessor implements Processor {
         containers = null;
         progressTicket = null;
         columnsTypeMismatchAlreadyWarned.clear();
+        //Flush report and create a new one for next process:
+        reportAfterDone = report;
         report = new Report();
         edgeCountForAverage.clear();
     }
@@ -188,7 +191,7 @@ public abstract class AbstractProcessor implements Processor {
 
     protected void flushToElementAttributes(ContainerUnloader container, ElementDraft elementDraft, Element element) {
         for (ColumnDraft columnDraft : elementDraft.getColumns()) {
-            if (elementDraft instanceof EdgeDraft && columnDraft.getId().equals("weight")) {
+            if (elementDraft instanceof EdgeDraft && columnDraft.getId().equalsIgnoreCase("weight")) {
                 continue;//Special weight column
             }
 
@@ -497,6 +500,6 @@ public abstract class AbstractProcessor implements Processor {
 
     @Override
     public Report getReport() {
-        return report;
+        return reportAfterDone;
     }
 }

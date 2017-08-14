@@ -111,6 +111,12 @@ public class ReportPanel extends javax.swing.JPanel {
     private Container[] containers;
     //UI
     private ButtonGroup processorGroup = new ButtonGroup();
+    //Preferences:
+    private static final String PREF_MORE_OPTIONS_PANEL_VISIBLE = "ReportPanel_moreOptionsPanelVisible";
+    private static final String PREF_EDGE_MERGE_STRATEGY = "ReportPanel_edgeMergeStrategy";
+    private static final String PREF_AUTOSCALE = "ReportPanel_autoscale";
+    private static final String PREF_CREATE_MISSING_NODES = "ReportPanel_createMissingNodes";
+    private static final String PREF_SELF_LOOP = "ReportPanel_selfLoops";
 
     public ReportPanel() {
         try {
@@ -136,6 +142,7 @@ public class ReportPanel extends javax.swing.JPanel {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 boolean s = autoscaleCheckbox.isSelected();
+                NbPreferences.forModule(ReportPanel.class).putBoolean(PREF_AUTOSCALE, s);
                 for (Container container : containers) {
                     container.getLoader().setAutoScale(s);
                 }
@@ -146,6 +153,7 @@ public class ReportPanel extends javax.swing.JPanel {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 boolean s = createMissingNodesCheckbox.isSelected();
+                NbPreferences.forModule(ReportPanel.class).putBoolean(PREF_CREATE_MISSING_NODES, s);
                 for (Container container : containers) {
                     container.getLoader().setAllowAutoNode(s);
                 }
@@ -156,6 +164,7 @@ public class ReportPanel extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 moreOptionsPanel.setVisible(!moreOptionsPanel.isVisible());
+                NbPreferences.forModule(ReportPanel.class).putBoolean(PREF_MORE_OPTIONS_PANEL_VISIBLE, moreOptionsPanel.isVisible());
                 JRootPane rootPane = SwingUtilities.getRootPane(ReportPanel.this);
                 ((JDialog) rootPane.getParent()).pack();
             }
@@ -165,6 +174,7 @@ public class ReportPanel extends javax.swing.JPanel {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 EdgeMergeStrategy strategy = ((EdgesMergeStrategyWrapper) edgesMergeStrategyCombo.getSelectedItem()).getInstance();
+                NbPreferences.forModule(ReportPanel.class).put(PREF_EDGE_MERGE_STRATEGY, strategy.name());
                 for (Container container : containers) {
                     container.getLoader().setEdgesMergeStrategy(strategy);
                 }
@@ -175,6 +185,7 @@ public class ReportPanel extends javax.swing.JPanel {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 boolean s = selfLoopCheckBox.isSelected();
+                NbPreferences.forModule(ReportPanel.class).putBoolean(PREF_SELF_LOOP, s);
                 for (Container container : containers) {
                     container.getLoader().setAllowSelfLoop(s);
                 }
@@ -242,7 +253,10 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     private void initMoreOptionsPanel() {
-        moreOptionsPanel.setVisible(false);
+        boolean moreOptionsPanelVisible = NbPreferences.forModule(ReportPanel.class).getBoolean(PREF_MORE_OPTIONS_PANEL_VISIBLE, false);
+        if (!moreOptionsPanelVisible) {
+            moreOptionsPanel.setVisible(false);
+        }
     }
 
     private void initGraphTypeCombo(final Container[] containers) {
@@ -376,12 +390,20 @@ public class ReportPanel extends javax.swing.JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                //Autoscale
-                autoscaleCheckbox.setSelected(containers[0].getUnloader().isAutoScale());
-                selfLoopCheckBox.setSelected(containers[0].getUnloader().allowSelfLoop());
-                createMissingNodesCheckbox.setSelected(containers[0].getUnloader().allowAutoNode());
+                boolean autoscalePref = NbPreferences.forModule(ReportPanel.class).getBoolean(PREF_AUTOSCALE, containers[0].getUnloader().isAutoScale());
+                boolean selfLoopPref = NbPreferences.forModule(ReportPanel.class).getBoolean(PREF_SELF_LOOP, containers[0].getUnloader().allowSelfLoop());
+                boolean createMissingNodesPref = NbPreferences.forModule(ReportPanel.class).getBoolean(PREF_CREATE_MISSING_NODES, containers[0].getUnloader().allowAutoNode());
+                EdgeMergeStrategy strategyPref = containers[0].getUnloader().getEdgesMergeStrategy();
+                try {
+                    strategyPref = EdgeMergeStrategy.valueOf(NbPreferences.forModule(ReportPanel.class).get(PREF_EDGE_MERGE_STRATEGY, strategyPref.name()));
+                } catch (Exception e) {
+                    //NOOP
+                }
 
-                edgesMergeStrategyCombo.setSelectedItem(new EdgesMergeStrategyWrapper(containers[0].getUnloader().getEdgesMergeStrategy()));
+                autoscaleCheckbox.setSelected(autoscalePref);
+                selfLoopCheckBox.setSelected(selfLoopPref);
+                createMissingNodesCheckbox.setSelected(createMissingNodesPref);
+                edgesMergeStrategyCombo.setSelectedItem(new EdgesMergeStrategyWrapper(strategyPref));
             }
         });
     }

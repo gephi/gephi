@@ -129,6 +129,16 @@ public class DefaultProcessor extends AbstractProcessor {
         }
 
         GraphConfigurationWrapper originalConfig = new GraphConfigurationWrapper(graphController.getGraphModel(workspace).getConfiguration());
+        if (container.getEdgeCount() == 0) {
+            //Fix different config problems that are not actually problems since no edges are present:
+            //A case user-friendly specially for spreadsheet import
+
+            //Make weight types match:
+            if (!originalConfig.edgeWeightType.equals(configuration.getEdgeWeightType())) {
+                configuration.setEdgeWeightType(originalConfig.edgeWeightType);
+            }
+        }
+
         GraphConfigurationWrapper newConfig = new GraphConfigurationWrapper(configuration);
 
         if (!originalConfig.equals(newConfig)) {
