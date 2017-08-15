@@ -61,6 +61,8 @@ public class TickGraph {
     private TickParameters parameters;
     private BufferedImage image;
 
+    private static final int MIN_PIXEL_MARGIN_BETWEEN_TICKS = 5;
+
     public BufferedImage getImage(TimelineModel model, int width, int height) {
         double newMin = model.getCustomMin();
         double newMax = model.getCustomMax();
@@ -77,10 +79,9 @@ public class TickGraph {
     }
 
     private BufferedImage draw() {
+        final BufferedImage img = new BufferedImage(parameters.getWidth(), parameters.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
-        final BufferedImage image = new BufferedImage(parameters.getWidth(), parameters.getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-        final Graphics2D g = image.createGraphics();
+        final Graphics2D g = img.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (parameters.getType().equals(TickParameters.TickType.DATE)) {
@@ -89,7 +90,7 @@ public class TickGraph {
             drawReal(g);
         }
 
-        return image;
+        return img;
     }
 
     private void drawDate(Graphics2D g) {
@@ -102,7 +103,7 @@ public class TickGraph {
         FontMetrics smallMetrics = null;
         Font smallFont = parameters.getFont();
         Font bigFont;
-        FontMetrics bigMetrics;
+        FontMetrics bigMetrics = null;
         if (smallFont != null && fontSize > parameters.getFontSize() / 4) {
             smallFont = smallFont.deriveFont(Font.PLAIN, fontSize);
             smallMetrics = g.getFontMetrics(smallFont);
@@ -115,7 +116,6 @@ public class TickGraph {
 
         DateTick dateTick = DateTick.create(min, max, width);
 
-
         int TOP_TICK = 0;
         int LOWER_TICK = 1;
 
@@ -124,67 +124,69 @@ public class TickGraph {
             g.setFont(smallFont);
             g.setColor(parameters.getDateColor(LOWER_TICK));
             Interval[] intervals = dateTick.getIntervals(LOWER_TICK);
+            int previousXLabelEnd = Integer.MIN_VALUE;
+
             int labelWidth = smallMetrics != null ? smallMetrics.stringWidth("0000") : 0;
             for (Interval interval : intervals) {
                 long ms = interval.getStartMillis();
                 int x = dateTick.getTickPixelPosition(ms, width);
                 if (x >= 0) {
-                    g.setColor(parameters.getDateColor(LOWER_TICK));
-
                     //Height
                     int h = (int) (Math.min(40, (int) (height / 15.0)));
 
-                    //Draw line
-                    g.drawLine(x, 0, x, h);
+                    boolean noTickOverlap = x >= previousXLabelEnd + MIN_PIXEL_MARGIN_BETWEEN_TICKS;
 
-                    //Label                       
-                    if (smallFont != null && width / intervals.length > labelWidth) {
-                        String label = dateTick.getTickValue(LOWER_TICK, interval.getStart());
-                        int xLabel = x + 4;
-                        g.setColor(parameters.getDateColor(1));
-                        int y = (int) (fontSize * 1.2);
+                    if (noTickOverlap) {
+                        //Draw line
+                        g.setColor(parameters.getDateColor(LOWER_TICK));
+                        g.drawLine(x, 0, x, h);
 
-                        g.drawString(label, xLabel, y);
+                        //Label                       
+                        if (smallFont != null && width / intervals.length > labelWidth) {
+                            String label = dateTick.getTickValue(LOWER_TICK, interval.getStart());
+                            int xLabel = x + 4;
+                            int yLabel = (int) (fontSize * 1.2);
+
+                            g.setColor(parameters.getDateColor(TOP_TICK));
+                            g.drawString(label, xLabel, yLabel);
+                            previousXLabelEnd = x + smallMetrics.stringWidth(label);
+                        }
                     }
                 }
             }
         }
 
         //Top tick
-        if (dateTick.getTypeCount() > 0) {
+        if (dateTick.getTypeCount() > 0 && bigFont != null) {
             g.setFont(bigFont);
             g.setColor(parameters.getDateColor(TOP_TICK));
             Interval[] intervals = dateTick.getIntervals(TOP_TICK);
+            int previousXLabelEnd = Integer.MIN_VALUE;
+
             for (Interval interval : intervals) {
                 long ms = interval.getStartMillis();
                 int x = dateTick.getTickPixelPosition(ms, width);
+
+                String label = dateTick.getTickValue(TOP_TICK, interval.getStart());
+
+                //Draw Line
+                boolean noTickOverlap = x >= previousXLabelEnd + MIN_PIXEL_MARGIN_BETWEEN_TICKS;
+                if (noTickOverlap && x >= 0) {
+                    g.drawLine(x, 0, x, height);
+                }
+
+                int xLabel = -1;
+                int yLabel = (int) (fontSize * 4);
                 if (x >= 0) {
-                    g.setColor(parameters.getDateColor(TOP_TICK));
-
-                    //Height
-                    int h = height;
-
-                    //Draw Line
-                    g.drawLine(x, 0, x, h);
-
-                    //Label
-                    if (bigFont != null) {
-                        String label = dateTick.getTickValue(TOP_TICK, interval.getStart());
-                        int xLabel = x + 4;
-                        g.setColor(parameters.getDateColor(TOP_TICK));
-                        int y = (int) (fontSize * 4);
-
-                        g.drawString(label, xLabel, y);
-                    }
+                    xLabel = x + 4;
                 } else if (x > ((dateTick.getTickPixelPosition(interval.getEndMillis(), width) - x) / -2)) {
+                    xLabel = 4;
+                }
 
-                    if (bigFont != null) {
-                        String label = dateTick.getTickValue(TOP_TICK, interval.getStart());
-                        g.setColor(parameters.getDateColor(TOP_TICK));
-                        int y = (int) (fontSize * 4);
-
-                        g.drawString(label, 4, y);
-                    }
+                if (xLabel >= 0
+                        && noTickOverlap) {
+                    g.drawString(label, xLabel, yLabel);
+                    previousXLabelEnd = x + bigMetrics.stringWidth(label);
                 }
             }
         }
@@ -240,7 +242,6 @@ public class TickGraph {
 //        int fifty = (int) ((50 - min) * (width / (max - min)));
 //        g.setColor(Color.BLUE);
 //        g.drawLine(fifty, 0, fifty, height);
-
         RealTick graduation = RealTick.create(min, max, width);
         int numberTicks = graduation.getNumberTicks();
         for (int i = 0; i <= numberTicks; i++) {

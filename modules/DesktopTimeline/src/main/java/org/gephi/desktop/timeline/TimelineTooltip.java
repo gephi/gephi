@@ -178,7 +178,7 @@ public class TimelineTooltip {
         richTooltip.addDescriptionSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.max") + ": " + getMax());
 
         //Title
-        richTooltip.setTitle(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.position") + ": " + getPosition());
+        richTooltip.setTitle(getPosition());
 
         //Img
         richTooltip.setMainImage(ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/info.png"));
