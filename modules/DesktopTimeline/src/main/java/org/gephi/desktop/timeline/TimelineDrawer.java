@@ -48,9 +48,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.util.Locale;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
@@ -64,32 +62,29 @@ import org.openide.util.Lookup;
 public class TimelineDrawer extends JPanel implements MouseListener, MouseMotionListener {
 
     //Consts
-    private static Cursor CURSOR_DEFAULT = new Cursor(Cursor.DEFAULT_CURSOR);
-    private static Cursor CURSOR_LEFT_HOOK = new Cursor(Cursor.E_RESIZE_CURSOR);
-    private static Cursor CURSOR_CENTRAL_HOOK = new Cursor(Cursor.MOVE_CURSOR);
-    private static Cursor CURSOR_RIGHT_HOOK = new Cursor(Cursor.W_RESIZE_CURSOR);
+    private static final Cursor CURSOR_DEFAULT = new Cursor(Cursor.DEFAULT_CURSOR);
+    private static final Cursor CURSOR_LEFT_HOOK = new Cursor(Cursor.E_RESIZE_CURSOR);
+    private static final Cursor CURSOR_CENTRAL_HOOK = new Cursor(Cursor.MOVE_CURSOR);
+    private static final Cursor CURSOR_RIGHT_HOOK = new Cursor(Cursor.W_RESIZE_CURSOR);
     private static final int LOC_RESIZE_FROM = 1;
     private static final int LOC_RESIZE_TO = 2;
     private static final int LOC_RESIZE_CENTER = 3;
     private static final int LOC_RESIZE_UNKNOWN = -1;
-    private static Locale LOCALE = Locale.ENGLISH;
     //Settings
-    private DrawerSettings settings = new DrawerSettings();
+    private final DrawerSettings settings = new DrawerSettings();
     //Flags
     private Integer latestMousePositionX = null;
     private int currentMousePositionX = 0;
-    private Timer viewToModelSync = null;
-    private Timer modelToViewSync = null;
     private boolean mouseInside = false;
     //Model
     private TimelineModel model;
     private TimelineController controller;
     //Ticks
-    private TickGraph tickGraph = new TickGraph();
+    private final TickGraph tickGraph = new TickGraph();
     //Sparkline
-    private Sparkline sparkline = new Sparkline();
+    private final Sparkline sparkline = new Sparkline();
     //Tooltip
-    private TimelineTooltip tooltip = new TimelineTooltip();
+    private final TimelineTooltip tooltip = new TimelineTooltip();
 
     public enum TimelineState {
 
@@ -206,7 +201,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
         int innerWidth = width - 1;
         int innerHeight = height - settings.tmMarginBottom - 2;
         int innerY = settings.tmMarginTop + 1;
-        if(settings.background.top != null) {
+        if (settings.background.top != null) {
             g2d.setColor(settings.background.top);
             g2d.fillRect(0, innerY, innerWidth, innerHeight);
         }
@@ -315,6 +310,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
 
     /**
      * Position of current x.
+     *
      * @param x current location
      * @param r width of slider
      * @return LOC_RESIZE_*
@@ -345,6 +341,36 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
     public void mouseClicked(MouseEvent e) {
         latestMousePositionX = e.getX();
         currentMousePositionX = latestMousePositionX;
+
+        //On double click in a left/right handle, set the interval to the min/max
+        if (e.getClickCount() == 2) {
+            int x = e.getX();
+            int r = settings.selection.visibleHookWidth + settings.selection.invisibleHookMargin;
+
+            int width = getWidth();
+            double min = model.getCustomMin();
+            double max = model.getCustomMax();
+            double intervalStart = model.getIntervalStart();
+            double intervalEnd = model.getIntervalEnd();
+
+            int sf = Math.max(0, getPixelPosition(intervalStart, max - min, min, width));
+            int st = Math.min(width, getPixelPosition(intervalEnd, max - min, min, width));
+
+            int position = inPosition(x, r, sf, st);
+            switch (position) {
+                case LOC_RESIZE_FROM:
+                    controller.setInterval(min, intervalEnd);
+                    break;
+                case LOC_RESIZE_CENTER:
+                    controller.setInterval(min, max);
+                    break;
+                case LOC_RESIZE_TO:
+                    controller.setInterval(intervalStart, max);
+                    break;
+            }
+
+            setInterval(model.getIntervalStart(), model.getIntervalEnd());
+        }
     }
 
     @Override
@@ -358,7 +384,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
         int r = settings.selection.visibleHookWidth + settings.selection.invisibleHookMargin;
 
         tooltip.stop();
-        
+
         int width = getWidth();
         double min = model.getCustomMin();
         double max = model.getCustomMax();
@@ -447,7 +473,6 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
         int sf = Math.max(0, getPixelPosition(intervalStart, max - min, min, width));
         int st = Math.min(width, getPixelPosition(intervalEnd, max - min, min, width));
 
-
         //Tooltip
         double pos = getReal(currentMousePositionX, max - min, min, width);
         tooltip.setModel(model);
@@ -455,12 +480,10 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
 
         // SELECTED ZONE BEGIN POSITION, IN PIXELS
         // int sf = (int) (model.getFromFloat() * (double) w);
-
         // SELECTED ZONE END POSITION, IN PIXELS
         //int st = (int) (model.getToFloat() * (double) w);
-
         HighlightedComponent old = highlightedComponent;
-        Cursor newCursor = null;
+        Cursor newCursor;
 
         int a = 0;//settings.selection.invisibleHookMargin;
 
@@ -497,7 +520,6 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
 
     @Override
     public void mouseDragged(MouseEvent evt) {
-
         if (model == null) {
             return;
         }
@@ -522,10 +544,8 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
 
         // SELECTED ZONE BEGIN POSITION, IN PIXELS
         // sf = (model.getFromFloat() * w);
-
         // SELECTED ZONE END POSITION, IN PIXELS
         //st = (model.getToFloat() * w);
-
         if (currentState == TimelineState.IDLE) {
             int position = inPosition(x, r, sf, st);
             switch (position) {
@@ -545,63 +565,40 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
                     break;
             }
         }
-        double delta = 0;
+        int deltaPx = 0;
         if (latestMousePositionX != null) {
-            delta = x - latestMousePositionX;
+            deltaPx = x - latestMousePositionX;
         }
         latestMousePositionX = x;
+
+        double deltaTimestamp = getReal(deltaPx, max - min, 0, width);
+        double newFrom = intervalStart;
+        double newTo = intervalEnd;
+
+        switch (currentState) {
+            case RESIZE_FROM:
+                //problem: moving the left part will crush the security zone
+                newFrom += deltaTimestamp;
+                break;
+            case RESIZE_TO:
+                newTo += deltaTimestamp;
+                break;
+            case MOVING:
+                newFrom += deltaTimestamp;
+                newTo += deltaTimestamp;
+                break;
+        }
 
         // minimal selection zone width (a security to not crush it!)
         int s = settings.selection.minimalWidth;
 
-        switch (currentState) {
-            case RESIZE_FROM:
-
-                //problem: moving the left part will crush the security zone
-                if ((sf + delta) >= (st - s)) {
-                    sf = st - s;
-                } else {
-                    if (sf + delta <= 0) {
-                        sf = 0;
-                    } else {
-                        sf += delta;
-                    }
-                }
-                break;
-            case RESIZE_TO:
-                if ((st + delta) <= (sf + s)) {
-                    st = sf + s;
-                } else {
-                    if ((st + delta >= width)) {
-                        st = width;
-                    } else {
-                        st += delta;
-                    }
-                }
-                break;
-            case MOVING:
-                // collision on the left..
-                if ((sf + delta) < 0) {
-                    st = (st - sf);
-                    sf = 0;
-                    // .. or the right
-                } else if ((st + delta) >= width) {
-                    sf = width - (st - sf);
-                    st = width;
-                } else {
-                    sf += delta;
-                    st += delta;
-                }
-                break;
-        }
-
-        if (width != 0) {
-            double from = getReal(sf, max - min, min, width);
-            double to = getReal(st, max - min, min, width);
-            from = Math.max(from, model.getCustomMin());
-            to = Math.min(to, model.getCustomMax());
-            if (from < to) {
-                controller.setInterval(from, to);
+        int sfNew = Math.max(0, getPixelPosition(newFrom, max - min, min, width));
+        int stNew = Math.min(width, getPixelPosition(newTo, max - min, min, width));
+        if (width != 0 && stNew - sfNew >= s) {
+            newFrom = Math.max(newFrom, model.getCustomMin());
+            newTo = Math.min(newTo, model.getCustomMax());
+            if (newFrom < newTo) {
+                controller.setInterval(newFrom, newTo);
             }
         }
     }
