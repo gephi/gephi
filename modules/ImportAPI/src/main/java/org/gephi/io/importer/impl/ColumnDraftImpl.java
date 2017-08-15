@@ -42,7 +42,11 @@
 package org.gephi.io.importer.impl;
 
 import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.TimeRepresentation;
+import org.gephi.graph.api.types.TimeMap;
+import org.gephi.graph.api.types.TimeSet;
 import org.gephi.io.importer.api.ColumnDraft;
+import org.gephi.io.importer.api.ContainerUnloader;
 
 public class ColumnDraftImpl implements ColumnDraft {
 
@@ -97,6 +101,38 @@ public class ColumnDraftImpl implements ColumnDraft {
     @Override
     public void setDefaultValueString(String value) {
         this.defaultValue = AttributeUtils.parse(value, typeClass);
+    }
+
+    @Override
+    public Class getResolvedTypeClass(ContainerUnloader container) {
+        TimeRepresentation timeRepresentation = container.getTimeRepresentation();
+        Class typeClassFinal = typeClass;
+        //Get final dynamic type:
+        if (dynamic && !TimeSet.class.isAssignableFrom(typeClassFinal) && !TimeMap.class.isAssignableFrom(typeClassFinal)) {
+            if (timeRepresentation.equals(TimeRepresentation.TIMESTAMP)) {
+                typeClassFinal = AttributeUtils.getTimestampMapType(typeClassFinal);
+            } else {
+                typeClassFinal = AttributeUtils.getIntervalMapType(typeClassFinal);
+            }
+        }
+
+        return typeClassFinal;
+    }
+
+    @Override
+    public Object getResolvedDefaultValue(ContainerUnloader container) {
+        Class resolvedTypeClass = getResolvedTypeClass(container);
+
+        Object resolvedDefaultValue = defaultValue;
+        if (resolvedDefaultValue != null && !resolvedTypeClass.isAssignableFrom(resolvedDefaultValue.getClass())) {
+            try {
+                resolvedDefaultValue = AttributeUtils.parse(resolvedDefaultValue.toString(), resolvedTypeClass);
+            } catch (Exception e) {
+                //Failed to parse
+            }
+        }
+        
+        return resolvedDefaultValue;
     }
 
     @Override

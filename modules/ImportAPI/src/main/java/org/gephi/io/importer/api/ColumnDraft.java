@@ -70,6 +70,14 @@ public interface ColumnDraft {
      * @return column's type
      */
     public Class getTypeClass();
+    
+    /**
+     * Gets the column's resolved (final) type taking into account the container settings and whether the column is dynamic or not.
+     *
+     * @param container Container
+     * @return column's final type
+     */
+    public Class getResolvedTypeClass(ContainerUnloader container);
 
     /**
      * Gets the column's default value.
@@ -77,6 +85,14 @@ public interface ColumnDraft {
      * @return default value or null if empty
      */
     public Object getDefaultValue();
+    
+    /**
+     * Gets the column's resolved (final) default value taking into account the container settings and whether the column is dynamic or not.
+     *
+     * @param container Container
+     * @return default value or null if empty
+     */
+    public Object getResolvedDefaultValue(ContainerUnloader container);
 
     /**
      * Returns true if this column is dynamic.

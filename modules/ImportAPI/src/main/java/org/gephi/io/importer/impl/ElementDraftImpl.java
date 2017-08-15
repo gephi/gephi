@@ -284,24 +284,21 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void parseAndSetValue(String key, String value) {
         ColumnDraft column = getColumn(key);
-        Class typeClass;
         if (column.isDynamic()) {
             if (container.getTimeRepresentation().equals(TimeRepresentation.INTERVAL)) {
                 if (container.getInterval() != null) {
                     parseAndSetValue(key, value, container.getInterval().getLow(), container.getInterval().getHigh());
                     return;
                 }
-                typeClass = AttributeUtils.getIntervalMapType(column.getTypeClass());
             } else {
                 if (container.getTimestamp() != null) {
                     parseAndSetValue(key, value, container.getTimestamp());
                     return;
                 }
-                typeClass = AttributeUtils.getTimestampMapType(column.getTypeClass());
             }
-        } else {
-            typeClass = column.getTypeClass();
         }
+
+        Class typeClass = column.getResolvedTypeClass(container);
         Object val = AttributeUtils.parse(value, typeClass);
         setValue(key, val);
     }
@@ -452,19 +449,12 @@ public abstract class ElementDraftImpl implements ElementDraft {
     //UTILITY
     protected void setAttributeValue(ColumnDraft column, Object value) throws Exception {
         int index = ((ColumnDraftImpl) column).getIndex();
-        Class typeClass = column.getTypeClass();
 
         if (!(value instanceof TimeSet)) {
             value = AttributeUtils.standardizeValue(value);
         }
-        
-        if (column.isDynamic() && !TimeSet.class.isAssignableFrom(typeClass)) {
-            if (container.getTimeRepresentation() == TimeRepresentation.INTERVAL) {
-                typeClass = AttributeUtils.getIntervalMapType(typeClass);
-            } else {
-                typeClass = AttributeUtils.getTimestampMapType(typeClass);
-            }
-        }
+
+        Class typeClass = column.getResolvedTypeClass(container);
 
         if (!value.getClass().equals(typeClass)) {
             throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");

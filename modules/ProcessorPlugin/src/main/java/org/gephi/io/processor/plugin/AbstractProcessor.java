@@ -109,18 +109,24 @@ public abstract class AbstractProcessor implements Processor {
         TimeRepresentation timeRepresentation = container.getTimeRepresentation();
         for (ColumnDraft col : columns) {
             if (!table.hasColumn(col.getId())) {
-                Class typeClass = col.getTypeClass();
-                //Get final dynamic type:
-                if (col.isDynamic() && !TimeSet.class.isAssignableFrom(typeClass) && !TimeMap.class.isAssignableFrom(typeClass)) {
-                    if (timeRepresentation.equals(TimeRepresentation.TIMESTAMP)) {
-                        typeClass = AttributeUtils.getTimestampMapType(typeClass);
-                    } else {
-                        typeClass = AttributeUtils.getIntervalMapType(typeClass);
-                    }
-                }
-
+                Class typeClass = col.getResolvedTypeClass(container);
+                
                 if (Attributes.isTypeAvailable(typeClass, timeRepresentation)) {
-                    table.addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, col.getDefaultValue(), !col.isDynamic());
+                    Object defaultValue = col.getResolvedDefaultValue(container);
+                    if (defaultValue != null && !typeClass.isAssignableFrom(defaultValue.getClass())) {
+                        String error = NbBundle.getMessage(
+                                AbstractProcessor.class, "AbstractProcessor.error.columnDefaultValueTypeMismatch",
+                                col.getId(),
+                                defaultValue.toString(),
+                                defaultValue.getClass().getSimpleName(),
+                                typeClass.getSimpleName()
+                        );
+
+                        report.logIssue(new Issue(error, Issue.Level.SEVERE));
+                        defaultValue = null;
+                    }
+
+                    table.addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, defaultValue, !col.isDynamic());
                 } else {
                     String error = NbBundle.getMessage(
                             AbstractProcessor.class, "AbstractProcessor.error.unavailableColumnType",
@@ -206,14 +212,7 @@ public abstract class AbstractProcessor implements Processor {
                 continue;
             }
 
-            Class columnDraftTypeClass = columnDraft.getTypeClass();
-            if (columnDraft.isDynamic() && !AttributeUtils.isDynamicType(columnDraftTypeClass)) {
-                if (container.getTimeRepresentation() == TimeRepresentation.INTERVAL) {
-                    columnDraftTypeClass = AttributeUtils.getIntervalMapType(columnDraftTypeClass);
-                } else {
-                    columnDraftTypeClass = AttributeUtils.getTimestampMapType(columnDraftTypeClass);
-                }
-            }
+            Class columnDraftTypeClass = columnDraft.getResolvedTypeClass(container);
 
             if (!column.getTypeClass().equals(columnDraftTypeClass)) {
                 if (!columnsTypeMismatchAlreadyWarned.contains(column)) {
@@ -325,17 +324,9 @@ public abstract class AbstractProcessor implements Processor {
         ColumnDraft weightColumnDraft = container.getEdgeColumn("weight");
 
         boolean weightColumnDraftIsDynamic = weightColumnDraft != null && weightColumnDraft.isDynamic();
-        Class columnDraftTypeClass = weightColumnDraft != null ? weightColumnDraft.getTypeClass() : Double.class;
 
         if (weightColumn.isDynamic() != weightColumnDraftIsDynamic) {
-            if (weightColumnDraftIsDynamic && !AttributeUtils.isDynamicType(columnDraftTypeClass)) {
-                if (container.getTimeRepresentation() == TimeRepresentation.INTERVAL) {
-                    columnDraftTypeClass = AttributeUtils.getIntervalMapType(columnDraftTypeClass);
-                } else {
-                    columnDraftTypeClass = AttributeUtils.getTimestampMapType(columnDraftTypeClass);
-                }
-            }
-
+            Class weightColumnDraftTypeClass = weightColumnDraft != null ? weightColumnDraft.getResolvedTypeClass(container): Double.class;
             if (!columnsTypeMismatchAlreadyWarned.contains(weightColumn)) {
                 columnsTypeMismatchAlreadyWarned.add(weightColumn);
 
@@ -343,7 +334,7 @@ public abstract class AbstractProcessor implements Processor {
                         AbstractProcessor.class, "AbstractProcessor.error.columnTypeMismatch",
                         weightColumn.getId(),
                         weightColumn.getTypeClass().getSimpleName(),
-                        columnDraftTypeClass.getSimpleName()
+                        weightColumnDraftTypeClass.getSimpleName()
                 );
 
                 report.logIssue(new Issue(error, Issue.Level.SEVERE));
