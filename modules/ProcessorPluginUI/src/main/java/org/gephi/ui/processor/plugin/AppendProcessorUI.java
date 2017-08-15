@@ -48,7 +48,7 @@ import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.ProcessorUI;
 import org.openide.util.lookup.ServiceProvider;
 
-@ServiceProvider(service = ProcessorUI.class, position = 2000)
+@ServiceProvider(service = ProcessorUI.class, position = 10000)
 public class AppendProcessorUI implements ProcessorUI {
 
     @Override

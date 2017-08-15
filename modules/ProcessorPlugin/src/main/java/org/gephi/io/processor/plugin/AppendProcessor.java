@@ -53,7 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = Processor.class, position = 20)
+@ServiceProvider(service = Processor.class, position = 100)
 public class AppendProcessor extends DefaultProcessor implements Processor {
 
     @Override
