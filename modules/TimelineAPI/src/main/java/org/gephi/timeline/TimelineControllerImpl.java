@@ -354,43 +354,15 @@ public class TimelineControllerImpl implements TimelineController {
         if (model != null) {
             if (!(model.getChart() == null && column == null)
                     || (model.getChart() != null && !model.getChart().getColumn().equals(column))) {
-                if (column != null && graphModel.getGraph().getAttribute(column) != null) {
+                if (column != null && graphModel.getGraph().getAttribute(column) == null) {
                     throw new IllegalArgumentException("Not a graph column");
                 }
                 Thread thread = new Thread(new Runnable() {
 
                     @Override
                     public void run() {
-                        TimelineChart chart = null;
                         Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraphVisible();
-                        if (column != null) {
-//                            DynamicType type = (DynamicType) graph.getAttributes().getValue(column.getIndex());
-//                            if (type != null) {
-//                                List<Interval> intervals = type.getIntervals(model.getCustomMin(), model.getCustomMax());
-//                                Number[] xs = new Number[intervals.size() * 2];
-//                                Number[] ys = new Number[intervals.size() * 2];
-//                                int i = 0;
-//                                Interval interval;
-//                                for (int j = 0; j < intervals.size(); j++) {
-//                                    interval = intervals.get(j);
-//                                    Number x = (Double) interval.getLow();
-//                                    Number y = (Number) interval.getValue();
-//                                    xs[i] = x;
-//                                    ys[i] = y;
-//                                    i++;
-//                                    if (j != intervals.size() - 1 && intervals.get(j + 1).getLow() < interval.getHigh()) {
-//                                        xs[i] = (Double) intervals.get(j + 1).getLow();
-//                                    } else {
-//                                        xs[i] = (Double) interval.getHigh();
-//                                    }
-//                                    ys[i] = y;
-//                                    i++;
-//                                }
-//                                if (xs.length > 0) {
-//                                    chart = new TimelineChartImpl(column, xs, ys);
-//                                }
-//                            }
-                        }
+                        TimelineChart chart = TimelineChartImpl.of(graph, column);
                         model.setChart(chart);
 
                         fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CHART, model, chart));
