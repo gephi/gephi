@@ -50,7 +50,6 @@ import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
-import org.joda.time.format.ISODateTimeFormat;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
@@ -67,6 +66,8 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
 
     private TimelineModel model;
     private TimelineController controller;
+    
+    private static final String DATE_TIME_FORMAT_HELP_TEXT = "ISO 8601";
 
     public CustomBoundsDialog() {
         initComponents();
@@ -83,10 +84,10 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
     public void setDefaults() {
         switch (model.getTimeFormat()) {
             case DATE:
-                minTextField.setText(AttributeUtils.printDate(model.getMin()));
-                maxTextField.setText(AttributeUtils.printDate(model.getMax()));
-                startTextField.setText(AttributeUtils.printDate(model.getMin()));
-                endTextField.setText(AttributeUtils.printDate(model.getMax()));
+                minTextField.setText(AttributeUtils.printDateTime(model.getMin()));
+                maxTextField.setText(AttributeUtils.printDateTime(model.getMax()));
+                startTextField.setText(AttributeUtils.printDateTime(model.getMin()));
+                endTextField.setText(AttributeUtils.printDateTime(model.getMax()));
                 break;
             case DATETIME:
                 minTextField.setText(AttributeUtils.printDateTime(model.getMin()));
@@ -113,10 +114,12 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
 
         switch (model.getTimeFormat()) {
             case DATE:
-                minTextField.setText(AttributeUtils.printDate(model.getCustomMin()));
-                maxTextField.setText(AttributeUtils.printDate(model.getCustomMax()));
-                startTextField.setText(AttributeUtils.printDate(model.getIntervalStart()));
-                endTextField.setText(AttributeUtils.printDate(model.getIntervalEnd()));
+                //Note: we can't just print a date or we might go below the minimum timestamp due to resolution loss
+                //and the user would face a validation error without having changed anything
+                minTextField.setText(AttributeUtils.printDateTime(model.getCustomMin()));
+                maxTextField.setText(AttributeUtils.printDateTime(model.getCustomMax()));
+                startTextField.setText(AttributeUtils.printDateTime(model.getIntervalStart()));
+                endTextField.setText(AttributeUtils.printDateTime(model.getIntervalEnd()));
                 break;
             case DATETIME:
                 minTextField.setText(AttributeUtils.printDateTime(model.getCustomMin()));
@@ -210,7 +213,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                         return false;
                     }
                 } catch (Exception ex) {
-                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", ISODateTimeFormat.dateTime()));
+                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", DATE_TIME_FORMAT_HELP_TEXT));
                     return false;
                 }
 
@@ -249,14 +252,14 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                 try {
                     AttributeUtils.parseDateTime(t);
                 } catch (Exception ex) {
-                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", ISODateTimeFormat.date()));
+                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", DATE_TIME_FORMAT_HELP_TEXT));
                     return false;
                 }
             } else if (model.getTimeFormat().equals(TimeFormat.DATETIME)) {
                 try {
                     AttributeUtils.parseDateTime(t);
                 } catch (Exception ex) {
-                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", ISODateTimeFormat.dateTime()));
+                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", DATE_TIME_FORMAT_HELP_TEXT));
                     return false;
                 }
             } else {

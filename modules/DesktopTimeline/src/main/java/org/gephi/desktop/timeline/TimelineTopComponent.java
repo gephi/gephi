@@ -274,6 +274,13 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (model != null) {
+                    //Bounds not set? Cannot play
+                    if (model.getMin() == model.getIntervalStart()
+                            && model.getMax() == model.getIntervalEnd()) {
+                        String helpMessage = NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.playButton.intevalNotSet");
+                        JOptionPane.showMessageDialog(null, helpMessage, helpMessage, JOptionPane.WARNING_MESSAGE);
+                    }
+
                     if (model.isPlaying() && !playButton.isSelected()) {
                         controller.stopPlay();
                     } else if (!model.isPlaying() && playButton.isSelected()) {
