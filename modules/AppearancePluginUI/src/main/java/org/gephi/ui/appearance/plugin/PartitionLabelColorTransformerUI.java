@@ -70,7 +70,7 @@ public class PartitionLabelColorTransformerUI implements TransformerUI {
 
     @Override
     public String getDisplayName() {
-        return NbBundle.getMessage(UniqueElementColorTransformerUI.class, "Attribute.partition.name");
+        return NbBundle.getMessage(PartitionLabelColorTransformerUI.class, "Attribute.partition.name");
     }
 
     @Override

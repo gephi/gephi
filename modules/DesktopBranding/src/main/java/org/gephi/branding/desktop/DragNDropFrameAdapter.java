@@ -100,7 +100,7 @@ public class DragNDropFrameAdapter {
                         try {
                             pc.openProject(file);
                         } catch (Exception ew) {
-                            ew.printStackTrace();
+                            Exceptions.printStackTrace(ew);
                             NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(DragNDropFrameAdapter.class, "DragNDropFrameAdapter.openGephiError"), NotifyDescriptor.WARNING_MESSAGE);
                             DialogDisplayer.getDefault().notify(msg);
                         }

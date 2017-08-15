@@ -44,6 +44,7 @@ package org.gephi.layout.plugin.openord;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import org.gephi.graph.api.Graph;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -171,7 +172,7 @@ public class Combine implements Runnable {
                 lock.wait();
             }
         } catch (InterruptedException ex) {
-            ex.printStackTrace();
+            Exceptions.printStackTrace(ex);
         }
     }
 }

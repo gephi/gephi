@@ -69,6 +69,7 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.modules.ModuleInfo;
 import org.openide.modules.SpecificationVersion;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
@@ -104,7 +105,7 @@ public class ReportController {
                             NotifyDescriptor.INFORMATION_MESSAGE));
                     return;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                 }
                 handle.finish();
                 DialogDisplayer.getDefault().notify(
@@ -163,7 +164,7 @@ public class ReportController {
             report.writeXml(document);
             return document;
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
         return null;
     }

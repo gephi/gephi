@@ -57,6 +57,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -162,7 +163,7 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
             writer.writeCharacters(editor.getAsText());
             writer.writeEndElement();
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
     }
 
@@ -316,7 +317,7 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
                             }
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Exceptions.printStackTrace(e);
                     }
                 } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
                     property = null;

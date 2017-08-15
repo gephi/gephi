@@ -157,7 +157,6 @@ public class ImporterPajek implements FileImporter, LongTask {
 
             reader.close();
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
         Progress.finish(progressTicket);

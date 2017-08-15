@@ -121,7 +121,7 @@ public final class WelcomeTopComponent extends JPanel {
                     try {
                         pc.openProject(file);
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        Exceptions.printStackTrace(ex);
                         NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.openGephiError"), NotifyDescriptor.WARNING_MESSAGE);
                         DialogDisplayer.getDefault().notify(msg);
                     }

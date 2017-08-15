@@ -58,6 +58,7 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -69,8 +70,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = OptionProcessor.class)
 public class CommandLineProcessor extends OptionProcessor {
 
-    private Option openOption = Option.defaultArguments();
-    private Option openOption2 = Option.additionalArguments('o', "open");
+    private final Option openOption = Option.defaultArguments();
+    private final Option openOption2 = Option.additionalArguments('o', "open");
     private final String MEMORY_ERROR;
     private static final String GEPHI_EXTENSION = "gephi";
 
@@ -114,7 +115,7 @@ public class CommandLineProcessor extends OptionProcessor {
                     try {
                         pc.openProject(file);
                     } catch (Exception ew) {
-                        ew.printStackTrace();
+                        Exceptions.printStackTrace(ew);
                         NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(CommandLineProcessor.class, "CommandLineProcessor.openGephiError"), NotifyDescriptor.WARNING_MESSAGE);
                         DialogDisplayer.getDefault().notify(msg);
                     }
@@ -134,7 +135,7 @@ public class CommandLineProcessor extends OptionProcessor {
             NotifyDescriptor nd = new NotifyDescriptor.Message(MEMORY_ERROR, NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(nd);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Exceptions.printStackTrace(ex);
             NotifyDescriptor nd = new NotifyDescriptor.Message("CommandLineParsing " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(nd);
         }

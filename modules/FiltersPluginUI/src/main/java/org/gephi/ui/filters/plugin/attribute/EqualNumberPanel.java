@@ -48,6 +48,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.plugin.attribute.AttributeEqualBuilder.EqualNumberFilter;
 import org.gephi.filters.spi.FilterProperty;
+import org.openide.util.Exceptions;
 import org.openide.util.WeakListeners;
 
 /**
@@ -68,7 +69,7 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
         try {
             match.setValue((Number) valueSpinner.getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
     }
 

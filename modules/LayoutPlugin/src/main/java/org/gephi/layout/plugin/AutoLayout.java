@@ -144,7 +144,7 @@ public class AutoLayout {
                         d.getProperty().setValue(val);
                     }
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    Exceptions.printStackTrace(ex);
                 }
             }
         }

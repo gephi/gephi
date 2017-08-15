@@ -45,6 +45,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.plugin.graph.KCoreBuilder.KCoreFilter;
 import org.gephi.filters.spi.FilterProperty;
+import org.openide.util.Exceptions;
 import org.openide.util.WeakListeners;
 
 /**
@@ -65,7 +66,7 @@ public class KCorePanel extends javax.swing.JPanel implements ChangeListener {
         try {
             k.setValue((Integer) degreeSpinner.getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
     }
 

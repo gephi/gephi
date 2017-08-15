@@ -68,6 +68,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicListUI;
 import org.gephi.appearance.api.Partition;
 import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -255,16 +256,8 @@ public class PartitionPanel extends javax.swing.JPanel {
                 method.invoke(ui);
                 list.revalidate();
                 list.repaint();
-            } catch (final SecurityException e) {
-                e.printStackTrace();
-            } catch (final NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (final IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (final IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (final InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Exceptions.printStackTrace(e);
             }
         }
     }

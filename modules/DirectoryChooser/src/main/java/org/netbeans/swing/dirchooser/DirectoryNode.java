@@ -51,6 +51,7 @@ import javax.swing.JFileChooser;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 
 /**
  * A directory tree node.
@@ -122,7 +123,7 @@ public class DirectoryNode extends DefaultMutableTreeNode {
 
             ArrayList files = getFiles(chooser);
 
-            if (files.size() == 0) {
+            if (files.isEmpty()) {
                 return false;
             }
 
@@ -137,7 +138,7 @@ public class DirectoryNode extends DefaultMutableTreeNode {
                         }
                         add(node);
                     } catch (NullPointerException t) {
-                        t.printStackTrace();
+                        Exceptions.printStackTrace(t);
                     }
                 }
             }

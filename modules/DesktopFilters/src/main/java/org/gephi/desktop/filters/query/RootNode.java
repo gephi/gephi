@@ -55,6 +55,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.nodes.NodeTransfer;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.datatransfer.PasteType;
@@ -88,10 +89,8 @@ public class RootNode extends AbstractNode {
                         return null;
                     }
                 };
-            } catch (UnsupportedFlavorException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            } catch (Exception ex) {
+                Exceptions.printStackTrace(ex);
             }
         } else if (dropNode != null && dropNode instanceof SavedQueryNode) {
             return new PasteType() {

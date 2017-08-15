@@ -115,13 +115,6 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 if (t instanceof OutOfMemoryError) {
                     return;
                 }
-//                t.printStackTrace();
-//                String message = t.getCause().getMessage();
-//                if (message == null || message.isEmpty()) {
-//                    message = t.getMessage();
-//                }
-//                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(message, NotifyDescriptor.WARNING_MESSAGE);
-//                DialogDisplayer.getDefault().notify(msg);
                 Exceptions.printStackTrace(t);
             }
         };

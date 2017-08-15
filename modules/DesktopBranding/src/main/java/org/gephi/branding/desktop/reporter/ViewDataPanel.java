@@ -47,6 +47,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.openide.util.Exceptions;
 import org.w3c.dom.Document;
 
 /**
@@ -68,7 +69,7 @@ public class ViewDataPanel extends javax.swing.JPanel {
             String xmlString = result.getWriter().toString();
             textArea.setText(xmlString);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Exceptions.printStackTrace(ex);
         }
     }
 

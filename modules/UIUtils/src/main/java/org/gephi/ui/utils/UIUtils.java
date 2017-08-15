@@ -63,6 +63,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicButtonListener;
 import javax.swing.table.JTableHeader;
+import org.openide.util.Exceptions;
 
 //Copied from org.netbeans.lib.profiler.ui
 public final class UIUtils {
@@ -543,10 +544,8 @@ public final class UIUtils {
         } else {
             try {
                 SwingUtilities.invokeAndWait(r);
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InvocationTargetException | InterruptedException e) {
+                Exceptions.printStackTrace(e);
             }
         }
     }

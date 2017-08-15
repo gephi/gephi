@@ -56,6 +56,7 @@ import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -173,7 +174,7 @@ public class EgoBuilder implements FilterBuilder {
                     FilterProperty.createProperty(this, Integer.class, "depth"),
                     FilterProperty.createProperty(this, Boolean.class, "self")};
             } catch (NoSuchMethodException ex) {
-                ex.printStackTrace();
+                Exceptions.printStackTrace(ex);
             }
             return new FilterProperty[0];
         }

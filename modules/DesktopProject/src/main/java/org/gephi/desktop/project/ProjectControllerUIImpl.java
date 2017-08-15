@@ -578,7 +578,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 try {
                     loadProject(gephiFile);
                 } catch (Exception ew) {
-                    ew.printStackTrace();
+                    Exceptions.printStackTrace(ew);
                     NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject.defaulterror"), NotifyDescriptor.WARNING_MESSAGE);
                     DialogDisplayer.getDefault().notify(msg);
                 }

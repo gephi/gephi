@@ -48,6 +48,7 @@ import com.jogamp.opengl.GLDrawableFactory;
 import com.jogamp.opengl.GLProfile;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
@@ -98,13 +99,13 @@ public class GraphicalConfiguration {
             //Pbuffer
             pBufferSupport = GLDrawableFactory.getDesktopFactory().canCreateGLPbuffer(device, profile);
 
-        } catch (final GraphicalConfigurationException exc) {
+        } catch (final GraphicalConfigurationException e) {
             messageDelivered = true;
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), exc.getMessage(), "Configuration", JOptionPane.WARNING_MESSAGE);
-                    exc.printStackTrace();
+                    JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), e.getMessage(), "Configuration", JOptionPane.WARNING_MESSAGE);
+                    Exceptions.printStackTrace(e);
                 }
             });
         }

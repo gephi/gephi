@@ -73,6 +73,7 @@ import javax.swing.WindowConstants;
 import javax.swing.text.View;
 import org.apache.commons.codec.binary.Base64;
 import org.openide.awt.StatusDisplayer;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
@@ -90,7 +91,7 @@ class ReportSelection implements Transferable {
         try {
             flavors.add(new DataFlavor("text/html;class=java.lang.String"));
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
+            Exceptions.printStackTrace(ex);
         }
     }
     private String html;
@@ -115,7 +116,7 @@ class ReportSelection implements Transferable {
                     BufferedImage image = ImageIO.read(file);
                     ImageIO.write((RenderedImage) image, "PNG", out);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                 }
                 byte[] imageBytes = out.toByteArray();
                 String base64String = Base64.encodeBase64String(imageBytes);
@@ -271,7 +272,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
                 pjob.print();
             }
         } catch (PrinterException e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
 }//GEN-LAST:event_printButtonActionPerformed
     private final String LAST_PATH = "SimpleHTMLReport_Save_Last_Path";
@@ -297,7 +298,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
                             StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveError", destinationFolder.getName()));
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Exceptions.printStackTrace(e);
                     }
                 }
             }, "SaveReportTask");
@@ -353,7 +354,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         try {
             toolkit.getSystemClipboard().setContents(new ReportSelection(this.mHTMLReport), null);
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
 
     }//GEN-LAST:event_copyButtonActionPerformed
@@ -408,7 +409,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
                 return Printable.NO_SUCH_PAGE;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
         return Printable.PAGE_EXISTS;
     }

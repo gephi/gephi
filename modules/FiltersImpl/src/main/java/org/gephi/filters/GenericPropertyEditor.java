@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import org.apache.commons.codec.binary.Base64;
+import org.openide.util.Exceptions;
 
 public class GenericPropertyEditor extends PropertyEditorSupport {
     
@@ -73,7 +74,7 @@ public class GenericPropertyEditor extends PropertyEditorSupport {
                 oos = new ObjectOutputStream(bos);
                 oos.writeObject(val);
             } catch (Exception e) {
-                e.printStackTrace();;
+                Exceptions.printStackTrace(e);
             } finally {
                 if (oos != null) {
                     try {
@@ -105,7 +106,7 @@ public class GenericPropertyEditor extends PropertyEditorSupport {
                 ois = new ObjectInputStream(bis);
                 val = ois.readObject();
             } catch (Exception e) {
-                e.printStackTrace();;
+                Exceptions.printStackTrace(e);
             } finally {
                 if (ois != null) {
                     try {

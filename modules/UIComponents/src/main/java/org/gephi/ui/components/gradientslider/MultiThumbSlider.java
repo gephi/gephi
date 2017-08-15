@@ -47,6 +47,7 @@ import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.openide.util.Exceptions;
 
 /** This JComponent resembles a <code>JSlider</code>, except there are
  * at least two thumbs.  A <code>JSlider</code> is designed to modify
@@ -188,7 +189,7 @@ public abstract class MultiThumbSlider extends JComponent {
             try {
                 ((ChangeListener) changeListeners.get(a)).stateChanged(new ChangeEvent(this));
             } catch (Throwable t) {
-                t.printStackTrace();
+                Exceptions.printStackTrace(t);
             }
         }
     }

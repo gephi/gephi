@@ -45,6 +45,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.gephi.filters.plugin.attribute.AttributeEqualBuilder.EqualBooleanFilter;
 import org.gephi.filters.spi.FilterProperty;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -74,7 +75,7 @@ public class EqualBooleanPanel extends javax.swing.JPanel implements ActionListe
         try {
             match.setValue(trueButton.isSelected());
         } catch (Exception e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
     }
 

@@ -50,6 +50,7 @@ import javax.swing.JToggleButton;
 import org.gephi.perspective.api.PerspectiveController;
 import org.gephi.perspective.spi.Perspective;
 import org.gephi.ui.utils.UIUtils;
+import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 
@@ -60,7 +61,7 @@ import org.openide.util.Lookup;
 public class BannerComponent extends javax.swing.JPanel {
 
     private transient JToggleButton[] buttons;
-    private transient PerspectiveController perspectiveController;
+    private final transient PerspectiveController perspectiveController;
 
     public BannerComponent() {
         initComponents();
@@ -81,7 +82,7 @@ public class BannerComponent extends javax.swing.JPanel {
                         java.net.URI uri = new java.net.URI("http://gephi.org");
                         desktop.browse(uri);
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        Exceptions.printStackTrace(ex);
                     }
                 }
 

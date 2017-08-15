@@ -62,6 +62,7 @@ import org.gephi.statistics.spi.StatisticsBuilder;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -167,7 +168,7 @@ public class StatisticsModelImpl implements StatisticsModel {
                 }
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Exceptions.printStackTrace(ex);
         }
         return builder.toString();
     }
@@ -189,7 +190,7 @@ public class StatisticsModelImpl implements StatisticsModel {
                     BufferedImage image = ImageIO.read(file);
                     ImageIO.write((RenderedImage) image, "PNG", out);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                 }
                 byte[] imageBytes = out.toByteArray();
                 String base64String = Base64.encodeBase64String(imageBytes);

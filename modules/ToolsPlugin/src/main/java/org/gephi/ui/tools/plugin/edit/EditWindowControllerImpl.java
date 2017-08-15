@@ -45,6 +45,7 @@ import javax.swing.SwingUtilities;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.api.EditWindowController;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.WindowManager;
 
@@ -115,7 +116,7 @@ public class EditWindowControllerImpl implements EditWindowController {
             try {
                 SwingUtilities.invokeAndWait(runnable);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                Exceptions.printStackTrace(ex);
             }
         }
         return runnable.open;

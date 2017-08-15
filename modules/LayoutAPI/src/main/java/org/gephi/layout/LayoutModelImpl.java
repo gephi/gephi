@@ -195,7 +195,7 @@ public class LayoutModelImpl implements LayoutModel {
                     savedProperties.put(new LayoutPropertyKey(p.getCanonicalName(), layout.getClass().getName()), value);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Exceptions.printStackTrace(e);
             }
         }
     }
@@ -214,7 +214,7 @@ public class LayoutModelImpl implements LayoutModel {
                     try {
                         property.getProperty().setValue(savedProperties.get(l));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Exceptions.printStackTrace(e);
                     }
                 }
             }

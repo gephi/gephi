@@ -237,7 +237,7 @@ public class PaletteManager {
                     Color[] colors = deserializeColors(cols);
                     recentPalette.addLast(new Palette(colors));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                 }
             } else {
                 break;
@@ -259,7 +259,7 @@ public class PaletteManager {
             try {
                 prefs.putByteArray(COLORS + i, serializeColors(palette.getColors()));
             } catch (Exception e) {
-                e.printStackTrace();
+                Exceptions.printStackTrace(e);
             }
             i++;
         }
@@ -267,17 +267,18 @@ public class PaletteManager {
 
     private byte[] serializeColors(Color[] colors) throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bos);
-        out.writeObject(colors);
-        out.close();
+        try (ObjectOutputStream out = new ObjectOutputStream(bos)) {
+            out.writeObject(colors);
+        }
         return bos.toByteArray();
     }
 
     private Color[] deserializeColors(byte[] colors) throws Exception {
         ByteArrayInputStream bis = new ByteArrayInputStream(colors);
-        ObjectInputStream in = new ObjectInputStream(bis);
-        Color[] array = (Color[]) in.readObject();
-        in.close();
+        Color[] array;
+        try (ObjectInputStream in = new ObjectInputStream(bis)) {
+            array = (Color[]) in.readObject();
+        }
         return array;
     }
 

@@ -53,6 +53,7 @@ import org.gephi.io.importer.plugin.database.EdgeListDatabaseImpl;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -108,15 +109,8 @@ public class EdgeListDatabaseManager {
                 if (unserialized != null) {
                     edgeListDatabases = unserialized;
                 }
-            } catch (java.io.InvalidClassException e) {
-            } catch (EOFException eofe) {
-                // Empty configuration: do nothing
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } catch (Exception e) {
+                Exceptions.printStackTrace(e);
             } finally {
                 if (is != null) {
                     try {
@@ -143,8 +137,7 @@ public class EdgeListDatabaseManager {
             ois = new ObjectOutputStream(databaseConfigurations.getOutputStream(lock));
             ois.writeObject(edgeListDatabases);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         } finally {
             if (ois != null) {
                 try {
