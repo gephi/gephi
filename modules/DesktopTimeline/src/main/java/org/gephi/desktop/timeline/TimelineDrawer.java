@@ -584,8 +584,17 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
                 newTo += deltaTimestamp;
                 break;
             case MOVING:
-                newFrom += deltaTimestamp;
-                newTo += deltaTimestamp;
+                if ((sf + deltaPx) < 0) {
+                    newTo = (newTo - newFrom);
+                    newFrom = min;
+                    // .. or the right
+                } else if ((st + deltaPx) >= width) {
+                    newFrom = max - (newTo - newFrom);
+                    newTo = max;
+                } else {
+                    newFrom += deltaTimestamp;
+                    newTo += deltaTimestamp;
+                }
                 break;
         }
 
