@@ -130,4 +130,8 @@ public class GraphicalConfiguration {
     public boolean isVboSupported() {
         return vboSupport;
     }
+
+    public boolean isIntelVendor() {
+        return vendor.toLowerCase().contains("intel");
+    }
 }

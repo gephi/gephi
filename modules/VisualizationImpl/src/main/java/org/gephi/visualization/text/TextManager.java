@@ -296,12 +296,22 @@ public class TextManager implements VizArchitecture {
 
         @Override
         public void initRenderer(Font font) {
-            renderer = new TextRenderer(font, antialised, fractionalMetrics, null, mipmap);
+            renderer = new TextRenderer(font, antialised, fractionalMetrics, null, shouldUseMipmapGeneration());
         }
 
         @Override
         public void reinitRenderer() {
-            renderer = new TextRenderer(renderer.getFont(), antialised, fractionalMetrics, null, mipmap);
+            renderer = new TextRenderer(renderer.getFont(), antialised, fractionalMetrics, null, shouldUseMipmapGeneration());
+        }
+
+        private boolean shouldUseMipmapGeneration() {
+            boolean doMipmap = mipmap;
+            if (drawable.getGraphicalConfiguration() != null && drawable.getGraphicalConfiguration().isIntelVendor()) {
+                //Disable mipmap generation in intel GPUs. See https://github.com/gephi/gephi/issues/1494 (Some label characters fade away when zooming out)
+                doMipmap = false;
+            }
+
+            return doMipmap;
         }
 
         @Override

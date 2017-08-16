@@ -251,6 +251,8 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         graphicalConfiguration = new GraphicalConfiguration();
         graphicalConfiguration.checkGeneralCompatibility(gl);
 
+        vizController.getTextManager().reinitRenderers();
+        
         //Reinit viewport, to ensure reshape to perform
         viewport = Buffers.newDirectIntBuffer(4);
 
