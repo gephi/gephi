@@ -58,6 +58,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.gephi.graph.api.Interval;
+import org.gephi.layout.plugin.AbstractLayout;
 import org.openide.util.Exceptions;
 
 /**
@@ -95,6 +96,8 @@ public class ForceAtlas2 implements Layout {
 
     @Override
     public void initAlgo() {
+        AbstractLayout.ensureSafeLayoutNodePositions(graphModel);
+        
         speed = 1.;
         speedEfficiency = 1.;
 

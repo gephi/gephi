@@ -41,7 +41,10 @@
  */
 package org.gephi.layout.plugin;
 
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 
@@ -81,5 +84,28 @@ public abstract class AbstractLayout implements Layout {
 
     public boolean isConverged() {
         return converged;
+    }
+
+    /**
+     * See https://github.com/gephi/gephi/issues/603 Nodes position to NaN on applied layout
+     *
+     * @param graphModel
+     */
+    public static void ensureSafeLayoutNodePositions(GraphModel graphModel) {
+        Graph graph = graphModel.getGraph();
+        NodeIterable nodesIterable = graph.getNodes();
+        for (Node node : nodesIterable) {
+            if (node.x() != 0 || node.y() != 0) {
+                nodesIterable.doBreak();
+                return;
+            }
+        }
+
+        //All at 0.0, init some random positions
+        nodesIterable = graph.getNodes();
+        for (Node node : nodesIterable) {
+            node.setX((float) ((0.01 + Math.random()) * 1000) - 500);
+            node.setY((float) ((0.01 + Math.random()) * 1000) - 500);
+        }
     }
 }

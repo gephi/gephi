@@ -101,6 +101,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
     @Override
     public void initAlgo() {
+        ensureSafeLayoutNodePositions(graphModel);
     }
 
     private double getEdgeWeight(Edge edge, boolean isDynamicWeight, Interval interval) {
