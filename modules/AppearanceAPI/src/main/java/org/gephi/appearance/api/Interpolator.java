@@ -152,12 +152,16 @@ public abstract class Interpolator {
                         + "all be in range [0,1]");
             }
 
+            if(px1 == 0 && px2 == 0) {
+                px2 += 0.01;//Fix numerical inestability with some small difference
+            }
+            
             // save control point data
             x1 = px1;
             y1 = py1;
             x2 = px2;
             y2 = py2;
-
+            
             // calc linearity/identity curve
             isCurveLinear = ((x1 == y1) && (x2 == y2));
 
