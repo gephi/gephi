@@ -13,6 +13,12 @@ source_file = modules/VisualizationImpl/src/main/resources/org/gephi/visualizati
 source_lang = en
 type = PROPERTIES
 
+[gephi.org-gephi-visualization-text]
+file_filter = modules/VisualizationImpl/src/main/resources/org/gephi/visualization/text/Bundle_<lang>.properties
+source_file = modules/VisualizationImpl/src/main/resources/org/gephi/visualization/text/Bundle.properties
+source_lang = en
+type = PROPERTIES
+
 [gephi.org-gephi-visualization-screenshot]
 file_filter = modules/VisualizationImpl/src/main/resources/org/gephi/visualization/screenshot/Bundle_<lang>.properties
 source_file = modules/VisualizationImpl/src/main/resources/org/gephi/visualization/screenshot/Bundle.properties
@@ -355,6 +361,18 @@ source_file = modules/ImportPluginUI/src/main/resources/org/gephi/ui/importer/pl
 source_lang = en
 type = PROPERTIES
 
+[gephi.org-gephi-ui-importer-plugin-spreadsheet]
+file_filter = modules/ImportPluginUI/src/main/resources/org/gephi/ui/importer/plugin/spreadsheet/Bundle_<lang>.properties
+source_file = modules/ImportPluginUI/src/main/resources/org/gephi/ui/importer/plugin/spreadsheet/Bundle.properties
+source_lang = en
+type = PROPERTIES
+
+[gephi.org-gephi-ui-importer-plugin-spreadsheet-wizard]
+file_filter = modules/ImportPluginUI/src/main/resources/org/gephi/ui/importer/plugin/spreadsheet/wizard/Bundle_<lang>.properties
+source_file = modules/ImportPluginUI/src/main/resources/org/gephi/ui/importer/plugin/spreadsheet/wizard/Bundle.properties
+source_lang = en
+type = PROPERTIES
+
 [gephi.org-gephi-io-importer-plugin]
 file_filter = modules/ImportPlugin/src/main/resources/org/gephi/io/importer/plugin/Bundle_<lang>.properties
 source_file = modules/ImportPlugin/src/main/resources/org/gephi/io/importer/plugin/Bundle.properties
@@ -364,6 +382,18 @@ type = PROPERTIES
 [gephi.org-gephi-io-importer-plugin-file]
 file_filter = modules/ImportPlugin/src/main/resources/org/gephi/io/importer/plugin/file/Bundle_<lang>.properties
 source_file = modules/ImportPlugin/src/main/resources/org/gephi/io/importer/plugin/file/Bundle.properties
+source_lang = en
+type = PROPERTIES
+
+[gephi.org-gephi-io-importer-plugin-file-spreadsheet]
+file_filter = modules/ImportPlugin/src/main/resources/org/gephi/io/importer/plugin/file/spreadsheet/Bundle_<lang>.properties
+source_file = modules/ImportPlugin/src/main/resources/org/gephi/io/importer/plugin/file/spreadsheet/Bundle.properties
+source_lang = en
+type = PROPERTIES
+
+[gephi.s-ephi-io-importer-plugin-file-spreadsheet-process]
+file_filter = modules/ImportPlugin/src/main/resources/org/gephi/io/importer/plugin/file/spreadsheet/process/Bundle_<lang>.properties
+source_file = modules/ImportPlugin/src/main/resources/org/gephi/io/importer/plugin/file/spreadsheet/process/Bundle.properties
 source_lang = en
 type = PROPERTIES
 
@@ -868,12 +898,6 @@ type = PROPERTIES
 [gephi.org-gephi-algorithms]
 file_filter = modules/AlgorithmsPlugin/src/main/resources/org/gephi/algorithms/Bundle_<lang>.properties
 source_file = modules/AlgorithmsPlugin/src/main/resources/org/gephi/algorithms/Bundle.properties
-source_lang = en
-type = PROPERTIES
-
-[gephi.org-gephi-visualization-text]
-file_filter = modules/VisualizationImpl/src/main/resources/org/gephi/visualization/text/Bundle_<lang>.properties
-source_file = modules/VisualizationImpl/src/main/resources/org/gephi/visualization/text/Bundle.properties
 source_lang = en
 type = PROPERTIES
 
