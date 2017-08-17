@@ -49,6 +49,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphObserver;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizArchitecture;
@@ -62,6 +63,7 @@ import org.gephi.visualization.octree.Octree;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.text.TextManager;
 import org.gephi.visualization.text.TextModelImpl;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -179,8 +181,8 @@ public class DataBridge implements VizArchitecture {
 
             graph.readLock();
             try {
-
-                boolean isView = !graph.getView().isMainView();
+                GraphView graphView = graph.getView();
+                boolean isView = !graphView.isMainView();
                 for (int i = 0; i < nodes.length; i++) {
                     NodeModel node = nodes[i];
                     if (node != null && (node.getNode().getStoreId() == -1 || (isView && !graph.contains(node.getNode())))) {
@@ -241,7 +243,7 @@ public class DataBridge implements VizArchitecture {
                     } else {
                         model = edges[id];
                     }
-                    float w = (float) edge.getWeight(graph.getView());
+                    float w = (float) edge.getWeight(graphView);
                     model.setWeight(w);
                     minWeight = Math.min(w, minWeight);
                     maxWeight = Math.max(w, maxWeight);
@@ -252,6 +254,9 @@ public class DataBridge implements VizArchitecture {
                     limits.setMaxWeight(maxWeight);
                     limits.setMinWeight(minWeight);
                 }
+            } catch (Throwable e) {
+                //Don't crash the whole visualization if some strange exception occurs
+                Exceptions.printStackTrace(e);
             } finally {
                 graph.readUnlockAll();
             }
