@@ -329,7 +329,6 @@ public class CompatibilityEngine extends AbstractEngine {
             rectangle.setBlocking(someSelection);
 
             if (vizController.getVizModel().isLightenNonSelectedAuto()) {
-
                 if (vizConfig.isLightenNonSelectedAnimation()) {
                     if (!anySelected && someSelection) {
                         //Start animation
@@ -369,7 +368,6 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void mouseMove() {
-
         //Selection
         if (vizConfig.isSelectionEnable() && rectangleSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
@@ -379,7 +377,7 @@ public class CompatibilityEngine extends AbstractEngine {
             }
         }
 
-        if (customSelection || currentSelectionArea.blockSelection()) {
+        if (customSelection || currentSelectionArea != null && currentSelectionArea.blockSelection()) {
             return;
         }
 
@@ -460,7 +458,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public List<NodeModel> getSelectedNodes() {
         List<NodeModel> selected = new ArrayList<>();
-        for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext();) {
+        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
             NodeModel nodeModel = itr.next();
             if (nodeModel.isSelected()) {
                 selected.add(nodeModel);
@@ -484,7 +482,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public List<Node> getSelectedUnderlyingNodes() {
         List<Node> selected = new ArrayList<>();
-        for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext();) {
+        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
             NodeModel nodeModel = itr.next();
             if (nodeModel.isSelected()) {
                 selected.add(nodeModel.getNode());
@@ -512,24 +510,24 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void selectObject(Model[] objs) {
-        resetSelection();
-
+        if (!customSelection) {
+            vizConfig.setRectangleSelection(false);
+            customSelection = true;
+        }
+        
         if (objs != null) {
-            if (!customSelection) {
-                vizConfig.setRectangleSelection(false);
-                customSelection = true;
-                configChanged = true;
-
-                forceHighlight();
-            }
-            
             for (Model mdl : objs) {
                 if (mdl != null) {
                     mdl.setSelected(true);
                     anySelected = true;
                 }
             }
+            
+            forceHighlight();
         }
+        
+        scheduler.requireUpdateSelection();
+        configChanged = true;
     }
 
     private void forceHighlight() {
@@ -548,12 +546,14 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void resetSelection() {
+        resetNodesSelection();
+        resetEdgesSelection();
+        
         customSelection = false;
         configChanged = true;
         anySelected = false;
-        
-        resetNodesSelection();
-        resetEdgesSelection();
+        vizConfig.setLightenNonSelected(false);
+        scheduler.requireUpdateSelection();
     }
     
     private void resetNodesSelection(){
@@ -593,6 +593,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (vizConfig.isCustomSelection()) {
             rectangleSelection = false;
             currentSelectionArea = null;
+            customSelection = true;
         } else if (vizConfig.isRectangleSelection()) {
             currentSelectionArea = new Rectangle();
             rectangleSelection = true;

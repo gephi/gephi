@@ -167,6 +167,7 @@ public class FilterThread extends Thread {
         if (running) {
             VisualizationController visController = Lookup.getDefault().lookup(VisualizationController.class);
             if (visController != null) {
+                visController.resetSelection();
                 visController.selectNodes(result.getNodes().toArray());
                 visController.selectEdges(result.getEdges().toArray());
             }

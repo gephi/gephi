@@ -80,9 +80,6 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
 
     public FiltersPanel() {
         initComponents();
-        //Hide for now as non-functional
-        selectButton.setVisible(false);
-
         //Toolbar
         Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
         toolbar.setBorder(b);
@@ -146,10 +143,13 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //filterButton.setSelected(false);
-                if (uiModel.getSelectedQuery() != null) {
-                    FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-                    controller.selectVisible(uiModel.getSelectedRoot());
+                FilterController controller = Lookup.getDefault().lookup(FilterController.class);
+                if (controller.getModel().isSelecting()) {
+                    controller.selectVisible(null);
+                } else {
+                    if (uiModel.getSelectedQuery() != null) {
+                        controller.selectVisible(uiModel.getSelectedRoot());
+                    }
                 }
             }
         });
@@ -191,15 +191,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 }
             }
         });
-        /*autoRefreshButton.addActionListener(new ActionListener() {
-
-        public void actionPerformed(ActionEvent e) {
-        if (filterModel.isAutoRefresh() != autoRefreshButton.isSelected()) {
-        FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-        controller.setAutoRefresh(autoRefreshButton.isSelected());
-        }
-        }
-        });*/
+        
         updateEnabled(false);
     }
 
@@ -242,7 +234,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
             @Override
             public void run() {
                 resetButton.setEnabled(enabled);
-                selectButton.setEnabled(enabled);
+                selectButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
                 filterButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
                 /*autoRefreshButton.setEnabled(enabled);*/
                 exportColumnButton.setEnabled(enabled && uiModel.getSelectedQuery() != null && filterModel.getCurrentQuery() != null);
@@ -267,16 +259,13 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                         filterButton.setSelected(false);
                         filterButton.setVisible(true);
                     }
-//                    filterButton.setSelected(filterModel.isFiltering());
-//                    selectButton.setSelected(filterModel.isSelecting());
-                    /*autoRefreshButton.setSelected(filterModel.isAutoRefresh());*/
+                    
+                    selectButton.setSelected(filterModel.isSelecting());
                 } else {
                     stopButton.setVisible(false);
                     filterButton.setVisible(true);
                     filterButton.setSelected(false);
-//                    filterButton.setSelected(false);
-//                    selectButton.setSelected(false);
-                    /*autoRefreshButton.setSelected(false);*/
+                    selectButton.setSelected(false);
                 }
             }
         });

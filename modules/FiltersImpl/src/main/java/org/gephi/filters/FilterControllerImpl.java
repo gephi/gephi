@@ -291,7 +291,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         } else {
             VisualizationController visController = Lookup.getDefault().lookup(VisualizationController.class);
             if (visController != null) {
-                visController.selectNodes(null);
+                visController.resetSelection();
             }
         }
     }
