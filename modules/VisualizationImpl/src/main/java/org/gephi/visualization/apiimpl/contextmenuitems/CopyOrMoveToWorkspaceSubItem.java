@@ -41,14 +41,18 @@
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.desktop.project.api.ProjectControllerUI;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -126,35 +130,53 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
 
     public boolean copyToWorkspace(Workspace workspace) {
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace currentWorkspace = projectController.getCurrentWorkspace();
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
-        GraphModel graphModel;
+        Workspace currentWorkspace = projectController.getCurrentWorkspace();
+        GraphModel currentGraphModel = graphController.getGraphModel(currentWorkspace);
+
+        GraphModel targetGraphModel;
         if (workspace == null) {
             workspace = Lookup.getDefault().lookup(ProjectControllerUI.class).newWorkspace();
-            graphModel = graphController.getGraphModel(workspace);
+            targetGraphModel = graphController.getGraphModel(workspace);
 
-            GraphModel currentGraphModel = graphController.getGraphModel(currentWorkspace);
-            graphModel.setConfiguration(currentGraphModel.getConfiguration());
-            graphModel.setTimeFormat(currentGraphModel.getTimeFormat());
-            graphModel.setTimeZone(currentGraphModel.getTimeZone());
+            targetGraphModel.setConfiguration(currentGraphModel.getConfiguration());
+            targetGraphModel.setTimeFormat(currentGraphModel.getTimeFormat());
+            targetGraphModel.setTimeZone(currentGraphModel.getTimeZone());
         } else {
-            graphModel = graphController.getGraphModel(workspace);
+            targetGraphModel = graphController.getGraphModel(workspace);
         }
 
+        currentGraphModel.getGraph().readLock();
         try {
-            graphModel.bridge().copyNodes(nodes);
+            targetGraphModel.bridge().copyNodes(nodes);
+            Graph targetGraph = targetGraphModel.getGraph();
+
+            Graph visibleCurrentGraph = currentGraphModel.getGraphVisible();
+            List<Edge> edgesToRemove = new ArrayList<>();
+            for (Edge edge : targetGraph.getEdges()) {
+                if (!visibleCurrentGraph.hasEdge(edge.getId())) {
+                    edgesToRemove.add(edge);
+                }
+            }
+
+            if (!edgesToRemove.isEmpty()) {
+                targetGraph.removeAllEdges(edgesToRemove);
+            }
+
             return true;
         } catch (Exception e) {
             String error = NbBundle.getMessage(CopyOrMoveToWorkspace.class, "GraphContextMenu_CopyOrMoveToWorkspace_ConfigurationNotCompatible");
             String title = NbBundle.getMessage(CopyOrMoveToWorkspace.class, "GraphContextMenu_CopyOrMoveToWorkspace_ConfigurationNotCompatible_Title");
             JOptionPane.showMessageDialog(null, error, title, JOptionPane.ERROR_MESSAGE);
             return false;
+        } finally {
+            currentGraphModel.getGraph().readUnlockAll();
         }
     }
 
     public void moveToWorkspace(Workspace workspace) {
-        if(copyToWorkspace(workspace)){
+        if (copyToWorkspace(workspace)) {
             delete();
         }
     }
