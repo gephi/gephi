@@ -54,6 +54,8 @@ public class OperatorQueryImpl extends AbstractQueryImpl {
     private final Operator operator;
     private boolean simple = false; //Simple when children are only NodeFilter/EdgeFilter leaves
 
+    private String customName = null;
+
     public OperatorQueryImpl(Operator predicate) {
         this.operator = (Operator) predicate;
     }
@@ -65,11 +67,15 @@ public class OperatorQueryImpl extends AbstractQueryImpl {
 
     @Override
     public String getName() {
+        if (customName != null) {
+            return customName;
+        }
         return operator.getName();
     }
 
     @Override
     public void setName(String name) {
+        customName = name;
     }
 
     @Override
