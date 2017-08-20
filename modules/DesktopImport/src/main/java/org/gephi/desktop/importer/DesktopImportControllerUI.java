@@ -51,6 +51,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +78,7 @@ import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.ProcessorUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.CharsetToolkit;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
@@ -130,13 +132,27 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     public void importFiles(FileObject[] fileObjects) {
         MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
 
+        fileObjects = Arrays.copyOf(fileObjects, fileObjects.length);
+
+        //Extract files if they are zipped:
+        for (int i = 0; i < fileObjects.length; i++) {
+            fileObjects[i] = ImportUtils.getArchivedFile(fileObjects[i]);
+            if (FileUtil.isArchiveArtifact(fileObjects[i])) {
+                try {
+                    //Copy the archived file so we never have problems converting it to a simple File during import:
+                    File tempDir = TempDirUtils.createTempDirectory();
+                    fileObjects[i] = FileUtil.copyFile(fileObjects[i], FileUtil.toFileObject(tempDir), fileObjects[i].getName());
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        }
+
         Reader[] readers = new Reader[fileObjects.length];
         FileImporter[] importers = new FileImporter[fileObjects.length];
         try {
             for (int i = 0; i < fileObjects.length; i++) {
                 FileObject fileObject = fileObjects[i];
-                fileObject = ImportUtils.getArchivedFile(fileObject);
-
                 importers[i] = controller.getFileImporter(fileObject);
 
                 if (importers[i] == null) {
@@ -213,14 +229,24 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                 if (importer instanceof FileImporter.FileAware) {
                     try (Reader reader = readers[i]) {
-                        File file;
+                        File file = null;
                         if (fileObjects != null) {
                             file = FileUtil.toFile(fileObjects[i]);
-                        } else {
+                        }
+
+                        if (file == null) {
                             //There is no source file but the importer needs it, create temporary copy:
-                            file = TempDirUtils.createTempDir().createFile("file_copy_" + i);
+                            String fileName = "tmp_file" + 1;
+                            String charset = "UTF-8";
+                            if (fileObjects != null && fileObjects[i] != null) {//Netbeans FileUtil.toFile bug returning null?? Try to recover:
+                                fileName = fileObjects[i].getNameExt();
+                                CharsetToolkit charsetToolkit = new CharsetToolkit(fileObjects[i].getInputStream());
+                                charset = charsetToolkit.getCharset().name();
+                            }
+
+                            file = TempDirUtils.createTempDir().createFile(fileName);
                             try (FileOutputStream fos = new FileOutputStream(file)) {
-                                FileUtil.copy(new ReaderInputStream(reader, "UTF-8"), fos);
+                                FileUtil.copy(new ReaderInputStream(reader, charset), fos);
                             }
                         }
 
