@@ -42,6 +42,8 @@
 package org.gephi.filters;
 
 import java.beans.PropertyEditorManager;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import org.gephi.filters.FilterThread.PropertyModifier;
 import org.gephi.filters.api.FilterController;
@@ -312,11 +314,11 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         }
         Column nodeCol = result.getModel().getNodeTable().getColumn("filter_" + title);
         if (nodeCol == null) {
-            nodeCol = result.getModel().getNodeTable().addColumn("filter_" + title, title, Boolean.class, Origin.DATA, Boolean.FALSE, false);
+            nodeCol = result.getModel().getNodeTable().addColumn("filter_" + title, title, Boolean.class, Origin.DATA, Boolean.FALSE, true);
         }
         Column edgeCol = result.getModel().getEdgeTable().getColumn("filter_" + title);
         if (edgeCol == null) {
-            edgeCol = result.getModel().getEdgeTable().addColumn("filter_" + title, title, Boolean.class, Origin.DATA, Boolean.FALSE, false);
+            edgeCol = result.getModel().getEdgeTable().addColumn("filter_" + title, title, Boolean.class, Origin.DATA, Boolean.FALSE, true);
         }
 
         result.writeLock();
@@ -365,6 +367,17 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 Workspace newWorkspace = pc.newWorkspace(pc.getCurrentProject());
                 GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(newWorkspace);
                 graphModel.bridge().copyNodes(graphView.getNodes().toArray());
+                Graph graph = graphModel.getGraph();
+                List<Edge> edgesToRemove = new ArrayList<>();
+                for (Edge edge : graph.getEdges()) {
+                    if(!graphView.hasEdge(edge.getId())){
+                        edgesToRemove.add(edge);
+                    }
+                }
+                if(!edgesToRemove.isEmpty()){
+                    graph.removeAllEdges(edgesToRemove);
+                }
+                
                 Progress.finish(ticket);
                 String workspaceName = newWorkspace.getLookup().lookup(WorkspaceInformation.class).getName();
                 //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToNewWorkspace.status", workspaceName));
