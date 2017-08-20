@@ -69,6 +69,13 @@ public interface Query {
      * @return query's name
      */
     public String getName();
+    
+    /**
+     * Sets the query name to a custom value
+     * 
+     * @param name Custom name
+     */
+    public void setName(String name);
 
     /**
      * Returns queries that are children of this query.

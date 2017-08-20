@@ -175,7 +175,7 @@ public class InterEdgesBuilder implements CategoryBuilder {
             Object destValue = partition.getValue(edge.getTarget(), graph);
             srcValue = srcValue == null ? NULL : srcValue;
             destValue = destValue == null ? NULL : destValue;
-            return parts.contains(srcValue) && parts.contains(destValue) && !srcValue.equals(destValue);
+            return parts.contains(srcValue) && parts.contains(destValue) && srcValue.equals(destValue);
         }
 
         @Override

@@ -203,6 +203,7 @@ public class QueryNode extends AbstractNode {
             FilterBuilder builder = filterController.getModel().getLibrary().getBuilder(filter);
 
             Query childQuery = filterController.createQuery(builder);
+            childQuery.setName(child.getName());
 
             Filter filterCopy = childQuery.getFilter();
             FilterProperty[] filterProperties = filter.getProperties();
@@ -212,7 +213,7 @@ public class QueryNode extends AbstractNode {
                     filterCopyProperties[i].setValue(filterProperties[i].getValue());
                 }
             }
-
+            
             if (parent == null) {
                 filterController.add(childQuery);
             } else {

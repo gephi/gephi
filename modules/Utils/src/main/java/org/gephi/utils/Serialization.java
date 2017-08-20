@@ -44,6 +44,12 @@ package org.gephi.utils;
 import java.awt.Font;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  * Class for serialization utils such as writing any object value to a String and retrieving it by String + class name.
@@ -52,13 +58,19 @@ import java.beans.PropertyEditorManager;
  */
 public class Serialization {
 
-    /**
-     * Converts any value to a serialized String. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
-     *
-     * @param value Value to serialize as String
-     * @return Result String or null if the value can't be serialized with a <code>PropertyEditor</code>
-     */
-    public static String getValueAsText(Object value) {
+    private final GraphModel graphModel;
+
+    public Serialization() {
+        this(null);
+    }
+
+    public Serialization(GraphModel graphModel) {
+        this.graphModel = graphModel;
+    }
+
+    private static final Serialization INSTANCE_WITHOUT_GRAPH_MODEL = new Serialization();
+
+    public String toText(Object value) {
         if (value == null) {
             return null;
         }
@@ -67,31 +79,55 @@ public class Serialization {
             return (String) value;
         }
 
-        Class valueClass = value.getClass();
+        return toText(value, value.getClass());
+    }
+
+    public String toText(Object value, Class valueClass) {
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof String) {
+            return (String) value;
+        }
+
         if (valueClass.equals(Font.class)) {
             Font f = (Font) value;
             return String.format("%s-%d-%d", f.getName(), f.getStyle(), f.getSize()); //bug 551877
-        } else if (isPrimitiveOrPrimitiveWrapper(valueClass) || Number.class.isAssignableFrom(valueClass)) {
+        } else if (isPrimitiveOrPrimitiveWrapper(valueClass) || (Number.class.isAssignableFrom(valueClass) && !Number.class.equals(valueClass))) {
             return String.valueOf(value);
         } else {
             PropertyEditor editor = PropertyEditorManager.findEditor(valueClass);
             if (editor != null) {
-                editor.setValue(value);
-                return editor.getAsText();
+                Method setGraphModelMethod = null;
+                try {
+                    setGraphModelMethod = editor.getClass().getMethod("setGraphModel", GraphModel.class);
+                    if (setGraphModelMethod != null) {
+                        setGraphModelMethod.invoke(editor, graphModel);
+                    }
+                } catch (Exception ex) {
+                    //NOOP
+                }
+
+                try {
+                    editor.setValue(value);
+                    return editor.getAsText();
+                } finally {
+                    if (setGraphModelMethod != null) {
+                        try {
+                            setGraphModelMethod.invoke(editor, (Object[]) null);
+                        } catch (Exception ex) {
+                            //NOOP
+                        }
+                    }
+                }
             } else {
                 return null;
             }
         }
     }
 
-    /**
-     * Deserializes a serialized String of the given class. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
-     *
-     * @param valueStr String to deserialize
-     * @param valueClass Class of the serialized value
-     * @return Deserialized value or null if it can't be deserialized with a <code>PropertyEditor</code>
-     */
-    public static Object readValueFromText(String valueStr, Class valueClass) {
+    public Object fromText(String valueStr, Class valueClass) {
         if (String.class.equals(valueClass)) {
             return valueStr;
         } else if (valueClass.equals(Font.class)) {
@@ -103,17 +139,70 @@ public class Serialization {
             }
         } else if (isPrimitiveOrPrimitiveWrapper(valueClass)) {
             return parsePrimitiveOrWrapper(valueClass, valueStr);
-        } else if (Number.class.isAssignableFrom(valueClass)) {
+        } else if (Number.class.isAssignableFrom(valueClass) && !Number.class.equals(valueClass)) {
             return NumberUtils.parseNumber(valueStr, valueClass);
         } else {
             PropertyEditor editor = PropertyEditorManager.findEditor(valueClass);
             if (editor != null) {
-                editor.setAsText(valueStr);
-                return editor.getValue();
+                Method setGraphModelMethod = null;
+                try {
+                    setGraphModelMethod = editor.getClass().getMethod("setGraphModel", GraphModel.class);
+                    if (setGraphModelMethod != null) {
+                        setGraphModelMethod.invoke(editor, graphModel);
+                    }
+                } catch (Exception ex) {
+                    //NOOP
+                }
+
+                try {
+                    editor.setAsText(valueStr);
+                    return editor.getValue();
+                } finally {
+                    if (setGraphModelMethod != null) {
+                        try {
+                            setGraphModelMethod.invoke(editor, (Object[]) null);
+                        } catch (Exception ex) {
+                            //NOOP
+                        }
+                    }
+                }
             } else {
                 return null;
             }
         }
+    }
+
+    /**
+     * Converts any value to a serialized String. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     *
+     * @param value Value to serialize as String
+     * @return Result String or null if the value can't be serialized with a <code>PropertyEditor</code>
+     */
+    public static String getValueAsText(Object value) {
+        return INSTANCE_WITHOUT_GRAPH_MODEL.toText(value);
+    }
+    
+    /**
+     * Converts any value to a serialized String. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     *
+     * @param value Value to serialize as String
+     * @param valueClass Class to use for the value
+     * @return Result String or null if the value can't be serialized with a <code>PropertyEditor</code>
+     */
+    public static String getValueAsText(Object value, Class valueClass) {
+        return INSTANCE_WITHOUT_GRAPH_MODEL.toText(value, valueClass);
+    }
+        
+
+    /**
+     * Deserializes a serialized String of the given class. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     *
+     * @param valueStr String to deserialize
+     * @param valueClass Class of the serialized value
+     * @return Deserialized value or null if it can't be deserialized with a <code>PropertyEditor</code>
+     */
+    public static Object readValueFromText(String valueStr, Class valueClass) {
+        return INSTANCE_WITHOUT_GRAPH_MODEL.fromText(valueStr, valueClass);
     }
 
     /**

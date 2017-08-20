@@ -109,12 +109,14 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public void addFirst(Query function) {
+        updateParameters(function);
         queries.addFirst(function);
         currentQuery = function;
         fireChangeEvent();
     }
 
     public void addLast(Query function) {
+        updateParameters(function);
         queries.addLast(function);
         fireChangeEvent();
     }
@@ -138,6 +140,8 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public void setSubQuery(Query query, Query subQuery) {
+        updateParameters(subQuery);
+        
         //Clean
         if (queries.contains(subQuery)) {
             queries.remove(subQuery);

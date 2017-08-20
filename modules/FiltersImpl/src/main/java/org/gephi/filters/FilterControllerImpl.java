@@ -168,7 +168,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             model.addFirst(absQuery);
 
             //Init filters with default graph
-            Graph graph = null;
+            Graph graph;
             if (model != null && model.getGraphModel() != null) {
                 graph = model.getGraphModel().getGraph();
             } else {
@@ -208,7 +208,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     public void setSubQuery(Query query, Query subQuery) {
         //Init subquery when new filter
         if (subQuery.getParent() == null && subQuery != model.getCurrentQuery()) {
-            Graph graph = null;
+            Graph graph;
             if (model != null && model.getGraphModel() != null) {
                 graph = model.getGraphModel().getGraph();
             } else {

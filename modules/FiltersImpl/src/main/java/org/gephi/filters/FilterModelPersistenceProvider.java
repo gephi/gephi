@@ -41,8 +41,6 @@
  */
 package org.gephi.filters;
 
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorManager;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
@@ -52,11 +50,10 @@ import javax.xml.stream.events.XMLEvent;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.*;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
+import org.gephi.utils.Serialization;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -123,6 +120,8 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
     }
 
     private void writeQuery(String code, XMLStreamWriter writer, FilterModelImpl model, Query query, int parentId) throws XMLStreamException {
+        Serialization serialization = new Serialization(model.getGraphModel());
+        
         writer.writeStartElement(code);
         int id = queryId++;
         writer.writeAttribute("id", String.valueOf(id));
@@ -133,11 +132,12 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
         FilterBuilder builder = model.getLibrary().getBuilder(filter);
         writer.writeAttribute("builder", builder.getClass().getName());
         writer.writeAttribute("filter", filter.getClass().getName());
+        writer.writeAttribute("name", query.getName());
 
         //Params
         for (int i = 0; i < query.getPropertiesCount(); i++) {
             FilterProperty prop = query.getFilter().getProperties()[i];
-            writeParameter(writer, i, prop);
+            writeParameter(writer, i, prop, serialization);
         }
 
         writer.writeEndElement();
@@ -147,20 +147,11 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
         }
     }
 
-    private void writeParameter(XMLStreamWriter writer, int index, FilterProperty property) {
+    private void writeParameter(XMLStreamWriter writer, int index, FilterProperty property, Serialization serialization) {
         try {
-            PropertyEditor editor = property.getPropertyEditor();
-            if (editor == null) {
-                editor = PropertyEditorManager.findEditor(property.getValueType());
-            }
-            if (editor == null) {
-                return;
-            }
-            Object val = property.getValue();
-            editor.setValue(val);
             writer.writeStartElement("parameter");
             writer.writeAttribute("index", String.valueOf(index));
-            writer.writeCharacters(editor.getAsText());
+            writer.writeCharacters(serialization.toText(property.getValue(), property.getValueType()));
             writer.writeEndElement();
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
@@ -168,6 +159,8 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
     }
 
     public void readXML(XMLStreamReader reader, FilterModelImpl model) throws XMLStreamException {
+        Serialization serialization = new Serialization(model.getGraphModel());
+        
         Map<Integer, Query> idMap = new HashMap<>();
         boolean end = false;
         while (reader.hasNext() && !end) {
@@ -180,7 +173,7 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
                 } else if ("query".equalsIgnoreCase(name)) {
                     String id = reader.getAttributeValue(null, "id");
                     String parent = reader.getAttributeValue(null, "parent");
-                    Query query = readQuery(reader, model);
+                    Query query = readQuery(reader, model, serialization);
                     if (query != null) {
                         idMap.put(Integer.parseInt(id), query);
                         if (parent != null) {
@@ -200,7 +193,7 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
                 } else if ("savedquery".equalsIgnoreCase(name)) {
                     String id = reader.getAttributeValue(null, "id");
                     String parent = reader.getAttributeValue(null, "parent");
-                    Query query = readQuery(reader, model);
+                    Query query = readQuery(reader, model, serialization);
                     if (query != null) {
                         idMap.put(Integer.parseInt(id), query);
                         if (parent != null) {
@@ -238,9 +231,10 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
         }
     }
 
-    private Query readQuery(XMLStreamReader reader, FilterModelImpl model) throws XMLStreamException {
+    private Query readQuery(XMLStreamReader reader, FilterModelImpl model, Serialization serialization) throws XMLStreamException {
         String builderClassName = reader.getAttributeValue(null, "builder");
         String filterClassName = reader.getAttributeValue(null, "filter");
+        String queryName = reader.getAttributeValue(null, "name");
         FilterBuilder builder = null;
         for (FilterBuilder fb : model.getLibrary().getLookup().lookupAll(FilterBuilder.class)) {
             if (fb.getClass().getName().equals(builderClassName)) {
@@ -255,6 +249,7 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
                 }
             }
         }
+
         if (builder == null) {
             for (CategoryBuilder catBuilder : Lookup.getDefault().lookupAll(CategoryBuilder.class)) {
                 for (FilterBuilder fb : catBuilder.getBuilders(model.getWorkspace())) {
@@ -283,6 +278,8 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
                 query = new FilterQueryImpl(builder, filter);
             }
 
+            query.setName(queryName);
+
             FilterProperty property = null;
             boolean end = false;
             while (reader.hasNext() && !end) {
@@ -295,27 +292,10 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
                     }
                 } else if (eventType.equals(XMLStreamReader.CHARACTERS) && property != null) {
                     try {
-                        PropertyEditor editor = property.getPropertyEditor();
-                        if (editor == null) {
-                            editor = PropertyEditorManager.findEditor(property.getValueType());
-                        }
-                        if (editor != null) {
-                            String textValue = reader.getText();
-
-                            if (editor instanceof AttributeColumnPropertyEditor) {
-                                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                                GraphModel graphModel = gc.getGraphModel(model.getWorkspace());
-                                ((AttributeColumnPropertyEditor) editor).setGraphModel(graphModel);
-                            }
-
-                            editor.setAsText(textValue);
-                            property.setValue(editor.getValue());
-                            model.updateParameters(query);
-
-                            if (editor instanceof AttributeColumnPropertyEditor) {
-                                ((AttributeColumnPropertyEditor) editor).setGraphModel(null);
-                            }
-                        }
+                        String textValue = reader.getText();
+                        Object value = serialization.fromText(textValue, property.getValueType());
+                        property.setValue(value);
+                        model.updateParameters(query);
                     } catch (Exception e) {
                         Exceptions.printStackTrace(e);
                     }

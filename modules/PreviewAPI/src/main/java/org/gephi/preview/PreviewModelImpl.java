@@ -392,7 +392,7 @@ public class PreviewModelImpl implements PreviewModel {
             String propertyName = property.getName();
             Object propertyValue = property.getValue();
             if (propertyValue != null) {
-                String text = Serialization.getValueAsText(propertyValue);
+                String text = Serialization.getValueAsText(propertyValue, property.getType());
                 if (text != null) {
                     writer.writeStartElement("previewproperty");
                     writer.writeAttribute("name", propertyName);
@@ -416,7 +416,7 @@ public class PreviewModelImpl implements PreviewModel {
             Object value = simpleValueEntry.getValue();
             if (value != null) {
                 Class clazz = value.getClass();
-                String text = Serialization.getValueAsText(value);
+                String text = Serialization.getValueAsText(value, clazz);
                 if (text != null) {
                     writer.writeStartElement("previewsimplevalue");
                     writer.writeAttribute("name", simpleValueEntry.getKey());

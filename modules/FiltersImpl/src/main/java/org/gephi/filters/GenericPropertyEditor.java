@@ -69,6 +69,7 @@ public class GenericPropertyEditor extends PropertyEditorSupport {
         if (val != null) {
             ByteArrayOutputStream bos = null;
             ObjectOutputStream oos = null;
+            //FIXME: using java serialization is a bit dangerous, change this but keep compatibility with old saved files
             try {
                 bos = new ByteArrayOutputStream();
                 oos = new ObjectOutputStream(bos);
