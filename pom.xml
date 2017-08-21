@@ -202,7 +202,7 @@
 
         <gephi.maven-antrun-plugin.version>1.8</gephi.maven-antrun-plugin.version>
 
-        <gephi.maven-assembly-plugin.version>3.0.0</gephi.maven-assembly-plugin.version>
+        <gephi.maven-assembly-plugin.version>3.1.0</gephi.maven-assembly-plugin.version>
 
         <gephi.maven-clean-plugin.version>3.0.0</gephi.maven-clean-plugin.version>
 
