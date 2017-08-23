@@ -476,7 +476,7 @@ public class Octree {
                     nodesLength = octant.nodesLength;
                 }
             }
-            return true;
+            return pointer != null;
         }
 
         @Override
@@ -530,7 +530,7 @@ public class Octree {
                     }
                 }
             }
-            return true;
+            return pointer != null;
         }
 
         @Override
