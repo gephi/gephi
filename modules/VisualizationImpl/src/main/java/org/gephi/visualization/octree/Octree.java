@@ -418,7 +418,7 @@ public class Octree {
                     nodesLength = octant.nodesLength;
                 }
             }
-            return true;
+            return pointer != null;
         }
 
         @Override
@@ -520,7 +520,7 @@ public class Octree {
                     pointer = edges[edgeId++];
                 }
                 if (pointer == null) {
-                    if (nodeItr.hasNext()) {
+                    if (nodeItr != null && nodeItr.hasNext()) {
                         NodeModel node = nodeItr.next();
                         edges = node.getEdges();
                         edgeLength = edges.length;
