@@ -229,7 +229,7 @@ public class Report {
 
     public Element writeXml(Document document) {
         Element reportE = document.createElement("report");
-        reportE.setAttribute("version", "0.9.1");
+        reportE.setAttribute("version", "0.9.2");
 
         //Date
         Element dateE = document.createElement("date");
