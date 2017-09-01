@@ -207,9 +207,7 @@ public class AutoLayout {
 
     private void verifiy() {
         float sum = 0;
-        for (LayoutScenario l : layouts) {
-            sum += l.ratio;
-        }
+        layouts.stream().map(l -> l.ratio).reduce(sum, (accumulator, _item) -> accumulator += _item);
         if (sum != 1) {
             throw new RuntimeException("Ratio sum is not 1");
         }

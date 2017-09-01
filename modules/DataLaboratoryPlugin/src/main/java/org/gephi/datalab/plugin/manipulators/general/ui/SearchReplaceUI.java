@@ -169,9 +169,9 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
 
         //Fill possible columns to search (first value is all columns):
         columnsToSearchComboBox.addItem(NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.allColumns"));
-        for (Column c : table) {
+        table.forEach(c -> {
             columnsToSearchComboBox.addItem(new ColumnWrapper(c));
-        }
+        });
     }
 
     private void refreshRegexPattern() {

@@ -242,8 +242,8 @@ public class SelectionManager implements VizArchitecture {
 
     private void fireChangeEvent() {
         ChangeEvent evt = new ChangeEvent(this);
-        for (ChangeListener l : listeners) {
+        listeners.forEach(l -> {
             l.stateChanged(evt);
-        }
+        });
     }
 }

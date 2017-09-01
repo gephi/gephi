@@ -149,9 +149,9 @@ public class WorkspaceInformationImpl implements WorkspaceInformation {
         if ((oldValue == null && newValue != null) || (oldValue != null && newValue == null)
                 || (oldValue != null && !oldValue.equals(newValue))) {
             PropertyChangeEvent event = new PropertyChangeEvent(this, eventName, oldValue, newValue);
-            for (PropertyChangeListener listener : listeners) {
+            listeners.forEach(listener -> {
                 listener.propertyChange(event);
-            }
+            });
         }
     }
 }

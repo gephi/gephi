@@ -368,9 +368,9 @@ public class AppearanceUIController {
 
     protected void firePropertyChangeEvent(String propertyName, Object oldValue, Object newValue) {
         AppearanceUIModelEvent event = new AppearanceUIModelEvent(this, propertyName, oldValue, newValue);
-        for (AppearanceUIModelListener listener : listeners) {
+        listeners.forEach(listener -> {
             listener.propertyChange(event);
-        }
+        });
     }
 
     private class GraphChangeObserver extends TimerTask {

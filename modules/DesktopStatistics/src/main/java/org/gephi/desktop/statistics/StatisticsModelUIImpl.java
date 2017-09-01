@@ -161,9 +161,9 @@ public class StatisticsModelUIImpl implements StatisticsModelUI {
 
     public void fireChangeEvent() {
         ChangeEvent evt = new ChangeEvent(this);
-        for (ChangeListener listener : listeners) {
+        listeners.forEach(listener -> {
             listener.stateChanged(evt);
-        }
+        });
     }
 
     public Workspace getWorkspace() {

@@ -90,7 +90,7 @@ public class ManageColumnEstimators implements PluginGeneralActionsManipulator {
         return NbBundle.getMessage(ManageColumnEstimators.class, "ManageColumnEstimators.description");
     }
     
-    public List<Column> getColumns(){
+    public List<Column> getColumns() {
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
         
         Table table;
@@ -101,11 +101,9 @@ public class ManageColumnEstimators implements PluginGeneralActionsManipulator {
         }
         
         List<Column> availableColumns = new ArrayList<>();
-        for (Column column : table) {
-            if(TimeMap.class.isAssignableFrom(column.getTypeClass())){
+        table.stream().filter(column -> TimeMap.class.isAssignableFrom(column.getTypeClass())).forEach(column -> {
                 availableColumns.add(column);
-            }
-        }
+        });
         return availableColumns;
     }
 

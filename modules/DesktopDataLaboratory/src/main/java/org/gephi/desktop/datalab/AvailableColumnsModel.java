@@ -119,11 +119,9 @@ public class AvailableColumnsModel {
      */
     public Column[] getAvailableColumns() {
         List<Column> availableColumnsList = new ArrayList<>();
-        for (Column column : table) {
-            if(availableColumns.contains(column)){
+        table.stream().filter(column -> availableColumns.contains(column)).forEach(column -> {
                 availableColumnsList.add(column);
-            }
-        }
+            });
         return availableColumnsList.toArray(new Column[0]);
     }
 
@@ -144,12 +142,11 @@ public class AvailableColumnsModel {
         
         //Note: We need to remove all columns and add them all again because there could be a new column with the same title but different index 
         //if the old one with the same title was removed, and we should not keep the old column with same title.
-        for (Column column : table) {
-            if (availableColumnsCopy.contains(column) || !allKnownColumns.contains(column)) {
-                allKnownColumns.add(column);
-
-                addAvailableColumn(column);
-            }
-        }
+        table.stream().filter(column -> availableColumnsCopy.contains(column) || !allKnownColumns.contains(column)).map(column -> {
+            allKnownColumns.add(column);
+            return column;
+        }).forEach(column -> {
+            addAvailableColumn(column);
+        });
     }
 }
