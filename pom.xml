@@ -1114,6 +1114,17 @@
             </build>
         </profile>
         
+        <!-- Profile that disable doclint for now as Javadoc is much more strict in 1.8 -->
+        <profile>
+            <id>javadoc18</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <gephi.javadoc.opts>-Xdoclint:none</gephi.javadoc.opts>
+            </properties>
+        </profile>
+        
         <!-- Profile to create Javadoc -->
         <profile>
             <id>create-javadoc</id>
@@ -1158,6 +1169,7 @@
                             <detectLinks>false</detectLinks>
                             <detectOfflineLinks>true</detectOfflineLinks>   
                             <quiet>true</quiet>   
+                            <additionalparam>${gephi.javadoc.opts}</additionalparam>
                         </configuration>
                         <executions>
                             <execution> 
@@ -1258,17 +1270,6 @@
             </properties>
         </profile>
         
-        <!-- Profile that disable doclint for now as Javadoc is much more strict in 1.8 -->
-        <profile>
-            <id>javadoc18</id>
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-            <properties>
-                <additionalparam>-Xdoclint:none</additionalparam>
-            </properties>
-        </profile>
-
         <!-- Profile activated for windows/macos release only. Should be called alone so it only creates the windows installer/compressed dmg -->
         <profile>
             <id>release-extra</id>
