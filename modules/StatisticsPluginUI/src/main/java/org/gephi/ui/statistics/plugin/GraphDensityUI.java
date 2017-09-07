@@ -52,9 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsUI.class)
 public class GraphDensityUI implements StatisticsUI {
 
-    /** */
     private GraphDensityPanel panel;
-    /** */
     private GraphDensity graphDensity;
 
     @Override
