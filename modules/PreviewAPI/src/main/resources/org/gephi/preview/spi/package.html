@@ -1,50 +1,84 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN">
 <html>
-    <body bgcolor="white">
-        Interfaces for creating new renderers, item builders and render targets.
+    <head>
+        <title>org.gephi.preview.spi</title>
+    </head>
+    <body>
+        <p>
+            Interfaces for creating new renderers, item builders and render targets.
+        </p>
         <h3>Create a new Item Builder</h3>
-        <ol><li>Create a new module and set <code>Preview API</code>, 
+        <ol>
+            <li>
+                Create a new module and set <code>Preview API</code>, 
                 <code>Graph API</code>, <code>AttributesAPI</code> and 
-                <code>Lookup</code> as dependencies.</li>
-            <li>Create a new item class which implements <code>Item</code> or 
+                <code>Lookup</code> as dependencies.
+            </li>
+            <li>
+                Create a new item class which implements <code>Item</code> or 
                 extends <code>AbstractItem</code>. The <code>AbstractItem</code>
                 class is located in the <code>PreviewPlugin</code> module so add
                 it as dependency first. An item should be very simple but has a
-                unique identifier returned by its <code>getType()</code> method.</li>
-            <li>Create a new builder class that implements <code>ItemBuilder</code></li>
-            <li>Implement the <code>getType()</code> method and returns the <b>same</b>
-                identifier than the <code>Item</code> you created earlier.</li>
-            <li>Implement the <code>getItems()</code> method by retrieving objects
-                from the given graph.</li>
-            <li>Add <b>@ServiceProvider</b> annotation to your builder, that it can
+                unique identifier returned by its <code>getType()</code> method.
+            </li>
+            <li>
+                Create a new builder class that implements <code>ItemBuilder</code>
+            </li>
+            <li>
+                Implement the <code>getType()</code> method and returns the <b>same</b>
+                identifier than the <code>Item</code> you created earlier.
+            </li>
+            <li>
+                Implement the <code>getItems()</code> method by retrieving objects
+                from the given graph.
+            </li>
+            <li>
+                Add <b>@ServiceProvider</b> annotation to your builder, that it can
                 be found by the system. Set <code>ItemBuilder</code> as the
-                annotation parameter.</li>
+                annotation parameter.
+            </li>
         </ol>
         <h3>Create a new Renderer</h3>
-        <ol><li>Create a new module and set <code>Preview API</code>, 
+        <ol>
+            <li>
+                Create a new module and set <code>Preview API</code>, 
                 <code>GraphAPI</code>, <code>Processing Wrapper</code>, 
-                <code>iText Wrapper</code> and <code>Lookup</code> as dependencies.</li>
-            <li>Create a new class that implements <code>Renderer</code>.</li>
-            <li>Implement the renderer methods. </li>
-            <li>Add <b>@ServiceProvider</b> annotation to your builder, that it can
+                <code>iText Wrapper</code> and <code>Lookup</code> as dependencies.
+            </li>
+            <li>
+                Create a new class that implements <code>Renderer</code>.
+            </li>
+            <li>
+                Implement the renderer methods.
+            </li>
+            <li>
+                Add <b>@ServiceProvider</b> annotation to your builder, that it can
                 be found by the system. Set <code>Renderer</code> as the
-                annotation parameter.</li>
+                annotation parameter.
+            </li>
         </ol>
         <h3>Add data to an existing item</h3>
-        To add an additional data attribute to a Node or Edge item, you need to create
-        a new item builder for the specific type. For instance if one want to add
-        a new attribute to nodes create a new <code>ItemBuilder</code> for the
-        type <code>Item.Node</code>. Simply return item objects with the data you
-        want to add. The system will automatically merge your new data to node items.
+        <p>
+            To add an additional data attribute to a Node or Edge item, you need to create
+            a new item builder for the specific type. For instance if one want to add
+            a new attribute to nodes create a new <code>ItemBuilder</code> for the
+            type <code>Item.Node</code>. Simply return item objects with the data you
+            want to add. The system will automatically merge your new data to node items.
+        </p>
         <h3>Extend or replace an existing renderer</h3>
-        <p>To extend or completely replace a default Renderer by your own implementation, 
-        create a new Renderer and set the annotation like below. In addition add Preview Plugin module as a dependency.
-        </p><pre>@ServiceProvider(service=Renderer.class, position=XXX)
+        <p>
+            To extend or completely replace a default Renderer by your own implementation, 
+            create a new Renderer and set the annotation like below. In addition add Preview Plugin module as a dependency.
+        </p>
+        <pre>@ServiceProvider(service=Renderer.class, position=XXX)
         public class MyRenderer extends NodeRenderer
         </pre>
-        <p>Being XXX the new position of the renderer
-        Then you can reuse parts of the base class or just override them.
-        </p><p>Default renderers are:
+        <p>
+            Being XXX the new position of the renderer
+            Then you can reuse parts of the base class or just override them.
+        </p>
+        <p>
+            Default renderers are:
         </p>
         <ul>
             <li> org.gephi.preview.plugin.renderers.NodeRenderer</li>
@@ -54,15 +88,24 @@
             <li> org.gephi.preview.plugin.renderers.ArrowRenderer</li>
         </ul>
         <h3>Add a new PreviewUI settings panel</h3>
-        Plug-ins can add UI components to the Preview Settings module. Additional components are placed in new tabs and have access to the
-        current <code>PreviewModel</code> and therefore <code>PreviewProperties</code>.
-        <ol><li>Create a new module and set <code>Preview API</code> and 
-                <code>Lookup</code> as dependencies.</li>
-            <li>Create a new class that implements <code>PreviewUI</code> and implements
-                methods.</li>
-            <li>Add <b>@ServiceProvider</b> annotation to your builder, that it can
+        <p>
+            Plug-ins can add UI components to the Preview Settings module. Additional components are placed in new tabs and have access to the
+            current <code>PreviewModel</code> and therefore <code>PreviewProperties</code>.
+        </p>
+        <ol>
+            <li>
+                Create a new module and set <code>Preview API</code> and 
+                <code>Lookup</code> as dependencies.
+            </li>
+            <li>
+                Create a new class that implements <code>PreviewUI</code> and implements
+                methods.
+            </li>
+            <li>
+                Add <b>@ServiceProvider</b> annotation to your builder, that it can
                 be found by the system. Set <code>PreviewUI</code> as the
-                'service' annotation parameter.</li>
+                'service' annotation parameter.
+            </li>
         </ol>
     </body>
 </html>

@@ -1,17 +1,32 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN">
 <html>
-    <body bgcolor="white">
-        Generator interfaces that plugins implement to add new generators.
+    <head>
+        <title>org.gephi.io.generator.spi</title>
+    </head>
+    <body>
+        <p>
+            Generator interfaces that plugins implement to add new generators.
+        </p>
         <h3>Create a new Generator</h3>
-        <ol><li>Create a new module, and set <code>GeneratorAPI</code> as a dependency.</li>
-            <li>Create a new class that implements <code>Generator</code>. Because
+        <ol>
+            <li>
+                Create a new module, and set <code>GeneratorAPI</code> as a dependency.
+            </li>
+            <li>
+                Create a new class that implements <code>Generator</code>. Because
                 <code>Generator</code> interface extends <code>LongTask</code>, add
-                <code>LongTaskAPI</code> as another of your module dependency.</li>
-            <li>Add <b>@ServiceProvider</b> annotation to your class to declare
+                <code>LongTaskAPI</code> as another of your module dependency.
+            </li>
+            <li>
+                Add <b>@ServiceProvider</b> annotation to your class to declare
                 you are implementing a Generator service. Put <code>Generator.class</code>
-                as the annotation <b>service</b> parameter.</li>
-            <li>Implement <code>GeneratorUI</code> if your generator needs
+                as the annotation <b>service</b> parameter.
+            </li>
+            <li>
+                Implement <code>GeneratorUI</code> if your generator needs
                 a settings panel and return it from <code>getUI()</code>
-                method.</li></ol>
+                method.
+            </li>
+        </ol>
     </body>
 </html>

@@ -1,27 +1,52 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN">
 <html>
-    <body bgcolor="white">
-        Interfaces for creating new perspectives and perspective members.
+    <head>
+        <title>org.gephi.perspective.spi</title>
+    </head>
+    <body>
+        <p>
+            Interfaces for creating new perspectives and perspective members.
+        </p>
         <h3>Create a new Perspective</h3>
-        <ol><li>Create a new module and set <code>Perspective API</code>,
-                and <code>Lookup API</code> as dependencies.</li>
-            <li>Create a new implementation of perspective and fill methods.</li>
-            <li>Add <code>@ServiceProvider</code> annotation to your class to be found by
-                the system, like <b>@ServiceProvider(service = Perspective.class, position = 500)</b>.</li>
-            <li>Set the position to define the order of appearance, Overview is 100, Preview is 300.</li>
+        <ol>
+            <li>
+                Create a new module and set <code>Perspective API</code>,
+                and <code>Lookup API</code> as dependencies.
+            </li>
+            <li>
+                Create a new implementation of perspective and fill methods.
+            </li>
+            <li>
+                Add <code>@ServiceProvider</code> annotation to your class to be found by
+                the system, like <b>@ServiceProvider(service = Perspective.class, position = 500)</b>.
+            </li>
+            <li>
+                Set the position to define the order of appearance, Overview is 100, Preview is 300.
+            </li>
         </ol>
         <h3>HowTo attach a TopComponent to a perspective</h3>
-        <ol><li>Create a new class which implements the <code>PerspectiveMember</code> interface</li>
-            <li>Implement the <code>isMemberOf()</code> method. Simply test if the given
+        <ol>
+            <li>
+                Create a new class which implements the <code>PerspectiveMember</code> interface
+            </li>
+            <li>
+                Implement the <code>isMemberOf()</code> method. Simply test if the given
                 perspective is the one you want to attach the component. For default perspectives, first
                 add a dependency to the <code>DesktopPerspective</code> module and then for instance with preview:
-                <pre>public boolean isMemberOf(Perspective perspective) {
+                <pre>              
+public boolean isMemberOf(Perspective perspective) {
     return perspective instanceof PreviewPerspective;
-}</pre></li>
-            <li>Return the unique <code>TopComponent</code> identifier for the <code>getTopComponentId()</code>
-                method. The identifier is defined in the <code>TopComponent</code> annotations.</li>
-            <li>Add <code>@ServiceProvider</code> annotation to your class to be found by
-                the system, like <b>@ServiceProvider(service = PerspectiveMember.class)</b>.</li>
+}
+                </pre>
+            </li>
+            <li>
+                Return the unique <code>TopComponent</code> identifier for the <code>getTopComponentId()</code>
+                method. The identifier is defined in the <code>TopComponent</code> annotations.
+            </li>
+            <li>
+                Add <code>@ServiceProvider</code> annotation to your class to be found by
+                the system, like <b>@ServiceProvider(service = PerspectiveMember.class)</b>.
+            </li>
         </ol>
     </body>
 </html>

@@ -1,13 +1,19 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN">
 <html>
-    <body bgcolor="white">
-        API for importing data from any support.
+    <head>
+        <title>org.gephi.io.importer.api</title>
+    </head>
+    <body>
+        <p>
+            API for importing data from any support.
+        </p>
         <p>
             This API defines a <b>secure import flow</b>, that allows to import data in
             a container, then checks the container for data consistency and finally
             process data and appended them to <code>GraphAPI</code>.
         </p>
-        <p>See <code>org.gephi.io.importer.spi</code> package for defining new
+        <p>
+            See <code>org.gephi.io.importer.spi</code> package for defining new
             importers and <code>org.gephi.io.processor.spi</code> for processors.
             Processors come after importers and are responsible for appending
             import results.</p>
