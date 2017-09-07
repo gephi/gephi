@@ -1168,7 +1168,7 @@
                             <nohelp>true</nohelp>
                             <detectLinks>false</detectLinks>
                             <detectOfflineLinks>true</detectOfflineLinks>   
-                            <quiet>true</quiet>   
+                            <quiet>false</quiet>   
                             <additionalparam>${gephi.javadoc.opts}</additionalparam>
                         </configuration>
                         <executions>
