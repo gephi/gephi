@@ -206,7 +206,7 @@
 
         <gephi.maven-clean-plugin.version>3.0.0</gephi.maven-clean-plugin.version>
 
-        <gephi.maven-compiler-plugin.version>3.6.2</gephi.maven-compiler-plugin.version>
+        <gephi.maven-compiler-plugin.version>3.7.0</gephi.maven-compiler-plugin.version>
 
         <gephi.maven-dependency-plugin.version>3.0.1</gephi.maven-dependency-plugin.version>
 
@@ -222,7 +222,7 @@
 
         <gephi.maven-jarsigner-plugin.version>1.4</gephi.maven-jarsigner-plugin.version>
 
-        <gephi.maven-javadoc-plugin.version>2.10.4</gephi.maven-javadoc-plugin.version> 
+        <gephi.maven-javadoc-plugin.version>3.0.0-M1</gephi.maven-javadoc-plugin.version> 
 
         <gephi.maven-license-plugin.version>1.9.0</gephi.maven-license-plugin.version>
 
