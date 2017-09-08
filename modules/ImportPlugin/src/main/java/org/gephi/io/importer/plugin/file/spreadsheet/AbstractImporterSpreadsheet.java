@@ -130,12 +130,12 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
                 default:
                     throw new IllegalArgumentException("Unknown mode " + getMode());
             }
-            
+
             importer.execute();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
-            if(importer != null){
+            if (importer != null) {
                 report.append(importer.getReport());
                 importer = null;
             }
@@ -204,7 +204,7 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
                     }
                 }
             }
-            
+
             if (mode == null) {
                 //Default adjacency list:
                 mode = Mode.ADJACENCY_LIST;
@@ -322,13 +322,33 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
                 LinkedHashSet<Class> columnMatches = classMatchByHeader.get(column);
 
                 Class detectedClass = String.class;//Default
+
+                //Use the detected type matching if any:
                 if (!columnMatches.isEmpty() && columnMatches.size() != classesToTry.size()) {
-                    detectedClass = columnMatches.iterator().next();
+                    detectedClass = columnMatches.iterator().next();//First match
                 }
 
                 //Change some typical column types to expected types when possible:
                 if (column.equalsIgnoreCase("id") || column.equalsIgnoreCase("label")) {
                     detectedClass = String.class;
+                }
+
+                if (detectedClass.equals(String.class)) {//No other thing than String found, try to guess very probable dynamic types:
+                    if (column.toLowerCase().contains("interval")) {
+                        detectedClass = IntervalSet.class;
+                    }
+
+                    if (column.toLowerCase().contains("timestamp")) {
+                        detectedClass = TimestampSet.class;
+                    }
+
+                    if (column.equalsIgnoreCase("timeset")) {
+                        if (foundTimeRepresentation == TimeRepresentation.INTERVAL) {
+                            detectedClass = IntervalSet.class;
+                        } else {
+                            detectedClass = TimestampSet.class;
+                        }
+                    }
                 }
 
                 if (getMode() == Mode.EDGES_TABLE) {
@@ -338,11 +358,11 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
 
                     //Favor double types for weight column:
                     if (column.equalsIgnoreCase("weight")) {
-                        if(columnMatches.contains(Double.class)){
+                        if (columnMatches.contains(Double.class)) {
                             detectedClass = Double.class;
-                        } else if(columnMatches.contains(IntervalDoubleMap.class)){
+                        } else if (columnMatches.contains(IntervalDoubleMap.class)) {
                             detectedClass = IntervalDoubleMap.class;
-                        } else if(columnMatches.contains(TimestampDoubleMap.class)){
+                        } else if (columnMatches.contains(TimestampDoubleMap.class)) {
                             detectedClass = TimestampDoubleMap.class;
                         }
                     }
@@ -374,7 +394,14 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
 
     @Override
     public void setFile(File file) {
+        File previousFile = this.file;
         this.file = file;
+
+        if (previousFile == null && file != null) {
+            //First time setting the file, auto detect settings. They can be changed later by the programmer/UI user.
+            //But not auto detect again if the importer controller sets the file a second time, or that would cancel the possible changes made by the programmer/UI user.
+            refreshAutoDetections();
+        }
     }
 
     public File getFile() {

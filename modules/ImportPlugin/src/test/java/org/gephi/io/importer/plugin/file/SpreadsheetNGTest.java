@@ -111,7 +111,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
         Assert.assertEquals(importer.getFieldDelimiter(), ';');
@@ -135,7 +134,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
@@ -159,7 +157,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetExcel importer = new ImporterSpreadsheetExcel();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getMode(), Mode.MATRIX);
 
@@ -182,7 +179,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
         Assert.assertEquals(importer.getFieldDelimiter(), ';');
@@ -206,7 +202,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
@@ -230,7 +225,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
@@ -253,7 +247,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
@@ -277,7 +270,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
         Assert.assertEquals(importer.getFieldDelimiter(), ' ');
@@ -303,7 +295,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
         Assert.assertEquals(importer.getFieldDelimiter(), ' ');
@@ -329,7 +320,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
@@ -353,7 +343,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
@@ -387,7 +376,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
@@ -424,7 +412,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetExcel importer = new ImporterSpreadsheetExcel();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getMode(), Mode.NODES_TABLE);
 
@@ -452,7 +439,6 @@ public class SpreadsheetNGTest {
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
         importer.setFile(file);
-        importer.refreshAutoDetections();
 
         Assert.assertEquals(importer.getMode(), Mode.NODES_TABLE);
 
