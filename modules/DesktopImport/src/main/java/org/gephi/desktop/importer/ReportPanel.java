@@ -460,6 +460,7 @@ public class ReportPanel extends javax.swing.JPanel {
         int i = 0;
         for (Processor processor : Lookup.getDefault().lookupAll(Processor.class)) {
             JRadioButton radio = new JRadioButton(processor.getDisplayName());
+            radio.setToolTipText(processor.getDisplayName());
             radio.putClientProperty(PROCESSOR_KEY, processor);
             processorGroup.add(radio);
         }
@@ -488,7 +489,15 @@ public class ReportPanel extends javax.swing.JPanel {
                 int i = 0;
                 for (AbstractButton radio : validButtons) {
                     radio.setSelected(i == 0);
-                    GridBagConstraints constraints = new GridBagConstraints(0, i++, 1, 1, 0, (i == validButtons.size() ? 1.0 : 0.0), GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
+                    GridBagConstraints constraints = new GridBagConstraints(
+                            0, i++,//gridx, gridy
+                            1, 1, //gridwidth, gridheight
+                            1, (i == validButtons.size() ? 1.0 : 0.0),//weightx, weighty
+                            GridBagConstraints.NORTHWEST,//anchor
+                            GridBagConstraints.HORIZONTAL,//fill
+                            new Insets(0, 0, 0, 0),//insets
+                            0, 0//ipadx, ipady
+                    );
                     processorPanel.add(radio, constraints);
                 }
             }
@@ -764,9 +773,9 @@ public class ReportPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(sourceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(processorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelGraphType)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

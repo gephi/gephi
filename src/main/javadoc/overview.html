@@ -17,6 +17,11 @@
         <h2>API Changes</h2>
         <ul>
             <li>
+                (September 08 2017) A new <b>optional</b> <code>FileAware</code> interface <code>FileImporter</code> in <code>ImporterAPI</code>.
+                This allows file importers to receive the file to import in a <code>setFile</code> method <b>instead</b> of the <code>setReader</code> method being called.
+                If your <code>FileImporter</code> implements this interface, <code>setFile</code> will be called, and <code>setReader</code> will not be called.
+            </li>
+            <li>
                 (February 07 2016) A new <code>setColors</code> method has been added to <code>Partition</code> in <code>AppearanceAPI</code>.
             </li>
             <li>
