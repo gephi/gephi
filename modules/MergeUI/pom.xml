@@ -5,43 +5,35 @@
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
         <version>0.9.2-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
+                <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
-    <artifactId>project-api</artifactId>
+    <artifactId>merge-ui</artifactId>
     <version>0.9.2-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
-    <name>ProjectAPI</name>
+    <name>MergeUI</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-filesystems</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>project-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-filesystems</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>graph-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>utils-longtask</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>utils-longtask</artifactId>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
         </dependency>
     </dependencies>
-
+    
     <build>
         <plugins>
             <plugin>
@@ -49,10 +41,6 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>org.gephi.project.api</publicPackage>
-                        <publicPackage>org.gephi.project.spi</publicPackage>
-                        <publicPackage>org.gephi.workspace.api</publicPackage>
-                        <publicPackage>org.gephi.workspace.spi</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

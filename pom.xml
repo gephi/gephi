@@ -769,6 +769,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>merge-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${gephi.slf4j.version}</version>
@@ -1379,5 +1384,6 @@
         <module>modules/BatikWrapper</module>
         <module>modules/CoreLibraryWrapper</module>
         <module>modules/UILibraryWrapper</module>
+        <module>modules/MergeUI</module>
     </modules>
 </project>

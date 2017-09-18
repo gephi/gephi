@@ -45,7 +45,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -64,6 +66,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceProvider;
+import org.gephi.project.spi.MergeWorkspacesUI;
 import org.gephi.project.spi.ProjectPropertiesUI;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
@@ -102,6 +105,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     private boolean deleteWorkspace = false;
     private boolean duplicateWorkspace = false;
     private boolean renameWorkspace = false;
+    private boolean mergeWorkspaces = false;
     //Project
     private final ProjectController controller;
     private final ImportControllerUI importControllerUI;
@@ -428,6 +432,11 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     public boolean canProjectProperties() {
         return projectProperties;
     }
+    
+    @Override
+    public boolean canMergeWorkspaces() {
+        return mergeWorkspaces;
+    }
 
     private void lockProjectActions() {
         saveProject = false;
@@ -440,6 +449,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         deleteWorkspace = false;
         duplicateWorkspace = false;
         renameWorkspace = false;
+        mergeWorkspaces = false;
     }
 
     private void unlockProjectActions() {
@@ -458,6 +468,19 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         openProject = true;
         newProject = true;
         openFile = true;
+    }
+    
+    @Override
+    public void mergeWorkspaces(){
+        MergeWorkspacesUI mergeUI =  Lookup.getDefault().lookup(MergeWorkspacesUI.class);
+        if(mergeUI != null){
+            JPanel panel = mergeUI.getPanel();
+            DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(ProjectControllerUIImpl.class, "MergeWorkspaces_dialog_title"));
+            Object result = DialogDisplayer.getDefault().notify(dd);
+            if(result == NotifyDescriptor.OK_OPTION){
+                mergeUI.mergeWorkspaces(panel);
+            }
+        }
     }
 
     @Override
@@ -624,7 +647,9 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
     @Override
     public Workspace newWorkspace() {
-        return controller.newWorkspace(controller.getCurrentProject());
+        Workspace workspace = controller.newWorkspace(controller.getCurrentProject());
+        checkMergeWorkspaces();
+        return workspace;
     }
 
     @Override
@@ -640,7 +665,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             deleteWorkspace = false;
             duplicateWorkspace = false;
             renameWorkspace = false;
-
             //Title bar
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
@@ -653,6 +677,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             });
         }
         controller.deleteWorkspace(controller.getCurrentWorkspace());
+        checkMergeWorkspaces();
     }
 
     @Override
@@ -663,5 +688,10 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     @Override
     public Workspace duplicateWorkspace() {
         return controller.duplicateWorkspace(controller.getCurrentWorkspace());
+    }
+    
+    @Override
+    public void checkMergeWorkspaces() {
+        mergeWorkspaces = (controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces().length > 1) ? true : false;
     }
 }

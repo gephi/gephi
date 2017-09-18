@@ -39,70 +39,39 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
-package org.gephi.desktop.project.api;
+package org.gephi.branding.desktop.actions;
 
-import java.io.File;
-import org.gephi.io.importer.spi.FileImporterBuilder;
-import org.gephi.project.api.Project;
-import org.gephi.project.api.Workspace;
+import java.awt.event.ActionEvent;
+import org.gephi.desktop.project.api.ProjectControllerUI;
+import org.openide.util.HelpCtx;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.actions.SystemAction;
 
-/**
- *
- * @author Mathieu Bastian
- */
-public interface ProjectControllerUI {
+public class DuplicateWorkspace extends SystemAction {
 
-    public void saveProject();
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Lookup.getDefault().lookup(ProjectControllerUI.class).duplicateWorkspace();
+    }
 
-    public void saveAsProject();
+    @Override
+    public boolean isEnabled() {
+        return Lookup.getDefault().lookup(ProjectControllerUI.class).canDuplicateWorkspace();
+    }
 
-    public void openProject(File file);
+    @Override
+    protected String iconResource() {
+        return "org/gephi/branding/desktop/actions/resources/duplicateWorkspace.png";
+    }
 
-    public void renameProject(final String name);
+    @Override
+    public String getName() {
+        return NbBundle.getMessage(DuplicateWorkspace.class, "CTL_DuplicateWorkspace");
+    }
 
-    public void projectProperties();
-    
-    public void mergeWorkspaces();
-
-    public void openFile(FileImporterBuilder[] builders);
-    
-    public void openFile();
-
-    public Workspace newWorkspace();
-
-    public Workspace duplicateWorkspace();
-
-    public Project getCurrentProject();
-
-    public Project newProject();
-
-    public void deleteWorkspace();
-
-    public void closeProject();
-
-    public void renameWorkspace(final String name);
-
-    public boolean canNewProject();
-
-    public boolean canCloseProject();
-
-    public boolean canOpenFile();
-
-    public boolean canSave();
-
-    public boolean canSaveAs();
-
-    public boolean canNewWorkspace();
-
-    public boolean canDuplicateWorkspace();
-
-    public boolean canDeleteWorkspace();
-
-    public boolean canRenameWorkspace();
-
-    public boolean canProjectProperties();
-    
-    public boolean canMergeWorkspaces();
-    
-    public void checkMergeWorkspaces();
+    @Override
+    public HelpCtx getHelpCtx() {
+        return null;
+    }
 }

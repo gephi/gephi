@@ -205,6 +205,12 @@ source_file = modules/ProjectAPI/src/main/resources/org/gephi/project/api/Bundle
 source_lang = en
 type = PROPERTIES
 
+[gephi.org-gephi-ui-merge]
+file_filter = modules/ProjectAPI/src/main/resources/org/gephi/ui/merge/Bundle_<lang>.properties
+source_file = modules/ProjectAPI/src/main/resources/org/gephi/ui/merge/Bundle.properties
+source_lang = en
+type = PROPERTIES
+
 [gephi.org-gephi-ui-processor-plugin]
 file_filter = modules/ProcessorPluginUI/src/main/resources/org/gephi/ui/processor/plugin/Bundle_<lang>.properties
 source_file = modules/ProcessorPluginUI/src/main/resources/org/gephi/ui/processor/plugin/Bundle.properties
