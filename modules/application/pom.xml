@@ -18,7 +18,7 @@
     <name>gephi-app</name>
     
     <properties>
-        <skipJarGoal>false</skipJarGoal>
+        <jarGoalPhase>package</jarGoalPhase>
         <skipCreateTargz>true</skipCreateTargz>
         <skipReplaceWindowsIcon>true</skipReplaceWindowsIcon>
         <skipCreateExe>true</skipCreateExe>
@@ -479,19 +479,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration combine.self="override"> <!-- Override for not using the archive - manifestFile from parent pom -->
-                    <skip>${skipJarGoal}</skip>
+                <configuration combine.self="override">
+                    <!-- Override for not using the archive - manifestFile from parent pom -->
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <phase>${jarGoalPhase}</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
-
+            
             <!-- Disable the ZIP goal. Also set up the location of the gephi.conf -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -553,7 +553,7 @@
         <profile>
             <id>deployment</id>
             <properties>
-                <skipJarGoal>true</skipJarGoal>
+                <jarGoalPhase>none</jarGoalPhase>
             </properties>
 
             <!-- Localization dependency -->
