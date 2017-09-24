@@ -208,7 +208,7 @@
 
         <gephi.maven-compiler-plugin.version>3.7.0</gephi.maven-compiler-plugin.version>
 
-        <gephi.maven-dependency-plugin.version>3.0.1</gephi.maven-dependency-plugin.version>
+        <gephi.maven-dependency-plugin.version>3.0.2</gephi.maven-dependency-plugin.version>
 
         <gephi.maven-deploy-plugin.version>2.8.2</gephi.maven-deploy-plugin.version>
 
@@ -234,7 +234,7 @@
 
         <gephi.maven-source-plugin.version>3.0.1</gephi.maven-source-plugin.version>
 
-        <gephi.maven-surefire-plugin.version>2.20</gephi.maven-surefire-plugin.version>
+        <gephi.maven-surefire-plugin.version>2.20.1</gephi.maven-surefire-plugin.version>
 
         <gephi.build-helper-maven-plugin.version>3.0.0</gephi.build-helper-maven-plugin.version>
 
