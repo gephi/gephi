@@ -128,6 +128,21 @@ public class SpreadsheetNGTest {
     }
 
     @Test
+    public void testAdjacencyList_AutoDetectImporter() throws FileNotFoundException, IOException {
+        File file = FileUtil.archiveOrDirForURL(SpreadsheetNGTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/adj_list.csv"));
+
+        importController.importFile(file);
+
+        Container container = importController.importFile(file);
+        Assert.assertNotNull(container);
+        Assert.assertTrue(container.getReport().isEmpty());
+
+        importController.process(container, new DefaultProcessor(), workspace);
+
+        checkEdgesSpreadsheet();
+    }
+
+    @Test
     public void testMatrix_CSV() throws FileNotFoundException, IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetNGTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/matrix.csv"));
 
@@ -142,6 +157,19 @@ public class SpreadsheetNGTest {
         Container container = importController.importFile(
                 file, importer
         );
+        Assert.assertNotNull(container);
+        Assert.assertTrue(container.getReport().isEmpty());
+
+        importController.process(container, new DefaultProcessor(), workspace);
+
+        checkEdgesSpreadsheet();
+    }
+
+    @Test
+    public void testMatrix_CSV_AutoDetectImporter() throws FileNotFoundException, IOException {
+        File file = FileUtil.archiveOrDirForURL(SpreadsheetNGTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/matrix.csv"));
+
+        Container container = importController.importFile(file);
         Assert.assertNotNull(container);
         Assert.assertTrue(container.getReport().isEmpty());
 
@@ -370,6 +398,18 @@ public class SpreadsheetNGTest {
     }
 
     @Test
+    public void testEdgesTableTypesTest_AutoDetectImporter() throws FileNotFoundException, IOException {
+        File file = FileUtil.archiveOrDirForURL(SpreadsheetNGTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_types_test.csv"));
+
+        Container container = importController.importFile(file);
+        Assert.assertNotNull(container);
+
+        importController.process(container, new DefaultProcessor(), workspace);
+
+        checkEdgesSpreadsheet(false);
+    }
+
+    @Test
     public void testNodesTableTypesTest() throws FileNotFoundException, IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetNGTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/nodes_table_types_test.csv"));
 
@@ -479,7 +519,7 @@ public class SpreadsheetNGTest {
         exporter.execute();
 
         String result = Files.readFile(tmpFile).trim().replace("\r", "");
-        String expected = Files.readFile(SpreadsheetNGTest.class.getResourceAsStream("/org/gephi/io/importer/plugin/file/spreadsheet/expected/" + testName + "_edges.csv")).trim();
+        String expected = Files.readFile(SpreadsheetNGTest.class.getResourceAsStream("/org/gephi/io/importer/plugin/file/spreadsheet/expected/" + testName.replace("_AutoDetectImporter", "") + "_edges.csv")).trim();
 
         Assert.assertEquals(result, expected);
     }
