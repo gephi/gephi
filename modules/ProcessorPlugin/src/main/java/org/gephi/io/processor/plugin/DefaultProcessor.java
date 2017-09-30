@@ -303,9 +303,6 @@ public class DefaultProcessor extends AbstractProcessor {
                     //Actually it's directed so we can create the opposite directed edge, not incompatible
                     edge = null;
                 }
-            } else {
-                //Undirected but opposite edges are not compatible, check for it
-                edge = graph.getEdge(target, source, edgeType);
             }
         } else {
             if (edge.isDirected() == directed) {
