@@ -210,19 +210,38 @@ public final class ImportUtils {
         }
     }
 
-    public static FileObject getArchivedFile(FileObject fileObject) {
+    public static boolean isArchiveFile(FileObject fileObject) {
         if (fileObject == null) {
-            return null;
+            return false;
         }
 
         if (fileObject.getExt().toLowerCase().startsWith("xls")) {//Seems to break it otherwise!
+            return false;
+        }
+
+        boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
+        boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
+
+        if (isGz || isBzip) {
+            return true;
+        }
+
+        return FileUtil.isArchiveFile(fileObject);
+    }
+
+    public static FileObject getArchivedFile(final FileObject fileObject) {
+        if (!isArchiveFile(fileObject)) {
             return fileObject;
         }
+
+        FileObject result = fileObject;
 
         // ZIP and JAR archives
         if (FileUtil.isArchiveFile(fileObject)) {
             FileObject[] children = FileUtil.getArchiveRoot(fileObject).getChildren();
-            fileObject = children.length > 0 ? children[0] : null;
+            if (children.length > 0) {
+                result = children[0];
+            }
         } else { // GZ or BZIP2 archives
             boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
             boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
@@ -260,14 +279,18 @@ public final class ImportUtils {
                     }
                     tempFile.deleteOnExit();
                     tempFile = FileUtil.normalizeFile(tempFile);
-                    fileObject = FileUtil.toFileObject(tempFile);
+                    result = FileUtil.toFileObject(tempFile);
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
                 }
             }
         }
-        
-        return fileObject;
+
+        if (result == null) {
+            result = fileObject;//Never return null if the archive is empty, broken or anything
+        }
+
+        return result;
     }
 
     public static File getBzipFile(FileObject in, File out, boolean isTar) throws IOException {
