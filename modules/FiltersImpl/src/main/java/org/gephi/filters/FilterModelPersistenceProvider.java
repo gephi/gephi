@@ -280,7 +280,9 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
                 query = new FilterQueryImpl(builder, filter);
             }
 
-            query.setName(queryName);
+            if(queryName != null) {
+                query.setName(queryName);
+            }
 
             FilterProperty property = null;
             boolean end = false;
