@@ -108,18 +108,19 @@ public abstract class AbstractWizardVisualPanel1 extends javax.swing.JPanel {
             while (iterator.hasNext() && count < MAX_ROWS_PREVIEW) {
                 count++;
 
-                SheetRow row = iterator.next();
+                final SheetRow row = iterator.next();
+                final int rowSize = row.size();
 
                 maxRowSize = Math.max(maxRowSize, row.size());
 
-                currentRecord = new String[row.size()];
-                for (int i = 0; i < row.size(); i++) {
+                currentRecord = new String[rowSize];
+                for (int i = 0; i < rowSize; i++) {
                     currentRecord[i] = row.get(i);
                 }
 
                 // Search for missing source or target columns for edges table
                 if (mode == SpreadsheetGeneralConfiguration.Mode.EDGES_TABLE) {
-                    if (currentRecord[sourceColumnIndex] == null || currentRecord[targetColumnIndex] == null) {
+                    if (rowSize <= sourceColumnIndex || rowSize <= targetColumnIndex || currentRecord[sourceColumnIndex] == null || currentRecord[targetColumnIndex] == null) {
                         hasRowsMissingSourcesOrTargets = true;
                     }
                 }

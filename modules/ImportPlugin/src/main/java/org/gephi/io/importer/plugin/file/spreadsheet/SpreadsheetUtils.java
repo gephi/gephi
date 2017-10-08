@@ -112,6 +112,7 @@ public class SpreadsheetUtils {
 
         CSVFormat csvFormat = CSVFormat.DEFAULT
                 .withDelimiter(fieldSeparator)
+                .withEscape('\\')
                 .withIgnoreEmptyLines(true)
                 .withNullString("")
                 .withIgnoreSurroundingSpaces(true)
