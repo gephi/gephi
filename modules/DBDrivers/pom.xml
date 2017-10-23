@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.20.0</version>
+            <version>3.20.1</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -29,12 +29,12 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.1.4.jre7</version>
+            <version>42.1.4</version>
         </dependency>
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>6.2.1.jre7</version>
+            <version>6.2.2.jre8</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.microsoft.azure</groupId>

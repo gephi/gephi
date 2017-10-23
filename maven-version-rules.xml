@@ -5,6 +5,8 @@
         <ignoreVersion type="regex">(?i).*alpha.*</ignoreVersion>
         
         <ignoreVersion type="regex">(?i).*beta.*</ignoreVersion>
+		 <ignoreVersion type="regex">(?i).*preview.*</ignoreVersion>
+		
         <ignoreVersion type="regex">(?i).*[-.]b([0-9]+)?</ignoreVersion>
         
         <ignoreVersion type="regex">(?i).*[-.]rc([0-9]+)?</ignoreVersion>
