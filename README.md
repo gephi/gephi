@@ -1,7 +1,6 @@
 # Gephi - The Open Graph Viz Platform
 
 [![Build Status](https://travis-ci.org/gephi/gephi.svg?branch=master)](https://travis-ci.org/gephi/gephi)
-[![Dependency Status](https://www.versioneye.com/user/projects/5891dedd45c80c0016cae662/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5891dedd45c80c0016cae662?child=summary)
 [![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.9.2/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.9.2)
 [![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.9.1/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.9.1)
 

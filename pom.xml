@@ -246,7 +246,7 @@
         
         <gephi.site-maven-plugin.version>0.12</gephi.site-maven-plugin.version>
         
-        <versioneye-maven-plugin.version>3.11.4</versioneye-maven-plugin.version>
+        <gephi.versions-maven-plugin.version>2.5</gephi.versions-maven-plugin.version>
     </properties>
     
     <!-- Maven required version -->
@@ -809,6 +809,14 @@
             <plugins>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>${gephi.versions-maven-plugin.version}</version>
+                    <configuration>
+                        <rulesUri>file:///${session.executionRootDirectory}/maven-version-rules.xml</rulesUri>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
                     <version>${gephi.nbm-maven-plugin.version}</version>
                     <extensions>true</extensions>
@@ -918,18 +926,6 @@
                     <groupId>com.github.github</groupId>
                     <artifactId>site-maven-plugin</artifactId>
                     <version>${gephi.site-maven-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>com.versioneye</groupId>
-                    <artifactId>versioneye-maven-plugin</artifactId>
-                    <version>${versioneye-maven-plugin.version}</version>
-                    <configuration>
-                        <visibility>public</visibility>
-                        <updatePropertiesAfterCreate>true</updatePropertiesAfterCreate>
-                        <mergeAfterCreate>true</mergeAfterCreate>
-                        <trackPlugins>true</trackPlugins>
-                        <propertiesPath>${basedir}/versioneye.properties</propertiesPath>
-                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
