@@ -130,9 +130,6 @@ public class ImporterGraphML implements FileImporter, LongTask {
         properties.addEdgePropertyAssociation(EdgeProperties.G, "g");
         properties.addEdgePropertyAssociation(EdgeProperties.B, "b");
         properties.addEdgePropertyAssociation(EdgeProperties.COLOR, "color");
-
-        nodePropertiesAttributes.put("d3", NodeProperties.LABEL);// Default node label used by yEd from yworks.com.
-        edgePropertiesAttributes.put("d7", EdgeProperties.LABEL);// Default edge label used by yEd from yworks.com.
     }
 
     @Override
@@ -197,7 +194,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String attName = reader.getAttributeName(i).getLocalPart();
             if (GRAPH_DEFAULT_EDGETYPE.equalsIgnoreCase(attName)) {
-                defaultEdgeType = reader.getAttributeValue(i);
+                defaultEdgeType = reader.getAttributeValue(i).trim();
             } else if (GRAPH_ID.equalsIgnoreCase(attName)) {
                 id = reader.getAttributeValue(i);
             }
@@ -279,7 +276,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String attName = reader.getAttributeName(i).getLocalPart();
             if (ATTVALUE_FOR.equalsIgnoreCase(attName)) {
-                fore = reader.getAttributeValue(i);
+                fore = reader.getAttributeValue(i).trim();
             }
         }
 
@@ -444,7 +441,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String attName = reader.getAttributeName(i).getLocalPart();
             if (ATTVALUE_FOR.equalsIgnoreCase(attName)) {
-                fore = reader.getAttributeValue(i);
+                fore = reader.getAttributeValue(i).trim();
             }
         }
 
@@ -533,13 +530,13 @@ public class ImporterGraphML implements FileImporter, LongTask {
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String attName = reader.getAttributeName(i).getLocalPart();
             if (ATTRIBUTE_ID.equalsIgnoreCase(attName)) {
-                id = reader.getAttributeValue(i);
+                id = reader.getAttributeValue(i).trim();
             } else if (ATTRIBUTE_TYPE.equalsIgnoreCase(attName)) {
-                type = reader.getAttributeValue(i);
+                type = reader.getAttributeValue(i).trim();
             } else if (ATTRIBUTE_TITLE.equalsIgnoreCase(attName)) {
-                title = reader.getAttributeValue(i);
+                title = reader.getAttributeValue(i).trim();
             } else if (ATTRIBUTE_FOR.equalsIgnoreCase(attName)) {
-                forStr = reader.getAttributeValue(i);
+                forStr = reader.getAttributeValue(i).trim();
             }
         }
 
