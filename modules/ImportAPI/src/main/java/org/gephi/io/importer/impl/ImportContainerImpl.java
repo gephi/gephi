@@ -333,6 +333,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         edgeMap.put(edgeDraft.getId(), index);
     }
 
+    private void removeNode(NodeDraftImpl node) {
+        String id = node.getId();
+        if (!nodeMap.containsKey(id)) {
+            return;
+        }
+
+        int index = nodeMap.removeInt(id);
+        nodeList.set(index, null);
+    }
+
     @Override
     public void removeEdge(EdgeDraft edgeDraft) {
         checkElementDraftImpl(edgeDraft);
@@ -343,6 +353,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (!edgeMap.containsKey(id)) {
             return;
         }
+        
+        boolean directed = edgeDraftImpl.getDirection() == EdgeDirection.DIRECTED;
 
         if (edgeDraftImpl.getDirection() != null) {
             //UnCounting
@@ -361,12 +373,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
 
         int edgeType = getEdgeType(edgeDraftImpl.getType());
-        long sourceTargetLong = getLongId(edgeDraftImpl);
+        long sourceTargetLong = getLongId(edgeDraftImpl.getSource(), edgeDraftImpl.getTarget(), directed);
         ensureLongSetArraySize(edgeType);
         Long2ObjectMap<int[]> edgeTypeSet = edgeTypeSets[edgeType];
 
         //Get index
-        int index = edgeMap.remove(id);
+        int index = edgeMap.removeInt(id);
 
         //Update edgeType set
         int[] edges = edgeTypeSet.remove(sourceTargetLong);
@@ -727,14 +739,14 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (directedEdgesCount > 0 && edgeDefault.equals(EdgeDirectionDefault.UNDIRECTED)) {
             //Force undirected
             for (EdgeDraftImpl edge : edgeList.toArray(new EdgeDraftImpl[0])) {
-                if (edge != null && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
+                final boolean notAlreadyRemoved = edge != null
+                        && edgeMap.containsKey(edge.getId());
+
+                if (notAlreadyRemoved && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
                     EdgeDraftImpl opposite = getOpposite(edge);
                     if (opposite != null) {
-                        int oppositeIndex = edgeMap.getInt(opposite.getId());
                         mergeDirectedEdges(opposite, edge);
-
-                        edgeMap.removeInt(opposite.getId());
-                        edgeList.set(oppositeIndex, null);
+                        removeEdge(opposite);
                     }
                 }
             }
@@ -745,14 +757,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (!allowAutoNode()) {
             for (NodeDraftImpl node : nodeList) {
                 if (node != null && node.isCreatedAuto()) {
-                    int index = nodeMap.removeInt(node.getId());
-                    nodeList.set(index, null);
+                    removeNode(node);
                 }
             }
             for (EdgeDraftImpl edge : edgeList) {
                 if (edge != null && (edge.getSource().isCreatedAuto() || edge.getTarget().isCreatedAuto())) {
-                    int index = edgeMap.remove(edge.getId());
-                    edgeList.set(index, null);
+                    removeEdge(edge);
                 }
             }
         }
