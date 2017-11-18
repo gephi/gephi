@@ -85,6 +85,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
     private static final String EDGE_SOURCE = "source";
     private static final String EDGE_TARGET = "target";
     private static final String EDGE_DIRECTED = "directed";
+    private static final String EDGE_TYPE = "label";
     private static final String ATTRIBUTE = "key";
     private static final String ATTRIBUTE_ID = "id";
     private static final String ATTRIBUTE_TITLE = "attr.name";
@@ -371,6 +372,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
         String source = "";
         String target = "";
         String directed = "";
+        String type = null;
 
         //Attributes
         for (int i = 0; i < reader.getAttributeCount(); i++) {
@@ -383,6 +385,8 @@ public class ImporterGraphML implements FileImporter, LongTask {
                 id = reader.getAttributeValue(i);
             } else if (EDGE_DIRECTED.equalsIgnoreCase(attName)) {
                 directed = reader.getAttributeValue(i);
+            } else if (EDGE_TYPE.equalsIgnoreCase(attName)) {
+                type = reader.getAttributeValue(i).trim();
             }
         }
 
@@ -398,6 +402,10 @@ public class ImporterGraphML implements FileImporter, LongTask {
         NodeDraft nodeTarget = container.getNode(target);
         edge.setSource(nodeSource);
         edge.setTarget(nodeTarget);
+        if (type != null && !type.isEmpty()) {
+            //Edge labels not retained on graphml export https://github.com/gephi/gephi/issues/1516
+            edge.setType(type);
+        }
 
         //Type
         if (!directed.isEmpty()) {
@@ -415,9 +423,9 @@ public class ImporterGraphML implements FileImporter, LongTask {
 
         boolean end = false;
         while (reader.hasNext() && !end) {
-            int type = reader.next();
+            int elemType = reader.next();
 
-            switch (type) {
+            switch (elemType) {
                 case XMLStreamReader.START_ELEMENT:
                     if (ATTVALUE.equalsIgnoreCase(xmlReader.getLocalName())) {
                         readEdgeAttValue(reader, edge);
@@ -562,7 +570,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
                     property = true;
                 }
             }
-            
+
             if (property) {
                 return;
             }
