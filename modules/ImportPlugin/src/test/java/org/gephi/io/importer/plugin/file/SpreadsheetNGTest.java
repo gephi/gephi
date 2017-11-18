@@ -61,6 +61,7 @@ import org.gephi.graph.api.types.IntervalLongMap;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.io.exporter.plugin.ExporterSpreadsheet;
 import org.gephi.io.importer.api.Container;
+import org.gephi.io.importer.api.EdgeDirectionDefault;
 import org.gephi.io.importer.api.EdgeMergeStrategy;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.plugin.file.spreadsheet.ImporterSpreadsheetCSV;
@@ -343,7 +344,7 @@ public class SpreadsheetNGTest {
 
     @Test
     public void testEdgesTableDynamicWeightsMerged() throws FileNotFoundException, IOException {
-        File file = FileUtil.archiveOrDirForURL(SpreadsheetNGTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edgest_table_dynamic_weights.csv"));
+        File file = FileUtil.archiveOrDirForURL(SpreadsheetNGTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_dynamic_weights.csv"));
 
         ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
 
@@ -490,6 +491,60 @@ public class SpreadsheetNGTest {
         importController.process(container, new DefaultProcessor(), workspace);
 
         checkNodesSpreadsheet();
+    }
+    
+    @Test
+    public void testUTF8CharsWithBOM() throws FileNotFoundException, IOException {
+        File file = FileUtil.archiveOrDirForURL(SpreadsheetNGTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/test_utf8_chars_with_bom.csv"));
+
+        ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
+
+        importer.setFile(file);
+
+        Assert.assertEquals(importer.getMode(), Mode.NODES_TABLE);
+        Assert.assertEquals(importer.getCharset().name(), "UTF-8");
+
+        Container container = importController.importFile(
+                file, importer
+        );
+        Assert.assertNotNull(container);
+
+        importController.process(container, new DefaultProcessor(), workspace);
+
+        checkNodesSpreadsheet();
+    }
+    
+    @Test
+    public void testEdgesTableOppositeForceUndirected_Merged() throws FileNotFoundException, IOException {
+        File file = FileUtil.archiveOrDirForURL(SpreadsheetNGTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_opposite_force_undirected_merged.csv"));
+
+        Container container = importController.importFile(file);
+        Assert.assertNotNull(container);
+
+        //Force undirected:
+        container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
+        container.getLoader().setEdgesMergeStrategy(EdgeMergeStrategy.SUM);
+
+        importController.process(container, new DefaultProcessor(), workspace);
+
+        checkEdgesSpreadsheet();
+    }
+    
+    @Test
+    public void testEdgesTableOppositeForceUndirected_Issue1848() throws FileNotFoundException, IOException {
+        //https://github.com/gephi/gephi/issues/1848
+        File file = FileUtil.archiveOrDirForURL(SpreadsheetNGTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_opposite_force_undirected_issue_1848.csv"));
+
+        Container container = importController.importFile(file);
+        Assert.assertNotNull(container);
+
+        //Force undirected:
+        container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
+        container.getLoader().setEdgesMergeStrategy(EdgeMergeStrategy.SUM);
+
+        importController.process(container, new DefaultProcessor(), workspace);
+
+        checkEdgesSpreadsheet();
     }
 
     private void checkEdgesSpreadsheet() throws IOException {

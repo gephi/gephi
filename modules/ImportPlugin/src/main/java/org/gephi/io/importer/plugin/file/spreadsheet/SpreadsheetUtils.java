@@ -53,6 +53,7 @@ import org.apache.commons.csv.CSVParser;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetParser;
+import org.gephi.utils.CharsetToolkit;
 import org.openide.util.NbBundle;
 
 /**
@@ -127,8 +128,24 @@ public class SpreadsheetUtils {
             csvFormat = csvFormat.withHeader((String[]) null).withSkipHeaderRecord(false);
         }
 
+        boolean hasBOM = false;
+        try (FileInputStream is = new FileInputStream(file)) {
+            CharsetToolkit charsetToolkit = new CharsetToolkit(is);
+            hasBOM = charsetToolkit.hasUTF8Bom() || charsetToolkit.hasUTF16BEBom() || charsetToolkit.hasUTF16LEBom();
+        } catch (IOException e) {
+            //NOOP
+        }
+
         FileInputStream fileInputStream = new FileInputStream(file);
         InputStreamReader is = new InputStreamReader(fileInputStream, charset);
+        if (hasBOM) {
+            try {
+                is.read();
+            } catch (IOException e) {
+                // should never happen, as a file with no content
+                // but with a BOM has at least one char
+            }
+        }
         return new CSVParser(is, csvFormat);
     }
 }

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module-Localizing-Bundle: org/gephi/io/exporter/plugin/Bundle.properties
-OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}
+OpenIDE-Module-Specification-Version: 0.9.2.1
 OpenIDE-Module-Display-Category: Plugin
 OpenIDE-Module-Name: Export Plugin

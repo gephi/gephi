@@ -45,7 +45,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
-import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;

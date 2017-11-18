@@ -228,7 +228,7 @@ public class DefaultProcessor extends AbstractProcessor {
 
             Edge edge = graph.getEdge(source, target, edgeType);
 
-            if (edgesMergeStrategy == EdgeMergeStrategy.NO_MERGE) {
+            if (edge != null && edgesMergeStrategy == EdgeMergeStrategy.NO_MERGE) {
                 //Undirected and directed edges are incompatible, check for them or we could get an exception:
                 final Edge incompatibleEdge = findIncompatibleEdge(graph, source, target, createDirected, edgeType);
                 if (incompatibleEdge == null) {

@@ -444,10 +444,19 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         Element weightE = createEdgeWeight(document, e, graph);
         edgeE.appendChild(weightE);
 
-        if (e.isDirected() && !graph.isDirected()) {
-            edgeE.setAttribute("type", "directed");
-        } else if (!e.isDirected() && graph.isDirected()) {
-            edgeE.setAttribute("type", "undirected");
+        boolean directedEdgeDefault = graph.isDirected() || graph.isMixed();
+        if (e.isDirected() && !directedEdgeDefault) {
+            edgeE.setAttribute("directed", "true");
+        } else if (!e.isDirected() && directedEdgeDefault) {
+            edgeE.setAttribute("directed", "false");
+        }
+
+        if (e.getTypeLabel() != null) {
+            //Edge labels not retained on graphml export https://github.com/gephi/gephi/issues/1516
+            String typeLabel = e.getTypeLabel().toString().trim();
+            if (!typeLabel.isEmpty()) {
+                edgeE.setAttribute("label", typeLabel);
+            }
         }
 
         //Attribute values
