@@ -494,6 +494,27 @@ public class SpreadsheetNGTest {
     }
     
     @Test
+    public void testUTF8CharsWithBOM() throws FileNotFoundException, IOException {
+        File file = FileUtil.archiveOrDirForURL(SpreadsheetNGTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/test_utf8_chars_with_bom.csv"));
+
+        ImporterSpreadsheetCSV importer = new ImporterSpreadsheetCSV();
+
+        importer.setFile(file);
+
+        Assert.assertEquals(importer.getMode(), Mode.NODES_TABLE);
+        Assert.assertEquals(importer.getCharset().name(), "UTF-8");
+
+        Container container = importController.importFile(
+                file, importer
+        );
+        Assert.assertNotNull(container);
+
+        importController.process(container, new DefaultProcessor(), workspace);
+
+        checkNodesSpreadsheet();
+    }
+    
+    @Test
     public void testEdgesTableOppositeForceUndirected_Merged() throws FileNotFoundException, IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetNGTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_opposite_force_undirected_merged.csv"));
 
