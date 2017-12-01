@@ -1,0 +1,8 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Thu Nov 30 22:32:29 BRST 2017
+http\://bits.netbeans.org/maven2/.lastUpdated=1512088281619
+http\://nexus.gephi.org/nexus/content/repositories/thirdparty/.error=Could not transfer artifact com.teradata\:teradata-jdbc\:pom\:14.00.00.21 from/to gephi (http\://nexus.gephi.org/nexus/content/repositories/thirdparty/)\: nexus.gephi.org
+https\://repo.maven.apache.org/maven2/.lastUpdated=1512088281854
+http\://bits.netbeans.org/maven2/.error=
+@default-gephi-http\://nexus.gephi.org/nexus/content/repositories/thirdparty/.lastUpdated=1512088349136
+https\://repo.maven.apache.org/maven2/.error=

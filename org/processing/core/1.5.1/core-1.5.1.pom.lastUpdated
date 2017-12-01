@@ -1,0 +1,8 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Thu Nov 30 22:29:28 BRST 2017
+http\://bits.netbeans.org/maven2/.lastUpdated=1512088168603
+https\://repo.maven.apache.org/maven2/.lastUpdated=1512088168868
+http\://nexus.gephi.org/nexus/content/repositories/thirdparty/.error=Could not transfer artifact org.processing\:core\:pom\:1.5.1 from/to gephi (http\://nexus.gephi.org/nexus/content/repositories/thirdparty/)\: nexus.gephi.org
+http\://bits.netbeans.org/maven2/.error=
+@default-gephi-http\://nexus.gephi.org/nexus/content/repositories/thirdparty/.lastUpdated=1512088168650
+https\://repo.maven.apache.org/maven2/.error=
