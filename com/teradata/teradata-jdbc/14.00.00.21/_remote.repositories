@@ -1,0 +1,4 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Thu Nov 30 22:32:43 BRST 2017
+teradata-jdbc-14.00.00.21.jar>=
+teradata-jdbc-14.00.00.21.pom>=

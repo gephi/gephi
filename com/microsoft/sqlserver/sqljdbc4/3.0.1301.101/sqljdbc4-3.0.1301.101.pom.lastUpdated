@@ -1,0 +1,8 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Thu Nov 30 22:31:21 BRST 2017
+http\://bits.netbeans.org/maven2/.lastUpdated=1512088280916
+https\://repo.maven.apache.org/maven2/.lastUpdated=1512088281166
+http\://nexus.gephi.org/nexus/content/repositories/thirdparty/.error=Could not transfer artifact com.microsoft.sqlserver\:sqljdbc4\:pom\:3.0.1301.101 from/to gephi (http\://nexus.gephi.org/nexus/content/repositories/thirdparty/)\: nexus.gephi.org
+http\://bits.netbeans.org/maven2/.error=
+@default-gephi-http\://nexus.gephi.org/nexus/content/repositories/thirdparty/.lastUpdated=1512088280948
+https\://repo.maven.apache.org/maven2/.error=
