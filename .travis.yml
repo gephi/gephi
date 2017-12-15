@@ -28,7 +28,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export JAVA_HOME=$(/usr/libexec/java_home);fi
 
   # Build & install innoextract
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then git clone --branch 1.5 https://github.com/dscharrer/innoextract.git;fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then git clone --branch 1.6 --single-branch https://github.com/dscharrer/innoextract.git;fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd innoextract && mkdir -p build && cd build && cmake .. && make && export PATH=$PATH:$PWD && cd ../..;fi
 
   # OS X keychain init
