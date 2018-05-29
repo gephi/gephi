@@ -133,11 +133,9 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
     public String getReport() {
         //Time series
         XYSeries dSeries = ChartUtils.createXYSeries(averages, "Degree Time Series");
-        String csv = "x,y\n";
+        String csv = "x;y\n";
         for (int i = 0; i < dSeries.getItems().size(); i++) {
-            csv += dSeries.getX(i) + "," + dSeries.getY(i) + "\n";
-            System.out.print("FUCK X " + dSeries.getX(i));
-            System.out.println("  FUCK Y " + dSeries.getY(i));
+            csv += dSeries.getX(i) + ";" + dSeries.getY(i) + "\n";
         }
 
         XYSeriesCollection dataset = new XYSeriesCollection();
@@ -172,7 +170,10 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
          report += averages.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
          }*/
         report += "<br /><br /></BODY></HTML>";
-        return report + "-|-@-|-" + csv;
+        
+        System.out.println(report + "rabatperezmito" + csv);
+        
+        return report + "rabatperezmito" + csv;
     }
 
     @Override

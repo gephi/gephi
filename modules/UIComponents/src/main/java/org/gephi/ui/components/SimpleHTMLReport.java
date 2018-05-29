@@ -162,9 +162,12 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
     
     public SimpleHTMLReport(java.awt.Frame parent, String html) {
         super(parent, false);
-        String[] htmlCSV = html.split("-|-@-|-");
+        System.out.println(html);
+        String[] htmlCSV = html.split("rabatperezmito");
+        System.out.println(htmlCSV[0]);
         mHTMLReport = htmlCSV[0];
         if (htmlCSV.length > 1) {
+            System.out.println(htmlCSV[1]);
             this.csv = htmlCSV[1];
         } else {
             this.csv = "";

@@ -257,6 +257,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
     private void showReport() {
         final String report = currentModel.getReport(statisticsUI.getStatisticsClass());
+        // TODO, TOCA AKI PARA OBTENER CSV CON ; COMO SEPARADOR,
         if (report != null) {
             SwingUtilities.invokeLater(new Runnable() {
 
