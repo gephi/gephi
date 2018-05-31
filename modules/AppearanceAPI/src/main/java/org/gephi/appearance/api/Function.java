@@ -128,4 +128,11 @@ public interface Function {
      * @return element class
      */
     public Class<? extends Element> getElementClass();
+    
+    /**
+     * Changes the graph of the ranking attribute and makes a refresh.
+     * 
+     * @param graph the new graph which will be set in the ranking attribute.
+     */
+    public void updateRankingGraphAndRefresh(Graph graph);
 }

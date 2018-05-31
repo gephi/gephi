@@ -90,7 +90,14 @@ public abstract class FunctionImpl implements Function {
         this.partition = partition;
         this.ranking = ranking;
     }
-
+    
+    public void updateRankingGraphAndRefresh(Graph graph){
+        if(ranking != null){
+            ranking.updateGraph(graph);
+            ranking.refresh();
+        }
+    }
+    
     @Override
     public void transform(Element element, Graph graph) {
         if (isSimple()) {

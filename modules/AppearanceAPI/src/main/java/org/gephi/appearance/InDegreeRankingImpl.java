@@ -52,8 +52,6 @@ import org.gephi.graph.api.Node;
  */
 public class InDegreeRankingImpl extends RankingImpl {
 
-    private final DirectedGraph graph;
-
     public InDegreeRankingImpl(DirectedGraph graph) {
         super();
         this.graph = graph;
@@ -66,11 +64,13 @@ public class InDegreeRankingImpl extends RankingImpl {
 
     @Override
     protected void refresh() {
-        if (graph.getNodeCount() > 0) {
+        DirectedGraph dirGraph = (DirectedGraph)this.graph;
+        
+        if (dirGraph.getNodeCount() > 0) {
             int minV = Integer.MAX_VALUE;
             int maxV = Integer.MIN_VALUE;
-            for (Node n : graph.getNodes()) {
-                int degree = graph.getInDegree(n);
+            for (Node n : dirGraph.getNodes()) {
+                int degree = dirGraph.getInDegree(n);
                 minV = Math.min(degree, minV);
                 maxV = Math.max(degree, maxV);
             }

@@ -43,13 +43,15 @@ package org.gephi.appearance;
 
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
+import org.gephi.graph.api.Graph;
 
 /**
  *
  * @author mbastian
  */
 public abstract class RankingImpl implements Ranking {
-
+    
+    protected Graph graph;
     protected Number min;
     protected Number max;
 
@@ -66,6 +68,10 @@ public abstract class RankingImpl implements Ranking {
     @Override
     public Number getMaxValue() {
         return max;
+    }
+    
+    public void updateGraph(Graph g){
+        this.graph = g;
     }
 
     @Override

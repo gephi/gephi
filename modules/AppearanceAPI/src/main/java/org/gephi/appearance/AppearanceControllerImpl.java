@@ -120,6 +120,7 @@ public class AppearanceControllerImpl implements AppearanceController {
                 iterable = graph.getEdges();
             }
             try {
+                function.updateRankingGraphAndRefresh(graph);
                 for (Element element : iterable) {
                     function.transform(element, graph);
                 }

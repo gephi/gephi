@@ -22,7 +22,6 @@ public class AttributeRankingImpl extends RankingImpl {
 
     protected final Index index;
     protected final Column column;
-    protected final Graph graph;
 
     public AttributeRankingImpl(Column column, Graph graph, Index index) {
         super();

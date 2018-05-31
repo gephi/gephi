@@ -51,8 +51,6 @@ import org.gephi.graph.api.Node;
  */
 public class DegreeRankingImpl extends RankingImpl {
 
-    private final Graph graph;
-
     public DegreeRankingImpl(Graph graph) {
         super();
         this.graph = graph;
