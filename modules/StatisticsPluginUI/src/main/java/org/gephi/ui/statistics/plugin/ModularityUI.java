@@ -70,6 +70,7 @@ public class ModularityUI implements StatisticsUI {
             panel.setRandomize(mod.getRandom());
             panel.setUseWeight(mod.getUseWeight());
             panel.setResolution(mod.getResolution());
+            panel.setStartModularityNumber(mod.getStartModularityNumber());
         }
     }
 
@@ -79,6 +80,7 @@ public class ModularityUI implements StatisticsUI {
             mod.setRandom(panel.isRandomize());
             mod.setUseWeight(panel.useWeight());
             mod.setResolution(panel.resolution());
+            mod.setStartModularityNumber(panel.getStartModularityNumber());
             settings.save(mod);
         }
         mod = null;

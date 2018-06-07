@@ -80,6 +80,20 @@ public class ModularityPanel extends javax.swing.JPanel {
     public void setResolution(double resolution) {
         resolutionTextField.setText(String.valueOf(resolution));
     }
+    
+    public void setStartModularityNumber(int startModularityNumber){
+        startModularityNumberTextField.setText(String.valueOf(startModularityNumber));
+    }
+    
+    public int getStartModularityNumber(){
+        try {
+            return Integer.valueOf(startModularityNumberTextField.getText());
+        } catch (Exception e) {
+            
+        }
+        
+        return 0;
+    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -97,14 +111,17 @@ public class ModularityPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         labelEdgeWeight = new javax.swing.JLabel();
         labelRandomize = new javax.swing.JLabel();
+        labelStartModularityNumber = new org.jdesktop.swingx.JXLabel();
+        startModularityNumberTextField = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         labelResolution = new org.jdesktop.swingx.JXLabel();
 
         randomizeCheckbox.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.randomizeCheckbox.text")); // NOI18N
         randomizeCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 
-        desriptionLabel.setLineWrap(true);
         desriptionLabel.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.desriptionLabel.text")); // NOI18N
         desriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        desriptionLabel.setLineWrap(true);
 
         header.setDescription(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.header.description")); // NOI18N
         header.setTitle(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.header.title")); // NOI18N
@@ -124,11 +141,23 @@ public class ModularityPanel extends javax.swing.JPanel {
         labelRandomize.setForeground(new java.awt.Color(102, 102, 102));
         labelRandomize.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.labelRandomize.text")); // NOI18N
 
+        labelStartModularityNumber.setForeground(new java.awt.Color(102, 102, 102));
+        labelStartModularityNumber.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.labelStartModularityNumber.text")); // NOI18N
+        labelStartModularityNumber.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        labelStartModularityNumber.setFont(labelStartModularityNumber.getFont().deriveFont(labelStartModularityNumber.getFont().getSize()-1f));
+        labelStartModularityNumber.setLineWrap(true);
+        labelStartModularityNumber.setPreferredSize(new java.awt.Dimension(500, 12));
+
+        startModularityNumberTextField.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.startModularityNumberTextField.text")); // NOI18N
+        startModularityNumberTextField.setToolTipText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.startModularityNumberTextField.toolTipText")); // NOI18N
+
+        jLabel2.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.jLabel2.text")); // NOI18N
+
         labelResolution.setForeground(new java.awt.Color(102, 102, 102));
-        labelResolution.setLineWrap(true);
         labelResolution.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.labelResolution.text")); // NOI18N
         labelResolution.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         labelResolution.setFont(labelResolution.getFont().deriveFont(labelResolution.getFont().getSize()-1f));
+        labelResolution.setLineWrap(true);
         labelResolution.setPreferredSize(new java.awt.Dimension(500, 12));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -137,28 +166,35 @@ public class ModularityPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(63, 63, 63)
-                        .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(381, 381, 381))
+                        .addComponent(randomizeCheckbox)
+                        .addGap(25, 25, 25)
+                        .addComponent(labelRandomize, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(useWeightCheckbox)
+                            .addComponent(resolutionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addGap(18, 18, 18)
+                        .addComponent(labelEdgeWeight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(randomizeCheckbox)
-                                .addGap(25, 25, 25)
-                                .addComponent(labelRandomize, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(useWeightCheckbox)
-                                    .addComponent(resolutionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel1))
+                                .addComponent(startModularityNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(labelResolution, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
-                                    .addComponent(labelEdgeWeight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                                .addComponent(labelStartModularityNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(487, 487, 487)))
                 .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(136, 136, 136)
+                    .addComponent(labelResolution, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGap(22, 22, 22)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -173,25 +209,39 @@ public class ModularityPanel extends javax.swing.JPanel {
                     .addComponent(useWeightCheckbox)
                     .addComponent(labelEdgeWeight))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(resolutionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addGap(3, 3, 3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(resolutionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(labelResolution, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(26, 26, 26)
-                .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(startModularityNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(labelStartModularityNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(166, 166, 166)
+                    .addComponent(labelResolution, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
+                    .addGap(51, 51, 51)))
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jdesktop.swingx.JXLabel desriptionLabel;
     private org.jdesktop.swingx.JXHeader header;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel labelEdgeWeight;
     private javax.swing.JLabel labelRandomize;
     private org.jdesktop.swingx.JXLabel labelResolution;
+    private org.jdesktop.swingx.JXLabel labelStartModularityNumber;
     private javax.swing.JCheckBox randomizeCheckbox;
     private javax.swing.JTextField resolutionTextField;
+    private javax.swing.JTextField startModularityNumberTextField;
     private javax.swing.JCheckBox useWeightCheckbox;
     // End of variables declaration//GEN-END:variables
 }
