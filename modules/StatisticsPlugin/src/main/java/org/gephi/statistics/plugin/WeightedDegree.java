@@ -63,6 +63,8 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.NbBundle;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Sebastien Heymann
@@ -205,12 +207,32 @@ public class WeightedDegree implements Statistics, LongTask {
     
     @Override
     public String getCSV() {
-        return "";
+        String csv = "";
+
+        if (isDirected) {
+            XYSeries dSeries = ChartUtils.createXYSeries(degreeDist, "Degree Distribution");
+            XYSeries idSeries = ChartUtils.createXYSeries(inDegreeDist, "In-Degree Distribution");
+            XYSeries odSeries = ChartUtils.createXYSeries(outDegreeDist, "Out-Degree Distribution");
+
+            csv += "Degree Distribution\n,";
+            double[][] dSeriesData = dSeries.toArray();
+            
+            System.out.println(Arrays.deepToString(dSeriesData));
+            
+        } else {
+            XYSeries dSeries = ChartUtils.createXYSeries(degreeDist, "Degree Distribution");
+            double[][] dSeriesData = dSeries.toArray();
+            
+            System.out.println(Arrays.deepToString(dSeriesData));
+        }
+        
+        return csv;
     }
 
     @Override
     public String getReport() {
         String report;
+        System.out.println("HELLO WORLD");
 
         if (isDirected) {
             report = getDirectedReport();
