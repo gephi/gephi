@@ -58,6 +58,7 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Table;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.spi.Statistics;
+import org.gephi.utils.CSVStringBuilder;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -367,7 +368,25 @@ public class ConnectedComponents implements Statistics, LongTask {
 
     @Override
     public String getCSV() {
-        return "";
+        
+        CSVStringBuilder csv = new CSVStringBuilder();
+        
+        Map<Integer, Integer> sizeDist = new HashMap<>();
+        for (int v : componentsSize) {
+            if (!sizeDist.containsKey(v)) {
+                sizeDist.put(v, 0);
+            }
+            sizeDist.put(v, sizeDist.get(v) + 1);
+        }
+        
+        XYSeries dSeries = ChartUtils.createXYSeries(sizeDist, "Size Distribution");
+
+        double[][] dSeriesData = dSeries.toArray();
+        
+        csv.addTable(dSeriesData, "Size (number of nodes)", "Count", "Size Distribution");
+        
+        return csv.getCSV();
+        
     }
     
     @Override
