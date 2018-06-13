@@ -56,6 +56,7 @@ import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.gephi.utils.CSVStringBuilder;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
@@ -63,7 +64,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.NbBundle;
 
-import java.util.Arrays;
 
 /**
  *
@@ -208,27 +208,30 @@ public class WeightedDegree implements Statistics, LongTask {
     @Override
     public String getCSV() {
         
-        System.out.println("HELLO WORLD");
-        String csv = "";
+        CSVStringBuilder csvBuilder = new CSVStringBuilder();
 
         if (isDirected) {
             XYSeries dSeries = ChartUtils.createXYSeries(degreeDist, "Degree Distribution");
             XYSeries idSeries = ChartUtils.createXYSeries(inDegreeDist, "In-Degree Distribution");
             XYSeries odSeries = ChartUtils.createXYSeries(outDegreeDist, "Out-Degree Distribution");
 
-            csv += "Degree Distribution\n,";
             double[][] dSeriesData = dSeries.toArray();
+            double[][] idSeriesData = idSeries.toArray();
+            double[][] odSeriesData = odSeries.toArray();
             
-            System.out.println(Arrays.deepToString(dSeriesData));
-            
+            csvBuilder.addTable(dSeriesData, "Value", "Count", "Degree Distribution");
+            csvBuilder.addTable(idSeriesData, "Value", "Count", "In-Degree Distribution");
+            csvBuilder.addTable(odSeriesData, "Value", "Count", "Out-Degree Distribution");
         } else {
             XYSeries dSeries = ChartUtils.createXYSeries(degreeDist, "Degree Distribution");
+            
             double[][] dSeriesData = dSeries.toArray();
             
-            System.out.println(Arrays.deepToString(dSeriesData));
+            csvBuilder.addTable(dSeriesData, "Value", "Count", "Degree Distribution");
         }
         
-        return csv;
+        System.out.println(csvBuilder.getCSV());
+        return csvBuilder.getCSV();
     }
 
     @Override
