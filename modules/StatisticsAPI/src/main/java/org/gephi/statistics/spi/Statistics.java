@@ -69,4 +69,10 @@ public interface Statistics {
      * @return An HTML string that displays the results for this Statistics
      */
     public String getReport();
+    
+    /**
+     * Returns a CSV string containing similar information to HTML report.
+     * @return A CSV string representing this Statistics
+    */
+    public String getCSV();
 }

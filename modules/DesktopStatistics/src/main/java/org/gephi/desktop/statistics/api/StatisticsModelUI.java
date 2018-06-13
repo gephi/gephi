@@ -94,6 +94,14 @@ public interface StatisticsModelUI {
      * @return                  the report or <code>null</code> if not found
      */
     public String getReport(Class<? extends Statistics> statistics);
+    
+    /**
+     * Returns the CSV for the given statistics class or <code>null</code> if no CSV
+     * exists for this statistics.
+     * @param statistics        a statistics class
+     * @return                  the CSV or <code>null</code> if not found
+     */
+    public String getCSV(Class<? extends Statistics> statistics);
 
     public void addChangeListener(ChangeListener changeListener);
 

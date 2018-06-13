@@ -161,6 +161,7 @@ public class StatisticsControllerImpl implements StatisticsController {
             GraphModel graphModel = graphController.getGraphModel();
             statistics.execute(graphModel);
             model.addReport(statistics);
+            model.addCSV(statistics);
         }
     }
 
@@ -243,6 +244,7 @@ public class StatisticsControllerImpl implements StatisticsController {
         }
         statistics.end();
         model.addReport(statistics);
+        model.addCSV(statistics);
     }
 
     @Override

@@ -99,6 +99,12 @@ public class StatisticsModelUIImpl implements StatisticsModelUI {
         StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
         return controller.getModel(workspace).getReport(statistics);
     }
+    
+    @Override
+    public String getCSV(Class<? extends Statistics> statistics) {
+        StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
+        return controller.getModel(workspace).getCSV(statistics);
+    }
 
     @Override
     public boolean isStatisticsUIVisible(StatisticsUI statisticsUI) {
