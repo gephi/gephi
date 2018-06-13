@@ -59,6 +59,7 @@ import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.plugin.ClusteringCoefficient;
 import org.gephi.statistics.spi.DynamicStatistics;
+import org.gephi.utils.CSVStringBuilder;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
@@ -119,7 +120,16 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
 
     @Override
     public String getCSV() {
-        return "";
+        
+        CSVStringBuilder csv = new CSVStringBuilder();
+
+        XYSeries dSeries = ChartUtils.createXYSeries(averages, "Clustering Coefficient Time Series");
+        double[][] dSeriesData = dSeries.toArray();
+        
+        csv.addTable(dSeriesData, "Clustering Coefficient", "Time", "Average Clustering Coefficient");
+        
+        return csv.getCSV();
+        
     }
     
     @Override

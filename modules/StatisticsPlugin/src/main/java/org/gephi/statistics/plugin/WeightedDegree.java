@@ -230,7 +230,6 @@ public class WeightedDegree implements Statistics, LongTask {
             csvBuilder.addTable(dSeriesData, "Value", "Count", "Degree Distribution");
         }
         
-        System.out.println(csvBuilder.getCSV());
         return csvBuilder.getCSV();
     }
 

@@ -57,7 +57,7 @@ public class CSVStringBuilder {
         int entries = data[0].length;
         
         for (int i = 0; i < entries; i++) {
-            csv += data[0][i] + "," + data[1][i];
+            csv += data[0][i] + "," + data[1][i] + "\n";
         }
         
         csv += "\n";
