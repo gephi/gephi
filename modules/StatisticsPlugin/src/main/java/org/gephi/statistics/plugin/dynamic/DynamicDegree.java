@@ -130,6 +130,11 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
     }
 
     @Override
+    public String getCSV() {
+        return "";
+    }
+    
+    @Override
     public String getReport() {
         //Time series
         XYSeries dSeries = ChartUtils.createXYSeries(averages, "Degree Time Series");

@@ -118,6 +118,11 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
     }
 
     @Override
+    public String getCSV() {
+        return "";
+    }
+    
+    @Override
     public String getReport() {
         //Time series
         XYSeries dSeries = ChartUtils.createXYSeries(averages, "Clustering Coefficient Time Series");

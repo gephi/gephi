@@ -79,6 +79,11 @@ public class DynamicNbNodes implements DynamicStatistics {
     }
 
     @Override
+    public String getCSV() {
+        return "";
+    }
+    
+    @Override
     public String getReport() {
         //Time series
         XYSeries dSeries = ChartUtils.createXYSeries(counts, "Nb Nodes Time Series");
