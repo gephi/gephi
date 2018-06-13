@@ -158,6 +158,7 @@ class ReportSelection implements Transferable {
 public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
     private String mHTMLReport;
+    private String mCSVReport;
 
     public SimpleHTMLReport(java.awt.Frame parent, String html) {
         super(parent, false);
@@ -173,6 +174,13 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         pack();
         setLocationRelativeTo(parent);
         setVisible(true);
+        exportCSVButton.setVisible(false);
+        
+    }
+    
+    public void setCSV(String csvString) {
+        mCSVReport = csvString;
+        exportCSVButton.setVisible(true);
     }
 
     /**
@@ -319,9 +327,24 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private boolean saveReportCSV(File destinationFolder) throws IOException {
-        
+        if (!destinationFolder.exists()) {
+            destinationFolder.mkdir();
+        }else{
+            if(!destinationFolder.isDirectory()){
+                return false;
+            }
+        }
+
+        //Write CSV file
+        File csvFile = new File(destinationFolder, "report.csv");
+        FileOutputStream outputStream = new FileOutputStream(csvFile);
+        OutputStreamWriter out = new OutputStreamWriter(outputStream, "UTF-8");
+        out.append(this.mCSVReport);
+        out.flush();
+        out.close();
+        outputStream.close();
+
         return true;
-        
     }
     
     private boolean saveReport(String html, File destinationFolder) throws IOException {
@@ -382,7 +405,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
     private void exportCSVButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportCSVButtonActionPerformed
         
-        final String html = this.mHTMLReport;
+        final String csv = this.mCSVReport;
 
         final String path = NbPreferences.forModule(SimpleHTMLReport.class).get(LAST_PATH, null);
         JFileChooser fileChooser = new JFileChooser(path);
@@ -391,7 +414,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         if (result == JFileChooser.APPROVE_OPTION) {
             final File destinationFolder = fileChooser.getSelectedFile();
             NbPreferences.forModule(SimpleHTMLReport.class).put(LAST_PATH, destinationFolder.getAbsolutePath());
-            Thread saveReportCSVThread = new Thread(new Runnable() {
+            Thread saveReportThread = new Thread(new Runnable() {
 
                 @Override
                 public void run() {
@@ -406,7 +429,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
                     }
                 }
             }, "SaveReportTask");
-            saveReportCSVThread.start();
+            saveReportThread.start();
 
         }
         
