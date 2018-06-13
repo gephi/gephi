@@ -298,8 +298,8 @@ public class Hits implements Statistics, LongTask {
         double[][] dHubsSeriesData = dHubsSeries.toArray();
         double[][] dAuthsSeriesData = dAuthsSeries.toArray();
         
-        csv.addTable(dHubsSeriesData, "Hubs Distribution", "Score", "Count");
-        csv.addTable(dAuthsSeriesData, "Authority Distribution", "Score", "Count");
+        csv.addTable(dHubsSeriesData, "Score", "Count", "Hubs Distribution");
+        csv.addTable(dAuthsSeriesData, "Score", "Count", "Authority Distribution");
         
         return csv.getCSV();
         

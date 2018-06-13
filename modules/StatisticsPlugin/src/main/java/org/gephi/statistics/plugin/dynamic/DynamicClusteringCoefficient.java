@@ -126,7 +126,7 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
         XYSeries dSeries = ChartUtils.createXYSeries(averages, "Clustering Coefficient Time Series");
         double[][] dSeriesData = dSeries.toArray();
         
-        csv.addTable(dSeriesData, "Clustering Coefficient", "Time", "Average Clustering Coefficient");
+        csv.addTable(dSeriesData, "Time", "Average Clustering Coefficient", "Clustering Coefficient");
         
         return csv.getCSV();
         

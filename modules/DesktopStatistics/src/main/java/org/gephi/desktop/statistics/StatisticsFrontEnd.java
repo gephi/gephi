@@ -264,8 +264,8 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
                 @Override
                 public void run() {
-                    SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), report);
-                    // TODO: Pass the csv report to the SimpleHTMLReport
+                    //SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), report);
+                    SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), csv);
                 }
             });
         }

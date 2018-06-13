@@ -706,7 +706,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         
         double[][] dSeriesData = dSeries.toArray();
         
-        csv.addTable(dSeriesData, "Clustering Coefficient Distribution", "Value", "Count");
+        csv.addTable(dSeriesData, "Value", "Count", "Clustering Coefficient Distribution");
         
         return csv.getCSV();
         
