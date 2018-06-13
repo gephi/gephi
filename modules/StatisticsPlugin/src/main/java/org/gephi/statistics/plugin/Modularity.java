@@ -669,7 +669,7 @@ public class Modularity implements Statistics, LongTask {
 
         double[][] dSeriesData = dSeries.toArray();
         
-        csv.addTable(dSeriesData, "Modularity Class", "Size (number of nodes", "Size Distribution");
+        csv.addTable(dSeriesData, "Modularity Class", "Size (number of nodes)", "Size Distribution");
         
         return csv.getCSV();
         
