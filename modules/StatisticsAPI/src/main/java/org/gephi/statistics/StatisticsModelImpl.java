@@ -86,7 +86,7 @@ public class StatisticsModelImpl implements StatisticsModel {
     }
     
     public void addCSV(Statistics statistics) {
-        csvMap.put(statistics.getClass(), statistics.getReport());
+        csvMap.put(statistics.getClass(), statistics.getCSV());
     }
 
     @Override

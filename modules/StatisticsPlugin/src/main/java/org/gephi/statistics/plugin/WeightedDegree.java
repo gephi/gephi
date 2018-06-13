@@ -207,6 +207,8 @@ public class WeightedDegree implements Statistics, LongTask {
     
     @Override
     public String getCSV() {
+        
+        System.out.println("HELLO WORLD");
         String csv = "";
 
         if (isDirected) {
@@ -232,7 +234,6 @@ public class WeightedDegree implements Statistics, LongTask {
     @Override
     public String getReport() {
         String report;
-        System.out.println("HELLO WORLD");
 
         if (isDirected) {
             report = getDirectedReport();
