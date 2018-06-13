@@ -107,7 +107,12 @@ public class GraphDensity implements Statistics {
 
     @Override
     public String getCSV() {
-        return "";
+        
+        NumberFormat f = new DecimalFormat("#0.000");
+        
+        return "directed,density\n" + 
+                (isDirected ? "yes" : "no") + "," + f.format(density);
+        
     }
     
     /**
