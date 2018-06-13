@@ -262,6 +262,12 @@ public class Hits implements Statistics, LongTask {
         return newIndices;
     }
 
+    @Override
+    public String getCSV() {
+        return "";
+    }
+    
+    
     /**
      *
      * @return

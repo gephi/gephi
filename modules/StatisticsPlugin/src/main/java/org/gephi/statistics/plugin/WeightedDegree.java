@@ -202,6 +202,11 @@ public class WeightedDegree implements Statistics, LongTask {
         }
         degreeDist.put(wdegree, degreeDist.get(wdegree) + 1);
     }
+    
+    @Override
+    public String getCSV() {
+        return "";
+    }
 
     @Override
     public String getReport() {

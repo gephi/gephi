@@ -429,6 +429,11 @@ public class GraphDistance implements Statistics, LongTask {
         return ChartUtils.renderChart(chart, pName + ".png");
     }
 
+    @Override
+    public String getCSV() {
+        return "";
+    }
+    
     /**
      *
      * @return

@@ -262,6 +262,11 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         return sumChanged;
     }
 
+    @Override
+    public String getCSV() {
+        return "";
+    }
+    
     /**
      *
      * @return

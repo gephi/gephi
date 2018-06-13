@@ -651,6 +651,11 @@ public class Modularity implements Statistics, LongTask {
     }
 
     @Override
+    public String getCSV() {
+        return "";
+    }
+    
+    @Override
     public String getReport() {
         //Distribution series
         Map<Integer, Integer> sizeDist = new HashMap<>();

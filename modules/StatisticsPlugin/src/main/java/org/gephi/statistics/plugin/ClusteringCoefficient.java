@@ -682,6 +682,11 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
         node.setAttribute(clusteringColumn, nodeClusteringCoefficient);
     }
+    
+    @Override
+    public String getCSV() {
+        return "";
+    }
 
     @Override
     public String getReport() {

@@ -366,6 +366,11 @@ public class ConnectedComponents implements Statistics, LongTask {
     }
 
     @Override
+    public String getCSV() {
+        return "";
+    }
+    
+    @Override
     public String getReport() {
         Map<Integer, Integer> sizeDist = new HashMap<>();
         for (int v : componentsSize) {

@@ -105,6 +105,11 @@ public class GraphDensity implements Statistics {
         return result;
     }
 
+    @Override
+    public String getCSV() {
+        return "";
+    }
+    
     /**
      *
      * @return

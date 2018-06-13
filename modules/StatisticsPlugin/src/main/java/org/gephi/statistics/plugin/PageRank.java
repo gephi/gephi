@@ -382,6 +382,11 @@ public class PageRank implements Statistics, LongTask {
         return newIndicies;
     }
 
+    @Override
+    public String getCSV() {
+        return "";
+    }
+    
     /**
      *
      * @return

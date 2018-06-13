@@ -224,6 +224,11 @@ public class Degree implements Statistics, LongTask {
         degreeDist.put(degree, degreeDist.get(degree) + 1);
     }
 
+    @Override
+    public String getCSV() {
+        return "";
+    }
+    
     /**
      *
      * @return
