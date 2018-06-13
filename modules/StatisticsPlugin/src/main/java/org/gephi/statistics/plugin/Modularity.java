@@ -52,6 +52,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
+import org.gephi.utils.CSVStringBuilder;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -652,7 +653,26 @@ public class Modularity implements Statistics, LongTask {
 
     @Override
     public String getCSV() {
-        return "";
+        
+        CSVStringBuilder csv = new CSVStringBuilder();
+        
+        Map<Integer, Integer> sizeDist = new HashMap<>();
+        for (Node n : structure.graph.getNodes()) {
+            Integer v = (Integer) n.getAttribute(MODULARITY_CLASS);
+            if (!sizeDist.containsKey(v)) {
+                sizeDist.put(v, 0);
+            }
+            sizeDist.put(v, sizeDist.get(v) + 1);
+        }
+        
+        XYSeries dSeries = ChartUtils.createXYSeries(sizeDist, "Size Distribution");
+
+        double[][] dSeriesData = dSeries.toArray();
+        
+        csv.addTable(dSeriesData, "Modularity Class", "Size (number of nodes", "Size Distribution");
+        
+        return csv.getCSV();
+        
     }
     
     @Override
