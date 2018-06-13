@@ -318,6 +318,12 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
+    private boolean saveReportCSV(File destinationFolder) throws IOException {
+        
+        return true;
+        
+    }
+    
     private boolean saveReport(String html, File destinationFolder) throws IOException {
         if (!destinationFolder.exists()) {
             destinationFolder.mkdir();
@@ -376,7 +382,33 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
     private void exportCSVButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportCSVButtonActionPerformed
         
-        // This is our code goes
+        final String html = this.mHTMLReport;
+
+        final String path = NbPreferences.forModule(SimpleHTMLReport.class).get(LAST_PATH, null);
+        JFileChooser fileChooser = new JFileChooser(path);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int result = fileChooser.showSaveDialog(WindowManager.getDefault().getMainWindow());
+        if (result == JFileChooser.APPROVE_OPTION) {
+            final File destinationFolder = fileChooser.getSelectedFile();
+            NbPreferences.forModule(SimpleHTMLReport.class).put(LAST_PATH, destinationFolder.getAbsolutePath());
+            Thread saveReportCSVThread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        if (saveReportCSV(destinationFolder)) {
+                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveSuccess", destinationFolder.getName()));
+                        }else{
+                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveError", destinationFolder.getName()));
+                        }
+                    } catch (IOException e) {
+                        Exceptions.printStackTrace(e);
+                    }
+                }
+            }, "SaveReportTask");
+            saveReportCSVThread.start();
+
+        }
         
     }//GEN-LAST:event_exportCSVButtonActionPerformed
 
