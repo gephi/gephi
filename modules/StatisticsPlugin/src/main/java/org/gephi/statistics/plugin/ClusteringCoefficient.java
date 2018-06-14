@@ -748,7 +748,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                     + "</BODY> </HTML>";
         }
         
-        //report += csvCreator.generateData(dSeries);
+        report += csvCreator.generateData(dSeries);
         return report;
     }
 

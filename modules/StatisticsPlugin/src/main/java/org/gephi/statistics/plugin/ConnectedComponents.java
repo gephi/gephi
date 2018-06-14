@@ -410,7 +410,7 @@ public class ConnectedComponents implements Statistics, LongTask {
                 + "Robert Tarjan, <i>Depth-First Search and Linear Graph Algorithms</i>, in SIAM Journal on Computing 1 (2): 146–160 (1972)<br />"
                 + "</BODY> </HTML>";
 
-        //report += csvCreator.generateData(dSeries);
+        report += csvCreator.generateData(dSeries);
         
         return report;
     }

@@ -65,6 +65,7 @@ import java.io.OutputStreamWriter;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
@@ -158,20 +159,19 @@ class ReportSelection implements Transferable {
 public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
     private String mHTMLReport;
-    private String csv;
+    private List<String> csv;
     
     public SimpleHTMLReport(java.awt.Frame parent, String html) {
         super(parent, false);
-        System.out.println(html);
-        String[] htmlCSV = html.split("rabatperezmito");
-        System.out.println(htmlCSV[0]);
+        this.csv = new ArrayList<String>();
+        String[] htmlCSV = html.split("</HTML>");
         mHTMLReport = htmlCSV[0];
         if (htmlCSV.length > 1) {
-            System.out.println(htmlCSV[1]);
-            this.csv = htmlCSV[1];
-        } else {
-            this.csv = "";
+            for (int i = 1; i < htmlCSV.length; i++) {
+                this.csv.add(htmlCSV[i]);
+            }
         }
+        
         initComponents();
         displayPane.setContentType("text/html;");
         displayPane.setText(this.mHTMLReport);
@@ -387,40 +387,44 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
     }//GEN-LAST:event_closeButtonActionPerformed
 
     private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
-        final String csv = this.csv;
+        final List<String> csv = this.csv;
+        if (csv.size() > 0) {
+            final String path = NbPreferences.forModule(SimpleHTMLReport.class).get(LAST_PATH, null);
+            JFileChooser fileChooser = new JFileChooser(path);
+            //fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int result = fileChooser.showSaveDialog(WindowManager.getDefault().getMainWindow());
+            if (result == JFileChooser.APPROVE_OPTION) {
+                final File destinationFolder = fileChooser.getSelectedFile();
+                NbPreferences.forModule(SimpleHTMLReport.class).put(LAST_PATH, destinationFolder.getAbsolutePath());
+                Thread saveReportThread = new Thread(new Runnable() {
 
-        final String path = NbPreferences.forModule(SimpleHTMLReport.class).get(LAST_PATH, null);
-        JFileChooser fileChooser = new JFileChooser(path);
-        //fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int result = fileChooser.showSaveDialog(WindowManager.getDefault().getMainWindow());
-        if (result == JFileChooser.APPROVE_OPTION) {
-            final File destinationFolder = fileChooser.getSelectedFile();
-            NbPreferences.forModule(SimpleHTMLReport.class).put(LAST_PATH, destinationFolder.getAbsolutePath());
-            Thread saveReportThread = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-                        if (exportCSV(csv, destinationFolder)) {
-                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveSuccess", destinationFolder.getName()));
-                        }else{
-                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveError", destinationFolder.getName()));
+                    @Override
+                    public void run() {
+                        try {
+                            if (exportCSV(csv, destinationFolder)) {
+                                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveSuccess", destinationFolder.getName()));
+                            }else{
+                                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveError", destinationFolder.getName()));
+                            }
+                        } catch (IOException e) {
+                            Exceptions.printStackTrace(e);
                         }
-                    } catch (IOException e) {
-                        Exceptions.printStackTrace(e);
                     }
-                }
-            }, "ExportReportTask");
-            saveReportThread.start();
+                }, "ExportReportTask");
+                saveReportThread.start();
 
+            }
+           
         }
     }//GEN-LAST:event_exportButtonActionPerformed
 
-    private boolean exportCSV(String csv, File destinationFolder) throws IOException {
-        if (csv.equals("")) {
+    private boolean exportCSV(List<String> csv, File destinationFolder) throws IOException {
+        int i = 0;
+        
+        if (csv.size() > 0) {
             return false;
         }
-        
+
         if (!destinationFolder.exists()) {
             destinationFolder.mkdir();
         }else{
@@ -428,17 +432,21 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
                 return false;
             }
         }
+        
+        for (String data : csv) {
 
-        StringBuffer replaceBuffer = new StringBuffer();
-        replaceBuffer.append(csv);
-        //Write CSV file
-        File csvFile = new File(destinationFolder, "dataExported.csv");
-        FileOutputStream outputStream = new FileOutputStream(csvFile);
-        OutputStreamWriter out = new OutputStreamWriter(outputStream, "UTF-8");
-        out.append(replaceBuffer.toString());
-        out.flush();
-        out.close();
-        outputStream.close();
+            StringBuffer replaceBuffer = new StringBuffer();
+            replaceBuffer.append(data);
+            //Write CSV file
+            File csvFile = new File(destinationFolder, "dataExported" + i + ".csv");
+            FileOutputStream outputStream = new FileOutputStream(csvFile);
+            OutputStreamWriter out = new OutputStreamWriter(outputStream, "UTF-8");
+            out.append(replaceBuffer.toString());
+            out.flush();
+            out.close();
+            outputStream.close();
+
+        }
 
         return true;
     }
