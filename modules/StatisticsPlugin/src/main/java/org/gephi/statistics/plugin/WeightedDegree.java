@@ -238,7 +238,10 @@ public class WeightedDegree implements Statistics, LongTask {
                     + "Average Weighted Degree: " + f.format(avgWDegree)
                     + "<br /><br />" + degreeImageFile
                     + "</BODY></HTML>";
+            
+            report += csvCreator.generateData(dSeries);
         }
+  
         return report;
     }
 
@@ -306,7 +309,10 @@ public class WeightedDegree implements Statistics, LongTask {
                 + "<br /><br />" + indegreeImageFile
                 + "<br /><br />" + outdegreeImageFile
                 + "</BODY></HTML>";
-
+        
+        report += csvCreator.generateData(dSeries);
+        report += csvCreator.separator + csvCreator.generateData(idSeries);
+        report += csvCreator.separator + csvCreator.generateData(odSeries);
         return report;
     }
 

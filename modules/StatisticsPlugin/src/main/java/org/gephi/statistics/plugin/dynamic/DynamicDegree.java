@@ -58,6 +58,7 @@ import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.IntervalIntegerMap;
 import org.gephi.graph.api.types.TimestampIntegerMap;
 import org.gephi.statistics.plugin.ChartUtils;
+import org.gephi.statistics.plugin.csvCreator;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
@@ -69,7 +70,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-//BORRAR COMENTARIO
 
 /**
  *
@@ -135,10 +135,6 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
     public String getReport() {
         //Time series
         XYSeries dSeries = ChartUtils.createXYSeries(averages, "Degree Time Series");
-        String csv = "x;y\n";
-        for (int i = 0; i < dSeries.getItems().size(); i++) {
-            csv += dSeries.getX(i) + ";" + dSeries.getY(i) + "\n";
-        }
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(dSeries);
@@ -173,9 +169,11 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
          }*/
         report += "<br /><br /></BODY></HTML>";
         
-        System.out.println(report + "rabatperezmito" + csv);
+        report += csvCreator.generateData(dSeries);
         
-        return report + "rabatperezmito" + csv;
+        //System.out.println(report + "rabatperezmito" + csv);
+        
+        return report;
     }
 
     @Override

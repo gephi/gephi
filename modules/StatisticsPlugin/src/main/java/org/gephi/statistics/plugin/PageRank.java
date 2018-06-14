@@ -430,6 +430,8 @@ public class PageRank implements Statistics, LongTask {
                 + "<br /><br />" + "<h2> Algorithm: </h2>"
                 + "Sergey Brin, Lawrence Page, <i>The Anatomy of a Large-Scale Hypertextual Web Search Engine</i>, in Proceedings of the seventh International Conference on the World Wide Web (WWW1998):107-117<br />"
                 + "</BODY> </HTML>";
+        
+        report += csvCreator.generateData(dSeries);
 
         return report;
 
