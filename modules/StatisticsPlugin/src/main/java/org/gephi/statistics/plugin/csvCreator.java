@@ -29,9 +29,4 @@ public class csvCreator {
         
         return csv;
     }
-    
-    public static void splitter(){
-        
-    }
-    
 }

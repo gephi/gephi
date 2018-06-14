@@ -342,8 +342,8 @@ public class Hits implements Statistics, LongTask {
                 + "Jon M. Kleinberg, <i>Authoritative Sources in a Hyperlinked Environment</i>, in Journal of the ACM 46 (5): 604–632 (1999)<br />"
                 + "</BODY> </HTML>";
         
-        //report += csvCreator.generateData(dHubsSeries);
-        //report += csvCreator.separator + csvCreator.generateData(dAuthsSeries);
+        report += csvCreator.generateData(dHubsSeries);
+        report += csvCreator.separator + csvCreator.generateData(dAuthsSeries);
 
         return report;
     }
