@@ -421,7 +421,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
     private boolean exportCSV(List<String> csv, File destinationFolder) throws IOException {
         int i = 0;
         
-        if (csv.size() > 0) {
+        if (csv.size() == 0) {
             return false;
         }
 
@@ -434,6 +434,9 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         }
         
         for (String data : csv) {
+            
+            System.out.println(data);
+            
 
             StringBuffer replaceBuffer = new StringBuffer();
             replaceBuffer.append(data);
@@ -445,6 +448,8 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
             out.flush();
             out.close();
             outputStream.close();
+            
+            i++;
 
         }
 

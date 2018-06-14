@@ -19,9 +19,9 @@ public class csvCreator {
     public static String generateData(XYSeries data){
         
         if(!data.getItems().isEmpty()){
-            csv = "x;y\n";
+            csv = "x,y\n";
             for (int i = 0; i < data.getItems().size(); i++) {
-                csv += data.getX(i) + ";" + data.getY(i) + "\n";
+                csv += data.getX(i) + "," + data.getY(i) + "\n";
             }
         }else{
             csv += "";
