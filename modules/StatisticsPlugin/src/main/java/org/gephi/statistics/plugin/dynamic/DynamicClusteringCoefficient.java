@@ -154,6 +154,9 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
         report += average.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
         }*/
         report += "<br /><br /></BODY></HTML>";
+        
+        //report += csvCreator.generateData(dSeries);
+        
         return report;
     }
 
