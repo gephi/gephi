@@ -700,7 +700,7 @@ public class Modularity implements Statistics, LongTask {
                 + "R. Lambiotte, J.-C. Delvenne, M. Barahona <i>Laplacian Dynamics and Multiscale Modular Structure in Networks 2009<br />"
                 + "</BODY> </HTML>";
         
-        //report += csvCreator.generateData(dSeries);
+        report += csvCreator.generateData(dSeries);
 
         return report;
     }
