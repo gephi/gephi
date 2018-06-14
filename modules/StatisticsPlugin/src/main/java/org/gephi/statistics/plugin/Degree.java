@@ -262,6 +262,8 @@ public class Degree implements Statistics, LongTask {
                     + "Average Degree: " + f.format(avgDegree)
                     + "<br /><br />" + degreeImageFile
                     + "</BODY></HTML>";
+            
+            //report += csvCreator.generateData(dSeries);
         }
         return report;
     }
