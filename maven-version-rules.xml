@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset xmlns="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" comparisonMethod="maven" xsi:schemaLocation="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0 http://mojo.codehaus.org/versions-maven-plugin/xsd/rule-2.0.0.xsd">
+    <ignoreVersions>
+        <!-- Ignore Alpha's, Beta's, release candidates and milestones -->
+        <ignoreVersion type="regex">(?i).*alpha.*</ignoreVersion>
+        
+        <ignoreVersion type="regex">(?i).*beta.*</ignoreVersion>
+		 <ignoreVersion type="regex">(?i).*preview.*</ignoreVersion>
+		
+        <ignoreVersion type="regex">(?i).*[-.]b([0-9]+)?</ignoreVersion>
+        
+        <ignoreVersion type="regex">(?i).*[-.]rc([0-9]+)?</ignoreVersion>
+        
+        <ignoreVersion type="regex">(?i).*[-.]m([0-9]+)?</ignoreVersion>
+        
+        <ignoreVersion type="regex">(?i).*[-.]pr([0-9]+)?</ignoreVersion>
+        
+        <!-- Ignore Netbeans RCP non-standard versions -->
+        <ignoreVersion type="regex">(?i)RELEASE.*</ignoreVersion>
+        
+        <!-- Ignore old jre specific versions-->
+        <ignoreVersion type="regex">(?i).*[-.]jre[0-9]+</ignoreVersion>
+    </ignoreVersions>
+    <rules>
+        <!-- Obvious mismatches -->
+		<!--
+        <rule groupId="commons-collections" artifactId="commons-collections">
+            <ignoreVersions>
+                <ignoreVersion type="regex">^200.*$</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+        <rule groupId="commons-logging" artifactId="commons-logging">
+            <ignoreVersions>
+                <ignoreVersion>99.0-does-not-exist</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+        <rule groupId="org.hamcrest">
+            <ignoreVersions>
+                <ignoreVersion>1.4-atlassian-1</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+		-->
+    </rules>
+</ruleset>
+
+<!-- This file is used for checking new dependency and plugin versions with mvn versions:display-dependency-updates and mvn versions:display-plugin-updates and ignoring some noisy incorrect versions detected as newer -->

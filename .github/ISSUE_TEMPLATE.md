@@ -19,7 +19,8 @@
 
 ## Your Environment
 
-* Version used: Gephi 0.9.1
-* Operating System:
+* Version used: Gephi 0.9.2
+* Java version: 
+* Operating System: 
 
 <!--- Or preferably, include a copy of your messages.log file in your user directory (see https://github.com/gephi/gephi/wiki/Troubleshooting) -->
