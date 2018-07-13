@@ -10,7 +10,7 @@
 
 - **Simple** Easy to install and [get started](https://gephi.github.io/users/quick-start). An UI that is centered around the visualization. Like Photoshop™ for graphs.
 
-- **Modular** Extend Gephi with [plug-ins](https://marketplace.gephi.org). The architecture is built on top of Netbeans Platform and can be extended or reused easily through well-written APIs.
+- **Modular** Extend Gephi with [plug-ins](https://gephi.org/plugins). The architecture is built on top of Netbeans Platform and can be extended or reused easily through well-written APIs.
 
 [Download Gephi](https://gephi.github.io/users/download) for Windows, Mac OS X and Linux and consult the [release notes](https://github.com/gephi/gephi/wiki/Releases). Example datasets can be found on our [wiki](https://github.com/gephi/gephi/wiki/Datasets).
 
