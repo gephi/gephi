@@ -77,7 +77,7 @@ Gephi is extensible and lets developers create plug-ins to add new features, or 
 
 - [Plugins Quick Start (5 minutes)](https://github.com/gephi/gephi/wiki/Plugin-Quick-Start)
 
-- Browse the [plugins](https://marketplace.gephi.org/) created by the community
+- Browse the [plugins](https://gephi.org/plugins) created by the community
 
 - We've created a [**Plugins Bootcamp**](https://github.com/gephi/gephi-plugins-bootcamp) to learn by examples.
 
