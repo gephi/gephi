@@ -1,3 +1,5 @@
+<!--- Cannot find Java 1.8? Please check this https://github.com/gephi/gephi/issues/1787 and don't create a new issue -->
+
 ## Expected Behavior
 
 ## Current Behavior
