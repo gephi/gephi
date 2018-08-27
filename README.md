@@ -22,13 +22,13 @@ Download and [Install](https://gephi.github.io/users/install/) Gephi on your com
 
 Get started with the [Quick Start](https://gephi.github.io/users/quick-start/) and follow the [Tutorials](https://gephi.github.io/users/). Load a sample [dataset](https://github.com/gephi/gephi/wiki/Datasets) and start to play with the data.
 
-If you run into any trouble or have questions consult our [forum](http://forum.gephi.org).
+If you run into any trouble or have questions consult our [forum](http://forum-gephi.org/).
 
 ## Latest releases
 
 ### Stable
 
-- Latest stable release on [gephi.org](https://gephi.org/users/download//).
+- Latest stable release on [gephi.org](https://gephi.org/users/download/).
 
 ### Nightly builds
 
@@ -99,7 +99,7 @@ Copyright 2011 Gephi Consortium. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
+Development and Distribution License ("CDDL") (collectively, the
 "License"). You may not use this file except in compliance with the
 License. You can obtain a copy of the License at
 http://gephi.github.io/developers/license/
