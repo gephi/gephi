@@ -15,41 +15,51 @@
 
     <name>CoreLibraryWrapper</name>
     
+    <properties>
+        <gephi.stax-utils.version>snapshot-20100402</gephi.stax-utils.version>
+        <gephi.commons-codec.version>1.11</gephi.commons-codec.version>
+        <gephi.commons-compress.version>1.18</gephi.commons-compress.version>
+        <gephi.commons-csv.version>1.6</gephi.commons-csv.version>
+        <gephi.jfreechart.version>1.0.19</gephi.jfreechart.version>
+        <gephi.itextpdf.version>5.5.13</gephi.itextpdf.version>
+        <gephi.trove4j.version>3.0.3</gephi.trove4j.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>net.java.dev</groupId>
             <artifactId>stax-utils</artifactId>
-            <version>snapshot-20100402</version>
+            <version>${gephi.stax-utils.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.11</version>
+            <version>${gephi.commons-codec.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.15</version>
+            <version>${gephi.commons-compress.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.0.19</version>
+            <version>${gephi.jfreechart.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sf.trove4j</groupId>
             <artifactId>trove4j</artifactId>
-            <version>3.0.3</version>
+            <version>${gephi.trove4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
-            <version>1.5</version>
+            <version>${gephi.commons-csv.version}</version>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
-            <version>5.5.12</version>
+            <version>${gephi.itextpdf.version}</version>
         </dependency>
     </dependencies>
 

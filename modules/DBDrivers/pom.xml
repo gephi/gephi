@@ -15,26 +15,33 @@
 
     <name>DBDrivers</name>
 
+    <properties>
+        <gephi.sqlite.version>3.25.2</gephi.sqlite.version>
+        <gephi.mysql.version>8.0.13</gephi.mysql.version>
+        <gephi.postgresql.version>42.2.5</gephi.postgresql.version>
+        <gephi.sqlserver.version>6.2.2.jre8</gephi.sqlserver.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.20.1</version>
+            <version>${gephi.sqlite.version}</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>6.0.6</version>
+            <version>${gephi.mysql.version}</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.1.4</version>
+            <version>${gephi.postgresql.version}</version>
         </dependency>
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>6.2.2.jre8</version>
+            <version>${gephi.sqlserver.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.microsoft.azure</groupId>

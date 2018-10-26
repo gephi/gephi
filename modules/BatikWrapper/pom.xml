@@ -19,12 +19,16 @@
         Batik in its own module wrapper because some dependencies define classes 
         in packages such as org.w3c and javax.xml and Netbeans dependency system will complain in transitive dependencies 
     -->
+
+    <properties>
+        <gephi.batik.version>1.10</gephi.batik.version>
+    </properties>
     
     <dependencies>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-transcoder</artifactId>
-            <version>1.9.1</version>
+            <version>${gephi.batik.version}</version>
             <exclusions>
                 <!-- Avoid including a copy of javax.xml and org.w3c classes -->
                 <exclusion>

@@ -156,7 +156,7 @@
         <gephi.javac.fork>true</gephi.javac.fork>
         
         <!-- Testing settings -->
-        <gephi.testng.version>6.11</gephi.testng.version>
+        <gephi.testng.version>6.14.3</gephi.testng.version>
         <gephi.test.maxMemory>768M</gephi.test.maxMemory>
         <gephi.test.reportsDirectory>${project.build.directory}/surefire-reports/plain</gephi.test.reportsDirectory>
         <gephi.test.failureIgnore>${testFailureIgnore}</gephi.test.failureIgnore>
@@ -204,11 +204,11 @@
 
         <gephi.maven-assembly-plugin.version>3.1.0</gephi.maven-assembly-plugin.version>
 
-        <gephi.maven-clean-plugin.version>3.0.0</gephi.maven-clean-plugin.version>
+        <gephi.maven-clean-plugin.version>3.1.0</gephi.maven-clean-plugin.version>
 
-        <gephi.maven-compiler-plugin.version>3.7.0</gephi.maven-compiler-plugin.version>
+        <gephi.maven-compiler-plugin.version>3.8.0</gephi.maven-compiler-plugin.version>
 
-        <gephi.maven-dependency-plugin.version>3.0.2</gephi.maven-dependency-plugin.version>
+        <gephi.maven-dependency-plugin.version>3.1.1</gephi.maven-dependency-plugin.version>
 
         <gephi.maven-deploy-plugin.version>2.8.2</gephi.maven-deploy-plugin.version>
 
@@ -218,7 +218,7 @@
 
         <gephi.maven-install-plugin.version>2.5.2</gephi.maven-install-plugin.version>
 
-        <gephi.maven-jar-plugin.version>3.0.2</gephi.maven-jar-plugin.version>
+        <gephi.maven-jar-plugin.version>3.1.0</gephi.maven-jar-plugin.version>
 
         <gephi.maven-jarsigner-plugin.version>1.4</gephi.maven-jarsigner-plugin.version>
 
@@ -230,23 +230,23 @@
 
         <gephi.maven-resources-plugin.version>3.0.2</gephi.maven-resources-plugin.version>
 
-        <gephi.maven-site-plugin.version>3.6</gephi.maven-site-plugin.version>
+        <gephi.maven-site-plugin.version>3.7.1</gephi.maven-site-plugin.version>
 
         <gephi.maven-source-plugin.version>3.0.1</gephi.maven-source-plugin.version>
 
-        <gephi.maven-surefire-plugin.version>2.20.1</gephi.maven-surefire-plugin.version>
+        <gephi.maven-surefire-plugin.version>2.22.1</gephi.maven-surefire-plugin.version>
 
         <gephi.build-helper-maven-plugin.version>3.0.0</gephi.build-helper-maven-plugin.version>
 
         <gephi.nbm-maven-plugin.version>4.1</gephi.nbm-maven-plugin.version>
         
-        <gephi.wagon-maven-plugin.version>1.0</gephi.wagon-maven-plugin.version>  
+        <gephi.wagon-maven-plugin.version>2.0.0</gephi.wagon-maven-plugin.version>  
         
         <gephi.nexus-staging-maven-plugin.version>1.6.8</gephi.nexus-staging-maven-plugin.version>
         
         <gephi.site-maven-plugin.version>0.12</gephi.site-maven-plugin.version>
         
-        <gephi.versions-maven-plugin.version>2.5</gephi.versions-maven-plugin.version>
+        <gephi.versions-maven-plugin.version>2.7</gephi.versions-maven-plugin.version>
     </properties>
     
     <!-- Maven required version -->
@@ -808,6 +808,10 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <!-- 
+                    Check new versions with:
+                    mvn versions:display-property-updates
+                    -->
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
                     <version>${gephi.versions-maven-plugin.version}</version>
