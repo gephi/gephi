@@ -18,6 +18,10 @@ addons:
     - cmake
     - libboost-all-dev
     - liblzma-dev
+  homebrew:
+    update: true
+    packages:
+      - gnupg
 
 cache:
   directories:
@@ -37,7 +41,6 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./src/travis/add-key.sh;fi
 
   # GPG install
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update && brew unlink gnupg && brew install gnupg && export PATH="/usr/local/opt/gnupg/bin:$PATH";fi
   - openssl aes-256-cbc -k "$GPG_PUBRING_ENCRYPTION" -in "$TRAVIS_BUILD_DIR/src/travis/pubring.gpg.enc" -d -a -out "$TRAVIS_BUILD_DIR/src/travis/pubring.gpg"
   - openssl aes-256-cbc -k "$GPG_SECRETRING_ENCRYPTION" -in "$TRAVIS_BUILD_DIR/src/travis/secretring.gpg.enc" -d -a -out "$TRAVIS_BUILD_DIR/src/travis/secretring.gpg"
 
@@ -55,7 +58,7 @@ before_script:
 
 script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then travis_retry mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.defaultKeyring=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring="$TRAVIS_BUILD_DIR/src/travis/pubring.gpg" -Dgpg.secretKeyring="$TRAVIS_BUILD_DIR/src/travis/secretring.gpg" clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,replace-windows-icon,create-exe,create-targz;fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then travis_retry mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.executable=gpg2 -Dgpg.defaultKeyring=false -Dgpg.useAgent=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring="$TRAVIS_BUILD_DIR/src/travis/pubring.gpg" -Dgpg.secretKeyring="$TRAVIS_BUILD_DIR/src/travis/secretring.gpg" clean deploy -P deployment,create-dmg;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then travis_retry mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.executable=gpg -Dgpg.defaultKeyring=false -Dgpg.useAgent=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring="$TRAVIS_BUILD_DIR/src/travis/pubring.gpg" -Dgpg.secretKeyring="$TRAVIS_BUILD_DIR/src/travis/secretring.gpg" clean deploy -P deployment,create-dmg;fi
 
 after_script:
   # Clean OS X keychain
