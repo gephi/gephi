@@ -141,7 +141,7 @@ public class CharsetToolkit {
 
     /**
      * <p>Guess the encoding of the provided buffer.</p>
-     * If Byte Order Markers are encountered at the beginning of the buffer, we immidiately
+     * <p>If Byte Order Markers are encountered at the beginning of the buffer, we immidiately
      * return the charset implied by this BOM. Otherwise, the file would not be a human
      * readable text file.</p>
      *

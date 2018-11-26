@@ -141,7 +141,7 @@ class ArrayWrapper implements Comparable {
 
     /**
      *
-     * @param pArray
+     * @param array
      */
     ArrayWrapper(int ID, EdgeWrapper[] array) {
         this.array = array;
@@ -154,7 +154,7 @@ class ArrayWrapper implements Comparable {
 
     /**
      *
-     * @param pIndex
+     * @param index
      * @return
      */
     public int get(int index) {

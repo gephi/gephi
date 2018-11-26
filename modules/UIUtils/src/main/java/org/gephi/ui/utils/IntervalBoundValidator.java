@@ -55,7 +55,7 @@ import org.openide.util.NbBundle;
 public class IntervalBoundValidator implements Validator<String> {
 
     /**
-     * If not null, interval start <= end is also validated.
+     * If not null, interval start &lt;= end is also validated.
      */
     private JTextComponent intervalStartTextField = null;
 

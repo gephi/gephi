@@ -82,7 +82,7 @@ public class Vec3f {
     this.z = z;
   }
 
-  /** Sets the ith component, 0 <= i < 3 */
+  /** Sets the ith component, 0 &lt;= i &lt; 3 */
   public void set(int i, float val) {
     switch (i) {
     case 0: x = val; break;
@@ -92,7 +92,7 @@ public class Vec3f {
     }
   }
 
-  /** Gets the ith component, 0 <= i < 3 */
+  /** Gets the ith component, 0 &lt;= i &lt; 3 */
   public float get(int i) {
     switch (i) {
     case 0: return x;

@@ -52,9 +52,7 @@ import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
 /**
- * Adaptation of the SwingX demo SplineEditor. Used to get a
- * {@link Interpolator} for computing.
- * <p>
+ * Adaptation of the SwingX demo SplineEditor. Used to get a Interpolator for computing.
  * <a href="http://www.jroller.com/gfx/entry/swing_demos_animations_and_swing">Romain Guy's article</a>
  *
  * @author Mathieu Bastian

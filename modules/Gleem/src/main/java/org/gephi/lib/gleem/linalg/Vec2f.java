@@ -68,7 +68,7 @@ public class Vec2f {
     this.y = y;
   }
 
-  /** Sets the ith component, 0 <= i < 2 */
+  /** Sets the ith component, 0 &lt;= i &lt; 2 */
   public void set(int i, float val) {
     switch (i) {
     case 0: x = val; break;
@@ -77,7 +77,7 @@ public class Vec2f {
     }
   }
 
-  /** Gets the ith component, 0 <= i < 2 */
+  /** Gets the ith component, 0 &lt;= i &lt; 2 */
   public float get(int i) {
     switch (i) {
     case 0: return x;

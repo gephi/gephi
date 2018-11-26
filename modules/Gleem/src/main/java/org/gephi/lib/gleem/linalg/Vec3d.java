@@ -42,7 +42,7 @@ public class Vec3d {
     this.z = z;
   }
 
-  /** Sets the ith component, 0 <= i < 3 */
+  /** Sets the ith component, 0 &lt;= i &lt; 3 */
   public void set(int i, double val) {
     switch (i) {
     case 0: x = val; break;
@@ -52,7 +52,7 @@ public class Vec3d {
     }
   }
 
-  /** Gets the ith component, 0 <= i < 3 */
+  /** Gets the ith component, 0 &lt;= i &lt; 3 */
   public double get(int i) {
     switch (i) {
     case 0: return x;

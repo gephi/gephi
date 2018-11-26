@@ -239,7 +239,7 @@ public class Rotf {
   /** Turns the upper left 3x3 of the passed matrix into a rotation.
       Implementation from Watt and Watt, <u>Advanced Animation and
       Rendering Techniques</u>.
-      @see gleem.linalg.Mat4f#getRotation */
+      @see org.gephi.lib.gleem.linalg.Mat4f#getRotation */
   public void fromMatrix(Mat4f mat) {
     // FIXME: Should reimplement to follow Horn's advice of using
     // eigenvector decomposition to handle roundoff error in given

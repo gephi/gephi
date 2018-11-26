@@ -49,15 +49,18 @@ import org.gephi.project.api.Workspace;
  * <p>
  * By default the timeline is disabled and can be enabled with the
  * <code>setEnabled()</code> method. Once enabled, the controller is setting its
- * interval value to the {@link DynamicModel}.
+ * interval value to the DynamicModel.
+ * </p>
  * <p>
  * The interval can be animated using the <code>startPlay()</code> and
  * <code>stopPlay()</code> methods. Configuration parameters are also available.
+ * </p>
  * <p>
  * This controller also allows to lookup graph attribute columns that can be
  * used as sparklines (e.g. node count, average degree...). Use the
  * <code>selectColumn()</code> to create a {@link TimelineChart} accessible from
  * the <code>TimelineModel</code>.
+ * </p>
  *
  * @author Julian Bilcke, Mathieu Bastian
  * @see TimelineModel
@@ -86,7 +89,7 @@ public interface TimelineController {
      *
      * @param min the lower bound
      * @param max the upper bound
-     * @throws IllegalArgumentException if <code>min<code> is superior or equal than
+     * @throws IllegalArgumentException if <code>min</code> is superior or equal than
      * <code>max</code> or out of bounds
      */
     public void setCustomBounds(double min, double max);
@@ -105,7 +108,7 @@ public interface TimelineController {
      *
      * @param from the lower bound
      * @param to the upper bound
-     * @throws IllegalArgumentException if <code>min<code> is superior or equal than
+     * @throws IllegalArgumentException if <code>min</code> is superior or equal than
      * <code>max</code> or out of bounds
      */
     public void setInterval(double from, double to);

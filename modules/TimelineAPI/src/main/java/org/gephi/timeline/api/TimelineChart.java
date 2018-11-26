@@ -41,19 +41,19 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.timeline.api;
 
-import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
 
 /**
  * Sparkline type chart visible in the timeline, for instance the number of
  * nodes over time.
  * <p>
  * Charts are usually created from the Statistics module and data are saved
- * within {@link Graph#getAttributes()}. Columns can be accessed from the graph
- * table in the {@link AttributeModel#getGraphTable() }.
+ * within {@link GraphModel}. Columns can be accessed from the graph
+ * table in the {@link GraphModel}.
+ * </p>
  *
  * @author Mathieu Bastian
- * @see
- * TimelineController#selectColumn(org.gephi.data.attributes.api.AttributeColumn)
+ * @see TimelineController#selectColumn(java.lang.String)
  */
 public interface TimelineChart {
 

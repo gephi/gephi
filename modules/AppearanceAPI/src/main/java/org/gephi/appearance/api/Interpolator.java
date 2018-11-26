@@ -211,15 +211,12 @@ public abstract class Interpolator {
          * use Bernstein basis to evaluate 1D cubic Bezier curve (quicker and
          * more numerically stable than power basis) -- 1D control coordinates
          * are (0, p1, p2, 1), where p1 and p2 are in range [0,1], and there is
-         * no ordering constraint on p1 and p2, i.e., p1 <= p2 does not have to
-         * be true @param t is the pa
-         *
-         * ramaterized value in range [0,1] @param p1 is 1st control point
-         * coordinate in range [0,1] @param p2 is 2nd control point coor
-         *
-         * d
-         * inate in range [0,1] @return the value of the Bezier curve at
-         * parameter t
+         * no ordering constraint on p1 and p2, i.e., p1 &lt;= p2 does not have to
+         * be true 
+         * @param t is the paramaterized value in range [0,1]
+         * @param p1 is 1st control point coordinate in range [0,1]
+         * @param p2 is 2nd control point coordinate in range [0,1]
+         * @return the value of the Bezier curve at parameter t
          */
         private float eval(float t, float p1, float p2) {
             // Use optimzied version of the normal Bernstein basis form of Bezier:
@@ -233,15 +230,12 @@ public abstract class Interpolator {
         /**
          * evaluate Bernstein basis derivative of 1D cubic Bezier curve, where
          * 1D control points are (0, p1, p2, 1), where p1 and p2 are in range
-         * [0,1], and there is no ordering constraint on p1 and p2, i.e., p1 <=
-         * p2 does not have to be true @param t is the paramaterized
-         *
-         * value in range [0,1] @param p1 is 1st control point coordinate in
-         * range [0,1] @param p2 is 2nd control point coo
-         *
-         * r
-         * dinate in range [0,1] @return the value of the Bezier curve at
-         * parameter t
+         * [0,1], and there is no ordering constraint on p1 and p2, i.e., p1 &lt;=
+         * p2 does not have to be true 
+         * @param t is the paramaterized value in range [0,1]
+         * @param p1 is 1st control point coordinate in range [0,1]
+         * @param p2 is 2nd control point coordinate in range [0,1]
+         * @return the value of the Bezier curve at parameter t
          */
         private float evalDerivative(float t, float p1, float p2) {
             // use optimzed version of Berstein basis Bezier derivative:
@@ -258,8 +252,7 @@ public abstract class Interpolator {
          * x-value sample array that was created on construction
          *
          * @param x is x-value of cubic bezier curve, in range [0,1]
-         * @return a good initial guess for parameter t (in range [0,1]) that
-         * gives x
+         * @return a good initial guess for parameter t (in range [0,1]) that gives x
          */
         private float getInitialGuessForT(float x) {
             // find which places in the array that x would be sandwiched between,

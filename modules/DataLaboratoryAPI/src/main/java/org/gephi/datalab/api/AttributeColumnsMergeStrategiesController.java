@@ -80,12 +80,11 @@ public interface AttributeColumnsMergeStrategiesController {
      * <p>Only one of the 2 column could be null, and its corresponding start/end default will be used.</p>
      * <p>Columns can be of any type. If not numeric, their values will be parsed.</p>
      * <p>Default start and end values will be used when the columns don't have a value or it can't be parsed to a double.</p>
-     * <p>When start > end for any reason:
+     * When start &gt; end for any reason:
      * <ul>
      * <li>If both columns were provided: A infinite time interval will be set</li>
      * <li>If only one column was provided: The value for the provided column will be kept and the other will be infinite</li>
      * </ul>
-     * </p>
      * @param table Table of the columns, can't be null or wrong
      * @param startColumn Column to use as start value
      * @param endColumn Column to use as end value
@@ -101,12 +100,11 @@ public interface AttributeColumnsMergeStrategiesController {
      * <p>Columns can be of any type.</p>
      * <p>Default start and end values will be used when the columns don't have a value or it can't be parsed to a date.
      * If a default value can't be parsed to a date, infinity will be used as default instead.</p>
-     * <p>When start > end for any reason:
+     * When start &gt; end for any reason:
      * <ul>
      * <li>If both columns were provided: A infinite time interval will be set</li>
      * <li>If only one column was provided: The value for the provided column will be kept and the other will be infinite</li>
      * </ul>
-     * </p>
      * @param table Table of the columns, can't be null or wrong
      * @param startColumn Column to use as start value
      * @param endColumn Column to use as end value

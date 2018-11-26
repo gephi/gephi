@@ -186,7 +186,7 @@ public class JRangeSlider extends JSlider {
 
         /**
          * Constructs a RangeSliderUI for the specified slider component.
-         * @param b RangeSlider
+         * @param slider RangeSlider
          */
         public JRangeSliderWindowsUI(JSlider slider) {
             super(slider);
@@ -754,7 +754,7 @@ public class JRangeSlider extends JSlider {
 
         /**
          * Constructs a RangeSliderUI for the specified slider component.
-         * @param b RangeSlider
+         * @param slider RangeSlider
          */
         public JRangeSliderBasicUI(JSlider slider) {
             super(slider);

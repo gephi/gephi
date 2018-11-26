@@ -362,7 +362,7 @@ public interface AttributeColumnsController {
 
     /**
      * <p>Calculates all statistics at once from a number/number list column using <code>MathUtils</code> class.</p>
-     * <p>Returns an array of <b>length=8</b> of <code>BigDecimal</code> numbers with the results in the following order: 
+     * Returns an array of <b>length=8</b> of <code>BigDecimal</code> numbers with the results in the following order: 
      * <ol>
      * <li>average</li>
      * <li>first quartile (Q1)</li>
@@ -373,7 +373,6 @@ public interface AttributeColumnsController {
      * <li>minimumValue</li>
      * <li>maximumValue</li>
      * </ol>
-     * </p>
      * <p>The column can only be a number/number list column.</p>
      * <p>Otherwise, a IllegalArgumentException will be thrown.</p>
      * @param table Table of the column
