@@ -51,7 +51,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 @ServiceProvider(service = LayoutBuilder.class)
 public class ForceAtlas implements LayoutBuilder {

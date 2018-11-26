@@ -51,7 +51,7 @@ import org.gephi.layout.spi.LayoutBuilder;
 /**
  * Base class for layout algorithms.
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public abstract class AbstractLayout implements Layout {
 

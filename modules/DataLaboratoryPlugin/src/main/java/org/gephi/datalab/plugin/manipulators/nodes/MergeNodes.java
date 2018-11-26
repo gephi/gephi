@@ -61,7 +61,6 @@ import org.openide.util.NbPreferences;
 
 /**
  * <p>Nodes manipulator that merges 2 or more nodes</p>
- * <p>
  * The behaviour is:
  * <ul>
  * <li>Merged nodes are deleted if desired, and one new node is created</li>
@@ -69,7 +68,6 @@ import org.openide.util.NbPreferences;
  * <li>Each column uses an strategy to reduce the rows values to one value</li>
  * <li></li>
  * </ul>
- * </p>
  * @author Eduardo Ramos
  */
 public class MergeNodes extends BasicNodesManipulator {

@@ -45,7 +45,7 @@ import org.gephi.layout.plugin.force.ForceVector;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public class ForceLayoutData extends ForceVector {
 

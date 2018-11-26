@@ -55,7 +55,7 @@ import org.openide.util.NbBundle;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public class RandomLayout extends AbstractLayout implements Layout {
 

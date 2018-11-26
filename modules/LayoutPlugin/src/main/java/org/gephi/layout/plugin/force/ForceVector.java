@@ -45,7 +45,7 @@ import org.gephi.graph.spi.LayoutData;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public class ForceVector implements LayoutData {
 

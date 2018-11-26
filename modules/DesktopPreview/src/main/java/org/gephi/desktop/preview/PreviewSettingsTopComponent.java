@@ -288,8 +288,6 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
 
     /**
      * Enables the refresh button.
-     *
-     * @see PreviewUIController#enableRefresh()
      */
     public void enableRefreshButton() {
         refreshButton.setEnabled(true);
@@ -302,8 +300,6 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
 
     /**
      * Disables the refresh button.
-     *
-     * @see PreviewUIController#disableRefresh()
      */
     public void disableRefreshButton() {
         refreshButton.setEnabled(false);

@@ -45,7 +45,7 @@ import org.gephi.graph.api.Node;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public interface Displacement {
 

@@ -58,7 +58,7 @@ import org.gephi.graph.api.TextProperties;
 import org.gephi.graph.spi.LayoutData;
 
 /**
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public class QuadTree implements Node {
 

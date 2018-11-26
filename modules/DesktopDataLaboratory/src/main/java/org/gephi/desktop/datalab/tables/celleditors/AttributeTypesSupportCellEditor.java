@@ -49,7 +49,6 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import org.gephi.desktop.datalab.utils.GraphModelProvider;
-import org.gephi.desktop.datalab.utils.stringconverters.DoubleStringConverter;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.types.IntervalMap;
@@ -60,7 +59,7 @@ import org.joda.time.DateTimeZone;
 
 /**
  *
- * @author Eduardo Ramos<eduramiba@gmail.com>
+ * @author Eduardo Ramos
  */
 public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
 

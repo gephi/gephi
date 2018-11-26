@@ -55,7 +55,7 @@ import org.openide.util.NbBundle;
 /**
  * Sample layout that scales the graph.
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public abstract class AbstractScaleLayout extends AbstractLayout implements Layout {
 

@@ -58,7 +58,7 @@ package org.gephi.layout.spi;
  * the RotateLayout class. The only difference is the angle provided by the
  * LayoutBuilder on the time of instantiation of the RotateLayout object.
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public interface LayoutBuilder {
 

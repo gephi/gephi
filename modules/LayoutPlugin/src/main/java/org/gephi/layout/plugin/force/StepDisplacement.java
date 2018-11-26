@@ -46,7 +46,7 @@ import org.gephi.graph.api.Node;
 /**
  * The node is moved a fixed distance (step) in the direction of the force.
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public class StepDisplacement implements Displacement {
 

@@ -63,7 +63,7 @@ import org.openide.util.Exceptions;
 /**
  * Hu's basic algorithm
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public class YifanHuLayout extends AbstractLayout implements Layout {
 
@@ -437,7 +437,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     /**
      * Fa = (n2 - n1) * ||n2 - n1|| / K
      *
-     * @author Helder Suzuki <heldersuzuki@gephi.org>
+     * @author Helder Suzuki
      */
     public class SpringForce extends AbstractForce {
 
@@ -468,7 +468,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     /**
      * Fr = -C*K*K*(n2-n1)/||n2-n1||
      *
-     * @author Helder Suzuki <heldersuzuki@gephi.org>
+     * @author Helder Suzuki
      */
     public class ElectricalForce extends AbstractForce {
 

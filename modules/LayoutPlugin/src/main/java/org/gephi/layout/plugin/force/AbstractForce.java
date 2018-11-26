@@ -46,7 +46,7 @@ import org.gephi.layout.plugin.ForceVectorUtils;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public abstract class AbstractForce {
 

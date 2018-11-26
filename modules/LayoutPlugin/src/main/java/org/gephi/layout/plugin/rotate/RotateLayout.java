@@ -55,7 +55,7 @@ import org.openide.util.NbBundle;
 /**
  * Sample layout that simply rotates the graph.
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public class RotateLayout extends AbstractLayout implements Layout {
 

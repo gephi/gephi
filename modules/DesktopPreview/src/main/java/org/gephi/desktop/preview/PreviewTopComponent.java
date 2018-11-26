@@ -221,8 +221,6 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
     /**
      * Shows the banner panel.
-     *
-     * @see PreviewUIController#showRefreshNotification()
      */
     public void showBannerPanel() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -239,8 +237,6 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
 
     /**
      * Hides the banner panel.
-     *
-     * @see PreviewUIController#hideRefreshNotification()
      */
     public void hideBannerPanel() {
         SwingUtilities.invokeLater(new Runnable() {

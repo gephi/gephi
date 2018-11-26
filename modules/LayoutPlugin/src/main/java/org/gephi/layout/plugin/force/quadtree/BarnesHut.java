@@ -49,7 +49,7 @@ import org.gephi.layout.plugin.force.ForceVector;
 /**
  * Barnes-Hut's O(n log n) force calculation algorithm.
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  */
 public class BarnesHut {
 

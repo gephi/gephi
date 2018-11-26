@@ -54,7 +54,7 @@ import org.gephi.graph.api.GraphModel;
  * properly define the various <code>LayoutProperty</code> returned by the
  * {@link #getProperties()} method and provide getter and setter for each.
  *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @author Helder Suzuki
  * @see LayoutBuilder
  */
 public interface Layout {
@@ -93,7 +93,6 @@ public interface Layout {
     /**
      * The properties for this layout.
      * @return              the layout properties
-     * @throws NoSuchMethodException 
      */
     public LayoutProperty[] getProperties();
 
