@@ -39,7 +39,8 @@ public class Octree {
     //Selected
     protected List<Octant> selectedLeaves;
     //Itr
-    protected final OctantIterator nodeIterator;
+    protected final OctantIterator visibleOctantsNodeIterator;
+    protected final OctantIterator allOctantsNodeIterator;
     protected final SelectableIterator selectableIterator;
     protected final EdgeIterator edgeIterator;
 
@@ -50,7 +51,8 @@ public class Octree {
         this.maxDepth = maxDepth;
         this.size = size;
         this.selectedLeaves = new ArrayList<>();
-        this.nodeIterator = new OctantIterator();
+        this.visibleOctantsNodeIterator = new OctantIterator(false);
+        this.allOctantsNodeIterator = new OctantIterator(true);
         this.edgeIterator = new EdgeIterator(null);
         this.selectableIterator = new SelectableIterator();
 
@@ -147,9 +149,14 @@ public class Octree {
         visibleLeaves = 0;
     }
 
-    public Iterator<NodeModel> getNodeIterator() {
-        nodeIterator.reset();
-        return nodeIterator;
+    public Iterator<NodeModel> getVisibleOctantsNodeIterator() {
+        visibleOctantsNodeIterator.reset();
+        return visibleOctantsNodeIterator;
+    }
+    
+    public Iterator<NodeModel> getAllOctantsNodeIterator() {
+        allOctantsNodeIterator.reset();
+        return allOctantsNodeIterator;
     }
 
     public Iterator<NodeModel> getSelectableNodeIterator() {
@@ -158,8 +165,8 @@ public class Octree {
     }
 
     public Iterator<EdgeModel> getEdgeIterator() {
-        nodeIterator.reset();
-        edgeIterator.reset(nodeIterator);
+        visibleOctantsNodeIterator.reset();
+        edgeIterator.reset(visibleOctantsNodeIterator);
         return edgeIterator;
     }
 
@@ -393,9 +400,11 @@ public class Octree {
         private int nodesId;
         private int nodesLength;
         private NodeModel pointer;
+        private final boolean ignoreVisibility;
 
-        public OctantIterator() {
+        public OctantIterator(boolean ignoreVisibility) {
             leavesLength = leaves.length;
+            this.ignoreVisibility = ignoreVisibility;
         }
 
         @Override
@@ -407,10 +416,10 @@ public class Octree {
                 }
                 if (pointer == null) {
                     octant = null;
-                    while (leafId < leavesLength && (octant == null || !octant.visible)) {
+                    while (leafId < leavesLength && (octant == null || (!octant.visible && !ignoreVisibility))) {
                         octant = leaves[leafId++];
                     }
-                    if (octant == null || !octant.visible) {
+                    if (octant == null || (!octant.visible && !ignoreVisibility)) {
                         return false;
                     }
                     nodes = octant.nodes;

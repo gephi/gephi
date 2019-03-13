@@ -180,7 +180,7 @@ public class CompatibilityEngine extends AbstractEngine {
         //Nodes
         if (nodeModeler.isEnabled()) {
             nodeModeler.beforeDisplay(gl, glu);
-            for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+            for (Iterator<NodeModel> itr = octree.getVisibleOctantsNodeIterator(); itr.hasNext();) {
                 NodeModel obj = itr.next();
                 if (obj.markTime != markTime) {
                     obj.display(gl, glu, vizModel);
@@ -197,7 +197,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 textManager.getNodeRenderer().beginRendering();
                 textManager.defaultNodeColor();
                 if (textManager.isSelectedOnly()) {
-                    for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+                    for (Iterator<NodeModel> itr = octree.getVisibleOctantsNodeIterator(); itr.hasNext();) {
                         NodeModel obj = itr.next();
                         if (obj.markTime != markTime) {
                             if (obj.isSelected() && obj.isTextVisible()) {
@@ -207,7 +207,7 @@ public class CompatibilityEngine extends AbstractEngine {
                         }
                     }
                 } else {
-                    for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+                    for (Iterator<NodeModel> itr = octree.getVisibleOctantsNodeIterator(); itr.hasNext();) {
                         NodeModel obj = itr.next();
                         if (obj.markTime != markTime) {
                             if (obj.isTextVisible()) {
@@ -221,7 +221,7 @@ public class CompatibilityEngine extends AbstractEngine {
             }
 
             //Draw rectangles around text for debug
-//            for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+//            for (Iterator<NodeModel> itr = octree.getVisibleOctantsNodeIterator(); itr.hasNext();) {
 //                NodeModel obj = itr.next();
 //
 //                float textW = obj.getTextWidth();
@@ -448,7 +448,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public synchronized void updateLOD() {
-        Iterator<NodeModel> iterator = octree.getNodeIterator();
+        Iterator<NodeModel> iterator = octree.getVisibleOctantsNodeIterator();
         for (; iterator.hasNext();) {
             NodeModel obj = iterator.next();
             nodeModeler.chooseModel(obj);
@@ -458,7 +458,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public synchronized List<NodeModel> getSelectedNodes() {
         List<NodeModel> selected = new ArrayList<>();
-        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+        for (Iterator<NodeModel> itr = octree.getAllOctantsNodeIterator(); itr.hasNext();) {
             NodeModel nodeModel = itr.next();
             if (nodeModel.isSelected()) {
                 selected.add(nodeModel);
@@ -482,7 +482,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public synchronized List<Node> getSelectedUnderlyingNodes() {
         List<Node> selected = new ArrayList<>();
-        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+        for (Iterator<NodeModel> itr = octree.getAllOctantsNodeIterator(); itr.hasNext();) {
             NodeModel nodeModel = itr.next();
             if (nodeModel.isSelected()) {
                 selected.add(nodeModel.getNode());
