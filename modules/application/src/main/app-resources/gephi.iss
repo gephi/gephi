@@ -44,8 +44,7 @@ Name: "{app}"; Permissions: users-full
 
 [Files]
 ;Source: "gephi\bin\gephi.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "gephi\*"; DestDir: "{app}"; Excludes: "gephi\etc\gephi.conf"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "gephi\etc\gephi.conf"; DestDir: "{app}\etc"; Permissions: users-modify; Flags: ignoreversion
+Source: "gephi\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
