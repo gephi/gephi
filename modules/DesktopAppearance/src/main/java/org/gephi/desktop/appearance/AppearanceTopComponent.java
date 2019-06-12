@@ -54,6 +54,7 @@ import java.util.Comparator;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
@@ -94,6 +95,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     //Model
     private transient final AppearanceUIController controller;
     private transient AppearanceUIModel model;
+    private boolean toogleMacroRecording;
+    private List<Function> macrosList;
 
     public AppearanceTopComponent() {
         setName(NbBundle.getMessage(AppearanceTopComponent.class, "CTL_AppearanceTopComponent"));
@@ -102,6 +105,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         model = controller.getModel();
         controller.addPropertyChangeListener(this);
         toolbar = new AppearanceToolbar(controller);
+        toogleMacroRecording = false;
+        macrosList = new ArrayList<Function>();
 
         initComponents();
         initControls();
@@ -369,6 +374,39 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             @Override
             public void actionPerformed(ActionEvent e) {
                 controller.appearanceController.transform(model.getSelectedFunction());
+                if(toogleMacroRecording){
+                    macrosList.add(model.getSelectedFunction());
+                }
+            }
+        });
+        macroRecordButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {       
+                
+                if(toogleMacroRecording){
+                    toogleMacroRecording = false;
+                    JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
+                    System.out.println("Stoping macros recording...");
+                }else{
+                    macrosList.clear();
+                    toogleMacroRecording = true;
+                    JOptionPane.showMessageDialog(null, "The system will start recording your actions now.");
+                    System.out.println("Recording macros...");
+                }
+                
+            }
+        });
+        executeMacroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(macrosList.isEmpty()){
+                    JOptionPane.showMessageDialog(null, "There isn't any macro stored. Please use Recording button first.");
+                }else{
+                    for(Function f : macrosList){
+                        System.out.println("Executing function " + f);
+                        controller.appearanceController.transform(f);
+                    }
+                }
             }
         });
         autoApplyButton.addActionListener(new ActionListener() {
@@ -483,6 +521,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         stopAutoApplyButton = new javax.swing.JToggleButton();
         autoApplyToolbar = new javax.swing.JToolBar();
         enableAutoButton = new javax.swing.JToggleButton();
+        executeMacroButton = new javax.swing.JButton();
+        macroRecordButton = new javax.swing.JButton();
         autoApplyButton = new javax.swing.JToggleButton();
 
         setOpaque(true);
@@ -610,6 +650,24 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         autoApplyToolbar.add(Box.createHorizontalGlue());
         autoApplyToolbar.add(enableAutoButton);
 
+        org.openide.awt.Mnemonics.setLocalizedText(executeMacroButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.executeMacroButton.text")); // NOI18N
+        executeMacroButton.setFocusable(false);
+        executeMacroButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        executeMacroButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        autoApplyToolbar.add(executeMacroButton);
+
+        org.openide.awt.Mnemonics.setLocalizedText(macroRecordButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.macroRecordButton.text")); // NOI18N
+        macroRecordButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.macroRecordButton.toolTipText")); // NOI18N
+        macroRecordButton.setFocusable(false);
+        macroRecordButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        macroRecordButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        macroRecordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                macroRecordButtonActionPerformed(evt);
+            }
+        });
+        autoApplyToolbar.add(macroRecordButton);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -640,6 +698,11 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
         add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void macroRecordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_macroRecordButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_macroRecordButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
     private javax.swing.JComboBox attibuteBox;
@@ -651,7 +714,9 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private javax.swing.JPanel controlPanel;
     private javax.swing.JToolBar controlToolbar;
     private javax.swing.JToggleButton enableAutoButton;
+    private javax.swing.JButton executeMacroButton;
     private javax.swing.JToggleButton localScaleButton;
+    private javax.swing.JButton macroRecordButton;
     private javax.swing.JPanel mainPanel;
     private org.jdesktop.swingx.JXHyperlink splineButton;
     private javax.swing.JToggleButton stopAutoApplyButton;
