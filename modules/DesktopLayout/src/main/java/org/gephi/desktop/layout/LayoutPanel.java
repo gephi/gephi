@@ -59,12 +59,14 @@ import java.util.Comparator;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import org.gephi.desktop.layout.LayoutPresetPersistence.Preset;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutModel;
+import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutUI;
 import org.gephi.ui.components.richtooltip.RichTooltip;
@@ -84,10 +86,14 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     private LayoutModel model;
     private LayoutController controller;
     private LayoutPresetPersistence layoutPresetPersistence;
+    private Layout macroLayout;
+    private boolean toogleMacroRecording;
 
     public LayoutPanel() {
         NO_SELECTION = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.choose.text");
         controller = Lookup.getDefault().lookup(LayoutController.class);
+        macroLayout = null;
+        toogleMacroRecording = false;
         initComponents();
         layoutPresetPersistence = new LayoutPresetPersistence();
         initEvents();
@@ -300,6 +306,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
     private void run() {
         controller.executeLayout();
+        System.out.println(controller.getModel());
     }
 
     private void stop() {
@@ -322,6 +329,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         layoutToolbar = new javax.swing.JToolBar();
         presetsButton = new javax.swing.JButton();
         resetButton = new javax.swing.JButton();
+        executeMacro = new javax.swing.JButton();
+        recordButton = new javax.swing.JButton();
         layoutProvidedPanel = new javax.swing.JPanel();
         propertySheet = new PropertySheet();
 
@@ -353,7 +362,6 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         runButton.setIconTextGap(5);
         runButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         runButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runButtonActionPerformed(evt);
             }
@@ -377,12 +385,33 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
         resetButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.resetButton.text")); // NOI18N
         resetButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetButtonActionPerformed(evt);
             }
         });
         layoutToolbar.add(resetButton);
+
+        executeMacro.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.executeMacro.text")); // NOI18N
+        executeMacro.setFocusable(false);
+        executeMacro.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        executeMacro.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        executeMacro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                executeMacroActionPerformed(evt);
+            }
+        });
+        layoutToolbar.add(executeMacro);
+
+        recordButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.recordButton.text")); // NOI18N
+        recordButton.setFocusable(false);
+        recordButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        recordButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        recordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                recordButtonActionPerformed(evt);
+            }
+        });
+        layoutToolbar.add(recordButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -424,15 +453,42 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
             stop();
         } else {
             run();
+            if(toogleMacroRecording){
+                macroLayout = model.getSelectedLayout();
+            }
         }
     }//GEN-LAST:event_runButtonActionPerformed
+
+    private void executeMacroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeMacroActionPerformed
+        controller.setLayout(macroLayout);
+                if (model.isRunning()) {
+            stop();
+        } else {
+            run();
+        }
+    }//GEN-LAST:event_executeMacroActionPerformed
+
+    private void recordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordButtonActionPerformed
+      if(toogleMacroRecording){
+          toogleMacroRecording = false;
+          JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
+          recordButton.setText("Record Macro");
+      }else{
+          toogleMacroRecording = true;
+          JOptionPane.showMessageDialog(null, "The system will start recording your actions now.");
+          recordButton.setText("Stop Recording");
+      }
+    }//GEN-LAST:event_recordButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton executeMacro;
     private javax.swing.JLabel infoLabel;
     private javax.swing.JComboBox layoutCombobox;
     private javax.swing.JPanel layoutProvidedPanel;
     private javax.swing.JToolBar layoutToolbar;
     private javax.swing.JButton presetsButton;
     private javax.swing.JPanel propertySheet;
+    private javax.swing.JButton recordButton;
     private javax.swing.JButton resetButton;
     private javax.swing.JButton runButton;
     // End of variables declaration//GEN-END:variables

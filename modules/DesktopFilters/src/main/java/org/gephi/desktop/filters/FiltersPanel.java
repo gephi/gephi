@@ -45,6 +45,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -77,6 +78,10 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     private final FilterPanelPanel filterPanelPanel;
     private QueryExplorer queriesExplorer;
     private final QueriesPanel queriesPanel;
+    
+    private boolean toogleMacroRecording;
+    FilterController macroController;
+    Query macroQuery;
 
     public FiltersPanel() {
         initComponents();
@@ -93,6 +98,9 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         southPanel.add(queriesPanel, BorderLayout.CENTER);
         filterPanelPanel = new FilterPanelPanel();
         filtersUIPanel.add(filterPanelPanel);
+        toogleMacroRecording = false;
+        macroController = null;
+        macroQuery = null;
 
         initEvents();
     }
@@ -122,12 +130,55 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 if (uiModel.getSelectedQuery() != null) {
                     FilterController controller = Lookup.getDefault().lookup(FilterController.class);
                     controller.filterVisible(uiModel.getSelectedRoot());
+                    
+                    stopButton.setSelected(false);
+                    stopButton.setVisible(true);
+                    filterButton.setVisible(false);
+                    if(toogleMacroRecording){
+                        macroController = controller;
+                        macroQuery = uiModel.getSelectedRoot();
+                        toogleMacroRecording = false;
+                        JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
+                        macroRecordButton.setText("Record Macro");
+                    }
+                }
+            }
+        });
+        
+        macroRecordButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {       
+                
+                if(toogleMacroRecording){
+                    toogleMacroRecording = false;
+                    JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
+                    System.out.println("Stoping macros recording...");
+                    macroRecordButton.setText("Record Macro");
+                }else{
+                    
+                    toogleMacroRecording = true;
+                    JOptionPane.showMessageDialog(null, "The system will start recording your actions now.");
+                    System.out.println("Recording macros...");
+                    macroRecordButton.setText("Stop Recording");
+                }
+                
+            }
+        });
+        
+        executeMacroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(macroController == null){
+                    JOptionPane.showMessageDialog(null, "There isn't any macro stored. Please use Recording button first.");
+                }else{
+                    macroController.filterVisible(macroQuery);
                     stopButton.setSelected(false);
                     stopButton.setVisible(true);
                     filterButton.setVisible(false);
                 }
             }
         });
+        
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -335,6 +386,9 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         splitPane = new javax.swing.JSplitPane();
         libraryTree = new FiltersExplorer();
         southPanel = new javax.swing.JPanel();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        executeMacroButton = new javax.swing.JButton();
+        macroRecordButton = new javax.swing.JButton();
         filtersUIPanel = new javax.swing.JPanel();
         southToolbar = new javax.swing.JToolBar();
         buttonsPanel = new javax.swing.JPanel();
@@ -395,6 +449,15 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         splitPane.setLeftComponent(libraryTree);
 
         southPanel.setLayout(new java.awt.BorderLayout());
+
+        executeMacroButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.executeMacroButton.text")); // NOI18N
+        jSplitPane1.setLeftComponent(executeMacroButton);
+
+        macroRecordButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.macroRecordButton.text")); // NOI18N
+        jSplitPane1.setRightComponent(macroRecordButton);
+
+        southPanel.add(jSplitPane1, java.awt.BorderLayout.PAGE_END);
+
         splitPane.setRightComponent(southPanel);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -455,12 +518,15 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonsPanel;
+    private javax.swing.JButton executeMacroButton;
     private javax.swing.JButton exportColumnButton;
     private javax.swing.JButton exportLabelVisible;
     private javax.swing.JButton exportWorkspaceButton;
     private javax.swing.JToggleButton filterButton;
     private javax.swing.JPanel filtersUIPanel;
+    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JScrollPane libraryTree;
+    private javax.swing.JButton macroRecordButton;
     private javax.swing.JButton resetButton;
     private javax.swing.JToggleButton selectButton;
     private javax.swing.JToolBar.Separator separator;

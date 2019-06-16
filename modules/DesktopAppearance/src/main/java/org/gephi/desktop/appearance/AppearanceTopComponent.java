@@ -387,11 +387,13 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                     toogleMacroRecording = false;
                     JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
                     System.out.println("Stoping macros recording...");
+                    macroRecordButton.setText("Record Macro");
                 }else{
                     macrosList.clear();
                     toogleMacroRecording = true;
                     JOptionPane.showMessageDialog(null, "The system will start recording your actions now.");
                     System.out.println("Recording macros...");
+                    macroRecordButton.setText("Stop Recording");
                 }
                 
             }
