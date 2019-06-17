@@ -113,10 +113,6 @@
                 <attr name="originalFile" stringvalue="Actions/Tools/org-gephi-branding-desktop-actions-OpenOnlineDoc.instance"/>
                 <attr name="position" intvalue="11000"/>
             </file>
-            <file name="org-gephi-branding-desktop-actions-Macros.instance">
-                <attr name="originalFile" stringvalue="Actions/Tools/org-gephi-branding-desktop-actions-Macros.instance"/>
-                <attr name="position" intvalue="12000"/>
-            </file>
             <file name="org-netbeans-modules-favorites-templates-TemplatesAction.shadow_hidden"/>
             <file name="org-netbeans-modules-templates-actions-TemplatesAction.shadow_hidden"/>
             <file name="org-openide-actions-ToolsAction.shadow_hidden"/>
