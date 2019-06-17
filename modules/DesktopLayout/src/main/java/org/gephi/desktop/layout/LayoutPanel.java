@@ -329,8 +329,6 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         layoutToolbar = new javax.swing.JToolBar();
         presetsButton = new javax.swing.JButton();
         resetButton = new javax.swing.JButton();
-        executeMacro = new javax.swing.JButton();
-        recordButton = new javax.swing.JButton();
         layoutProvidedPanel = new javax.swing.JPanel();
         propertySheet = new PropertySheet();
 
@@ -391,28 +389,6 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         });
         layoutToolbar.add(resetButton);
 
-        executeMacro.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.executeMacro.text")); // NOI18N
-        executeMacro.setFocusable(false);
-        executeMacro.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        executeMacro.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        executeMacro.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                executeMacroActionPerformed(evt);
-            }
-        });
-        layoutToolbar.add(executeMacro);
-
-        recordButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.recordButton.text")); // NOI18N
-        recordButton.setFocusable(false);
-        recordButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        recordButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        recordButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                recordButtonActionPerformed(evt);
-            }
-        });
-        layoutToolbar.add(recordButton);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -459,36 +435,13 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         }
     }//GEN-LAST:event_runButtonActionPerformed
 
-    private void executeMacroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeMacroActionPerformed
-        controller.setLayout(macroLayout);
-                if (model.isRunning()) {
-            stop();
-        } else {
-            run();
-        }
-    }//GEN-LAST:event_executeMacroActionPerformed
-
-    private void recordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordButtonActionPerformed
-      if(toogleMacroRecording){
-          toogleMacroRecording = false;
-          JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
-          recordButton.setText("Record Macro");
-      }else{
-          toogleMacroRecording = true;
-          JOptionPane.showMessageDialog(null, "The system will start recording your actions now.");
-          recordButton.setText("Stop Recording");
-      }
-    }//GEN-LAST:event_recordButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton executeMacro;
     private javax.swing.JLabel infoLabel;
     private javax.swing.JComboBox layoutCombobox;
     private javax.swing.JPanel layoutProvidedPanel;
     private javax.swing.JToolBar layoutToolbar;
     private javax.swing.JButton presetsButton;
     private javax.swing.JPanel propertySheet;
-    private javax.swing.JButton recordButton;
     private javax.swing.JButton resetButton;
     private javax.swing.JButton runButton;
     // End of variables declaration//GEN-END:variables

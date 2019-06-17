@@ -78,6 +78,11 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>macro-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -63,6 +63,7 @@ import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.macroapi.macros.Macro;
 import org.gephi.ui.components.splineeditor.SplineEditor;
 import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -374,15 +375,23 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             @Override
             public void actionPerformed(ActionEvent e) {
                 controller.appearanceController.transform(model.getSelectedFunction());
-                if(toogleMacroRecording){
-                    macrosList.add(model.getSelectedFunction());
-                }
+                
+                //1. Llegir json
+                //2. agafar variable isRecording
+                //3. si false -> res
+                //4. si true -> crear variable MacroAppearance
+                //5. setActions (List<Functions>)
+                //6. en el addMacro de Macro.java fer que rebi una List<Object> i les guardi al json
+                
+                //Object obj = parser.parse(new FileReader("/Users/<username>/Documents/file1.txt"));
+                   // macrosList.add(model.getSelectedFunction());
+                
             }
         });
-        macroRecordButton.addActionListener(new ActionListener() {
+        /*macroRecordButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {       
-                
+          
                 if(toogleMacroRecording){
                     toogleMacroRecording = false;
                     JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
@@ -410,7 +419,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                     }
                 }
             }
-        });
+        });*/
         autoApplyButton.addActionListener(new ActionListener() {
 
             @Override
@@ -484,6 +493,10 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
          * model.setBarChartVisible(barChartButton.isSelected()); } });
          */
     }
+    
+    public void executeMacro(){
+        
+    }
 
     private void refreshEnable() {
         boolean modelEnabled = isModelEnabled();
@@ -523,8 +536,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         stopAutoApplyButton = new javax.swing.JToggleButton();
         autoApplyToolbar = new javax.swing.JToolBar();
         enableAutoButton = new javax.swing.JToggleButton();
-        executeMacroButton = new javax.swing.JButton();
-        macroRecordButton = new javax.swing.JButton();
         autoApplyButton = new javax.swing.JToggleButton();
 
         setOpaque(true);
@@ -652,24 +663,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         autoApplyToolbar.add(Box.createHorizontalGlue());
         autoApplyToolbar.add(enableAutoButton);
 
-        org.openide.awt.Mnemonics.setLocalizedText(executeMacroButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.executeMacroButton.text")); // NOI18N
-        executeMacroButton.setFocusable(false);
-        executeMacroButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        executeMacroButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        autoApplyToolbar.add(executeMacroButton);
-
-        org.openide.awt.Mnemonics.setLocalizedText(macroRecordButton, org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.macroRecordButton.text")); // NOI18N
-        macroRecordButton.setToolTipText(org.openide.util.NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.macroRecordButton.toolTipText")); // NOI18N
-        macroRecordButton.setFocusable(false);
-        macroRecordButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        macroRecordButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        macroRecordButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                macroRecordButtonActionPerformed(evt);
-            }
-        });
-        autoApplyToolbar.add(macroRecordButton);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -701,10 +694,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void macroRecordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_macroRecordButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_macroRecordButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
     private javax.swing.JComboBox attibuteBox;
@@ -716,9 +705,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private javax.swing.JPanel controlPanel;
     private javax.swing.JToolBar controlToolbar;
     private javax.swing.JToggleButton enableAutoButton;
-    private javax.swing.JButton executeMacroButton;
     private javax.swing.JToggleButton localScaleButton;
-    private javax.swing.JButton macroRecordButton;
     private javax.swing.JPanel mainPanel;
     private org.jdesktop.swingx.JXHyperlink splineButton;
     private javax.swing.JToggleButton stopAutoApplyButton;

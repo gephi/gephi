@@ -139,13 +139,13 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                         macroQuery = uiModel.getSelectedRoot();
                         toogleMacroRecording = false;
                         JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
-                        macroRecordButton.setText("Record Macro");
+                        //macroRecordButton.setText("Record Macro");
                     }
                 }
             }
         });
         
-        macroRecordButton.addActionListener(new ActionListener() {
+        /*macroRecordButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {       
                 
@@ -177,7 +177,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                     filterButton.setVisible(false);
                 }
             }
-        });
+        });*/
         
         stopButton.addActionListener(new ActionListener() {
             @Override
@@ -386,9 +386,6 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         splitPane = new javax.swing.JSplitPane();
         libraryTree = new FiltersExplorer();
         southPanel = new javax.swing.JPanel();
-        jSplitPane1 = new javax.swing.JSplitPane();
-        executeMacroButton = new javax.swing.JButton();
-        macroRecordButton = new javax.swing.JButton();
         filtersUIPanel = new javax.swing.JPanel();
         southToolbar = new javax.swing.JToolBar();
         buttonsPanel = new javax.swing.JPanel();
@@ -449,15 +446,6 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         splitPane.setLeftComponent(libraryTree);
 
         southPanel.setLayout(new java.awt.BorderLayout());
-
-        executeMacroButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.executeMacroButton.text")); // NOI18N
-        jSplitPane1.setLeftComponent(executeMacroButton);
-
-        macroRecordButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.macroRecordButton.text")); // NOI18N
-        jSplitPane1.setRightComponent(macroRecordButton);
-
-        southPanel.add(jSplitPane1, java.awt.BorderLayout.PAGE_END);
-
         splitPane.setRightComponent(southPanel);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -518,15 +506,12 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonsPanel;
-    private javax.swing.JButton executeMacroButton;
     private javax.swing.JButton exportColumnButton;
     private javax.swing.JButton exportLabelVisible;
     private javax.swing.JButton exportWorkspaceButton;
     private javax.swing.JToggleButton filterButton;
     private javax.swing.JPanel filtersUIPanel;
-    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JScrollPane libraryTree;
-    private javax.swing.JButton macroRecordButton;
     private javax.swing.JButton resetButton;
     private javax.swing.JToggleButton selectButton;
     private javax.swing.JToolBar.Separator separator;
