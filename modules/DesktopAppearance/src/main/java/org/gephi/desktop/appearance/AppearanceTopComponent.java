@@ -64,6 +64,8 @@ import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.macroapi.macros.Macro;
+import org.gephi.macroapi.macros.MacroAppearance;
+import org.gephi.macroapi.macros.ManageMacros;
 import org.gephi.ui.components.splineeditor.SplineEditor;
 import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -376,6 +378,12 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             public void actionPerformed(ActionEvent e) {
                 controller.appearanceController.transform(model.getSelectedFunction());
                 
+                if(ManageMacros.getRecordingState()){
+                    Macro macro = ManageMacros.getCurrentMacro();
+                    macro.setName("Puta Colau");
+                    macro.addAction(model.getSelectedFunction());
+                    ManageMacros.addCurrentMacro(macro);
+                }
                 //1. Llegir json
                 //2. agafar variable isRecording
                 //3. si false -> res
@@ -384,30 +392,12 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                 //6. en el addMacro de Macro.java fer que rebi una List<Object> i les guardi al json
                 
                 //Object obj = parser.parse(new FileReader("/Users/<username>/Documents/file1.txt"));
-                   // macrosList.add(model.getSelectedFunction());
-                
-            }
-        });
-        /*macroRecordButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {       
+                   // macrosList.add(model.getSelectedFunction());             
           
-                if(toogleMacroRecording){
-                    toogleMacroRecording = false;
-                    JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
-                    System.out.println("Stoping macros recording...");
-                    macroRecordButton.setText("Record Macro");
-                }else{
-                    macrosList.clear();
-                    toogleMacroRecording = true;
-                    JOptionPane.showMessageDialog(null, "The system will start recording your actions now.");
-                    System.out.println("Recording macros...");
-                    macroRecordButton.setText("Stop Recording");
-                }
-                
             }
         });
-        executeMacroButton.addActionListener(new ActionListener() {
+
+        /*executeMacroButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(macrosList.isEmpty()){

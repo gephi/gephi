@@ -41,6 +41,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <useOSGiDependencies>true</useOSGiDependencies>
+                    <publicPackages>
+                        <publicPackage>org.gephi.macroapi.macros</publicPackage>
+                    </publicPackages>
                 </configuration>
             </plugin>
             <plugin>

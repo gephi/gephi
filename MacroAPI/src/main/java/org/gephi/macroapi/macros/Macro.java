@@ -5,6 +5,7 @@
  */
 package org.gephi.macroapi.macros;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class Macro {
     private Date date;
     
     public Macro(){
+        actions = new ArrayList<Object>();
     }
     
     public String getName(){
@@ -36,8 +38,8 @@ public class Macro {
         return actions;
     }
     
-    public void addActions(List<Object> actions){
-        this.actions = actions;
+    public void addAction(Object action){
+        this.actions.add(action);
     }
     
     public void save(){

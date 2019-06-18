@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import org.gephi.macroapi.macros.ManageMacros;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -35,9 +36,13 @@ public final class Macros implements ActionListener {
             public void run() {
                 final ArrayList<String> macros = new ArrayList<>();
                 
-                macros.add("Macro 1");
+                /*macros.add("Macro 1");
                 macros.add("Macro 2");
-                macros.add("Macro 3");
+                macros.add("Macro 3");*/
+                
+                for(String currentMacro : ManageMacros.getMacrosNames()){
+                    macros.add(currentMacro);
+                }
                 
                 
                 MacrosPanelList component = MacrosPanelList.getInstance();

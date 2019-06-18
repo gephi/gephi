@@ -6,26 +6,44 @@
 package org.gephi.macroapi.macros;
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 public class ManageMacros {
-    private ArrayList<Macro> macros;
-    private boolean isRecording;
+    private static ArrayList<Macro> macros = new ArrayList<Macro>();
+    private static boolean isRecording;
+    private static Macro currentMacro;
     
-    public void changeRecordingState(){
-        if(isRecording)
-            isRecording = false;
-        else
-            isRecording = true;
-    }
-    
-    public ManageMacros(){
-        macros = new ArrayList<Macro>();
+    private ManageMacros(){
         isRecording = false;
+        currentMacro = null;
         getMacros("abc");
     }
     
-    public void addMacro(Macro macro){
+    public static void changeRecordingState(boolean state){
+        if(state){
+            isRecording = true;
+            JOptionPane.showMessageDialog(null, "The system will start recording your actions now.");
+        }
+        else{
+            isRecording = false;
+            JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
+        }
+    }
+     
+    public static boolean getRecordingState() {
+        return isRecording;
+    }
+    
+    public static void addMacro(Macro macro){
         macros.add(macro);
+    }
+    
+    public static void addCurrentMacro(Macro macro){
+        currentMacro = macro;
+    }
+    
+    public static Macro getCurrentMacro(){
+        return currentMacro;
     }
     
     // Get a JSON filepath and transform it into a list of macros
@@ -38,7 +56,7 @@ public class ManageMacros {
         
     }
     
-    public ArrayList<String> getMacrosNames(){
+    public static ArrayList<String> getMacrosNames(){
         ArrayList<String> names = new ArrayList<String>();
         
         for(Macro m : macros)
@@ -46,8 +64,8 @@ public class ManageMacros {
         return names;
     }
     
-    public void editName(String newName, int index){
+    public static void editName(String newName, int index){
         macros.get(index).setName(newName);
-        saveMacros();
+        //saveMacros();
     }
 }

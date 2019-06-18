@@ -6,8 +6,9 @@
 package org.gephi.branding.desktop;
 
 import java.util.ArrayList;
-import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import org.gephi.macroapi.macros.Macro;
 import org.gephi.macroapi.macros.ManageMacros;
 
 /**
@@ -164,9 +165,13 @@ public class MacrosPanelList extends javax.swing.JPanel {
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
-        int idx = list1.getSelectedIndex();
-        macrosList.remove(idx);
-        list1.remove(idx);
+        int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to delete this macro?","Warning",JOptionPane.YES_NO_OPTION);
+        if(dialogResult == JOptionPane.YES_OPTION){
+            int idx = list1.getSelectedIndex();
+            macrosList.remove(idx);
+            list1.remove(idx);
+        }
+
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private void ExecuteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExecuteButtonActionPerformed
@@ -174,7 +179,32 @@ public class MacrosPanelList extends javax.swing.JPanel {
     }//GEN-LAST:event_ExecuteButtonActionPerformed
 
     private void recordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordButtonActionPerformed
-        // TODO add your handling code here:        
+        if(ManageMacros.getRecordingState()){
+            ManageMacros.changeRecordingState(false);
+            recordButton.setText("Record Macro");
+            //Posar popup per escriure nom de la macro
+            Macro macro = ManageMacros.getCurrentMacro();
+            String macroName = JOptionPane.showInputDialog("Enter a macro name");
+            macro.setName(macroName);
+            ManageMacros.addMacro(macro);
+        }else{
+            ManageMacros.changeRecordingState(true);
+            recordButton.setText("Stop Recording");
+            Macro macro = new Macro();
+            ManageMacros.addCurrentMacro(macro);
+        }
+        
+        /*if(ManageMacros.getRecordingState()){
+            recordButton.setText("Stop Recording");
+            Macro macro = ManageMacros.getCurrentMacro();
+            ManageMacros.addMacro(macro);
+        }
+        else{
+            recordButton.setText("Record Macro");
+            Macro macro = new Macro();
+            ManageMacros.addCurrentMacro(macro);
+        }*/
+            
     }//GEN-LAST:event_recordButtonActionPerformed
 
 
