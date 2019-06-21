@@ -165,11 +165,15 @@ public class MacrosPanelList extends javax.swing.JPanel {
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
-        int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to delete this macro?","Warning",JOptionPane.YES_NO_OPTION);
-        if(dialogResult == JOptionPane.YES_OPTION){
-            int idx = list1.getSelectedIndex();
-            macrosList.remove(idx);
-            list1.remove(idx);
+        int idx = list1.getSelectedIndex();
+        if(idx != -1){
+            int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to delete this macro?","Warning",JOptionPane.YES_NO_OPTION);
+            if(dialogResult == JOptionPane.YES_OPTION){
+                    macrosList.remove(idx);
+                    list1.remove(idx);
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Please select a Macro first");
         }
 
     }//GEN-LAST:event_removeButtonActionPerformed
