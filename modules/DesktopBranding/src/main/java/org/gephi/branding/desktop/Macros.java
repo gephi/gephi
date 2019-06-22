@@ -5,18 +5,18 @@
  */
 package org.gephi.branding.desktop;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import javax.swing.JDialog;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 import org.gephi.macroapi.macros.ManageMacros;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.WindowManager;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 @ActionID(
         category = "Tools",
@@ -34,21 +34,13 @@ public final class Macros implements ActionListener {
        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                final ArrayList<String> macros = new ArrayList<>();
-                
-                /*macros.add("Macro 1");
-                macros.add("Macro 2");
-                macros.add("Macro 3");*/
-                
-                for(String currentMacro : ManageMacros.getMacrosNames()){
-                    macros.add(currentMacro);
-                }
-                
-                
+                final List<String> macros = new ArrayList<>();
+                macros.addAll(ManageMacros.getMacrosNames());
+
                 MacrosPanelList component = MacrosPanelList.getInstance();
                 
                 component.setMacrosList(macros);
-                
+
                 JDialog dialog = new JDialog(WindowManager.getDefault().getMainWindow(),
                         component.getName(), false);
                 dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

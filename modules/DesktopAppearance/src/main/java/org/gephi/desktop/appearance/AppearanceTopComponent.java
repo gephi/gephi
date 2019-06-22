@@ -380,7 +380,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                 
                 if(ManageMacros.getRecordingState()){
                     Macro macro = ManageMacros.getCurrentMacro();
-                    macro.setName("Puta Colau");
                     macro.addAction(model.getSelectedFunction());
                     ManageMacros.addCurrentMacro(macro);
                 }

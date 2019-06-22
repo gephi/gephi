@@ -5,18 +5,18 @@
  */
 package org.gephi.macroapi.macros;
 
+import javax.swing.*;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
+import java.util.List;
 
 public class ManageMacros {
-    private static ArrayList<Macro> macros = new ArrayList<Macro>();
+    private static List<Macro> macros = new ArrayList<Macro>();
     private static boolean isRecording;
     private static Macro currentMacro;
     
     private ManageMacros(){
         isRecording = false;
         currentMacro = null;
-        getMacros("abc");
     }
     
     public static void changeRecordingState(boolean state){
@@ -46,21 +46,12 @@ public class ManageMacros {
         return currentMacro;
     }
     
-    // Get a JSON filepath and transform it into a list of macros
-    public void getMacros(String filepath){
-        
-    }
-    
-    // Transform macros array into JSON file
-    public void saveMacros(){
-        
-    }
-    
-    public static ArrayList<String> getMacrosNames(){
-        ArrayList<String> names = new ArrayList<String>();
-        
-        for(Macro m : macros)
+    public static List<String> getMacrosNames(){
+        List<String> names = new ArrayList<String>();
+
+        for(Macro m : macros) {
             names.add(m.getName());
+        }
         return names;
     }
     

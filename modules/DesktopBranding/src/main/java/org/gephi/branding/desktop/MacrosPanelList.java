@@ -5,20 +5,16 @@
  */
 package org.gephi.branding.desktop;
 
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import org.gephi.macroapi.macros.Macro;
 import org.gephi.macroapi.macros.ManageMacros;
 
-/**
- *
- * @author Aleix
- */
+import javax.swing.*;
+import java.util.List;
+
 public class MacrosPanelList extends javax.swing.JPanel {
 
     private static MacrosPanelList instance;
-    private ArrayList<String> macrosList;
+    private List<String> macrosList;
 
     public MacrosPanelList() {
         initComponents();
@@ -31,7 +27,7 @@ public class MacrosPanelList extends javax.swing.JPanel {
         return instance;
     }
 
-    public void setMacrosList(ArrayList<String> list){
+    public void setMacrosList(List<String> list){
         this.macrosList = list;
         for(String s : macrosList)
             list1.add(s);
@@ -119,38 +115,36 @@ public class MacrosPanelList extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(118, 118, 118)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(ExecuteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(recordButton)
-                        .addContainerGap())))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(recordButton)))
+                .addContainerGap(98, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(list1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(58, 58, 58)
-                        .addComponent(recordButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(ExecuteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 83, Short.MAX_VALUE)))
+                .addContainerGap()
+                .addComponent(list1, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(64, 64, 64)
+                .addComponent(recordButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ExecuteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -186,28 +180,18 @@ public class MacrosPanelList extends javax.swing.JPanel {
         if(ManageMacros.getRecordingState()){
             ManageMacros.changeRecordingState(false);
             recordButton.setText("Record Macro");
-            //Posar popup per escriure nom de la macro
             Macro macro = ManageMacros.getCurrentMacro();
             String macroName = JOptionPane.showInputDialog("Enter a macro name");
             macro.setName(macroName);
             ManageMacros.addMacro(macro);
+            // Testejar això, fa un refresh en teoria
+            //revalidate();
+            //repaint();
         }else{
             ManageMacros.changeRecordingState(true);
             recordButton.setText("Stop Recording");
-            Macro macro = new Macro();
-            ManageMacros.addCurrentMacro(macro);
+            ManageMacros.addCurrentMacro(new Macro());
         }
-        
-        /*if(ManageMacros.getRecordingState()){
-            recordButton.setText("Stop Recording");
-            Macro macro = ManageMacros.getCurrentMacro();
-            ManageMacros.addMacro(macro);
-        }
-        else{
-            recordButton.setText("Record Macro");
-            Macro macro = new Macro();
-            ManageMacros.addCurrentMacro(macro);
-        }*/
             
     }//GEN-LAST:event_recordButtonActionPerformed
 
