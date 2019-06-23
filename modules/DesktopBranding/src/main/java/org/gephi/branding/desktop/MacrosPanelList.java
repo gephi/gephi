@@ -174,6 +174,13 @@ public class MacrosPanelList extends javax.swing.JPanel {
 
     private void ExecuteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExecuteButtonActionPerformed
         //EXECUTE RECORDED MACRO
+        int idx = list1.getSelectedIndex();
+        if(idx != -1){
+            String name = macrosList.get(idx);
+            ManageMacros.executeMacro(name);
+        }else{
+            JOptionPane.showMessageDialog(null, "Please select a Macro first");
+        }
     }//GEN-LAST:event_ExecuteButtonActionPerformed
 
     private void recordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordButtonActionPerformed

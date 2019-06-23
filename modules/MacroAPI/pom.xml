@@ -22,15 +22,31 @@
         </dependency>
         <dependency>
             <groupId>org.gephi</groupId>
-            <artifactId>appearance-api</artifactId>
+            <artifactId>filters-api</artifactId>
             <version>0.9.3-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.gephi</groupId>
-            <artifactId>filters-api</artifactId>
-            <version>0.9.3-SNAPSHOT</version>
-            <type>jar</type>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>appearance-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>desktop-appearance</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-nbjunit</artifactId>
+            <version>RELEASE90</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-insane</artifactId>
+            <version>RELEASE90</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>

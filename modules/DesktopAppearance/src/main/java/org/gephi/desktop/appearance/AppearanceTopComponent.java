@@ -64,7 +64,6 @@ import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.macroapi.macros.Macro;
-import org.gephi.macroapi.macros.MacroAppearance;
 import org.gephi.macroapi.macros.ManageMacros;
 import org.gephi.ui.components.splineeditor.SplineEditor;
 import org.gephi.ui.utils.UIUtils;
@@ -98,8 +97,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     //Model
     private transient final AppearanceUIController controller;
     private transient AppearanceUIModel model;
-    private boolean toogleMacroRecording;
-    private List<Function> macrosList;
+    
+    private static Macro macroToExecute;
 
     public AppearanceTopComponent() {
         setName(NbBundle.getMessage(AppearanceTopComponent.class, "CTL_AppearanceTopComponent"));
@@ -108,8 +107,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         model = controller.getModel();
         controller.addPropertyChangeListener(this);
         toolbar = new AppearanceToolbar(controller);
-        toogleMacroRecording = false;
-        macrosList = new ArrayList<Function>();
 
         initComponents();
         initControls();
@@ -158,6 +155,11 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         //            localScaleButton.setEnabled((Boolean) pce.getNewValue());
         //        }
     }
+    
+    public static void setMacroToExecute(Macro macro){
+        macroToExecute = macro;
+        executeMacro();
+    }
 
     public void refreshModel(AppearanceUIModel model) {
         this.model = model;
@@ -165,7 +167,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         refreshCenterPanel();
         refreshCombo();
         refreshControls();
-
+        
+        System.out.println("Hola2");
         //South visible
         /*
          * if (barChartPanel.isVisible() != model.isBarChartVisible()) {
@@ -483,8 +486,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
          */
     }
     
-    public void executeMacro(){
-        
+    public static void executeMacro(){
+        System.out.println("Executant " + macroToExecute.getName());
     }
 
     private void refreshEnable() {

@@ -8,6 +8,7 @@ package org.gephi.macroapi.macros;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.desktop.appearance.AppearanceTopComponent;
 
 public class ManageMacros {
     private static List<Macro> macros = new ArrayList<Macro>();
@@ -46,6 +47,14 @@ public class ManageMacros {
         return currentMacro;
     }
     
+    public static void executeMacro(String macroName){
+        Macro toExecute = null;
+        toExecute = getMacroByName(macroName);
+        if(toExecute != null)
+            AppearanceTopComponent.setMacroToExecute(toExecute);
+        //AppearanceTopComponent.executeMacro();
+    }
+    
     public static List<String> getMacrosNames(){
         List<String> names = new ArrayList<String>();
 
@@ -53,6 +62,19 @@ public class ManageMacros {
             names.add(m.getName());
         }
         return names;
+    }
+    
+    public static Macro getMacroByName(String macroName){
+        Macro returnMacro = null;
+        
+        for(Macro iteratedMacro : macros){
+            if(iteratedMacro.getName().equals(macroName)){
+                returnMacro = iteratedMacro;
+                break;
+            }
+        }
+        
+        return returnMacro;
     }
     
     public static void editName(String newName, int index){
