@@ -168,7 +168,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         refreshCombo();
         refreshControls();
         
-        System.out.println("Hola2");
         //South visible
         /*
          * if (barChartPanel.isVisible() != model.isBarChartVisible()) {
