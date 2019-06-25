@@ -393,8 +393,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                 //6. en el addMacro de Macro.java fer que rebi una List<Object> i les guardi al json
                 
                 //Object obj = parser.parse(new FileReader("/Users/<username>/Documents/file1.txt"));
-                   // macrosList.add(model.getSelectedFunction());             
-          
+                    // macrosList.add(model.getSelectedFunction());
+
             }
         });
 

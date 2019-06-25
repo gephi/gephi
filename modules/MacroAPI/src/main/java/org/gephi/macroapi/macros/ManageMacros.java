@@ -46,6 +46,10 @@ public class ManageMacros {
         return currentMacro;
     }
     
+    public static void deleteCurrentMacro(){
+        currentMacro = null;
+    }
+    
     public static void executeMacro(String macroName){
         Macro toExecute = null;
         toExecute = getMacroByName(macroName);
@@ -64,20 +68,38 @@ public class ManageMacros {
     }
     
     public static Macro getMacroByName(String macroName){
-        Macro returnMacro = null;
         
         for(Macro iteratedMacro : macros){
             if(iteratedMacro.getName().equals(macroName)){
-                returnMacro = iteratedMacro;
-                break;
+                return iteratedMacro;
             }
         }
         
-        return returnMacro;
+        return null;
     }
+    
+    public static boolean existMacro(String macroName){
+        
+        for(Macro iteratedMacro : macros){
+            if(iteratedMacro.getName().equals(macroName)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     
     public static void editName(String newName, int index){
         macros.get(index).setName(newName);
         //saveMacros();
+    }
+    
+    public static void deleteMacro(String name){
+        for(Macro iteratedMacro : macros){
+            if(iteratedMacro.getName().equals(name)){
+                macros.remove(iteratedMacro);
+                break;
+            }
+        }
     }
 }

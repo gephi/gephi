@@ -26,17 +26,12 @@ public class MacrosPanelList extends javax.swing.JPanel {
         }
         return instance;
     }
-
-    public void setMacrosList(List<String> list){
-        this.macrosList = list;
-        for(String macro : macrosList) {
-            list1.add(macro);
-        }
-    }
     
-    public void addMacro(String macro){
-        macrosList.add(macro);
-        list1.add(macro);
+    public void updateList(){
+        list1.removeAll();
+        for(String name : ManageMacros.getMacrosNames()){
+            list1.add(name);
+        }
     }
 
     /**
@@ -50,9 +45,9 @@ public class MacrosPanelList extends javax.swing.JPanel {
 
         list1 = new java.awt.List();
         removeButton = new javax.swing.JToggleButton();
-        ExecuteButton = new javax.swing.JToggleButton();
+        executeButton = new javax.swing.JToggleButton();
         editButton = new javax.swing.JToggleButton();
-        recordButton = new javax.swing.JButton();
+        recordButton = new javax.swing.JToggleButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(400, 400));
@@ -77,16 +72,16 @@ public class MacrosPanelList extends javax.swing.JPanel {
             }
         });
 
-        ExecuteButton.setSelected(true);
-        org.openide.awt.Mnemonics.setLocalizedText(ExecuteButton, org.openide.util.NbBundle.getMessage(MacrosPanelList.class, "MacrosPanelList.ExecuteButton.text")); // NOI18N
-        ExecuteButton.setToolTipText(org.openide.util.NbBundle.getMessage(MacrosPanelList.class, "MacrosPanelList.ExecuteButton.toolTipText")); // NOI18N
-        ExecuteButton.setFocusable(false);
-        ExecuteButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        ExecuteButton.setMargin(new java.awt.Insets(0, 7, 0, 7));
-        ExecuteButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        ExecuteButton.addActionListener(new java.awt.event.ActionListener() {
+        executeButton.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(executeButton, org.openide.util.NbBundle.getMessage(MacrosPanelList.class, "MacrosPanelList.executeButton.text")); // NOI18N
+        executeButton.setToolTipText(org.openide.util.NbBundle.getMessage(MacrosPanelList.class, "MacrosPanelList.executeButton.toolTipText")); // NOI18N
+        executeButton.setFocusable(false);
+        executeButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        executeButton.setMargin(new java.awt.Insets(0, 7, 0, 7));
+        executeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        executeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ExecuteButtonActionPerformed(evt);
+                executeButtonActionPerformed(evt);
             }
         });
 
@@ -103,7 +98,13 @@ public class MacrosPanelList extends javax.swing.JPanel {
             }
         });
 
+        recordButton.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(recordButton, org.openide.util.NbBundle.getMessage(MacrosPanelList.class, "MacrosPanelList.recordButton.text")); // NOI18N
+        recordButton.setToolTipText(org.openide.util.NbBundle.getMessage(MacrosPanelList.class, "MacrosPanelList.recordButton.toolTipText")); // NOI18N
+        recordButton.setFocusable(false);
+        recordButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        recordButton.setMargin(new java.awt.Insets(0, 7, 0, 7));
+        recordButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         recordButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 recordButtonActionPerformed(evt);
@@ -117,13 +118,13 @@ public class MacrosPanelList extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(recordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ExecuteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(recordButton))
-                .addContainerGap(81, Short.MAX_VALUE))
+                    .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(executeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,14 +133,14 @@ public class MacrosPanelList extends javax.swing.JPanel {
                 .addComponent(list1, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(55, 55, 55)
-                .addComponent(recordButton)
-                .addGap(32, 32, 32)
+                .addGap(68, 68, 68)
+                .addComponent(recordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(ExecuteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(executeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -150,25 +151,31 @@ public class MacrosPanelList extends javax.swing.JPanel {
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         int idx = list1.getSelectedIndex();
-        JTextField field = new JTextField(list1.getSelectedItem());
-        list1.replaceItem("", idx);
+        String macroName = JOptionPane.showInputDialog("Enter a new name");
+        if(macroName == null)   
+            return;
+        while(ManageMacros.existMacro(macroName) || ("".equals(macroName))){
+            macroName = JOptionPane.showInputDialog("A macro with that name already exist! Please, enter a new macro name");
+        }
+        ManageMacros.editName(macroName, idx);
+        updateList();
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
-        int idx = list1.getSelectedIndex();
-        if(idx != -1){
-            int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to delete this macro?","Warning",JOptionPane.YES_NO_OPTION);
-            if(dialogResult == JOptionPane.YES_OPTION){
-                    macrosList.remove(idx);
-                    list1.remove(idx);
-            }
+        String macrosName= list1.getSelectedItem();
+        if(!macrosName.equals("")){
+                int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to delete this macro?","Warning",JOptionPane.YES_NO_OPTION);
+                if(dialogResult == JOptionPane.YES_OPTION){
+                    ManageMacros.deleteMacro(macrosName);
+                    updateList();
+                }
         }else{
             JOptionPane.showMessageDialog(null, "Please select a Macro first");
         }
 
     }//GEN-LAST:event_removeButtonActionPerformed
 
-    private void ExecuteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExecuteButtonActionPerformed
+    private void executeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeButtonActionPerformed
         //EXECUTE RECORDED MACRO
         int idx = list1.getSelectedIndex();
         if(idx != -1){
@@ -177,7 +184,7 @@ public class MacrosPanelList extends javax.swing.JPanel {
         }else{
             JOptionPane.showMessageDialog(null, "Please select a Macro first");
         }
-    }//GEN-LAST:event_ExecuteButtonActionPerformed
+    }//GEN-LAST:event_executeButtonActionPerformed
 
     private void recordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordButtonActionPerformed
         if(ManageMacros.getRecordingState()){
@@ -185,25 +192,30 @@ public class MacrosPanelList extends javax.swing.JPanel {
             recordButton.setText("Record Macro");
             Macro macro = ManageMacros.getCurrentMacro();
             String macroName = JOptionPane.showInputDialog("Enter a macro name");
+            if(macroName == null){
+                ManageMacros.getCurrentMacro();
+                return;
+            }
+            while(ManageMacros.existMacro(macroName) || ("".equals(macroName))){
+                macroName = JOptionPane.showInputDialog("A macro with that name already exist! Please, enter a new macro name");
+            }
             macro.setName(macroName);
             ManageMacros.addMacro(macro);
-            // Testejar això, fa un refresh en teoria
-            //revalidate();
-            //repaint();
+            updateList();
+
         }else{
             ManageMacros.changeRecordingState(true);
             recordButton.setText("Stop Recording");
             ManageMacros.addCurrentMacro(new Macro());
         }
-            
     }//GEN-LAST:event_recordButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton ExecuteButton;
     private javax.swing.JToggleButton editButton;
+    private javax.swing.JToggleButton executeButton;
     private java.awt.List list1;
-    private javax.swing.JButton recordButton;
+    private javax.swing.JToggleButton recordButton;
     private javax.swing.JToggleButton removeButton;
     // End of variables declaration//GEN-END:variables
 }

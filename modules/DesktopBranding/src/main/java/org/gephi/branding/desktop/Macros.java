@@ -34,11 +34,8 @@ public final class Macros implements ActionListener {
        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                final List<String> macros = new ArrayList<>();         
-                macros.addAll(ManageMacros.getMacrosNames());
-
                 MacrosPanelList component = new MacrosPanelList();
-                component.setMacrosList(macros);
+                component.updateList();
                 
                 JDialog dialog = new JDialog(WindowManager.getDefault().getMainWindow(),component.getName(), false);
                 dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
