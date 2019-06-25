@@ -8,7 +8,6 @@ package org.gephi.macroapi.macros;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.desktop.appearance.AppearanceTopComponent;
 
 public class ManageMacros {
     private static List<Macro> macros = new ArrayList<Macro>();
@@ -50,8 +49,8 @@ public class ManageMacros {
     public static void executeMacro(String macroName){
         Macro toExecute = null;
         toExecute = getMacroByName(macroName);
-        if(toExecute != null)
-            AppearanceTopComponent.setMacroToExecute(toExecute);
+        //if(toExecute != null)
+            //AppearanceTopComponent.setMacroToExecute(toExecute);
         //AppearanceTopComponent.executeMacro();
     }
     
