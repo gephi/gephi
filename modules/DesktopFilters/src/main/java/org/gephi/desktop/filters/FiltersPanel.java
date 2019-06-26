@@ -45,6 +45,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -57,6 +58,9 @@ import org.gephi.desktop.filters.query.QueryExplorer;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
+import org.gephi.macroapi.macros.Macro;
+import org.gephi.macroapi.macros.MacroType;
+import org.gephi.macroapi.macros.ManageMacros;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -134,13 +138,15 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                     stopButton.setSelected(false);
                     stopButton.setVisible(true);
                     filterButton.setVisible(false);
-                    if(toogleMacroRecording){
+                    
+                    if(ManageMacros.getRecordingState()){
                         macroController = controller;
-                        macroQuery = uiModel.getSelectedRoot();
-                        toogleMacroRecording = false;
-                        JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
-                        //macroRecordButton.setText("Record Macro");
-                    }
+                        Macro macro = ManageMacros.getCurrentMacro();
+                        HashMap action = new HashMap<>();
+                        action.put(MacroType.FILTER, uiModel.getSelectedRoot());
+                        macro.addAction(action);
+                        ManageMacros.addCurrentMacro(macro);
+                    }  
                 }
             }
         });

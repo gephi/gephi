@@ -52,7 +52,8 @@ public class ManageMacros {
     
     public static void executeMacro(String macroName){
         Macro macro = getMacroByName(macroName);
-        
+        System.out.println("Macro is: " + macro.toString());
+
         //switch(macro.getActions()){
             
         //}

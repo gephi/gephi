@@ -56,7 +56,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -69,6 +71,9 @@ import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutUI;
+import org.gephi.macroapi.macros.Macro;
+import org.gephi.macroapi.macros.MacroType;
+import org.gephi.macroapi.macros.ManageMacros;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -429,9 +434,13 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
             stop();
         } else {
             run();
-            if(toogleMacroRecording){
-                macroLayout = model.getSelectedLayout();
-            }
+            if(ManageMacros.getRecordingState()){
+                Macro macro = ManageMacros.getCurrentMacro();
+                HashMap action = new HashMap<>();
+                action.put(MacroType.LAYOUT, model.getSelectedLayout());
+                macro.addAction(action);
+                ManageMacros.addCurrentMacro(macro);
+            }  
         }
     }//GEN-LAST:event_runButtonActionPerformed
 
