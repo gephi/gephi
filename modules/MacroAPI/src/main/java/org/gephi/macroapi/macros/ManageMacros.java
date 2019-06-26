@@ -51,8 +51,11 @@ public class ManageMacros {
     }
     
     public static void executeMacro(String macroName){
-        Macro toExecute = null;
-        toExecute = getMacroByName(macroName);
+        Macro macro = getMacroByName(macroName);
+        
+        //switch(macro.getActions()){
+            
+        //}
         //if(toExecute != null)
             //AppearanceTopComponent.setMacroToExecute(toExecute);
         //AppearanceTopComponent.executeMacro();

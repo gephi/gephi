@@ -10,6 +10,7 @@ import org.gephi.macroapi.macros.ManageMacros;
 
 import javax.swing.*;
 import java.util.List;
+import org.gephi.macroapi.macros.MacroType;
 
 public class MacrosPanelList extends javax.swing.JPanel {
 
@@ -176,8 +177,9 @@ public class MacrosPanelList extends javax.swing.JPanel {
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private void executeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeButtonActionPerformed
-        //EXECUTE RECORDED MACRO
+
         int idx = list1.getSelectedIndex();
+
         if(idx != -1){
             String name = macrosList.get(idx);
             ManageMacros.executeMacro(name);
@@ -187,12 +189,11 @@ public class MacrosPanelList extends javax.swing.JPanel {
     }//GEN-LAST:event_executeButtonActionPerformed
 
     private void recordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordButtonActionPerformed
+        
         if(ManageMacros.getRecordingState()){
             ManageMacros.changeRecordingState(false);
             recordButton.setText("Record Macro");
             Macro macro = ManageMacros.getCurrentMacro();
-            System.out.println("Macro: " + macro);
-            System.out.println("Actions: " + macro.getActions().toString());
 
             if(macro.getActions().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "No actions were detected.");

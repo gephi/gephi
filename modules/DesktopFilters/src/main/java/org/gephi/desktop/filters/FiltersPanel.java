@@ -145,40 +145,6 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
             }
         });
         
-        /*macroRecordButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {       
-                
-                if(toogleMacroRecording){
-                    toogleMacroRecording = false;
-                    JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
-                    System.out.println("Stoping macros recording...");
-                    macroRecordButton.setText("Record Macro");
-                }else{
-                    
-                    toogleMacroRecording = true;
-                    JOptionPane.showMessageDialog(null, "The system will start recording your actions now.");
-                    System.out.println("Recording macros...");
-                    macroRecordButton.setText("Stop Recording");
-                }
-                
-            }
-        });
-        
-        executeMacroButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(macroController == null){
-                    JOptionPane.showMessageDialog(null, "There isn't any macro stored. Please use Recording button first.");
-                }else{
-                    macroController.filterVisible(macroQuery);
-                    stopButton.setSelected(false);
-                    stopButton.setVisible(true);
-                    filterButton.setVisible(false);
-                }
-            }
-        });*/
-        
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

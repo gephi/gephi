@@ -51,7 +51,9 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -64,6 +66,7 @@ import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.macroapi.macros.Macro;
+import org.gephi.macroapi.macros.MacroType;
 import org.gephi.macroapi.macros.ManageMacros;
 import org.gephi.ui.components.splineeditor.SplineEditor;
 import org.gephi.ui.utils.UIUtils;
@@ -382,35 +385,14 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                 
                 if(ManageMacros.getRecordingState()){
                     Macro macro = ManageMacros.getCurrentMacro();
-                    macro.addAction(model.getSelectedFunction());
+                    Map action = new HashMap<>();
+                    action.put(MacroType.APPEARANCE, model.getSelectedFunction());
+                    macro.addAction(action);
                     ManageMacros.addCurrentMacro(macro);
                 }
-                //1. Llegir json
-                //2. agafar variable isRecording
-                //3. si false -> res
-                //4. si true -> crear variable MacroAppearance
-                //5. setActions (List<Functions>)
-                //6. en el addMacro de Macro.java fer que rebi una List<Object> i les guardi al json
-                
-                //Object obj = parser.parse(new FileReader("/Users/<username>/Documents/file1.txt"));
-                    // macrosList.add(model.getSelectedFunction());
-
             }
         });
 
-        /*executeMacroButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(macrosList.isEmpty()){
-                    JOptionPane.showMessageDialog(null, "There isn't any macro stored. Please use Recording button first.");
-                }else{
-                    for(Function f : macrosList){
-                        System.out.println("Executing function " + f);
-                        controller.appearanceController.transform(f);
-                    }
-                }
-            }
-        });*/
         autoApplyButton.addActionListener(new ActionListener() {
 
             @Override

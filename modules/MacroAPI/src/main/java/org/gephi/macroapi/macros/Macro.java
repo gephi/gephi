@@ -8,14 +8,15 @@ package org.gephi.macroapi.macros;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class Macro {
-    private List<Object> actions;
+    private List<Map<MacroType, Object>> actions;
     private String name;
     private Date date;
     
     public Macro(){
-        actions = new ArrayList<Object>();
+        actions = new ArrayList<Map<MacroType, Object>>();;
     }
     
     public String getName(){
@@ -34,11 +35,15 @@ public class Macro {
         this.date = date;
     }
     
-    public List<Object> getActions(){
+    public List<Map<MacroType, Object>> getActions(){
         return actions;
     }
     
-    public void addAction(Object action){
+    public void setActions(List<Map<MacroType, Object>> actions) {
+        this.actions = actions;
+    }
+        
+    public void addAction(Map<MacroType, Object> action){
         this.actions.add(action);
     }
     
