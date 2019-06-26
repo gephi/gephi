@@ -152,28 +152,34 @@ public class MacrosPanelList extends javax.swing.JPanel {
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         int idx = list1.getSelectedIndex();
-        String macroName = JOptionPane.showInputDialog("Enter a new name");
-        if(macroName == null)   
-            return;
-        while(ManageMacros.existMacro(macroName) || ("".equals(macroName))){
-            macroName = JOptionPane.showInputDialog("A macro with that name already exist! Please, enter a new macro name");
+        String selectedName= list1.getSelectedItem();
+
+        if(selectedName != null){
+            String macroName = JOptionPane.showInputDialog("Enter a new name");
+            if(macroName == null)   
+                return;
+            while(ManageMacros.existMacro(macroName) || ("".equals(macroName))){
+                macroName = JOptionPane.showInputDialog("A macro with that name already exist! Please, enter a new macro name");
+            }
+            ManageMacros.editName(macroName, idx);
+            updateList();
+        }else{
+            JOptionPane.showMessageDialog(null, "Please select a Macro first");
         }
-        ManageMacros.editName(macroName, idx);
-        updateList();
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
-        String macrosName= list1.getSelectedItem();
-        if(!macrosName.equals("")){
+        String macroName= list1.getSelectedItem();
+
+        if(!(macroName == null || macroName.equals(""))){
                 int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to delete this macro?","Warning",JOptionPane.YES_NO_OPTION);
                 if(dialogResult == JOptionPane.YES_OPTION){
-                    ManageMacros.deleteMacro(macrosName);
+                    ManageMacros.deleteMacro(macroName);
                     updateList();
                 }
         }else{
             JOptionPane.showMessageDialog(null, "Please select a Macro first");
         }
-
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private void executeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeButtonActionPerformed
