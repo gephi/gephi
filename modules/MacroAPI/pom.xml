@@ -2,14 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.gephi</groupId>
         <artifactId>gephi-parent</artifactId>
+        <groupId>org.gephi</groupId>
         <version>0.9.3-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
     </parent>
+    
     <groupId>org.gephi</groupId>
     <artifactId>macro-api</artifactId>
     <version>0.9.3-SNAPSHOT</version>
     <packaging>nbm</packaging>
+    
     <name>MacroAPI</name>
     
     <dependencies>
@@ -20,12 +23,10 @@
         <dependency>
             <groupId>org.gephi</groupId>
             <artifactId>layout-api</artifactId>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.gephi</groupId>
             <artifactId>filters-api</artifactId>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -45,23 +46,10 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <useOSGiDependencies>true</useOSGiDependencies>
                     <publicPackages>
                         <publicPackage>org.gephi.macroapi.macros</publicPackage>
                     </publicPackages>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

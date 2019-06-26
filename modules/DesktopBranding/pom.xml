@@ -26,6 +26,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>macro-api</artifactId>
+            <version>0.9.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>project-api</artifactId>
         </dependency>
         <dependency>
@@ -115,11 +120,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>macro-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
