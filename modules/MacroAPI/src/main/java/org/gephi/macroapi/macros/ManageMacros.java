@@ -5,6 +5,9 @@
  */
 package org.gephi.macroapi.macros;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +23,22 @@ public class ManageMacros {
     }
     
     public static void changeRecordingState(boolean state){
+        String filepath = System.getProperty("user.dir") + "/current_macro.json";
         if(state){
             isRecording = true;
-            JOptionPane.showMessageDialog(null, "The system will start recording your actions now.");
+            JOptionPane.showMessageDialog(null, "The system will start recording your actions now.");        
+            try{
+                FileWriter file = new FileWriter(filepath);
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            }
         }
         else{
             isRecording = false;
             JOptionPane.showMessageDialog(null, "Macro recording stopped.");
+            File file = new File(filepath); 
+            file.delete();
         }
     }
      

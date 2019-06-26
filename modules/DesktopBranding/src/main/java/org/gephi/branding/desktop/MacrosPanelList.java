@@ -10,6 +10,7 @@ import org.gephi.macroapi.macros.ManageMacros;
 
 import javax.swing.*;
 import java.util.List;
+import java.io.FileWriter;
 import org.gephi.macroapi.macros.MacroType;
 
 public class MacrosPanelList extends javax.swing.JPanel {
@@ -151,6 +152,8 @@ public class MacrosPanelList extends javax.swing.JPanel {
     }//GEN-LAST:event_list1ActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        
         int idx = list1.getSelectedIndex();
         String selectedName= list1.getSelectedItem();
 
@@ -169,6 +172,7 @@ public class MacrosPanelList extends javax.swing.JPanel {
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
+
         String macroName= list1.getSelectedItem();
 
         if(!(macroName == null || macroName.equals(""))){
@@ -224,7 +228,7 @@ public class MacrosPanelList extends javax.swing.JPanel {
         }else{
             ManageMacros.changeRecordingState(true);
             recordButton.setText("Stop Recording");
-            ManageMacros.addCurrentMacro(new Macro());
+            ManageMacros.addCurrentMacro(new Macro());                         
         }
     }//GEN-LAST:event_recordButtonActionPerformed
 
