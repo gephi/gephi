@@ -191,18 +191,28 @@ public class MacrosPanelList extends javax.swing.JPanel {
             ManageMacros.changeRecordingState(false);
             recordButton.setText("Record Macro");
             Macro macro = ManageMacros.getCurrentMacro();
-            String macroName = JOptionPane.showInputDialog("Enter a macro name");
-            if(macroName == null){
-                ManageMacros.getCurrentMacro();
-                return;
-            }
-            while(ManageMacros.existMacro(macroName) || ("".equals(macroName))){
-                macroName = JOptionPane.showInputDialog("A macro with that name already exist! Please, enter a new macro name");
-            }
-            macro.setName(macroName);
-            ManageMacros.addMacro(macro);
-            updateList();
+            System.out.println("Macro: " + macro);
+            System.out.println("Actions: " + macro.getActions().toString());
 
+            if(macro.getActions().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "No actions were detected.");
+            } else {
+                String macroName = JOptionPane.showInputDialog("Enter a macro name");
+                if(macroName == null){
+                    ManageMacros.getCurrentMacro();
+                    return;
+                }
+                while(ManageMacros.existMacro(macroName) || ("".equals(macroName))){
+                    if(ManageMacros.existMacro(macroName)){
+                        macroName = JOptionPane.showInputDialog("A macro with that name already exist! Please, enter a new macro name");
+                    } else {
+                        macroName = JOptionPane.showInputDialog("Empty value is not allowed, please enter a name:");
+                    }
+                }
+                macro.setName(macroName);
+                ManageMacros.addMacro(macro);
+                updateList();
+            }
         }else{
             ManageMacros.changeRecordingState(true);
             recordButton.setText("Stop Recording");

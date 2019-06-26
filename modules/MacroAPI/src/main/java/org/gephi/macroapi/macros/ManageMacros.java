@@ -26,7 +26,7 @@ public class ManageMacros {
         }
         else{
             isRecording = false;
-            JOptionPane.showMessageDialog(null, "Macro recording stopped. Actions saved.");
+            JOptionPane.showMessageDialog(null, "Macro recording stopped.");
         }
     }
      
