@@ -58,10 +58,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
@@ -87,21 +85,27 @@ import org.openide.util.NbPreferences;
 
 public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeListener {
 
+    private static LayoutPanel instance;
     private final String NO_SELECTION;
     private LayoutModel model;
     private LayoutController controller;
     private LayoutPresetPersistence layoutPresetPersistence;
-    private Layout macroLayout;
-    private boolean toogleMacroRecording;
+
 
     public LayoutPanel() {
         NO_SELECTION = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.choose.text");
         controller = Lookup.getDefault().lookup(LayoutController.class);
-        macroLayout = null;
-        toogleMacroRecording = false;
+        instance = this;
         initComponents();
         layoutPresetPersistence = new LayoutPresetPersistence();
         initEvents();
+    }
+    
+    public static synchronized LayoutPanel getInstance() {
+        if (instance == null) {
+            instance = new LayoutPanel();
+        }
+        return instance;
     }
 
     private void initEvents() {
@@ -301,6 +305,16 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     private void setSelectedLayout(LayoutBuilder builder) {
         controller.setLayout(builder != null ? model.getLayout(builder) : null);
     }
+    
+    public void executeAction(Object o){
+        Layout action = (Layout) o;
+        controller.setLayout(action);
+        if(model.isRunning()){
+            stop();
+        }else{
+            run();
+        }
+    }
 
     private void reset() {
         if (model.getSelectedLayout() != null) {
@@ -311,7 +325,6 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
     private void run() {
         controller.executeLayout();
-        System.out.println(controller.getModel());
     }
 
     private void stop() {

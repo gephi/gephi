@@ -126,6 +126,16 @@
             <artifactId>desktop-appearance</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>desktop-layout</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>desktop-filters</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

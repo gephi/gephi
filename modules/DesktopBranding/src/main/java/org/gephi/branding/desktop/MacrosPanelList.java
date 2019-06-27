@@ -13,6 +13,8 @@ import java.util.List;
 import java.io.FileWriter;
 import java.util.Map;
 import org.gephi.desktop.appearance.AppearanceTopComponent;
+import org.gephi.desktop.filters.FiltersPanel;
+import org.gephi.desktop.layout.LayoutPanel;
 import org.gephi.macroapi.macros.MacroType;
 
 public class MacrosPanelList extends javax.swing.JPanel {
@@ -197,8 +199,18 @@ public class MacrosPanelList extends javax.swing.JPanel {
             for(Map<MacroType, Object> currentAction : macro.getActions()){
                 if(currentAction.get(MacroType.APPEARANCE) != null){
                     Object f = currentAction.get(MacroType.APPEARANCE);
-                    AppearanceTopComponent Appearanceinstance = AppearanceTopComponent.getInstance();
-                    Appearanceinstance.executeAction(f);
+                    AppearanceTopComponent appearanceInstance = AppearanceTopComponent.getInstance();
+                    appearanceInstance.executeAction(f);
+                }
+                if(currentAction.get(MacroType.LAYOUT) != null){
+                    Object o = currentAction.get(MacroType.LAYOUT);
+                    LayoutPanel layoutInstance = LayoutPanel.getInstance();
+                    layoutInstance.executeAction(o);
+                }
+                if(currentAction.get(MacroType.FILTER) != null){
+                    Object o = currentAction.get(MacroType.FILTER);
+                    FiltersPanel filtersInstance = FiltersPanel.getInstance();
+                    filtersInstance.executeAction(o);
                 }
             }
         }else{

@@ -522,7 +522,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     
     public void executeAction(Object o){
         Function f = (Function) o;
-       System.out.println("Executant " + f);
         controller.appearanceController.transform(f);
     }
 

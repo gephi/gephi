@@ -74,6 +74,7 @@ import org.openide.util.NbBundle;
  */
 public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.Provider, ChangeListener {
 
+    private static FiltersPanel instance;
     private final ExplorerManager manager = new ExplorerManager();
     //Models
     private FilterModel filterModel;
@@ -88,6 +89,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     Query macroQuery;
 
     public FiltersPanel() {
+        instance = this;
         initComponents();
         //Toolbar
         Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
@@ -107,6 +109,13 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         macroQuery = null;
 
         initEvents();
+    }
+    
+    public static synchronized FiltersPanel getInstance() {
+        if (instance == null) {
+            instance = new FiltersPanel();
+        }
+        return instance;
     }
 
     private void initEvents() {
@@ -337,6 +346,16 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         if (uiModel != null) {
             uiModel.addChangeListener(this);
         }
+    }
+    
+    
+    public void executeAction(Object o){
+        Query q = (Query) o;
+        FilterController controller = Lookup.getDefault().lookup(FilterController.class);
+        controller.filterVisible(q);
+        stopButton.setSelected(false);
+        stopButton.setVisible(true);
+        filterButton.setVisible(false);
     }
 
     /**
