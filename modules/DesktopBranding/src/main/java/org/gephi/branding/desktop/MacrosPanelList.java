@@ -11,12 +11,13 @@ import org.gephi.macroapi.macros.ManageMacros;
 import javax.swing.*;
 import java.util.List;
 import java.io.FileWriter;
+import java.util.Map;
+import org.gephi.desktop.appearance.AppearanceTopComponent;
 import org.gephi.macroapi.macros.MacroType;
 
 public class MacrosPanelList extends javax.swing.JPanel {
 
     private static MacrosPanelList instance;
-    private List<String> macrosList;
 
     public MacrosPanelList() {
         initComponents();
@@ -122,11 +123,11 @@ public class MacrosPanelList extends javax.swing.JPanel {
                 .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(recordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(executeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                    .addComponent(executeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(recordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -187,13 +188,19 @@ public class MacrosPanelList extends javax.swing.JPanel {
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private void executeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeButtonActionPerformed
+        String macroName= list1.getSelectedItem();
 
-
-
-        String macrosName= list1.getSelectedItem();
-
-        if(macrosName != null){
-            ManageMacros.executeMacro(macrosName);
+        if(macroName != null){
+            //ManageMacros.executeMacro(macrosName);
+            Macro macro = ManageMacros.getMacroByName(macroName);
+            
+            for(Map<MacroType, Object> currentAction : macro.getActions()){
+                if(currentAction.get(MacroType.APPEARANCE) != null){
+                    Object f = currentAction.get(MacroType.APPEARANCE);
+                    AppearanceTopComponent Appearanceinstance = AppearanceTopComponent.getInstance();
+                    Appearanceinstance.executeAction(f);
+                }
+            }
         }else{
             JOptionPane.showMessageDialog(null, "Please select a Macro first");
         }

@@ -65,7 +65,6 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
@@ -99,6 +98,7 @@ import org.openide.windows.TopComponent;
         preferredID = "AppearanceTopComponent")
 public class AppearanceTopComponent extends TopComponent implements Lookup.Provider, AppearanceUIModelListener {
 
+    private static AppearanceTopComponent instance;
     //Const
     private final String NO_SELECTION = NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.choose.text");
     //UI
@@ -111,6 +111,12 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private transient final AppearanceUIController controller;
     private transient AppearanceUIModel model;
 
+    public static synchronized AppearanceTopComponent getInstance() {
+        if (instance == null) {
+            instance = new AppearanceTopComponent();
+        }
+        return instance;
+    }
 
     public AppearanceTopComponent() {
         setName(NbBundle.getMessage(AppearanceTopComponent.class, "CTL_AppearanceTopComponent"));
@@ -119,6 +125,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         model = controller.getModel();
         controller.addPropertyChangeListener(this);
         toolbar = new AppearanceToolbar(controller);
+        instance = this;
         
         initComponents();
         initControls();
@@ -389,7 +396,16 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             public void actionPerformed(ActionEvent e) {
                 controller.appearanceController.transform(model.getSelectedFunction());
                 
-                String filepath = System.getProperty("user.dir") + "/current_macro.json";
+                if(ManageMacros.getRecordingState()){
+                    Map action = new HashMap<>();
+                    Macro macro = ManageMacros.getCurrentMacro();
+                    action.put(MacroType.APPEARANCE, model.getSelectedFunction());
+                    macro.addAction(action);
+                    ManageMacros.addCurrentMacro(macro);
+                    
+                }
+                
+                /*String filepath = System.getProperty("user.dir") + "/current_macro.json";
                 File file = new File(filepath);
                 if(file.exists()) {
                     Gson gson = new Gson();
@@ -409,13 +425,13 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                     actionsList.add(action);
 
                     // Write the actions list
-                    try {
+                    /*try {
                         String json = gson.toJson(actionsList, listType);
                         new PrintWriter(file).print(json);
                     } catch (IOException ex) {
                         Exceptions.printStackTrace(ex);
                     }
-                }
+                }*/
             }
         });
 
@@ -502,6 +518,12 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 //        rankingChooser.setEnabled(modelEnabled);
 //        rankingToolbar.setEnabled(modelEnabled);
 //        listResultPanel.setEnabled(modelEnabled);
+    }
+    
+    public void executeAction(Object o){
+        Function f = (Function) o;
+       System.out.println("Executant " + f);
+        controller.appearanceController.transform(f);
     }
 
     private boolean isModelEnabled() {

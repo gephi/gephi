@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package org.gephi.macroapi.macros;
-import org.gephi.appearance.api.Function;
+//import org.gephi.appearance.api.Function;
 
 import java.util.List;
 
@@ -13,10 +13,10 @@ import java.util.List;
  * @author u124275
  */
 public class MacroAppearance extends Macro{
-    List<Function> actions;
+    //List<Function> actions;
     
-    MacroAppearance(List<Function> actions){
+    /*MacroAppearance(List<Function> actions){
         super();
         this.actions = actions;
-    }
+    }*/
 }
