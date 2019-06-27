@@ -41,8 +41,6 @@
  */
 package org.gephi.desktop.appearance;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,13 +48,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -81,7 +72,6 @@ import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -402,36 +392,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                     action.put(MacroType.APPEARANCE, model.getSelectedFunction());
                     macro.addAction(action);
                     ManageMacros.addCurrentMacro(macro);
-                    
                 }
-                
-                /*String filepath = System.getProperty("user.dir") + "/current_macro.json";
-                File file = new File(filepath);
-                if(file.exists()) {
-                    Gson gson = new Gson();
-                    Type listType = new TypeToken<List<Map>>() {}.getType();
-                    List<Map> actionsList = new ArrayList<Map>();
-                    
-                    if(file.length() > 0){
-                        // Read Actions List
-                        try {
-                            actionsList = gson.fromJson(new FileReader(file), listType);
-                        } catch (IOException exc) {
-                        }
-                    }                       
-                    
-                    Map action = new HashMap<>();
-                    action.put(MacroType.APPEARANCE, model.getSelectedFunction());
-                    actionsList.add(action);
-
-                    // Write the actions list
-                    /*try {
-                        String json = gson.toJson(actionsList, listType);
-                        new PrintWriter(file).print(json);
-                    } catch (IOException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }*/
             }
         });
 
@@ -520,9 +481,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 //        listResultPanel.setEnabled(modelEnabled);
     }
     
-    public void executeAction(Object o){
-        Function f = (Function) o;
-        controller.appearanceController.transform(f);
+    public void executeAction(Object function){
+        controller.appearanceController.transform((Function) function);
     }
 
     private boolean isModelEnabled() {

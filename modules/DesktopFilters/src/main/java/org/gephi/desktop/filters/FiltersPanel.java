@@ -46,7 +46,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.HashMap;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -349,10 +348,9 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     }
     
     
-    public void executeAction(Object o){
-        Query q = (Query) o;
+    public void executeAction(Object action){
         FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-        controller.filterVisible(q);
+        controller.filterVisible((Query) action);
         stopButton.setSelected(false);
         stopButton.setVisible(true);
         filterButton.setVisible(false);

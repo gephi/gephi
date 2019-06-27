@@ -16,7 +16,7 @@ public class Macro {
     private Date date;
     
     public Macro(){
-        actions = new ArrayList<Map<MacroType, Object>>();;
+        actions = new ArrayList<>();
     }
     
     public String getName(){

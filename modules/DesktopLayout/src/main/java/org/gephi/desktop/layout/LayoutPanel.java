@@ -240,7 +240,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         comboBoxModel.addElement(NO_SELECTION);
         comboBoxModel.setSelectedItem(NO_SELECTION);
         if (model != null) {
-            List<LayoutBuilder> builders = new ArrayList<>(Lookup.getDefault().lookupAll(LayoutBuilder.class));
+            List<LayoutBuilder> builders = (List<LayoutBuilder>) new ArrayList<>(Lookup.getDefault().lookupAll(LayoutBuilder.class));
             Collections.sort(builders, new Comparator() {
                 @Override
                 public int compare(Object o1, Object o2) {
@@ -306,9 +306,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         controller.setLayout(builder != null ? model.getLayout(builder) : null);
     }
     
-    public void executeAction(Object o){
-        Layout action = (Layout) o;
-        controller.setLayout(action);
+    public void executeAction(Object action){
+        controller.setLayout((Layout) action);
         if(model.isRunning()){
             stop();
         }else{

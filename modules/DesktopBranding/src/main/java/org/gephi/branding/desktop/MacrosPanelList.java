@@ -9,8 +9,6 @@ import org.gephi.macroapi.macros.Macro;
 import org.gephi.macroapi.macros.ManageMacros;
 
 import javax.swing.*;
-import java.util.List;
-import java.io.FileWriter;
 import java.util.Map;
 import org.gephi.desktop.appearance.AppearanceTopComponent;
 import org.gephi.desktop.filters.FiltersPanel;
@@ -170,7 +168,7 @@ public class MacrosPanelList extends javax.swing.JPanel {
             ManageMacros.editName(macroName, idx);
             updateList();
         }else{
-            JOptionPane.showMessageDialog(null, "Please select a Macro first");
+            JOptionPane.showMessageDialog(null, "Please select a macro first");
         }
     }//GEN-LAST:event_editButtonActionPerformed
 
@@ -185,7 +183,7 @@ public class MacrosPanelList extends javax.swing.JPanel {
                     updateList();
                 }
         }else{
-            JOptionPane.showMessageDialog(null, "Please select a Macro first");
+            JOptionPane.showMessageDialog(null, "Please select a macro first");
         }
     }//GEN-LAST:event_removeButtonActionPerformed
 
@@ -193,24 +191,23 @@ public class MacrosPanelList extends javax.swing.JPanel {
         String macroName= list1.getSelectedItem();
 
         if(macroName != null){
-            //ManageMacros.executeMacro(macrosName);
             Macro macro = ManageMacros.getMacroByName(macroName);
             
             for(Map<MacroType, Object> currentAction : macro.getActions()){
                 if(currentAction.get(MacroType.APPEARANCE) != null){
-                    Object f = currentAction.get(MacroType.APPEARANCE);
+                    Object action = currentAction.get(MacroType.APPEARANCE);
                     AppearanceTopComponent appearanceInstance = AppearanceTopComponent.getInstance();
-                    appearanceInstance.executeAction(f);
+                    appearanceInstance.executeAction(action);
                 }
                 if(currentAction.get(MacroType.LAYOUT) != null){
-                    Object o = currentAction.get(MacroType.LAYOUT);
+                    Object action = currentAction.get(MacroType.LAYOUT);
                     LayoutPanel layoutInstance = LayoutPanel.getInstance();
-                    layoutInstance.executeAction(o);
+                    layoutInstance.executeAction(action);
                 }
                 if(currentAction.get(MacroType.FILTER) != null){
-                    Object o = currentAction.get(MacroType.FILTER);
+                    Object action = currentAction.get(MacroType.FILTER);
                     FiltersPanel filtersInstance = FiltersPanel.getInstance();
-                    filtersInstance.executeAction(o);
+                    filtersInstance.executeAction(action);
                 }
             }
         }else{

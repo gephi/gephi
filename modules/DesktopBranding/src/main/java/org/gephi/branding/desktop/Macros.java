@@ -5,7 +5,6 @@
  */
 package org.gephi.branding.desktop;
 
-import org.gephi.macroapi.macros.ManageMacros;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -15,8 +14,6 @@ import org.openide.windows.WindowManager;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 @ActionID(
         category = "Tools",
