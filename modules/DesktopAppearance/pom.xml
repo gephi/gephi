@@ -51,7 +51,6 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
-            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -60,7 +59,6 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -82,12 +80,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>macro-api</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.4</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
 
