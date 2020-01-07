@@ -16,7 +16,7 @@
     <name>ImportPlugin</name>
 
     <properties>
-        <gephi.apache-poi.version>4.0.1</gephi.apache-poi.version>
+        <gephi.apache-poi.version>4.1.1</gephi.apache-poi.version>
     </properties>
 
     <dependencies>
