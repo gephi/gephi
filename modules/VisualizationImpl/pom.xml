@@ -186,7 +186,7 @@
         <repository>
             <id>jogamp-remote</id>
             <name>jogamp test mirror</name>
-            <url>http://www.jogamp.org/deployment/maven/</url>
+            <url>https://www.jogamp.org/deployment/maven/</url>
             <layout>default</layout>
             <snapshots>
                 <enabled>false</enabled>
