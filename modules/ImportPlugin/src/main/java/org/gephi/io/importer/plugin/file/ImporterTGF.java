@@ -115,7 +115,11 @@ public class ImporterTGF implements FileImporter, LongTask {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterTGF.class, "importerTGF_error_emptynodes"), Issue.Level.CRITICAL));
         }
         for (String n : nodes) {
-            addNode(n.substring(0, n.indexOf(" ")), n.substring(n.indexOf(" ")));
+            if (n.contains(" ")) {
+                addNode(n.substring(0, n.indexOf(" ")), n.substring(n.indexOf(" ")));
+            } else {
+                addNode(n, n);
+            }
         }
         Progress.progress(progressTicket);      //Progress
         for (String e : edges) {
@@ -124,7 +128,12 @@ public class ImporterTGF implements FileImporter, LongTask {
             String[] tempFields = e.split(" ");
             String from = tempFields[0];
             String to = tempFields[1];
-            addEdge(from, to, e.substring(secondSpace));
+            if (secondSpace == -1) { 
+                addEdge(from, to, null);
+            } else {
+                addEdge(from, to, e.substring(secondSpace));
+            }
+            
         }
         Progress.progress(progressTicket);      //Progress
     }
@@ -157,7 +166,9 @@ public class ImporterTGF implements FileImporter, LongTask {
             EdgeDraft edge = container.factory().newEdgeDraft();
             edge.setSource(sourceNode);
             edge.setTarget(targetNode);
-            edge.setLabel(label);
+            if (label != null) {
+                edge.setLabel(label);
+            }
             container.addEdge(edge);
         }
     }
