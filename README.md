@@ -50,7 +50,7 @@ Consult the [**Javadoc**](http://gephi.github.io/gephi/0.9.2/apidocs/index.html)
 
 ### Requirements
 
-- Java JDK 7 or 8 with preferably [Oracle Java JDK](http://java.com/en/).
+- Java JDK 8. Note: Gephi does not currently work with JDK newer than 8. Work needs to be done yet in order to support newer java versions.
 
 - [Apache Maven](http://maven.apache.org/) version 3.2.2 or later
 
