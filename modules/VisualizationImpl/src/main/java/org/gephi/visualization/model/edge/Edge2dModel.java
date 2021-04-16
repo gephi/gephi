@@ -190,10 +190,18 @@ public class Edge2dModel extends EdgeModel {
                 b = edge.b();
 
                 if (edge.alpha() == 0f) {
-                    Node node = sourceModel.isSelected() ? edge.getTarget() : edge.getSource();
-                    r = node.r();
-                    g = node.g();
-                    b = node.b();
+                    if (edge.isDirected()) {
+                      Node source = edge.getSource();
+                      r = source.r();
+                      g = source.g();
+                      b = source.b();
+                    } else {
+                      // HINT: for undirected graphs use the non-selected node color, see: issue #292
+                      Node node = sourceModel.isSelected() ? edge.getTarget() : edge.getSource();
+                      r = node.r();
+                      g = node.g();
+                      b = node.b();
+                    }
                 }
 
                 r = Math.min(1, 0.5f * r + 0.5f);
