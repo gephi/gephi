@@ -134,7 +134,7 @@
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
         
         <!-- Netbeans Platfrom version -->
-        <netbeans.version>RELEASE82</netbeans.version>
+        <netbeans.version>RELEASE90</netbeans.version>
         
         <!-- Graphstore version -->
         <graphstore.version>0.5.9</graphstore.version>
@@ -256,14 +256,6 @@
  
     <!-- Repositories -->
     <repositories>
-        <repository>
-            <id>netbeans</id>
-            <name>NetBeans</name>
-            <url>https://bits.netbeans.org/nexus/content/groups/netbeans/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
         <repository>
             <id>gephi-thirdparty</id>
             <url>https://raw.github.com/gephi/gephi/mvn-thirdparty-repo/</url>
