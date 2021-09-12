@@ -5,7 +5,7 @@ matrix:
     - os: linux
       jdk: openjdk8
     - os: osx
-      osx_image: xcode7.3
+      osx_image: xcode9.3
 branches:
   only:
     - master
@@ -19,7 +19,6 @@ addons:
     - libboost-all-dev
     - liblzma-dev
   homebrew:
-    update: true
     packages:
       - gnupg
 
@@ -62,4 +61,4 @@ script:
 
 after_script:
   # Clean OS X keychain
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./src/travis/remove-key.sh;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./src/travis/remove-key.sh;fi
