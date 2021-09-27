@@ -173,8 +173,8 @@
         
         <!-- Mac OS X bundle settings -->
         <gephi.appbundle.name>Gephi</gephi.appbundle.name>
-        <gephi.bundle.jre.url>http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1</gephi.bundle.jre.url>
-        <gephi.bundle.jre.version>jre-8u181-macosx-x64</gephi.bundle.jre.version>
+        <gephi.bundle.jre.url>https://javadl.oracle.com/webapps/download/GetFile/1.8.0_251-b08/3d5a2bb8f8d4428bbe94aed7ec7ae784/unix-i586</gephi.bundle.jre.url>
+        <gephi.bundle.jre.version>jre-8u251-macosx-x64</gephi.bundle.jre.version>
 
         <!-- Mac OS X signing identity - must match with a verified Apple developer certificate in the keychain -->
         <gephi.codesign.identity>Developer ID Application</gephi.codesign.identity>

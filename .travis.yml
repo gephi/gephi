@@ -10,6 +10,10 @@ branches:
   only:
     - master
 
+jobs:
+  allow_failures:
+    - os: osx
+
 addons:
   apt:
     packages:
@@ -20,7 +24,7 @@ addons:
     - liblzma-dev
   homebrew:
     packages:
-      - gnupg
+      - gnupg@1.4
 
 cache:
   directories:
@@ -35,13 +39,13 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd innoextract && mkdir -p build && cd build && cmake .. && make && export PATH=$PATH:$PWD && cd ../..;fi
 
   # OS X keychain init
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in src/travis/certs/dev_id.cer.enc -d -a -out src/travis/certs/dev_id.cer;fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in src/travis/certs/dev_id.p12.enc -d -a -out src/travis/certs/dev_id.p12;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then openssl enc -d -aes-256-cbc -pbkdf2 -iter 20000 -k "$ENCRYPTION_SECRET" -in src/travis/certs/dev_id.cer.enc -d -out src/travis/certs/dev_id.cer;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then openssl enc -d -aes-256-cbc -pbkdf2 -iter 20000 -k "$ENCRYPTION_SECRET" -in src/travis/certs/dev_id.p12.enc -d -out src/travis/certs/dev_id.p12;fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./src/travis/add-key.sh;fi
 
   # GPG install
-  - openssl aes-256-cbc -k "$GPG_PUBRING_ENCRYPTION" -in "$TRAVIS_BUILD_DIR/src/travis/pubring.gpg.enc" -d -a -out "$TRAVIS_BUILD_DIR/src/travis/pubring.gpg"
-  - openssl aes-256-cbc -k "$GPG_SECRETRING_ENCRYPTION" -in "$TRAVIS_BUILD_DIR/src/travis/secretring.gpg.enc" -d -a -out "$TRAVIS_BUILD_DIR/src/travis/secretring.gpg"
+  - openssl aes-256-cbc -md md5 -k "$GPG_PUBRING_ENCRYPTION" -in "$TRAVIS_BUILD_DIR/src/travis/pubring.gpg.enc" -d -a -out "$TRAVIS_BUILD_DIR/src/travis/pubring.gpg"
+  - openssl aes-256-cbc -md md5 -k "$GPG_SECRETRING_ENCRYPTION" -in "$TRAVIS_BUILD_DIR/src/travis/secretring.gpg.enc" -d -a -out "$TRAVIS_BUILD_DIR/src/travis/secretring.gpg"
 
 install:
   # Install InnoSetup
@@ -53,7 +57,7 @@ install:
 
 before_script:
   # Setup Maven's settings.xml
-  - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server><server><id>netbeans</id></server></servers><profiles><profile><id>deployment</id><properties><keystore.password>\${env.KEYSTORE_PASSWD}</keystore.password><gpg.passphrase>\${env.GPG_PASSPHRASE}</gpg.passphrase></properties></profile></profiles></settings>" > ~/settings.xml
+  - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server></servers><profiles><profile><id>deployment</id><properties><keystore.password>\${env.KEYSTORE_PASSWD}</keystore.password><gpg.passphrase>\${env.GPG_PASSPHRASE}</gpg.passphrase></properties></profile></profiles></settings>" > ~/settings.xml
 
 script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.defaultKeyring=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring="$TRAVIS_BUILD_DIR/src/travis/pubring.gpg" -Dgpg.secretKeyring="$TRAVIS_BUILD_DIR/src/travis/secretring.gpg" clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,replace-windows-icon,create-exe,create-targz;fi
