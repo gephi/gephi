@@ -156,7 +156,7 @@
         <gephi.javac.fork>true</gephi.javac.fork>
         
         <!-- Testing settings -->
-        <gephi.testng.version>7.1.0</gephi.testng.version>
+        <gephi.testng.version>7.4.0</gephi.testng.version>
         <gephi.test.maxMemory>768M</gephi.test.maxMemory>
         <gephi.test.reportsDirectory>${project.build.directory}/surefire-reports/plain</gephi.test.reportsDirectory>
         <gephi.test.failureIgnore>${testFailureIgnore}</gephi.test.failureIgnore>
@@ -195,26 +195,26 @@
         
         <!--==== Dependency Versions ==================================================================================-->
         
-        <gephi.slf4j.version>1.7.30</gephi.slf4j.version>
-        <gephi.sentry.raven.version>8.0.3</gephi.sentry.raven.version>
+        <gephi.slf4j.version>1.7.32</gephi.slf4j.version>
+        <gephi.sentry.raven.version>8.0.3</gephi.sentry.raven.version><!-- TODO: change to new sentry sdk -->
         
         <!--==== Plugin Versions ==================================================================================-->
 
-        <gephi.maven-antrun-plugin.version>1.8</gephi.maven-antrun-plugin.version>
+        <gephi.maven-antrun-plugin.version>3.0.0</gephi.maven-antrun-plugin.version>
 
-        <gephi.maven-assembly-plugin.version>3.2.0</gephi.maven-assembly-plugin.version>
+        <gephi.maven-assembly-plugin.version>3.3.0</gephi.maven-assembly-plugin.version>
 
         <gephi.maven-clean-plugin.version>3.1.0</gephi.maven-clean-plugin.version>
 
         <gephi.maven-compiler-plugin.version>3.8.1</gephi.maven-compiler-plugin.version>
 
-        <gephi.maven-dependency-plugin.version>3.1.1</gephi.maven-dependency-plugin.version>
+        <gephi.maven-dependency-plugin.version>3.2.0</gephi.maven-dependency-plugin.version>
 
         <gephi.maven-deploy-plugin.version>2.8.2</gephi.maven-deploy-plugin.version>
 
         <gephi.maven-enforcer-plugin.version>1.4.1</gephi.maven-enforcer-plugin.version>
 
-        <gephi.maven-gpg-plugin.version>1.6</gephi.maven-gpg-plugin.version>
+        <gephi.maven-gpg-plugin.version>3.0.1</gephi.maven-gpg-plugin.version>
 
         <gephi.maven-install-plugin.version>2.5.2</gephi.maven-install-plugin.version>
 
@@ -222,31 +222,31 @@
 
         <gephi.maven-jarsigner-plugin.version>3.0.0</gephi.maven-jarsigner-plugin.version>
 
-        <gephi.maven-javadoc-plugin.version>3.1.1</gephi.maven-javadoc-plugin.version> 
+        <gephi.maven-javadoc-plugin.version>3.3.1</gephi.maven-javadoc-plugin.version> 
 
         <gephi.maven-license-plugin.version>1.9.0</gephi.maven-license-plugin.version>
 
         <gephi.maven-release-plugin.version>2.5.3</gephi.maven-release-plugin.version>
 
-        <gephi.maven-resources-plugin.version>3.1.0</gephi.maven-resources-plugin.version>
+        <gephi.maven-resources-plugin.version>3.2.0</gephi.maven-resources-plugin.version>
 
-        <gephi.maven-site-plugin.version>3.8.2</gephi.maven-site-plugin.version>
+        <gephi.maven-site-plugin.version>3.9.1</gephi.maven-site-plugin.version>
 
         <gephi.maven-source-plugin.version>3.2.1</gephi.maven-source-plugin.version>
 
         <gephi.maven-surefire-plugin.version>2.22.2</gephi.maven-surefire-plugin.version>
 
-        <gephi.build-helper-maven-plugin.version>3.0.0</gephi.build-helper-maven-plugin.version>
+        <gephi.build-helper-maven-plugin.version>3.2.0</gephi.build-helper-maven-plugin.version>
 
         <gephi.nbm-maven-plugin.version>4.1</gephi.nbm-maven-plugin.version>
         
-        <gephi.wagon-maven-plugin.version>2.0.0</gephi.wagon-maven-plugin.version>  
+        <gephi.wagon-maven-plugin.version>2.0.2</gephi.wagon-maven-plugin.version>  
         
         <gephi.nexus-staging-maven-plugin.version>1.6.8</gephi.nexus-staging-maven-plugin.version>
         
         <gephi.site-maven-plugin.version>0.12</gephi.site-maven-plugin.version>
         
-        <gephi.versions-maven-plugin.version>2.7</gephi.versions-maven-plugin.version>
+        <gephi.versions-maven-plugin.version>2.8.1</gephi.versions-maven-plugin.version>
     </properties>
     
     <!-- Maven required version -->
