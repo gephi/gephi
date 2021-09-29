@@ -22,7 +22,6 @@ addons:
     casks: temurin8
     packages:
       - gnupg@1.4
-      - openssl@1.1
 
 cache:
   directories:
@@ -37,8 +36,8 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd innoextract && mkdir -p build && cd build && cmake .. && make && export PATH=$PATH:$PWD && cd ../..;fi
 
   # OS X keychain init
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/local/opt/openssl@1.1/bin/openssl enc -d -aes-256-cbc -pbkdf2 -iter 20000 -k "$ENCRYPTION_SECRET" -in src/travis/certs/dev_id.cer.enc -out src/travis/certs/dev_id.cer;fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/local/opt/openssl@1.1/bin/openssl enc -d -aes-256-cbc -pbkdf2 -iter 20000 -k "$ENCRYPTION_SECRET" -in src/travis/certs/dev_id.p12.enc -out src/travis/certs/dev_id.p12;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then gpg1 --output src/travis/certs/dev_id.cer --passphrase "$ENCRYPTION_SECRET" --decrypt src/travis/certs/dev_id.cer.enc;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then gpg1 --output src/travis/certs/dev_id.p12 --passphrase "$ENCRYPTION_SECRET" --decrypt src/travis/certs/dev_id.p12.enc;fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./src/travis/add-key.sh;fi
 
   # GPG install
