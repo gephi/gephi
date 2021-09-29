@@ -29,8 +29,8 @@ cache:
     - $HOME/.m2
 
 before_install:
-  # Fix java home path issue on osx (issue #2839)
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export JAVA_HOME=$(/usr/libexec/java_home);fi
+  # Fix java home path issue on osx
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home;fi
 
   # Build & install innoextract
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then git clone --branch 1.6 --single-branch https://github.com/dscharrer/innoextract.git;fi
