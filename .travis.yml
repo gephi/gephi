@@ -31,18 +31,14 @@ cache:
 before_install:
   # Fix java home path issue on osx (issue #2839)
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export JAVA_HOME=$(/usr/libexec/java_home);fi
-  
-  # Check versions of openssl and gpg
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then which gpg;fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then which openssl;fi
 
   # Build & install innoextract
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then git clone --branch 1.6 --single-branch https://github.com/dscharrer/innoextract.git;fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd innoextract && mkdir -p build && cd build && cmake .. && make && export PATH=$PATH:$PWD && cd ../..;fi
 
   # OS X keychain init
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then openssl enc -d -aes-256-cbc -pbkdf2 -iter 20000 -k "$ENCRYPTION_SECRET" -in src/travis/certs/dev_id.cer.enc -out src/travis/certs/dev_id.cer;fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then openssl enc -d -aes-256-cbc -pbkdf2 -iter 20000 -k "$ENCRYPTION_SECRET" -in src/travis/certs/dev_id.p12.enc -out src/travis/certs/dev_id.p12;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/local/opt/openssl@1.1/bin/openssl enc -d -aes-256-cbc -pbkdf2 -iter 20000 -k "$ENCRYPTION_SECRET" -in src/travis/certs/dev_id.cer.enc -out src/travis/certs/dev_id.cer;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/local/opt/openssl@1.1/bin/openssl enc -d -aes-256-cbc -pbkdf2 -iter 20000 -k "$ENCRYPTION_SECRET" -in src/travis/certs/dev_id.p12.enc -out src/travis/certs/dev_id.p12;fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./src/travis/add-key.sh;fi
 
   # GPG install
@@ -63,7 +59,7 @@ before_script:
 
 script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.defaultKeyring=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring="$TRAVIS_BUILD_DIR/src/travis/pubring.gpg" -Dgpg.secretKeyring="$TRAVIS_BUILD_DIR/src/travis/secretring.gpg" clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,replace-windows-icon,create-exe,create-targz;fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.executable=gpg -Dgpg.defaultKeyring=false -Dgpg.useAgent=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring="$TRAVIS_BUILD_DIR/src/travis/pubring.gpg" -Dgpg.secretKeyring="$TRAVIS_BUILD_DIR/src/travis/secretring.gpg" clean deploy -P deployment,create-dmg;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.executable=gpg1 -Dgpg.defaultKeyring=false -Dgpg.useAgent=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring="$TRAVIS_BUILD_DIR/src/travis/pubring.gpg" -Dgpg.secretKeyring="$TRAVIS_BUILD_DIR/src/travis/secretring.gpg" clean deploy -P deployment,create-dmg;fi
 
 after_script:
   # Clean OS X keychain
