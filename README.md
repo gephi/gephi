@@ -34,9 +34,9 @@ If you run into any trouble or have questions consult our [forum](http://forum-g
 
 Current version is 0.9.3-SNAPSHOT
 
-- [gephi-0.9.3-SNAPSHOT-windows.exe](http://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.3-SNAPSHOT&c=windows&p=exe) (Windows)
+- [gephi-0.9.3-SNAPSHOT-windows.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.3-SNAPSHOT&c=windows&p=exe) (Windows)
 
-- [gephi-0.9.3-SNAPSHOT-macos.dmg](http://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.3-SNAPSHOT&c=macos&p=dmg) (Mac OS X)
+- [gephi-0.9.3-SNAPSHOT-macos.dmg](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.3-SNAPSHOT&c=macos&p=dmg) (Mac OS X)
 
 - [gephi-0.9.3-SNAPSHOT-linux.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.3-SNAPSHOT&c=linux&p=tar.gz) (Linux)
 
