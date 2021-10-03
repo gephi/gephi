@@ -535,6 +535,7 @@
                                     <includes>
                                         <include>${brandingToken}.conf</include>
                                         <include>Info.plist</include>
+                                        <include>Entitlements.plist</include>
                                     </includes>
                                     <filtering>true</filtering>
                                 </resource>
@@ -678,6 +679,27 @@
                                             <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}.dmg" followsymlinks="false"/>
                                         </delete>
                                         <delete file="${project.build.directory}/${project.artifactId}-${project.version}.dmg" failonerror="false"/>
+                                        
+                                        <!-- Codesign Gephi modules with native librairies -->
+                                        <exec executable="/bin/bash" os="Mac OS X">
+                                            <arg value="src/main/app-resources/codesign.sh" />
+                                            <arg value="${project.build.directory}/${brandingToken}/${brandingToken}/modules/ext" />
+                                            <arg value="${gephi.codesign.identity}" />
+                                        </exec>
+                                        
+                                        <!-- Codesign Netbeans native librairies -->
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
+                                            <arg value="--entitlements" />
+                                            <arg value="${project.build.directory}/Entitlements.plist" />
+                                            <arg value="--sign"/>
+                                            <arg value="${gephi.codesign.identity}"/>
+                                            <arg value="--deep"/>
+                                            <arg value="--force"/>
+                                            <arg value="--timestamp"/>
+                                            <arg value="--options"/>
+                                            <arg value="runtime"/>
+                                            <arg value="${project.build.directory}/${brandingToken}/platform/modules/lib/libjnidispatch-440.jnilib" />
+                                        </exec>
 
                                         <!-- Create folders -->
                                         <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app"/>
@@ -738,19 +760,17 @@
                                         <delete file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/MacOS/libjli.dylib"/>
                                         <copy file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/Home/lib/jli/libjli.dylib" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/MacOS"/>
 
-                                        <!-- Codesign JRE -->
-                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
-                                            <arg value="-fs"/>
-                                            <arg value="${gephi.codesign.identity}"/>
-                                            <arg value="-v"/>
-                                            <arg value="${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/"/>
-                                        </exec>
-
                                         <!-- Codesign app -->
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
-                                            <arg value="-fs"/>
+                                            <arg value="--entitlements" />
+                                            <arg value="${project.build.directory}/Entitlements.plist" />
+                                            <arg value="--sign"/>
                                             <arg value="${gephi.codesign.identity}"/>
-                                            <arg value="-v"/>
+                                            <arg value="--deep"/>
+                                            <arg value="--force"/>
+                                            <arg value="--timestamp"/>
+                                            <arg value="--options"/>
+                                            <arg value="runtime"/>
                                             <arg value="${gephi.appbundle.name}.app"/>
                                         </exec>
 
