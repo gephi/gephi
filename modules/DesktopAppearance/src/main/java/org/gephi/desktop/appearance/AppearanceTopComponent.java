@@ -51,7 +51,9 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
@@ -62,6 +64,9 @@ import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.macroapi.macros.Macro;
+import org.gephi.macroapi.macros.MacroType;
+import org.gephi.macroapi.macros.ManageMacros;
 import org.gephi.ui.components.splineeditor.SplineEditor;
 import org.gephi.ui.utils.UIUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -83,6 +88,7 @@ import org.openide.windows.TopComponent;
         preferredID = "AppearanceTopComponent")
 public class AppearanceTopComponent extends TopComponent implements Lookup.Provider, AppearanceUIModelListener {
 
+    private static AppearanceTopComponent instance;
     //Const
     private final String NO_SELECTION = NbBundle.getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.choose.text");
     //UI
@@ -95,6 +101,13 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private transient final AppearanceUIController controller;
     private transient AppearanceUIModel model;
 
+    public static synchronized AppearanceTopComponent getInstance() {
+        if (instance == null) {
+            instance = new AppearanceTopComponent();
+        }
+        return instance;
+    }
+
     public AppearanceTopComponent() {
         setName(NbBundle.getMessage(AppearanceTopComponent.class, "CTL_AppearanceTopComponent"));
 
@@ -102,7 +115,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         model = controller.getModel();
         controller.addPropertyChangeListener(this);
         toolbar = new AppearanceToolbar(controller);
-
+        instance = this;
+        
         initComponents();
         initControls();
         if (UIUtils.isAquaLookAndFeel()) {
@@ -150,6 +164,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         //            localScaleButton.setEnabled((Boolean) pce.getNewValue());
         //        }
     }
+    
+
 
     public void refreshModel(AppearanceUIModel model) {
         this.model = model;
@@ -157,7 +173,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         refreshCenterPanel();
         refreshCombo();
         refreshControls();
-
+        
         //South visible
         /*
          * if (barChartPanel.isVisible() != model.isBarChartVisible()) {
@@ -369,8 +385,17 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             @Override
             public void actionPerformed(ActionEvent e) {
                 controller.appearanceController.transform(model.getSelectedFunction());
+                
+                if(ManageMacros.getRecordingState()){
+                    Map action = new HashMap<>();
+                    Macro macro = ManageMacros.getCurrentMacro();
+                    action.put(MacroType.APPEARANCE, model.getSelectedFunction());
+                    macro.addAction(action);
+                    ManageMacros.addCurrentMacro(macro);
+                }
             }
         });
+
         autoApplyButton.addActionListener(new ActionListener() {
 
             @Override
@@ -454,6 +479,10 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 //        rankingChooser.setEnabled(modelEnabled);
 //        rankingToolbar.setEnabled(modelEnabled);
 //        listResultPanel.setEnabled(modelEnabled);
+    }
+    
+    public void executeAction(Object function){
+        controller.appearanceController.transform((Function) function);
     }
 
     private boolean isModelEnabled() {
@@ -640,6 +669,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
         add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
     private javax.swing.JComboBox attibuteBox;

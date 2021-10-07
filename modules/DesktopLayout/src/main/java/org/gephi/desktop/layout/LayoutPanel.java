@@ -56,6 +56,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JMenuItem;
@@ -65,8 +66,12 @@ import javax.swing.JSeparator;
 import org.gephi.desktop.layout.LayoutPresetPersistence.Preset;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutModel;
+import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutUI;
+import org.gephi.macroapi.macros.Macro;
+import org.gephi.macroapi.macros.MacroType;
+import org.gephi.macroapi.macros.ManageMacros;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -80,17 +85,27 @@ import org.openide.util.NbPreferences;
 
 public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeListener {
 
+    private static LayoutPanel instance;
     private final String NO_SELECTION;
     private LayoutModel model;
     private LayoutController controller;
     private LayoutPresetPersistence layoutPresetPersistence;
 
+
     public LayoutPanel() {
         NO_SELECTION = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.choose.text");
         controller = Lookup.getDefault().lookup(LayoutController.class);
+        instance = this;
         initComponents();
         layoutPresetPersistence = new LayoutPresetPersistence();
         initEvents();
+    }
+    
+    public static synchronized LayoutPanel getInstance() {
+        if (instance == null) {
+            instance = new LayoutPanel();
+        }
+        return instance;
     }
 
     private void initEvents() {
@@ -225,7 +240,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         comboBoxModel.addElement(NO_SELECTION);
         comboBoxModel.setSelectedItem(NO_SELECTION);
         if (model != null) {
-            List<LayoutBuilder> builders = new ArrayList<>(Lookup.getDefault().lookupAll(LayoutBuilder.class));
+            List<LayoutBuilder> builders = (List<LayoutBuilder>) new ArrayList<>(Lookup.getDefault().lookupAll(LayoutBuilder.class));
             Collections.sort(builders, new Comparator() {
                 @Override
                 public int compare(Object o1, Object o2) {
@@ -290,6 +305,15 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     private void setSelectedLayout(LayoutBuilder builder) {
         controller.setLayout(builder != null ? model.getLayout(builder) : null);
     }
+    
+    public void executeAction(Object action){
+        controller.setLayout((Layout) action);
+        if(model.isRunning()){
+            stop();
+        }else{
+            run();
+        }
+    }
 
     private void reset() {
         if (model.getSelectedLayout() != null) {
@@ -353,7 +377,6 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         runButton.setIconTextGap(5);
         runButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         runButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runButtonActionPerformed(evt);
             }
@@ -377,7 +400,6 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
         resetButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.resetButton.text")); // NOI18N
         resetButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetButtonActionPerformed(evt);
             }
@@ -424,8 +446,16 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
             stop();
         } else {
             run();
+            if(ManageMacros.getRecordingState()){
+                Macro macro = ManageMacros.getCurrentMacro();
+                HashMap action = new HashMap<>();
+                action.put(MacroType.LAYOUT, model.getSelectedLayout());
+                macro.addAction(action);
+                ManageMacros.addCurrentMacro(macro);
+            }  
         }
     }//GEN-LAST:event_runButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel infoLabel;
     private javax.swing.JComboBox layoutCombobox;

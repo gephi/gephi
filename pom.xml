@@ -1371,5 +1371,6 @@
         <module>modules/BatikWrapper</module>
         <module>modules/CoreLibraryWrapper</module>
         <module>modules/UILibraryWrapper</module>
+        <module>modules/MacroAPI</module>
     </modules>
 </project>

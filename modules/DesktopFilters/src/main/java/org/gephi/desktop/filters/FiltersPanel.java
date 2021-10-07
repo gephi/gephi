@@ -45,6 +45,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.HashMap;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -56,6 +57,9 @@ import org.gephi.desktop.filters.query.QueryExplorer;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
+import org.gephi.macroapi.macros.Macro;
+import org.gephi.macroapi.macros.MacroType;
+import org.gephi.macroapi.macros.ManageMacros;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -69,6 +73,7 @@ import org.openide.util.NbBundle;
  */
 public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.Provider, ChangeListener {
 
+    private static FiltersPanel instance;
     private final ExplorerManager manager = new ExplorerManager();
     //Models
     private FilterModel filterModel;
@@ -77,8 +82,13 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     private final FilterPanelPanel filterPanelPanel;
     private QueryExplorer queriesExplorer;
     private final QueriesPanel queriesPanel;
+    
+    private boolean toogleMacroRecording;
+    FilterController macroController;
+    Query macroQuery;
 
     public FiltersPanel() {
+        instance = this;
         initComponents();
         //Toolbar
         Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
@@ -93,8 +103,18 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         southPanel.add(queriesPanel, BorderLayout.CENTER);
         filterPanelPanel = new FilterPanelPanel();
         filtersUIPanel.add(filterPanelPanel);
+        toogleMacroRecording = false;
+        macroController = null;
+        macroQuery = null;
 
         initEvents();
+    }
+    
+    public static synchronized FiltersPanel getInstance() {
+        if (instance == null) {
+            instance = new FiltersPanel();
+        }
+        return instance;
     }
 
     private void initEvents() {
@@ -122,12 +142,23 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 if (uiModel.getSelectedQuery() != null) {
                     FilterController controller = Lookup.getDefault().lookup(FilterController.class);
                     controller.filterVisible(uiModel.getSelectedRoot());
+                    
                     stopButton.setSelected(false);
                     stopButton.setVisible(true);
                     filterButton.setVisible(false);
+                    
+                    if(ManageMacros.getRecordingState()){
+                        macroController = controller;
+                        Macro macro = ManageMacros.getCurrentMacro();
+                        HashMap action = new HashMap<>();
+                        action.put(MacroType.FILTER, uiModel.getSelectedRoot());
+                        macro.addAction(action);
+                        ManageMacros.addCurrentMacro(macro);
+                    }  
                 }
             }
         });
+        
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -314,6 +345,15 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         if (uiModel != null) {
             uiModel.addChangeListener(this);
         }
+    }
+    
+    
+    public void executeAction(Object action){
+        FilterController controller = Lookup.getDefault().lookup(FilterController.class);
+        controller.filterVisible((Query) action);
+        stopButton.setSelected(false);
+        stopButton.setVisible(true);
+        filterButton.setVisible(false);
     }
 
     /**
