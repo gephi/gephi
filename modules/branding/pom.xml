@@ -14,6 +14,11 @@
     <artifactId>gephi-branding</artifactId>
     <packaging>nbm</packaging>
     <name>Branding</name>
+    
+    <properties>
+        <!-- Disable AutoUpdate in development -->
+        <enableAutoUpdate>false</enableAutoUpdate>
+    </properties>
 
     <build>
         <plugins>
@@ -43,6 +48,7 @@
                         </configuration> 
                     </execution> 
                     
+                    <!-- Configure AutoUpdate URLs and whether it's on or off -->
                     <execution> 
                         <id>generate-autoudate-urls</id> 
                         <phase>generate-resources</phase> 
@@ -54,8 +60,8 @@
                             <resources> 
                                 <resource> 
                                     <directory>src/main/resources</directory> 
-                                    <includes> 
-                                        <include>org/gephi/branding/Bundle.properties</include>
+                                    <includes>
+                                        <include>org/gephi/branding/layer.xml</include>
                                     </includes> 
                                     <filtering>true</filtering> 
                                 </resource> 
@@ -66,4 +72,14 @@
             </plugin>
         </plugins>
     </build>
+    
+    <profiles>
+        <!-- The deployment profile is built for releases  -->
+        <profile>
+            <id>deployment</id>
+            <properties>
+                <enableAutoUpdate>true</enableAutoUpdate>
+            </properties>
+        </profile>
+    </profiles>
 </project>
