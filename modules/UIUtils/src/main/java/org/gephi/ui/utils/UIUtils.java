@@ -381,47 +381,7 @@ public final class UIUtils {
      * @param button button
      */
     public static void fixButtonUI(AbstractButton button) {
-        // JButton
-        if (button.getUI() instanceof com.sun.java.swing.plaf.windows.WindowsButtonUI) {
-            button.setUI(new com.sun.java.swing.plaf.windows.WindowsButtonUI() {
-
-                @Override
-                protected BasicButtonListener createButtonListener(AbstractButton b) {
-                    return new BasicButtonListener(b); // Fix for  Issue 71546
-                }
-
-                @Override
-                protected void paintFocus(Graphics g, AbstractButton b, Rectangle viewRect, Rectangle textRect,
-                        Rectangle iconRect) {
-                    int width = b.getWidth();
-                    int height = b.getHeight();
-                    g.setColor(getFocusColor());
-                    javax.swing.plaf.basic.BasicGraphicsUtils.drawDashedRect(g, dashedRectGapX, dashedRectGapY,
-                            width - dashedRectGapWidth,
-                            height - dashedRectGapHeight);
-                }
-            });
-        } // JToggleButton
-        else if (button.getUI() instanceof com.sun.java.swing.plaf.windows.WindowsToggleButtonUI) {
-            button.setUI(new com.sun.java.swing.plaf.windows.WindowsToggleButtonUI() {
-
-                @Override
-                protected BasicButtonListener createButtonListener(AbstractButton b) {
-                    return new BasicButtonListener(b); // Fix for  Issue 71546
-                }
-
-                @Override
-                protected void paintFocus(Graphics g, AbstractButton b, Rectangle viewRect, Rectangle textRect,
-                        Rectangle iconRect) {
-                    int width = b.getWidth();
-                    int height = b.getHeight();
-                    g.setColor(getFocusColor());
-                    javax.swing.plaf.basic.BasicGraphicsUtils.drawDashedRect(g, dashedRectGapX, dashedRectGapY,
-                            width - dashedRectGapWidth,
-                            height - dashedRectGapHeight);
-                }
-            });
-        }
+        // Doesn't seem to be necessary any more, conflicts with Jigsaw
     }
 
     private static BufferedImage createTableScreenshot(Component component) {
