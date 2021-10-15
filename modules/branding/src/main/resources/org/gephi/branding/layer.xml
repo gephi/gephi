@@ -4,20 +4,18 @@
     <folder name="Services">
         <folder name="AutoupdateType">
             <file name="org_gephi_branding_update_center.instance">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.Bundle"/>
                 <attr name="displayName" bundlevalue="org.gephi.branding.Bundle#Services/AutoupdateType/org_gephi_branding_update_center.instance"/>
-                <attr name="enabled" boolvalue="true"/>
+                <attr name="enabled" boolvalue="${enableAutoUpdate}"/>
                 <attr name="instanceCreate" methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
                 <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
-                <attr name="url_key" stringvalue="org_gephi_branding_update_center"/>
+                <attr name="url" stringvalue="${gephi.update.center.official.url}"/>
             </file>
             <file name="org_gephi_branding_update_center_1.instance">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.Bundle"/>
                 <attr name="displayName" bundlevalue="org.gephi.branding.Bundle#Services/AutoupdateType/org_gephi_branding_update_center_1.instance"/>
-                <attr name="enabled" boolvalue="true"/>
+                <attr name="enabled" boolvalue="${enableAutoUpdate}"/>
                 <attr name="instanceCreate" methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
                 <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
-                <attr name="url_key" stringvalue="org_gephi_branding_update_center_1"/>
+                <attr name="url" stringvalue="${gephi.update.center.thirdparty.url}"/>
             </file>
         </folder>
     </folder>
