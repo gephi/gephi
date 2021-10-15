@@ -134,7 +134,7 @@
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
         
         <!-- Netbeans Platfrom version -->
-        <netbeans.version>RELEASE90</netbeans.version>
+        <netbeans.version>RELEASE125</netbeans.version>
         
         <!-- Graphstore version -->
         <graphstore.version>0.5.9</graphstore.version>
@@ -146,8 +146,8 @@
         <gephi.modules.specification.version>0.9.3</gephi.modules.specification.version>
 
         <!-- Java compilation settings -->
-        <gephi.javac.source>1.7</gephi.javac.source>
-        <gephi.javac.target>1.7</gephi.javac.target>
+        <gephi.javac.source>1.8</gephi.javac.source>
+        <gephi.javac.target>1.8</gephi.javac.target>
         <gephi.javac.xlint>-Xlint:all</gephi.javac.xlint>
         <gephi.javac.debug>true</gephi.javac.debug>
         <gephi.javac.optimize>true</gephi.javac.optimize>
@@ -238,7 +238,7 @@
 
         <gephi.build-helper-maven-plugin.version>3.0.0</gephi.build-helper-maven-plugin.version>
 
-        <gephi.nbm-maven-plugin.version>4.1</gephi.nbm-maven-plugin.version>
+        <gephi.nbm-maven-plugin.version>4.6</gephi.nbm-maven-plugin.version>
         
         <gephi.wagon-maven-plugin.version>2.0.0</gephi.wagon-maven-plugin.version>  
         
@@ -812,7 +812,7 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
+                    <groupId>org.apache.netbeans.utilities</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
                     <version>${gephi.nbm-maven-plugin.version}</version>
                     <extensions>true</extensions>
@@ -985,7 +985,7 @@
             
             <!-- NBM options -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
