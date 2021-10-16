@@ -173,8 +173,7 @@
         
         <!-- Mac OS X bundle settings -->
         <gephi.appbundle.name>Gephi</gephi.appbundle.name>
-        <gephi.bundle.jre.url>https://javadl.oracle.com/webapps/download/GetFile/1.8.0_251-b08/3d5a2bb8f8d4428bbe94aed7ec7ae784/unix-i586</gephi.bundle.jre.url>
-        <gephi.bundle.jre.version>jre-8u251-macosx-x64</gephi.bundle.jre.version>
+        <gephi.bundle.jre.url>https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jre_x64_mac_hotspot_11.0.12_7.tar.gz</gephi.bundle.jre.url>
 
         <!-- Mac OS X signing identity - must match with a verified Apple developer certificate in the keychain -->
         <gephi.codesign.identity>Developer ID Application</gephi.codesign.identity>
@@ -228,7 +227,7 @@
 
         <gephi.maven-release-plugin.version>2.5.3</gephi.maven-release-plugin.version>
 
-        <gephi.maven-resources-plugin.version>3.1.0</gephi.maven-resources-plugin.version>
+        <gephi.maven-resources-plugin.version>3.2.0</gephi.maven-resources-plugin.version>
 
         <gephi.maven-site-plugin.version>3.8.2</gephi.maven-site-plugin.version>
 
