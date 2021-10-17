@@ -61,6 +61,7 @@
                 <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
+                    <moduleType>autoload</moduleType>
                     <publicPackages>
                         <publicPackage>org.gephi.io.database.drivers</publicPackage>
                     </publicPackages>
