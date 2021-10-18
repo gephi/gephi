@@ -134,7 +134,7 @@
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
         
         <!-- Netbeans Platfrom version -->
-        <netbeans.version>RELEASE90</netbeans.version>
+        <netbeans.version>RELEASE125</netbeans.version>
         
         <!-- Graphstore version -->
         <graphstore.version>0.5.9</graphstore.version>
@@ -146,8 +146,8 @@
         <gephi.modules.specification.version>0.9.3</gephi.modules.specification.version>
 
         <!-- Java compilation settings -->
-        <gephi.javac.source>1.7</gephi.javac.source>
-        <gephi.javac.target>1.7</gephi.javac.target>
+        <gephi.javac.source>1.8</gephi.javac.source>
+        <gephi.javac.target>1.8</gephi.javac.target>
         <gephi.javac.xlint>-Xlint:all</gephi.javac.xlint>
         <gephi.javac.debug>true</gephi.javac.debug>
         <gephi.javac.optimize>true</gephi.javac.optimize>
@@ -156,7 +156,7 @@
         <gephi.javac.fork>true</gephi.javac.fork>
         
         <!-- Testing settings -->
-        <gephi.testng.version>7.1.0</gephi.testng.version>
+        <gephi.testng.version>7.4.0</gephi.testng.version>
         <gephi.test.maxMemory>768M</gephi.test.maxMemory>
         <gephi.test.reportsDirectory>${project.build.directory}/surefire-reports/plain</gephi.test.reportsDirectory>
         <gephi.test.failureIgnore>${testFailureIgnore}</gephi.test.failureIgnore>
@@ -173,8 +173,7 @@
         
         <!-- Mac OS X bundle settings -->
         <gephi.appbundle.name>Gephi</gephi.appbundle.name>
-        <gephi.bundle.jre.url>https://javadl.oracle.com/webapps/download/GetFile/1.8.0_251-b08/3d5a2bb8f8d4428bbe94aed7ec7ae784/unix-i586</gephi.bundle.jre.url>
-        <gephi.bundle.jre.version>jre-8u251-macosx-x64</gephi.bundle.jre.version>
+        <gephi.bundle.jre.url>https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jre_x64_mac_hotspot_11.0.12_7.tar.gz</gephi.bundle.jre.url>
 
         <!-- Mac OS X signing identity - must match with a verified Apple developer certificate in the keychain -->
         <gephi.codesign.identity>Developer ID Application</gephi.codesign.identity>
@@ -195,26 +194,27 @@
         
         <!--==== Dependency Versions ==================================================================================-->
         
-        <gephi.slf4j.version>1.7.30</gephi.slf4j.version>
+        <gephi.slf4j.version>1.7.32</gephi.slf4j.version>
+        <!-- TODO: change to new sentry sdk -->
         <gephi.sentry.raven.version>8.0.3</gephi.sentry.raven.version>
         
         <!--==== Plugin Versions ==================================================================================-->
 
-        <gephi.maven-antrun-plugin.version>1.8</gephi.maven-antrun-plugin.version>
+        <gephi.maven-antrun-plugin.version>3.0.0</gephi.maven-antrun-plugin.version>
 
-        <gephi.maven-assembly-plugin.version>3.2.0</gephi.maven-assembly-plugin.version>
+        <gephi.maven-assembly-plugin.version>3.3.0</gephi.maven-assembly-plugin.version>
 
         <gephi.maven-clean-plugin.version>3.1.0</gephi.maven-clean-plugin.version>
 
         <gephi.maven-compiler-plugin.version>3.8.1</gephi.maven-compiler-plugin.version>
 
-        <gephi.maven-dependency-plugin.version>3.1.1</gephi.maven-dependency-plugin.version>
+        <gephi.maven-dependency-plugin.version>3.2.0</gephi.maven-dependency-plugin.version>
 
         <gephi.maven-deploy-plugin.version>2.8.2</gephi.maven-deploy-plugin.version>
 
         <gephi.maven-enforcer-plugin.version>1.4.1</gephi.maven-enforcer-plugin.version>
 
-        <gephi.maven-gpg-plugin.version>1.6</gephi.maven-gpg-plugin.version>
+        <gephi.maven-gpg-plugin.version>3.0.1</gephi.maven-gpg-plugin.version>
 
         <gephi.maven-install-plugin.version>2.5.2</gephi.maven-install-plugin.version>
 
@@ -222,31 +222,31 @@
 
         <gephi.maven-jarsigner-plugin.version>3.0.0</gephi.maven-jarsigner-plugin.version>
 
-        <gephi.maven-javadoc-plugin.version>3.1.1</gephi.maven-javadoc-plugin.version> 
+        <gephi.maven-javadoc-plugin.version>3.3.1</gephi.maven-javadoc-plugin.version> 
 
         <gephi.maven-license-plugin.version>1.9.0</gephi.maven-license-plugin.version>
 
         <gephi.maven-release-plugin.version>2.5.3</gephi.maven-release-plugin.version>
 
-        <gephi.maven-resources-plugin.version>3.1.0</gephi.maven-resources-plugin.version>
+        <gephi.maven-resources-plugin.version>3.2.0</gephi.maven-resources-plugin.version>
 
-        <gephi.maven-site-plugin.version>3.8.2</gephi.maven-site-plugin.version>
+        <gephi.maven-site-plugin.version>3.9.1</gephi.maven-site-plugin.version>
 
         <gephi.maven-source-plugin.version>3.2.1</gephi.maven-source-plugin.version>
 
         <gephi.maven-surefire-plugin.version>2.22.2</gephi.maven-surefire-plugin.version>
 
-        <gephi.build-helper-maven-plugin.version>3.0.0</gephi.build-helper-maven-plugin.version>
+        <gephi.build-helper-maven-plugin.version>3.2.0</gephi.build-helper-maven-plugin.version>
 
-        <gephi.nbm-maven-plugin.version>4.1</gephi.nbm-maven-plugin.version>
+        <gephi.nbm-maven-plugin.version>4.6</gephi.nbm-maven-plugin.version>
         
-        <gephi.wagon-maven-plugin.version>2.0.0</gephi.wagon-maven-plugin.version>  
+        <gephi.wagon-maven-plugin.version>2.0.2</gephi.wagon-maven-plugin.version>  
         
         <gephi.nexus-staging-maven-plugin.version>1.6.8</gephi.nexus-staging-maven-plugin.version>
         
         <gephi.site-maven-plugin.version>0.12</gephi.site-maven-plugin.version>
         
-        <gephi.versions-maven-plugin.version>2.7</gephi.versions-maven-plugin.version>
+        <gephi.versions-maven-plugin.version>2.8.1</gephi.versions-maven-plugin.version>
     </properties>
     
     <!-- Maven required version -->
@@ -812,7 +812,7 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
+                    <groupId>org.apache.netbeans.utilities</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
                     <version>${gephi.nbm-maven-plugin.version}</version>
                     <extensions>true</extensions>
@@ -985,7 +985,7 @@
             
             <!-- NBM options -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
@@ -993,11 +993,6 @@
                     <brandingToken>${brandingToken}</brandingToken>
                     <cluster>${brandingToken}</cluster>
                     <useOSGiDependencies>${gephi.netbeans.useOSGiDependencies}</useOSGiDependencies>
-                    
-                    <!-- Keystore location. Run Maven with '-Dkeystorepassword=' to specify the passphrase -->
-                    <keystore>src/keystore/keystore.ks</keystore>
-                    <keystorealias>gephi</keystorealias>
-                    <keystorepassword>${keystore.password}</keystorepassword>
                     
                     <!-- NBM settings -->
                     <requiresRestart>true</requiresRestart>
@@ -1085,6 +1080,19 @@
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                             <!-- The create-modules profile overrides this -->
                             <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                        </configuration>
+                    </plugin>
+
+                    <!-- NBM Signing -->
+                    <plugin>
+                        <groupId>org.apache.netbeans.utilities</groupId>
+                        <artifactId>nbm-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <!-- Keystore location. Run Maven with '-Dkeystorepassword=' to specify the passphrase -->
+                            <keystore>src/keystore/keystore.ks</keystore>
+                            <keystorealias>gephi</keystorealias>
+                            <keystorepassword>${keystore.password}</keystorepassword>
                         </configuration>
                     </plugin>
 

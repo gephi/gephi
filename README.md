@@ -10,7 +10,7 @@
 
 - **Simple** Easy to install and [get started](https://gephi.github.io/users/quick-start). An UI that is centered around the visualization. Like Photoshop™ for graphs.
 
-- **Modular** Extend Gephi with [plug-ins](https://gephi.org/plugins). The architecture is built on top of Netbeans Platform and can be extended or reused easily through well-written APIs.
+- **Modular** Extend Gephi with [plug-ins](https://gephi.org/plugins). The architecture is built on top of [Apache Netbeans Platform](https://netbeans.apache.org/tutorials/nbm-quick-start.html) and can be extended or reused easily through well-written APIs.
 
 [Download Gephi](https://gephi.github.io/users/download) for Windows, Mac OS X and Linux and consult the [release notes](https://github.com/gephi/gephi/wiki/Releases). Example datasets can be found on our [wiki](https://github.com/gephi/gephi/wiki/Datasets).
 
@@ -50,7 +50,7 @@ Consult the [**Javadoc**](http://gephi.github.io/gephi/0.9.2/apidocs/index.html)
 
 ### Requirements
 
-- Java JDK 8. Note: Gephi does not currently work with JDK newer than 8. Work needs to be done yet in order to support newer java versions.
+- Java JDK 8 (or later)
 
 - [Apache Maven](http://maven.apache.org/) version 3.2.2 or later
 

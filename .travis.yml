@@ -2,7 +2,7 @@ language: java
 matrix:
   include:
     - os: linux
-      jdk: openjdk8
+      jdk: openjdk11
     - os: osx
       osx_image: xcode12.5
 branches:
@@ -19,7 +19,7 @@ addons:
     - liblzma-dev
   homebrew:
     taps: homebrew/cask-versions
-    casks: temurin8
+    casks: temurin11
     packages:
       - gnupg@1.4
 
@@ -29,7 +29,7 @@ cache:
 
 before_install:
   # Fix java home path issue on osx
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-11.jdk/Contents/Home;fi
 
   # Build & install innoextract
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then git clone --branch 1.6 --single-branch https://github.com/dscharrer/innoextract.git;fi

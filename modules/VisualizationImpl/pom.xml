@@ -16,7 +16,7 @@
     <name>VisualizationImpl</name>
 
     <properties>
-        <jogl.version>2.3.2</jogl.version>
+        <jogl.version>2.4.0-rc-20210111</jogl.version>
     </properties>
 
     <dependencies>
@@ -181,18 +181,6 @@
             <artifactId>org-openide-modules</artifactId>
         </dependency>
     </dependencies>
-    
-    <repositories>
-        <repository>
-            <id>jogamp-remote</id>
-            <name>jogamp test mirror</name>
-            <url>https://www.jogamp.org/deployment/maven/</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
@@ -205,7 +193,7 @@
       </plugin>-->
             
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
                     <publicPackages>

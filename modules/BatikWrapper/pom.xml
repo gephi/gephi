@@ -14,14 +14,9 @@
     <packaging>nbm</packaging>
 
     <name>BatikWrapper</name>
-    
-    <!-- 
-        Batik in its own module wrapper because some dependencies define classes 
-        in packages such as org.w3c and javax.xml and Netbeans dependency system will complain in transitive dependencies 
-    -->
 
     <properties>
-        <gephi.batik.version>1.12</gephi.batik.version>
+        <gephi.batik.version>1.14</gephi.batik.version>
     </properties>
     
     <dependencies>
@@ -30,20 +25,22 @@
             <artifactId>batik-transcoder</artifactId>
             <version>${gephi.batik.version}</version>
             <exclusions>
-                <!-- Avoid including a copy of javax.xml and org.w3c classes -->
+                <!-- Not needed -->
                 <exclusion>
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
-                <!-- See https://issues.apache.org/jira/browse/BATIK-1197 Non optional dependencies on jython and rhino added in 1.9.1 -->
-                <!-- Also jython includes another copy of javax.xml and org.w3c classes... -->
                 <exclusion>
-                    <groupId>org.python</groupId>
-                    <artifactId>jython</artifactId>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.mozilla</groupId>
-                    <artifactId>rhino</artifactId>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -52,18 +49,13 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
+                    <moduleType>autoload</moduleType>
                     <publicPackages>
-                        <publicPackage>org.apache.commons.logging.*</publicPackage>
-                        <publicPackage>javax.xml.*</publicPackage>
                         <publicPackage>org.w3c.*</publicPackage>
                         <publicPackage>org.apache.batik.*</publicPackage>
-                        <publicPackage>org.apache.xpath.*</publicPackage>
-                        <publicPackage>org.apache.xalan.*</publicPackage>
-                        <publicPackage>org.apache.xml.*</publicPackage>
-                        <publicPackage>org.xml.sax.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

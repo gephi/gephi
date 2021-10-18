@@ -494,7 +494,7 @@
             
             <!-- Disable the ZIP goal. Also set up the location of the gephi.conf -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
                     <!-- Set up the gephi.conf for the final artifact -->
@@ -698,7 +698,7 @@
                                             <arg value="--timestamp"/>
                                             <arg value="--options"/>
                                             <arg value="runtime"/>
-                                            <arg value="${project.build.directory}/${brandingToken}/platform/modules/lib/libjnidispatch-440.jnilib" />
+                                            <arg value="${project.build.directory}/${brandingToken}/platform/modules/lib/libjnidispatch-nb.jnilib" />
                                         </exec>
 
                                         <!-- Create folders -->
@@ -724,17 +724,16 @@
                                             <arg line="-L"/>
                                             <arg line="-C"/>
                                             <arg line="-"/>
-                                            <arg line="-b"/>
-                                            <arg line="&quot;oraclelicense=accept-securebackup-cookie&quot;"/>
-                                            <arg line="-O"/>
-                                            <arg line="${gephi.bundle.jre.url}/${gephi.bundle.jre.version}.tar.gz"/>
+                                            <arg line="-o"/>
+                                            <arg line="jdk.tar.gz"/>
+                                            <arg line="${gephi.bundle.jre.url}"/>
                                         </exec>
 
                                         <!-- Unzip archive -->
                                         <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns"/>
                                         <exec dir="${project.build.directory}" executable="tar">
                                             <arg line="-zxf"/>
-                                            <arg line="${gephi.bundle.jre.version}.tar.gz"/>
+                                            <arg line="jdk.tar.gz"/>
                                             <arg line="-C &quot;${gephi.appbundle.name}.app/Contents/PlugIns&quot;"/>
                                         </exec>
 
@@ -747,7 +746,7 @@
 
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
-                                            <dirset dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" includes="jre*" />
+                                            <dirset dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" includes="jdk*" />
                                         </path>
                                         <property name="bundle.jre.path" refid="jre_name" />
                                         <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
@@ -756,10 +755,20 @@
                                         <replace file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;../../PlugIns/${bundle.jre.name}/Contents/Home&quot;"/>
                                         <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/**" perm="+x" type="both"/>
 
-                                        <!-- Fix JRE by replacing libjli.dylib symlink with real file -->
-                                        <delete file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/MacOS/libjli.dylib"/>
-                                        <copy file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/Home/lib/jli/libjli.dylib" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/MacOS"/>
-
+                                        <!-- Codesign JRE -->
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
+                                            <arg value="--entitlements" />
+                                            <arg value="${project.build.directory}/Entitlements.plist" />
+                                            <arg value="--sign"/>
+                                            <arg value="${gephi.codesign.identity}"/>
+                                            <arg value="--deep"/>
+                                            <arg value="--force"/>
+                                            <arg value="--timestamp"/>
+                                            <arg value="--options"/>
+                                            <arg value="runtime"/>
+                                            <arg value="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns/${bundle.jre.name}/Contents/MacOS/libjli.dylib" />
+                                        </exec>
+                                        
                                         <!-- Codesign app -->
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
                                             <arg value="--entitlements" />
@@ -910,7 +919,7 @@
                 <plugins>
                     <!-- NBM Plugin settings. Enable the autoupdate generation -->
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
+                        <groupId>org.apache.netbeans.utilities</groupId>
                         <artifactId>nbm-maven-plugin</artifactId>
                         <executions>
                             <execution>
