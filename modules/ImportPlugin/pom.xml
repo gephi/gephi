@@ -16,7 +16,8 @@
     <name>ImportPlugin</name>
 
     <properties>
-        <gephi.apache-poi.version>4.1.1</gephi.apache-poi.version>
+        <gephi.apache-poi.version>5.0.0</gephi.apache-poi.version>
+        <gephi.woodstox.version>6.2.6</gephi.woodstox.version>
     </properties>
 
     <dependencies>
@@ -60,6 +61,11 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>${gephi.apache-poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId><!-- Needed by apache poi -->
+            <version>${gephi.woodstox.version}</version>
         </dependency>
         
         <dependency>
