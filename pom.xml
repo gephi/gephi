@@ -994,11 +994,6 @@
                     <cluster>${brandingToken}</cluster>
                     <useOSGiDependencies>${gephi.netbeans.useOSGiDependencies}</useOSGiDependencies>
                     
-                    <!-- Keystore location. Run Maven with '-Dkeystorepassword=' to specify the passphrase -->
-                    <keystore>src/keystore/keystore.ks</keystore>
-                    <keystorealias>gephi</keystorealias>
-                    <keystorepassword>${keystore.password}</keystorepassword>
-                    
                     <!-- NBM settings -->
                     <requiresRestart>true</requiresRestart>
                     <licenseName>CDDL 1.0 and GNU GPL v3</licenseName>
@@ -1085,6 +1080,19 @@
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                             <!-- The create-modules profile overrides this -->
                             <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                        </configuration>
+                    </plugin>
+
+                    <!-- NBM Signing -->
+                    <plugin>
+                        <groupId>org.apache.netbeans.utilities</groupId>
+                        <artifactId>nbm-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <!-- Keystore location. Run Maven with '-Dkeystorepassword=' to specify the passphrase -->
+                            <keystore>src/keystore/keystore.ks</keystore>
+                            <keystorealias>gephi</keystorealias>
+                            <keystorepassword>${keystore.password}</keystorepassword>
                         </configuration>
                     </plugin>
 
