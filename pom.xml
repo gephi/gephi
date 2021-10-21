@@ -133,10 +133,10 @@
         <netbeans.run.params.ide/>
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
         
-        <!-- Netbeans Platfrom version -->
+        <!-- Netbeans Platform version -->
         <netbeans.version>RELEASE125</netbeans.version>
         
-        <!-- Graphstore version -->
+        <!-- GraphStore version -->
         <graphstore.version>0.5.9</graphstore.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
@@ -189,7 +189,7 @@
         <gephi.menu.app.name>Gephi ${project.version}</gephi.menu.app.name>
         <gephi.innosetup.path>C:/Program Files (x86)/Inno Setup 5</gephi.innosetup.path>
         
-        <!-- GitHub site-plugin authentification -->
+        <!-- GitHub site-plugin authentication -->
         <github.global.server>github</github.global.server>
         
         <!--==== Dependency Versions ==================================================================================-->
