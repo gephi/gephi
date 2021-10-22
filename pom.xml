@@ -13,8 +13,8 @@
     <url>http://gephi.org</url>
     <description>Gephi - The Open Graph Viz Platform</description>
     <organization>
-        <name>Gephi Consortium</name>
-        <url>http://consortium.gephi.org</url>
+        <name>Gephi</name>
+        <url>http://gephi.org</url>
     </organization>
     <inceptionYear>2007</inceptionYear>
     
@@ -1114,17 +1114,6 @@
             </build>
         </profile>
         
-        <!-- Profile that disable doclint for now as Javadoc is much more strict in 1.8 -->
-        <profile>
-            <id>javadoc18</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <gephi.javadoc.opts>-Xdoclint:none</gephi.javadoc.opts>
-            </properties>
-        </profile>
-        
         <!-- Profile to create Javadoc -->
         <profile>
             <id>create-javadoc</id>
@@ -1168,8 +1157,9 @@
                             <nohelp>true</nohelp>
                             <detectLinks>false</detectLinks>
                             <detectOfflineLinks>true</detectOfflineLinks>   
-                            <quiet>false</quiet>   
-                            <additionalparam>${gephi.javadoc.opts}</additionalparam>
+                            <quiet>false</quiet>
+                            <doclint>none</doclint>
+                            <source>8</source>
                         </configuration>
                         <executions>
                             <execution> 
