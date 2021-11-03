@@ -393,7 +393,6 @@
                 <groupId>org.netbeans.api</groupId>
                 <artifactId>org-netbeans-modules-nbjunit</artifactId>
                 <version>${netbeans.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
@@ -758,6 +757,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>ui-library-wrapper</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>test-utils</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1369,5 +1373,6 @@
         <module>modules/BatikWrapper</module>
         <module>modules/CoreLibraryWrapper</module>
         <module>modules/UILibraryWrapper</module>
+        <module>modules/TestUtils</module>
     </modules>
 </project>
