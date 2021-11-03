@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
 import java.util.ArrayList;
@@ -78,7 +79,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author mbastian
  */
 public class AppearanceModelImpl implements AppearanceModel {
@@ -86,7 +86,6 @@ public class AppearanceModelImpl implements AppearanceModel {
     private final Workspace workspace;
     private final GraphModel graphModel;
     private final Interpolator defaultInterpolator;
-    private boolean localScale = false;
     // Transformers
     private final List<Transformer> nodeTransformers;
     private final List<Transformer> edgeTransformers;
@@ -97,6 +96,7 @@ public class AppearanceModelImpl implements AppearanceModel {
     //
     private final FunctionsModel functionsMain;
     private final Map<Graph, FunctionsModel> functions = new HashMap<>();
+    private boolean localScale = false;
 
     public AppearanceModelImpl(Workspace workspace) {
         this.workspace = workspace;
@@ -122,6 +122,10 @@ public class AppearanceModelImpl implements AppearanceModel {
         return localScale;
     }
 
+    public void setLocalScale(boolean localScale) {
+        this.localScale = localScale;
+    }
+
     @Override
     public Function[] getNodeFunctions(Graph graph) {
         return refreshFunctions(graph).getNodeFunctions();
@@ -136,7 +140,7 @@ public class AppearanceModelImpl implements AppearanceModel {
     public Function getNodeFunction(Graph graph, Column column, Class<? extends Transformer> transformer) {
         for (Function f : refreshFunctions(graph).getNodeFunctions()) {
             if (f.isAttribute() && f.getTransformer().getClass().equals(transformer)
-                    && ((AttributeFunction) f).getColumn().equals(column)) {
+                && ((AttributeFunction) f).getColumn().equals(column)) {
                 return f;
             }
         }
@@ -147,7 +151,7 @@ public class AppearanceModelImpl implements AppearanceModel {
     public Function getEdgeFunction(Graph graph, Column column, Class<? extends Transformer> transformer) {
         for (Function f : refreshFunctions(graph).getEdgeFunctions()) {
             if (f.isAttribute() && f.getTransformer().getClass().equals(transformer)
-                    && ((AttributeFunction) f).getColumn().equals(column)) {
+                && ((AttributeFunction) f).getColumn().equals(column)) {
                 return f;
             }
         }
@@ -155,7 +159,8 @@ public class AppearanceModelImpl implements AppearanceModel {
     }
 
     @Override
-    public Function getNodeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer) {
+    public Function getNodeFunction(Graph graph, GraphFunction graphFunction,
+                                    Class<? extends Transformer> transformer) {
         String id = getNodeId(transformer, graphFunction);
         for (Function f : refreshFunctions(graph).getNodeFunctions()) {
             if (((FunctionImpl) f).getId().equals(id) && f.getTransformer().getClass().equals(transformer)) {
@@ -166,7 +171,8 @@ public class AppearanceModelImpl implements AppearanceModel {
     }
 
     @Override
-    public Function getEdgeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer) {
+    public Function getEdgeFunction(Graph graph, GraphFunction graphFunction,
+                                    Class<? extends Transformer> transformer) {
         String id = getEdgeId(transformer, graphFunction);
         for (Function f : refreshFunctions(graph).getEdgeFunctions()) {
             if (((FunctionImpl) f).getId().equals(id) && f.getTransformer().getClass().equals(transformer)) {
@@ -225,7 +231,7 @@ public class AppearanceModelImpl implements AppearanceModel {
 
             //Check and detroy old
             for (Iterator<Map.Entry<Graph, FunctionsModel>> it = functions.entrySet().iterator();
-                    it.hasNext();) {
+                 it.hasNext(); ) {
                 Map.Entry<Graph, FunctionsModel> entry = it.next();
                 if (entry.getKey().getView().isDestroyed()) {
                     it.remove();
@@ -233,6 +239,122 @@ public class AppearanceModelImpl implements AppearanceModel {
             }
             return m;
         }
+    }
+
+    protected String getIdCol(Column column) {
+        return (AttributeUtils.isNodeColumn(column) ? "node" : "edge") + "_column_" + column.getId();
+    }
+
+    protected String getNodeId(Class<? extends Transformer> transformer, GraphFunction graphFunction) {
+        return "node_" + transformer.getSimpleName() + "_" + graphFunction.getId();
+    }
+
+    protected String getEdgeId(Class<? extends Transformer> transformer, GraphFunction graphFunction) {
+        return "edge_" + transformer.getSimpleName() + "_" + graphFunction.getId();
+    }
+
+    private boolean isPartition(Graph graph, Column column) {
+        if (column.isDynamic()) {
+            if (!column.isNumber()) {
+                return true;
+            }
+            if (TimeMap.class.isAssignableFrom(column.getTypeClass())) {
+                ElementIterable<? extends Element> iterable =
+                    AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
+                for (Element el : iterable) {
+                    TimeMap val = (TimeMap) el.getAttribute(column);
+                    if (val != null) {
+                        Object[] va = val.toValuesArray();
+                        for (Object v : va) {
+                            if (v != null) {
+                                iterable.doBreak();
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        } else if (column.isIndexed()) {
+            if (!column.isNumber()) {
+                return true;
+            }
+            Index index;
+            if (AttributeUtils.isNodeColumn(column)) {
+                index = graphModel.getNodeIndex(graph.getView());
+            } else {
+                index = graphModel.getEdgeIndex(graph.getView());
+            }
+            return index.countValues(column) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isRanking(Graph graph, Column column) {
+        if (column.isDynamic() && column.isNumber()) {
+            ElementIterable<? extends Element> iterable =
+                AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
+            for (Element el : iterable) {
+                if (el.getAttribute(column, graph.getView()) != null) {
+                    iterable.doBreak();
+                    return true;
+                }
+            }
+        } else if (!column.isDynamic() && !column.isArray() && column.isIndexed() && column.isNumber()) {
+            Index index;
+            if (AttributeUtils.isNodeColumn(column)) {
+                index = localScale ? graphModel.getNodeIndex(graph.getView()) : graphModel.getNodeIndex();
+            } else {
+                index = localScale ? graphModel.getEdgeIndex(graph.getView()) : graphModel.getEdgeIndex();
+            }
+            if (index.countValues(column) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected GraphModel getGraphModel() {
+        return graphModel;
+    }
+
+    private Map<Class, TransformerUI> initTransformerUIs() {
+        //Index UIs
+        Map<Class, TransformerUI> uis = new HashMap<>();
+
+        for (TransformerUI ui : Lookup.getDefault().lookupAll(TransformerUI.class)) {
+            Class transformerClass = ui.getTransformerClass();
+            if (transformerClass == null) {
+                throw new NullPointerException("Transformer class can' be null");
+            }
+            if (uis.containsKey(transformerClass)) {
+                throw new RuntimeException("A Transformer can't be attach to multiple TransformerUI");
+            }
+            uis.put(transformerClass, ui);
+        }
+        return uis;
+    }
+
+    private List<Transformer> initNodeTransformers() {
+        List<Transformer> res = new ArrayList<>();
+        for (Transformer transformer : Lookup.getDefault().lookupAll(Transformer.class)) {
+            if (transformer.isNode()) {
+                res.add(transformer);
+            }
+        }
+        return res;
+    }
+
+    private List<Transformer> initEdgeTransformers() {
+        List<Transformer> res = new ArrayList<>();
+        for (Transformer transformer : Lookup.getDefault().lookupAll(Transformer.class)) {
+            if (transformer.isEdge()) {
+                res.add(transformer);
+            }
+        }
+        return res;
     }
 
     private class NodeFunctionsModel extends ElementFunctionsModel<Node> {
@@ -280,7 +402,8 @@ public class AppearanceModelImpl implements AppearanceModel {
                 if (!rankings.containsKey(getIdStr(GraphFunction.NODE_INDEGREE.getId()))) {
                     DirectedGraph directedGraph = (DirectedGraph) graph;
                     rankings.put(getIdStr(GraphFunction.NODE_INDEGREE.getId()), new InDegreeRankingImpl(directedGraph));
-                    rankings.put(getIdStr(GraphFunction.NODE_OUTDEGREE.getId()), new OutDegreeRankingImpl(directedGraph));
+                    rankings
+                        .put(getIdStr(GraphFunction.NODE_OUTDEGREE.getId()), new OutDegreeRankingImpl(directedGraph));
                 }
             } else {
                 rankings.remove(getIdStr(GraphFunction.NODE_INDEGREE.getId()));
@@ -293,7 +416,9 @@ public class AppearanceModelImpl implements AppearanceModel {
                 RankingImpl degreeRanking = rankings.get(getIdStr(GraphFunction.NODE_DEGREE.getId()));
                 if (!graphFunctions.containsKey(degreeId)) {
                     String name = NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.Degree.name");
-                    graphFunctions.put(degreeId, new GraphFunctionImpl(degreeId, name, Node.class, graph, t, getTransformerUI(t), degreeRanking, defaultInterpolator));
+                    graphFunctions.put(degreeId,
+                        new GraphFunctionImpl(degreeId, name, Node.class, graph, t, getTransformerUI(t), degreeRanking,
+                            defaultInterpolator));
                 }
                 degreeRanking.refresh();
 
@@ -304,10 +429,16 @@ public class AppearanceModelImpl implements AppearanceModel {
                 RankingImpl outdegreeRanking = rankings.get(getIdStr(GraphFunction.NODE_OUTDEGREE.getId()));
                 if (indegreeRanking != null && outdegreeRanking != null) {
                     if (!graphFunctions.containsKey(indegreeId)) {
-                        String inDegreeName = NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.InDegree.name");
-                        String outDegreeName = NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.OutDegree.name");
-                        graphFunctions.put(indegreeId, new GraphFunctionImpl(indegreeId, inDegreeName, Node.class, graph, t, getTransformerUI(t), indegreeRanking, defaultInterpolator));
-                        graphFunctions.put(outdegreeId, new GraphFunctionImpl(outdegreeId, outDegreeName, Node.class, graph, t, getTransformerUI(t), outdegreeRanking, defaultInterpolator));
+                        String inDegreeName =
+                            NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.InDegree.name");
+                        String outDegreeName =
+                            NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.OutDegree.name");
+                        graphFunctions.put(indegreeId,
+                            new GraphFunctionImpl(indegreeId, inDegreeName, Node.class, graph, t, getTransformerUI(t),
+                                indegreeRanking, defaultInterpolator));
+                        graphFunctions.put(outdegreeId,
+                            new GraphFunctionImpl(outdegreeId, outDegreeName, Node.class, graph, t, getTransformerUI(t),
+                                outdegreeRanking, defaultInterpolator));
                     }
                     indegreeRanking.refresh();
                     outdegreeRanking.refresh();
@@ -374,7 +505,9 @@ public class AppearanceModelImpl implements AppearanceModel {
                 RankingImpl ranking = rankings.get(getIdStr(GraphFunction.EDGE_WEIGHT.getId()));
                 if (!graphFunctions.containsKey(weightId)) {
                     String name = NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Weight.name");
-                    graphFunctions.put(weightId, new GraphFunctionImpl(weightId, name, Edge.class, graph, t, getTransformerUI(t), ranking, defaultInterpolator));
+                    graphFunctions.put(weightId,
+                        new GraphFunctionImpl(weightId, name, Edge.class, graph, t, getTransformerUI(t), ranking,
+                            defaultInterpolator));
                 }
                 ranking.refresh();
             }
@@ -386,7 +519,8 @@ public class AppearanceModelImpl implements AppearanceModel {
                 if (partition != null) {
                     if (!graphFunctions.containsKey(typeId)) {
                         String name = NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Type.name");
-                        graphFunctions.put(typeId, new GraphFunctionImpl(typeId, name, Edge.class, graph, t, getTransformerUI(t), partition));
+                        graphFunctions.put(typeId,
+                            new GraphFunctionImpl(typeId, name, Edge.class, graph, t, getTransformerUI(t), partition));
                     }
                     partition.refresh();
                 } else {
@@ -494,7 +628,8 @@ public class AppearanceModelImpl implements AppearanceModel {
             }
 
             //Clean
-            for (Iterator<Map.Entry<Column, ColumnObserver>> itr = columnObservers.entrySet().iterator(); itr.hasNext();) {
+            for (Iterator<Map.Entry<Column, ColumnObserver>> itr = columnObservers.entrySet().iterator();
+                 itr.hasNext(); ) {
                 Map.Entry<Column, ColumnObserver> entry = itr.next();
                 if (!columns.contains(entry.getKey())) {
                     rankings.remove(getIdCol(entry.getKey()));
@@ -557,7 +692,9 @@ public class AppearanceModelImpl implements AppearanceModel {
                     if (ranking != null) {
                         String id = getId(t, col);
                         if (!attributeFunctions.containsKey(id)) {
-                            attributeFunctions.put(id, new AttributeFunctionImpl(id, graph, col, t, getTransformerUI(t), ranking, defaultInterpolator));
+                            attributeFunctions.put(id,
+                                new AttributeFunctionImpl(id, graph, col, t, getTransformerUI(t), ranking,
+                                    defaultInterpolator));
                         }
                     }
                 }
@@ -570,7 +707,8 @@ public class AppearanceModelImpl implements AppearanceModel {
                     if (partition != null) {
                         String id = getId(t, col);
                         if (!attributeFunctions.containsKey(id)) {
-                            attributeFunctions.put(id, new AttributeFunctionImpl(id, graph, col, t, getTransformerUI(t), partition));
+                            attributeFunctions
+                                .put(id, new AttributeFunctionImpl(id, graph, col, t, getTransformerUI(t), partition));
                         }
                     }
                 }
@@ -581,7 +719,8 @@ public class AppearanceModelImpl implements AppearanceModel {
             for (Transformer transformer : getTransformers()) {
                 if (transformer instanceof SimpleTransformer) {
                     String id = getId(transformer, "simple");
-                    simpleFunctions.put(id, new SimpleFunctionImpl(id, getElementClass(), graph, transformer, getTransformerUI(transformer)));
+                    simpleFunctions.put(id, new SimpleFunctionImpl(id, getElementClass(), graph, transformer,
+                        getTransformerUI(transformer)));
                 }
             }
         }
@@ -621,121 +760,5 @@ public class AppearanceModelImpl implements AppearanceModel {
         protected String getIdStr(String suffix) {
             return getIdPrefix() + "_" + suffix;
         }
-    }
-
-    protected String getIdCol(Column column) {
-        return (AttributeUtils.isNodeColumn(column) ? "node" : "edge") + "_column_" + column.getId();
-    }
-
-    protected String getNodeId(Class<? extends Transformer> transformer, GraphFunction graphFunction) {
-        return "node_" + transformer.getSimpleName() + "_" + graphFunction.getId();
-    }
-
-    protected String getEdgeId(Class<? extends Transformer> transformer, GraphFunction graphFunction) {
-        return "edge_" + transformer.getSimpleName() + "_" + graphFunction.getId();
-    }
-
-    private boolean isPartition(Graph graph, Column column) {
-        if (column.isDynamic()) {
-            if (!column.isNumber()) {
-                return true;
-            }
-            ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
-            for (Element el : iterable) {
-                TimeMap val = (TimeMap) el.getAttribute(column);
-                if (val != null) {
-                    Object[] va = val.toValuesArray();
-                    for (Object v : va) {
-                        if (v != null) {
-                            iterable.doBreak();
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        } else if (column.isIndexed()) {
-            if (!column.isNumber()) {
-                return true;
-            }
-            Index index;
-            if (AttributeUtils.isNodeColumn(column)) {
-                index = graphModel.getNodeIndex(graph.getView());
-            } else {
-                index = graphModel.getEdgeIndex(graph.getView());
-            }
-            return index.countValues(column) > 0;
-        } else {
-            return false;
-        }
-    }
-
-    private boolean isRanking(Graph graph, Column column) {
-        if (column.isDynamic() && column.isNumber()) {
-            ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
-            for (Element el : iterable) {
-                if (el.getAttribute(column, graph.getView()) != null) {
-                    iterable.doBreak();
-                    return true;
-                }
-            }
-        } else if (!column.isDynamic() && !column.isArray() && column.isIndexed() && column.isNumber()) {
-            Index index;
-            if (AttributeUtils.isNodeColumn(column)) {
-                index = localScale ? graphModel.getNodeIndex(graph.getView()) : graphModel.getNodeIndex();
-            } else {
-                index = localScale ? graphModel.getEdgeIndex(graph.getView()) : graphModel.getEdgeIndex();
-            }
-            if (index.countValues(column) > 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void setLocalScale(boolean localScale) {
-        this.localScale = localScale;
-    }
-
-    protected GraphModel getGraphModel() {
-        return graphModel;
-    }
-
-    private Map<Class, TransformerUI> initTransformerUIs() {
-        //Index UIs
-        Map<Class, TransformerUI> uis = new HashMap<>();
-
-        for (TransformerUI ui : Lookup.getDefault().lookupAll(TransformerUI.class)) {
-            Class transformerClass = ui.getTransformerClass();
-            if (transformerClass == null) {
-                throw new NullPointerException("Transformer class can' be null");
-            }
-            if (uis.containsKey(transformerClass)) {
-                throw new RuntimeException("A Transformer can't be attach to multiple TransformerUI");
-            }
-            uis.put(transformerClass, ui);
-        }
-        return uis;
-    }
-
-    private List<Transformer> initNodeTransformers() {
-        List<Transformer> res = new ArrayList<>();
-        for (Transformer transformer : Lookup.getDefault().lookupAll(Transformer.class)) {
-            if (transformer.isNode()) {
-                res.add(transformer);
-            }
-        }
-        return res;
-    }
-
-    private List<Transformer> initEdgeTransformers() {
-        List<Transformer> res = new ArrayList<>();
-        for (Transformer transformer : Lookup.getDefault().lookupAll(Transformer.class)) {
-            if (transformer.isEdge()) {
-                res.add(transformer);
-            }
-        }
-        return res;
     }
 }

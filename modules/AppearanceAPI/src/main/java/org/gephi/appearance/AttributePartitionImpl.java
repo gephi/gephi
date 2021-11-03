@@ -87,7 +87,30 @@ public class AttributePartitionImpl extends PartitionImpl {
             parts.clear();
             elements = 0;
             ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
-            for (Element el : iterable) {
+
+            if (column.isDynamic()) {
+                refreshDynamic(iterable);
+            } else {
+                refreshNotIndexed(iterable);
+            }
+        }
+    }
+
+    private void refreshNotIndexed(ElementIterable<? extends Element> iterable) {
+        for (Element el : iterable) {
+            Object val = el.getAttribute(column);
+            Integer count = parts.get(val);
+            if(count == null) {
+                count = 0;
+            }
+            parts.put(val, ++count);
+            elements++;
+        }
+    }
+
+    private void refreshDynamic(ElementIterable<? extends Element> iterable) {
+        for (Element el : iterable) {
+            if (TimeMap.class.isAssignableFrom(column.getTypeClass())) {
                 TimeMap val = (TimeMap) el.getAttribute(column);
                 if (val != null) {
                     Object[] va = val.toValuesArray();
@@ -106,14 +129,7 @@ public class AttributePartitionImpl extends PartitionImpl {
 
     @Override
     public Object getValue(Element element, Graph gr) {
-        if (graph != null) {
-            TimeMap val = (TimeMap) element.getAttribute(column);
-            if (val != null) {
-                return val.get(gr.getView().getTimeInterval(), Estimator.FIRST);
-            }
-            return null;
-        }
-        return element.getAttribute(column);
+        return element.getAttribute(column, gr.getView());
     }
 
     @Override
