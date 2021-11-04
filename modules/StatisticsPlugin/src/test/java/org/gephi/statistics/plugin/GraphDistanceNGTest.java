@@ -42,46 +42,22 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
+import junit.framework.TestCase;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.impl.ProjectControllerImpl;
-import org.openide.util.Lookup;
-import static org.testng.Assert.*;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  *
  * @author Anna
  * @author Jonny Wray
  */
-public class GraphDistanceNGTest {
+public class GraphDistanceNGTest extends TestCase {
 
     private static final double TOLERANCE = 0.0001;
-
-    private ProjectController pc;
-
-    @BeforeClass
-    public void setUp() {
-        pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-    }
-
-    @BeforeMethod
-    public void initialize() {
-        pc.newProject();
-    }
-
-    @AfterMethod
-    public void clean() {
-        pc.closeCurrentProject();
-    }
 
     @Test
     public void testOneNodeAvPathLength() {
@@ -210,7 +186,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testDirectedStarOutGraphAvPathLength() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node firstNode = graphModel.factory().newNode("0");
@@ -235,7 +211,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testDirectedSpecial1GraphAvPathLength() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
@@ -348,7 +324,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial1UndirectedGraphDiameter() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -398,7 +374,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial2UndirectedGraphDiameter() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -480,7 +456,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial1DirectedGraphDiameter() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -530,7 +506,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial2DirectedGraphDiameter() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -677,7 +653,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial1UndirectedGraphRadius() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -727,7 +703,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial2UndirectedGraphRadius() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -809,7 +785,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial2DirectedGraphRadius() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1148,7 +1124,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial1UndirectedGraphBetweenness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1202,7 +1178,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial1UndirectedGraphCloseness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1257,7 +1233,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial1UndirectedGraphHarmonicCloseness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1311,7 +1287,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial2UndirectedGraphBetweenness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1371,7 +1347,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial2UndirectedGraphCloseness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1425,7 +1401,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial2UndirectedGraphHarmonicCloseness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1479,7 +1455,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial3UndirectedGraphBetweenness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1535,7 +1511,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial3UndirectedGraphCloseness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1593,7 +1569,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial3UndirectedGraphHarmonicCloseness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1768,7 +1744,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testDirectedStarOutGraphBetweenness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node firstNode = graphModel.factory().newNode("0");
@@ -1799,7 +1775,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testDirectedStarOutGraphCloseness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node firstNode = graphModel.factory().newNode("0");
@@ -1830,7 +1806,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testDirectedStarOutGraphHarmonicCloseness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node firstNode = graphModel.factory().newNode("0");
@@ -1861,7 +1837,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial1DirectedGraphBetweenness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1905,7 +1881,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial1DirectedGraphCloseness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1947,7 +1923,7 @@ public class GraphDistanceNGTest {
 
     @Test
     public void testSpecial1DirectedGraphHarmonicCloseness() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -1990,7 +1966,7 @@ public class GraphDistanceNGTest {
     @Test
     public void testConnectedComponentsUndirectedGraphCloseness() {
         //expected that values are computed separatly for every connected component
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -2027,7 +2003,7 @@ public class GraphDistanceNGTest {
     @Test
     public void testConnectedComponentsUndirectedGraphHarmonicCloseness() {
         //expected that values are computed separatly for every connected component
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");

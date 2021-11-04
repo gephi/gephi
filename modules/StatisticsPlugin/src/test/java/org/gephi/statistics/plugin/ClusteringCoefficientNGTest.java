@@ -5,44 +5,20 @@
 package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
+import junit.framework.TestCase;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.impl.ProjectControllerImpl;
-import org.openide.util.Lookup;
-import static org.testng.Assert.*;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  *
  * @author akharitonova
  */
-public class ClusteringCoefficientNGTest {
-
-    private ProjectController pc;
-
-    @BeforeClass
-    public void setUp() {
-        pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-    }
-
-    @BeforeMethod
-    public void initialize() {
-        pc.newProject();
-    }
-
-    @AfterMethod
-    public void clean() {
-        pc.closeCurrentProject();
-    }
+public class ClusteringCoefficientNGTest extends TestCase {
 
     @Test
     public void testOneNodeClusteringCoefficient() {
@@ -131,7 +107,7 @@ public class ClusteringCoefficientNGTest {
 
     @Test
     public void testSpecial1UndirectedGraphClusteringCoefficient() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -194,7 +170,7 @@ public class ClusteringCoefficientNGTest {
 
     @Test
     public void testSpecial2UndirectedGraphClusteringCoefficient() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -251,7 +227,7 @@ public class ClusteringCoefficientNGTest {
 
     @Test
     public void testSpecial3UndirectedGraphClusteringCoefficient() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -316,7 +292,7 @@ public class ClusteringCoefficientNGTest {
 
     @Test
     public void testSpecial1DirectedGraphClusteringCoefficient() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
 
@@ -359,7 +335,7 @@ public class ClusteringCoefficientNGTest {
 
     @Test
     public void testTriangleDirectedGraphClusteringCoefficient() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
 
@@ -400,7 +376,7 @@ public class ClusteringCoefficientNGTest {
 
     @Test
     public void testSpecial2DirectedGraphClusteringCoefficient() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
 
@@ -443,7 +419,7 @@ public class ClusteringCoefficientNGTest {
 
     @Test
     public void testTriangleNonCompleteDirectedGraphClusteringCoefficient() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
 

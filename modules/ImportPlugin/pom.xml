@@ -67,7 +67,13 @@
             <artifactId>woodstox-core</artifactId><!-- Needed by apache poi -->
             <version>${gephi.woodstox.version}</version>
         </dependency>
-        
+
+        <!-- Test only -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>test-utils</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-processor-plugin</artifactId>

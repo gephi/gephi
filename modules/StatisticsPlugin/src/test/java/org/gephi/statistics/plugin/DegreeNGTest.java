@@ -41,43 +41,19 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.statistics.plugin;
 
+import junit.framework.TestCase;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.impl.ProjectControllerImpl;
-import org.openide.util.Lookup;
-import static org.testng.Assert.*;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  *
  * @author Anna
  */
-public class DegreeNGTest {
-
-    private ProjectController pc;
-
-    @BeforeClass
-    public void setUp() {
-        pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-    }
-
-    @BeforeMethod
-    public void initialize() {
-        pc.newProject();
-    }
-
-    @AfterMethod
-    public void clean() {
-        pc.closeCurrentProject();
-    }
+public class DegreeNGTest extends TestCase {
 
     @Test
     public void testOneNodeDegree() {
@@ -199,7 +175,7 @@ public class DegreeNGTest {
 
     @Test
     public void testDirectedStarOutGraphDegree() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node firstNode = graphModel.factory().newNode("0");

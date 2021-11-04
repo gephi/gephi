@@ -41,7 +41,6 @@ Portions Copyrighted 2017 Gephi Consortium.
  */
 package org.gephi.io.importer.impl;
 
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -60,11 +59,13 @@ import org.gephi.io.processor.plugin.MergeProcessor;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.openide.util.Lookup;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  *
@@ -82,11 +83,11 @@ public class ImportNGTest {
 
     private static final double EPS = 0.001;
 
-    @BeforeMethod
-    public void setup(Method method) {
-        String testName = method.getName();
-        System.out.println("Starting test: " + testName);
+    @Rule
+    public TestName testName = new TestName();
 
+    @Before
+    public void setup() {
         projectController.newProject();
         workspace = projectController.getCurrentWorkspace();
 
@@ -99,7 +100,7 @@ public class ImportNGTest {
         container3.setReport(new Report());
     }
 
-    @AfterMethod
+    @After
     public void teardown() {
         projectController.closeCurrentProject();
         workspace = null;
@@ -225,11 +226,11 @@ public class ImportNGTest {
 
         Edge edge21 = graph.getEdge(graph.getNode("2"), graph.getNode("1"));
         Assert.assertNotNull(edge21);
-        Assert.assertEquals(edge21.getWeight(), 1.0);
+        Assert.assertEquals(edge21.getWeight(), 1.0, 0);
 
         Edge edge22 = graph.getEdge(graph.getNode("2"), graph.getNode("2"));
         Assert.assertNotNull(edge22);
-        Assert.assertEquals(edge22.getWeight(), 1.5);
+        Assert.assertEquals(edge22.getWeight(), 1.5, 0);
 
         return graph;
     }
@@ -242,7 +243,7 @@ public class ImportNGTest {
 
         Edge edge12 = graph.getEdge(graph.getNode("1"), graph.getNode("2"));
         Assert.assertNotNull(edge12);
-        Assert.assertEquals(edge12.getWeight(), 6.2);
+        Assert.assertEquals(edge12.getWeight(), 6.2, 0);
     }
 
     private void checkWeightsAveraged(boolean multipleContainers) {
@@ -264,7 +265,7 @@ public class ImportNGTest {
 
         Edge edge12 = graph.getEdge(graph.getNode("1"), graph.getNode("2"));
         Assert.assertNotNull(edge12);
-        Assert.assertEquals(edge12.getWeight(), 4.2);
+        Assert.assertEquals(edge12.getWeight(), 4.2, 0);
     }
 
     private void checkWeightsMinKept(boolean multipleContainers) {
@@ -275,7 +276,7 @@ public class ImportNGTest {
 
         Edge edge12 = graph.getEdge(graph.getNode("1"), graph.getNode("2"));
         Assert.assertNotNull(edge12);
-        Assert.assertEquals(edge12.getWeight(), 1.0);
+        Assert.assertEquals(edge12.getWeight(), 1.0, 0);
     }
 
     private void checkWeightsFirstKept(boolean multipleContainers) {
@@ -286,7 +287,7 @@ public class ImportNGTest {
 
         Edge edge12 = graph.getEdge(graph.getNode("1"), graph.getNode("2"));
         Assert.assertNotNull(edge12);
-        Assert.assertEquals(edge12.getWeight(), 1.0);
+        Assert.assertEquals(edge12.getWeight(), 1.0, 0);
     }
 
     private void checkWeightsLastKept(boolean multipleContainers) {
@@ -297,7 +298,7 @@ public class ImportNGTest {
 
         Edge edge12 = graph.getEdge(graph.getNode("1"), graph.getNode("2"));
         Assert.assertNotNull(edge12);
-        Assert.assertEquals(edge12.getWeight(), 4.2);
+        Assert.assertEquals(edge12.getWeight(), 4.2, 0);
     }
 
     private void checkWeightsNotMerged(boolean multipleContainers) {

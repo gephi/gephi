@@ -156,7 +156,6 @@
         <gephi.javac.fork>true</gephi.javac.fork>
         
         <!-- Testing settings -->
-        <gephi.testng.version>7.4.0</gephi.testng.version>
         <gephi.test.maxMemory>768M</gephi.test.maxMemory>
         <gephi.test.reportsDirectory>${project.build.directory}/surefire-reports/plain</gephi.test.reportsDirectory>
         <gephi.test.failureIgnore>${testFailureIgnore}</gephi.test.failureIgnore>
@@ -787,16 +786,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
-    <dependencies>
-        <!-- TestNG dependency -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${gephi.testng.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
     <build>
         

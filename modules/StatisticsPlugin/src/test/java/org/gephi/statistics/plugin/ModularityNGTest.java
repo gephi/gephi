@@ -42,42 +42,19 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
+import junit.framework.TestCase;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.impl.ProjectControllerImpl;
-import org.openide.util.Lookup;
-import static org.testng.Assert.*;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
  * @author Anna
  */
-public class ModularityNGTest {
-
-    private ProjectController pc;
-
-    @BeforeClass
-    public void setUp() {
-        pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-    }
-
-    @BeforeMethod
-    public void initialize() {
-        pc.newProject();
-    }
-
-    @AfterMethod
-    public void clean() {
-        pc.closeCurrentProject();
-    }
+public class ModularityNGTest extends TestCase {
 
     @Test
     public void testTwoConnectedNodesModularity() {
@@ -229,7 +206,7 @@ public class ModularityNGTest {
 
     @Test
     public void testCyclicWithWeightsGraphModularity() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
 
         Node node1 = graphModel.factory().newNode("0");
@@ -297,6 +274,6 @@ public class ModularityNGTest {
 
         assertEquals(class1, class2);
         assertEquals(class7, class8);
-        assertNotEquals(class4, class5);
+        Assert.assertNotEquals(class4, class5);
     }
 }

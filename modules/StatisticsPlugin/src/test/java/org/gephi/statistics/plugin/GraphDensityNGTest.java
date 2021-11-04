@@ -41,45 +41,21 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.statistics.plugin;
 
+import junit.framework.TestCase;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.impl.ProjectControllerImpl;
-import org.openide.util.Lookup;
-import static org.testng.Assert.*;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  *
  * @author Anna
  */
-public class GraphDensityNGTest {
-
-    private ProjectController pc;
-
-    @BeforeClass
-    public void setUp() {
-        pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-    }
-
-    @BeforeMethod
-    public void initialize() {
-        pc.newProject();
-    }
-
-    @AfterMethod
-    public void clean() {
-        pc.closeCurrentProject();
-    }
-
+public class GraphDensityNGTest extends TestCase {
+    
     @Test
     public void testOneNodeDensity() {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
@@ -127,7 +103,7 @@ public class GraphDensityNGTest {
 
     @Test
     public void testSelfLoopNodeDensity() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node currentNode = graphModel.factory().newNode("0");
         undirectedGraph.addNode(currentNode);

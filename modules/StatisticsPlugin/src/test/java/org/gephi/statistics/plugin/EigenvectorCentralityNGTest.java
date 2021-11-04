@@ -42,43 +42,20 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
+import junit.framework.TestCase;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.impl.ProjectControllerImpl;
-import org.openide.util.Lookup;
-import static org.testng.Assert.*;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
  * @author Anna
  */
-public class EigenvectorCentralityNGTest {
-
-    private ProjectController pc;
-
-    @BeforeClass
-    public void setUp() {
-        pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-    }
-
-    @BeforeMethod
-    public void initialize() {
-        pc.newProject();
-    }
-
-    @AfterMethod
-    public void clean() {
-        pc.closeCurrentProject();
-    }
+public class EigenvectorCentralityNGTest extends TestCase {
 
     @Test
     public void testOneNodeEigenvectorCentrality() {
@@ -180,7 +157,7 @@ public class EigenvectorCentralityNGTest {
 
     @Test
     public void testSpecial1UndirectedGraphEigenvectorCentrlity() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
 
         Node node1 = graphModel.factory().newNode("0");
@@ -225,13 +202,13 @@ public class EigenvectorCentralityNGTest {
         double ec3 = centralities[index3];
 
         assertEquals(ec2, ec3);
-        assertNotEquals(ec1, ec2);
+        Assert.assertNotEquals(ec1, ec2);
         assertEquals(ec3, 1.0);
     }
 
     @Test
     public void testSpecial2UndirectedGraphEigenvectorCentrlity() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
 
         Node node1 = graphModel.factory().newNode("0");
@@ -284,7 +261,7 @@ public class EigenvectorCentralityNGTest {
 
     @Test
     public void testSpecial3UndirectedGraphEigenvectorCentrlity() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
 
         Node node1 = graphModel.factory().newNode("0");
@@ -350,7 +327,7 @@ public class EigenvectorCentralityNGTest {
 
     @Test
     public void testSpecial1DirectedEigenvectorCentrality() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
 
@@ -412,7 +389,7 @@ public class EigenvectorCentralityNGTest {
 
     @Test
     public void testDirectedStarOutEigenvectorCentrality() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node firstNode = graphModel.factory().newNode("0");

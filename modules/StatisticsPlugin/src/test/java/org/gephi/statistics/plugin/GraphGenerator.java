@@ -56,7 +56,7 @@ import org.openide.util.Lookup;
 public class GraphGenerator {
 
     public static GraphModel generateNullUndirectedGraph(int n) {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         for (int i = 0; i < n; i++) {
             Node currentNode = graphModel.factory().newNode(((Integer) i).toString());
@@ -66,7 +66,7 @@ public class GraphGenerator {
     }
 
     public static GraphModel generateSelfLoopUndirectedGraph(int n) {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         for (int i = 0; i < n; i++) {
             Node currentNode = graphModel.factory().newNode(((Integer) i).toString());
@@ -78,7 +78,7 @@ public class GraphGenerator {
     }
 
     public static GraphModel generateCompleteUndirectedGraph(int n) {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node[] nodes = new Node[n];
         for (int i = 0; i < n; i++) {
@@ -96,7 +96,7 @@ public class GraphGenerator {
     }
 
     public static GraphModel generatePathUndirectedGraph(int n) {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         if (n <= 0) {
             return graphModel;
@@ -115,7 +115,7 @@ public class GraphGenerator {
     }
 
     public static GraphModel generateCyclicUndirectedGraph(int n) {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         if (n <= 0) {
             return graphModel;
@@ -137,7 +137,7 @@ public class GraphGenerator {
 
     //generates graph from n+1 nodes
     public static GraphModel generateStarUndirectedGraph(int n) {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node firstNode = graphModel.factory().newNode("0");
         undirectedGraph.addNode(firstNode);
@@ -151,7 +151,7 @@ public class GraphGenerator {
     }
 
     public static GraphModel generateNullDirectedGraph(int n) {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         for (int i = 0; i < n; i++) {
             Node currentNode = graphModel.factory().newNode(((Integer) i).toString());
@@ -161,7 +161,7 @@ public class GraphGenerator {
     }
 
     public static GraphModel generateSelfLoopDirectedGraph(int n) {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         for (int i = 0; i < n; i++) {
             Node currentNode = graphModel.factory().newNode(((Integer) i).toString());
@@ -173,7 +173,7 @@ public class GraphGenerator {
     }
 
     public static GraphModel generateCompleteDirectedGraph(int n) {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node[] nodes = new Node[n];
         for (int i = 0; i < n; i++) {
@@ -193,7 +193,7 @@ public class GraphGenerator {
     }
 
     public static GraphModel generatePathDirectedGraph(int n) {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         if (n <= 0) {
             return graphModel;
@@ -212,7 +212,7 @@ public class GraphGenerator {
     }
 
     public static GraphModel generateCyclicDirectedGraph(int n) {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         if (n <= 0) {
             return graphModel;

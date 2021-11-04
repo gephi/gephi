@@ -41,49 +41,25 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.statistics.plugin;
 
-import java.util.Arrays;
 import java.util.HashMap;
+import junit.framework.TestCase;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.impl.ProjectControllerImpl;
-import org.openide.util.Lookup;
-import org.testng.Assert;
-import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
  * @author Anna
  */
-public class HitsNGTest {
-
-    private ProjectController pc;
+public class HitsNGTest extends TestCase {
+    
     private static final double EPSILON = 1e-4;
-
-    @BeforeClass
-    public void setUp() {
-        pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-    }
-
-    @BeforeMethod
-    public void initialize() {
-        pc.newProject();
-    }
-
-    @AfterMethod
-    public void clean() {
-        pc.closeCurrentProject();
-    }
-
+    
     @Test
     public void testOneNodeHits() {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
@@ -217,7 +193,7 @@ public class HitsNGTest {
 
     @Test
     public void testGraphWithSelfLoopsHits() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
@@ -262,7 +238,7 @@ public class HitsNGTest {
 
     @Test
     public void testDirectedSpecial1GraphHits() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
@@ -324,7 +300,7 @@ public class HitsNGTest {
 
     @Test
     public void testDirectedStarOutGraphHits() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node firstNode = graphModel.factory().newNode("0");
@@ -366,7 +342,7 @@ public class HitsNGTest {
 
     @Test
     public void testDirectedSpecial2GraphHits() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
@@ -432,7 +408,7 @@ public class HitsNGTest {
 
     @Test
     public void testDirectedSpecial3GraphHits() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
@@ -489,7 +465,7 @@ public class HitsNGTest {
 
     @Test
     public void testExampleDirectedGraph() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
 
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");

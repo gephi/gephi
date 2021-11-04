@@ -43,44 +43,21 @@ package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import junit.framework.TestCase;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.impl.ProjectControllerImpl;
-import org.openide.util.Lookup;
-import static org.testng.Assert.*;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
+import org.junit.Assert;
 import org.testng.annotations.Test;
 
 /**
  *
  * @author Anna
  */
-public class ConnectedComponentsNGTest {
-
-    private ProjectController pc;
-
-    @BeforeClass
-    public void setUp() {
-        pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-    }
-
-    @BeforeMethod
-    public void initialize() {
-        pc.newProject();
-    }
-
-    @AfterMethod
-    public void clean() {
-        pc.closeCurrentProject();
-    }
-
+public class ConnectedComponentsNGTest extends TestCase {
+    
     @Test
     public void testComputeOneNodeWeaklyConnectedComponents() {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
@@ -96,7 +73,7 @@ public class ConnectedComponentsNGTest {
     
     @Test
     public void testComputeSelfLoopNodeAndIsolatedNodeWeaklyConnectedComponents() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -169,7 +146,7 @@ public class ConnectedComponentsNGTest {
 
     @Test
     public void testSpecial1UndirectedGraphConnectedComponents() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -208,7 +185,7 @@ public class ConnectedComponentsNGTest {
 
     @Test
     public void testSpecial2UndirectedGraphConnectedComponents() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -254,7 +231,7 @@ public class ConnectedComponentsNGTest {
 
         assertEquals(components.size(), 4);
         assertEquals(componentNumber4, componentNumber7);
-        assertNotEquals(componentNumber3, componentNumber8);
+        Assert.assertNotEquals(componentNumber3, componentNumber8);
     }
 
     @Test
@@ -281,7 +258,7 @@ public class ConnectedComponentsNGTest {
 
     @Test
     public void testSpecial1DirectedGraphConnectedComponents() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -320,7 +297,7 @@ public class ConnectedComponentsNGTest {
 
     @Test
     public void testSpecial2DirectedGraphConnectedComponents() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -361,12 +338,12 @@ public class ConnectedComponentsNGTest {
         assertEquals(stronglyConnectedComponents.size(), 3);
         assertEquals(weeklyConnectedComponents.size(), 1);
         assertEquals(componentNumber3, componentNumber5);
-        assertNotEquals(componentNumber1, componentNumber4);
+        Assert.assertNotEquals(componentNumber1, componentNumber4);
     }
 
     @Test
     public void testSpecial3DirectedGraphConnectedComponents() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -414,7 +391,7 @@ public class ConnectedComponentsNGTest {
 
     @Test
     public void testSpecial4DirectedGraphConnectedComponents() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");
@@ -461,12 +438,12 @@ public class ConnectedComponentsNGTest {
         int componentNumber5 = c.getComponentNumber(stronglyConnectedComponents, node5);
 
         assertEquals(stronglyConnectedComponents.size(), 2);
-        assertNotEquals(componentNumber1, componentNumber5);
+        Assert.assertNotEquals(componentNumber1, componentNumber5);
     }
 
     @Test
     public void testSpecial2UndirectedGraphGiantComponent() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
+        GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         Node node1 = graphModel.factory().newNode("0");
         Node node2 = graphModel.factory().newNode("1");

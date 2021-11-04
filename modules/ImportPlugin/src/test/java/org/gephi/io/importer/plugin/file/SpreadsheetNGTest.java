@@ -47,9 +47,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import org.gephi.graph.api.Column;
@@ -70,13 +72,14 @@ import org.gephi.io.importer.plugin.file.spreadsheet.process.SpreadsheetGeneralC
 import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.testng.reporters.Files;
 
 /**
  *
@@ -88,18 +91,17 @@ public class SpreadsheetNGTest {
     private final ImportController importController = Lookup.getDefault().lookup(ImportController.class);
     private final GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
     private Workspace workspace;
-    private String testName = null;
 
-    @BeforeMethod
-    public void setup(Method method) {
-        testName = method.getName();
-        System.out.println("Starting test: " + testName);
+    @Rule
+    public TestName testName = new TestName();
 
+    @Before
+    public void setup() {
         projectController.newProject();
         workspace = projectController.getCurrentWorkspace();
     }
 
-    @AfterMethod
+    @After
     public void teardown() {
         projectController.closeCurrentProject();
         workspace = null;
@@ -552,7 +554,7 @@ public class SpreadsheetNGTest {
     }
 
     private void checkEdgesSpreadsheet(boolean ignoreId) throws IOException {
-        File tmpFile = File.createTempFile(testName, ".csv");
+        File tmpFile = File.createTempFile(testName.getMethodName(), ".csv");
         Writer writer = new OutputStreamWriter(new FileOutputStream(tmpFile), "UTF-8");
 
         ExporterSpreadsheet exporter = new ExporterSpreadsheet();
@@ -573,14 +575,20 @@ public class SpreadsheetNGTest {
 
         exporter.execute();
 
-        String result = Files.readFile(tmpFile).trim().replace("\r", "");
-        String expected = Files.readFile(SpreadsheetNGTest.class.getResourceAsStream("/org/gephi/io/importer/plugin/file/spreadsheet/expected/" + testName.replace("_AutoDetectImporter", "") + "_edges.csv")).trim();
+        String result =  new String(Files.readAllBytes(tmpFile.toPath())).trim().replace("\r", "");
+        String expected = null;
+        try {
+            expected = new String(Files.readAllBytes(Paths
+                .get(getClass().getResource("/org/gephi/io/importer/plugin/file/spreadsheet/expected/" + testName.getMethodName().replace("_AutoDetectImporter", "") + "_edges.csv").toURI()))).trim();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
         Assert.assertEquals(result, expected);
     }
 
     private void checkNodesSpreadsheet() throws IOException {
-        File tmpFile = File.createTempFile(testName, ".csv");
+        File tmpFile = File.createTempFile(testName.getMethodName(), ".csv");
         Writer writer = new OutputStreamWriter(new FileOutputStream(tmpFile), "UTF-8");
 
         ExporterSpreadsheet exporter = new ExporterSpreadsheet();
@@ -590,9 +598,15 @@ public class SpreadsheetNGTest {
 
         exporter.execute();
 
-        String result = Files.readFile(tmpFile).trim().replace("\r", "");
+        String result = new String(Files.readAllBytes(tmpFile.toPath())).trim().replace("\r", "");
 
-        String expected = Files.readFile(SpreadsheetNGTest.class.getResourceAsStream("/org/gephi/io/importer/plugin/file/spreadsheet/expected/" + testName + "_nodes.csv")).trim();
+        String expected = null;
+        try {
+            expected = new String(Files.readAllBytes(Paths
+                .get(getClass().getResource("/org/gephi/io/importer/plugin/file/spreadsheet/expected/" + testName.getMethodName() + "_nodes.csv").toURI()))).trim();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
         Assert.assertEquals(result, expected);
     }
