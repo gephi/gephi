@@ -71,7 +71,7 @@ import org.openide.util.Lookup;
  *
  * @author Eduardo Ramos
  */
-public class ImportNGTest {
+public class ImportTest {
 
     private final ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
     private final ImportController importController = Lookup.getDefault().lookup(ImportController.class);

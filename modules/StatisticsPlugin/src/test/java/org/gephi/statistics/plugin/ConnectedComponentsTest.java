@@ -50,13 +50,13 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
 import org.junit.Assert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  *
  * @author Anna
  */
-public class ConnectedComponentsNGTest extends TestCase {
+public class ConnectedComponentsTest extends TestCase {
     
     @Test
     public void testComputeOneNodeWeaklyConnectedComponents() {

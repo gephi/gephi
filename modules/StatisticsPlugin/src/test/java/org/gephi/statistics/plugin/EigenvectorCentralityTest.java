@@ -55,7 +55,7 @@ import org.junit.Test;
  *
  * @author Anna
  */
-public class EigenvectorCentralityNGTest extends TestCase {
+public class EigenvectorCentralityTest extends TestCase {
 
     @Test
     public void testOneNodeEigenvectorCentrality() {

@@ -53,7 +53,7 @@ import org.junit.Test;
  *
  * @author Anna
  */
-public class DegreeNGTest extends TestCase {
+public class WeightedDegreeTest extends TestCase {
 
     @Test
     public void testOneNodeDegree() {
@@ -61,9 +61,9 @@ public class DegreeNGTest extends TestCase {
         Graph graph = graphModel.getGraph();
         Node n = graph.getNode("0");
 
-        Degree d = new Degree();
-        int degree = d.calculateDegree(graph, n);
-        assertEquals(degree, 0);
+        WeightedDegree d = new WeightedDegree();
+        d.execute(graph);
+        assertEquals(n.getAttribute(WeightedDegree.WDEGREE), 0.0);
     }
 
     @Test
@@ -71,10 +71,11 @@ public class DegreeNGTest extends TestCase {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(5);
         Graph graph = graphModel.getGraph();
         Node n = graph.getNode("1");
-        Degree d = new Degree();
-        int degree = d.calculateDegree(graph, n);
-        double avDegree = d.calculateAverageDegree(graph, false, false);
-        assertEquals(degree, 0);
+        WeightedDegree d = new WeightedDegree();
+        d.execute(graph);
+        double degree = (Double) n.getAttribute(WeightedDegree.WDEGREE);
+        double avDegree = d.getAverageDegree();
+        assertEquals(degree, 0.0);
         assertEquals(avDegree, 0.0);
     }
 
@@ -83,9 +84,9 @@ public class DegreeNGTest extends TestCase {
         GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(5);
         Graph graph = graphModel.getGraph();
         Node n = graph.getNode("2");
-        Degree d = new Degree();
-        int degree = d.calculateDegree(graph, n);
-        assertEquals(degree, 4);
+        WeightedDegree d = new WeightedDegree();
+        d.execute(graph);
+        assertEquals(n.getAttribute(WeightedDegree.WDEGREE), 4.0);
     }
 
     @Test
@@ -93,9 +94,9 @@ public class DegreeNGTest extends TestCase {
         GraphModel graphModel = GraphGenerator.generateSelfLoopUndirectedGraph(1);
         Graph graph = graphModel.getGraph();
         Node n = graph.getNode("0");
-        Degree d = new Degree();
-        int degree = d.calculateDegree(graph, n);
-        assertEquals(degree, 2);
+        WeightedDegree d = new WeightedDegree();
+        d.execute(graph);
+        assertEquals(n.getAttribute(WeightedDegree.WDEGREE), 2.0);
     }
 
     @Test
@@ -103,10 +104,11 @@ public class DegreeNGTest extends TestCase {
         GraphModel graphModel = GraphGenerator.generateSelfLoopDirectedGraph(1);
         DirectedGraph graph = graphModel.getDirectedGraph();
         Node n = graph.getNode("0");
-        Degree d = new Degree();
-        assertEquals(d.calculateDegree(graph, n), 2);
-        assertEquals(d.calculateInDegree(graph, n), 1);
-        assertEquals(d.calculateOutDegree(graph, n), 1);
+        WeightedDegree d = new WeightedDegree();
+        d.execute(graph);
+        assertEquals(n.getAttribute(WeightedDegree.WDEGREE), 2.0);
+        assertEquals(n.getAttribute(WeightedDegree.WINDEGREE), 1.0);
+        assertEquals(n.getAttribute(WeightedDegree.WOUTDEGREE), 1.0);
     }
 
     @Test
@@ -115,14 +117,15 @@ public class DegreeNGTest extends TestCase {
         Graph graph = graphModel.getGraph();
         Node n1 = graph.getNode("0");
         Node n2 = graph.getNode("1");
-        Degree d = new Degree();
-        int degree1 = d.calculateDegree(graph, n1);
-        int degree2 = d.calculateDegree(graph, n2);
-        double avDegree = d.calculateAverageDegree(graph, false, false);
+        WeightedDegree d = new WeightedDegree();
+        d.execute(graph);
+        double degree1 = (Double) n1.getAttribute(WeightedDegree.WDEGREE);
+        double degree2 = (Double) n2.getAttribute(WeightedDegree.WDEGREE);
+        double avDegree = d.getAverageDegree();
         double expectedAvDegree = 1.6667;
         double diff = Math.abs(avDegree - expectedAvDegree);
-        assertEquals(degree1, 5);
-        assertEquals(degree2, 1);
+        assertEquals(degree1, 5.0);
+        assertEquals(degree2, 1.0);
         assertTrue(diff < 0.001);
     }
 
@@ -131,10 +134,11 @@ public class DegreeNGTest extends TestCase {
         GraphModel graphModel = GraphGenerator.generateCyclicUndirectedGraph(5);
         Graph graph = graphModel.getGraph();
         Node n = graph.getNode("3");
-        Degree d = new Degree();
-        int degree = d.calculateDegree(graph, n);
-        double avDegree = d.calculateAverageDegree(graph, false, false);
-        assertEquals(degree, 2);
+        WeightedDegree d = new WeightedDegree();
+        d.execute(graph);
+        double degree = (Double) n.getAttribute(WeightedDegree.WDEGREE);
+        double avDegree = d.getAverageDegree();
+        assertEquals(degree, 2.0);
         assertEquals(avDegree, 2.0);
     }
 
@@ -144,14 +148,15 @@ public class DegreeNGTest extends TestCase {
         DirectedGraph graph = graphModel.getDirectedGraph();
         Node n1 = graph.getNode("0");
         Node n2 = graph.getNode("1");
-        Degree d = new Degree();
-        int inDegree1 = d.calculateInDegree(graph, n1);
-        int inDegree2 = d.calculateInDegree(graph, n2);
-        int outDegree1 = d.calculateOutDegree(graph, n1);
-        double avDegree = d.calculateAverageDegree(graph, true, false);
-        assertEquals(inDegree1, 0);
-        assertEquals(inDegree2, 1);
-        assertEquals(outDegree1, 1);
+        WeightedDegree d = new WeightedDegree();
+        d.execute(graph);
+        double inDegree1 = (Double) n1.getAttribute(WeightedDegree.WINDEGREE);
+        double inDegree2 = (Double) n2.getAttribute(WeightedDegree.WINDEGREE);
+        double outDegree1 = (Double) n1.getAttribute(WeightedDegree.WOUTDEGREE);
+        double avDegree = d.getAverageDegree();
+        assertEquals(inDegree1, 0.0);
+        assertEquals(inDegree2, 1.0);
+        assertEquals(outDegree1, 1.0);
         assertEquals(avDegree, 0.5);
     }
 
@@ -162,14 +167,15 @@ public class DegreeNGTest extends TestCase {
         Node n1 = graph.getNode("0");
         Node n3 = graph.getNode("2");
         Node n5 = graph.getNode("4");
-        Degree d = new Degree();
-        int inDegree3 = d.calculateInDegree(graph, n3);
-        int degree1 = d.calculateDegree(graph, n1);
-        int outDegree5 = d.calculateOutDegree(graph, n5);
-        double avDegree = d.calculateAverageDegree(graph, true, false);
-        assertEquals(inDegree3, 1);
-        assertEquals(degree1, 2);
-        assertEquals(outDegree5, 1);
+        WeightedDegree d = new WeightedDegree();
+        d.execute(graph);
+        double inDegree3 = (Double) n3.getAttribute(WeightedDegree.WINDEGREE);
+        double degree1 = (Double) n1.getAttribute(WeightedDegree.WDEGREE);
+        double outDegree5 = (Double) n5.getAttribute(WeightedDegree.WOUTDEGREE);
+        double avDegree = d.getAverageDegree();
+        assertEquals(inDegree3, 1.0);
+        assertEquals(degree1, 2.0);
+        assertEquals(outDegree5, 1.0);
         assertEquals(avDegree, 1.0);
     }
 
@@ -190,13 +196,14 @@ public class DegreeNGTest extends TestCase {
         DirectedGraph graph = graphModel.getDirectedGraph();
         Node n1 = graph.getNode("0");
         Node n3 = graph.getNode("2");
-        Degree d = new Degree();
-        int inDegree1 = d.calculateInDegree(graph, n1);
-        int outDegree1 = d.calculateOutDegree(graph, n1);
-        int degree3 = d.calculateDegree(graph, n3);
+        WeightedDegree d = new WeightedDegree();
+        d.execute(graph);
+        double inDegree1 = (Double) n1.getAttribute(WeightedDegree.WINDEGREE);
+        double outDegree1 = (Double) n1.getAttribute(WeightedDegree.WOUTDEGREE);
+        double degree3 = (Double) n3.getAttribute(WeightedDegree.WDEGREE);
 
-        assertEquals(inDegree1, 0);
-        assertEquals(outDegree1, 5);
-        assertEquals(degree3, 1);
+        assertEquals(inDegree1, 0.0);
+        assertEquals(outDegree1, 5.0);
+        assertEquals(degree3, 1.0);
     }
 }

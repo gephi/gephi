@@ -54,7 +54,7 @@ import org.junit.Test;
  *
  * @author Anna
  */
-public class GraphDensityNGTest extends TestCase {
+public class GraphDensityTest extends TestCase {
     
     @Test
     public void testOneNodeDensity() {

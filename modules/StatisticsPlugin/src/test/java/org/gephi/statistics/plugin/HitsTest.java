@@ -56,7 +56,7 @@ import org.junit.Test;
  *
  * @author Anna
  */
-public class HitsNGTest extends TestCase {
+public class HitsTest extends TestCase {
     
     private static final double EPSILON = 1e-4;
     

@@ -54,7 +54,7 @@ import org.junit.Test;
  *
  * @author Anna
  */
-public class PageRankNGTest extends TestCase {
+public class PageRankTest extends TestCase {
 
     @Test
     public void testOneNodePageRank() {

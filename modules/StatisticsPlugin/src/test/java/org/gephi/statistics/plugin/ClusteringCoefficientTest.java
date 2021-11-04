@@ -18,7 +18,7 @@ import org.junit.Test;
  *
  * @author akharitonova
  */
-public class ClusteringCoefficientNGTest extends TestCase {
+public class ClusteringCoefficientTest extends TestCase {
 
     @Test
     public void testOneNodeClusteringCoefficient() {

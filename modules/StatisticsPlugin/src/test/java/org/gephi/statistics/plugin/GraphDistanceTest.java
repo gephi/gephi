@@ -55,7 +55,7 @@ import org.junit.Test;
  * @author Anna
  * @author Jonny Wray
  */
-public class GraphDistanceNGTest extends TestCase {
+public class GraphDistanceTest extends TestCase {
 
     private static final double TOLERANCE = 0.0001;
 

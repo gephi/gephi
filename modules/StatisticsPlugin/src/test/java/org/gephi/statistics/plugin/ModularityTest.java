@@ -54,7 +54,7 @@ import org.junit.Test;
  *
  * @author Anna
  */
-public class ModularityNGTest extends TestCase {
+public class ModularityTest extends TestCase {
 
     @Test
     public void testTwoConnectedNodesModularity() {
