@@ -50,9 +50,9 @@ Consult the [**Javadoc**](http://gephi.github.io/gephi/0.9.2/apidocs/index.html)
 
 ### Requirements
 
-- Java JDK 8 (or later)
+- Java JDK 11 (or later)
 
-- [Apache Maven](http://maven.apache.org/) version 3.2.2 or later
+- [Apache Maven](http://maven.apache.org/) version 3.6.3 or later
 
 ### Checkout and Build the sources
 
