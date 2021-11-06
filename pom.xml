@@ -10,11 +10,11 @@
     <name>gephi</name>
     
     <!-- Project Metadata -->
-    <url>http://gephi.org</url>
+    <url>https://gephi.org</url>
     <description>Gephi - The Open Graph Viz Platform</description>
     <organization>
         <name>Gephi</name>
-        <url>http://gephi.org</url>
+        <url>https://gephi.org</url>
     </organization>
     <inceptionYear>2007</inceptionYear>
     
@@ -22,12 +22,12 @@
     <licenses>
         <license>
             <name>CDDL 1.0</name>
-            <url>http://www.opensource.org/licenses/CDDL-1.0</url>
+            <url>https://www.opensource.org/licenses/CDDL-1.0</url>
             <comments>CDDL License 1.0</comments>
         </license>
         <license>
             <name>GPL v3</name>
-            <url>http://www.opensource.org/licenses/GPL-3.0</url>
+            <url>https://www.opensource.org/licenses/GPL-3.0</url>
             <comments>GPL v3 License</comments>
         </license>
     </licenses>
@@ -158,7 +158,6 @@
         <!-- Testing settings -->
         <gephi.test.maxMemory>768M</gephi.test.maxMemory>
         <gephi.test.reportsDirectory>${project.build.directory}/surefire-reports/plain</gephi.test.reportsDirectory>
-        <gephi.test.failureIgnore>${testFailureIgnore}</gephi.test.failureIgnore>
         
         <!-- NBM Plugin settings -->
         <brandingToken>gephi</brandingToken>
@@ -190,6 +189,9 @@
         
         <!-- GitHub site-plugin authentication -->
         <github.global.server>github</github.global.server>
+
+        <!-- Run Maven with '-Dkeystorepassword=' to specify the passphrase -->
+        <keystore.password/>
         
         <!--==== Dependency Versions ==================================================================================-->
         
@@ -1001,6 +1003,13 @@
                     <installerOsSolaris>false</installerOsSolaris>
                     <installerOsMacosx>false</installerOsMacosx>
                 </configuration>
+                <executions>
+                    <!-- Disable default-branding as it's only needed for the branding module -->
+                    <execution>
+                        <id>default-branding</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Override default-site -->
@@ -1082,7 +1091,7 @@
                         <artifactId>nbm-maven-plugin</artifactId>
                         <extensions>true</extensions>
                         <configuration>
-                            <!-- Keystore location. Run Maven with '-Dkeystorepassword=' to specify the passphrase -->
+                            <!-- Keystore location -->
                             <keystore>src/keystore/keystore.ks</keystore>
                             <keystorealias>gephi</keystorealias>
                             <keystorepassword>${keystore.password}</keystorepassword>

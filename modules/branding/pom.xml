@@ -70,6 +70,23 @@
                     </execution> 
                 </executions> 
             </plugin>
+
+            <!-- NBM branding -->
+            <plugin>
+                <groupId>org.apache.netbeans.utilities</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <brandingToken>${brandingToken}</brandingToken>
+                    <cluster>${brandingToken}</cluster>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-branding</id>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     
