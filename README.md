@@ -60,9 +60,9 @@ Consult the [**Javadoc**](http://gephi.github.io/gephi/0.9.2/apidocs/index.html)
 
         git clone git@github.com:username/gephi.git
 
-- Run the following command or [open the project in Netbeans](https://github.com/gephi/gephi/wiki/How-to-build-Gephi)
+- Run the following command or [open the project in an IDE](https://github.com/gephi/gephi/wiki/How-to-build-Gephi)
 
-        mvn clean install
+        mvn -T 4 clean install
 
 - Once built, one can test running Gephi
 

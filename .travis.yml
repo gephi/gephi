@@ -57,8 +57,8 @@ before_script:
   - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server></servers><profiles><profile><id>deployment</id><properties><keystore.password>\${env.KEYSTORE_PASSWD}</keystore.password><gpg.passphrase>\${env.GPG_PASSPHRASE}</gpg.passphrase></properties></profile></profiles></settings>" > ~/settings.xml
 
 script:
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.defaultKeyring=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring="$TRAVIS_BUILD_DIR/src/travis/pubring.gpg" -Dgpg.secretKeyring="$TRAVIS_BUILD_DIR/src/travis/secretring.gpg" clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,replace-windows-icon,create-exe,create-targz;fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mvn --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.executable=gpg1 -Dgpg.defaultKeyring=false -Dgpg.useAgent=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring="$TRAVIS_BUILD_DIR/src/travis/pubring.gpg" -Dgpg.secretKeyring="$TRAVIS_BUILD_DIR/src/travis/secretring.gpg" clean deploy -P deployment,create-dmg;fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mvn -T 4 --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.defaultKeyring=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring="$TRAVIS_BUILD_DIR/src/travis/pubring.gpg" -Dgpg.secretKeyring="$TRAVIS_BUILD_DIR/src/travis/secretring.gpg" clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,replace-windows-icon,create-exe,create-targz;fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mvn -T 4 --batch-mode --settings ~/settings.xml -Djava.awt.headless=true -Dgpg.executable=gpg1 -Dgpg.defaultKeyring=false -Dgpg.useAgent=false -Dgpg-keyname=1481F619 -Dgpg.publicKeyring="$TRAVIS_BUILD_DIR/src/travis/pubring.gpg" -Dgpg.secretKeyring="$TRAVIS_BUILD_DIR/src/travis/secretring.gpg" clean deploy -P deployment,create-dmg;fi
 
 after_script:
   # Clean OS X keychain
