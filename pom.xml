@@ -129,7 +129,7 @@
         <gephi.build.timestamp>${maven.build.timestamp}</gephi.build.timestamp>
         
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gephi.maven.requiredVersion>3.2.2</gephi.maven.requiredVersion>
+        <gephi.maven.requiredVersion>3.6.3</gephi.maven.requiredVersion>
         <netbeans.run.params.ide/>
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
         
@@ -146,11 +146,8 @@
         <gephi.modules.specification.version>0.9.3</gephi.modules.specification.version>
 
         <!-- Java compilation settings -->
-        <gephi.javac.source>1.8</gephi.javac.source>
-        <gephi.javac.target>1.8</gephi.javac.target>
+        <gephi.javac.release>11</gephi.javac.release>
         <gephi.javac.xlint>-Xlint:all</gephi.javac.xlint>
-        <gephi.javac.debug>true</gephi.javac.debug>
-        <gephi.javac.optimize>true</gephi.javac.optimize>
         <gephi.javac.showDeprecation>true</gephi.javac.showDeprecation>
         <gephi.javac.showWarnings>true</gephi.javac.showWarnings>
         <gephi.javac.fork>true</gephi.javac.fork>
@@ -826,12 +823,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${gephi.maven-jar-plugin.version}</version>
-                    <configuration>
-                        <archive>
-                            <!-- required since nbm-maven-plugin 3.0-->
-                            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                        </archive>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -929,10 +920,7 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <debug>${gephi.javac.debug}</debug>
-                    <optimize>${gephi.javac.optimize}</optimize>
-                    <source>${gephi.javac.source}</source>
-                    <target>${gephi.javac.target}</target>
+                    <release>${gephi.javac.release}</release>
                     <showDeprecation>${gephi.javac.showDeprecation}</showDeprecation>
                     <showWarnings>${gephi.javac.showWarnings}</showWarnings>
                     <fork>${gephi.javac.fork}</fork>
@@ -976,6 +964,18 @@
                         </configuration> 
                     </execution> 
                 </executions> 
+            </plugin>
+
+            <!-- Jar plugin, required for NBM -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <!-- required since nbm-maven-plugin 3.0-->
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
             </plugin>
             
             <!-- NBM options -->
