@@ -19,6 +19,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: mvn clean install
+      - run: mvn nbm:cluster-app
+        working-directory: modules/application
       - if: matrix.os == 'ubuntu'
-        run: mvn nbm:cluster-app nbm:run-platform
+        run: mvn nbm:run-platform
         working-directory: modules/application
