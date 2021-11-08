@@ -1,5 +1,9 @@
-name: "Build"
-on: [push, pull_request]
+name: "Build & Test"
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron:  '0 6 * * 1' # Run every monday at 06:00 UTC
 
 jobs:
   build:
@@ -19,8 +23,12 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: mvn clean install
-      - run: mvn nbm:cluster-app
-        working-directory: modules/application
       - if: matrix.os == 'ubuntu'
-        run: mvn nbm:run-platform
+        run: mvn nbm:cluster-app nbm:run-platform
         working-directory: modules/application
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Windows build
+          path: |
+            '**/gephi*.exe'
+            'modules/application/target/gephi/**/*'
