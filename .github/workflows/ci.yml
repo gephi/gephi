@@ -28,6 +28,7 @@ jobs:
       - if: matrix.os == 'ubuntu'
         run: mvn nbm:run-platform
         working-directory: modules/application
+      - if: github.repository == 'EwoutH/gephi' && (github.head_ref == 'refs/heads/main' || github.ref_type == 'tag')
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }} build
