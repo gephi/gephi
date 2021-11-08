@@ -8,7 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, windows, macos]
-        node: '16'
+        node: ['16']
         include:
           - os: ubuntu
             node: '17'
