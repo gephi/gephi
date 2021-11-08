@@ -28,9 +28,9 @@ jobs:
       - if: matrix.os == 'ubuntu'
         run: mvn nbm:run-platform
         working-directory: modules/application
-      - uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2
         with:
-          name: Windows build
+          name: ${{ matrix.os }} build
           path: |
-            '**/gephi*.exe'
-            'modules/application/target/gephi/**/*'
+            **/gephi*.exe
+            modules/application/target/gephi/**/*.*
