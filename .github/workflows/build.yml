@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-11]
+        os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -42,6 +42,14 @@ jobs:
       - name: Build and publish package Linux
         run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,create-targz
         if: runner.os == 'Linux'
+        env:
+          OSSRH_USER: ${{ secrets.OSSRH_USER }}
+          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          
+      - name: Build and publish package Windows
+        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dgephi.innosetup.path="C:/Program Files (x86)/Inno Setup 6" -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,replace-windows-icon,create-exe
+        if: runner.os == 'Windows'
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
