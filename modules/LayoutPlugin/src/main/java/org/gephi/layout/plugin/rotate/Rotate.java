@@ -59,7 +59,7 @@ public class Rotate implements LayoutBuilder {
     private final RotateLayoutUI ui = new RotateLayoutUI();
 
     @Override
-    public Layout buildLayout() {
+    public RotateLayout buildLayout() {
         return new RotateLayout(this, 90);
     }
 

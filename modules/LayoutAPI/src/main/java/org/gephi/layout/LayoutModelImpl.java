@@ -221,6 +221,10 @@ public class LayoutModelImpl implements LayoutModel {
         }
     }
 
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
     private static class LayoutPropertyKey {
 
         private volatile int hashCode = 0;      //Cache hashcode
