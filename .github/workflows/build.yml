@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -25,10 +25,36 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE 
       
-      - name: Build and publish package
+      - name: Install MacOS requirements
+        run: brew install gnupg@1.4
+        if: runner.os == 'macOS'
+        
+      - name: Apple Developer Certificates
+        run: |
+          gpg1 --output src/travis/certs/dev_id.cer --passphrase "$ENCRYPTION_SECRET" --decrypt src/travis/certs/dev_id.cer.enc
+          gpg1 --output src/travis/certs/dev_id.p12 --passphrase "$ENCRYPTION_SECRET" --decrypt src/travis/certs/dev_id.p12.enc
+          ./src/travis/add-key.sh
+        if: runner.os == 'macOS'
+        env:
+          ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
+      
+      - name: Build and publish package Linux
         run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,create-targz
         if: runner.os == 'Linux'
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      
+      - name: Build and publish package MacOS
+        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,create-dmg
+        if: runner.os == 'macOS'
+        env:
+          OSSRH_USER: ${{ secrets.OSSRH_USER }}
+          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          
+      - name: CleanUp MacOS keychain
+        run: ./src/travis/remove-key.sh;fi
+        if: runner.os == 'macOS'
+
