@@ -187,7 +187,7 @@
         
         <!-- Installers settings -->
         <gephi.menu.app.name>Gephi ${project.version}</gephi.menu.app.name>
-        <gephi.innosetup.path>C:/Program Files (x86)/Inno Setup 5</gephi.innosetup.path>
+        <gephi.innosetup.path>C:/Program Files (x86)/Inno Setup 6</gephi.innosetup.path>
         
         <!-- GitHub site-plugin authentication -->
         <github.global.server>github</github.global.server>
