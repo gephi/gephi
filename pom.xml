@@ -821,6 +821,10 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${gephi.maven-compiler-plugin.version}</version>
+                <configuration>
+                	<fork>true</fork>
+                	<useIncrementalCompilation>true</useIncrementalCompilation>
+                </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -944,6 +948,8 @@
                     <compilerArgument>
                         ${gephi.javac.xlint}
                     </compilerArgument>
+                	<fork>true</fork>
+                	<useIncrementalCompilation>true</useIncrementalCompilation>
                 </configuration>
             </plugin>
  
