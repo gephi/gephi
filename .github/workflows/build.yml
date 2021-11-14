@@ -48,7 +48,7 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           
       - name: Build and publish package Windows
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,replace-windows-icon,create-exe
+        run: mvn -T 4 --batch-mode '-Djava.awt.headless=true' '-Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }}' clean deploy -P deployment,replace-windows-icon,create-exe
         if: runner.os == 'Windows'
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
