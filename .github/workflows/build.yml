@@ -31,9 +31,9 @@ jobs:
         
       - name: Apple Developer Certificates
         run: |
-          gpg1 --output src/travis/certs/dev_id.cer --passphrase "$ENCRYPTION_SECRET" --decrypt src/travis/certs/dev_id.cer.enc
-          gpg1 --output src/travis/certs/dev_id.p12 --passphrase "$ENCRYPTION_SECRET" --decrypt src/travis/certs/dev_id.p12.enc
-          ./src/travis/add-key.sh
+          gpg1 --output .github/workflows/build/certs/dev_id.cer --passphrase "$ENCRYPTION_SECRET" --decrypt .github/workflows/build/certs/dev_id.cer.enc
+          gpg1 --output .github/workflows/build/certs/dev_id.p12 --passphrase "$ENCRYPTION_SECRET" --decrypt .github/workflows/build/certs/dev_id.p12.enc
+          ./.github/workflows/build/add-key.sh
         if: runner.os == 'macOS'
         env:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
@@ -64,6 +64,6 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           
       - name: CleanUp MacOS keychain
-        run: ./src/travis/remove-key.sh
+        run: ./.github/workflows/build/remove-key.sh
         if: runner.os == 'macOS'
 

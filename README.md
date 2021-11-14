@@ -1,6 +1,6 @@
 # Gephi - The Open Graph Viz Platform
 
-[![Build Status](https://app.travis-ci.com/gephi/gephi.svg?branch=master)](https://app.travis-ci.com/github/gephi/gephi)
+[![build](https://github.com/gephi/gephi/actions/workflows/build.yml/badge.svg)](https://github.com/gephi/gephi/actions/workflows/build.yml)
 [![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.9.2/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.9.2)
 [![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.9.1/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.9.1)
 
