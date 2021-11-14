@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-11]
+        os: [ubuntu-latest, macos-11]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -56,6 +56,6 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           
       - name: CleanUp MacOS keychain
-        run: ./src/travis/remove-key.sh;fi
+        run: ./src/travis/remove-key.sh
         if: runner.os == 'macOS'
 
