@@ -23,6 +23,7 @@
         <skipReplaceWindowsIcon>true</skipReplaceWindowsIcon>
         <skipCreateExe>true</skipCreateExe>
         <skipCreateDmg>true</skipCreateDmg>
+        <skipAppleNotarization>true</skipAppleNotarization>
     </properties>
 
     <!-- Dependencies -->
@@ -820,6 +821,42 @@
                                     </target>
                                 </configuration>
                             </execution>
+
+                            <!-- Notarize DMG using Apple's notarization service (requires Xcode 13) -->
+                            <execution>
+                                <id>notarize-dmg</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${skipAppleNotarization}</skip>
+                                    <target>
+                                        <!-- Send DMG file to Apple's notarization service -->
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="xcrun">
+                                            <arg value="notarytool"/>
+                                            <arg value="submit"/>
+                                            <arg value="${project.artifactId}-${project.version}.dmg"/>
+                                            <arg value="--apple-id"/>
+                                            <arg value="${gephi.apple.notarization.username}"/>
+                                            <arg value="--password"/>
+                                            <arg value="${gephi.apple.notarization.password}"/>
+                                            <arg value="--team-id"/>
+                                            <arg value="${gephi.apple.notarization.teamId}"/>
+                                            <arg value="--wait"/>
+                                            <arg value="--timeout"/>
+                                            <arg value="${gephi.apple.notarization.timeout}"/>
+                                        </exec>
+
+                                        <!-- Staple the notarization ticket to the DMG bundle -->
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="xcrun">
+                                            <arg value="stapler"/>
+                                            <arg value="staple"/>
+                                            <arg value="${project.artifactId}-${project.version}.dmg"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                     
@@ -1038,6 +1075,14 @@
             <id>create-dmg</id>
             <properties>
                 <skipCreateDmg>false</skipCreateDmg>
+            </properties>
+        </profile>
+
+        <!-- Profile used along with deployment and create-dmg to notarize the bundle -->
+        <profile>
+            <id>notarize-dmg</id>
+            <properties>
+                <skipAppleNotarization>false</skipAppleNotarization>
             </properties>
         </profile>
 

@@ -191,6 +191,12 @@
         
         <!-- GitHub site-plugin authentication -->
         <github.global.server>github</github.global.server>
+
+        <!-- Apple Notarization settings -->
+        <gephi.apple.notarization.username/>
+        <gephi.apple.notarization.password/>
+        <gephi.apple.notarization.teamId/>
+        <gephi.apple.notarization.timeout>10m</gephi.apple.notarization.timeout>
         
         <!--==== Dependency Versions ==================================================================================-->
         

@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-11, windows-latest]
+        os: [macos-11]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -56,14 +56,16 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       
       - name: Build and publish package MacOS
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,create-dmg
+        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} -Dgephi.apple.notarization.username=$APPLE_USERNAME -Dgephi.apple.notarization.password=$APPLE_PASSWORD -Dgephi.apple.notarization.teamId=$APPLE_TEAM_ID clean deploy -P deployment,create-dmg,notarize-dmg
         if: runner.os == 'macOS'
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           
       - name: CleanUp MacOS keychain
         run: ./.github/workflows/build/remove-key.sh
         if: runner.os == 'macOS'
-
