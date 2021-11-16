@@ -1,3 +1,3 @@
 #!/bin/sh
 security delete-keychain gephi-build.keychain
-rm -rf src/travis/certs
+rm -rf .github/workflows/build/certs
