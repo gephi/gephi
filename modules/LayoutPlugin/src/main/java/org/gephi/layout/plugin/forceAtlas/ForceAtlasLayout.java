@@ -41,6 +41,10 @@
  */
 package org.gephi.layout.plugin.forceAtlas;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import static java.sql.DriverManager.println;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
@@ -104,12 +108,32 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
         ensureSafeLayoutNodePositions(graphModel);
     }
 
-    private double getEdgeWeight(Edge edge, boolean isDynamicWeight, Interval interval) {
+    private double getEdgeWeight(Edge edge, boolean isDynamicWeight, Interval interval, double minWeight) {
         if (isDynamicWeight) {
-            return edge.getWeight(interval);
+            return edge.getWeight(interval)-(minWeight - 1);
         } else {
-            return edge.getWeight();
+            return edge.getWeight() -(minWeight - 1);
         }
+    }
+    
+    
+    private double getMinWeight(Edge[] edges) {
+        
+        double minWeight = 999999;
+         for(Edge e : edges){
+            if(minWeight > e.getWeight())
+            {
+                minWeight = e.getWeight();
+            }
+
+        }
+         
+        //Negative Check
+        if(minWeight > 0)
+            minWeight = 0;
+        
+        return minWeight;
+   
     }
 
     @Override
@@ -119,10 +143,12 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
         boolean isDynamicWeight = graphModel.getEdgeTable().getColumn("weight").isDynamic();
         Interval interval = graph.getView().getTimeInterval();
 
+        
+
         try {
             Node[] nodes = graph.getNodes().toArray();
             Edge[] edges = graph.getEdges().toArray();
-
+ 
             for (Node n : nodes) {
                 if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceVectorNodeLayoutData)) {
                     n.setLayoutData(new ForceVectorNodeLayoutData());
@@ -155,21 +181,44 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                 }
             }
             // attraction
+            
+            double minWeight = getMinWeight(edges);
+
+            
             if (isAdjustSizes()) {
                 if (isOutboundAttractionDistribution()) {
+                    
+                    
+                    
+                    //FileOutputStream out = new FileOutputStream("/Users/astray/Desktop/file.txt");
+                    //String data = "";
+                
+                 
+                    
                     for (Edge e : edges) {
                         Node nf = e.getSource();
                         Node nt = e.getTarget();
                         double bonus = (nf.isFixed() || nt.isFixed()) ? (100) : (1);
-                        bonus *= getEdgeWeight(e, isDynamicWeight, interval);
+                        bonus *= getEdgeWeight(e, isDynamicWeight, interval, minWeight);
+                        
+                        //data +=  "Edge: "+e.getId().toString()+ " Weight: "+bonus+"\n";
+                        
+                    
+                        
                         ForceVectorUtils.fcBiAttractor_noCollide(nf, nt, bonus * getAttractionStrength() / (1 + graph.getDegree(nf)));
                     }
+
+                    //byte[] b = data.getBytes();
+                    //out.write(b);                    
+                    //out.close();
+                    
                 } else {
                     for (Edge e : edges) {
                         Node nf = e.getSource();
                         Node nt = e.getTarget();
                         double bonus = (nf.isFixed() || nt.isFixed()) ? (100) : (1);
-                        bonus *= getEdgeWeight(e, isDynamicWeight, interval);
+                        //ADD HERE
+                        bonus *= getEdgeWeight(e, isDynamicWeight, interval, minWeight);
                         ForceVectorUtils.fcBiAttractor_noCollide(nf, nt, bonus * getAttractionStrength());
                     }
                 }
@@ -179,7 +228,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                         Node nf = e.getSource();
                         Node nt = e.getTarget();
                         double bonus = (nf.isFixed() || nt.isFixed()) ? (100) : (1);
-                        bonus *= getEdgeWeight(e, isDynamicWeight, interval);
+                        bonus *= getEdgeWeight(e, isDynamicWeight, interval, minWeight);
                         ForceVectorUtils.fcBiAttractor(nf, nt, bonus * getAttractionStrength() / (1 + graph.getDegree(nf)));
                     }
                 } else {
@@ -187,7 +236,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                         Node nf = e.getSource();
                         Node nt = e.getTarget();
                         double bonus = (nf.isFixed() || nt.isFixed()) ? (100) : (1);
-                        bonus *= getEdgeWeight(e, isDynamicWeight, interval);
+                        bonus *= getEdgeWeight(e, isDynamicWeight, interval, minWeight);
                         ForceVectorUtils.fcBiAttractor(nf, nt, bonus * getAttractionStrength());
                     }
                 }
@@ -238,6 +287,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                     n.setY(y);
                 }
             }
+
         } finally {
             graph.readUnlockAll();
         }
