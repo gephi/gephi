@@ -94,6 +94,10 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         return lookup;
     }
 
+    public String getName() {
+        return lookup.lookup(ProjectInformationImpl.class).getName();
+    }
+
     public int nextWorkspaceId() {
         return workspaceIds.getAndIncrement();
     }

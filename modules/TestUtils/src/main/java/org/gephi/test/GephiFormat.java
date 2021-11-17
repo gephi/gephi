@@ -10,6 +10,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.gephi.workspace.impl.WorkspaceImpl;
@@ -22,15 +23,17 @@ public class GephiFormat {
         Assert.assertNotNull(provider.getIdentifier());
 
         String xmlString = toString(provider, workspace);
-        Workspace newWorkspace = fromString(provider, xmlString);
+        Workspace newWorkspace = fromString(provider, xmlString, workspace.getLookup().lookup(GraphModel.class));
         String xmlStringAgain = toString(provider, newWorkspace);
 
         Assert.assertEquals(xmlString, xmlStringAgain);
     }
 
-    private static Workspace fromString(WorkspaceXMLPersistenceProvider provider, String xmlString)
+    private static Workspace fromString(WorkspaceXMLPersistenceProvider provider, String xmlString, GraphModel graphModel)
         throws XMLStreamException, IOException {
         Workspace destinationWorkspace = new WorkspaceImpl(null, 0);
+        destinationWorkspace.add(graphModel);
+
         StringReader stringReader = new StringReader(xmlString);
         XMLStreamReader reader = newXMLReader(stringReader);
         provider.readXML(reader, destinationWorkspace);
@@ -56,7 +59,7 @@ public class GephiFormat {
         return stringWriter.toString();
     }
 
-    private static XMLStreamReader newXMLReader(Reader reader) throws XMLStreamException {
+    public static XMLStreamReader newXMLReader(Reader reader) throws XMLStreamException {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
             inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
@@ -64,7 +67,7 @@ public class GephiFormat {
         return inputFactory.createXMLStreamReader(reader);
     }
 
-    private static XMLStreamWriter newXMLWriter(Writer writer) throws XMLStreamException {
+    public static XMLStreamWriter newXMLWriter(Writer writer) throws XMLStreamException {
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
         outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
         return outputFactory.createXMLStreamWriter(writer);

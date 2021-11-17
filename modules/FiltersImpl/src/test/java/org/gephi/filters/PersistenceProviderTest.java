@@ -51,6 +51,18 @@ public class PersistenceProviderTest {
     }
 
     @Test
+    public void testFilterRename() throws Exception {
+        FilterModelImpl filterModel = Utils.newFilterModel();
+        EgoBuilder.EgoFilter egoFilter = new EgoBuilder.EgoFilter();
+        egoFilter.setPattern("test");
+
+        FilterQueryImpl query = new FilterQueryImpl(null, egoFilter);
+        query.setName("* Foo");
+        filterModel.addFirst(query);
+        GephiFormat.testXMLPersistenceProvider(new FilterModelPersistenceProvider(), filterModel.getWorkspace());
+    }
+
+    @Test
     public void testAttributeFilter() throws Exception {
         FilterModelImpl filterModel = Utils.newFilterModelWithGraph();
 
@@ -61,6 +73,7 @@ public class PersistenceProviderTest {
 
         FilterQueryImpl query = new FilterQueryImpl(builder, filter);
         filterModel.addFirst(query);
+        new FilterProcessor().init(filter, filterModel.getGraphModel().getGraph());
         GephiFormat.testXMLPersistenceProvider(new FilterModelPersistenceProvider(), filterModel.getWorkspace());
     }
 }

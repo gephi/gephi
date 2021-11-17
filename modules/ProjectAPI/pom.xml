@@ -32,6 +32,13 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>utils-longtask</artifactId>
         </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>test-utils</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

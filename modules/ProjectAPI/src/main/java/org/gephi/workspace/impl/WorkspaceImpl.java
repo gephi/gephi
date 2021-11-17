@@ -100,6 +100,10 @@ public class WorkspaceImpl implements Workspace {
         return id;
     }
 
+    public String getName() {
+        return lookup.lookup(WorkspaceInformationImpl.class).getName();
+    }
+
     @Override
     public String toString() {
         WorkspaceInformationImpl information = lookup.lookup(WorkspaceInformationImpl.class);
