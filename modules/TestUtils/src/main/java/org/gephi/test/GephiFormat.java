@@ -32,7 +32,9 @@ public class GephiFormat {
     private static Workspace fromString(WorkspaceXMLPersistenceProvider provider, String xmlString, GraphModel graphModel)
         throws XMLStreamException, IOException {
         Workspace destinationWorkspace = new WorkspaceImpl(null, 0);
-        destinationWorkspace.add(graphModel);
+        if(graphModel != null) {
+            destinationWorkspace.add(graphModel);
+        }
 
         StringReader stringReader = new StringReader(xmlString);
         XMLStreamReader reader = newXMLReader(stringReader);
