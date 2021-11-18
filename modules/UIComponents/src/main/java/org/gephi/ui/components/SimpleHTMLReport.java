@@ -158,6 +158,7 @@ class ReportSelection implements Transferable {
 public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
     private String mHTMLReport;
+    private String mCSVReport;
 
     public SimpleHTMLReport(java.awt.Frame parent, String html) {
         super(parent, false);
@@ -173,6 +174,13 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         pack();
         setLocationRelativeTo(parent);
         setVisible(true);
+        exportCSVButton.setVisible(false);
+        
+    }
+    
+    public void setCSV(String csvString) {
+        mCSVReport = csvString;
+        exportCSVButton.setVisible(true);
     }
 
     /**
@@ -189,6 +197,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         printButton = new javax.swing.JButton();
         copyButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
+        exportCSVButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.title")); // NOI18N
@@ -197,7 +206,6 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
         closeButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.closeButton.text")); // NOI18N
         closeButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeButtonActionPerformed(evt);
             }
@@ -209,7 +217,6 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         printButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/print.png"))); // NOI18N
         printButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.printButton.text")); // NOI18N
         printButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 printButtonActionPerformed(evt);
             }
@@ -219,7 +226,6 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/copy.gif"))); // NOI18N
         copyButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.copyButton.text")); // NOI18N
         copyButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 copyButtonActionPerformed(evt);
             }
@@ -229,12 +235,25 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/save.png"))); // NOI18N
         saveButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.saveButton.text")); // NOI18N
         saveButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveButtonActionPerformed(evt);
             }
         });
         jToolBar1.add(saveButton);
+        saveButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.saveButton.AccessibleContext.accessibleDescription")); // NOI18N
+
+        exportCSVButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/save.png"))); // NOI18N
+        exportCSVButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.exportCSVButton.text")); // NOI18N
+        exportCSVButton.setMaximumSize(new java.awt.Dimension(56, 20));
+        exportCSVButton.setMinimumSize(new java.awt.Dimension(56, 20));
+        exportCSVButton.setPreferredSize(new java.awt.Dimension(56, 20));
+        exportCSVButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportCSVButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(exportCSVButton);
+        exportCSVButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.exportCSVButton.AccessibleContext.accessibleName")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -242,16 +261,16 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(closeButton)
                 .addContainerGap())
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(closeButton)
@@ -307,6 +326,27 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
+    private boolean saveReportCSV(File destinationFolder) throws IOException {
+        if (!destinationFolder.exists()) {
+            destinationFolder.mkdir();
+        }else{
+            if(!destinationFolder.isDirectory()){
+                return false;
+            }
+        }
+
+        //Write CSV file
+        File csvFile = new File(destinationFolder, "report.csv");
+        FileOutputStream outputStream = new FileOutputStream(csvFile);
+        OutputStreamWriter out = new OutputStreamWriter(outputStream, "UTF-8");
+        out.append(this.mCSVReport);
+        out.flush();
+        out.close();
+        outputStream.close();
+
+        return true;
+    }
+    
     private boolean saveReport(String html, File destinationFolder) throws IOException {
         if (!destinationFolder.exists()) {
             destinationFolder.mkdir();
@@ -363,10 +403,43 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         dispose(); // TODO add your handling code here:
     }//GEN-LAST:event_closeButtonActionPerformed
 
+    private void exportCSVButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportCSVButtonActionPerformed
+        
+        final String csv = this.mCSVReport;
+
+        final String path = NbPreferences.forModule(SimpleHTMLReport.class).get(LAST_PATH, null);
+        JFileChooser fileChooser = new JFileChooser(path);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int result = fileChooser.showSaveDialog(WindowManager.getDefault().getMainWindow());
+        if (result == JFileChooser.APPROVE_OPTION) {
+            final File destinationFolder = fileChooser.getSelectedFile();
+            NbPreferences.forModule(SimpleHTMLReport.class).put(LAST_PATH, destinationFolder.getAbsolutePath());
+            Thread saveReportThread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        if (saveReportCSV(destinationFolder)) {
+                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveSuccess", destinationFolder.getName()));
+                        }else{
+                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveError", destinationFolder.getName()));
+                        }
+                    } catch (IOException e) {
+                        Exceptions.printStackTrace(e);
+                    }
+                }
+            }, "SaveReportTask");
+            saveReportThread.start();
+
+        }
+        
+    }//GEN-LAST:event_exportCSVButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
     private javax.swing.JButton copyButton;
     private javax.swing.JEditorPane displayPane;
+    private javax.swing.JButton exportCSVButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton printButton;

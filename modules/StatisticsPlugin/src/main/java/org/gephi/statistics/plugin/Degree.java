@@ -52,6 +52,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
+import org.gephi.utils.CSVStringBuilder;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -224,6 +225,34 @@ public class Degree implements Statistics, LongTask {
         degreeDist.put(degree, degreeDist.get(degree) + 1);
     }
 
+    @Override
+    public String getCSV() {
+       
+        CSVStringBuilder csv = new CSVStringBuilder();
+        
+        if (isDirected) {
+            XYSeries dSeries = ChartUtils.createXYSeries(degreeDist, "Degree Distribution");
+            XYSeries idSeries = ChartUtils.createXYSeries(inDegreeDist, "In-Degree Distribution");
+            XYSeries odSeries = ChartUtils.createXYSeries(outDegreeDist, "Out-Degree Distribution");
+
+            double[][] dSeriesData = dSeries.toArray();
+            double[][] idSeriesData = idSeries.toArray();
+            double[][] odSeriesData = odSeries.toArray();
+            
+            csv.addTable(dSeriesData, "Value", "Count", "Degree Distribution");
+            csv.addTable(idSeriesData, "Value", "Count", "In-Degree Distribution");
+            csv.addTable(odSeriesData, "Value", "Count", "Out-Degree Distribution");
+        }
+        else {
+            XYSeries dSeries = ChartUtils.createXYSeries(degreeDist, "Degree Distribution");
+            double[][] dSeriesData = dSeries.toArray();
+            csv.addTable(dSeriesData, "Value", "Count", "Degree Distribution");
+        }
+        
+        return csv.getCSV();
+        
+    }
+    
     /**
      *
      * @return

@@ -51,6 +51,7 @@ import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Interval;
 import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.spi.DynamicStatistics;
+import org.gephi.utils.CSVStringBuilder;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
@@ -78,6 +79,21 @@ public class DynamicNbEdges implements DynamicStatistics {
         this.counts = new HashMap<>();
     }
 
+    @Override
+    public String getCSV() {
+        
+        CSVStringBuilder csv = new CSVStringBuilder();
+        
+        XYSeries dSeries = ChartUtils.createXYSeries(counts, "Nb Edges Time Series");
+
+        double[][] dSeriesData = dSeries.toArray();
+        
+        csv.addTable(dSeriesData, "Time", "# Edges", "Nb Edges Time Series");
+        
+        return csv.getCSV();
+        
+    }
+    
     @Override
     public String getReport() {
         //Time series

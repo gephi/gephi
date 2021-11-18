@@ -257,12 +257,15 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
     private void showReport() {
         final String report = currentModel.getReport(statisticsUI.getStatisticsClass());
+        final String csv = currentModel.getCSV(statisticsUI.getStatisticsClass());
+        
         if (report != null) {
             SwingUtilities.invokeLater(new Runnable() {
 
                 @Override
                 public void run() {
                     SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), report);
+                    dialog.setCSV(csv);
                 }
             });
         }

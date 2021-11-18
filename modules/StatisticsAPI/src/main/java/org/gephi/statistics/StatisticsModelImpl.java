@@ -74,18 +74,29 @@ public class StatisticsModelImpl implements StatisticsModel {
 
     //Model  
     private final Map<Class, String> reportMap;
+    private final Map<Class, String> csvMap;
 
     public StatisticsModelImpl() {
         reportMap = new HashMap<>();
+        csvMap = new HashMap<>();
     }
 
     public void addReport(Statistics statistics) {
         reportMap.put(statistics.getClass(), statistics.getReport());
     }
+    
+    public void addCSV(Statistics statistics) {
+        csvMap.put(statistics.getClass(), statistics.getCSV());
+    }
 
     @Override
     public String getReport(Class<? extends Statistics> statisticsClass) {
         return reportMap.get(statisticsClass);
+    }
+    
+    @Override
+    public String getCSV(Class<? extends Statistics> statisticsClass) {
+        return csvMap.get(statisticsClass);
     }
 
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {

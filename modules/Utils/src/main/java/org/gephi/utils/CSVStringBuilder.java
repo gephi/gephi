@@ -1,7 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Patick J. McSweeney <pjmcswee@syr.edu>,
-          Mathieu Bastian <mathieu.bastian@gephi.org>
+Authors : Alex Boboc <alexgboboc@gmail.com>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -40,39 +39,37 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
-package org.gephi.statistics.spi;
+package org.gephi.utils;
 
 
-import org.gephi.graph.api.GraphModel;
-
-/**
- * Define a Statistics/Metrics execution task, that performs analysis and write results
- * as new attribute columns and/or HTML report.
- *
- * @author Patrick J. McSweeney, Mathieu Bastian
- * @see StatisticsBuilder
- */
-public interface Statistics {
-
-    /**
-     * Executes the statistics algorithm.
-     * <p>
-     * It is preferable to work on <b>visible</b> graphs, to be synchronized with the
-     * visualization.
-     * @param graphModel The graph model
-     */
-    public void execute(GraphModel graphModel);
-
-    /**
-     * Returns an HTML string that displays the statistics result. Can contains
-     * complex HTML snippets and images.
-     * @return An HTML string that displays the results for this Statistics
-     */
-    public String getReport();
+public class CSVStringBuilder {
     
-    /**
-     * Returns a CSV string containing similar information to HTML report.
-     * @return A CSV string representing this Statistics
-    */
-    public String getCSV();
+    private String csv = "";
+    private int tableCount = 0;
+    
+    public void addTable(double[][] data, String xAxis, String yAxis, String title) {
+        
+        csv += title +
+                "\n,\n" +
+                xAxis + "," + yAxis +
+                "\n";
+        
+        int entries = data[0].length;
+        
+        for (int i = 0; i < entries; i++) {
+            csv += data[0][i] + "," + data[1][i] + "\n";
+        }
+        
+        csv += "\n";
+        
+    }
+    
+    public String getCSV() {
+        return csv;
+    }
+    
+    public int getNumberOfTables() {
+        return tableCount;
+    }
+    
 }

@@ -57,6 +57,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
+import org.gephi.utils.CSVStringBuilder;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -681,6 +682,34 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             return;
         }
         node.setAttribute(clusteringColumn, nodeClusteringCoefficient);
+    }
+    
+    @Override
+    public String getCSV() {
+        
+        CSVStringBuilder csv = new CSVStringBuilder();
+        
+        // Distribution of values
+        Map<Double, Integer> dist = new HashMap<>();
+        for (int i = 0; i < N; i++) {
+            Double d = nodeClustering[i];
+            if (dist.containsKey(d)) {
+                Integer v = dist.get(d);
+                dist.put(d, v + 1);
+            } else {
+                dist.put(d, 1);
+            }
+        }
+
+        // Distribution series
+        XYSeries dSeries = ChartUtils.createXYSeries(dist, "Clustering Coefficient");
+        
+        double[][] dSeriesData = dSeries.toArray();
+        
+        csv.addTable(dSeriesData, "Value", "Count", "Clustering Coefficient Distribution");
+        
+        return csv.getCSV();
+        
     }
 
     @Override

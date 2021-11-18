@@ -53,6 +53,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
+import org.gephi.utils.CSVStringBuilder;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -262,6 +263,48 @@ public class Hits implements Statistics, LongTask {
         return newIndices;
     }
 
+    @Override
+    public String getCSV() {
+        
+        CSVStringBuilder csv = new CSVStringBuilder();
+        
+        // Distribution of hub values
+        Map<Double, Integer> distHubs = new HashMap<>();
+        for (int i = 0; i < hubs.length; i++) {
+            Double d = hubs[i];
+            if (distHubs.containsKey(d)) {
+                Integer v = distHubs.get(d);
+                distHubs.put(d, v + 1);
+            } else {
+                distHubs.put(d, 1);
+            }
+        }
+
+        // Distribution of authority values
+        Map<Double, Integer> distAuthorities = new HashMap<>();
+        for (int i = 0; i < authority.length; i++) {
+            Double d = authority[i];
+            if (distAuthorities.containsKey(d)) {
+                Integer v = distAuthorities.get(d);
+                distAuthorities.put(d, v + 1);
+            } else {
+                distAuthorities.put(d, 1);
+            }
+        }
+        
+        XYSeries dHubsSeries = ChartUtils.createXYSeries(distHubs, "Hubs");
+        XYSeries dAuthsSeries = ChartUtils.createXYSeries(distAuthorities, "Authority");
+
+        double[][] dHubsSeriesData = dHubsSeries.toArray();
+        double[][] dAuthsSeriesData = dAuthsSeries.toArray();
+        
+        csv.addTable(dHubsSeriesData, "Score", "Count", "Hubs Distribution");
+        csv.addTable(dAuthsSeriesData, "Score", "Count", "Authority Distribution");
+        
+        return csv.getCSV();
+        
+    }
+    
     /**
      *
      * @return

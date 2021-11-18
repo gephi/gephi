@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Stack;
 import org.gephi.graph.api.*;
 import org.gephi.statistics.spi.Statistics;
+import org.gephi.utils.CSVStringBuilder;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -429,6 +430,75 @@ public class GraphDistance implements Statistics, LongTask {
         return ChartUtils.renderChart(chart, pName + ".png");
     }
 
+    @Override
+    public String getCSV() {
+        
+        CSVStringBuilder csv = new CSVStringBuilder();
+        
+        Map<Double, Integer> dist = new HashMap<>();
+        for (int i = 0; i < N; i++) {
+            Double d = betweenness[i];
+            if (dist.containsKey(d)) {
+                Integer v = dist.get(d);
+                dist.put(d, v + 1);
+            } else {
+                dist.put(d, 1);
+            }
+        }
+
+        XYSeries dSeries = ChartUtils.createXYSeries(dist, "Betweenness Centraility Distribution");
+        double[][] dSeriesData = dSeries.toArray();
+        csv.addTable(dSeriesData, "Value", "Count", "Betweenness Centrality Distribution");
+        
+        Map<Double, Integer> dist2 = new HashMap<>();
+        for (int i = 0; i < N; i++) {
+            Double d = closeness[i];
+            if (dist2.containsKey(d)) {
+                Integer v = dist2.get(d);
+                dist2.put(d, v + 1);
+            } else {
+                dist2.put(d, 1);
+            }
+        }
+        
+        XYSeries cSeries = ChartUtils.createXYSeries(dist2, "Closeness Centrality Distribution");
+        double[][] cSeriesData = cSeries.toArray();
+        csv.addTable(cSeriesData, "Value", "Count", "Closeness Centrality Distribution");
+        
+        Map<Double, Integer> dist3 = new HashMap<>();
+        for (int i = 0; i < N; i++) {
+            Double d = harmonicCloseness[i];
+            if (dist3.containsKey(d)) {
+                Integer v = dist3.get(d);
+                dist3.put(d, v + 1);
+            } else {
+                dist3.put(d, 1);
+            }
+        }
+        
+        XYSeries hSeries = ChartUtils.createXYSeries(dist3, "Harmonic Closeness Centrality Distribution");
+        double[][] hSeriesData = hSeries.toArray();
+        csv.addTable(hSeriesData, "Value", "Count", "Harmonic Closeness Centrality Distribution");
+        
+        Map<Double, Integer> dist4 = new HashMap<>();
+        for (int i = 0; i < N; i++) {
+            Double d = eccentricity[i];
+            if (dist4.containsKey(d)) {
+                Integer v = dist4.get(d);
+                dist4.put(d, v + 1);
+            } else {
+                dist4.put(d, 1);
+            }
+        }
+        
+        XYSeries eSeries = ChartUtils.createXYSeries(dist4, "Eccentricity Distribution");
+        double[][] eSeriesData = eSeries.toArray();
+        csv.addTable(eSeriesData, "Value", "Count", "Eccentricity Distribution");
+        
+        return csv.getCSV();
+        
+    }
+    
     /**
      *
      * @return

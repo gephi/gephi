@@ -59,6 +59,7 @@ import org.gephi.graph.api.types.IntervalIntegerMap;
 import org.gephi.graph.api.types.TimestampIntegerMap;
 import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.spi.DynamicStatistics;
+import org.gephi.utils.CSVStringBuilder;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
@@ -129,6 +130,21 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
         }
     }
 
+    @Override
+    public String getCSV() {
+        
+        CSVStringBuilder csv = new CSVStringBuilder();
+        
+        XYSeries dSeries = ChartUtils.createXYSeries(averages, "Degree Time Series");
+
+        double[][] dSeriesData = dSeries.toArray();
+        
+        csv.addTable(dSeriesData, "Time", "Average Degree", "Degree Time Series");
+        
+        return csv.getCSV();
+        
+    }
+    
     @Override
     public String getReport() {
         //Time series
