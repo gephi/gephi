@@ -1,4 +1,4 @@
-package org.gephi.test;
+package org.gephi.graph;
 
 import java.util.Random;
 import org.gephi.graph.api.Configuration;

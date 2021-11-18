@@ -1,4 +1,4 @@
-package org.gephi.test;
+package org.gephi.project.io.utils;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -10,7 +10,6 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.gephi.workspace.impl.WorkspaceImpl;
@@ -23,18 +22,15 @@ public class GephiFormat {
         Assert.assertNotNull(provider.getIdentifier());
 
         String xmlString = toString(provider, workspace);
-        Workspace newWorkspace = fromString(provider, xmlString, workspace.getLookup().lookup(GraphModel.class));
+        Workspace newWorkspace = fromString(provider, xmlString);
         String xmlStringAgain = toString(provider, newWorkspace);
 
         Assert.assertEquals(xmlString, xmlStringAgain);
     }
 
-    private static Workspace fromString(WorkspaceXMLPersistenceProvider provider, String xmlString, GraphModel graphModel)
+    private static Workspace fromString(WorkspaceXMLPersistenceProvider provider, String xmlString)
         throws XMLStreamException, IOException {
         Workspace destinationWorkspace = new WorkspaceImpl(null, 0);
-        if(graphModel != null) {
-            destinationWorkspace.add(graphModel);
-        }
 
         StringReader stringReader = new StringReader(xmlString);
         XMLStreamReader reader = newXMLReader(stringReader);

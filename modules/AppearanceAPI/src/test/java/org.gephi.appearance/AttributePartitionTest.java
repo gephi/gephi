@@ -43,9 +43,9 @@
 package org.gephi.appearance;
 
 import junit.framework.TestCase;
+import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
-import org.gephi.test.GraphGenerator;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -40,8 +40,9 @@
         <!-- Test only -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>test-utils</artifactId>
+            <artifactId>graph-api</artifactId>
             <scope>test</scope>
+            <type>test-jar</type>
         </dependency>
     </dependencies>
 

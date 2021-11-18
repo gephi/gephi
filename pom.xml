@@ -764,11 +764,6 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>test-utils</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${gephi.slf4j.version}</version>
@@ -789,8 +784,31 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
+            <!-- Test JARs -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>project-api</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>graph-api</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <!-- JUnit Test dependency by default -->
+    <dependencies>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-nbjunit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         
@@ -1056,7 +1074,7 @@
             </build>
         </profile>
         
-        <!-- Profile for nighly builds and releases -->
+        <!-- Profile for nightly builds and releases -->
         <profile>
             <id>deployment</id>
             
@@ -1377,6 +1395,5 @@
         <module>modules/BatikWrapper</module>
         <module>modules/CoreLibraryWrapper</module>
         <module>modules/UILibraryWrapper</module>
-        <module>modules/TestUtils</module>
     </modules>
 </project>

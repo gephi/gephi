@@ -1,4 +1,4 @@
-package org.gephi.project.io;
+package org.gephi.project.io.utils;
 
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.workspace.impl.WorkspaceImpl;
@@ -15,4 +15,6 @@ public class Utils {
     public static WorkspaceImpl newWorkspace() {
         return new WorkspaceImpl(newProject(), 0, WORKSPACE_NAME);
     }
+
+
 }

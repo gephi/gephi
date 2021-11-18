@@ -3,7 +3,7 @@ package org.gephi.layout;
 import org.gephi.layout.utils.MockLayout;
 import org.gephi.layout.utils.MockLayoutBuilder;
 import org.gephi.layout.utils.Utils;
-import org.gephi.test.GephiFormat;
+import org.gephi.project.io.utils.GephiFormat;
 import org.junit.Test;
 import org.netbeans.junit.MockServices;
 

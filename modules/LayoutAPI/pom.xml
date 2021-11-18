@@ -48,7 +48,8 @@
         <!-- Test only -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>test-utils</artifactId>
+            <artifactId>project-api</artifactId>
+            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
     </dependencies>

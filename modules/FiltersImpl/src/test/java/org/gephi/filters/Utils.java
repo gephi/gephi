@@ -1,7 +1,7 @@
 package org.gephi.filters;
 
+import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.test.GraphGenerator;
 import org.gephi.workspace.impl.WorkspaceImpl;
 
 public class Utils {
