@@ -81,12 +81,12 @@ public class CopyDataToOtherColumnUI extends javax.swing.JPanel implements Attri
 
         ArrayList<Column> availableColumns = new ArrayList<>();
 
-        for (Column c : table) {
-            if (ac.canChangeColumnData(c) && c != column) {
-                availableColumns.add(c);
-                columnsComboBox.addItem(c.getTitle());
-            }
-        }
+        table.stream().filter(c -> ac.canChangeColumnData(c) && c != column).map(c -> {
+            availableColumns.add(c);
+            return c;
+        }).forEach(c -> {
+            columnsComboBox.addItem(c.getTitle());
+        });
 
         columns = availableColumns.toArray(new Column[0]);
     }

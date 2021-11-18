@@ -116,9 +116,9 @@ public class TextModelImpl {
         ChangeEvent evt = new ChangeEvent(this);
         List<ChangeListener> list = listeners;
         if (list != null) {
-            for (ChangeListener l : list) {
+            list.forEach(l -> {
                 l.stateChanged(evt);
-            }
+            });
         }
     }
 

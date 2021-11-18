@@ -187,9 +187,9 @@ public class INTERSECTIONBuilder implements FilterBuilder {
                     graph.removeEdge(e);
                 }
 
-                for (EdgeFilter ef : edgeFilters) {
+                edgeFilters.forEach(ef -> {
                     ef.finish();
-                }
+                });
             }
             return graph;
         }

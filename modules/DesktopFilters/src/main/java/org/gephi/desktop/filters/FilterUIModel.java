@@ -140,8 +140,8 @@ public final class FilterUIModel {
 
     private void fireChangeEvent() {
         ChangeEvent evt = new ChangeEvent(this);
-        for (ChangeListener listener : listeners) {
+        listeners.forEach(listener -> {
             listener.stateChanged(evt);
-        }
+        });
     }
 }

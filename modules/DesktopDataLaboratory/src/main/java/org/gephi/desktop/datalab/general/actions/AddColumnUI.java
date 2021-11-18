@@ -124,9 +124,9 @@ public class AddColumnUI extends javax.swing.JPanel {
 
         List<SupportedColumnTypeWrapper> supportedTypesWrappers = SupportedColumnTypeWrapper.buildOrderedSupportedTypesList(graphModel);
         
-        for (SupportedColumnTypeWrapper supportedColumnTypeWrapper : supportedTypesWrappers) {
+        supportedTypesWrappers.forEach(supportedColumnTypeWrapper -> {
             typeComboBox.addItem(supportedColumnTypeWrapper);
-        }
+        });
 
         int savedType = NbPreferences.forModule(AddColumnUI.class).getInt(COLUMN_TYPE_SAVED_PREFERENCES, -1);
         //Set last saved type or String by default:
