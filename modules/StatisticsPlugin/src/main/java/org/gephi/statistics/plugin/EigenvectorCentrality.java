@@ -309,6 +309,8 @@ public class EigenvectorCentrality implements Statistics, LongTask {
                 + "<br> <h2> Results: </h2>"
                 + imageFile
                 + "</BODY></HTML>";
+        
+        report += csvCreator.generateData(dSeries);
 
         return report;
 

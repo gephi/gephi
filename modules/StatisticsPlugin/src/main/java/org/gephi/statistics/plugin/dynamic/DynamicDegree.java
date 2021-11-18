@@ -58,6 +58,7 @@ import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.IntervalIntegerMap;
 import org.gephi.graph.api.types.TimestampIntegerMap;
 import org.gephi.statistics.plugin.ChartUtils;
+import org.gephi.statistics.plugin.csvCreator;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
@@ -68,6 +69,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+
 
 /**
  *
@@ -166,6 +168,11 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
          report += averages.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
          }*/
         report += "<br /><br /></BODY></HTML>";
+        
+        report += csvCreator.generateData(dSeries);
+        
+        //System.out.println(report + "rabatperezmito" + csv);
+        
         return report;
     }
 

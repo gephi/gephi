@@ -50,6 +50,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Interval;
 import org.gephi.statistics.plugin.ChartUtils;
+import org.gephi.statistics.plugin.csvCreator;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -115,6 +116,7 @@ public class DynamicNbNodes implements DynamicStatistics {
          report += count.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
          }*/
         report += "<br /><br /></BODY></HTML>";
+        report += csvCreator.generateData(dSeries);
         return report;
     }
 

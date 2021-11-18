@@ -699,6 +699,8 @@ public class Modularity implements Statistics, LongTask {
                 + "<br /><br />" + "<h2> Resolution: </h2>"
                 + "R. Lambiotte, J.-C. Delvenne, M. Barahona <i>Laplacian Dynamics and Multiscale Modular Structure in Networks 2009<br />"
                 + "</BODY> </HTML>";
+        
+        report += csvCreator.generateData(dSeries);
 
         return report;
     }

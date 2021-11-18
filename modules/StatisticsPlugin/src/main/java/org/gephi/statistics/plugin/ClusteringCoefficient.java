@@ -718,8 +718,10 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         NumberFormat f = new DecimalFormat("#0.000");
 
+        String report = "";
+        
         if (isDirected) {
-            return "<HTML> <BODY> <h1> Clustering Coefficient Metric Report </h1> "
+            report = "<HTML> <BODY> <h1> Clustering Coefficient Metric Report </h1> "
                     + "<hr>"
                     + "<br />" + "<h2> Parameters: </h2>"
                     + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br />"
@@ -732,7 +734,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                     + "</BODY> </HTML>";
         } else {
 
-            return "<HTML> <BODY> <h1> Clustering Coefficient Metric Report </h1> "
+            report = "<HTML> <BODY> <h1> Clustering Coefficient Metric Report </h1> "
                     + "<hr>"
                     + "<br />" + "<h2> Parameters: </h2>"
                     + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br />"
@@ -745,6 +747,9 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                     + "Matthieu Latapy, <i>Main-memory Triangle Computations for Very Large (Sparse (Power-Law)) Graphs</i>, in Theoretical Computer Science (TCS) 407 (1-3), pages 458-473, 2008<br />"
                     + "</BODY> </HTML>";
         }
+        
+        report += csvCreator.generateData(dSeries);
+        return report;
     }
 
     public void setDirected(boolean isDirected) {
