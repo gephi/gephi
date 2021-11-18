@@ -251,6 +251,10 @@
         <gephi.site-maven-plugin.version>0.12</gephi.site-maven-plugin.version>
         
         <gephi.versions-maven-plugin.version>2.8.1</gephi.versions-maven-plugin.version>
+
+        <gephi.maven-checkstyle-plugin.version>3.1.2</gephi.maven-checkstyle-plugin.version>
+
+        <gephi.checkstyle.version>9.1</gephi.checkstyle.version>
     </properties>
     
     <!-- Maven required version -->
@@ -933,6 +937,18 @@
                     <artifactId>site-maven-plugin</artifactId>
                     <version>${gephi.site-maven-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${gephi.maven-checkstyle-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${gephi.checkstyle.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
             </plugins>
         </pluginManagement>
         
@@ -1052,6 +1068,20 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Checkstyle configuration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+                    <encoding>UTF-8</encoding>
+                    <failsOnError>true</failsOnError>
+                    <consoleOutput>false</consoleOutput>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
             </plugin>
         </plugins>
     </build>
