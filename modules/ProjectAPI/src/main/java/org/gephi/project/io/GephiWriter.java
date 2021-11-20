@@ -45,6 +45,8 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectInformation;
@@ -138,7 +140,11 @@ public class GephiWriter {
         writer.writeComment("Persistence from '" + identifier + "' (" + persistenceProvider.getClass().getName() + ")");
         try {
             persistenceProvider.writeXML(writer, workspace);
-        } catch (UnsupportedOperationException e) {
+        } catch(Exception e) {
+            Logger.getLogger("").log(
+                Level.SEVERE,
+                "Error while writing XML workspace persistence provider '" + identifier + "'",
+                e);
         }
         writer.writeEndElement();
         writer.writeEndDocument();

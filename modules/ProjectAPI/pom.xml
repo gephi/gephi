@@ -32,6 +32,13 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>utils-longtask</artifactId>
         </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-masterfs</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

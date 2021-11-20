@@ -67,7 +67,7 @@ public class LegacyAttributeRowsPersistenceProvider implements WorkspaceXMLPersi
 
     @Override
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {
-        throw new UnsupportedOperationException("Not supported.");
+
     }
 
     @Override

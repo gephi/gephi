@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.xml.stream.Location;
@@ -125,7 +127,15 @@ public class LoadTask implements LongTask, Runnable {
                         if (workspace != null) {
                             for (WorkspacePersistenceProvider provider : providers) {
                                 if (provider instanceof WorkspaceXMLPersistenceProvider) {
-                                    readWorkspaceChildrenXML((WorkspaceXMLPersistenceProvider) provider, workspace, zip);
+                                    try {
+                                        readWorkspaceChildrenXML((WorkspaceXMLPersistenceProvider) provider, workspace,
+                                            zip);
+                                    } catch(Exception e) {
+                                        Logger.getLogger("").log(
+                                            Level.SEVERE,
+                                            "Error while reading XML workspace persistence provider '" + provider.getIdentifier() + "'",
+                                            e);
+                                    }
                                 } else if (provider instanceof WorkspaceBytesPersistenceProvider) {
                                     readWorkspaceChildrenBytes((WorkspaceBytesPersistenceProvider) provider, workspace, zip);
                                 }

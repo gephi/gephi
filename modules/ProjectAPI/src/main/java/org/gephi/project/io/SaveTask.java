@@ -48,6 +48,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
@@ -190,9 +192,11 @@ public class SaveTask implements LongTask, Runnable {
         } finally {
             if (writeFile != null && writeFile.exists()) {
                 FileObject tempFileObject = FileUtil.toFileObject(writeFile);
-                try {
-                    tempFileObject.delete();
-                } catch (IOException ex) {
+                if(tempFileObject != null) {
+                    try {
+                        tempFileObject.delete();
+                    } catch (IOException ex) {
+                    }
                 }
             }
         }
@@ -248,7 +252,6 @@ public class SaveTask implements LongTask, Runnable {
             //Create Writer and write project
             writer = newXMLWriter(outputStream);
             GephiWriter.writeWorkspaceChildren(writer, workspace, persistenceProvider);
-
         } finally {
             if (writer != null) {
                 writer.close();

@@ -67,7 +67,7 @@ public class LegacyDataPersistenceProvider implements WorkspaceXMLPersistencePro
 
     @Override
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {
-        throw new UnsupportedOperationException("Not supported.");
+
     }
 
     @Override

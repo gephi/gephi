@@ -10,6 +10,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.events.XMLEvent;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.gephi.workspace.impl.WorkspaceImpl;

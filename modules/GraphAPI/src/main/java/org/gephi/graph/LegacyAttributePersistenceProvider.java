@@ -80,7 +80,7 @@ public class LegacyAttributePersistenceProvider implements WorkspaceXMLPersisten
 
     @Override
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {
-        throw new UnsupportedOperationException("Not supported.");
+
     }
 
     @Override

@@ -91,7 +91,7 @@ public class WorkspaceImpl implements Workspace {
     }
 
     @Override
-    public Project getProject() {
+    public ProjectImpl getProject() {
         return project;
     }
 

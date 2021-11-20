@@ -65,7 +65,7 @@ public class LegacyGraphPersistenceProvider implements WorkspaceXMLPersistencePr
 
     @Override
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {
-        throw new UnsupportedOperationException("Not supported.");
+
     }
 
     @Override
