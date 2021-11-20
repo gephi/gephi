@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.general;
 
 import javax.swing.Icon;
@@ -56,17 +57,20 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * GeneralActionsManipulator that adds a new node to the graph, asking for its label.
  * Uses the default id for the node.
+ *
  * @author Eduardo Ramos
  */
-@ServiceProvider(service=GeneralActionsManipulator.class)
-public class AddNodeToGraph implements GeneralActionsManipulator{
+@ServiceProvider(service = GeneralActionsManipulator.class)
+public class AddNodeToGraph implements GeneralActionsManipulator {
 
     @Override
     public void execute() {
-        String label = JOptionPane.showInputDialog(null, NbBundle.getMessage(AddNodeToGraph.class, "AddNodeToGraph.dialog.text"), NbBundle.getMessage(AddNodeToGraph.class, "AddNodeToGraph.name"), JOptionPane.QUESTION_MESSAGE);
+        String label = JOptionPane
+            .showInputDialog(null, NbBundle.getMessage(AddNodeToGraph.class, "AddNodeToGraph.dialog.text"),
+                NbBundle.getMessage(AddNodeToGraph.class, "AddNodeToGraph.name"), JOptionPane.QUESTION_MESSAGE);
         if (label != null) {
-            Node node=Lookup.getDefault().lookup(GraphElementsController.class).createNode(label);
-            Lookup.getDefault().lookup(DataTablesController.class).setNodeTableSelection(new Node[]{node});
+            Node node = Lookup.getDefault().lookup(GraphElementsController.class).createNode(label);
+            Lookup.getDefault().lookup(DataTablesController.class).setNodeTableSelection(new Node[] {node});
         }
     }
 
@@ -102,6 +106,6 @@ public class AddNodeToGraph implements GeneralActionsManipulator{
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/plus-circle.png",true);
+        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/plus-circle.png", true);
     }
 }

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.branding.desktop.reporter;
 
 import com.getsentry.raven.Raven;
@@ -75,13 +76,13 @@ import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ReportController {
 
-    private static final String POST_URL = "https://d007fbbdeb6241b5b2c542a6bc548cf3:4a1af110df484e838da9243c1496ebe9@app.getsentry.com/85815";
-    
+    private static final String POST_URL =
+        "https://d007fbbdeb6241b5b2c542a6bc548cf3:4a1af110df484e838da9243c1496ebe9@app.getsentry.com/85815";
+
     private final Raven raven;
 
     public ReportController() {
@@ -93,15 +94,17 @@ public class ReportController {
 
             @Override
             public void run() {
-                ProgressHandle handle = ProgressHandleFactory.createHandle(NbBundle.getMessage(ReportController.class, "ReportController.status.sending"));
+                ProgressHandle handle = ProgressHandleFactory
+                    .createHandle(NbBundle.getMessage(ReportController.class, "ReportController.status.sending"));
                 try {
                     handle.start();
-                    
+
                     sendSentryReport(report);
-                    
+
                     handle.finish();
                     DialogDisplayer.getDefault().notify(
-                            new NotifyDescriptor.Message(NbBundle.getMessage(ReportController.class, "ReportController.status.sent"),
+                        new NotifyDescriptor.Message(
+                            NbBundle.getMessage(ReportController.class, "ReportController.status.sent"),
                             NotifyDescriptor.INFORMATION_MESSAGE));
                     return;
                 } catch (Exception e) {
@@ -109,34 +112,35 @@ public class ReportController {
                 }
                 handle.finish();
                 DialogDisplayer.getDefault().notify(
-                        new NotifyDescriptor.Message(NbBundle.getMessage(ReportController.class, "ReportController.status.failed"),
+                    new NotifyDescriptor.Message(
+                        NbBundle.getMessage(ReportController.class, "ReportController.status.failed"),
                         NotifyDescriptor.WARNING_MESSAGE));
             }
 
         }, "Exception Reporter");
         thread.start();
     }
-    
+
     private void sendSentryReport(Report report) {
         EventBuilder eventBuilder = new EventBuilder().withMessage(report.getThrowable().getMessage())
-                .withLevel(Event.Level.ERROR)
-                .withSentryInterface(new ExceptionInterface(report.getThrowable()))
-                .withRelease(report.getVersion())
-                .withServerName("Gephi Desktop")//Avoid raven looking up 'localhost' as hostname
-                .withExtra("OS", report.getOs())
-                .withExtra("Heap memory usage", report.getHeapMemoryUsage())
-                .withExtra("Non heap memory usage", report.getNonHeapMemoryUsage())
-                .withExtra("Processors", report.getNumberOfProcessors())
-                .withExtra("Screen devices", report.getScreenDevices())
-                .withExtra("Screen size", report.getScreenSize())
-                .withExtra("User description", report.getUserDescription())
-                .withExtra("User email", report.getUserEmail())
-                .withExtra("VM", report.getVm())
-                .withExtra("OpenGL Vendor", report.getGlVendor())
-                .withExtra("OpenGL Renderer", report.getGlRenderer())
-                .withExtra("OpenGL Version", report.getGlVersion())
-                .withExtra("Log", report.getLog());
-        
+            .withLevel(Event.Level.ERROR)
+            .withSentryInterface(new ExceptionInterface(report.getThrowable()))
+            .withRelease(report.getVersion())
+            .withServerName("Gephi Desktop")//Avoid raven looking up 'localhost' as hostname
+            .withExtra("OS", report.getOs())
+            .withExtra("Heap memory usage", report.getHeapMemoryUsage())
+            .withExtra("Non heap memory usage", report.getNonHeapMemoryUsage())
+            .withExtra("Processors", report.getNumberOfProcessors())
+            .withExtra("Screen devices", report.getScreenDevices())
+            .withExtra("Screen size", report.getScreenSize())
+            .withExtra("User description", report.getUserDescription())
+            .withExtra("User email", report.getUserEmail())
+            .withExtra("VM", report.getVm())
+            .withExtra("OpenGL Vendor", report.getGlVendor())
+            .withExtra("OpenGL Renderer", report.getGlRenderer())
+            .withExtra("OpenGL Version", report.getGlVersion())
+            .withExtra("Log", report.getLog());
+
         raven.sendEvent(eventBuilder);
     }
 
@@ -151,7 +155,7 @@ public class ReportController {
         //logModules(report);
         return buildXMLDocument(report);
     }
-    
+
     private Document buildXMLDocument(Report report) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -181,8 +185,8 @@ public class ReportController {
         report.setNumberOfProcessors(bean.getAvailableProcessors());
         String unknown = "unknown";                                   // NOI18N
         String str = System.getProperty("os.name", unknown) + ", " + // NOI18N
-                System.getProperty("os.version", unknown) + ", " + // NOI18N
-                System.getProperty("os.arch", unknown);               // NOI18N
+            System.getProperty("os.version", unknown) + ", " + // NOI18N
+            System.getProperty("os.arch", unknown);               // NOI18N
 
         report.setOs(str);
     }
@@ -195,9 +199,9 @@ public class ReportController {
 
     private void logJavaInfo(Report report) {
         String str = System.getProperty("java.vm.name", "unknown") + ", " // NOI18N
-                + System.getProperty("java.vm.version", "") + ", " // NOI18N
-                + System.getProperty("java.runtime.name", "unknown") + ", " // NOI18N
-                + System.getProperty("java.runtime.version", ""); // NOI18N
+            + System.getProperty("java.vm.version", "") + ", " // NOI18N
+            + System.getProperty("java.runtime.name", "unknown") + ", " // NOI18N
+            + System.getProperty("java.runtime.version", ""); // NOI18N
         report.setVm(str);
     }
 
@@ -205,9 +209,9 @@ public class ReportController {
         String str = ""; // NOI18N
         try {
             str = MessageFormat.format(
-                    NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion"), // NOI18N
-                    new Object[]{System.getProperty("netbeans.buildnumber")} // NOI18N
-                    );
+                NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion"), // NOI18N
+                new Object[] {System.getProperty("netbeans.buildnumber")} // NOI18N
+            );
             report.setVersion(str);
         } catch (MissingResourceException ex) {
         }

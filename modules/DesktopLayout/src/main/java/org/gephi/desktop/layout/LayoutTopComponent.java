@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.layout;
 
 import java.awt.BorderLayout;
@@ -56,15 +57,15 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.layout//Layout//EN",
-        autostore = false)
+    autostore = false)
 @TopComponent.Description(preferredID = "LayoutTopComponent",
-        iconBase = "org/gephi/desktop/layout/resources/small.png",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+    iconBase = "org/gephi/desktop/layout/resources/small.png",
+    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.layout.LayoutTopComponent")
 @ActionReference(path = "Menu/Window", position = 700)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_LayoutTopComponent",
-        preferredID = "LayoutTopComponent")
+    preferredID = "LayoutTopComponent")
 public final class LayoutTopComponent extends TopComponent {
 
     private LayoutPanel layoutPanel;

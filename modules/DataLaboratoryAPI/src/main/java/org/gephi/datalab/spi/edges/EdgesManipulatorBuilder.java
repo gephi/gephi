@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi.edges;
 
 /**
@@ -46,6 +47,7 @@ package org.gephi.datalab.spi.edges;
  * using the Netbeans Lookup but avoiding the singleton it causes.</p>
  * <p>Each EdgesManipulator should have a EdgesManipulatorBuilder
  * with <code>@ServiceProvider(service=EdgesManipulatorBuilder.class)</code> annotation to be public.</p>
+ *
  * @author Eduardo Ramos
  */
 public interface EdgesManipulatorBuilder {

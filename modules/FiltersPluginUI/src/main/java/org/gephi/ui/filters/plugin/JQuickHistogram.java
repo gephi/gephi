@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.filters.plugin;
 
 import java.awt.Color;
@@ -51,15 +52,14 @@ import java.util.List;
 import javax.swing.JPanel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class JQuickHistogram {
 
+    private final boolean inclusive = true;
     private int constraintHeight = 0;
     private int constraintWidth = 0;
     private JPanel panel;
-    private final boolean inclusive = true;
     //Data
     private List<Double> data;
     private Double minValue;
@@ -221,7 +221,8 @@ public class JQuickHistogram {
                     Double data = histogram.data.get(i);
                     int rectangleWidth = rectWidth + (leftover > 0 ? 1 : 0);
                     leftover--;
-                    int rectangleHeight = (int) ((data - histogram.minValue) / (histogram.maxValue - histogram.minValue) * currentHeight);
+                    int rectangleHeight =
+                        (int) ((data - histogram.minValue) / (histogram.maxValue - histogram.minValue) * currentHeight);
                     if (data >= histogram.minRange && data <= histogram.maxRange) {
                         g2d.setColor(fillInRangeColor);
                     } else {
@@ -247,7 +248,9 @@ public class JQuickHistogram {
                         average += d;
                     }
                     average /= size;
-                    int rectangleHeight = (int) ((average - histogram.minValue) / (histogram.maxValue - histogram.minValue) * currentHeight);
+                    int rectangleHeight =
+                        (int) ((average - histogram.minValue) / (histogram.maxValue - histogram.minValue) *
+                            currentHeight);
 
                     if (average >= histogram.minRange && average <= histogram.maxRange) {
                         g2d.setColor(fillInRangeColor);

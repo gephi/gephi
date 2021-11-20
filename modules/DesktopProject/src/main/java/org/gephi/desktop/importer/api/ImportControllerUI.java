@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.importer.api;
 
 import java.io.InputStream;
@@ -50,7 +51,6 @@ import org.gephi.io.importer.spi.WizardImporter;
 import org.openide.filesystems.FileObject;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface ImportControllerUI {

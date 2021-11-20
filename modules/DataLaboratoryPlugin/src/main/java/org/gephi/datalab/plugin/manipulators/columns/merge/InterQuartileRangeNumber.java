@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 import javax.swing.Icon;
@@ -55,6 +56,7 @@ import org.openide.util.NbBundle;
 /**
  * AttributeColumnsMergeStrategy for any combination of number or number list columns that
  * calculates the interquartile range (IQR) of all the values and creates a new BigDecimal column with the result of each row.
+ *
  * @author Eduardo Ramos
  */
 public class InterQuartileRangeNumber implements AttributeColumnsMergeStrategy, GeneralColumnTitleChooser {
@@ -71,7 +73,8 @@ public class InterQuartileRangeNumber implements AttributeColumnsMergeStrategy, 
 
     @Override
     public void execute() {
-        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).interQuartileRangeNumberMerge(table, columns, columnTitle);
+        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class)
+            .interQuartileRangeNumberMerge(table, columns, columnTitle);
     }
 
     @Override

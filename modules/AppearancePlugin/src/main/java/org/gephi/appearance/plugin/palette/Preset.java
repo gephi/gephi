@@ -39,10 +39,10 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.plugin.palette;
 
 /**
- *
  * @author mbastian
  */
 public class Preset {
@@ -100,7 +100,7 @@ public class Preset {
     }
 
     public float[] toArray() {
-        return new float[]{hMin, hMax, cMin, cMax, lMin, lMax};
+        return new float[] {hMin, hMax, cMin, cMax, lMin, lMax};
     }
 
     @Override

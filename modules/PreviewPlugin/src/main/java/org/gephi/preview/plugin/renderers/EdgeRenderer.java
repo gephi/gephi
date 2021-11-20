@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.plugin.renderers;
 
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -51,7 +52,16 @@ import java.awt.geom.Line2D;
 import java.util.Locale;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.gephi.preview.api.*;
+import org.gephi.preview.api.CanvasSize;
+import org.gephi.preview.api.G2DTarget;
+import org.gephi.preview.api.Item;
+import org.gephi.preview.api.PDFTarget;
+import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.api.RenderTarget;
+import org.gephi.preview.api.SVGTarget;
+import org.gephi.preview.api.Vector;
 import org.gephi.preview.plugin.builders.EdgeBuilder;
 import org.gephi.preview.plugin.builders.NodeBuilder;
 import org.gephi.preview.plugin.items.EdgeItem;
@@ -65,7 +75,6 @@ import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
 
 /**
- *
  * @author Yudi Xue, Mathieu Bastian
  */
 @ServiceProvider(service = Renderer.class, position = 100)
@@ -79,6 +88,12 @@ public class EdgeRenderer implements Renderer {
     public static final String TARGET = "target";
     public static final String TARGET_RADIUS = "edge.target.radius";
     public static final String SOURCE_RADIUS = "edge.source.radius";
+    private static final StraightEdgeRenderer STRAIGHT_RENDERER
+        = new StraightEdgeRenderer();
+    private static final CurvedEdgeRenderer CURVED_RENDERER
+        = new CurvedEdgeRenderer();
+    private static final SelfLoopEdgeRenderer SELF_LOOP_RENDERER
+        = new SelfLoopEdgeRenderer();
     //Default values
     protected boolean defaultShowEdges = true;
     protected float defaultThickness = 1;
@@ -91,12 +106,44 @@ public class EdgeRenderer implements Renderer {
     protected int defaultOpacity = 100;
     protected float defaultRadius = 0f;
 
-    private static final StraightEdgeRenderer STRAIGHT_RENDERER
-            = new StraightEdgeRenderer();
-    private static final CurvedEdgeRenderer CURVED_RENDERER
-            = new CurvedEdgeRenderer();
-    private static final SelfLoopEdgeRenderer SELF_LOOP_RENDERER
-            = new SelfLoopEdgeRenderer();
+    public static Color getColor(
+        final Item item,
+        final PreviewProperties properties) {
+        final Item sourceItem = item.getData(SOURCE);
+        final Item targetItem = item.getData(TARGET);
+        final EdgeColor edgeColor
+            = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
+        final Color color = edgeColor.getColor(
+            (Color) item.getData(EdgeItem.COLOR),
+            (Color) sourceItem.getData(NodeItem.COLOR),
+            (Color) targetItem.getData(NodeItem.COLOR));
+        return new Color(
+            color.getRed(),
+            color.getGreen(),
+            color.getBlue(),
+            (int) (getAlpha(properties) * 255));
+    }
+
+    private static boolean isSelfLoopEdge(final Item item) {
+        final Item sourceItem = item.getData(SOURCE);
+        final Item targetItem = item.getData(TARGET);
+        return item instanceof EdgeItem && sourceItem == targetItem;
+    }
+
+    private static float getAlpha(final PreviewProperties properties) {
+        float opacity = properties.getIntValue(PreviewProperty.EDGE_OPACITY) / 100F;
+        if (opacity < 0) {
+            opacity = 0;
+        }
+        if (opacity > 1) {
+            opacity = 1;
+        }
+        return opacity;
+    }
+
+    private static float getThickness(final Item item) {
+        return ((Double) item.getData(EdgeItem.WEIGHT)).floatValue();
+    }
 
     @Override
     public void preProcess(PreviewModel previewModel) {
@@ -120,11 +167,11 @@ public class EdgeRenderer implements Renderer {
 
         for (Item edge : edgeItems) {
             minWeight = Math.min(
-                    minWeight,
-                    (Double) edge.getData(EdgeItem.WEIGHT));
+                minWeight,
+                (Double) edge.getData(EdgeItem.WEIGHT));
             maxWeight = Math.max(
-                    maxWeight,
-                    (Double) edge.getData(EdgeItem.WEIGHT));
+                maxWeight,
+                (Double) edge.getData(EdgeItem.WEIGHT));
         }
         properties.putValue(EDGE_MIN_WEIGHT, minWeight);
         properties.putValue(EDGE_MAX_WEIGHT, maxWeight);
@@ -136,18 +183,18 @@ public class EdgeRenderer implements Renderer {
 
         //Rescale weight if necessary - and avoid negative weights
         final boolean rescaleWeight = properties.getBooleanValue(
-                PreviewProperty.EDGE_RESCALE_WEIGHT);
+            PreviewProperty.EDGE_RESCALE_WEIGHT);
 
         if (rescaleWeight) {
             final double weightDiff = maxWeight - minWeight;
             double minRescaledWeight = properties.getFloatValue(PreviewProperty.EDGE_RESCALE_WEIGHT_MIN);
             double maxRescaledWeight = properties.getFloatValue(PreviewProperty.EDGE_RESCALE_WEIGHT_MAX);
 
-            if(minRescaledWeight < 0){
+            if (minRescaledWeight < 0) {
                 minRescaledWeight = defaultRescaleWeightMin;
                 properties.putValue(PreviewProperty.EDGE_RESCALE_WEIGHT_MIN, defaultRescaleWeightMin);
             }
-            
+
             if (maxRescaledWeight < 0) {
                 maxRescaledWeight = defaultRescaleWeightMax;
                 properties.putValue(PreviewProperty.EDGE_RESCALE_WEIGHT_MAX, defaultRescaleWeightMax);
@@ -156,12 +203,12 @@ public class EdgeRenderer implements Renderer {
             if (minRescaledWeight > maxRescaledWeight) {
                 minRescaledWeight = maxRescaledWeight;
             }
-            
+
             final double rescaledWeightsDiff = maxRescaledWeight - minRescaledWeight;
 
             if (!Double.isInfinite(minWeight)
-                    && !Double.isInfinite(maxWeight)
-                    && !NumberUtils.equalsEpsilon(maxWeight, minWeight)) {
+                && !Double.isInfinite(maxWeight)
+                && !NumberUtils.equalsEpsilon(maxWeight, minWeight)) {
                 for (final Item item : edgeItems) {
                     double weight = (Double) item.getData(EdgeItem.WEIGHT);
                     weight = rescaledWeightsDiff * (weight - minWeight) / weightDiff + minRescaledWeight;
@@ -190,17 +237,17 @@ public class EdgeRenderer implements Renderer {
         for (final Item item : edgeItems) {
             if (!(Boolean) item.getData(EdgeItem.SELF_LOOP)) {
                 final float edgeRadius
-                        = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
+                    = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
 
                 boolean isDirected = (Boolean) item.getData(EdgeItem.DIRECTED);
                 if (isDirected
-                        || edgeRadius > 0F) {
+                    || edgeRadius > 0F) {
                     //Target
                     final Item targetItem = (Item) item.getData(TARGET);
                     final Double weight = item.getData(EdgeItem.WEIGHT);
                     //Avoid negative arrow size:
                     float arrowSize = properties.getFloatValue(
-                            PreviewProperty.ARROW_SIZE);
+                        PreviewProperty.ARROW_SIZE);
                     if (arrowSize < 0F) {
                         arrowSize = 0F;
                     }
@@ -208,16 +255,17 @@ public class EdgeRenderer implements Renderer {
                     final float arrowRadiusSize = isDirected ? arrowSize * weight.floatValue() : 0f;
 
                     final float targetRadius = -(edgeRadius
-                            + (Float) targetItem.getData(NodeItem.SIZE) / 2f
-                            + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f //We have to divide by 2 because the border stroke is not only an outline but also draws the other half of the curve inside the node
-                            + arrowRadiusSize);
+                        + (Float) targetItem.getData(NodeItem.SIZE) / 2f
+                        + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f
+                        //We have to divide by 2 because the border stroke is not only an outline but also draws the other half of the curve inside the node
+                        + arrowRadiusSize);
                     item.setData(TARGET_RADIUS, targetRadius);
 
                     //Source
                     final Item sourceItem = (Item) item.getData(SOURCE);
                     final float sourceRadius = -(edgeRadius
-                            + (Float) sourceItem.getData(NodeItem.SIZE) / 2f
-                            + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f);
+                        + (Float) sourceItem.getData(NodeItem.SIZE) / 2f
+                        + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f);
                     item.setData(SOURCE_RADIUS, sourceRadius);
                 }
             }
@@ -232,9 +280,9 @@ public class EdgeRenderer implements Renderer {
 
     @Override
     public void render(
-            Item item,
-            RenderTarget target,
-            PreviewProperties properties) {
+        Item item,
+        RenderTarget target,
+        PreviewProperties properties) {
         if (isSelfLoopEdge(item)) {
             SELF_LOOP_RENDERER.render(item, target, properties);
         } else if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
@@ -257,43 +305,43 @@ public class EdgeRenderer implements Renderer {
 
     @Override
     public PreviewProperty[] getProperties() {
-        return new PreviewProperty[]{
+        return new PreviewProperty[] {
             PreviewProperty.createProperty(this, PreviewProperty.SHOW_EDGES, Boolean.class,
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.display.displayName"),
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.display.description"),
-            PreviewProperty.CATEGORY_EDGES).setValue(defaultShowEdges),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.display.displayName"),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.display.description"),
+                PreviewProperty.CATEGORY_EDGES).setValue(defaultShowEdges),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_THICKNESS, Float.class,
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.thickness.displayName"),
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.thickness.description"),
-            PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultThickness),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.thickness.displayName"),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.thickness.description"),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultThickness),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_RESCALE_WEIGHT, Boolean.class,
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.displayName"),
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.description"),
-            PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultRescaleWeight),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.displayName"),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.description"),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultRescaleWeight),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_RESCALE_WEIGHT_MIN, Float.class,
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.min.displayName"),
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.min.description"),
-            PreviewProperty.CATEGORY_EDGES, PreviewProperty.EDGE_RESCALE_WEIGHT).setValue(defaultRescaleWeightMin),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.min.displayName"),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.min.description"),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.EDGE_RESCALE_WEIGHT).setValue(defaultRescaleWeightMin),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_RESCALE_WEIGHT_MAX, Float.class,
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.max.displayName"),
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.max.description"),
-            PreviewProperty.CATEGORY_EDGES, PreviewProperty.EDGE_RESCALE_WEIGHT).setValue(defaultRescaleWeightMax),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.max.displayName"),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.max.description"),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.EDGE_RESCALE_WEIGHT).setValue(defaultRescaleWeightMax),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_COLOR, EdgeColor.class,
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.color.displayName"),
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.color.description"),
-            PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultColor),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.color.displayName"),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.color.description"),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultColor),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_OPACITY, Float.class,
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.opacity.displayName"),
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.opacity.description"),
-            PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultOpacity),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.opacity.displayName"),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.opacity.description"),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultOpacity),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_CURVED, Boolean.class,
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.displayName"),
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.description"),
-            PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultEdgeCurved),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.displayName"),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.description"),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultEdgeCurved),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_RADIUS, Float.class,
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.radius.displayName"),
-            NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.radius.description"),
-            PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultRadius),};
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.radius.displayName"),
+                NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.radius.description"),
+                PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultRadius),};
     }
 
     @Override
@@ -307,8 +355,8 @@ public class EdgeRenderer implements Renderer {
     @Override
     public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
         return (itemBuilder instanceof EdgeBuilder
-                || itemBuilder instanceof NodeBuilder)
-                && showEdges(properties);//Needs some properties of nodes
+            || itemBuilder instanceof NodeBuilder)
+            && showEdges(properties);//Needs some properties of nodes
     }
 
     @Override
@@ -316,107 +364,68 @@ public class EdgeRenderer implements Renderer {
         return NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.name");
     }
 
-    public static Color getColor(
-            final Item item,
-            final PreviewProperties properties) {
-        final Item sourceItem = item.getData(SOURCE);
-        final Item targetItem = item.getData(TARGET);
-        final EdgeColor edgeColor
-                = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
-        final Color color = edgeColor.getColor(
-                (Color) item.getData(EdgeItem.COLOR),
-                (Color) sourceItem.getData(NodeItem.COLOR),
-                (Color) targetItem.getData(NodeItem.COLOR));
-        return new Color(
-                color.getRed(),
-                color.getGreen(),
-                color.getBlue(),
-                (int) (getAlpha(properties) * 255));
-    }
-
     private boolean showEdges(PreviewProperties properties) {
         return properties.getBooleanValue(PreviewProperty.SHOW_EDGES)
-                && !properties.getBooleanValue(PreviewProperty.MOVING);
-    }
-
-    private static boolean isSelfLoopEdge(final Item item) {
-        final Item sourceItem = item.getData(SOURCE);
-        final Item targetItem = item.getData(TARGET);
-        return item instanceof EdgeItem && sourceItem == targetItem;
-    }
-
-    private static float getAlpha(final PreviewProperties properties) {
-        float opacity = properties.getIntValue(PreviewProperty.EDGE_OPACITY) / 100F;
-        if (opacity < 0) {
-            opacity = 0;
-        }
-        if (opacity > 1) {
-            opacity = 1;
-        }
-        return opacity;
-    }
-
-    private static float getThickness(final Item item) {
-        return ((Double) item.getData(EdgeItem.WEIGHT)).floatValue();
+            && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 
     private static class StraightEdgeRenderer {
 
         public void render(
-                final Item item,
-                final RenderTarget target,
-                final PreviewProperties properties) {
+            final Item item,
+            final RenderTarget target,
+            final PreviewProperties properties) {
             final Helper h = new Helper(item);
             final Color color = getColor(item, properties);
 
             if (target instanceof G2DTarget) {
                 final Graphics2D graphics = ((G2DTarget) target).getGraphics();
                 graphics.setStroke(new BasicStroke(
-                        getThickness(item),
-                        BasicStroke.CAP_SQUARE,
-                        BasicStroke.JOIN_MITER));
+                    getThickness(item),
+                    BasicStroke.CAP_SQUARE,
+                    BasicStroke.JOIN_MITER));
                 graphics.setColor(color);
                 final Line2D.Float line
-                        = new Line2D.Float(h.x1, h.y1, h.x2, h.y2);
+                    = new Line2D.Float(h.x1, h.y1, h.x2, h.y2);
                 graphics.draw(line);
             } else if (target instanceof SVGTarget) {
                 final SVGTarget svgTarget = (SVGTarget) target;
                 final Element edgeElem = svgTarget.createElement("path");
                 edgeElem.setAttribute("class", String.format(
-                        "%s %s",
-                        SVGUtils.idAsClassAttribute(((Node) h.sourceItem.getSource()).getId()),
-                        SVGUtils.idAsClassAttribute(((Node) h.targetItem.getSource()).getId())
+                    "%s %s",
+                    SVGUtils.idAsClassAttribute(((Node) h.sourceItem.getSource()).getId()),
+                    SVGUtils.idAsClassAttribute(((Node) h.targetItem.getSource()).getId())
                 ));
                 edgeElem.setAttribute("d", String.format(
-                        Locale.ENGLISH,
-                        "M %f,%f L %f,%f",
-                        h.x1, h.y1, h.x2, h.y2));
+                    Locale.ENGLISH,
+                    "M %f,%f L %f,%f",
+                    h.x1, h.y1, h.x2, h.y2));
                 edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
                 edgeElem.setAttribute(
-                        "stroke-width",
-                        Float.toString(getThickness(item)
-                                * svgTarget.getScaleRatio()));
+                    "stroke-width",
+                    Float.toString(getThickness(item)
+                        * svgTarget.getScaleRatio()));
                 edgeElem.setAttribute(
-                        "stroke-opacity",
-                        (color.getAlpha() / 255f) + "");
+                    "stroke-opacity",
+                    (color.getAlpha() / 255f) + "");
                 edgeElem.setAttribute("fill", "none");
                 svgTarget.getTopElement(SVGTarget.TOP_EDGES)
-                        .appendChild(edgeElem);
+                    .appendChild(edgeElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
                 final PdfContentByte cb = pdfTarget.getContentByte();
                 cb.moveTo(h.x1, -h.y1);
                 cb.lineTo(h.x2, -h.y2);
                 cb.setRGBColorStroke(
-                        color.getRed(),
-                        color.getGreen(),
-                        color.getBlue());
+                    color.getRed(),
+                    color.getGreen(),
+                    color.getBlue());
                 cb.setLineWidth(getThickness(item));
                 if (color.getAlpha() < 255) {
                     cb.saveState();
                     final PdfGState gState = new PdfGState();
                     gState.setStrokeOpacity(
-                            getAlpha(properties));
+                        getAlpha(properties));
                     cb.setGState(gState);
                 }
                 cb.stroke();
@@ -427,8 +436,8 @@ public class EdgeRenderer implements Renderer {
         }
 
         public CanvasSize getCanvasSize(
-                final Item item,
-                final PreviewProperties properties) {
+            final Item item,
+            final PreviewProperties properties) {
             final Item sourceItem = item.getData(SOURCE);
             final Item targetItem = item.getData(TARGET);
             final Float x1 = sourceItem.getData(NodeItem.X);
@@ -497,9 +506,9 @@ public class EdgeRenderer implements Renderer {
     private static class CurvedEdgeRenderer {
 
         public void render(
-                final Item item,
-                final RenderTarget target,
-                final PreviewProperties properties) {
+            final Item item,
+            final RenderTarget target,
+            final PreviewProperties properties) {
             final Helper h = new Helper(item, properties);
             final Color color = getColor(item, properties);
 
@@ -508,7 +517,7 @@ public class EdgeRenderer implements Renderer {
                 graphics.setStroke(new BasicStroke(getThickness(item)));
                 graphics.setColor(color);
                 final GeneralPath gp
-                        = new GeneralPath(GeneralPath.WIND_NON_ZERO);
+                    = new GeneralPath(GeneralPath.WIND_NON_ZERO);
                 gp.moveTo(h.x1, h.y1);
                 gp.curveTo(h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x2, h.y2);
                 graphics.draw(gp);
@@ -516,41 +525,41 @@ public class EdgeRenderer implements Renderer {
                 final SVGTarget svgTarget = (SVGTarget) target;
                 final Element edgeElem = svgTarget.createElement("path");
                 edgeElem.setAttribute("class", String.format(
-                        "%s %s",
-                        SVGUtils.idAsClassAttribute(((Node) h.sourceItem.getSource()).getId()),
-                        SVGUtils.idAsClassAttribute(((Node) h.targetItem.getSource()).getId())
+                    "%s %s",
+                    SVGUtils.idAsClassAttribute(((Node) h.sourceItem.getSource()).getId()),
+                    SVGUtils.idAsClassAttribute(((Node) h.targetItem.getSource()).getId())
                 ));
                 edgeElem.setAttribute("d", String.format(
-                        Locale.ENGLISH,
-                        "M %f,%f C %f,%f %f,%f %f,%f",
-                        h.x1, h.y1,
-                        h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x2, h.y2));
+                    Locale.ENGLISH,
+                    "M %f,%f C %f,%f %f,%f %f,%f",
+                    h.x1, h.y1,
+                    h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x2, h.y2));
                 edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
                 edgeElem.setAttribute(
-                        "stroke-width",
-                        Float.toString(getThickness(item)
-                                * svgTarget.getScaleRatio()));
+                    "stroke-width",
+                    Float.toString(getThickness(item)
+                        * svgTarget.getScaleRatio()));
                 edgeElem.setAttribute(
-                        "stroke-opacity",
-                        (color.getAlpha() / 255f) + "");
+                    "stroke-opacity",
+                    (color.getAlpha() / 255f) + "");
                 edgeElem.setAttribute("fill", "none");
                 svgTarget.getTopElement(SVGTarget.TOP_EDGES)
-                        .appendChild(edgeElem);
+                    .appendChild(edgeElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
                 final PdfContentByte cb = pdfTarget.getContentByte();
                 cb.moveTo(h.x1, -h.y1);
                 cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x2, -h.y2);
                 cb.setRGBColorStroke(
-                        color.getRed(),
-                        color.getGreen(),
-                        color.getBlue());
+                    color.getRed(),
+                    color.getGreen(),
+                    color.getBlue());
                 cb.setLineWidth(getThickness(item));
                 if (color.getAlpha() < 255) {
                     cb.saveState();
                     final PdfGState gState = new PdfGState();
                     gState.setStrokeOpacity(
-                            getAlpha(properties));
+                        getAlpha(properties));
                     cb.setGState(gState);
                 }
                 cb.stroke();
@@ -561,17 +570,17 @@ public class EdgeRenderer implements Renderer {
         }
 
         public CanvasSize getCanvasSize(
-                final Item item,
-                final PreviewProperties properties) {
+            final Item item,
+            final PreviewProperties properties) {
             final Helper h = new Helper(item, properties);
             final float minX
-                    = Math.min(Math.min(Math.min(h.x1, h.x2), h.v1.x), h.v2.x);
+                = Math.min(Math.min(Math.min(h.x1, h.x2), h.v1.x), h.v2.x);
             final float minY
-                    = Math.min(Math.min(Math.min(h.y1, h.y2), h.v1.y), h.v2.y);
+                = Math.min(Math.min(Math.min(h.y1, h.y2), h.v1.y), h.v2.y);
             final float maxX
-                    = Math.max(Math.max(Math.max(h.x1, h.x2), h.v1.x), h.v2.x);
+                = Math.max(Math.max(Math.max(h.x1, h.x2), h.v1.x), h.v2.x);
             final float maxY
-                    = Math.max(Math.max(Math.max(h.y1, h.y2), h.v1.y), h.v2.y);
+                = Math.max(Math.max(Math.max(h.y1, h.y2), h.v1.y), h.v2.y);
             return new CanvasSize(minX, minY, maxX - minX, maxY - minY);
         }
 
@@ -587,8 +596,8 @@ public class EdgeRenderer implements Renderer {
             public final Vector v2;
 
             public Helper(
-                    final Item item,
-                    final PreviewProperties properties) {
+                final Item item,
+                final PreviewProperties properties) {
                 sourceItem = item.getData(SOURCE);
                 targetItem = item.getData(TARGET);
 
@@ -604,7 +613,7 @@ public class EdgeRenderer implements Renderer {
 
                 direction.normalize();
                 final float factor
-                        = properties.getFloatValue(BEZIER_CURVENESS) * length;
+                    = properties.getFloatValue(BEZIER_CURVENESS) * length;
 
                 final Vector n = new Vector(direction.y, -direction.x);
                 n.mult(factor);
@@ -614,11 +623,11 @@ public class EdgeRenderer implements Renderer {
             }
 
             private Vector computeCtrlPoint(
-                    final Float x,
-                    final Float y,
-                    final Vector direction,
-                    final float factor,
-                    final Vector normalVector) {
+                final Float x,
+                final Float y,
+                final Vector direction,
+                final float factor,
+                final Vector normalVector) {
                 final Vector v = new Vector(direction.x, direction.y);
                 v.mult(factor);
                 v.add(new Vector(x, y));
@@ -633,9 +642,9 @@ public class EdgeRenderer implements Renderer {
         public static final String ID = "SelfLoopEdge";
 
         public void render(
-                final Item item,
-                final RenderTarget target,
-                final PreviewProperties properties) {
+            final Item item,
+            final RenderTarget target,
+            final PreviewProperties properties) {
             final Helper h = new Helper(item);
             final Color color = getColor(item, properties);
 
@@ -644,7 +653,7 @@ public class EdgeRenderer implements Renderer {
                 graphics.setStroke(new BasicStroke(getThickness(item)));
                 graphics.setColor(color);
                 final GeneralPath gp
-                        = new GeneralPath(GeneralPath.WIND_NON_ZERO);
+                    = new GeneralPath(GeneralPath.WIND_NON_ZERO);
                 gp.moveTo(h.x, h.y);
                 gp.curveTo(h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x, h.y);
                 graphics.draw(gp);
@@ -653,36 +662,36 @@ public class EdgeRenderer implements Renderer {
 
                 final Element selfLoopElem = svgTarget.createElement("path");
                 selfLoopElem.setAttribute("d", String.format(
-                        Locale.ENGLISH,
-                        "M %f,%f C %f,%f %f,%f %f,%f",
-                        h.x, h.y, h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x, h.y));
+                    Locale.ENGLISH,
+                    "M %f,%f C %f,%f %f,%f %f,%f",
+                    h.x, h.y, h.v1.x, h.v1.y, h.v2.x, h.v2.y, h.x, h.y));
                 selfLoopElem.setAttribute("class", SVGUtils.idAsClassAttribute(h.node.getId()));
                 selfLoopElem.setAttribute(
-                        "stroke",
-                        svgTarget.toHexString(color));
+                    "stroke",
+                    svgTarget.toHexString(color));
                 selfLoopElem.setAttribute(
-                        "stroke-opacity",
-                        (color.getAlpha() / 255f) + "");
+                    "stroke-opacity",
+                    (color.getAlpha() / 255f) + "");
                 selfLoopElem.setAttribute("stroke-width", Float.toString(
-                        getThickness(item) * svgTarget.getScaleRatio()));
+                    getThickness(item) * svgTarget.getScaleRatio()));
                 selfLoopElem.setAttribute("fill", "none");
                 svgTarget.getTopElement(SVGTarget.TOP_EDGES)
-                        .appendChild(selfLoopElem);
+                    .appendChild(selfLoopElem);
             } else if (target instanceof PDFTarget) {
                 final PDFTarget pdfTarget = (PDFTarget) target;
                 final PdfContentByte cb = pdfTarget.getContentByte();
                 cb.moveTo(h.x, -h.y);
                 cb.curveTo(h.v1.x, -h.v1.y, h.v2.x, -h.v2.y, h.x, -h.y);
                 cb.setRGBColorStroke(
-                        color.getRed(),
-                        color.getGreen(),
-                        color.getBlue());
+                    color.getRed(),
+                    color.getGreen(),
+                    color.getBlue());
                 cb.setLineWidth(getThickness(item));
                 if (color.getAlpha() < 255) {
                     cb.saveState();
                     final PdfGState gState = new PdfGState();
                     gState.setStrokeOpacity(
-                            getAlpha(properties));
+                        getAlpha(properties));
                     cb.setGState(gState);
                 }
                 cb.stroke();
@@ -693,8 +702,8 @@ public class EdgeRenderer implements Renderer {
         }
 
         public CanvasSize getCanvasSize(
-                final Item item,
-                final PreviewProperties properties) {
+            final Item item,
+            final PreviewProperties properties) {
             final Helper h = new Helper(item);
             final float minX = Math.min(Math.min(h.x, h.v1.x), h.v2.x);
             final float minY = Math.min(Math.min(h.y, h.v1.y), h.v2.y);

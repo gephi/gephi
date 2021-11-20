@@ -39,30 +39,25 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.types;
 
 import java.awt.Color;
 
 /**
  * A color that can be custom or depend from a parent color.
- * 
+ *
  * @author Mathieu Bastian
  */
 public final class DependantColor {
 
-    public enum Mode {
-
-        PARENT, CUSTOM
-    }
-
     private final Color customColor;
     private final Mode mode;
-
     public DependantColor() {
         customColor = null;
         this.mode = Mode.PARENT;
     }
-    
+
     public DependantColor(Mode mode) {
         customColor = Color.BLACK;
         this.mode = mode;
@@ -80,11 +75,16 @@ public final class DependantColor {
     public Mode getMode() {
         return mode;
     }
-    
+
     public Color getColor(Color parentColor) {
         if (mode.equals(Mode.CUSTOM) && customColor != null) {
             return customColor;
         }
         return parentColor;
+    }
+
+    public enum Mode {
+
+        PARENT, CUSTOM
     }
 }

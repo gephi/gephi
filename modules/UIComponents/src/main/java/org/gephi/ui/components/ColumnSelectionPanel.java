@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.Component;
@@ -64,6 +65,36 @@ public class ColumnSelectionPanel extends JPanel {
         checkBoxes = new HashMap<>();
         setLayout(new GridBagLayout());
         init(columns);
+    }
+
+    public static void showColumnSelectionPopup(ColumnSelectionModel[] columns, Component c) {
+        JPopupMenu popup = new JPopupMenu();
+
+        for (int col = 0; col < columns.length; col++) {
+            final ColumnSelectionModel column = columns[col];
+            final JCheckBoxMenuItem checkBox = new JCheckBoxMenuItem();
+            checkBox.setText(column.getName());
+            checkBox.setSelected(column.isSelected());
+            checkBox.setEnabled(column.isEnabled());
+            checkBox.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    column.setSelected(checkBox.isSelected());
+                }
+            });
+            popup.add(checkBox);
+        }
+
+        popup.show(c, 8, 8);
+    }
+
+    public static void showColumnSelectionDialog(ColumnSelectionModel[] columns, String dialogTitle) {
+        ColumnSelectionPanel panel = new ColumnSelectionPanel(columns);
+        int res = JOptionPane.showConfirmDialog(null, panel, dialogTitle, JOptionPane.OK_CANCEL_OPTION);
+        if (res == JOptionPane.OK_OPTION) {
+            panel.applyDialogChanges();
+        }
     }
 
     public void init(ColumnSelectionModel[] columns) {
@@ -96,40 +127,10 @@ public class ColumnSelectionPanel extends JPanel {
     }
 
     private void applyDialogChanges() {
-        for (Iterator<ColumnSelectionModel> it = checkBoxes.keySet().iterator(); it.hasNext();) {
+        for (Iterator<ColumnSelectionModel> it = checkBoxes.keySet().iterator(); it.hasNext(); ) {
             ColumnSelectionModel columnModel = it.next();
             JCheckBox checkBox = checkBoxes.get(columnModel);
             columnModel.setSelected(checkBox.isSelected());
-        }
-    }
-
-    public static void showColumnSelectionPopup(ColumnSelectionModel[] columns, Component c) {
-        JPopupMenu popup = new JPopupMenu();
-
-        for (int col = 0; col < columns.length; col++) {
-            final ColumnSelectionModel column = columns[col];
-            final JCheckBoxMenuItem checkBox = new JCheckBoxMenuItem();
-            checkBox.setText(column.getName());
-            checkBox.setSelected(column.isSelected());
-            checkBox.setEnabled(column.isEnabled());
-            checkBox.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent evt) {
-                    column.setSelected(checkBox.isSelected());
-                }
-            });
-            popup.add(checkBox);
-        }
-
-        popup.show(c, 8, 8);
-    }
-
-    public static void showColumnSelectionDialog(ColumnSelectionModel[] columns, String dialogTitle) {
-        ColumnSelectionPanel panel = new ColumnSelectionPanel(columns);
-        int res = JOptionPane.showConfirmDialog(null, panel, dialogTitle, JOptionPane.OK_CANCEL_OPTION);
-        if (res == JOptionPane.OK_OPTION) {
-            panel.applyDialogChanges();
         }
     }
 

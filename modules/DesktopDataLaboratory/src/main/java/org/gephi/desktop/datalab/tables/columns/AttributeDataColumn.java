@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2015 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.tables.columns;
 
 import org.gephi.datalab.api.AttributeColumnsController;
@@ -46,7 +47,6 @@ import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class AttributeDataColumn<T extends Element> implements ElementDataColumn<T> {

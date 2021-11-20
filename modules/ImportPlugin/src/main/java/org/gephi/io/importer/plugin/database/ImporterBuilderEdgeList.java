@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.importer.plugin.database;
 
 import org.gephi.io.importer.spi.DatabaseImporter;
@@ -46,7 +47,6 @@ import org.gephi.io.importer.spi.DatabaseImporterBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = DatabaseImporterBuilder.class)

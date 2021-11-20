@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.swing;
 
 import com.jogamp.newt.event.MouseEvent;
@@ -62,7 +63,6 @@ import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.selection.Rectangle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class StandardGraphIO implements GraphIO, VizArchitecture {
@@ -166,8 +166,10 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
         //Update 3d position
         double[] marker = graphDrawable.draggingMarker;
-        mousePosition3d[0] = (float) ((x - graphDrawable.viewport.get(2) / 2.0) / -marker[0]) + graphDrawable.cameraTarget[0] / globalScale;       //Set to centric coordinates
-        mousePosition3d[1] = (float) ((y - graphDrawable.viewport.get(3) / 2.0) / -marker[1]) + graphDrawable.cameraTarget[1] / globalScale;
+        mousePosition3d[0] = (float) ((x - graphDrawable.viewport.get(2) / 2.0) / -marker[0]) +
+            graphDrawable.cameraTarget[0] / globalScale;       //Set to centric coordinates
+        mousePosition3d[1] = (float) ((y - graphDrawable.viewport.get(3) / 2.0) / -marker[1]) +
+            graphDrawable.cameraTarget[1] / globalScale;
 
         if (dragging) {
             dragging = false;
@@ -208,8 +210,10 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
             //Upate 3d position
             double[] marker = graphDrawable.draggingMarker;
-            mousePosition3d[0] = (float) ((x - graphDrawable.viewport.get(2) / 2.0) / -marker[0]) + graphDrawable.cameraTarget[0] / globalScale;       //Set to centric coordinates
-            mousePosition3d[1] = (float) ((y - graphDrawable.viewport.get(3) / 2.0) / -marker[1]) + graphDrawable.cameraTarget[1] / globalScale;
+            mousePosition3d[0] = (float) ((x - graphDrawable.viewport.get(2) / 2.0) / -marker[0]) +
+                graphDrawable.cameraTarget[0] / globalScale;       //Set to centric coordinates
+            mousePosition3d[1] = (float) ((y - graphDrawable.viewport.get(3) / 2.0) / -marker[1]) +
+                graphDrawable.cameraTarget[1] / globalScale;
 
             if (vizController.getVizConfig().isSelectionEnable()) {
                 engine.getScheduler().requireUpdateSelection();
@@ -227,7 +231,9 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             case MouseEvent.BUTTON1:
                 if (vizController.getVizConfig().isSelectionEnable() && engine.isRectangleSelection()) {
                     Rectangle r = (Rectangle) engine.getCurrentSelectionArea();
-                    boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0 || (e.getModifiers() & InputEvent.META_MASK) != 0;
+                    boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 ||
+                        (e.getModifiers() & InputEvent.CTRL_MASK) != 0 ||
+                        (e.getModifiers() & InputEvent.META_MASK) != 0;
                     r.setCtrl(ctrl);
                 }
                 engine.getScheduler().requireMouseClick();
@@ -279,8 +285,10 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             mousePosition[1] = (int) y;
 
             double[] marker = graphDrawable.draggingMarker;
-            mousePosition3d[0] = (float) ((x - graphDrawable.viewport.get(2) / 2.0) / -marker[0]) + graphDrawable.cameraTarget[0] / globalScale;       //Set to centric coordinates
-            mousePosition3d[1] = (float) ((y - graphDrawable.viewport.get(3) / 2.0) / -marker[1]) + graphDrawable.cameraTarget[1] / globalScale;
+            mousePosition3d[0] = (float) ((x - graphDrawable.viewport.get(2) / 2.0) / -marker[0]) +
+                graphDrawable.cameraTarget[0] / globalScale;       //Set to centric coordinates
+            mousePosition3d[1] = (float) ((y - graphDrawable.viewport.get(3) / 2.0) / -marker[1]) +
+                graphDrawable.cameraTarget[1] / globalScale;
             mouseDrag3d[0] = mousePosition3d[0];
             mouseDrag3d[1] = mousePosition3d[1];
 
@@ -327,7 +335,9 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             return;
         }
 
-        boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0 || (e.getModifiers() & InputEvent.META_MASK) != 0;
+        boolean ctrl =
+            (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0 ||
+                (e.getModifiers() & InputEvent.META_MASK) != 0;
         if (ctrl) {
             SelectionManager manager = VizController.getInstance().getSelectionManager();
             if (!manager.isRectangleSelection()) {
@@ -349,8 +359,10 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         float markerY = (float) graphDrawable.getDraggingMarkerY();
 
         //Transform in 3d coordinates
-        float mouseX = (float) ((mousePosition[0] - graphDrawable.viewport.get(2) / 2.0) / -markerX) + cameraTarget[0] / globalScale;       //Set to centric coordinates
-        float mouseY = (float) ((mousePosition[1] - graphDrawable.viewport.get(3) / 2.0) / -markerY) + cameraTarget[1] / globalScale;
+        float mouseX = (float) ((mousePosition[0] - graphDrawable.viewport.get(2) / 2.0) / -markerX) +
+            cameraTarget[0] / globalScale;       //Set to centric coordinates
+        float mouseY = (float) ((mousePosition[1] - graphDrawable.viewport.get(3) / 2.0) / -markerY) +
+            cameraTarget[1] / globalScale;
 
         //Get mouse position within the clipping plane
         mouseX = MathUtil.clamp(mouseX, limits.getMinXoctree(), limits.getMaxXoctree());
@@ -365,7 +377,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
         //Distance from location to mouse
         float distance = (float) Math.sqrt(locationVector.x() * locationVector.x()
-                + locationVector.y() * locationVector.y() + locationVector.z() * locationVector.z());
+            + locationVector.y() * locationVector.y() + locationVector.z() * locationVector.z());
         float distanceRatio = MathUtil.clamp(2 * distance / 10000f, 0f, 2f);
         float coeff = (float) (Math.exp(distanceRatio - 2) * 2.2 - 0.295);      //exp(x-2)*2.2-0.3
         float step = way * (10f + 1000 * coeff);
@@ -379,7 +391,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         locationVector.scale(stepRatio);
 
         if (cameraLocation[2] + locationVector.z() >= 1f
-                && cameraLocation[2] + locationVector.z() <= (graphDrawable.farDistance - graphDrawable.nearDistance)) {
+            && cameraLocation[2] + locationVector.z() <= (graphDrawable.farDistance - graphDrawable.nearDistance)) {
             cameraLocation[0] += locationVector.x();
             cameraLocation[1] += locationVector.y();
             cameraLocation[2] += locationVector.z();
@@ -396,7 +408,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     public void setCameraDistance(float distance) {
         float cameraLocation[] = graphDrawable.getCameraLocation();
         float cameraTarget[] = graphDrawable.getCameraTarget();
-        Vec3f camVect = new Vec3f(cameraTarget[0] - cameraLocation[0], cameraTarget[1] - cameraLocation[1], cameraTarget[2] - cameraLocation[2]);
+        Vec3f camVect = new Vec3f(cameraTarget[0] - cameraLocation[0], cameraTarget[1] - cameraLocation[1],
+            cameraTarget[2] - cameraLocation[2]);
 
         float diff = camVect.length() - distance;
         if (Math.abs(diff) > 1f) {
@@ -468,8 +481,12 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         float graphWidth = Math.abs(limits.getMaxXoctree() - limits.getMinXoctree());
         float graphHeight = Math.abs(limits.getMaxYoctree() - limits.getMinYoctree());
 
-        float currentDistanceGraphRatioX = Math.abs(graphDrawable.viewport.get(2) / (float) graphDrawable.getDraggingMarkerX()) / graphDrawable.cameraLocation[2];
-        float currentDistanceGraphRatioY = Math.abs(graphDrawable.viewport.get(3) / (float) graphDrawable.getDraggingMarkerY()) / graphDrawable.cameraLocation[2];
+        float currentDistanceGraphRatioX =
+            Math.abs(graphDrawable.viewport.get(2) / (float) graphDrawable.getDraggingMarkerX()) /
+                graphDrawable.cameraLocation[2];
+        float currentDistanceGraphRatioY =
+            Math.abs(graphDrawable.viewport.get(3) / (float) graphDrawable.getDraggingMarkerY()) /
+                graphDrawable.cameraLocation[2];
         float newCameraLocationX = graphWidth / currentDistanceGraphRatioX;
         float newCameraLocationY = graphHeight / currentDistanceGraphRatioY;
         float newCameraLocation = Math.max(newCameraLocationX, newCameraLocationY);
@@ -500,6 +517,12 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     @Override
     public boolean isDragging() {
         return dragging;
+    }
+
+    private MouseEvent convertMouseEvent(java.awt.event.MouseEvent me) {
+        return new MouseEvent((short) 0, me.getSource(), me.getWhen(), me.getModifiers(), me.getX(), me.getY(),
+            (short) me.getClickCount(), (short) me.getButton(),
+            me instanceof MouseWheelEvent ? new float[] {0, -((MouseWheelEvent) me).getUnitsToScroll()} : null, 1f);
     }
 
     private class MouseEventsWrapper extends MouseAdapter {
@@ -543,9 +566,5 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         public void mouseWheelMoved(MouseWheelEvent e) {
             StandardGraphIO.this.mouseWheelMoved(convertMouseEvent(e));
         }
-    }
-
-    private MouseEvent convertMouseEvent(java.awt.event.MouseEvent me) {
-        return new MouseEvent((short) 0, me.getSource(), me.getWhen(), me.getModifiers(), me.getX(), me.getY(), (short) me.getClickCount(), (short) me.getButton(), me instanceof MouseWheelEvent ? new float[]{0, -((MouseWheelEvent) me).getUnitsToScroll()} : null, 1f);
     }
 }

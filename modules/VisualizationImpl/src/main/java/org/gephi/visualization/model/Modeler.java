@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.model;
 
 import com.jogamp.opengl.GL2;
@@ -50,7 +51,6 @@ import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.CompatibilityEngine;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public abstract class Modeler {

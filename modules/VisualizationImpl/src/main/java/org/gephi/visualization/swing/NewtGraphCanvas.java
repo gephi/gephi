@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.swing;
 
 import com.jogamp.newt.awt.NewtCanvasAWT;
@@ -52,7 +53,6 @@ import javax.swing.ToolTipManager;
 import org.gephi.ui.utils.UIUtils;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class NewtGraphCanvas extends GLAbstractListener {

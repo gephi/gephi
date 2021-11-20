@@ -39,22 +39,22 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components.richtooltip;
 
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 /**
- *
  * @author Mathieu Bastian
  */
 class JRichTooltipPanel extends JPanel {
 
-    protected RichTooltip tooltipInfo;
     /**
      * @see #getUIClassID
      */
     public static final String uiClassID = "RichTooltipPanelUI";
+    protected RichTooltip tooltipInfo;
 
     public JRichTooltipPanel(RichTooltip tooltipInfo) {
         this.tooltipInfo = tooltipInfo;
@@ -73,8 +73,7 @@ class JRichTooltipPanel extends JPanel {
     /**
      * Sets the look and feel (L&amp;F) object that renders this component.
      *
-     * @param ui
-     *            The UI delegate.
+     * @param ui The UI delegate.
      */
     protected void setUI(RichTooltipPanelUI ui) {
         super.setUI(ui);

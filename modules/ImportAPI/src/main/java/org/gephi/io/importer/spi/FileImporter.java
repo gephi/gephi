@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.spi;
 
 import java.io.File;
@@ -50,17 +51,6 @@ import java.io.Reader;
  * @author Mathieu Bastian
  */
 public interface FileImporter extends Importer {
-    
-    /**
-     * Optional interface to implement for {@link FileImporter} classes that need to receive the source file instead of the {@link Reader}
-     */
-    public interface FileAware {
-        /**
-         * Called before showing the {@link ImporterUI} and before executing the importer.
-         * @param file Source file
-         */
-        public void setFile(File file);
-    }
 
     /**
      * Sets the reader where characters can be retrieved.
@@ -68,4 +58,16 @@ public interface FileImporter extends Importer {
      * @param reader the reader on data
      */
     public void setReader(Reader reader);
+
+    /**
+     * Optional interface to implement for {@link FileImporter} classes that need to receive the source file instead of the {@link Reader}
+     */
+    public interface FileAware {
+        /**
+         * Called before showing the {@link ImporterUI} and before executing the importer.
+         *
+         * @param file Source file
+         */
+        public void setFile(File file);
+    }
 }

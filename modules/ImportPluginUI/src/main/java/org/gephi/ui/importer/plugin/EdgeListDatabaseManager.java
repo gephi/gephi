@@ -39,9 +39,9 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.importer.plugin;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -56,7 +56,6 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 
 /**
- *
  * @author Andre Panisson
  */
 public class EdgeListDatabaseManager {
@@ -96,7 +95,7 @@ public class EdgeListDatabaseManager {
     private void load() {
         if (databaseConfigurations == null) {
             databaseConfigurations
-                    = FileUtil.getConfigFile("EdgeListDatabase");
+                = FileUtil.getConfigFile("EdgeListDatabase");
         }
 
         if (databaseConfigurations != null) {

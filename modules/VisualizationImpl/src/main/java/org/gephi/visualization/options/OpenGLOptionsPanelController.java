@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.options;
 
 import java.beans.PropertyChangeListener;
@@ -50,8 +51,8 @@ import org.openide.util.Lookup;
 
 public final class OpenGLOptionsPanelController extends OptionsPanelController {
 
-    private OpenGLPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private OpenGLPanel panel;
     private boolean changed;
 
     @Override

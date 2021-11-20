@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
 import java.awt.Color;
@@ -95,7 +96,7 @@ public interface Partition {
      * Returns the element's value for this partition.
      *
      * @param element element to get the value for
-     * @param graph graph this element belongs to
+     * @param graph   graph this element belongs to
      * @return the value for this partition
      */
     public Object getValue(Element element, Graph graph);

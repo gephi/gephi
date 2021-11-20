@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.filters.plugin.attribute;
 
 import javax.swing.JPanel;
@@ -47,7 +48,6 @@ import org.gephi.filters.plugin.attribute.EqualNumberUI;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = EqualNumberUI.class)

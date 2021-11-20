@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
@@ -15,7 +16,6 @@ import org.gephi.graph.api.UndirectedGraph;
 import org.junit.Test;
 
 /**
- *
  * @author akharitonova
  */
 public class ClusteringCoefficientTest extends TestCase {
@@ -31,7 +31,8 @@ public class ClusteringCoefficientTest extends TestCase {
         int[] triangles = new int[1];
         double[] nodeClustering = new double[1];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
         double avClusteringCoefficient = results.get("clusteringCoefficient");
 
         assertEquals(avClusteringCoefficient, Double.NaN);
@@ -47,7 +48,8 @@ public class ClusteringCoefficientTest extends TestCase {
         int[] triangles = new int[2];
         double[] nodeClustering = new double[2];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
         double avClusteringCoefficient = results.get("clusteringCoefficient");
 
         assertEquals(avClusteringCoefficient, Double.NaN);
@@ -64,7 +66,8 @@ public class ClusteringCoefficientTest extends TestCase {
         int[] triangles = new int[5];
         double[] nodeClustering = new double[5];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
         double avClusteringCoefficient = results.get("clusteringCoefficient");
 
         assertEquals(avClusteringCoefficient, Double.NaN);
@@ -81,7 +84,8 @@ public class ClusteringCoefficientTest extends TestCase {
         int[] triangles = new int[5];
         double[] nodeClustering = new double[5];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
         double avClusteringCoefficient = results.get("clusteringCoefficient");
 
         assertEquals(avClusteringCoefficient, 1.0);
@@ -98,7 +102,8 @@ public class ClusteringCoefficientTest extends TestCase {
         int[] triangles = new int[6];
         double[] nodeClustering = new double[6];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
 
         double avClusteringCoefficient = results.get("clusteringCoefficient");
 
@@ -155,7 +160,8 @@ public class ClusteringCoefficientTest extends TestCase {
         int[] triangles = new int[7];
         double[] nodeClustering = new double[7];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
 
         double cl1 = nodeClustering[0];
         double cl3 = nodeClustering[2];
@@ -212,7 +218,8 @@ public class ClusteringCoefficientTest extends TestCase {
         int[] triangles = new int[7];
         double[] nodeClustering = new double[7];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
 
         double cl2 = nodeClustering[1];
         double avClusteringCoefficient = results.get("clusteringCoefficient");
@@ -254,14 +261,15 @@ public class ClusteringCoefficientTest extends TestCase {
         undirectedGraph.addEdge(edge25);
         undirectedGraph.addEdge(edge36);
 
-       Graph graph = graphModel.getGraph();
+        Graph graph = graphModel.getGraph();
         ClusteringCoefficient cc = new ClusteringCoefficient();
 
         ArrayWrapper[] network = new ArrayWrapper[6];
         int[] triangles = new int[6];
         double[] nodeClustering = new double[6];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
 
         double cl1 = nodeClustering[0];
 
@@ -283,7 +291,8 @@ public class ClusteringCoefficientTest extends TestCase {
         int[] triangles = new int[3];
         double[] nodeClustering = new double[3];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, false);
 
         double avClusteringCoefficient = results.get("clusteringCoefficient");
 
@@ -327,7 +336,8 @@ public class ClusteringCoefficientTest extends TestCase {
         int[] triangles = new int[4];
         double[] nodeClustering = new double[4];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, true);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, true);
         double avClusteringCoefficient = results.get("clusteringCoefficient");
 
         assertEquals(avClusteringCoefficient, 0.5);
@@ -368,7 +378,8 @@ public class ClusteringCoefficientTest extends TestCase {
         int[] triangles = new int[3];
         double[] nodeClustering = new double[3];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, true);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, true);
         double avClusteringCoefficient = results.get("clusteringCoefficient");
 
         assertEquals(avClusteringCoefficient, 1.);
@@ -409,7 +420,8 @@ public class ClusteringCoefficientTest extends TestCase {
         int[] triangles = new int[4];
         double[] nodeClustering = new double[4];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, true);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, true);
         double avClusteringCoefficient = results.get("clusteringCoefficient");
         double res = 0.4167;
         double diff = 0.01;
@@ -450,7 +462,8 @@ public class ClusteringCoefficientTest extends TestCase {
         int[] triangles = new int[3];
         double[] nodeClustering = new double[3];
 
-        HashMap<String, Double> results = cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, true);
+        HashMap<String, Double> results =
+            cc.computeClusteringCoefficient(graph, network, triangles, nodeClustering, true);
         double avClusteringCoefficient = results.get("clusteringCoefficient");
         double res = 0.833;
         double diff = 0.01;

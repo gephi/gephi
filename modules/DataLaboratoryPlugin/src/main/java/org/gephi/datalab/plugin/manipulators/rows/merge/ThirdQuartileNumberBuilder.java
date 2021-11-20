@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
@@ -47,14 +48,15 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for ThirdQuartileNumber AttributeColumnsMergeStrategy.
+ *
  * @author Eduardo Ramos
  */
-@ServiceProvider(service=AttributeRowsMergeStrategyBuilder.class)
+@ServiceProvider(service = AttributeRowsMergeStrategyBuilder.class)
 public class ThirdQuartileNumberBuilder implements AttributeRowsMergeStrategyBuilder {
 
     @Override
     public AttributeRowsMergeStrategy getAttributeRowsMergeStrategy() {
         return new ThirdQuartileNumber();
     }
-    
+
 }

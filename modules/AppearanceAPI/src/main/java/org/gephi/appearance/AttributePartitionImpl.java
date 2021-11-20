@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
 import java.util.Collection;
@@ -48,13 +49,11 @@ import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.ElementIterable;
-import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Index;
 import org.gephi.graph.api.types.TimeMap;
 
 /**
- *
  * @author mbastian
  */
 public class AttributePartitionImpl extends PartitionImpl {
@@ -86,7 +85,8 @@ public class AttributePartitionImpl extends PartitionImpl {
         if (graph != null) {
             parts.clear();
             elements = 0;
-            ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
+            ElementIterable<? extends Element> iterable =
+                AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
 
             if (column.isDynamic()) {
                 refreshDynamic(iterable);
@@ -100,7 +100,7 @@ public class AttributePartitionImpl extends PartitionImpl {
         for (Element el : iterable) {
             Object val = el.getAttribute(column);
             Integer count = parts.get(val);
-            if(count == null) {
+            if (count == null) {
                 count = 0;
             }
             parts.put(val, ++count);

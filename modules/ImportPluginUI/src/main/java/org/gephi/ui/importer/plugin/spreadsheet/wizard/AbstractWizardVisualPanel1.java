@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.ui.importer.plugin.spreadsheet.wizard;
 
 import java.io.IOException;
@@ -56,7 +57,6 @@ import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetParser;
 import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetRow;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public abstract class AbstractWizardVisualPanel1 extends javax.swing.JPanel {
@@ -120,7 +120,8 @@ public abstract class AbstractWizardVisualPanel1 extends javax.swing.JPanel {
 
                 // Search for missing source or target columns for edges table
                 if (mode == SpreadsheetGeneralConfiguration.Mode.EDGES_TABLE) {
-                    if (rowSize <= sourceColumnIndex || rowSize <= targetColumnIndex || currentRecord[sourceColumnIndex] == null || currentRecord[targetColumnIndex] == null) {
+                    if (rowSize <= sourceColumnIndex || rowSize <= targetColumnIndex ||
+                        currentRecord[sourceColumnIndex] == null || currentRecord[targetColumnIndex] == null) {
                         hasRowsMissingSourcesOrTargets = true;
                     }
                 }

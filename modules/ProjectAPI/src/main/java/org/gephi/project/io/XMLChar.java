@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.io;
 
 import java.util.Arrays;
@@ -52,13 +53,13 @@ public class XMLChar {
     // Constants
     //
     /**
-     * Character flags.
-     */
-    private static final byte[] CHARS = new byte[1 << 16];
-    /**
      * Valid character mask.
      */
     public static final int MASK_VALID = 0x01;
+    /**
+     * Character flags.
+     */
+    private static final byte[] CHARS = new byte[1 << 16];
 
     //
     // Static initialization
@@ -702,7 +703,7 @@ public class XMLChar {
      */
     public static boolean isValid(int c) {
         return (c < 0x10000 && (CHARS[c] & MASK_VALID) != 0)
-                || (0x10000 <= c && c <= 0x10FFFF);
+            || (0x10000 <= c && c <= 0x10FFFF);
     } // isValid(int):boolean
 } // class XMLChar
 

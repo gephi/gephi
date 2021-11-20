@@ -50,15 +50,16 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Overview perspective
- * 
+ *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = Perspective.class, position=100)
+@ServiceProvider(service = Perspective.class, position = 100)
 public class OverviewPerspective implements Perspective {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/desktop/banner/perspective/plugin/resources/overview.png", false);
+        return ImageUtilities
+            .loadImageIcon("org/gephi/desktop/banner/perspective/plugin/resources/overview.png", false);
     }
 
     @Override

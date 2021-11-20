@@ -56,9 +56,9 @@ public class SupportSize {
     /**
      * Constructor.
      *
-     * @param width       the support's width
-     * @param height      the support's height
-     * @param lengthUnit  the lenght unit
+     * @param width      the support's width
+     * @param height     the support's height
+     * @param lengthUnit the lenght unit
      */
     public SupportSize(int width, int height, LengthUnit lengthUnit) {
         this.width = width;

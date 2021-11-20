@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.ui.importer.plugin.spreadsheet;
 
 import javax.swing.JPanel;
@@ -52,7 +53,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Eduardo Ramos
  */
 @ServiceProvider(service = ImporterUI.class)

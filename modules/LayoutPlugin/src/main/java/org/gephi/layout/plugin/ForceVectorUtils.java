@@ -39,12 +39,12 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin;
 
 import org.gephi.graph.api.Node;
 
 /**
- *
  * @author Mathieu Jacomy
  */
 public class ForceVectorUtils {
@@ -54,9 +54,9 @@ public class ForceVectorUtils {
     }
 
     public static void fcBiRepulsor(Node N1, Node N2, double c) {
-        double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
+        double xDist = N1.x() - N2.x();    // distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
-        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);	// distance tout court
+        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);    // distance tout court
 
         if (dist > 0) {
             double f = repulsion(c, dist);
@@ -73,9 +73,9 @@ public class ForceVectorUtils {
     }
 
     public static void fcBiRepulsor_y(Node N1, Node N2, double c, double verticalization) {
-        double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
+        double xDist = N1.x() - N2.x();    // distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
-        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);	// distance tout court
+        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);    // distance tout court
 
         if (dist > 0) {
             double f = repulsion(c, dist);
@@ -92,9 +92,10 @@ public class ForceVectorUtils {
     }
 
     public static void fcBiRepulsor_noCollide(Node N1, Node N2, double c) {
-        double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
+        double xDist = N1.x() - N2.x();    // distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
-        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist) - N1.size() - N2.size();	// distance (from the border of each node)
+        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist) - N1.size() -
+            N2.size();    // distance (from the border of each node)
 
         if (dist > 0) {
             double f = repulsion(c, dist);
@@ -108,7 +109,7 @@ public class ForceVectorUtils {
             N2L.dx -= xDist / dist * f;
             N2L.dy -= yDist / dist * f;
         } else if (dist != 0) {
-            double f = -c;	//flat repulsion
+            double f = -c;    //flat repulsion
 
             ForceVectorNodeLayoutData N1L = N1.getLayoutData();
             ForceVectorNodeLayoutData N2L = N2.getLayoutData();
@@ -122,9 +123,9 @@ public class ForceVectorUtils {
     }
 
     public static void fcUniRepulsor(Node N1, Node N2, double c) {
-        double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
+        double xDist = N1.x() - N2.x();    // distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
-        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);	// distance tout court
+        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);    // distance tout court
 
         if (dist > 0) {
             double f = repulsion(c, dist);
@@ -137,9 +138,9 @@ public class ForceVectorUtils {
     }
 
     public static void fcBiAttractor(Node N1, Node N2, double c) {
-        double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
+        double xDist = N1.x() - N2.x();    // distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
-        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);	// distance tout court
+        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);    // distance tout court
 
         if (dist > 0) {
             double f = attraction(c, dist);
@@ -156,9 +157,10 @@ public class ForceVectorUtils {
     }
 
     public static void fcBiAttractor_noCollide(Node N1, Node N2, double c) {
-        double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
+        double xDist = N1.x() - N2.x();    // distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
-        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist) - N1.size() - N2.size();	// distance (from the border of each node)
+        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist) - N1.size() -
+            N2.size();    // distance (from the border of each node)
 
         if (dist > 0) {
             double f = attraction(c, dist);
@@ -175,9 +177,9 @@ public class ForceVectorUtils {
     }
 
     public static void fcBiFlatAttractor(Node N1, Node N2, double c) {
-        double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
+        double xDist = N1.x() - N2.x();    // distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
-        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);	// distance tout court
+        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);    // distance tout court
 
         if (dist > 0) {
             double f = -c;
@@ -194,9 +196,9 @@ public class ForceVectorUtils {
     }
 
     public static void fcUniAttractor(Node N1, Node N2, float c) {
-        double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
+        double xDist = N1.x() - N2.x();    // distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
-        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);	// distance tout court
+        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);    // distance tout court
 
         if (dist > 0) {
             double f = attraction(c, dist);

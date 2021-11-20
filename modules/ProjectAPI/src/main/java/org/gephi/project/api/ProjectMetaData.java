@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.api;
 
 /**
@@ -58,6 +59,13 @@ public interface ProjectMetaData {
     public String getKeywords();
 
     /**
+     * Sets the project's keywords.
+     *
+     * @param keywords keywords
+     */
+    public void setKeywords(String keywords);
+
+    /**
      * Returns the author of this project.
      * <p>
      * The default value is the computer's user name.
@@ -67,25 +75,18 @@ public interface ProjectMetaData {
     public String getAuthor();
 
     /**
-     * Returns the description of this project.
-     *
-     * @return the project's description or empty string if missing
-     */
-    public String getDescription();
-
-    /**
-     * Returns the title of this project.
-     *
-     * @return the project's title or empty string if missing
-     */
-    public String getTitle();
-
-    /**
      * Sets the project's author.
      *
      * @param author author
      */
     public void setAuthor(String author);
+
+    /**
+     * Returns the description of this project.
+     *
+     * @return the project's description or empty string if missing
+     */
+    public String getDescription();
 
     /**
      * Sets the project's description.
@@ -95,11 +96,11 @@ public interface ProjectMetaData {
     public void setDescription(String description);
 
     /**
-     * Sets the project's keywords.
+     * Returns the title of this project.
      *
-     * @param keywords keywords
+     * @return the project's title or empty string if missing
      */
-    public void setKeywords(String keywords);
+    public String getTitle();
 
     /**
      * Sets the project's title.

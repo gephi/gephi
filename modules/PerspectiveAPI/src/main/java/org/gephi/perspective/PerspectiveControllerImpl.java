@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.perspective;
 
 import java.awt.Dimension;
@@ -55,16 +56,15 @@ import org.openide.windows.WindowSystemEvent;
 import org.openide.windows.WindowSystemListener;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = PerspectiveController.class)
 public class PerspectiveControllerImpl implements PerspectiveController {
 
     private static final String SELECTED_PERSPECTIVE_PREFERENCE = "PerspectiveControllerImpl_selectedPerspective";
+    private final Perspective[] perspectives;
     //Data
     private String selectedPerspective;
-    private final Perspective[] perspectives;
 
     public PerspectiveControllerImpl() {
         //Load perspectives

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2015 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.tables;
 
 import java.util.Arrays;
@@ -50,7 +51,6 @@ import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ElementsDataTableModel<T extends Element> extends AbstractTableModel {
@@ -118,7 +118,7 @@ public class ElementsDataTableModel<T extends Element> extends AbstractTableMode
     public T[] getElements() {
         return elements;
     }
-    
+
     public void configure(T[] elements, ElementDataColumn<T>[] columns) {
         Set<ElementDataColumn> oldColumns = new HashSet<ElementDataColumn>(Arrays.asList(this.columns));
         Set<ElementDataColumn> newColumns = new HashSet<ElementDataColumn>(Arrays.asList(columns));
@@ -133,12 +133,13 @@ public class ElementsDataTableModel<T extends Element> extends AbstractTableMode
             fireTableDataChanged();
         }
     }
-    
+
     /**
      * Column at index or null if it's a fake column.
-     * @return 
+     *
+     * @return
      */
-    public Column getColumnAtIndex(int i){
+    public Column getColumnAtIndex(int i) {
         if (i >= 0 && i < columns.length) {
             return columns[i].getColumn();
         } else {

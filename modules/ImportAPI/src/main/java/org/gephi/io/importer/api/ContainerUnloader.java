@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 import org.gephi.graph.api.Interval;
@@ -119,7 +120,7 @@ public interface ContainerUnloader {
     public boolean allowParallelEdges();
 
     public boolean isAutoScale();
-    
+
     public boolean isFillLabelWithId();
 
     public EdgeMergeStrategy getEdgesMergeStrategy();

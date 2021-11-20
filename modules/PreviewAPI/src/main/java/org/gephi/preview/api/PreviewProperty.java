@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.api;
 
 import java.beans.PropertyEditor;
@@ -53,16 +54,16 @@ import org.openide.util.NbBundle;
  * should be rendered. Each property should have a unique name and a type. Users
  * should use the static <code>createProperty()</code> methods to create instances.
  * <p>
- * Static default property names are defined in this class to help renderers to 
+ * Static default property names are defined in this class to help renderers to
  * reuse external properties and have cleaner code.
- * <P>
- * Properties can be grouped by categories, which default are 
+ * <p>
+ * Properties can be grouped by categories, which default are
  * <code>PreviewProperty.CATEGORY_NODES</code>, <code>PreviewProperty.CATEGORY_EDGES</code>,
  * <code>PreviewProperty.CATEGORY_NODE_LABELS</code>, <code>PreviewProperty.CATEGORY_EDGE_LABELS</code>
  * and <code>PreviewProperty.CATEGORY_EDGE_ARROWS</code>.
- * 
+ *
  * @author Mathieu Bastian
- * @see Renderer#getProperties() 
+ * @see Renderer#getProperties()
  */
 public class PreviewProperty {
 
@@ -81,7 +82,7 @@ public class PreviewProperty {
      */
     public static final String VISIBILITY_RATIO = "visibility-ratio";
     /**
-     * General <code>Float</code> property in percentage (0-100) describing the 
+     * General <code>Float</code> property in percentage (0-100) describing the
      * margin size. For instance if the value is 4 the size of the margin is 4% of
      * the total graph width.
      */
@@ -187,7 +188,7 @@ public class PreviewProperty {
      */
     public static final String NODE_LABEL_MAX_CHAR = "node.label.max-char";
     /**
-     * Node Label Outline <code>Float</code> property defining the outline size. 
+     * Node Label Outline <code>Float</code> property defining the outline size.
      */
     public static final String NODE_LABEL_OUTLINE_SIZE = "node.label.outline.size";
     /**
@@ -228,7 +229,7 @@ public class PreviewProperty {
      */
     public static final String EDGE_LABEL_MAX_CHAR = "edge.label.max-char";
     /**
-     * Edge Label Outline <code>Float</code> property defining the outline size. 
+     * Edge Label Outline <code>Float</code> property defining the outline size.
      */
     public static final String EDGE_LABEL_OUTLINE_SIZE = "edge.label.outline.size";
     /**
@@ -252,23 +253,28 @@ public class PreviewProperty {
     /**
      * Node category
      */
-    public static final String CATEGORY_NODES = NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.Nodes");
+    public static final String CATEGORY_NODES =
+        NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.Nodes");
     /**
      * Edge category
      */
-    public static final String CATEGORY_EDGES = NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.Edges");
+    public static final String CATEGORY_EDGES =
+        NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.Edges");
     /**
      * Node Label category
      */
-    public static final String CATEGORY_NODE_LABELS = NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.NodeLabels");
+    public static final String CATEGORY_NODE_LABELS =
+        NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.NodeLabels");
     /**
      * Edge Label category
      */
-    public static final String CATEGORY_EDGE_LABELS = NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.EdgeLabels");
+    public static final String CATEGORY_EDGE_LABELS =
+        NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.EdgeLabels");
     /**
      * Edge arrow category
      */
-    public static final String CATEGORY_EDGE_ARROWS = NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.EdgeArrows");
+    public static final String CATEGORY_EDGE_ARROWS =
+        NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.EdgeArrows");
     //Variables
     final String name;
     final String displayName;
@@ -288,7 +294,8 @@ public class PreviewProperty {
         this.category = category;
     }
 
-    PreviewProperty(Object source, String name, Class type, String displayName, String description, String category, String[] dependencies) {
+    PreviewProperty(Object source, String name, Class type, String displayName, String description, String category,
+                    String[] dependencies) {
         this.source = source;
         this.name = name;
         this.type = type;
@@ -300,8 +307,9 @@ public class PreviewProperty {
 
     /**
      * Create a new preview property. The <code>name</code> should be unique.
+     *
      * @param source the property source, for instance the renderer
-     * @param name the property's name
+     * @param name   the property's name
      * @return a new preview property
      */
     public static PreviewProperty createProperty(Object source, String name) {
@@ -310,12 +318,13 @@ public class PreviewProperty {
 
     /**
      * Create a new preview property. The <code>name</code> should be unique. If
-     * the type is different from basic types (Integer, Float, Double, String, 
+     * the type is different from basic types (Integer, Float, Double, String,
      * Boolean or Color) make sure to implement a {@link PropertyEditor} and register it:
      * <pre>PropertyEditorManager.registerEditor(MyType.class, MyTypePropertyEditor.class);</pre>
+     *
      * @param source the property source, for instance the renderer
-     * @param name the property's name
-     * @param type the property's value type
+     * @param name   the property's name
+     * @param type   the property's value type
      * @return a new preview property
      */
     public static PreviewProperty createProperty(Object source, String name, Class type) {
@@ -324,7 +333,7 @@ public class PreviewProperty {
 
     /**
      * Create a new preview property. The <code>name</code> should be unique. If
-     * the type is different from basic types (Integer, Float, Double, String, 
+     * the type is different from basic types (Integer, Float, Double, String,
      * Boolean or Color) make sure to implement a {@link PropertyEditor} and register it:
      * <pre>PropertyEditorManager.registerEditor(MyType.class, MyTypePropertyEditor.class);</pre>
      * The category can be one of the default categories:
@@ -333,21 +342,23 @@ public class PreviewProperty {
      * <li>PreviewProperty.CATEGORY_NODE_LABELS</li>
      * <li>PreviewProperty.CATEGORY_EDGE_LABELS</li>
      * <li>PreviewProperty.CATEGORY_EDGE_ARROWS</li></ul>
-     * @param source the property source, for instance the renderer
-     * @param name the property's name
-     * @param type the property's value type
+     *
+     * @param source      the property source, for instance the renderer
+     * @param name        the property's name
+     * @param type        the property's value type
      * @param displayName the property's display name
      * @param description the property's description
-     * @param category the property's category
+     * @param category    the property's category
      * @return a new preview property
      */
-    public static PreviewProperty createProperty(Object source, String name, Class type, String displayName, String description, String category) {
+    public static PreviewProperty createProperty(Object source, String name, Class type, String displayName,
+                                                 String description, String category) {
         return new PreviewProperty(source, name, type, displayName, description, category);
     }
 
     /**
      * Create a new preview property. The <code>name</code> should be unique. If
-     * the type is different from basic types (Integer, Float, Double, String, 
+     * the type is different from basic types (Integer, Float, Double, String,
      * Boolean or Color) make sure to implement a {@link PropertyEditor} and register it:
      * <pre>PropertyEditorManager.registerEditor(MyType.class, MyTypePropertyEditor.class);</pre>
      * The category can be one of the default categories:
@@ -359,21 +370,24 @@ public class PreviewProperty {
      * The <code>dependantProperties</code> list is used to automatically disable
      * the property if the dependant property is not selected. The dependant properties
      * need to be <code>Boolean</code> type.
-     * @param source the property source, for instance the renderer
-     * @param name the property's name
-     * @param type the property's value type
-     * @param displayName the property's display name
-     * @param description the property's description
-     * @param category the property's category
+     *
+     * @param source              the property source, for instance the renderer
+     * @param name                the property's name
+     * @param type                the property's value type
+     * @param displayName         the property's display name
+     * @param description         the property's description
+     * @param category            the property's category
      * @param dependantProperties a list of boolean properties this property depend on
      * @return a new preview property
      */
-    public static PreviewProperty createProperty(Object source, String name, Class type, String displayName, String description, String category, String... dependantProperties) {
+    public static PreviewProperty createProperty(Object source, String name, Class type, String displayName,
+                                                 String description, String category, String... dependantProperties) {
         return new PreviewProperty(source, name, type, displayName, description, category, dependantProperties);
     }
 
     /**
      * Returns the property value.
+     *
      * @param <T> the return type
      * @return the property value or <code>null</code>
      */
@@ -383,6 +397,7 @@ public class PreviewProperty {
 
     /**
      * Sets this property value and return it. The value can be <code>null</code>.
+     *
      * @param value the value to be set
      * @return this property instance
      */
@@ -393,6 +408,7 @@ public class PreviewProperty {
 
     /**
      * Returns the (unique) name of this property.
+     *
      * @return the property's name
      */
     public String getName() {
@@ -401,6 +417,7 @@ public class PreviewProperty {
 
     /**
      * Returns the type of this property.
+     *
      * @return this property's type
      */
     public Class getType() {
@@ -409,6 +426,7 @@ public class PreviewProperty {
 
     /**
      * Returns the display name of this property or <code>null</code> if not set.
+     *
      * @return this property's display name or <code>null</code>
      */
     public String getDisplayName() {
@@ -417,6 +435,7 @@ public class PreviewProperty {
 
     /**
      * Returns the description of this property or <code>null</code> if not set.
+     *
      * @return this property's description or <code>null</code>
      */
     public String getDescription() {
@@ -425,6 +444,7 @@ public class PreviewProperty {
 
     /**
      * Returns the source object of this property.
+     *
      * @return this property's source object
      */
     public Object getSource() {
@@ -433,6 +453,7 @@ public class PreviewProperty {
 
     /**
      * Returns the category of this property or <code>null</code> if not set.
+     *
      * @return this property's category or <code>null</code>
      */
     public String getCategory() {

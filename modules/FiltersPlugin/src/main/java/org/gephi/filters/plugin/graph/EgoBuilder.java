@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.graph;
 
 import java.util.ArrayList;
@@ -62,7 +63,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = FilterBuilder.class)
@@ -169,7 +169,7 @@ public class EgoBuilder implements FilterBuilder {
         @Override
         public FilterProperty[] getProperties() {
             try {
-                return new FilterProperty[]{
+                return new FilterProperty[] {
                     FilterProperty.createProperty(this, String.class, "pattern"),
                     FilterProperty.createProperty(this, Integer.class, "depth"),
                     FilterProperty.createProperty(this, Boolean.class, "self")};

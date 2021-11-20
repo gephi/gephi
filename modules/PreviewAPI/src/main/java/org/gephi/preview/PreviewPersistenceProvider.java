@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview;
 
 import javax.xml.stream.XMLStreamException;
@@ -52,7 +53,6 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = WorkspacePersistenceProvider.class)
@@ -72,7 +72,8 @@ public class PreviewPersistenceProvider implements WorkspaceXMLPersistenceProvid
 
     @Override
     public void readXML(XMLStreamReader reader, Workspace workspace) {
-        PreviewModelImpl model = (PreviewModelImpl) Lookup.getDefault().lookup(PreviewController.class).getModel(workspace);
+        PreviewModelImpl model =
+            (PreviewModelImpl) Lookup.getDefault().lookup(PreviewController.class).getModel(workspace);
         if (model == null) {
             model = new PreviewModelImpl(workspace);
             workspace.add(model);

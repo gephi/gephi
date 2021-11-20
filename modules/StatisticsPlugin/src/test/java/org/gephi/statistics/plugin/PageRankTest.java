@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
@@ -51,7 +52,6 @@ import org.gephi.graph.api.UndirectedGraph;
 import org.junit.Test;
 
 /**
- *
  * @author Anna
  */
 public class PageRankTest extends TestCase {

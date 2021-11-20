@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview;
 
 import com.itextpdf.text.FontFactory;
@@ -79,25 +80,25 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         float marginRight = properties.getFloatValue(PDFTarget.MARGIN_RIGHT);
         float marginTop = properties.getFloatValue(PDFTarget.MARGIN_TOP);
         com.itextpdf.text.Rectangle pageSize
-                = properties.getValue(PDFTarget.PAGESIZE);
+            = properties.getValue(PDFTarget.PAGESIZE);
         boolean landscape = properties.getBooleanValue(PDFTarget.LANDSCAPE);
         PdfContentByte cb = properties.getValue(PDFTarget.PDF_CONTENT_BYTE);
         PDFRenderTargetImpl renderTarget = new PDFRenderTargetImpl(
-                cb,
-                cs,
-                pageSize,
-                marginLeft,
-                marginRight,
-                marginTop,
-                marginBottom,
-                landscape);
+            cb,
+            cs,
+            pageSize,
+            marginLeft,
+            marginRight,
+            marginTop,
+            marginBottom,
+            landscape);
         return renderTarget;
     }
 
     public static class PDFRenderTargetImpl extends AbstractRenderTarget implements PDFTarget {
 
-        private final PdfContentByte cb;
         private static boolean fontRegistered = false;
+        private final PdfContentByte cb;
         //Parameters
         private final float marginTop;
         private final float marginBottom;
@@ -107,14 +108,14 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         private final com.itextpdf.text.Rectangle pageSize;
 
         public PDFRenderTargetImpl(
-                PdfContentByte cb,
-                CanvasSize cs,
-                com.itextpdf.text.Rectangle size,
-                float marginLeft,
-                float marginRight,
-                float marginTop,
-                float marginBottom,
-                boolean landscape) {
+            PdfContentByte cb,
+            CanvasSize cs,
+            com.itextpdf.text.Rectangle size,
+            float marginLeft,
+            float marginRight,
+            float marginTop,
+            float marginBottom,
+            boolean landscape) {
             this.cb = cb;
             this.marginTop = marginTop;
             this.marginLeft = marginLeft;
@@ -152,41 +153,45 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
                 if (font != null) {
                     BaseFont baseFont;
                     if (!font.getFontName().equals(FontFactory.COURIER)
-                            && !font.getFontName().equals(FontFactory.COURIER_BOLD)
-                            && !font.getFontName().equals(FontFactory.COURIER_OBLIQUE)
-                            && !font.getFontName().equals(FontFactory.COURIER_BOLDOBLIQUE)
-                            && !font.getFontName().equals(FontFactory.HELVETICA)
-                            && !font.getFontName().equals(FontFactory.HELVETICA_BOLD)
-                            && !font.getFontName().equals(FontFactory.HELVETICA_BOLDOBLIQUE)
-                            && !font.getFontName().equals(FontFactory.HELVETICA_OBLIQUE)
-                            && !font.getFontName().equals(FontFactory.SYMBOL)
-                            && !font.getFontName().equals(FontFactory.TIMES_ROMAN)
-                            && !font.getFontName().equals(FontFactory.TIMES_BOLD)
-                            && !font.getFontName().equals(FontFactory.TIMES_ITALIC)
-                            && !font.getFontName().equals(FontFactory.TIMES_BOLDITALIC)
-                            && !font.getFontName().equals(FontFactory.ZAPFDINGBATS)
-                            && !font.getFontName().equals(FontFactory.COURIER_BOLD)
-                            && !font.getFontName().equals(FontFactory.COURIER_BOLD)
-                            && !font.getFontName().equals(FontFactory.COURIER_BOLD)) {
+                        && !font.getFontName().equals(FontFactory.COURIER_BOLD)
+                        && !font.getFontName().equals(FontFactory.COURIER_OBLIQUE)
+                        && !font.getFontName().equals(FontFactory.COURIER_BOLDOBLIQUE)
+                        && !font.getFontName().equals(FontFactory.HELVETICA)
+                        && !font.getFontName().equals(FontFactory.HELVETICA_BOLD)
+                        && !font.getFontName().equals(FontFactory.HELVETICA_BOLDOBLIQUE)
+                        && !font.getFontName().equals(FontFactory.HELVETICA_OBLIQUE)
+                        && !font.getFontName().equals(FontFactory.SYMBOL)
+                        && !font.getFontName().equals(FontFactory.TIMES_ROMAN)
+                        && !font.getFontName().equals(FontFactory.TIMES_BOLD)
+                        && !font.getFontName().equals(FontFactory.TIMES_ITALIC)
+                        && !font.getFontName().equals(FontFactory.TIMES_BOLDITALIC)
+                        && !font.getFontName().equals(FontFactory.ZAPFDINGBATS)
+                        && !font.getFontName().equals(FontFactory.COURIER_BOLD)
+                        && !font.getFontName().equals(FontFactory.COURIER_BOLD)
+                        && !font.getFontName().equals(FontFactory.COURIER_BOLD)) {
 
-                        com.itextpdf.text.Font itextFont = FontFactory.getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
+                        com.itextpdf.text.Font itextFont = FontFactory
+                            .getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
                         baseFont = itextFont.getBaseFont();
                         if (baseFont == null && !PDFRenderTargetImpl.fontRegistered) {
 
                             if (progressTicket != null) {
                                 String displayName = progressTicket.getDisplayName();
-                                Progress.setDisplayName(progressTicket, NbBundle.getMessage(PDFRenderTargetImpl.class, "PDFRenderTargetImpl.font.registration"));
+                                Progress.setDisplayName(progressTicket, NbBundle
+                                    .getMessage(PDFRenderTargetImpl.class, "PDFRenderTargetImpl.font.registration"));
                                 registerFonts();
                                 Progress.setDisplayName(progressTicket, displayName);
                             }
 
-                            itextFont = FontFactory.getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
+                            itextFont = FontFactory
+                                .getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
                             baseFont = itextFont.getBaseFont();
 
                             PDFRenderTargetImpl.fontRegistered = true;
                         }
                     } else {
-                        com.itextpdf.text.Font itextFont = FontFactory.getFont(font.getFontName(), font.getSize(), font.getStyle());
+                        com.itextpdf.text.Font itextFont =
+                            FontFactory.getFont(font.getFontName(), font.getSize(), font.getStyle());
                         baseFont = itextFont.getBaseFont();
                     }
 

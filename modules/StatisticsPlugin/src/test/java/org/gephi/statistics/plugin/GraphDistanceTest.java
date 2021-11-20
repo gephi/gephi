@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
@@ -51,7 +52,6 @@ import org.gephi.graph.api.UndirectedGraph;
 import org.junit.Test;
 
 /**
- *
  * @author Anna
  * @author Jonny Wray
  */
@@ -834,7 +834,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         Node n1 = undirectedGraph.getNode("0");
@@ -852,7 +853,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         Node n1 = undirectedGraph.getNode("0");
@@ -870,7 +872,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] harmonic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         Node n1 = undirectedGraph.getNode("0");
@@ -888,7 +891,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         Node n1 = undirectedGraph.getNode("0");
@@ -906,7 +910,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         Node n1 = undirectedGraph.getNode("0");
@@ -924,7 +929,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] harmonic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         Node n1 = undirectedGraph.getNode("0");
@@ -942,7 +948,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         Node n1 = undirectedGraph.getNode("0");
@@ -960,7 +967,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         Node n1 = undirectedGraph.getNode("0");
@@ -978,7 +986,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] harmonic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         Node n1 = undirectedGraph.getNode("0");
@@ -996,7 +1005,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         Node n1 = undirectedGraph.getNode("0");
@@ -1017,7 +1027,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         Node n1 = undirectedGraph.getNode("0");
@@ -1026,7 +1037,7 @@ public class GraphDistanceTest extends TestCase {
         int index2 = indicies.get(n2);
 
         assertEquals(closeness[index1], 1.0, TOLERANCE);
-        assertEquals(closeness[index2], 1.0/1.8, TOLERANCE);
+        assertEquals(closeness[index2], 1.0 / 1.8, TOLERANCE);
     }
 
     @Test
@@ -1038,7 +1049,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] harmonic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         Node n1 = undirectedGraph.getNode("0");
@@ -1046,8 +1058,8 @@ public class GraphDistanceTest extends TestCase {
         int index1 = indicies.get(n1);
         int index2 = indicies.get(n2);
 
-        assertEquals(harmonic[index1], 5.0/5.0, TOLERANCE);
-        assertEquals(harmonic[index2], (1.0 + 4*0.5)/5.0, TOLERANCE);
+        assertEquals(harmonic[index1], 5.0 / 5.0, TOLERANCE);
+        assertEquals(harmonic[index2], (1.0 + 4 * 0.5) / 5.0, TOLERANCE);
     }
 
     @Test
@@ -1059,7 +1071,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         Node n4 = undirectedGraph.getNode("3");
@@ -1077,7 +1090,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         Node n2 = undirectedGraph.getNode("1");
@@ -1095,13 +1109,14 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         Node n3 = undirectedGraph.getNode("2");
         int index3 = indicies.get(n3);
 
-        assertEquals(closeness[index3], 1.0/1.5, TOLERANCE);
+        assertEquals(closeness[index3], 1.0 / 1.5, TOLERANCE);
     }
 
     @Test
@@ -1113,13 +1128,14 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(undirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] harmonic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         Node n3 = undirectedGraph.getNode("2");
         int index3 = indicies.get(n3);
 
-        assertEquals(harmonic[index3], (1.0 + 1.0 + 1.0/2.0 + 1.0/2.0)/4.0, TOLERANCE);
+        assertEquals(harmonic[index3], (1.0 + 1.0 + 1.0 / 2.0 + 1.0 / 2.0) / 4.0, TOLERANCE);
     }
 
     @Test
@@ -1166,7 +1182,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph hierarchicalUndirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         int index1 = indicies.get(node1);
@@ -1220,12 +1237,13 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph hierarchicalUndirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         int index7 = indicies.get(node7);
 
-        double res = 1.0/1.1667;
+        double res = 1.0 / 1.1667;
         double diff = 0.01;
 
         assertEquals(closeness[index7], res, TOLERANCE);
@@ -1275,12 +1293,13 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph hierarchicalUndirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] harmonic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         int index7 = indicies.get(node7);
 
-        double res = (5.0 + 0.5)/6.0;
+        double res = (5.0 + 0.5) / 6.0;
 
         assertEquals(harmonic[index7], res, TOLERANCE);
     }
@@ -1329,7 +1348,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph hierarchicalUndirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         Node n4 = undirectedGraph.getNode("3");
@@ -1389,12 +1409,13 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph hierarchicalUndirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         int index2 = indicies.get(node2);
 
-        double res = 1.0/2.2857;
+        double res = 1.0 / 2.2857;
 
         assertEquals(closeness[index2], res, TOLERANCE);
     }
@@ -1443,12 +1464,13 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph hierarchicalUndirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] harmonic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         int index2 = indicies.get(node2);
 
-        double res = (1.0 + 1.0/2.0 + 1.0 + 1.0/2.0 + 1.0/3.0 + 1.0/4.0 + 1.0/3.0)/7.0;
+        double res = (1.0 + 1.0 / 2.0 + 1.0 + 1.0 / 2.0 + 1.0 / 3.0 + 1.0 / 4.0 + 1.0 / 3.0) / 7.0;
 
         assertEquals(harmonic[index2], res, TOLERANCE);
     }
@@ -1501,7 +1523,8 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph hierarchicalUndirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         int index3 = indicies.get(node3);
@@ -1557,14 +1580,15 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph hierarchicalUndirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         int index1 = indicies.get(node1);
         int index3 = indicies.get(node3);
 
         assertEquals(closeness[index1], 1.0, TOLERANCE);
-        assertEquals(closeness[index3], 1.0/1.5, TOLERANCE);
+        assertEquals(closeness[index3], 1.0 / 1.5, TOLERANCE);
     }
 
     @Test
@@ -1615,14 +1639,15 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph hierarchicalUndirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] harmomic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         int index1 = indicies.get(node1);
         int index3 = indicies.get(node3);
 
-        assertEquals(harmomic[index1], 6.0/6.0, TOLERANCE);
-        assertEquals(harmomic[index3], (3.0 + 3.0/2.0)/6.0, TOLERANCE);
+        assertEquals(harmomic[index1], 6.0 / 6.0, TOLERANCE);
+        assertEquals(harmomic[index3], (3.0 + 3.0 / 2.0) / 6.0, TOLERANCE);
     }
 
     @Test
@@ -1634,7 +1659,8 @@ public class GraphDistanceTest extends TestCase {
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(graphModel.getGraph());
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         Node n2 = directedGraph.getNode("1");
@@ -1652,7 +1678,8 @@ public class GraphDistanceTest extends TestCase {
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(graphModel.getGraph());
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         Node n1 = directedGraph.getNode("0");
@@ -1660,7 +1687,7 @@ public class GraphDistanceTest extends TestCase {
         int index1 = indicies.get(n1);
         int index3 = indicies.get(n3);
 
-        assertEquals(closeness[index1], 1.0/2.0, TOLERANCE);
+        assertEquals(closeness[index1], 1.0 / 2.0, TOLERANCE);
         assertEquals(closeness[index3], 1.0, TOLERANCE);
     }
 
@@ -1673,7 +1700,8 @@ public class GraphDistanceTest extends TestCase {
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(graphModel.getGraph());
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
         double[] harmonic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         Node n1 = directedGraph.getNode("0");
@@ -1681,7 +1709,7 @@ public class GraphDistanceTest extends TestCase {
         int index1 = indicies.get(n1);
         int index3 = indicies.get(n3);
 
-        assertEquals(harmonic[index1], (1.0 + 1.0/2.0 + 1.0/3.0)/3.0, TOLERANCE);
+        assertEquals(harmonic[index1], (1.0 + 1.0 / 2.0 + 1.0 / 3.0) / 3.0, TOLERANCE);
         assertEquals(harmonic[index3], 1.0, TOLERANCE);
     }
 
@@ -1694,7 +1722,8 @@ public class GraphDistanceTest extends TestCase {
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(graphModel.getGraph());
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         Node n1 = directedGraph.getNode("0");
@@ -1715,13 +1744,14 @@ public class GraphDistanceTest extends TestCase {
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(graphModel.getGraph());
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         Node n2 = directedGraph.getNode("1");
         int index2 = indicies.get(n2);
 
-        assertEquals(closeness[index2], 1.0/2.5, TOLERANCE);
+        assertEquals(closeness[index2], 1.0 / 2.5, TOLERANCE);
     }
 
     @Test
@@ -1733,13 +1763,14 @@ public class GraphDistanceTest extends TestCase {
         DirectedGraph directedGraph = graphModel.getDirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(graphModel.getGraph());
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
         double[] harmonic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         Node n2 = directedGraph.getNode("1");
         int index2 = indicies.get(n2);
 
-        assertEquals(harmonic[index2], (1.0 + 1.0/2.0 + 1.0/3.0 + 1.0/4.0)/4.0, TOLERANCE);
+        assertEquals(harmonic[index2], (1.0 + 1.0 / 2.0 + 1.0 / 3.0 + 1.0 / 4.0) / 4.0, TOLERANCE);
     }
 
     @Test
@@ -1761,7 +1792,8 @@ public class GraphDistanceTest extends TestCase {
 
         HashMap<Node, Integer> indicies = d.createIndiciesMap(graphModel.getGraph());
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         Node n1 = directedGraph.getNode("0");
@@ -1792,7 +1824,8 @@ public class GraphDistanceTest extends TestCase {
 
         HashMap<Node, Integer> indicies = d.createIndiciesMap(graphModel.getGraph());
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         Node n1 = directedGraph.getNode("0");
@@ -1823,7 +1856,8 @@ public class GraphDistanceTest extends TestCase {
 
         HashMap<Node, Integer> indicies = d.createIndiciesMap(graphModel.getGraph());
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
         double[] harmonic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         Node n1 = directedGraph.getNode("0");
@@ -1867,7 +1901,8 @@ public class GraphDistanceTest extends TestCase {
 
         HashMap<Node, Integer> indicies = d.createIndiciesMap(graphModel.getGraph());
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
         double[] betweenness = metricsMap.get(GraphDistance.BETWEENNESS);
 
         int index1 = indicies.get(node1);
@@ -1911,14 +1946,15 @@ public class GraphDistanceTest extends TestCase {
 
         HashMap<Node, Integer> indicies = d.createIndiciesMap(graphModel.getGraph());
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         int index2 = indicies.get(node2);
         int index3 = indicies.get(node3);
 
-        assertEquals(closeness[index2], 1.0/2.5, TOLERANCE);
-        assertEquals(closeness[index3], 1.0/1.5, TOLERANCE);
+        assertEquals(closeness[index2], 1.0 / 2.5, TOLERANCE);
+        assertEquals(closeness[index3], 1.0 / 1.5, TOLERANCE);
     }
 
     @Test
@@ -1953,14 +1989,15 @@ public class GraphDistanceTest extends TestCase {
 
         HashMap<Node, Integer> indicies = d.createIndiciesMap(graphModel.getGraph());
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, true, false);
         double[] harmonic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         int index2 = indicies.get(node2);
         int index3 = indicies.get(node3);
 
-        assertEquals(harmonic[index2], (1.0 + 1.0/2.0 + 1.0/3.0 + 1.0/4.0)/4.0, TOLERANCE);
-        assertEquals(harmonic[index3], (1.0/2.0 + 1.0 + 1.0 + 1.0/2.0)/4.0, TOLERANCE);
+        assertEquals(harmonic[index2], (1.0 + 1.0 / 2.0 + 1.0 / 3.0 + 1.0 / 4.0) / 4.0, TOLERANCE);
+        assertEquals(harmonic[index3], (1.0 / 2.0 + 1.0 + 1.0 + 1.0 / 2.0) / 4.0, TOLERANCE);
     }
 
     @Test
@@ -1990,13 +2027,14 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph hierarchicalUndirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] closeness = metricsMap.get(GraphDistance.CLOSENESS);
 
         int index1 = indicies.get(node1);
         int index4 = indicies.get(node4);
 
-        assertEquals(closeness[index1], 1.0/1.5, TOLERANCE);
+        assertEquals(closeness[index1], 1.0 / 1.5, TOLERANCE);
         assertEquals(closeness[index4], 1., TOLERANCE);
     }
 
@@ -2027,13 +2065,14 @@ public class GraphDistanceTest extends TestCase {
         UndirectedGraph hierarchicalUndirectedGraph = graphModel.getUndirectedGraph();
         HashMap<Node, Integer> indicies = d.createIndiciesMap(hierarchicalUndirectedGraph);
 
-        HashMap<String, double[]> metricsMap = (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
+        HashMap<String, double[]> metricsMap =
+            (HashMap) d.calculateDistanceMetrics(graphModel.getGraph(), indicies, false, false);
         double[] harmonic = metricsMap.get(GraphDistance.HARMONIC_CLOSENESS);
 
         int index1 = indicies.get(node1);
         int index4 = indicies.get(node4);
 
-        assertEquals(harmonic[index1], (1.0 + 1.0/2.0)/2.0, TOLERANCE);
+        assertEquals(harmonic[index1], (1.0 + 1.0 / 2.0) / 2.0, TOLERANCE);
         assertEquals(harmonic[index4], 1.0, TOLERANCE);
     }
 }

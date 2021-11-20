@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.forceAtlas2;
 
 import javax.swing.Icon;
@@ -51,6 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Layout Builder
+ *
  * @author Mathieu Jacomy
  */
 @ServiceProvider(service = LayoutBuilder.class)

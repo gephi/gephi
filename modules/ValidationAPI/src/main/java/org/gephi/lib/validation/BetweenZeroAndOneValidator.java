@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.lib.validation;
 
 import org.netbeans.validation.api.Problems;
@@ -46,11 +47,9 @@ import org.netbeans.validation.api.Validator;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
-public class BetweenZeroAndOneValidator implements Validator<String>
-{
+public class BetweenZeroAndOneValidator implements Validator<String> {
 
     @Override
     public boolean validate(Problems problems, String compName, String model) {
@@ -62,7 +61,7 @@ public class BetweenZeroAndOneValidator implements Validator<String>
         }
         if (!result) {
             String message = NbBundle.getMessage(PositiveNumberValidator.class,
-                    "PositiveNumberValidator_NOT_POSITIVE", model);
+                "PositiveNumberValidator_NOT_POSITIVE", model);
             problems.add(message);
         }
         return result;

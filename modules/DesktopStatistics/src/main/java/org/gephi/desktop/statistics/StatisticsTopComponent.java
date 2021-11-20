@@ -40,6 +40,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.statistics;
 
 import java.awt.event.ActionEvent;
@@ -64,24 +65,27 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
 /**
- *
  * @author Mathieu Bastian
  * @author Patick J. McSweeney
  */
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.statistics//Statistics//EN",
-        autostore = false)
+    autostore = false)
 @TopComponent.Description(preferredID = "StatisticsTopComponent",
-        iconBase = "org/gephi/desktop/statistics/resources/small.png",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+    iconBase = "org/gephi/desktop/statistics/resources/small.png",
+    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "filtersmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.statistics.StatisticsTopComponent")
 @ActionReference(path = "Menu/Window", position = 1200)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_StatisticsTopComponent",
-        preferredID = "StatisticsTopComponent")
+    preferredID = "StatisticsTopComponent")
 public final class StatisticsTopComponent extends TopComponent implements ChangeListener {
 
     //Model
     private transient StatisticsModelUIImpl model;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton settingsButton;
+    private javax.swing.JPanel statisticsPanel;
+    private javax.swing.JToolBar toolbar;
 
     public StatisticsTopComponent() {
         initComponents();
@@ -141,7 +145,8 @@ public final class StatisticsTopComponent extends TopComponent implements Change
             public void actionPerformed(ActionEvent e) {
                 AvailableStatisticsChooser chooser = new AvailableStatisticsChooser();
                 chooser.setup(model, ((StatisticsPanel) statisticsPanel).getCategories());
-                DialogDescriptor dd = new DialogDescriptor(chooser, NbBundle.getMessage(StatisticsTopComponent.class, "AvailableStatisticsChooser.title"));
+                DialogDescriptor dd = new DialogDescriptor(chooser,
+                    NbBundle.getMessage(StatisticsTopComponent.class, "AvailableStatisticsChooser.title"));
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                     chooser.unsetup();
                 }
@@ -199,7 +204,8 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         toolbar.setFloatable(false);
         toolbar.setRollover(true);
 
-        org.openide.awt.Mnemonics.setLocalizedText(settingsButton, org.openide.util.NbBundle.getMessage(StatisticsTopComponent.class, "StatisticsTopComponent.settingsButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(settingsButton, org.openide.util.NbBundle
+            .getMessage(StatisticsTopComponent.class, "StatisticsTopComponent.settingsButton.text")); // NOI18N
         settingsButton.setFocusable(false);
         settingsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         settingsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -220,10 +226,6 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         gridBagConstraints.weighty = 1.0;
         add(statisticsPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton settingsButton;
-    private javax.swing.JPanel statisticsPanel;
-    private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
 
     void writeProperties(java.util.Properties p) {

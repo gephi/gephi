@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.Component;
@@ -58,7 +59,9 @@ class JMenuToggleButton extends JToggleButton {
 
     private boolean mouseInArrowArea = false;
 
-    /** Creates a new instance of MenuToggleButton */
+    /**
+     * Creates a new instance of MenuToggleButton
+     */
     public JMenuToggleButton(final Icon regIcon, Icon rollOverIcon, int arrowWidth) {
         assert null != regIcon;
         assert null != rollOverIcon;
@@ -132,10 +135,10 @@ class JMenuToggleButton extends JToggleButton {
 
             g.setColor(UIManager.getColor("controlHighlight")); //NOI18N
             g.drawLine(x + origIcon.getIconWidth() - arrowWidth - 2, y,
-                    x + origIcon.getIconWidth() - arrowWidth - 2, y + getIconHeight());
+                x + origIcon.getIconWidth() - arrowWidth - 2, y + getIconHeight());
             g.setColor(UIManager.getColor("controlShadow")); //NOI18N
             g.drawLine(x + origIcon.getIconWidth() - arrowWidth - 3, y,
-                    x + origIcon.getIconWidth() - arrowWidth - 3, y + getIconHeight());
+                x + origIcon.getIconWidth() - arrowWidth - 3, y + getIconHeight());
         }
 
         @Override

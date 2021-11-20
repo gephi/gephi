@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.filters.query;
 
 import java.awt.event.ActionEvent;
@@ -58,7 +59,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class QueryNode extends AbstractNode {
@@ -118,7 +118,7 @@ public class QueryNode extends AbstractNode {
     @Override
     public Action[] getActions(boolean context) {
         //System.out.println("getActions " + context);
-        return new Action[]{new RemoveAction(), new RenameAction(), new SaveAction(), new DuplicateAction()};
+        return new Action[] {new RemoveAction(), new RenameAction(), new SaveAction(), new DuplicateAction()};
     }
 
     public Query getQuery() {
@@ -152,8 +152,8 @@ public class QueryNode extends AbstractNode {
         public void actionPerformed(ActionEvent e) {
             FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
             NotifyDescriptor.InputLine question = new NotifyDescriptor.InputLine(
-                    NbBundle.getMessage(QueryNode.class, "QueryNode.actions.rename.text"),
-                    NbBundle.getMessage(QueryNode.class, "QueryNode.actions.rename.title"));
+                NbBundle.getMessage(QueryNode.class, "QueryNode.actions.rename.text"),
+                NbBundle.getMessage(QueryNode.class, "QueryNode.actions.rename.title"));
             question.setInputText(query.getName());
             if (DialogDisplayer.getDefault().notify(question) == NotifyDescriptor.OK_OPTION) {
                 String input = question.getInputText();
@@ -213,7 +213,7 @@ public class QueryNode extends AbstractNode {
                     filterCopyProperties[i].setValue(filterProperties[i].getValue());
                 }
             }
-            
+
             if (parent == null) {
                 filterController.add(childQuery);
             } else {

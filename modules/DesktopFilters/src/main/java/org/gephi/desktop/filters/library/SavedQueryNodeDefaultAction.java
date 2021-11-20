@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.filters.library;
 
 
@@ -49,7 +50,6 @@ import org.openide.util.Lookup;
 import org.openide.util.actions.SystemAction;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class SavedQueryNodeDefaultAction extends SystemAction {

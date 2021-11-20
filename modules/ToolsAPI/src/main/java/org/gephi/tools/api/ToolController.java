@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.tools.api;
 
 import javax.swing.JComponent;
@@ -59,7 +60,7 @@ public interface ToolController {
      * current tool, if exists.
      *
      * @param tool the tool that is to be selected or null to only unselect the
-     * current tool
+     *             current tool
      */
     public void select(Tool tool);
 

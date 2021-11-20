@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.gephi.graph;
 
 import java.util.HashMap;
@@ -13,7 +14,6 @@ import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.project.api.Workspace;
 
 /**
- *
  * @author mbastian
  */
 public class LegacyMapHelper {

@@ -39,10 +39,10 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.filters.query;
 
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,7 +60,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.datatransfer.PasteType;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class QueryChildren extends Children.Array {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.api;
 
 public class Vector {
@@ -52,6 +53,22 @@ public class Vector {
     public Vector(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+    public static Vector div(Vector v, float n) {
+        return new Vector(v.x / n, v.y / n);
+    }
+
+    public static Vector mult(Vector v, float n) {
+        return new Vector(v.x * n, v.y * n);
+    }
+
+    public static Vector add(Vector v1, Vector v2) {
+        return new Vector(v1.x + v2.x, v1.y + v2.y);
+    }
+
+    public static Vector sub(Vector v1, Vector v2) {
+        return new Vector(v1.x - v2.x, v1.y - v2.y);
     }
 
     public void set(float x, float y) {
@@ -103,22 +120,6 @@ public class Vector {
         if (m != 0 && m != 1) {
             div(m);
         }
-    }
-
-    public static Vector div(Vector v, float n) {
-        return new Vector(v.x / n, v.y / n);
-    }
-
-    public static Vector mult(Vector v, float n) {
-        return new Vector(v.x * n, v.y * n);
-    }
-
-    public static Vector add(Vector v1, Vector v2) {
-        return new Vector(v1.x + v2.x, v1.y + v2.y);
-    }
-
-    public static Vector sub(Vector v1, Vector v2) {
-        return new Vector(v1.x - v2.x, v1.y - v2.y);
     }
 
     public float getX() {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.importer;
 
 import java.awt.Component;
@@ -53,6 +54,12 @@ import org.openide.util.HelpCtx;
 
 public class WizardPanel1 implements WizardDescriptor.ValidatingPanel {
 
+    //    public final void addChangeListener(ChangeListener l) {
+//    }
+//
+//    public final void removeChangeListener(ChangeListener l) {
+//    }
+    private final Set<ChangeListener> listeners = new HashSet<>(1); // or can use ChangeSupport in NB 6.0
     /**
      * The visual component that displays this panel. If you need to access the
      * component from this class, just use getComponent().
@@ -94,12 +101,6 @@ public class WizardPanel1 implements WizardDescriptor.ValidatingPanel {
         // fireChangeEvent();
         // and uncomment the complicated stuff below.
     }
-//    public final void addChangeListener(ChangeListener l) {
-//    }
-//
-//    public final void removeChangeListener(ChangeListener l) {
-//    }
-    private final Set<ChangeListener> listeners = new HashSet<>(1); // or can use ChangeSupport in NB 6.0
 
     @Override
     public final void addChangeListener(ChangeListener l) {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.graph;
 
 import org.gephi.graph.api.Configuration;
@@ -51,7 +52,6 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author mbastian
  */
 @ServiceProvider(service = GraphController.class)

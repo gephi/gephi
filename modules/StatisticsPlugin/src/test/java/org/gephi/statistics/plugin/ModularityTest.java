@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
@@ -51,7 +52,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- *
  * @author Anna
  */
 public class ModularityTest extends TestCase {
@@ -67,7 +67,7 @@ public class ModularityTest extends TestCase {
         int[] comStructure = new int[graph.getNodeCount()];
 
         HashMap<String, Double> modularityValues = mod.computeModularity(graph, theStructure, comStructure,
-                1., true, false);
+            1., true, false);
 
         double modValue = modularityValues.get("modularity");
         int class1 = comStructure[0];
@@ -88,7 +88,7 @@ public class ModularityTest extends TestCase {
         int[] comStructure = new int[graph.getNodeCount()];
 
         HashMap<String, Double> modularityValues = mod.computeModularity(graph, theStructure, comStructure,
-                1., true, false);
+            1., true, false);
 
         double modValue = modularityValues.get("modularity");
 
@@ -111,7 +111,8 @@ public class ModularityTest extends TestCase {
                 undirectedGraph.addEdge(currentEdge);
             }
         }
-        Edge currentEdge = graphModel.factory().newEdge(undirectedGraph.getNode("0"), undirectedGraph.getNode("5"), false);
+        Edge currentEdge =
+            graphModel.factory().newEdge(undirectedGraph.getNode("0"), undirectedGraph.getNode("5"), false);
         undirectedGraph.addEdge(currentEdge);
         UndirectedGraph graph = graphModel.getUndirectedGraph();
 
@@ -121,7 +122,7 @@ public class ModularityTest extends TestCase {
         int[] comStructure = new int[graph.getNodeCount()];
 
         HashMap<String, Double> modularityValues = mod.computeModularity(graph, theStructure, comStructure,
-                1., true, false);
+            1., true, false);
 
         double modValue = modularityValues.get("modularity");
 
@@ -149,7 +150,8 @@ public class ModularityTest extends TestCase {
                 undirectedGraph.addEdge(currentEdge);
             }
         }
-        Edge currentEdge = graphModel.factory().newEdge(undirectedGraph.getNode("0"), undirectedGraph.getNode("5"), false);
+        Edge currentEdge =
+            graphModel.factory().newEdge(undirectedGraph.getNode("0"), undirectedGraph.getNode("5"), false);
         undirectedGraph.addEdge(currentEdge);
         UndirectedGraph graph = graphModel.getUndirectedGraph();
 
@@ -159,7 +161,7 @@ public class ModularityTest extends TestCase {
         int[] comStructure = new int[graph.getNodeCount()];
 
         HashMap<String, Double> modularityValues = mod.computeModularity(graph, theStructure, comStructure,
-                100., true, false);
+            100., true, false);
 
         double modValue = modularityValues.get("modularity");
 
@@ -186,7 +188,8 @@ public class ModularityTest extends TestCase {
                 undirectedGraph.addEdge(currentEdge);
             }
         }
-        Edge currentEdge = graphModel.factory().newEdge(undirectedGraph.getNode("0"), undirectedGraph.getNode("5"), 0, 100.f, false);
+        Edge currentEdge =
+            graphModel.factory().newEdge(undirectedGraph.getNode("0"), undirectedGraph.getNode("5"), 0, 100.f, false);
         undirectedGraph.addEdge(currentEdge);
         UndirectedGraph graph = graphModel.getUndirectedGraph();
 
@@ -196,7 +199,7 @@ public class ModularityTest extends TestCase {
         int[] comStructure = new int[graph.getNodeCount()];
 
         HashMap<String, Double> modularityValues = mod.computeModularity(graph, theStructure, comStructure,
-                1., true, true);
+            1., true, true);
 
         int class4 = comStructure[0];
         int class5 = comStructure[5];
@@ -232,15 +235,15 @@ public class ModularityTest extends TestCase {
         Edge edge12_1 = graphModel.factory().newEdge(node1, node2, 1, 2.f, false);
         Edge edge12_2 = graphModel.factory().newEdge(node1, node2, 2, 5.f, false);
         Edge edge12_3 = graphModel.factory().newEdge(node1, node2, 2, 3.f, false);
-        
+
         Edge edge23 = graphModel.factory().newEdge(node2, node3, false);
         Edge edge34 = graphModel.factory().newEdge(node3, node4, 0, 10.f, false);
         Edge edge45 = graphModel.factory().newEdge(node4, node5, false);
         Edge edge56 = graphModel.factory().newEdge(node5, node6, 0, 10.f, false);
         Edge edge67 = graphModel.factory().newEdge(node6, node7, false);
-        
+
         //Test 2 parallel edges summing weight = 10
-        Edge edge78_1= graphModel.factory().newEdge(node7, node8, 0, 5.f, false);
+        Edge edge78_1 = graphModel.factory().newEdge(node7, node8, 0, 5.f, false);
         Edge edge78_2 = graphModel.factory().newEdge(node7, node8, 0, 5.f, false);
         Edge edge81 = graphModel.factory().newEdge(node8, node1, false);
 
@@ -263,7 +266,7 @@ public class ModularityTest extends TestCase {
         int[] comStructure = new int[graph.getNodeCount()];
 
         HashMap<String, Double> modularityValues = mod.computeModularity(graph, theStructure, comStructure,
-                1., true, true);
+            1., true, true);
 
         int class1 = comStructure[0];
         int class2 = comStructure[1];

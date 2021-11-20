@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.progress;
 
 import org.gephi.utils.progress.ProgressTicket;
@@ -47,7 +48,6 @@ import org.openide.util.Cancellable;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ProgressTicketProvider.class, position = 10)

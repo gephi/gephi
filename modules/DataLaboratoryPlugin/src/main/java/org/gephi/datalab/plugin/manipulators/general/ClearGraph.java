@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.general;
 
 import javax.swing.Icon;
@@ -62,7 +63,9 @@ public class ClearGraph implements PluginGeneralActionsManipulator {
 
     @Override
     public void execute() {
-        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearGraph.class, "ClearGraph.dialog.text"), NbBundle.getMessage(ClearGraph.class, "ClearGraph.name"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearGraph.class, "ClearGraph.dialog.text"),
+            NbBundle.getMessage(ClearGraph.class, "ClearGraph.name"), JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
             Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph().clear();
         }
     }

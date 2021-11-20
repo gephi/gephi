@@ -6,7 +6,6 @@ import org.gephi.graph.api.types.TimeSet;
 import org.jdesktop.swingx.JXTable;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class IntervalSetGraphicsComponentProvider extends AbstractTimeSetGraphicsComponentProvider {

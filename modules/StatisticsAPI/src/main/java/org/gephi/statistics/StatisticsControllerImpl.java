@@ -40,6 +40,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics;
 
 import org.gephi.graph.api.Edge;
@@ -54,7 +55,8 @@ import org.gephi.graph.api.TimeIndex;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
-import org.gephi.statistics.api.*;
+import org.gephi.statistics.api.StatisticsController;
+import org.gephi.statistics.api.StatisticsModel;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
@@ -67,7 +69,6 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  * @author Patrick J. McSweeney
  */
@@ -227,7 +228,7 @@ public class StatisticsControllerImpl implements StatisticsController {
                         }
                     }
                 }
-                
+
                 statistics.loop(g.getView(), new Interval(low, high));
             } finally {
                 graph.writeUnlock();
@@ -272,9 +273,9 @@ public class StatisticsControllerImpl implements StatisticsController {
 
     private static class DynamicLongTask implements LongTask {
 
+        private final LongTask longTask;
         private ProgressTicket progressTicket;
         private boolean cancel = false;
-        private final LongTask longTask;
 
         public DynamicLongTask(DynamicStatistics statistics) {
             if (statistics instanceof LongTask) {

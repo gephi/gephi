@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.actions;
 
 import java.awt.event.ActionEvent;
@@ -50,7 +51,6 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Eduardo Ramos
  */
 @ActionID(id = "org.gephi.desktop.datalab.actions.ImportSpreadsheet", category = "File")

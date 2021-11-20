@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.tools.plugin;
 
 import javax.swing.Icon;
@@ -55,16 +56,15 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Tool.class)
 public class Sizer implements Tool {
 
-    private SizerPanel sizerPanel;
-    private ToolEventListener[] listeners;
     private final float INTENSITY = 0.4f;
     private final float LIMIT = 0.1f;
+    private SizerPanel sizerPanel;
+    private ToolEventListener[] listeners;
     //Vars
     private Node[] nodes;
     private float[] sizes;

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.desktop.importer;
 
 import java.awt.Color;
@@ -75,7 +76,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
@@ -90,6 +90,12 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
     private ImageIcon warningIcon;
     private ImageIcon severeIcon;
     private ImageIcon criticalIcon;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.netbeans.swing.outline.Outline issuesOutline;
+    private javax.swing.JEditorPane reportEditor;
+    private javax.swing.JScrollPane tab1ScrollPane;
+    private javax.swing.JScrollPane tab2ScrollPane;
+    private javax.swing.JTabbedPane tabbedPane;
 
     public ProcessorIssuesReportPanel() {
         try {
@@ -115,8 +121,10 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
                 if (SwingUtilities.isRightMouseButton(e)) {
                     JPopupMenu contextMenu = new JPopupMenu();
                     JMenuItem menuItem = new JMenuItem();
-                    menuItem.setText(NbBundle.getMessage(ProcessorIssuesReportPanel.class, "ReportPanel.reportCopy.text"));
-                    menuItem.setToolTipText(NbBundle.getMessage(ProcessorIssuesReportPanel.class, "ReportPanel.reportCopy.description"));
+                    menuItem
+                        .setText(NbBundle.getMessage(ProcessorIssuesReportPanel.class, "ReportPanel.reportCopy.text"));
+                    menuItem.setToolTipText(
+                        NbBundle.getMessage(ProcessorIssuesReportPanel.class, "ReportPanel.reportCopy.description"));
                     menuItem.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -133,9 +141,12 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
 
     public void initIcons() {
         infoIcon = new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/info.png"));
-        warningIcon = new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/warning.gif"));
-        severeIcon = new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/severe.png"));
-        criticalIcon = new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/critical.png"));
+        warningIcon =
+            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/warning.gif"));
+        severeIcon =
+            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/severe.png"));
+        criticalIcon =
+            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/resources/critical.png"));
     }
 
     public void setData(Report report) {
@@ -155,7 +166,8 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
             tab1ScrollPane.setViewportView(label);
         } else {
             //Busy label
-            final BusyUtils.BusyLabel busyLabel = BusyUtils.createCenteredBusyLabel(tab1ScrollPane, "Retrieving issues...", issuesOutline);
+            final BusyUtils.BusyLabel busyLabel =
+                BusyUtils.createCenteredBusyLabel(tab1ScrollPane, "Retrieving issues...", issuesOutline);
 
             //Thread
             Thread thread = new Thread(fillingThreads, new Runnable() {
@@ -191,11 +203,11 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
                 while (itr.hasNext()) {
                     Issue issue = itr.next();
                     sb
-                            .append('[')
-                            .append(issue.getLevel().name())
-                            .append("] ")
-                            .append(issue.getMessage())
-                            .append('\n');
+                        .append('[')
+                        .append(issue.getLevel().name())
+                        .append("] ")
+                        .append(issue.getMessage())
+                        .append('\n');
                 }
                 final String text = sb.toString();
 
@@ -231,37 +243,34 @@ public class ProcessorIssuesReportPanel extends javax.swing.JPanel {
 
         tab1ScrollPane.setViewportView(issuesOutline);
 
-        tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ProcessorIssuesReportPanel.class, "ProcessorIssuesReportPanel.tab1ScrollPane.TabConstraints.tabTitle"), tab1ScrollPane); // NOI18N
+        tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ProcessorIssuesReportPanel.class,
+            "ProcessorIssuesReportPanel.tab1ScrollPane.TabConstraints.tabTitle"), tab1ScrollPane); // NOI18N
 
         reportEditor.setEditable(false);
         reportEditor.setFocusable(false);
         tab2ScrollPane.setViewportView(reportEditor);
 
-        tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ProcessorIssuesReportPanel.class, "ProcessorIssuesReportPanel.tab2ScrollPane.TabConstraints.tabTitle"), tab2ScrollPane); // NOI18N
+        tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ProcessorIssuesReportPanel.class,
+            "ProcessorIssuesReportPanel.tab2ScrollPane.TabConstraints.tabTitle"), tab2ScrollPane); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 270,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.netbeans.swing.outline.Outline issuesOutline;
-    private javax.swing.JEditorPane reportEditor;
-    private javax.swing.JScrollPane tab1ScrollPane;
-    private javax.swing.JScrollPane tab2ScrollPane;
-    private javax.swing.JTabbedPane tabbedPane;
     // End of variables declaration//GEN-END:variables
 
     private class IssueTreeModel implements TreeModel {

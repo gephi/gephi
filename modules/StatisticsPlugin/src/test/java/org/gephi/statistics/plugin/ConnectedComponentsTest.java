@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
@@ -53,11 +54,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- *
  * @author Anna
  */
 public class ConnectedComponentsTest extends TestCase {
-    
+
     @Test
     public void testComputeOneNodeWeaklyConnectedComponents() {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
@@ -70,7 +70,7 @@ public class ConnectedComponentsTest extends TestCase {
         LinkedList<LinkedList<Node>> components = c.computeWeaklyConnectedComponents(graph, indices);
         assertEquals(components.size(), 1);
     }
-    
+
     @Test
     public void testComputeSelfLoopNodeAndIsolatedNodeWeaklyConnectedComponents() {
         GraphModel graphModel = GraphModel.Factory.newInstance();
@@ -88,11 +88,11 @@ public class ConnectedComponentsTest extends TestCase {
 
         ConnectedComponents c = new ConnectedComponents();
         HashMap<Node, Integer> indices = new HashMap<>();
-        
+
         indices.put(node1, 0);
         indices.put(node2, 1);
         indices.put(node3, 2);
-        
+
         LinkedList<LinkedList<Node>> components = c.computeWeaklyConnectedComponents(undirectedGraph, indices);
         assertEquals(components.size(), 2);
     }
@@ -134,7 +134,8 @@ public class ConnectedComponentsTest extends TestCase {
                 undirectedGraph.addEdge(currentEdge);
             }
         }
-        Edge currentEdge = graphModel.factory().newEdge(undirectedGraph.getNode("0"), undirectedGraph.getNode("5"), false);
+        Edge currentEdge =
+            graphModel.factory().newEdge(undirectedGraph.getNode("0"), undirectedGraph.getNode("5"), false);
         undirectedGraph.addEdge(currentEdge);
         UndirectedGraph graph = graphModel.getUndirectedGraph();
 

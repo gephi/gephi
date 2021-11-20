@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.project.api;
 
 import java.io.File;
@@ -47,7 +48,6 @@ import org.gephi.project.api.Project;
 import org.gephi.project.api.Workspace;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface ProjectControllerUI {
@@ -63,7 +63,7 @@ public interface ProjectControllerUI {
     public void projectProperties();
 
     public void openFile(FileImporterBuilder[] builders);
-    
+
     public void openFile();
 
     public Workspace newWorkspace();

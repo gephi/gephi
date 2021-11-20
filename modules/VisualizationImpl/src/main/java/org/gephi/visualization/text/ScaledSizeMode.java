@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.text;
 
 import javax.swing.ImageIcon;
@@ -46,7 +47,6 @@ import org.gephi.visualization.model.node.NodeModel;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ScaledSizeMode implements SizeMode {

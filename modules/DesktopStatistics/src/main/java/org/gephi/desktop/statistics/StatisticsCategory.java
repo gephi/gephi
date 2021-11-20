@@ -39,11 +39,11 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.statistics;
 
 
 /**
- *
  * @author Patick J. McSweeney
  */
 public class StatisticsCategory {

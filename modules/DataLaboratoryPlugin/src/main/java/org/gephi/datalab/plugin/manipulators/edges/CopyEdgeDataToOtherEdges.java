@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.edges;
 
 import java.util.ArrayList;
@@ -107,7 +108,9 @@ public class CopyEdgeDataToOtherEdges extends BasicEdgesManipulator implements G
 
     @Override
     public ManipulatorUI getUI() {
-        return new GeneralChooseColumnsAndRowUI(NbBundle.getMessage(CopyEdgeDataToOtherEdges.class, "CopyEdgeDataToOtherEdges.ui.rowDescription"), NbBundle.getMessage(CopyEdgeDataToOtherEdges.class, "CopyEdgeDataToOtherEdges.ui.columnsDescription"));
+        return new GeneralChooseColumnsAndRowUI(
+            NbBundle.getMessage(CopyEdgeDataToOtherEdges.class, "CopyEdgeDataToOtherEdges.ui.rowDescription"),
+            NbBundle.getMessage(CopyEdgeDataToOtherEdges.class, "CopyEdgeDataToOtherEdges.ui.columnsDescription"));
     }
 
     @Override

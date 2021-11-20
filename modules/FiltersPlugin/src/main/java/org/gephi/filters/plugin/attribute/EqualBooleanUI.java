@@ -39,12 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.attribute;
 
 import javax.swing.JPanel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface EqualBooleanUI {

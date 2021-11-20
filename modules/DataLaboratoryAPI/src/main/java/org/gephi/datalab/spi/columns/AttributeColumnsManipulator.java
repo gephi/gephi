@@ -1,4 +1,3 @@
-
 /*
  Copyright 2008-2010 Gephi
  Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -40,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi.columns;
 
 import java.awt.Image;
@@ -58,6 +58,7 @@ import org.gephi.graph.api.Table;
  * <li>Provide and UI or not</li>
  * <li>Provide and icon or not</li>
  * </ul>
+ *
  * @author Eduardo Ramos
  */
 public interface AttributeColumnsManipulator {
@@ -65,7 +66,7 @@ public interface AttributeColumnsManipulator {
     /**
      * Execute this AttributeColumnsManipulator with the indicated table and column
      *
-     * @param table AttributeTable of the column
+     * @param table  AttributeTable of the column
      * @param column AttributeColumn of the table to manipulate
      */
     void execute(Table table, Column column);
@@ -94,7 +95,7 @@ public interface AttributeColumnsManipulator {
     /**
      * Returns a ManipulatorUI for this Manipulator if it needs one.
      *
-     * @param table AttributeTable of the column
+     * @param table  AttributeTable of the column
      * @param column AttributeColumn of the table to manipulate
      * @return ManipulatorUI for this Manipulator or null
      */

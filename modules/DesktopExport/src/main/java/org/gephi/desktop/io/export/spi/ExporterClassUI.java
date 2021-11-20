@@ -39,10 +39,10 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.io.export.spi;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface ExporterClassUI {

@@ -39,13 +39,13 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.impl;
 
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.NodeDraft;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
@@ -63,9 +63,10 @@ public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
         super(container, id);
     }
 
-    //SETTERS
-    public void setCreatedAuto(boolean createdAuto) {
-        this.createdAuto = createdAuto;
+    //GETTERS
+    @Override
+    public float getSize() {
+        return size;
     }
 
     @Override
@@ -74,34 +75,13 @@ public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
     }
 
     @Override
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    @Override
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    @Override
-    public void setZ(float z) {
-        this.z = z;
-    }
-
-    @Override
-    public void setFixed(boolean fixed) {
-        this.fixed = fixed;
-    }
-
-    //GETTERS
-    @Override
-    public float getSize() {
-        return size;
-    }
-
-    @Override
     public float getX() {
         return x;
+    }
+
+    @Override
+    public void setX(float x) {
+        this.x = x;
     }
 
     @Override
@@ -110,8 +90,18 @@ public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
     }
 
     @Override
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    @Override
     public float getZ() {
         return z;
+    }
+
+    @Override
+    public void setZ(float z) {
+        this.z = z;
     }
 
     @Override
@@ -120,8 +110,18 @@ public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
     }
 
     @Override
+    public void setFixed(boolean fixed) {
+        this.fixed = fixed;
+    }
+
+    @Override
     public boolean isCreatedAuto() {
         return createdAuto;
+    }
+
+    //SETTERS
+    public void setCreatedAuto(boolean createdAuto) {
+        this.createdAuto = createdAuto;
     }
 
     @Override

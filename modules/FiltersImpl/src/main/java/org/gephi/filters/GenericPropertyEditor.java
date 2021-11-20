@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters;
 
 import java.beans.PropertyEditorSupport;
@@ -51,19 +52,19 @@ import org.apache.commons.codec.binary.Base64;
 import org.openide.util.Exceptions;
 
 public class GenericPropertyEditor extends PropertyEditorSupport {
-    
+
     private Object val;
-    
-    @Override
-    public void setValue(Object value) {
-        this.val = value;
-    }
-    
+
     @Override
     public Object getValue() {
         return val;
     }
-    
+
+    @Override
+    public void setValue(Object value) {
+        this.val = value;
+    }
+
     @Override
     public String getAsText() {
         if (val != null) {
@@ -96,7 +97,7 @@ public class GenericPropertyEditor extends PropertyEditorSupport {
         }
         return "null";
     }
-    
+
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         if (!text.equals("null")) {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet;
 
 import java.io.IOException;
@@ -54,7 +55,6 @@ import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetParser;
 import org.gephi.io.importer.plugin.file.spreadsheet.sheets.excel.ExcelSheetParser;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ImporterSpreadsheetExcel extends AbstractImporterSpreadsheet {
@@ -68,7 +68,8 @@ public class ImporterSpreadsheetExcel extends AbstractImporterSpreadsheet {
 
     @Override
     public SheetParser createParser() throws IOException {
-        boolean withFirstRecordAsHeader = generalConfig.getMode() == SpreadsheetGeneralConfiguration.Mode.NODES_TABLE || generalConfig.getMode() == SpreadsheetGeneralConfiguration.Mode.EDGES_TABLE;
+        boolean withFirstRecordAsHeader = generalConfig.getMode() == SpreadsheetGeneralConfiguration.Mode.NODES_TABLE ||
+            generalConfig.getMode() == SpreadsheetGeneralConfiguration.Mode.EDGES_TABLE;
         return createParser(withFirstRecordAsHeader);
     }
 
@@ -104,7 +105,7 @@ public class ImporterSpreadsheetExcel extends AbstractImporterSpreadsheet {
             return names;
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.SEVERE, ex.getMessage());
-            return new String[]{"Error"};
+            return new String[] {"Error"};
         }
     }
 

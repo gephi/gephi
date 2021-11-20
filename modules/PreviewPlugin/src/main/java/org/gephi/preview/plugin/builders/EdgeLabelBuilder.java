@@ -39,11 +39,16 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.plugin.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.graph.api.*;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.TextProperties;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.EdgeLabelItem;
 import org.gephi.preview.spi.ItemBuilder;
@@ -52,7 +57,6 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ItemBuilder.class)

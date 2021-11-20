@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
 import org.gephi.graph.api.Edge;
@@ -48,7 +49,6 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.types.TimeMap;
 
 /**
- *
  * @author mbastian
  */
 public class EdgeWeightRankingImpl extends RankingImpl {

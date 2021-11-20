@@ -40,6 +40,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.statistics;
 
 import java.awt.Dimension;
@@ -72,21 +73,27 @@ import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
 /**
- *
  * @author Mathieu Bastian
  * @author Patick J. McSweeney
  */
 public class StatisticsFrontEnd extends javax.swing.JPanel {
 
-    private StatisticsUI statisticsUI;
     private final String RUN;
     private final String CANCEL;
     private final ImageIcon RUN_ICON;
     private final ImageIcon STOP_ICON;
+    private StatisticsUI statisticsUI;
     private Statistics currentStatistics;
     private StatisticsModelUI currentModel;
 
     //Img
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.swingx.JXBusyLabel busyLabel;
+    private javax.swing.JLabel displayLabel;
+    private javax.swing.JButton reportButton;
+    private javax.swing.JLabel resultLabel;
+    private javax.swing.JButton runButton;
+    private javax.swing.JToolBar toolbar;
 
     public StatisticsFrontEnd(StatisticsUI ui) {
         initComponents();
@@ -188,7 +195,9 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         currentStatistics = builder.getStatistics();
         if (currentStatistics != null) {
             if (currentStatistics instanceof DynamicStatistics && !graphModel.isDynamic()) {
-                DialogDisplayer.getDefault().notifyLater(new NotifyDescriptor.Message(NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.notDynamicGraph"), NotifyDescriptor.WARNING_MESSAGE));
+                DialogDisplayer.getDefault().notifyLater(new NotifyDescriptor.Message(
+                    NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.notDynamicGraph"),
+                    NotifyDescriptor.WARNING_MESSAGE));
                 return;
             }
 
@@ -206,7 +215,9 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
                 dynamicPanel.setup((DynamicStatistics) currentStatistics);
 
                 JPanel dynamicSettingsPanel = DynamicSettingsPanel.createCounpoundPanel(dynamicPanel, settingsPanel);
-                final DialogDescriptor dd = new DialogDescriptor(dynamicSettingsPanel, NbBundle.getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title", builder.getName()));
+                final DialogDescriptor dd = new DialogDescriptor(dynamicSettingsPanel, NbBundle
+                    .getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title",
+                        builder.getName()));
                 if (dynamicSettingsPanel instanceof ValidationPanel) {
                     ValidationPanel vp = (ValidationPanel) dynamicSettingsPanel;
                     vp.addChangeListener(new ChangeListener() {
@@ -226,7 +237,9 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
             } else if (settingsPanel != null) {
                 statisticsUI.setup(currentStatistics);
 
-                final DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title", builder.getName()));
+                final DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle
+                    .getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title",
+                        builder.getName()));
                 if (settingsPanel instanceof ValidationPanel) {
                     ValidationPanel vp = (ValidationPanel) settingsPanel;
                     vp.addChangeListener(new ChangeListener() {
@@ -288,7 +301,8 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
 
-        busyLabel.setText(org.openide.util.NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.busyLabel.text")); // NOI18N
+        busyLabel.setText(org.openide.util.NbBundle
+            .getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.busyLabel.text")); // NOI18N
         busyLabel.setMinimumSize(new java.awt.Dimension(16, 16));
         busyLabel.setPreferredSize(new java.awt.Dimension(16, 16));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -297,7 +311,8 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         add(busyLabel, gridBagConstraints);
 
-        displayLabel.setText(org.openide.util.NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.displayLabel.text")); // NOI18N
+        displayLabel.setText(org.openide.util.NbBundle
+            .getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.displayLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -306,7 +321,8 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 0);
         add(displayLabel, gridBagConstraints);
 
-        resultLabel.setText(org.openide.util.NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.resultLabel.text")); // NOI18N
+        resultLabel.setText(org.openide.util.NbBundle
+            .getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.resultLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
@@ -317,15 +333,18 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         toolbar.setRollover(true);
         toolbar.setOpaque(false);
 
-        runButton.setText(org.openide.util.NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.runButton.text")); // NOI18N
+        runButton.setText(org.openide.util.NbBundle
+            .getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.runButton.text")); // NOI18N
         runButton.setFocusable(false);
         runButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         runButton.setMargin(new java.awt.Insets(1, 2, 1, 2));
         runButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(runButton);
 
-        reportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/statistics/resources/report.png"))); // NOI18N
-        reportButton.setToolTipText(org.openide.util.NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.reportButton.toolTipText")); // NOI18N
+        reportButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/statistics/resources/report.png"))); // NOI18N
+        reportButton.setToolTipText(org.openide.util.NbBundle
+            .getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.reportButton.toolTipText")); // NOI18N
         reportButton.setFocusable(false);
         reportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         reportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -337,12 +356,5 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         add(toolbar, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.jdesktop.swingx.JXBusyLabel busyLabel;
-    private javax.swing.JLabel displayLabel;
-    private javax.swing.JButton reportButton;
-    private javax.swing.JLabel resultLabel;
-    private javax.swing.JButton runButton;
-    private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
 }

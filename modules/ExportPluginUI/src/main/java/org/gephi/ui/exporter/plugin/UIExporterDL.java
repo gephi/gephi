@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.exporter.plugin;
 
 import javax.swing.JPanel;
@@ -71,8 +72,8 @@ public class UIExporterDL implements ExporterUI {
     @Override
     public void unsetup(boolean update) {
         if (update) {
-          panel.unsetup(exporter);
-          settings.save(exporter);
+            panel.unsetup(exporter);
+            settings.save(exporter);
         }
 
         panel = null;
@@ -89,23 +90,21 @@ public class UIExporterDL implements ExporterUI {
         return NbBundle.getMessage(UIExporterDL.class, "UIExporterDL.name");
     }
 
-private static class ExporterDLSettings
-{
-    private boolean useListFormat = true;
-    private boolean useMatrixFormat = false;
-    private boolean makeSymmetricMatrix = false;
-   private void load(ExporterDL exporterDL)
-   {
-       exporterDL.setUseListFormat(useListFormat);
-       exporterDL.setUseMatrixFormat(useMatrixFormat);
-       exporterDL.setMakeSymmetricMatrix(makeSymmetricMatrix);
-   }
-   
-   private void save(ExporterDL exporterDL)
-   {
-       useListFormat = exporterDL.isUseListFormat();
-       useMatrixFormat = exporterDL.isUseMatrixFormat();
-       makeSymmetricMatrix = exporterDL.isMakeSymmetricMatrix();
-   }
-}
+    private static class ExporterDLSettings {
+        private boolean useListFormat = true;
+        private boolean useMatrixFormat = false;
+        private boolean makeSymmetricMatrix = false;
+
+        private void load(ExporterDL exporterDL) {
+            exporterDL.setUseListFormat(useListFormat);
+            exporterDL.setUseMatrixFormat(useMatrixFormat);
+            exporterDL.setMakeSymmetricMatrix(makeSymmetricMatrix);
+        }
+
+        private void save(ExporterDL exporterDL) {
+            useListFormat = exporterDL.isUseListFormat();
+            useMatrixFormat = exporterDL.isUseMatrixFormat();
+            makeSymmetricMatrix = exporterDL.isMakeSymmetricMatrix();
+        }
+    }
 }

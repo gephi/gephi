@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.branding.desktop;
 
 import com.sun.management.OperatingSystemMXBean;
@@ -73,7 +74,7 @@ import org.openide.util.Utilities;
  * <p>
  * The user has the choice to cancel or let this class increase the maximum memory and
  * reboot. It will also try to save the project.
- * 
+ *
  * @author Mathieu Bastian
  */
 public class MemoryStarvationManager implements NotificationListener {
@@ -126,14 +127,17 @@ public class MemoryStarvationManager implements NotificationListener {
 
         //Dialog
         if (canIncreaseMemory()) {
-            String messageBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.message", getMb(Runtime.getRuntime().maxMemory()) + " mb", getMb(getMaximumXmx()) + " mb");
+            String messageBundle = NbBundle
+                .getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.message",
+                    getMb(Runtime.getRuntime().maxMemory()) + " mb", getMb(getMaximumXmx()) + " mb");
             String titleBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.title");
-            String increaseAndRestart = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.button");
+            String increaseAndRestart =
+                NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.button");
             String cancelBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.cancel");
             NotifyDescriptor msg = new NotifyDescriptor(messageBundle, titleBundle,
-                    NotifyDescriptor.YES_NO_CANCEL_OPTION,
-                    NotifyDescriptor.ERROR_MESSAGE,
-                    new Object[]{increaseAndRestart, cancelBundle}, increaseAndRestart);
+                NotifyDescriptor.YES_NO_CANCEL_OPTION,
+                NotifyDescriptor.ERROR_MESSAGE,
+                new Object[] {increaseAndRestart, cancelBundle}, increaseAndRestart);
 
             if (DialogDisplayer.getDefault().notify(msg) != increaseAndRestart) {
                 resumeThreads();
@@ -149,14 +153,17 @@ public class MemoryStarvationManager implements NotificationListener {
                 Exceptions.printStackTrace(ex);
             }
         } else {
-            String messageBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.message", getMb(Runtime.getRuntime().maxMemory()) + " mb");
+            String messageBundle = NbBundle
+                .getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.message",
+                    getMb(Runtime.getRuntime().maxMemory()) + " mb");
             String titleBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.title");
-            String saveAndRestart = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.button");
+            String saveAndRestart =
+                NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.button");
             String cancelBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.cancel");
             NotifyDescriptor msg = new NotifyDescriptor(messageBundle, titleBundle,
-                    NotifyDescriptor.YES_NO_CANCEL_OPTION,
-                    NotifyDescriptor.ERROR_MESSAGE,
-                    new Object[]{saveAndRestart, cancelBundle}, saveAndRestart);
+                NotifyDescriptor.YES_NO_CANCEL_OPTION,
+                NotifyDescriptor.ERROR_MESSAGE,
+                new Object[] {saveAndRestart, cancelBundle}, saveAndRestart);
 
             if (DialogDisplayer.getDefault().notify(msg) != saveAndRestart) {
                 resumeThreads();
@@ -273,11 +280,11 @@ public class MemoryStarvationManager implements NotificationListener {
         // List every thread in the group
         for (Thread t : threadSet) {
             if (t.getName().startsWith(GENERATOR_THREAD)
-                    || t.getName().startsWith(IMPORTER_THREAD)
-                    || t.getName().startsWith(EXPORTER_THREAD)
-                    || t.getName().startsWith(PROJECT_THREAD)
-                    || t.getName().startsWith(STATISTICS_THREAD)
-                    || t.getName().startsWith(PREVIEW_THREAD)) {
+                || t.getName().startsWith(IMPORTER_THREAD)
+                || t.getName().startsWith(EXPORTER_THREAD)
+                || t.getName().startsWith(PROJECT_THREAD)
+                || t.getName().startsWith(STATISTICS_THREAD)
+                || t.getName().startsWith(PREVIEW_THREAD)) {
                 if (t.isAlive()) {
                     t.suspend();
                 }
@@ -290,11 +297,11 @@ public class MemoryStarvationManager implements NotificationListener {
         // List every thread in the group
         for (Thread t : threadSet) {
             if (t.getName().startsWith(GENERATOR_THREAD)
-                    || t.getName().startsWith(IMPORTER_THREAD)
-                    || t.getName().startsWith(EXPORTER_THREAD)
-                    || t.getName().startsWith(PROJECT_THREAD)
-                    || t.getName().startsWith(STATISTICS_THREAD)
-                    || t.getName().startsWith(PREVIEW_THREAD)) {
+                || t.getName().startsWith(IMPORTER_THREAD)
+                || t.getName().startsWith(EXPORTER_THREAD)
+                || t.getName().startsWith(PROJECT_THREAD)
+                || t.getName().startsWith(STATISTICS_THREAD)
+                || t.getName().startsWith(PREVIEW_THREAD)) {
                 if (t.isAlive()) {
                     t.resume();
                 }
@@ -307,10 +314,10 @@ public class MemoryStarvationManager implements NotificationListener {
         // List every thread in the group
         for (Thread t : threadSet) {
             if (t.getName().startsWith(GENERATOR_THREAD)
-                    || t.getName().startsWith(IMPORTER_THREAD)
-                    || t.getName().startsWith(EXPORTER_THREAD)
-                    || t.getName().startsWith(STATISTICS_THREAD)
-                    || t.getName().startsWith(PREVIEW_THREAD)) {
+                || t.getName().startsWith(IMPORTER_THREAD)
+                || t.getName().startsWith(EXPORTER_THREAD)
+                || t.getName().startsWith(STATISTICS_THREAD)
+                || t.getName().startsWith(PREVIEW_THREAD)) {
                 t.interrupt();
             }
         }

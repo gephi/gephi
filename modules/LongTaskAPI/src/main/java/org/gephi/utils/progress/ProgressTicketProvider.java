@@ -45,7 +45,6 @@ package org.gephi.utils.progress;
 import org.openide.util.Cancellable;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface ProgressTicketProvider {

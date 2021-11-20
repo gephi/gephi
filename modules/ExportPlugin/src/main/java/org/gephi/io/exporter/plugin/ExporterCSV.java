@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
@@ -65,6 +66,16 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
 
     private static final String SEPARATOR = ";";
     private static final String EOL = "\n";
+    /**
+     * Formatter for limiting precision to 6 decimals, avoiding precision errors (epsilon).
+     */
+    private static final DecimalFormat FORMAT = new DecimalFormat("0.######");
+
+    static {
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.ENGLISH);
+        FORMAT.setDecimalFormatSymbols(symbols);
+    }
+
     //Settings
     private boolean edgeWeight = true;
     private boolean writeZero = true;
@@ -76,16 +87,6 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportVisible;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
-
-    /**
-     * Formatter for limiting precision to 6 decimals, avoiding precision errors (epsilon).
-     */
-    private static final DecimalFormat FORMAT = new DecimalFormat("0.######");
-
-    static {
-        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.ENGLISH);
-        FORMAT.setDecimalFormatSymbols(symbols);
-    }
 
     @Override
     public boolean execute() {

@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.utils;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class TempDirUtils {
@@ -81,7 +81,7 @@ public class TempDirUtils {
         }
 
         public File createFile(String fileName) {
-            File file =  new File(tempDir, fileName);
+            File file = new File(tempDir, fileName);
             file.deleteOnExit();
             return file;
         }

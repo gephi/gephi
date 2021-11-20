@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.forceAtlas2;
 
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.forceAtlas2.ForceFactory.RepulsionForce;
 
 /**
- *
  * @author Mathieu Jacomy
  */
 public class NodesThread implements Runnable {
@@ -61,7 +61,8 @@ public class NodesThread implements Runnable {
     private RepulsionForce GravityForce;
     private double scaling;
 
-    public NodesThread(Node[] nodes, int from, int to, boolean barnesHutOptimize, double barnesHutTheta, double gravity, RepulsionForce GravityForce, double scaling, Region rootRegion, RepulsionForce Repulsion) {
+    public NodesThread(Node[] nodes, int from, int to, boolean barnesHutOptimize, double barnesHutTheta, double gravity,
+                       RepulsionForce GravityForce, double scaling, Region rootRegion, RepulsionForce Repulsion) {
         this.nodes = nodes;
         this.from = from;
         this.to = to;

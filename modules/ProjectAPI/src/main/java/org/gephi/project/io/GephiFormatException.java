@@ -39,12 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.io;
 
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class GephiFormatException extends RuntimeException {
@@ -94,10 +94,12 @@ public class GephiFormatException extends RuntimeException {
         }
 
         if (isImport) {
-            return String.format(NbBundle.getMessage(GephiFormatException.class, "gephiFormatException_import"), params);
+            return String
+                .format(NbBundle.getMessage(GephiFormatException.class, "gephiFormatException_import"), params);
         } else //Export
         {
-            return String.format(NbBundle.getMessage(GephiFormatException.class, "gephiFormatException_export"), params);
+            return String
+                .format(NbBundle.getMessage(GephiFormatException.class, "gephiFormatException_export"), params);
         }
 
     }

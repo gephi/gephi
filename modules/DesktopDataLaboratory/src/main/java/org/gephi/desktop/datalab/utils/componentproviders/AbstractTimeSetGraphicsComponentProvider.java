@@ -13,7 +13,6 @@ import org.jdesktop.swingx.renderer.ComponentProvider;
 import org.jdesktop.swingx.renderer.JRendererLabel;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public abstract class AbstractTimeSetGraphicsComponentProvider extends ComponentProvider<JLabel> {
@@ -40,7 +39,8 @@ public abstract class AbstractTimeSetGraphicsComponentProvider extends Component
         TimeSet timeSet = (TimeSet) value;
         String text = null;
         if (timeSet != null) {
-            text = timeSet.toString(graphModelProvider.getGraphModel().getTimeFormat(), graphModelProvider.getGraphModel().getTimeZone());
+            text = timeSet.toString(graphModelProvider.getGraphModel().getTimeFormat(),
+                graphModelProvider.getGraphModel().getTimeZone());
         }
 
         return text;
@@ -70,17 +70,6 @@ public abstract class AbstractTimeSetGraphicsComponentProvider extends Component
         return rendererLabel = new JRendererLabel();
     }
 
-    protected class TimeIntervalGraphicsParameters {
-
-        private final double[] starts;
-        private final double[] ends;
-
-        public TimeIntervalGraphicsParameters(double[] starts, double[] ends) {
-            this.starts = starts;
-            this.ends = ends;
-        }
-    }
-
     public abstract TimeIntervalGraphicsParameters getTimeIntervalGraphicsParameters(TimeSet value);
 
     public void setImagePainter(TimeSet value, boolean isSelected) {
@@ -99,13 +88,13 @@ public abstract class AbstractTimeSetGraphicsComponentProvider extends Component
         TimeIntervalGraphicsParameters params = getTimeIntervalGraphicsParameters(value);
 
         final BufferedImage image = timeIntervalGraphics.createTimeIntervalImage(
-                params.starts,
-                params.ends,
-                rendererLabel.getWidth() - 1,
-                rendererLabel.getHeight() - 1,
-                FILL_COLOR,
-                BORDER_COLOR,
-                background
+            params.starts,
+            params.ends,
+            rendererLabel.getWidth() - 1,
+            rendererLabel.getHeight() - 1,
+            FILL_COLOR,
+            BORDER_COLOR,
+            background
         );
 
         rendererLabel.setPainter(new ImagePainter(image));
@@ -121,5 +110,16 @@ public abstract class AbstractTimeSetGraphicsComponentProvider extends Component
 
     public void setMinMax(double min, double max) {
         timeIntervalGraphics.setMinMax(min, max);
+    }
+
+    protected class TimeIntervalGraphicsParameters {
+
+        private final double[] starts;
+        private final double[] ends;
+
+        public TimeIntervalGraphicsParameters(double[] starts, double[] ends) {
+            this.starts = starts;
+            this.ends = ends;
+        }
     }
 }

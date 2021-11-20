@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
 import org.gephi.graph.api.Element;
@@ -46,7 +47,6 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 
 /**
- *
  * @author mbastian
  */
 public class DegreeRankingImpl extends RankingImpl {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi.nodes;
 
 /**
@@ -46,6 +47,7 @@ package org.gephi.datalab.spi.nodes;
  * using the Netbeans Lookup but avoiding the singleton it causes.</p>
  * <p>Each NodesManipulator should have a NodesManipulatorBuilder
  * with <code>@ServiceProvider(service=NodesManipulatorBuilder.class)</code> annotation to be public.</p>
+ *
  * @author Eduardo Ramos
  */
 public interface NodesManipulatorBuilder {

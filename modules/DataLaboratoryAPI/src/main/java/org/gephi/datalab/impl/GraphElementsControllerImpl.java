@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.impl;
 
 import java.util.Arrays;
@@ -127,7 +128,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     public Edge createEdge(String id, Node source, Node target, boolean directed) {
         return createEdge(id, source, target, directed, getCurrentGraph());
     }
-    
+
     @Override
     public Edge createEdge(Node source, Node target, boolean directed, Object typeLabel) {
         return createEdge(null, source, target, directed, typeLabel, getCurrentGraph());
@@ -147,7 +148,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     public Edge createEdge(String id, Node source, Node target, boolean directed, Graph graph) {
         return createEdge(id, source, target, directed, null, graph);
     }
-    
+
     @Override
     public Edge createEdge(String id, Node source, Node target, boolean directed, Object typeLabel, Graph graph) {
         Edge newEdge = buildEdge(graph, id, source, target, directed, typeLabel);
@@ -157,9 +158,9 @@ public class GraphElementsControllerImpl implements GraphElementsController {
             }
         } catch (Exception e) {
             Logger.getLogger("").log(
-                    Level.SEVERE, 
-                    "Error when adding edge [id = {0}, source = {1}, target = {2}, directed = {3}, typeLabel = {4}] to the graph. Exception message: {5}",
-                    new Object[]{id, source.getId(), target.getId(), directed, typeLabel, e.getMessage()}
+                Level.SEVERE,
+                "Error when adding edge [id = {0}, source = {1}, target = {2}, directed = {3}, typeLabel = {4}] to the graph. Exception message: {5}",
+                new Object[] {id, source.getId(), target.getId(), directed, typeLabel, e.getMessage()}
             );
         }
         return null;
@@ -219,7 +220,8 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     @Override
-    public Node mergeNodes(Graph graph, Node[] nodes, Node selectedNode, Column[] columns, AttributeRowsMergeStrategy[] mergeStrategies, boolean deleteMergedNodes) {
+    public Node mergeNodes(Graph graph, Node[] nodes, Node selectedNode, Column[] columns,
+                           AttributeRowsMergeStrategy[] mergeStrategies, boolean deleteMergedNodes) {
         Table edgesTable = graph.getModel().getEdgeTable();
         if (selectedNode == null) {
             selectedNode = nodes[0];//Use first node as selected node if null
@@ -390,23 +392,23 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         }
         newNode.setSize(DEFAULT_NODE_SIZE);
         newNode.setLabel(label);
-        
+
         //Set random position to the node:
         newNode.setX((float) ((0.01 + Math.random()) * 1000) - 500);
         newNode.setY((float) ((0.01 + Math.random()) * 1000) - 500);
-        
+
         return newNode;
     }
 
     private Edge buildEdge(Graph graph, String id, Node source, Node target, boolean directed, Object typeLabel) {
         int type;
-        if(typeLabel == null){
+        if (typeLabel == null) {
             type = graph.getModel().getEdgeType(null);
         } else {
             //Create the type if missing:
             type = graph.getModel().addEdgeType(typeLabel);
         }
-        
+
         Edge newEdge;
         if (id != null) {
             newEdge = graph.getModel().factory().newEdge(id, source, target, type, DEFAULT_EDGE_WEIGHT, directed);

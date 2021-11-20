@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.general;
 
 import javax.swing.Icon;
@@ -70,7 +71,8 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
     @Override
     public void execute() {
         if (source != null && target != null) {
-            Lookup.getDefault().lookup(GraphElementsController.class).createEdge(source, target, directed, edgeTypeLabel);
+            Lookup.getDefault().lookup(GraphElementsController.class)
+                .createEdge(source, target, directed, edgeTypeLabel);
         }
     }
 
@@ -92,8 +94,10 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
     @Override
     public ManipulatorUI getUI() {
         GraphModel currentGraphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
-        if (graphModel != null && graphModel != currentGraphModel) {//If graph model has changed since last execution, change default mode for edges to create in UI, else keep this parameter across calls
-            directed = currentGraphModel.isDirected() || currentGraphModel.isMixed();//Get graph directed state. Set to true if graph is directed or mixed
+        if (graphModel != null && graphModel !=
+            currentGraphModel) {//If graph model has changed since last execution, change default mode for edges to create in UI, else keep this parameter across calls
+            directed = currentGraphModel.isDirected() ||
+                currentGraphModel.isMixed();//Get graph directed state. Set to true if graph is directed or mixed
             graphModel = currentGraphModel;
             source = null;
         }

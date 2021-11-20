@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.general;
 
 import javax.swing.Icon;
@@ -58,6 +59,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * GeneralActionsManipulator that shows a UI for doing search/replace tasks with normal and regex features.
+ *
  * @author Eduardo Ramos
  */
 @ServiceProvider(service = GeneralActionsManipulator.class)
@@ -76,7 +78,7 @@ public class SearchReplace implements GeneralActionsManipulator {
         }
         DialogDescriptor dd = new DialogDescriptor(ui, getName());
         dd.setModal(true);
-        dd.setOptions(new Object[]{NbBundle.getMessage(SearchReplace.class, "SearchReplace.window.close")});
+        dd.setOptions(new Object[] {NbBundle.getMessage(SearchReplace.class, "SearchReplace.window.close")});
         ui.setActive(true);
         DialogDisplayer.getDefault().notify(dd);
         ui.setActive(false);
@@ -95,7 +97,9 @@ public class SearchReplace implements GeneralActionsManipulator {
     @Override
     public boolean canExecute() {
         Table currentTable = getCurrentTable();
-        return currentTable != null && Lookup.getDefault().lookup(AttributeColumnsController.class).getTableRowsCount(currentTable) > 0;//Make sure that there is at least 1 row
+        return currentTable != null &&
+            Lookup.getDefault().lookup(AttributeColumnsController.class).getTableRowsCount(currentTable) >
+                0;//Make sure that there is at least 1 row
     }
 
     @Override
@@ -115,7 +119,8 @@ public class SearchReplace implements GeneralActionsManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/binocular--pencil.png", true);
+        return ImageUtilities
+            .loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/binocular--pencil.png", true);
     }
 
     private Table getCurrentTable() {

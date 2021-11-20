@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that copies the given columns data of one node to the other selected nodes.
+ *
  * @author Eduardo Ramos
  */
 public class CopyNodeDataToOtherNodes extends BasicNodesManipulator implements GeneralColumnsAndRowChooser {
@@ -106,7 +108,9 @@ public class CopyNodeDataToOtherNodes extends BasicNodesManipulator implements G
 
     @Override
     public ManipulatorUI getUI() {
-        return new GeneralChooseColumnsAndRowUI(NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.ui.rowDescription"),NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.ui.columnsDescription"));
+        return new GeneralChooseColumnsAndRowUI(
+            NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.ui.rowDescription"),
+            NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.ui.columnsDescription"));
     }
 
     @Override
@@ -146,6 +150,6 @@ public class CopyNodeDataToOtherNodes extends BasicNodesManipulator implements G
 
     @Override
     public void setRow(Element row) {
-        clickedNode=(Node) row;
+        clickedNode = (Node) row;
     }
 }

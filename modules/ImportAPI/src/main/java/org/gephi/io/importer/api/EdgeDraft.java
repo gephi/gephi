@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 /**
@@ -52,15 +53,6 @@ package org.gephi.io.importer.api;
 public interface EdgeDraft extends ElementDraft {
 
     /**
-     * Sets this edge's weight.
-     * <p>
-     * Default is 1.0.
-     *
-     * @param weight edge's weight
-     */
-    public void setWeight(double weight);
-
-    /**
      * Returns this edge's weight.
      *
      * @return edge's weight
@@ -68,14 +60,13 @@ public interface EdgeDraft extends ElementDraft {
     public double getWeight();
 
     /**
-     * Sets this edge's type.
+     * Sets this edge's weight.
      * <p>
-     * Edges can have different types but by default all edges have a default,
-     * null type. In other words, setting a type is optional.
+     * Default is 1.0.
      *
-     * @param type edge type
+     * @param weight edge's weight
      */
-    public void setType(Object type);
+    public void setWeight(double weight);
 
     /**
      * Gets this edge's type.
@@ -88,11 +79,14 @@ public interface EdgeDraft extends ElementDraft {
     public Object getType();
 
     /**
-     * Sets this edge's direction setting.
+     * Sets this edge's type.
+     * <p>
+     * Edges can have different types but by default all edges have a default,
+     * null type. In other words, setting a type is optional.
      *
-     * @param direction edge's direction
+     * @param type edge type
      */
-    public void setDirection(EdgeDirection direction);
+    public void setType(Object type);
 
     /**
      * Returns this edge's direction setting.
@@ -102,20 +96,11 @@ public interface EdgeDraft extends ElementDraft {
     public EdgeDirection getDirection();
 
     /**
-     * Sets this edge's source.
+     * Sets this edge's direction setting.
      *
-     * @param nodeSource node source
+     * @param direction edge's direction
      */
-    public void setSource(NodeDraft nodeSource);
-
-    /**
-     * Sets this edge's target.
-     * <p>
-     * Self-loops should simply set both source and target with the same node.
-     *
-     * @param nodeTarget node target
-     */
-    public void setTarget(NodeDraft nodeTarget);
+    public void setDirection(EdgeDirection direction);
 
     /**
      * Get edge's source.
@@ -125,11 +110,27 @@ public interface EdgeDraft extends ElementDraft {
     public NodeDraft getSource();
 
     /**
+     * Sets this edge's source.
+     *
+     * @param nodeSource node source
+     */
+    public void setSource(NodeDraft nodeSource);
+
+    /**
      * Get edge's target.
      *
      * @return edge's target or null if unset
      */
     public NodeDraft getTarget();
+
+    /**
+     * Sets this edge's target.
+     * <p>
+     * Self-loops should simply set both source and target with the same node.
+     *
+     * @param nodeTarget node target
+     */
+    public void setTarget(NodeDraft nodeTarget);
 
     /**
      * Returns true if this edge is a self-loop.

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.filters;
 
 import java.awt.BorderLayout;
@@ -56,28 +57,27 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.filters//Filters//EN",
-        autostore = false)
+    autostore = false)
 @TopComponent.Description(preferredID = "FiltersTopComponent",
-        iconBase = "org/gephi/desktop/filters/resources/small.png",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+    iconBase = "org/gephi/desktop/filters/resources/small.png",
+    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "filtersmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.filters.FiltersTopComponent")
 @ActionReference(path = "Menu/Window", position = 400)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_FiltersTopComponent",
-        preferredID = "FiltersTopComponent")
+    preferredID = "FiltersTopComponent")
 public final class FiltersTopComponent extends TopComponent {
 
-    private static FiltersTopComponent instance;
     static final String ICON_PATH = "org/gephi/desktop/filters/resources/small.png";
     private static final String PREFERRED_ID = "FiltersTopComponent";
+    private static final long AUTO_REFRESH_RATE_MILLISECONDS = 3000;
+    private static FiltersTopComponent instance;
     //Panel
     private final FiltersPanel panel;
     //Models
     private FilterModel filterModel;
     private WorkspaceColumnsObservers observers;
     private FilterUIModel uiModel;
-    
-    private static final long AUTO_REFRESH_RATE_MILLISECONDS = 3000;
     private java.util.Timer observersTimer;
 
     public FiltersTopComponent() {
@@ -128,7 +128,7 @@ public final class FiltersTopComponent extends TopComponent {
             activateWorkspace(workspace);
         }
         refreshModel();
-        
+
         initEvents();
     }
 
@@ -154,21 +154,21 @@ public final class FiltersTopComponent extends TopComponent {
     public FilterUIModel getUiModel() {
         return uiModel;
     }
-    
+
     private void initEvents() {
         observersTimer = new java.util.Timer("DataLaboratoryGraphObservers");
         observersTimer.schedule(new TimerTask() {
 
-            @Override
-            public void run() {
-                if(observers != null) {
-                    if(observers.hasChanges()) {
-                        refreshModel();
-                    }
-                }
-            }
-        }
-        , 0, AUTO_REFRESH_RATE_MILLISECONDS);//Check graph and tables for changes every 100 ms
+                                    @Override
+                                    public void run() {
+                                        if (observers != null) {
+                                            if (observers.hasChanges()) {
+                                                refreshModel();
+                                            }
+                                        }
+                                    }
+                                }
+            , 0, AUTO_REFRESH_RATE_MILLISECONDS);//Check graph and tables for changes every 100 ms
     }
 
     /**

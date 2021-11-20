@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.spi;
 
 import org.openide.WizardDescriptor;
@@ -103,7 +104,7 @@ public interface ImporterWizardUI {
      * <code>importer</code>.
      *
      * @param importer the importer that settings are to be written
-     * @param panel the panel that settings are read
+     * @param panel    the panel that settings are read
      */
     public void unsetup(WizardImporter importer, WizardDescriptor.Panel panel);
 
@@ -111,7 +112,7 @@ public interface ImporterWizardUI {
      * Returns <code>true</code> if this UI belongs to the given importer.
      *
      * @param importer the importer that has to be tested
-     * @return          <code>true</code> if the UI is matching with
+     * @return <code>true</code> if the UI is matching with
      * <code>importer</code>, <code>false</code> otherwise.
      */
     public boolean isUIForImporter(Importer importer);

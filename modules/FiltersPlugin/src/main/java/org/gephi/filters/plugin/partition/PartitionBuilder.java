@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.partition;
 
 import java.util.ArrayList;
@@ -72,16 +73,15 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = CategoryBuilder.class)
 public class PartitionBuilder implements CategoryBuilder {
 
     private final static Category PARTITION = new Category(
-            NbBundle.getMessage(PartitionBuilder.class, "PartitionBuilder.name"),
-            null,
-            FilterLibrary.ATTRIBUTES);
+        NbBundle.getMessage(PartitionBuilder.class, "PartitionBuilder.name"),
+        null,
+        FilterLibrary.ATTRIBUTES);
 
     @Override
     public Category getCategory() {
@@ -137,8 +137,8 @@ public class PartitionBuilder implements CategoryBuilder {
         @Override
         public String getName() {
             return column.getTitle() + " (" + (AttributeUtils.isNodeColumn(column)
-                    ? NbBundle.getMessage(PartitionFilterBuilder.class, "PartitionFilterBuilder.name.node")
-                    : NbBundle.getMessage(PartitionFilterBuilder.class, "PartitionFilterBuilder.name.edge")) + ")";
+                ? NbBundle.getMessage(PartitionFilterBuilder.class, "PartitionFilterBuilder.name.node")
+                : NbBundle.getMessage(PartitionFilterBuilder.class, "PartitionFilterBuilder.name.edge")) + ")";
         }
 
         @Override
@@ -217,7 +217,8 @@ public class PartitionBuilder implements CategoryBuilder {
 
         @Override
         public String getName() {
-            return NbBundle.getMessage(PartitionBuilder.class, "PartitionBuilder.name") + " (" + column.getTitle() + ")";
+            return NbBundle.getMessage(PartitionBuilder.class, "PartitionBuilder.name") + " (" + column.getTitle() +
+                ")";
         }
 
         public boolean evaluate(Graph graph, Node node) {
@@ -274,7 +275,7 @@ public class PartitionBuilder implements CategoryBuilder {
             if (filterProperties == null) {
                 filterProperties = new FilterProperty[0];
                 try {
-                    filterProperties = new FilterProperty[]{
+                    filterProperties = new FilterProperty[] {
                         FilterProperty.createProperty(this, Column.class, "column"),
                         FilterProperty.createProperty(this, Set.class, "parts")};
                 } catch (Exception ex) {
@@ -292,15 +293,15 @@ public class PartitionBuilder implements CategoryBuilder {
             return parts;
         }
 
+        public void setParts(Set<Object> parts) {
+            this.parts = parts;
+        }
+
         public Column getColumn() {
             return column;
         }
 
         public void setColumn(Column column) {
-        }
-
-        public void setParts(Set<Object> parts) {
-            this.parts = parts;
         }
     }
 }

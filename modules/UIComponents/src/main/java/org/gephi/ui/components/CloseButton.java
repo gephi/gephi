@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import javax.swing.Action;
@@ -47,7 +48,6 @@ import javax.swing.JButton;
 import org.gephi.ui.utils.UIUtils;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class CloseButton extends JButton {
@@ -64,25 +64,40 @@ public class CloseButton extends JButton {
 
     private void init() {
         if (UIUtils.isGTKLookAndFeel()) {
-            setIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/gtk_bigclose_enabled.png")));
-            setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/gtk_bigclose_rollover.png")));
-            setPressedIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/gtk_bigclose_pressed.png")));
+            setIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/gtk_bigclose_enabled.png")));
+            setRolloverIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/gtk_bigclose_rollover.png")));
+            setPressedIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/gtk_bigclose_pressed.png")));
         } else if (UIUtils.isWindowsClassicLookAndFeel()) {
-            setIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/win_bigclose_enabled.png")));
-            setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/win_bigclose_rollover.png")));
-            setPressedIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/win_bigclose_pressed.png")));
+            setIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/win_bigclose_enabled.png")));
+            setRolloverIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/win_bigclose_rollover.png")));
+            setPressedIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/win_bigclose_pressed.png")));
         } else if (UIUtils.isWindowsXPLookAndFeel()) {
-            setIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_enabled.png")));
-            setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_rollover.png")));
-            setPressedIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_pressed.png")));
+            setIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_enabled.png")));
+            setRolloverIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_rollover.png")));
+            setPressedIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_pressed.png")));
         } else if (UIUtils.isWindowsVistaLookAndFeel()) {
-            setIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_enabled.png")));
-            setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_rollover.png")));
-            setPressedIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_pressed.png")));
+            setIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_enabled.png")));
+            setRolloverIcon(new ImageIcon(
+                getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_rollover.png")));
+            setPressedIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_pressed.png")));
         } else if (UIUtils.isAquaLookAndFeel()) {
-            setIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/mac_bigclose_enabled.png")));
-            setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/mac_bigclose_rollover.png")));
-            setPressedIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/mac_bigclose_pressed.png")));
+            setIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/mac_bigclose_enabled.png")));
+            setRolloverIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/mac_bigclose_rollover.png")));
+            setPressedIcon(
+                new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/mac_bigclose_pressed.png")));
         }
 
         setText("");

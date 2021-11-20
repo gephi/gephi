@@ -39,16 +39,16 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
 
 /**
- *
  * @author Eduardo
  */
-public abstract class BasicNodesManipulator implements NodesManipulator{
+public abstract class BasicNodesManipulator implements NodesManipulator {
 
     @Override
     public boolean isAvailable() {

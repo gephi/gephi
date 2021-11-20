@@ -45,7 +45,6 @@ package org.gephi.lib.validation;
 import org.netbeans.validation.api.ui.ValidationGroup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface ValidationClient {

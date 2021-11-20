@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
 import org.gephi.appearance.spi.Transformer;
@@ -60,7 +61,7 @@ public interface Function {
      * Transforms the given element.
      *
      * @param element element to transform
-     * @param graph the graph this element belongs to
+     * @param graph   the graph this element belongs to
      */
     public void transform(Element element, Graph graph);
 

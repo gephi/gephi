@@ -39,13 +39,13 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
 
 /**
- *
  * @author mbastian
  */
 public abstract class RankingImpl implements Ranking {
@@ -73,7 +73,8 @@ public abstract class RankingImpl implements Ranking {
         if (min.equals(max)) {
             return 1f;
         }
-        float normalizedValue = (float) (value.doubleValue() - min.doubleValue()) / (float) (max.doubleValue() - min.doubleValue());
+        float normalizedValue =
+            (float) (value.doubleValue() - min.doubleValue()) / (float) (max.doubleValue() - min.doubleValue());
         return interpolator.interpolate(normalizedValue);
     }
 }

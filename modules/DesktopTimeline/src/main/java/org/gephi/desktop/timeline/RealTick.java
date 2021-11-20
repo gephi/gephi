@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.timeline;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class RealTick {
@@ -109,7 +109,7 @@ public class RealTick {
     }
 
     /**
-     * Return 2 if multiple of 10, 1 if multiple of 5, 0 otherwise 
+     * Return 2 if multiple of 10, 1 if multiple of 5, 0 otherwise
      */
     public int getTickRank(int index) {
         double t = minTick + (index * tick);

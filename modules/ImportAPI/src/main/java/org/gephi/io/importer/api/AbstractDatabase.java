@@ -39,13 +39,13 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 import org.gephi.io.database.drivers.SQLDriver;
 import org.gephi.io.database.drivers.SQLUtils;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public abstract class AbstractDatabase implements Database {

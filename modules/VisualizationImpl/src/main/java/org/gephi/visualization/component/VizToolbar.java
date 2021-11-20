@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.component;
 
 import java.awt.Component;
@@ -51,7 +52,6 @@ import javax.swing.UIManager;
 import org.gephi.ui.utils.UIUtils;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class VizToolbar extends JToolBar {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.impl;
 
 import java.io.Serializable;
@@ -49,16 +50,15 @@ import org.gephi.project.api.Project;
 import org.gephi.project.api.Projects;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ProjectsImpl implements Projects, Serializable {
 
     //Project
     private final List<Project> projects;
-    private ProjectImpl currentProject;
     //Workspace ids
     private final AtomicInteger projectIds;
+    private ProjectImpl currentProject;
 
     public ProjectsImpl() {
         projects = new ArrayList<>();
@@ -85,13 +85,13 @@ public class ProjectsImpl implements Projects, Serializable {
         return currentProject;
     }
 
+    public synchronized void setCurrentProject(ProjectImpl currentProject) {
+        this.currentProject = currentProject;
+    }
+
     @Override
     public synchronized boolean hasCurrentProject() {
         return currentProject != null;
-    }
-
-    public synchronized void setCurrentProject(ProjectImpl currentProject) {
-        this.currentProject = currentProject;
     }
 
     public synchronized void closeCurrentProject() {
@@ -102,11 +102,11 @@ public class ProjectsImpl implements Projects, Serializable {
         return projectIds.getAndIncrement();
     }
 
-    public void setProjectIds(int id) {
-        projectIds.set(id);
-    }
-
     public int getProjectIds() {
         return projectIds.get();
+    }
+
+    public void setProjectIds(int id) {
+        projectIds.set(id);
     }
 }

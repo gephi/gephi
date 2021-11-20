@@ -39,12 +39,12 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.force;
 
 import org.gephi.graph.spi.LayoutData;
 
 /**
- *
  * @author Helder Suzuki
  */
 public class ForceVector implements LayoutData {

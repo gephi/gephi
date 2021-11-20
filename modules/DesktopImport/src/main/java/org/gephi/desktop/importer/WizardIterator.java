@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.importer;
 
 import java.awt.Component;
@@ -63,7 +64,7 @@ public class WizardIterator implements WizardDescriptor.Iterator {
      */
     private WizardDescriptor.Panel[] getPanels() {
         if (panels == null) {
-            panels = new WizardDescriptor.Panel[]{
+            panels = new WizardDescriptor.Panel[] {
                 new WizardPanel1(),
                 new WizardPanel2()
             };
@@ -127,7 +128,7 @@ public class WizardIterator implements WizardDescriptor.Iterator {
             for (ImporterWizardUI wizardUi : Lookup.getDefault().lookupAll(ImporterWizardUI.class)) {
                 WizardVisualPanel1 visual1 = ((WizardVisualPanel1) current().getComponent());
                 if (visual1.getCurrentCategory().equals(wizardUi.getCategory())
-                        && visual1.getCurrentWizard().equals(wizardUi.getDisplayName())) {
+                    && visual1.getCurrentWizard().equals(wizardUi.getDisplayName())) {
                     WizardDescriptor.Panel[] wizardPanels = wizardUi.getPanels();
                     WizardDescriptor.Panel tempFirstPanel = panels[0];
                     panels = new WizardDescriptor.Panel[wizardPanels.length + 1];

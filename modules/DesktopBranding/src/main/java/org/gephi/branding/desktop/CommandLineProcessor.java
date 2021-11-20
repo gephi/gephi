@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.branding.desktop;
 
 import java.io.File;
@@ -64,16 +65,15 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = OptionProcessor.class)
 public class CommandLineProcessor extends OptionProcessor {
 
+    private static final String GEPHI_EXTENSION = "gephi";
     private final Option openOption = Option.defaultArguments();
     private final Option openOption2 = Option.additionalArguments('o', "open");
     private final String MEMORY_ERROR;
-    private static final String GEPHI_EXTENSION = "gephi";
 
     public CommandLineProcessor() {
         MEMORY_ERROR = NbBundle.getMessage(CommandLineProcessor.class, "CommandLineProcessor.OutOfMemoryError.message");
@@ -106,7 +106,9 @@ public class CommandLineProcessor extends OptionProcessor {
                 }
                 FileObject fileObject = FileUtil.toFileObject(file);
                 if (!file.exists()) {
-                    NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(CommandLineProcessor.class, "CommandLineProcessor.fileNotFound", file.getName()), NotifyDescriptor.WARNING_MESSAGE);
+                    NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle
+                        .getMessage(CommandLineProcessor.class, "CommandLineProcessor.fileNotFound", file.getName()),
+                        NotifyDescriptor.WARNING_MESSAGE);
                     DialogDisplayer.getDefault().notify(msg);
                     return;
                 }
@@ -116,7 +118,9 @@ public class CommandLineProcessor extends OptionProcessor {
                         pc.openProject(file);
                     } catch (Exception ew) {
                         Exceptions.printStackTrace(ew);
-                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(CommandLineProcessor.class, "CommandLineProcessor.openGephiError"), NotifyDescriptor.WARNING_MESSAGE);
+                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
+                            NbBundle.getMessage(CommandLineProcessor.class, "CommandLineProcessor.openGephiError"),
+                            NotifyDescriptor.WARNING_MESSAGE);
                         DialogDisplayer.getDefault().notify(msg);
                     }
                     return;
@@ -125,7 +129,9 @@ public class CommandLineProcessor extends OptionProcessor {
                     if (importController.getImportController().isFileSupported(FileUtil.toFile(fileObject))) {
                         importController.importFile(fileObject);
                     } else {
-                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(CommandLineProcessor.class, "CommandLineProcessor.fileNotSupported"), NotifyDescriptor.WARNING_MESSAGE);
+                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
+                            NbBundle.getMessage(CommandLineProcessor.class, "CommandLineProcessor.fileNotSupported"),
+                            NotifyDescriptor.WARNING_MESSAGE);
                         DialogDisplayer.getDefault().notify(msg);
                     }
                 }
@@ -136,7 +142,8 @@ public class CommandLineProcessor extends OptionProcessor {
             DialogDisplayer.getDefault().notify(nd);
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
-            NotifyDescriptor nd = new NotifyDescriptor.Message("CommandLineParsing " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
+            NotifyDescriptor nd =
+                new NotifyDescriptor.Message("CommandLineParsing " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(nd);
         }
     }

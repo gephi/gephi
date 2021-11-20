@@ -39,11 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.timeline.api;
 
 /**
  * Timeline model listener.
- * 
+ *
  * @author Julian Bilcke
  * @see TimelineModelEvent
  */

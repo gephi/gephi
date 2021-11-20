@@ -6,7 +6,6 @@ import org.gephi.graph.api.types.TimestampSet;
 import org.jdesktop.swingx.JXTable;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class TimestampSetGraphicsComponentProvider extends AbstractTimeSetGraphicsComponentProvider {

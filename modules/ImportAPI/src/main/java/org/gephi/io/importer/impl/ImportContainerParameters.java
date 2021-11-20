@@ -39,12 +39,12 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.impl;
 
 import org.gephi.io.importer.api.EdgeMergeStrategy;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ImportContainerParameters {
@@ -69,6 +69,10 @@ public class ImportContainerParameters {
 
     public EdgeMergeStrategy getEdgesMergeStrategy() {
         return edgesMergeStrategy;
+    }
+
+    public void setEdgesMergeStrategy(EdgeMergeStrategy edgesMergeStrategy) {
+        this.edgesMergeStrategy = edgesMergeStrategy;
     }
 
     public boolean isParallelEdges() {
@@ -125,9 +129,5 @@ public class ImportContainerParameters {
 
     public void setMergeParallelEdgesAttributes(boolean mergeParallelEdgesAttributes) {
         this.mergeParallelEdgesAttributes = mergeParallelEdgesAttributes;
-    }
-
-    public void setEdgesMergeStrategy(EdgeMergeStrategy edgesMergeStrategy) {
-        this.edgesMergeStrategy = edgesMergeStrategy;
     }
 }

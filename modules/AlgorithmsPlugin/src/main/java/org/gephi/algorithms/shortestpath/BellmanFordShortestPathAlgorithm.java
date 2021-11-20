@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.algorithms.shortestpath;
 
 import java.util.HashMap;
@@ -49,7 +50,6 @@ import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Node;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgorithm {

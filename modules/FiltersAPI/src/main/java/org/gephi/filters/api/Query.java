@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.api;
 
 import org.gephi.filters.spi.Filter;
@@ -69,10 +70,10 @@ public interface Query {
      * @return query's name
      */
     public String getName();
-    
+
     /**
      * Sets the query name to a custom value
-     * 
+     *
      * @param name Custom name
      */
     public void setName(String name);
@@ -112,7 +113,7 @@ public interface Query {
      * @param index the index of the property
      * @return the query's property name
      * @throws ArrayIndexOutOfBoundsException if <code>index</code> is out of
-     * bounds
+     *                                        bounds
      */
     public String getPropertyName(int index);
 
@@ -122,7 +123,7 @@ public interface Query {
      * @param index the index of the property
      * @return the query's property value
      * @throws ArrayIndexOutOfBoundsException if <code>index</code> is out of
-     * bounds
+     *                                        bounds
      */
     public Object getPropertyValue(int index);
 

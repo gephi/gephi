@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.api.selection;
 
 import java.util.ArrayList;
@@ -54,14 +55,13 @@ import org.gephi.visualization.model.Model;
 import org.gephi.visualization.opengl.AbstractEngine;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class SelectionManager implements VizArchitecture {
 
+    private final List<ChangeListener> listeners;
     private VizConfig vizConfig;
     private AbstractEngine engine;
-    private final List<ChangeListener> listeners;
     //Settings
     private int mouseSelectionDiameter;
     private boolean mouseSelectionZoomProportionnal;
@@ -151,18 +151,18 @@ public class SelectionManager implements VizArchitecture {
     }
 
     public void selectNode(Node node) {
-        selectNodes(new Node[]{node});
+        selectNodes(new Node[] {node});
     }
 
     public void selectEdge(Edge edge) {
-        selectEdges(new Edge[]{edge});
+        selectEdges(new Edge[] {edge});
     }
 
     public void selectNodes(Node[] nodes) {
         if (!isCustomSelection()) {
             setCustomSelection();
         }
-        
+
         Model[] models = engine.getNodeModelsForNodes(nodes);
         engine.selectObject(models);
     }
@@ -171,7 +171,7 @@ public class SelectionManager implements VizArchitecture {
         if (!isCustomSelection()) {
             setCustomSelection();
         }
-        
+
         Model[] models = engine.getEdgeModelsForEdges(edges);
         engine.selectObject(models);
     }
@@ -183,20 +183,20 @@ public class SelectionManager implements VizArchitecture {
         }
     }
 
-    public void setMouseSelectionDiameter(int mouseSelectionDiameter) {
-        this.mouseSelectionDiameter = mouseSelectionDiameter;
-    }
-
     public int getMouseSelectionDiameter() {
         return mouseSelectionDiameter;
     }
 
-    public void setMouseSelectionZoomProportionnal(boolean mouseSelectionZoomProportionnal) {
-        this.mouseSelectionZoomProportionnal = mouseSelectionZoomProportionnal;
+    public void setMouseSelectionDiameter(int mouseSelectionDiameter) {
+        this.mouseSelectionDiameter = mouseSelectionDiameter;
     }
 
     public boolean isMouseSelectionZoomProportionnal() {
         return mouseSelectionZoomProportionnal;
+    }
+
+    public void setMouseSelectionZoomProportionnal(boolean mouseSelectionZoomProportionnal) {
+        this.mouseSelectionZoomProportionnal = mouseSelectionZoomProportionnal;
     }
 
     public boolean isSelectionUpdateWhileDragging() {

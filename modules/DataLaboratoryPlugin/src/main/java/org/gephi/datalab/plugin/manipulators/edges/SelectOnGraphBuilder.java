@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.edges;
 
 import org.gephi.datalab.spi.edges.EdgesManipulator;
@@ -52,7 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = EdgesManipulatorBuilder.class)
 public class SelectOnGraphBuilder implements EdgesManipulatorBuilder {
-    
+
     @Override
     public EdgesManipulator getEdgesManipulator() {
         return new SelectOnGraph();

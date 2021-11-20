@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
@@ -53,6 +54,7 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that selects in edges table all edges that have a node.
+ *
  * @author Eduardo Ramos
  */
 public class SelectEdgesOnTable extends BasicNodesManipulator {
@@ -87,7 +89,7 @@ public class SelectEdgesOnTable extends BasicNodesManipulator {
 
     @Override
     public boolean canExecute() {
-        return edges!=null;//Do not enable if the node has no edges.
+        return edges != null;//Do not enable if the node has no edges.
     }
 
     @Override
@@ -107,6 +109,7 @@ public class SelectEdgesOnTable extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-select-row.png", true);
+        return ImageUtilities
+            .loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-select-row.png", true);
     }
 }

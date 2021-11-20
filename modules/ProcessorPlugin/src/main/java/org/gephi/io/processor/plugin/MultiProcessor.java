@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.processor.plugin;
 
 import org.gephi.io.importer.api.ContainerUnloader;

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.desktop.appearance;
 
 import java.util.Collection;
@@ -71,7 +72,6 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author mbastian
  */
 @ServiceProvider(service = AppearanceUIController.class)
@@ -237,7 +237,8 @@ public class AppearanceUIController {
                 if (function != null) {
                     model.refreshSelectedFunction();
                     if (!function.isSimple()) {
-                        graphObserver = new GraphChangeObserver(function.getGraph(), function instanceof AttributeFunction ? ((AttributeFunction) function).getColumn() : null);
+                        graphObserver = new GraphChangeObserver(function.getGraph(),
+                            function instanceof AttributeFunction ? ((AttributeFunction) function).getColumn() : null);
                         graphObserver.start();
                     }
                 }
@@ -261,7 +262,8 @@ public class AppearanceUIController {
                 if (function != null) {
                     model.refreshSelectedFunction();
                     if (!function.isSimple()) {
-                        graphObserver = new GraphChangeObserver(function.getGraph(), function instanceof AttributeFunction ? ((AttributeFunction) function).getColumn() : null);
+                        graphObserver = new GraphChangeObserver(function.getGraph(),
+                            function instanceof AttributeFunction ? ((AttributeFunction) function).getColumn() : null);
                         graphObserver.start();
                     }
                 }
@@ -286,7 +288,8 @@ public class AppearanceUIController {
                 if (function != null) {
                     model.refreshSelectedFunction();
                     if (!function.isSimple()) {
-                        graphObserver = new GraphChangeObserver(function.getGraph(), function instanceof AttributeFunction ? ((AttributeFunction) function).getColumn() : null);
+                        graphObserver = new GraphChangeObserver(function.getGraph(),
+                            function instanceof AttributeFunction ? ((AttributeFunction) function).getColumn() : null);
                         graphObserver.start();
                     }
                 }
@@ -303,13 +306,15 @@ public class AppearanceUIController {
         }
         if (model != null) {
             Function oldValue = model.getSelectedFunction();
-            if ((oldValue == null && function != null) || (oldValue != null && function == null) || (function != null && oldValue != null && !oldValue.equals(function))) {
+            if ((oldValue == null && function != null) || (oldValue != null && function == null) ||
+                (function != null && oldValue != null && !oldValue.equals(function))) {
                 model.setAutoApply(false);
                 model.setSelectedFunction(function);
                 firePropertyChangeEvent(AppearanceUIModelEvent.SELECTED_FUNCTION, oldValue, function);
 
                 if (function != null && !function.isSimple()) {
-                    graphObserver = new GraphChangeObserver(function.getGraph(), function instanceof AttributeFunction ? ((AttributeFunction) function).getColumn() : null);
+                    graphObserver = new GraphChangeObserver(function.getGraph(),
+                        function instanceof AttributeFunction ? ((AttributeFunction) function).getColumn() : null);
                     graphObserver.start();
                 }
             }
@@ -419,8 +424,8 @@ public class AppearanceUIController {
 
     private class TableChangeObserver extends TimerTask {
 
-        private final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
         private static final int INTERVAL = 500;
+        private final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
         private final Timer timer;
         private final TableObserver nodeObserver;
         private final TableObserver edgeObserver;

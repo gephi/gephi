@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 import javax.swing.Icon;
@@ -56,6 +57,7 @@ import org.openide.util.NbPreferences;
 /**
  * AttributeColumnsMergeStrategy that joins columns of any type into a new column
  * using the separator string that the user provides.
+ *
  * @author Eduardo Ramos
  */
 public class JoinWithSeparator implements AttributeColumnsMergeStrategy {
@@ -70,13 +72,15 @@ public class JoinWithSeparator implements AttributeColumnsMergeStrategy {
     public void setup(Table table, Column[] columns) {
         this.table = table;
         this.columns = columns;
-        separator=NbPreferences.forModule(JoinWithSeparator.class).get(SEPARATOR_SAVED_PREFERENCES, DEFAULT_SEPARATOR);
+        separator =
+            NbPreferences.forModule(JoinWithSeparator.class).get(SEPARATOR_SAVED_PREFERENCES, DEFAULT_SEPARATOR);
     }
 
     @Override
     public void execute() {
         NbPreferences.forModule(JoinWithSeparator.class).put(SEPARATOR_SAVED_PREFERENCES, separator);
-        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).joinWithSeparatorMerge(table, columns, null, newColumnTitle, separator);
+        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class)
+            .joinWithSeparatorMerge(table, columns, null, newColumnTitle, separator);
     }
 
     @Override

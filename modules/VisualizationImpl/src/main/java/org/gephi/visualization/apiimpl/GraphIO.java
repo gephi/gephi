@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.apiimpl;
 
 import com.jogamp.newt.event.MouseListener;
 import java.awt.event.KeyListener;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface GraphIO extends MouseListener, KeyListener {

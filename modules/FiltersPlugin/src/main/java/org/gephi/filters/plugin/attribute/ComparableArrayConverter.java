@@ -38,6 +38,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.attribute;
 
 import java.util.List;

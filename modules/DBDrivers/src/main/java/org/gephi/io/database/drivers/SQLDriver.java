@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.database.drivers;
 
 import java.io.Serializable;
@@ -46,7 +47,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface SQLDriver extends Serializable {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet;
 
 import java.io.File;
@@ -57,7 +58,6 @@ import org.gephi.utils.CharsetToolkit;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class SpreadsheetUtils {
@@ -80,7 +80,9 @@ public class SpreadsheetUtils {
 
     public static void logIssue(Report report, Issue issue, SheetParser parser) {
         if (parser != null) {
-            String newMessage = "[" + NbBundle.getMessage(SpreadsheetUtils.class, "SpreadsheetUtils.recordNumber", parser.getCurrentRecordNumber()) + "] " + issue.getMessage();
+            String newMessage = "[" + NbBundle
+                .getMessage(SpreadsheetUtils.class, "SpreadsheetUtils.recordNumber", parser.getCurrentRecordNumber()) +
+                "] " + issue.getMessage();
             issue = new Issue(newMessage, issue.getLevel());
         }
 
@@ -106,24 +108,25 @@ public class SpreadsheetUtils {
         }
     }
 
-    public static CSVParser configureCSVParser(File file, Character fieldSeparator, Charset charset, boolean withFirstRecordAsHeader) throws IOException {
+    public static CSVParser configureCSVParser(File file, Character fieldSeparator, Charset charset,
+                                               boolean withFirstRecordAsHeader) throws IOException {
         if (fieldSeparator == null) {
             fieldSeparator = ',';
         }
 
         CSVFormat csvFormat = CSVFormat.DEFAULT
-                .withDelimiter(fieldSeparator)
-                .withEscape('\\')
-                .withIgnoreEmptyLines(true)
-                .withNullString("")
-                .withIgnoreSurroundingSpaces(true)
-                .withTrim(true);
+            .withDelimiter(fieldSeparator)
+            .withEscape('\\')
+            .withIgnoreEmptyLines(true)
+            .withNullString("")
+            .withIgnoreSurroundingSpaces(true)
+            .withTrim(true);
 
         if (withFirstRecordAsHeader) {
             csvFormat = csvFormat
-                    .withFirstRecordAsHeader()
-                    .withAllowMissingColumnNames(false)
-                    .withIgnoreHeaderCase(false);
+                .withFirstRecordAsHeader()
+                .withAllowMissingColumnNames(false)
+                .withIgnoreHeaderCase(false);
         } else {
             csvFormat = csvFormat.withHeader((String[]) null).withSkipHeaderRecord(false);
         }

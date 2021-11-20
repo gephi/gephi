@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.exporter.plugin;
 
 import javax.swing.JPanel;
@@ -48,7 +49,6 @@ import org.gephi.io.exporter.spi.ExporterUI;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author megaterik
  */
 @ServiceProvider(service = ExporterUI.class)
@@ -66,15 +66,14 @@ public class UIExporterVNA implements ExporterUI {
 
     @Override
     public void setup(Exporter exporter) {
-        this.exporter = (ExporterVNA)exporter;
+        this.exporter = (ExporterVNA) exporter;
         settings.load(this.exporter);
-        panel.setup((ExporterVNA)exporter);
+        panel.setup((ExporterVNA) exporter);
     }
 
     @Override
     public void unsetup(boolean update) {
-        if (update)
-        {
+        if (update) {
             panel.unsetup(exporter);
             settings.save(exporter);
         }
@@ -100,9 +99,8 @@ public class UIExporterVNA implements ExporterUI {
         private boolean exportColor = true;
         private boolean normalize = false;
         private boolean exportAttributes = true;
-        
-        private void load(ExporterVNA exporter)
-        {
+
+        private void load(ExporterVNA exporter) {
             exporter.setExportColor(exportColor);
             exporter.setExportCoords(exportCoords);
             exporter.setExportEdgeWeight(exportEdgeWeight);
@@ -111,9 +109,8 @@ public class UIExporterVNA implements ExporterUI {
             exporter.setExportAttributes(exportAttributes);
             exporter.setNormalize(normalize);
         }
-        
-        private void save(ExporterVNA exporter)
-        {
+
+        private void save(ExporterVNA exporter) {
             exportColor = exporter.isExportColor();
             exportCoords = exporter.isExportCoords();
             exportEdgeWeight = exporter.isExportEdgeWeight();

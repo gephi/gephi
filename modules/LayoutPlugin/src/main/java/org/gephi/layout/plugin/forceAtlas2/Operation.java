@@ -39,10 +39,10 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.forceAtlas2;
 
 /**
- *
  * @author Mathieu Jacomy
  */
 public abstract class Operation {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.types.editors;
 
 import java.awt.Color;
@@ -64,11 +65,11 @@ public class BasicDependantOriginalColorPropertyEditor extends PropertyEditorSup
         if (c.getMode().equals(DependantOriginalColor.Mode.CUSTOM)) {
             Color color = c.getCustomColor() == null ? Color.BLACK : c.getCustomColor();
             return String.format(
-                    "%s [%d,%d,%d]",
-                    c.getMode().name().toLowerCase(),
-                    color.getRed(),
-                    color.getGreen(),
-                    color.getBlue());
+                "%s [%d,%d,%d]",
+                c.getMode().name().toLowerCase(),
+                color.getRed(),
+                color.getGreen(),
+                color.getBlue());
         } else {
             return c.getMode().name().toLowerCase();
         }

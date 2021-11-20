@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import java.math.BigDecimal;
@@ -56,6 +57,7 @@ import org.openide.util.NbBundle;
 /**
  * AttributeRowsMergeStrategy for any number or number list column that
  * calculates the third quartile of all the values.
+ *
  * @author Eduardo Ramos
  */
 public class ThirdQuartileNumber implements AttributeRowsMergeStrategy {
@@ -77,7 +79,8 @@ public class ThirdQuartileNumber implements AttributeRowsMergeStrategy {
 
     @Override
     public void execute() {
-        result = StatisticsUtils.quartile3(Lookup.getDefault().lookup(AttributeColumnsController.class).getRowsColumnNumbers(rows, column));
+        result = StatisticsUtils
+            .quartile3(Lookup.getDefault().lookup(AttributeColumnsController.class).getRowsColumnNumbers(rows, column));
     }
 
     @Override

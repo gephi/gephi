@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.processor.plugin;
 
 import org.gephi.io.importer.api.ContainerUnloader;
@@ -64,7 +65,7 @@ public class MergeProcessor extends DefaultProcessor implements Processor {
 
     @Override
     public void process() {
-        try{
+        try {
             if (containers.length <= 1) {
                 throw new RuntimeException("This processor can only handle multiple containers");
             }

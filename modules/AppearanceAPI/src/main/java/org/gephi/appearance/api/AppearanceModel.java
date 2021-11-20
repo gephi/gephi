@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
 import org.gephi.appearance.spi.Transformer;
@@ -52,27 +53,6 @@ import org.gephi.project.api.Workspace;
  * One model exists for each workspace.
  */
 public interface AppearanceModel {
-
-    /**
-     * Identifies the non-column-based functions.
-     */
-    public enum GraphFunction {
-        NODE_DEGREE("degree"),
-        NODE_INDEGREE("indegree"),
-        NODE_OUTDEGREE("outdegree"),
-        EDGE_WEIGHT("weight"),
-        EDGE_TYPE("type");
-
-        private final String id;
-
-        GraphFunction(String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
-    }
 
     /**
      * Return the workspace this model is associated with
@@ -94,7 +74,7 @@ public interface AppearanceModel {
     /**
      * Returns the node partition for this graph and column.
      *
-     * @param graph graph
+     * @param graph  graph
      * @param column column
      * @return node partition of null if it doesn't exist
      */
@@ -103,7 +83,7 @@ public interface AppearanceModel {
     /**
      * Returns the edge partition for this graph and column.
      *
-     * @param graph graph
+     * @param graph  graph
      * @param column column
      * @return edge partition of null if it doesn't exist
      */
@@ -120,8 +100,8 @@ public interface AppearanceModel {
     /**
      * Returns the node function for the given column and transformer.
      *
-     * @param graph graph
-     * @param column column
+     * @param graph       graph
+     * @param column      column
      * @param transformer transformer class
      * @return node function or null if not found
      */
@@ -131,9 +111,9 @@ public interface AppearanceModel {
      * Returns the node function for the given graph function identifier and
      * transformer.
      *
-     * @param graph graph
+     * @param graph         graph
      * @param graphFunction graphFunction
-     * @param transformer transformer class
+     * @param transformer   transformer class
      * @return node function or null if not found
      */
     public Function getNodeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer);
@@ -149,8 +129,8 @@ public interface AppearanceModel {
     /**
      * Returns the node function for the given column and transformer.
      *
-     * @param graph graph
-     * @param column column
+     * @param graph       graph
+     * @param column      column
      * @param transformer transformer class
      * @return edge function or null if not found
      */
@@ -160,10 +140,31 @@ public interface AppearanceModel {
      * Returns the edge function for the given graph function identifier and
      * transformer.
      *
-     * @param graph graph
+     * @param graph         graph
      * @param graphFunction graphFunction
-     * @param transformer transformer class
+     * @param transformer   transformer class
      * @return edge function or null if not found
      */
     public Function getEdgeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer);
+
+    /**
+     * Identifies the non-column-based functions.
+     */
+    public enum GraphFunction {
+        NODE_DEGREE("degree"),
+        NODE_INDEGREE("indegree"),
+        NODE_OUTDEGREE("outdegree"),
+        EDGE_WEIGHT("weight"),
+        EDGE_TYPE("type");
+
+        private final String id;
+
+        GraphFunction(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+    }
 }

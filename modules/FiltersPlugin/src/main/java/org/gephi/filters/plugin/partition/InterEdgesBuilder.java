@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.partition;
 
 import java.util.ArrayList;
@@ -65,16 +66,15 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author mbastian
  */
 @ServiceProvider(service = CategoryBuilder.class)
 public class InterEdgesBuilder implements CategoryBuilder {
 
     public final static Category INTER_EDGES = new Category(
-            NbBundle.getMessage(InterEdgesBuilder.class, "InterEdgesBuilder.name"),
-            null,
-            FilterLibrary.ATTRIBUTES);
+        NbBundle.getMessage(InterEdgesBuilder.class, "InterEdgesBuilder.name"),
+        null,
+        FilterLibrary.ATTRIBUTES);
 
     @Override
     public Category getCategory() {
@@ -160,7 +160,8 @@ public class InterEdgesBuilder implements CategoryBuilder {
 
         @Override
         public String getName() {
-            return NbBundle.getMessage(IntraEdgesBuilder.class, "InterEdgesBuilder.name") + " (" + column.getTitle() + ")";
+            return NbBundle.getMessage(IntraEdgesBuilder.class, "InterEdgesBuilder.name") + " (" + column.getTitle() +
+                ")";
         }
 
         @Override

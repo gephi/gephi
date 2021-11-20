@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
 import org.gephi.graph.api.Element;
@@ -70,7 +71,7 @@ public interface Ranking {
      * Returns the element's value for this ranking.
      *
      * @param element element to get the value for
-     * @param graph graph this element belongs to
+     * @param graph   graph this element belongs to
      * @return the value for this ranking
      */
     public Number getValue(Element element, Graph graph);
@@ -81,7 +82,7 @@ public interface Ranking {
      * The value is first put between zero and one by doing <code>(value - min) / (max
      * - min)</code> and then passed to the given interpolator.
      *
-     * @param value value to normalize
+     * @param value        value to normalize
      * @param interpolator interpolator
      * @return normalized value
      */

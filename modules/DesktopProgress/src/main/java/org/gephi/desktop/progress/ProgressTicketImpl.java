@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.progress;
 
 import org.gephi.utils.progress.ProgressTicket;
@@ -48,7 +49,6 @@ import org.openide.awt.StatusDisplayer;
 import org.openide.util.Cancellable;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public final class ProgressTicketImpl implements ProgressTicket {
@@ -82,6 +82,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
 
     /**
      * Finish the task and display a statusbar message
+     *
      * @param finishMessage Finish message
      */
     @Override
@@ -106,6 +107,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
 
     /**
      * Notify the user about completed workunits.
+     *
      * @param workunit cumulative number of workunits completed so far
      */
     @Override
@@ -122,6 +124,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
 
     /**
      * Notify the user about progress by showing message with details.
+     *
      * @param message details about the status of the task
      */
     @Override
@@ -133,7 +136,8 @@ public final class ProgressTicketImpl implements ProgressTicket {
 
     /**
      * Notify the user about completed workunits and show additional detailed message.
-     * @param message details about the status of the task
+     *
+     * @param message  details about the status of the task
      * @param workunit a cumulative number of workunits completed so far
      */
     @Override
@@ -149,7 +153,18 @@ public final class ProgressTicketImpl implements ProgressTicket {
     }
 
     /**
+     * Returns the current display name.
+     *
+     * @return the current task's display name
+     */
+    @Override
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    /**
      * Change the display name of the progress task. Use with care, please make sure the changed name is not completely different, or otherwise it might appear to the user as a different task.
+     *
      * @param newDisplayName the new display name
      */
     @Override
@@ -158,15 +173,6 @@ public final class ProgressTicketImpl implements ProgressTicket {
             handle.setDisplayName(newDisplayName);
             this.displayName = newDisplayName;
         }
-    }
-
-    /**
-     * Returns the current display name.
-     * @return the current task's display name
-     */
-    @Override
-    public String getDisplayName() {
-        return displayName;
     }
 
     /**
@@ -182,6 +188,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
 
     /**
      * Start the progress indication for a task with known number of steps.
+     *
      * @param workunits total number of workunits that will be processed
      */
     @Override
@@ -195,6 +202,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
 
     /**
      * Currently indeterminate task can be switched to show percentage completed.
+     *
      * @param workunits workunits total number of workunits that will be processed
      */
     @Override

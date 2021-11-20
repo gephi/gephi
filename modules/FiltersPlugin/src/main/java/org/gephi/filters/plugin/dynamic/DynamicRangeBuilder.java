@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.dynamic;
 
 import java.util.ArrayList;
@@ -69,16 +70,15 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = CategoryBuilder.class)
 public class DynamicRangeBuilder implements CategoryBuilder {
 
     private final static Category DYNAMIC = new Category(
-            NbBundle.getMessage(DynamicRangeBuilder.class, "DynamicRangeBuilder.category"),
-            null,
-            null);
+        NbBundle.getMessage(DynamicRangeBuilder.class, "DynamicRangeBuilder.category"),
+        null,
+        null);
 
     @Override
     public Category getCategory() {
@@ -217,7 +217,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             if (filterProperties == null) {
                 filterProperties = new FilterProperty[0];
                 try {
-                    filterProperties = new FilterProperty[]{
+                    filterProperties = new FilterProperty[] {
                         FilterProperty.createProperty(this, Range.class, "range"),
                         FilterProperty.createProperty(this, Boolean.class, "keepNull")};
                 } catch (Exception ex) {

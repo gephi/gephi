@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin.dynamic;
 
 import java.text.DecimalFormat;
@@ -70,7 +71,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class DynamicDegree implements DynamicStatistics, LongTask {
@@ -117,14 +117,23 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
             dynamicDegreeColumn = nodeTable.getColumn(DYNAMIC_DEGREE);
             if (isDirected) {
                 if (dynamicInDegreeColumn == null) {
-                    dynamicInDegreeColumn = nodeTable.addColumn(DYNAMIC_INDEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.InDegree"), tr.equals(TimeRepresentation.INTERVAL) ? IntervalIntegerMap.class : TimestampIntegerMap.class, null);
+                    dynamicInDegreeColumn = nodeTable.addColumn(DYNAMIC_INDEGREE,
+                        NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.InDegree"),
+                        tr.equals(TimeRepresentation.INTERVAL) ? IntervalIntegerMap.class : TimestampIntegerMap.class,
+                        null);
                 }
                 if (dynamicOutDegreeColumn == null) {
-                    dynamicOutDegreeColumn = nodeTable.addColumn(DYNAMIC_OUTDEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.OutDegree"), tr.equals(TimeRepresentation.INTERVAL) ? IntervalIntegerMap.class : TimestampIntegerMap.class, null);
+                    dynamicOutDegreeColumn = nodeTable.addColumn(DYNAMIC_OUTDEGREE,
+                        NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.OutDegree"),
+                        tr.equals(TimeRepresentation.INTERVAL) ? IntervalIntegerMap.class : TimestampIntegerMap.class,
+                        null);
                 }
             }
             if (dynamicDegreeColumn == null) {
-                dynamicDegreeColumn = nodeTable.addColumn(DYNAMIC_DEGREE, NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.Degree"), tr.equals(TimeRepresentation.INTERVAL) ? IntervalIntegerMap.class : TimestampIntegerMap.class, null);
+                dynamicDegreeColumn = nodeTable.addColumn(DYNAMIC_DEGREE,
+                    NbBundle.getMessage(DynamicDegree.class, "DynamicDegree.nodecolumn.Degree"),
+                    tr.equals(TimeRepresentation.INTERVAL) ? IntervalIntegerMap.class : TimestampIntegerMap.class,
+                    null);
             }
         }
     }
@@ -138,14 +147,14 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
         dataset.addSeries(dSeries);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Degree Time Series",
-                "Time",
-                "Average Degree",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "Degree Time Series",
+            "Time",
+            "Average Degree",
+            dataset,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
 
         chart.removeLegend();
         ChartUtils.decorateChart(chart);
@@ -155,12 +164,12 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
         NumberFormat f = new DecimalFormat("#0.000000");
 
         String report = "<HTML> <BODY> <h1>Dynamic Degree Report </h1> "
-                + "<hr>"
-                + "<br> Bounds: from " + f.format(bounds.getLow()) + " to " + f.format(bounds.getHigh())
-                + "<br> Window: " + window
-                + "<br> Tick: " + tick
-                + "<br><br><h2> Average degrees over time: </h2>"
-                + "<br /><br />" + degreeImageFile;
+            + "<hr>"
+            + "<br> Bounds: from " + f.format(bounds.getLow()) + " to " + f.format(bounds.getHigh())
+            + "<br> Window: " + window
+            + "<br> Tick: " + tick
+            + "<br><br><h2> Average degrees over time: </h2>"
+            + "<br /><br />" + degreeImageFile;
 
         /*for (Interval<Double> averages : averages) {
          report += averages.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
@@ -185,7 +194,8 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
             if (!averageOnly) {
                 switch (tr) {
                     case INTERVAL:
-                        n.setAttribute(dynamicDegreeColumn, degree, new Interval(interval.getLow(), interval.getLow() + tick));
+                        n.setAttribute(dynamicDegreeColumn, degree,
+                            new Interval(interval.getLow(), interval.getLow() + tick));
                         break;
                     case TIMESTAMP:
                         n.setAttribute(dynamicDegreeColumn, degree, interval.getLow());
@@ -199,8 +209,10 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
 
                     switch (tr) {
                         case INTERVAL:
-                            n.setAttribute(dynamicInDegreeColumn, indegree, new Interval(interval.getLow(), interval.getLow() + tick));
-                            n.setAttribute(dynamicOutDegreeColumn, outdegree, new Interval(interval.getLow(), interval.getLow() + tick));
+                            n.setAttribute(dynamicInDegreeColumn, indegree,
+                                new Interval(interval.getLow(), interval.getLow() + tick));
+                            n.setAttribute(dynamicOutDegreeColumn, outdegree,
+                                new Interval(interval.getLow(), interval.getLow() + tick));
                             break;
                         case TIMESTAMP:
                             n.setAttribute(dynamicInDegreeColumn, indegree, interval.getLow());
@@ -230,8 +242,8 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
     }
 
     @Override
-    public void setBounds(Interval bounds) {
-        this.bounds = bounds;
+    public double getWindow() {
+        return window;
     }
 
     @Override
@@ -240,18 +252,13 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
     }
 
     @Override
-    public void setTick(double tick) {
-        this.tick = tick;
-    }
-
-    @Override
-    public double getWindow() {
-        return window;
-    }
-
-    @Override
     public double getTick() {
         return tick;
+    }
+
+    @Override
+    public void setTick(double tick) {
+        this.tick = tick;
     }
 
     @Override
@@ -259,20 +266,25 @@ public class DynamicDegree implements DynamicStatistics, LongTask {
         return bounds;
     }
 
-    public void setDirected(boolean isDirected) {
-        this.isDirected = isDirected;
+    @Override
+    public void setBounds(Interval bounds) {
+        this.bounds = bounds;
     }
 
     public boolean isDirected() {
         return isDirected;
     }
 
-    public void setAverageOnly(boolean averageOnly) {
-        this.averageOnly = averageOnly;
+    public void setDirected(boolean isDirected) {
+        this.isDirected = isDirected;
     }
 
     public boolean isAverageOnly() {
         return averageOnly;
+    }
+
+    public void setAverageOnly(boolean averageOnly) {
+        this.averageOnly = averageOnly;
     }
 
     @Override

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.timeline;
 
 import javax.swing.JComponent;
@@ -46,26 +47,25 @@ import org.gephi.desktop.banner.perspective.spi.BottomComponent;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=BottomComponent.class)
+@ServiceProvider(service = BottomComponent.class)
 public class BottomComponentImpl implements BottomComponent {
 
     private final TimelineTopComponent timelineTopComponent = new TimelineTopComponent();
-    
+
     @Override
     public JComponent getComponent() {
         return timelineTopComponent;
     }
 
     @Override
-    public void setVisible(boolean visible) {
-        timelineTopComponent.setTimeLineVisible(visible);
-    }
-    
-    @Override
     public boolean isVisible() {
         return timelineTopComponent.isVisible();
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        timelineTopComponent.setTimeLineVisible(visible);
     }
 }

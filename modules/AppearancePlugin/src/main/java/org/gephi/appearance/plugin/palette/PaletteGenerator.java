@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.plugin.palette;
 
 import java.awt.Color;
@@ -49,12 +50,11 @@ import java.util.List;
 import java.util.Random;
 
 /**
- *
  * @author mbastian
  */
 public class PaletteGenerator {
 
-    private static final float[] DEFAULT_FILTER = new float[]{0, 360, 0, 3, 0, 1.5f};
+    private static final float[] DEFAULT_FILTER = new float[] {0, 360, 0, 3, 0, 1.5f};
 
     public static Color[] generatePalette(int colorsCount, int quality) {
         return generatePalette(colorsCount, quality, false, null, null);
@@ -68,7 +68,8 @@ public class PaletteGenerator {
         return generatePalette(colorsCount, quality, false, null, filter);
     }
 
-    public static Color[] generatePalette(int colorsCount, int quality, boolean ultraPrecision, Random random, float[] filter) {
+    public static Color[] generatePalette(int colorsCount, int quality, boolean ultraPrecision, Random random,
+                                          float[] filter) {
         if (filter == null) {
             filter = DEFAULT_FILTER;
         }
@@ -84,7 +85,7 @@ public class PaletteGenerator {
                 for (double a = -1; a <= 1; a += 0.05) {
                     for (double b = -1; b <= 1; b += 0.05) {
                         if (checkColor2(l, a, b, filter)) {
-                            colorSamples.add(new double[]{l, a, b});
+                            colorSamples.add(new double[] {l, a, b});
                         }
                     }
                 }
@@ -94,7 +95,7 @@ public class PaletteGenerator {
                 for (double a = -1; a <= 1; a += 0.1) {
                     for (double b = -1; b <= 1; b += 0.1) {
                         if (checkColor2(l, a, b, filter)) {
-                            colorSamples.add(new double[]{l, a, b});
+                            colorSamples.add(new double[] {l, a, b});
                         }
                     }
                 }
@@ -111,7 +112,8 @@ public class PaletteGenerator {
                 double minDistance = 1000000;
                 for (int j = 0; j < kMeans.length; j++) {
                     double[] kMean = kMeans[j];
-                    double distance = Math.sqrt(Math.pow(lab[0] - kMean[0], 2) + Math.pow(lab[1] - kMean[1], 2) + Math.pow(lab[2] - kMean[2], 2));
+                    double distance = Math.sqrt(Math.pow(lab[0] - kMean[0], 2) + Math.pow(lab[1] - kMean[1], 2) +
+                        Math.pow(lab[2] - kMean[2], 2));
                     if (distance < minDistance) {
                         minDistance = distance;
                         samplesClosest[i] = j;
@@ -123,7 +125,7 @@ public class PaletteGenerator {
             List<double[]> freeColorSamples = colorSamples;
             for (int j = 0; j < kMeans.length; j++) {
                 int count = 0;
-                double[] candidateKMean = new double[]{0, 0, 0};
+                double[] candidateKMean = new double[] {0, 0, 0};
                 for (int i = 0; i < colorSamples.size(); i++) {
                     if (samplesClosest[i] == j) {
                         count++;
@@ -142,38 +144,42 @@ public class PaletteGenerator {
                 if (count != 0 && checkColor2(candidateKMean[0], candidateKMean[1], candidateKMean[2], filter)) {
                     kMeans[j] = candidateKMean;
                 } else // The candidate kMean is out of the boundaries of the color space, or unfound.
-                if (freeColorSamples.size() > 0) {
-                    // We just search for the closest FREE color of the candidate kMean
-                    double minDistance = 10000000000.0;
-                    int closest = -1;
-                    for (int i = 0; i < freeColorSamples.size(); i++) {
-                        double distance = Math.sqrt(Math.pow(freeColorSamples.get(i)[0] - candidateKMean[0], 2) + Math.pow(freeColorSamples.get(i)[1] - candidateKMean[1], 2) + Math.pow(freeColorSamples.get(i)[2] - candidateKMean[2], 2));
-                        if (distance < minDistance) {
-                            minDistance = distance;
-                            closest = i;
+                    if (freeColorSamples.size() > 0) {
+                        // We just search for the closest FREE color of the candidate kMean
+                        double minDistance = 10000000000.0;
+                        int closest = -1;
+                        for (int i = 0; i < freeColorSamples.size(); i++) {
+                            double distance = Math.sqrt(Math.pow(freeColorSamples.get(i)[0] - candidateKMean[0], 2) +
+                                Math.pow(freeColorSamples.get(i)[1] - candidateKMean[1], 2) +
+                                Math.pow(freeColorSamples.get(i)[2] - candidateKMean[2], 2));
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                closest = i;
+                            }
                         }
-                    }
-                    kMeans[j] = colorSamples.get(closest);
+                        kMeans[j] = colorSamples.get(closest);
 
-                } else {
-                    // Then we just search for the closest color of the candidate kMean
-                    double minDistance = 10000000000.0;
-                    int closest = -1;
-                    for (int i = 0; i < colorSamples.size(); i++) {
-                        double distance = Math.sqrt(Math.pow(colorSamples.get(i)[0] - candidateKMean[0], 2) + Math.pow(colorSamples.get(i)[1] - candidateKMean[1], 2) + Math.pow(colorSamples.get(i)[2] - candidateKMean[2], 2));
-                        if (distance < minDistance) {
-                            minDistance = distance;
-                            closest = i;
+                    } else {
+                        // Then we just search for the closest color of the candidate kMean
+                        double minDistance = 10000000000.0;
+                        int closest = -1;
+                        for (int i = 0; i < colorSamples.size(); i++) {
+                            double distance = Math.sqrt(Math.pow(colorSamples.get(i)[0] - candidateKMean[0], 2) +
+                                Math.pow(colorSamples.get(i)[1] - candidateKMean[1], 2) +
+                                Math.pow(colorSamples.get(i)[2] - candidateKMean[2], 2));
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                closest = i;
+                            }
                         }
+                        kMeans[j] = colorSamples.get(closest);
                     }
-                    kMeans[j] = colorSamples.get(closest);
-                }
                 List<double[]> newFreeColorSamples = new ArrayList<>();
                 for (double[] color : freeColorSamples) {
                     double[] kMean = kMeans[j];
                     if (color[0] != kMean[0]
-                            || color[1] != kMean[1]
-                            || color[2] != kMean[2]) {
+                        || color[1] != kMean[1]
+                        || color[2] != kMean[2]) {
                         newFreeColorSamples.add(color);
                     }
                 }
@@ -193,9 +199,9 @@ public class PaletteGenerator {
     private static double[][] generateRandomKmeans(int colorsCount, Random random, float[] filter) {
         double[][] kMeans = new double[colorsCount][];
         for (int i = 0; i < colorsCount; i++) {
-            double[] lab = new double[]{random.nextDouble(), 2 * random.nextDouble() - 1, 2 * random.nextDouble() - 1};
+            double[] lab = new double[] {random.nextDouble(), 2 * random.nextDouble() - 1, 2 * random.nextDouble() - 1};
             while (!checkColor2(lab, filter)) {
-                lab = new double[]{random.nextDouble(), 2 * random.nextDouble() - 1, 2 * random.nextDouble() - 1};
+                lab = new double[] {random.nextDouble(), 2 * random.nextDouble() - 1, 2 * random.nextDouble() - 1};
             }
             kMeans[i] = lab;
         }
@@ -244,10 +250,11 @@ public class PaletteGenerator {
         double[] hcl = lab2hcl(l, a, b);
         // Check that a color is valid: it must verify our checkColor condition, but also be in the color space
         return !Double.isNaN(rgb[0]) && rgb[0] >= 0 && rgb[1] >= 0
-                && rgb[2] >= 0 && rgb[0] < 256 && rgb[1] < 256 && rgb[2] < 256
-                && (filter[0] < filter[1] ? (hcl[0] >= filter[0] && hcl[0] <= filter[1]) : (hcl[0] >= filter[0] || hcl[0] <= filter[1]))
-                && hcl[1] >= filter[2] && hcl[1] <= filter[3]
-                && hcl[2] >= filter[4] && hcl[2] <= filter[5];
+            && rgb[2] >= 0 && rgb[0] < 256 && rgb[1] < 256 && rgb[2] < 256
+            && (filter[0] < filter[1] ? (hcl[0] >= filter[0] && hcl[0] <= filter[1]) :
+            (hcl[0] >= filter[0] || hcl[0] <= filter[1]))
+            && hcl[1] >= filter[2] && hcl[1] <= filter[3]
+            && hcl[2] >= filter[4] && hcl[2] <= filter[5];
     }
 
     private static int[] lab2rgb(double l, double a, double b) {
@@ -257,11 +264,11 @@ public class PaletteGenerator {
 
     private static double[] lab2xyz(double l, double a, double b) {
         double sl = (l + 0.16) / 1.16;
-        double[] ill = new double[]{0.96421, 1.00000, 0.82519};
+        double[] ill = new double[] {0.96421, 1.00000, 0.82519};
         double y = ill[1] * finv(sl);
         double x = ill[0] * finv(sl + (a / 5.0));
         double z = ill[2] * finv(sl - (b / 2.0));
-        return new double[]{x, y, z};
+        return new double[] {x, y, z};
     }
 
     private static int[] xyz2rgb(double x, double y, double z) {
@@ -277,7 +284,7 @@ public class PaletteGenerator {
         int r = (int) Math.round(255.0 * correct1(rl));
         int g = (int) Math.round(255.0 * correct1(gl));
         int b = (int) Math.round(255.0 * correct1(bl));
-        return new int[]{r, g, b};
+        return new int[] {r, g, b};
     }
 
     private static double[] rgb2lab(int r, int g, int b) {
@@ -292,15 +299,15 @@ public class PaletteGenerator {
         double x = 0.4124 * rl + 0.3576 * gl + 0.1805 * bl;
         double y = 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
         double z = 0.0193 * rl + 0.1192 * gl + 0.9505 * bl;
-        return new double[]{x, y, z};
+        return new double[] {x, y, z};
     }
 
     private static double[] xyz2lab(double x, double y, double z) {
-        double[] ill = new double[]{0.96421, 1.00000, 0.82519};
+        double[] ill = new double[] {0.96421, 1.00000, 0.82519};
         double l = 1.16 * flab(y / ill[1]) - 0.16;
         double a = 5 * (flab(x / ill[0]) - flab(y / ill[1]));
         double b = 2 * (flab(y / ill[1]) - flab(z / ill[2]));
-        return new double[]{l, a, b};
+        return new double[] {l, a, b};
     }
 
     private static double[] lab2hcl(double l, double a, double b) {
@@ -314,7 +321,7 @@ public class PaletteGenerator {
         if (c < 0) {
             c += 360;
         }
-        return new double[]{c, s, l};
+        return new double[] {c, s, l};
     }
 
     private static double finv(double t) {

@@ -39,13 +39,13 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.plugin.palette;
 
 import java.awt.Color;
 import java.util.Arrays;
 
 /**
- *
  * @author mbastian
  */
 public class Palette {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters;
 
 import org.gephi.graph.api.GraphModel;
@@ -46,7 +47,6 @@ import org.gephi.graph.api.GraphObserver;
 import org.openide.util.Exceptions;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class FilterAutoRefreshor extends Thread {

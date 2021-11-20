@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.layout;
 
 import java.io.File;
@@ -70,7 +71,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class LayoutPresetPersistence {
@@ -127,7 +127,8 @@ public class LayoutPresetPersistence {
         for (LayoutProperty p : layout.getProperties()) {
             for (int i = 0; i < preset.propertyNames.size(); i++) {
                 if (p.getCanonicalName().equalsIgnoreCase(preset.propertyNames.get(i))
-                        || p.getProperty().getName().equalsIgnoreCase(preset.propertyNames.get(i))) {//Also compare with property name to maintain compatibility with old presets
+                    || p.getProperty().getName().equalsIgnoreCase(preset.propertyNames
+                    .get(i))) {//Also compare with property name to maintain compatibility with old presets
                     try {
                         p.getProperty().setValue(preset.propertyValues.get(i));
                     } catch (Exception e) {

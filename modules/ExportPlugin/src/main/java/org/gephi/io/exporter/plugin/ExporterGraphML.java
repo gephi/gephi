@@ -40,6 +40,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
@@ -80,7 +81,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 /**
- *
  * @author Sebastien Heymann
  * @author Mathieu Bastian
  */
@@ -308,8 +308,8 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         attributeE.setAttribute("id", column.getId());
         attributeE.setAttribute("attr.name", column.getTitle());
         if (column.getTypeClass().equals(Integer.class)
-                || column.getTypeClass().equals(Short.class)
-                || column.getTypeClass().equals(Byte.class)) {
+            || column.getTypeClass().equals(Short.class)
+            || column.getTypeClass().equals(Byte.class)) {
             attributeE.setAttribute("attr.type", "int");
         } else {
             attributeE.setAttribute("attr.type", AttributeUtils.getTypeName(column.getTypeClass()));
@@ -617,47 +617,47 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
 
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".graphml", NbBundle.getMessage(getClass(), "fileType_GraphML_Name"));
-        return new FileType[]{ft};
-    }
-
-    public void setExportAttributes(boolean exportAttributes) {
-        this.exportAttributes = exportAttributes;
-    }
-
-    public void setExportColors(boolean exportColors) {
-        this.exportColors = exportColors;
-    }
-
-    public void setExportPosition(boolean exportPosition) {
-        this.exportPosition = exportPosition;
-    }
-
-    public void setExportSize(boolean exportSize) {
-        this.exportSize = exportSize;
-    }
-
-    public void setNormalize(boolean normalize) {
-        this.normalize = normalize;
+        return new FileType[] {ft};
     }
 
     public boolean isExportAttributes() {
         return exportAttributes;
     }
 
+    public void setExportAttributes(boolean exportAttributes) {
+        this.exportAttributes = exportAttributes;
+    }
+
     public boolean isExportColors() {
         return exportColors;
+    }
+
+    public void setExportColors(boolean exportColors) {
+        this.exportColors = exportColors;
     }
 
     public boolean isExportPosition() {
         return exportPosition;
     }
 
+    public void setExportPosition(boolean exportPosition) {
+        this.exportPosition = exportPosition;
+    }
+
     public boolean isExportSize() {
         return exportSize;
     }
 
+    public void setExportSize(boolean exportSize) {
+        this.exportSize = exportSize;
+    }
+
     public boolean isNormalize() {
         return normalize;
+    }
+
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
     }
 
     @Override

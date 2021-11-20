@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.labelAdjust;
 
 import java.util.ArrayList;
@@ -54,7 +55,6 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Jacomy
  */
 public class LabelAdjust extends AbstractLayout implements Layout {
@@ -275,19 +275,19 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         final String LABELADJUST_CATEGORY = "LabelAdjust";
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
-                    NbBundle.getMessage(getClass(), "LabelAdjust.speed.name"),
-                    LABELADJUST_CATEGORY,
-                    "LabelAdjust.speed.name",
-                    NbBundle.getMessage(getClass(), "LabelAdjust.speed.desc"),
-                    "getSpeed", "setSpeed"));
+                this, Double.class,
+                NbBundle.getMessage(getClass(), "LabelAdjust.speed.name"),
+                LABELADJUST_CATEGORY,
+                "LabelAdjust.speed.name",
+                NbBundle.getMessage(getClass(), "LabelAdjust.speed.desc"),
+                "getSpeed", "setSpeed"));
             properties.add(LayoutProperty.createProperty(
-                    this, Boolean.class,
-                    NbBundle.getMessage(getClass(), "LabelAdjust.adjustBySize.name"),
-                    LABELADJUST_CATEGORY,
-                    "LabelAdjust.adjustBySize.name",
-                    NbBundle.getMessage(getClass(), "LabelAdjust.adjustBySize.desc"),
-                    "isAdjustBySize", "setAdjustBySize"));
+                this, Boolean.class,
+                NbBundle.getMessage(getClass(), "LabelAdjust.adjustBySize.name"),
+                LABELADJUST_CATEGORY,
+                "LabelAdjust.adjustBySize.name",
+                NbBundle.getMessage(getClass(), "LabelAdjust.adjustBySize.desc"),
+                "isAdjustBySize", "setAdjustBySize"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }

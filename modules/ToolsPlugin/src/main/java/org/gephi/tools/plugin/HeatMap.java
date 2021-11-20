@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.tools.plugin;
 
 import java.awt.Color;
@@ -68,7 +69,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Tool.class)
@@ -84,8 +84,8 @@ public class HeatMap implements Tool {
 
     public HeatMap() {
         //Default settings
-        gradientColors = new Color[]{new Color(227, 74, 51), new Color(253, 187, 132), new Color(254, 232, 200)};
-        gradientPositions = new float[]{0f, 0.5f, 1f};
+        gradientColors = new Color[] {new Color(227, 74, 51), new Color(253, 187, 132), new Color(254, 232, 200)};
+        gradientPositions = new float[] {0f, 0.5f, 1f};
     }
 
     @Override
@@ -155,7 +155,8 @@ public class HeatMap implements Tool {
                     }
                     Color c = colors[0];
                     n.setColor(c);
-                    heatMapPanel.setStatus(NbBundle.getMessage(HeatMap.class, "HeatMap.status.maxdistance") + new DecimalFormat("#.##").format(algorithm.getMaxDistance()));
+                    heatMapPanel.setStatus(NbBundle.getMessage(HeatMap.class, "HeatMap.status.maxdistance") +
+                        new DecimalFormat("#.##").format(algorithm.getMaxDistance()));
                 } catch (Exception e) {
                     Logger.getLogger("").log(Level.SEVERE, "", e);
                 }

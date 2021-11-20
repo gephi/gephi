@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.api;
 
 import java.beans.PropertyChangeListener;
@@ -46,7 +47,7 @@ import java.beans.PropertyChangeListener;
 /**
  * Hosts various information about a workspace.
  * <p>
- * Clients can subscribe to changes by using the 
+ * Clients can subscribe to changes by using the
  * {@link #addChangeListener(java.beans.PropertyChangeListener) } method. It
  * triggers the following events:
  * <ul>

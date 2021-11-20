@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import org.gephi.io.exporter.api.FileType;
@@ -48,7 +49,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Eduardo Ramos
  */
 @ServiceProvider(service = GraphFileExporterBuilder.class)
@@ -61,8 +61,9 @@ public class ExporterBuilderSpreadsheet implements GraphFileExporterBuilder {
 
     @Override
     public FileType[] getFileTypes() {
-        FileType ft = new FileType(new String[]{".csv", ".tsv"}, NbBundle.getMessage(ExporterBuilderSpreadsheet.class, "fileType_Spreadsheet_Name"));
-        return new FileType[]{ft};
+        FileType ft = new FileType(new String[] {".csv", ".tsv"},
+            NbBundle.getMessage(ExporterBuilderSpreadsheet.class, "fileType_Spreadsheet_Name"));
+        return new FileType[] {ft};
     }
 
     @Override

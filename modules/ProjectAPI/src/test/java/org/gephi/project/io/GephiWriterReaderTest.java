@@ -8,7 +8,6 @@ import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.io.utils.GephiFormat;
 import org.gephi.project.io.utils.MockXMLPersistenceProvider;
 import org.gephi.project.io.utils.Utils;
-import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.gephi.workspace.impl.WorkspaceImpl;
 import org.junit.Assert;
 import org.junit.Test;

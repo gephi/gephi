@@ -39,10 +39,10 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.tools.spi;
 
 /**
- *
  * @author Martin Škurla
  */
 public class UnselectToolException extends RuntimeException {

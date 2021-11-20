@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.layout.spi;
 
 import org.gephi.graph.api.GraphModel;
@@ -68,7 +69,8 @@ public interface Layout {
      * Injects the graph model for the graph this Layout should operate on.
      * <p>
      * It's preferable to get <b>visible</b> graph to perform on visualization.
-     * @param graphModel    the graph model that the layout is to be working on
+     *
+     * @param graphModel the graph model that the layout is to be working on
      */
     public void setGraphModel(GraphModel graphModel);
 
@@ -80,8 +82,9 @@ public interface Layout {
 
     /**
      * Tests if the algorithm can run, called before each pass.
-     * @return              <code>true</code> if the algorithm can run, <code>
-     *                      false</code> otherwise
+     *
+     * @return <code>true</code> if the algorithm can run, <code>
+     * false</code> otherwise
      */
     public boolean canAlgo();
 
@@ -92,7 +95,8 @@ public interface Layout {
 
     /**
      * The properties for this layout.
-     * @return              the layout properties
+     *
+     * @return the layout properties
      */
     public LayoutProperty[] getProperties();
 
@@ -103,7 +107,8 @@ public interface Layout {
 
     /**
      * The reference to the LayoutBuilder that instanciated this Layout.
-     * @return              the reference to the builder that builts this instance
+     *
+     * @return the reference to the builder that builts this instance
      */
     public LayoutBuilder getBuilder();
 }

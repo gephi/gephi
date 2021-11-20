@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.api;
 
 import java.beans.PropertyChangeListener;
@@ -47,7 +48,7 @@ import java.io.File;
 /**
  * Hosts various information about a project.
  * <p>
- * Clients can subscribe to changes by using the 
+ * Clients can subscribe to changes by using the
  * {@link #addChangeListener(java.beans.PropertyChangeListener) } method. It
  * triggers the following events:
  * <ul>
@@ -112,8 +113,8 @@ public interface ProjectInformation {
      * <p>
      * Returns an empty string if the project isn't associated with a file.
      *
-     * @see #hasFile()
      * @return file name
+     * @see #hasFile()
      */
     public String getFileName();
 
@@ -122,8 +123,8 @@ public interface ProjectInformation {
      * <p>
      * Returns null if the project isn't associated with a file.
      *
-     * @see #hasFile()
      * @return file or null if none
+     * @see #hasFile()
      */
     public File getFile();
 

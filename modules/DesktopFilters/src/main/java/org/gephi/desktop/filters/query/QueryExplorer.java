@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.filters.query;
 
 import java.beans.PropertyChangeEvent;
@@ -60,7 +61,6 @@ import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class QueryExplorer extends BeanTreeView implements PropertyChangeListener, ChangeListener {
@@ -168,7 +168,8 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
             public void run() {
                 //uiModel.setSelectedQuery(model.getCurrentQuery());
                 saveExpandStatus(QueryExplorer.this.manager.getRootContext());
-                QueryExplorer.this.manager.setRootContext(new RootNode(new QueryChildren(QueryExplorer.this.model.getQueries())));
+                QueryExplorer.this.manager
+                    .setRootContext(new RootNode(new QueryChildren(QueryExplorer.this.model.getQueries())));
                 loadExpandStatus(QueryExplorer.this.manager.getRootContext());
             }
         });

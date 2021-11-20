@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.desktop.appearance;
 
 import java.util.concurrent.Executors;
@@ -48,7 +49,6 @@ import java.util.concurrent.TimeUnit;
 import org.gephi.appearance.api.Function;
 
 /**
- *
  * @author mbastian
  */
 public class AutoAppyTransformer implements Runnable {

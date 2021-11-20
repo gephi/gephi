@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import junit.framework.TestCase;
@@ -50,7 +51,6 @@ import org.gephi.graph.api.Node;
 import org.junit.Test;
 
 /**
- *
  * @author Anna
  */
 public class WeightedDegreeTest extends TestCase {

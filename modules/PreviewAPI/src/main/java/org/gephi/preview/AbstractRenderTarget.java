@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview;
 
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class AbstractRenderTarget implements LongTask {
@@ -63,12 +63,12 @@ public class AbstractRenderTarget implements LongTask {
         return true;
     }
 
+    public ProgressTicket getProgressTicket() {
+        return progressTicket;
+    }
+
     @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
-    }
-
-    public ProgressTicket getProgressTicket() {
-        return progressTicket;
     }
 }

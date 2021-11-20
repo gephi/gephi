@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2015 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.tables.popup;
 
 import java.awt.Point;
@@ -53,7 +54,6 @@ import org.jdesktop.swingx.JXTable;
 import org.openide.awt.MouseUtils;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public abstract class AbstractPopupAdapter<T extends Element> extends MouseUtils.PopupMouseAdapter {
@@ -120,6 +120,6 @@ public abstract class AbstractPopupAdapter<T extends Element> extends MouseUtils
             popup.show(table, xpos, ypos);
         }
     }
-    
+
     protected abstract JPopupMenu createPopup(Point p);
 }

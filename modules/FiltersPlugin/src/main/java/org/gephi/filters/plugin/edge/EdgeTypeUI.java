@@ -39,12 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.edge;
 
 import javax.swing.JPanel;
 
 /**
- *
  * @author mbastian
  */
 public interface EdgeTypeUI {

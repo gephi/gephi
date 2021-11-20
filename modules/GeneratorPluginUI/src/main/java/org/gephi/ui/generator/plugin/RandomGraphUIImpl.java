@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.generator.plugin;
 
 import javax.swing.JPanel;
@@ -48,7 +49,6 @@ import org.gephi.io.generator.spi.Generator;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = RandomGraphUI.class)

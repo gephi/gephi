@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.plugin.items;
 
 import java.util.HashMap;
@@ -46,7 +47,6 @@ import java.util.Map;
 import org.gephi.preview.api.Item;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public abstract class AbstractItem implements Item {

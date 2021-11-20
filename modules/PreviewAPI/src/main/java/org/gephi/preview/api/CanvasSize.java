@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.api;
 
 /**
@@ -56,9 +57,9 @@ public class CanvasSize {
     /**
      * Constructor.
      *
-     * @param x The x coordinate of the top left position
-     * @param y The y coordinate of the top left position
-     * @param width The canvas width
+     * @param x      The x coordinate of the top left position
+     * @param y      The y coordinate of the top left position
+     * @param width  The canvas width
      * @param height The canvas height
      */
     public CanvasSize(float x, float y, float width, float height) {

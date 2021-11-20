@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.model.node;
 
 import com.jogamp.opengl.GL2;
@@ -50,7 +51,6 @@ import org.gephi.visualization.model.Modeler;
 import org.gephi.visualization.opengl.CompatibilityEngine;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class NodeModeler extends Modeler {
@@ -158,8 +158,8 @@ public class NodeModeler extends Modeler {
     protected float cameraDistance(NodeModel object) {
         float[] cameraLocation = drawable.getCameraLocation();
         double distance = Math.sqrt(Math.pow((double) object.getNode().x() - cameraLocation[0], 2d)
-                + Math.pow((double) object.getNode().y() - cameraLocation[1], 2d)
-                + Math.pow((double) object.getNode().z() - cameraLocation[2], 2d));
+            + Math.pow((double) object.getNode().y() - cameraLocation[1], 2d)
+            + Math.pow((double) object.getNode().z() - cameraLocation[2], 2d));
         object.setCameraDistance((float) distance);
 
         return (float) distance;

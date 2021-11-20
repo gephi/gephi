@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.force.quadtree;
 
 import org.gephi.graph.api.Node;
@@ -93,11 +94,11 @@ public class BarnesHut {
         return f;
     }
 
-    public void setTheta(float theta) {
-        this.theta = theta;
-    }
-
     public float getTheta() {
         return theta;
+    }
+
+    public void setTheta(float theta) {
+        this.theta = theta;
     }
 }

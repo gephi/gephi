@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.exporter.plugin;
 
 import org.gephi.io.exporter.api.FileType;
@@ -48,22 +49,21 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = GraphFileExporterBuilder.class)
-public class ExporterBuilderDL implements GraphFileExporterBuilder 
-{
+public class ExporterBuilderDL implements GraphFileExporterBuilder {
 
     @Override
     public GraphExporter buildExporter() {
-       return new ExporterDL();
+        return new ExporterDL();
     }
 
     @Override
     public FileType[] getFileTypes() {
-        return new FileType[]{new FileType(".dl", NbBundle.getMessage(ExporterBuilderCSV.class, "fileType_DL_Name"))};
+        return new FileType[] {new FileType(".dl", NbBundle.getMessage(ExporterBuilderCSV.class, "fileType_DL_Name"))};
     }
 
     @Override
     public String getName() {
         return "DL";
     }
-    
+
 }

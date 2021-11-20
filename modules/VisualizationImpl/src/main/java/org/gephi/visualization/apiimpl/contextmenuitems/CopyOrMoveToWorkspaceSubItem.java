@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import java.util.ArrayList;
@@ -52,7 +53,6 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -68,19 +68,14 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
     private final int position;
     private final boolean copy;
 
-    @Override
-    public void setup(Node[] nodes, Node clickedNode) {
-        this.nodes = nodes;
-    }
-
     /**
      * Constructor with copy or move settings
      *
-     * @param workspace Workspace to copy or move, or null to use new workspace
+     * @param workspace  Workspace to copy or move, or null to use new workspace
      * @param canExecute canExecute
-     * @param type type
-     * @param position position
-     * @param copy True to copy, false to move
+     * @param type       type
+     * @param position   position
+     * @param copy       True to copy, false to move
      */
     public CopyOrMoveToWorkspaceSubItem(Workspace workspace, boolean canExecute, int type, int position, boolean copy) {
         this.workspace = workspace;
@@ -88,6 +83,11 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
         this.type = type;
         this.position = position;
         this.copy = copy;
+    }
+
+    @Override
+    public void setup(Node[] nodes, Node clickedNode) {
+        this.nodes = nodes;
     }
 
     @Override
@@ -104,7 +104,9 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
         if (workspace != null) {
             return workspace.getLookup().lookup(WorkspaceInformation.class).getName();
         } else {
-            return NbBundle.getMessage(CopyOrMoveToWorkspaceSubItem.class, copy ? "GraphContextMenu_CopyToWorkspace_NewWorkspace" : "GraphContextMenu_MoveToWorkspace_NewWorkspace");
+            return NbBundle.getMessage(CopyOrMoveToWorkspaceSubItem.class,
+                copy ? "GraphContextMenu_CopyToWorkspace_NewWorkspace" :
+                    "GraphContextMenu_MoveToWorkspace_NewWorkspace");
         }
     }
 
@@ -166,8 +168,10 @@ public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesMani
 
             return true;
         } catch (Exception e) {
-            String error = NbBundle.getMessage(CopyOrMoveToWorkspace.class, "GraphContextMenu_CopyOrMoveToWorkspace_ConfigurationNotCompatible");
-            String title = NbBundle.getMessage(CopyOrMoveToWorkspace.class, "GraphContextMenu_CopyOrMoveToWorkspace_ConfigurationNotCompatible_Title");
+            String error = NbBundle.getMessage(CopyOrMoveToWorkspace.class,
+                "GraphContextMenu_CopyOrMoveToWorkspace_ConfigurationNotCompatible");
+            String title = NbBundle.getMessage(CopyOrMoveToWorkspace.class,
+                "GraphContextMenu_CopyOrMoveToWorkspace_ConfigurationNotCompatible_Title");
             JOptionPane.showMessageDialog(null, error, title, JOptionPane.ERROR_MESSAGE);
             return false;
         } finally {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 /**
@@ -59,41 +60,18 @@ public interface NodeDraft extends ElementDraft {
     public float getX();
 
     /**
-     * Returns this node's Y position.
-     *
-     * @return y position
-     */
-    public float getY();
-
-    /**
-     * Returns this node's Z position.
-     *
-     * @return z position
-     */
-    public float getZ();
-
-    /**
-     * Returns this node's size.
-     *
-     * @return size
-     */
-    public float getSize();
-
-    /**
-     * Returns whether this node's position is fixed.
-     * <p>
-     * Default is false.
-     *
-     * @return true if fixed, false otherwise
-     */
-    public boolean isFixed();
-
-    /**
      * Sets this node's X position.
      *
      * @param x x position
      */
     public void setX(float x);
+
+    /**
+     * Returns this node's Y position.
+     *
+     * @return y position
+     */
+    public float getY();
 
     /**
      * Sets this node's Y position.
@@ -103,6 +81,13 @@ public interface NodeDraft extends ElementDraft {
     public void setY(float y);
 
     /**
+     * Returns this node's Z position.
+     *
+     * @return z position
+     */
+    public float getZ();
+
+    /**
      * Sets this node's Z position.
      *
      * @param z z position
@@ -110,11 +95,27 @@ public interface NodeDraft extends ElementDraft {
     public void setZ(float z);
 
     /**
+     * Returns this node's size.
+     *
+     * @return size
+     */
+    public float getSize();
+
+    /**
      * Sets this node's size.
      *
      * @param size size
      */
     public void setSize(float size);
+
+    /**
+     * Returns whether this node's position is fixed.
+     * <p>
+     * Default is false.
+     *
+     * @return true if fixed, false otherwise
+     */
+    public boolean isFixed();
 
     /**
      * Sets whether this node's position is fixed.

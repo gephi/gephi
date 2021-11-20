@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
 import org.gephi.graph.api.DirectedGraph;
@@ -47,7 +48,6 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 
 /**
- *
  * @author mbastian
  */
 public class OutDegreeRankingImpl extends RankingImpl {
@@ -61,7 +61,7 @@ public class OutDegreeRankingImpl extends RankingImpl {
 
     @Override
     public Number getValue(Element element, Graph gr) {
-        return ((DirectedGraph)gr).getOutDegree((Node) element);
+        return ((DirectedGraph) gr).getOutDegree((Node) element);
     }
 
     @Override

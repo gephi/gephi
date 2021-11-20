@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.desktop.importer;
 
 import java.util.Objects;
@@ -46,7 +47,6 @@ import org.gephi.io.importer.api.EdgeMergeStrategy;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class EdgesMergeStrategyWrapper {
@@ -59,7 +59,7 @@ public class EdgesMergeStrategyWrapper {
     public EdgeMergeStrategy getInstance() {
         return instance;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 7;

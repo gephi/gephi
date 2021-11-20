@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
 import java.util.logging.Level;
@@ -55,7 +56,6 @@ import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 
 /**
- *
  * @author mbastian
  */
 public abstract class FunctionImpl implements Function {
@@ -71,7 +71,9 @@ public abstract class FunctionImpl implements Function {
     protected final RankingImpl ranking;
     protected Interpolator interpolator;
 
-    protected FunctionImpl(String id, String name, Class<? extends Element> elementClass, Graph graph, Column column, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition, RankingImpl ranking, Interpolator interpolator) {
+    protected FunctionImpl(String id, String name, Class<? extends Element> elementClass, Graph graph, Column column,
+                           Transformer transformer, TransformerUI transformerUI, PartitionImpl partition,
+                           RankingImpl ranking, Interpolator interpolator) {
         if (id == null) {
             throw new NullPointerException("The id can't be null");
         }
@@ -98,7 +100,9 @@ public abstract class FunctionImpl implements Function {
         } else if (isRanking()) {
             Number val = ranking.getValue(element, graph);
             if (val == null) {
-                Logger.getLogger("").log(Level.WARNING, "The element with id ''{0}'' has a null value for ranking. Using 0 instead", element.getId());
+                Logger.getLogger("")
+                    .log(Level.WARNING, "The element with id ''{0}'' has a null value for ranking. Using 0 instead",
+                        element.getId());
                 val = 0;
             }
             ((RankingTransformer) transformer).transform(element, ranking, interpolator, val);

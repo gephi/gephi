@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin.dynamic.builder;
 
 import org.gephi.statistics.plugin.dynamic.DynamicClusteringCoefficient;
@@ -48,7 +49,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = StatisticsBuilder.class)

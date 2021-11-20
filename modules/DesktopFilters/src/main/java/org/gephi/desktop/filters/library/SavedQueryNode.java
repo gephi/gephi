@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.filters.library;
 
 import java.awt.event.ActionEvent;
@@ -53,7 +54,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class SavedQueryNode extends AbstractNode {
@@ -68,7 +68,7 @@ public class SavedQueryNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean context) {
-        return new Action[]{new RemoveAction()};
+        return new Action[] {new RemoveAction()};
     }
 
     @Override

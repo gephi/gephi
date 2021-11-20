@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.edge;
 
 import java.util.ArrayList;
@@ -49,7 +50,12 @@ import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.AbstractFilter;
 import org.gephi.filters.plugin.graph.RangeUI;
-import org.gephi.filters.spi.*;
+import org.gephi.filters.spi.Category;
+import org.gephi.filters.spi.EdgeFilter;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.RangeFilter;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.project.api.Workspace;
@@ -58,7 +64,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = FilterBuilder.class)

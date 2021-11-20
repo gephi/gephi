@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.opengl;
 
 import com.jogamp.nativewindow.AbstractGraphicsDevice;
@@ -61,14 +62,14 @@ import org.openide.windows.WindowManager;
 public class GraphicalConfiguration {
 
     private static boolean messageDelivered = false;
+    private final GLProfile profile = GLProfile.get(GLProfile.GL2);
+    private final GLCapabilities caps = new GLCapabilities(profile);
+    private final AbstractGraphicsDevice device = GLDrawableFactory.getFactory(profile).getDefaultDevice();
     private boolean vboSupport = false;
     private boolean pBufferSupport = false;
     private String vendor = "";
     private String renderer = "";
     private String versionStr = "";
-    private final GLProfile profile = GLProfile.get(GLProfile.GL2);
-    private final GLCapabilities caps = new GLCapabilities(profile);
-    private final AbstractGraphicsDevice device = GLDrawableFactory.getFactory(profile).getDefaultDevice();
 
     public void checkGeneralCompatibility(GL2 gl) {
         if (messageDelivered) {
@@ -80,20 +81,24 @@ public class GraphicalConfiguration {
             vendor = gl.glGetString(GL2.GL_VENDOR);
             renderer = gl.glGetString(GL2.GL_RENDERER);
             versionStr = gl.glGetString(GL2.GL_VERSION);
-            String currentConfig = String.format(NbBundle.getMessage(GraphicalConfiguration.class, "graphicalConfiguration_currentConfig"), vendor, renderer, versionStr);
+            String currentConfig = String
+                .format(NbBundle.getMessage(GraphicalConfiguration.class, "graphicalConfiguration_currentConfig"),
+                    vendor, renderer, versionStr);
 
             // Check version.
             if (!gl.isExtensionAvailable("GL_VERSION_1_2")) {
-                String err = String.format(NbBundle.getMessage(GraphicalConfiguration.class, "graphicalConfiguration_exception"), versionStr, currentConfig);
+                String err = String
+                    .format(NbBundle.getMessage(GraphicalConfiguration.class, "graphicalConfiguration_exception"),
+                        versionStr, currentConfig);
                 throw new GraphicalConfigurationException(err);
             }
 
             //VBO
             boolean vboExtension = gl.isExtensionAvailable("GL_ARB_vertex_buffer_object");
             boolean vboFunctions = gl.isFunctionAvailable("glGenBuffersARB")
-                    && gl.isFunctionAvailable("glBindBufferARB")
-                    && gl.isFunctionAvailable("glBufferDataARB")
-                    && gl.isFunctionAvailable("glDeleteBuffersARB");
+                && gl.isFunctionAvailable("glBindBufferARB")
+                && gl.isFunctionAvailable("glBufferDataARB")
+                && gl.isFunctionAvailable("glDeleteBuffersARB");
             vboSupport = vboExtension && vboFunctions;
 
             //Pbuffer
@@ -104,7 +109,9 @@ public class GraphicalConfiguration {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), e.getMessage(), "Configuration", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane
+                        .showMessageDialog(WindowManager.getDefault().getMainWindow(), e.getMessage(), "Configuration",
+                            JOptionPane.WARNING_MESSAGE);
                     Exceptions.printStackTrace(e);
                 }
             });

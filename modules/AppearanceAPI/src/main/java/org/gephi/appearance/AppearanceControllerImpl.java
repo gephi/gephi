@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
 import org.gephi.appearance.api.AppearanceController;
@@ -57,7 +58,6 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author mbastian
  */
 @ServiceProvider(service = AppearanceController.class)

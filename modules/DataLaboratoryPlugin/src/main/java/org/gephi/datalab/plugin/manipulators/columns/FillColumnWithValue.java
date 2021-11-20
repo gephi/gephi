@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
@@ -56,6 +57,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * AttributeColumnsManipulator that fills an Column with the value that the user provides in the UI.
+ *
  * @author Eduardo Ramos
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
@@ -63,7 +65,9 @@ public class FillColumnWithValue implements AttributeColumnsManipulator {
 
     @Override
     public void execute(Table table, Column column) {
-        String value = JOptionPane.showInputDialog(null,NbBundle.getMessage(FillColumnWithValue.class, "FillColumnWithValue.inputDialog.text"),getName(),JOptionPane.QUESTION_MESSAGE);
+        String value = JOptionPane.showInputDialog(null,
+            NbBundle.getMessage(FillColumnWithValue.class, "FillColumnWithValue.inputDialog.text"), getName(),
+            JOptionPane.QUESTION_MESSAGE);
         if (value != null) {
             Lookup.getDefault().lookup(AttributeColumnsController.class).fillColumnWithValue(table, column, value);
             Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
@@ -86,7 +90,7 @@ public class FillColumnWithValue implements AttributeColumnsManipulator {
     }
 
     @Override
-    public AttributeColumnsManipulatorUI getUI(Table table,Column column) {
+    public AttributeColumnsManipulatorUI getUI(Table table, Column column) {
         return null;
     }
 

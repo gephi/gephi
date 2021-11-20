@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 import java.text.SimpleDateFormat;
@@ -80,7 +81,8 @@ public class CreateTimeInterval implements AttributeColumnsMergeStrategy {
 
     @Override
     public void execute() {
-        AttributeColumnsMergeStrategiesController ac = Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class);
+        AttributeColumnsMergeStrategiesController ac =
+            Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class);
         if (parseNumbers) {
             ac.mergeNumericColumnsToTimeInterval(table, startColumn, endColumn, startNumber, endNumber);
         } else {
@@ -100,7 +102,9 @@ public class CreateTimeInterval implements AttributeColumnsMergeStrategy {
 
     @Override
     public boolean canExecute() {
-        TimeRepresentation timeRepresentation = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getConfiguration().getTimeRepresentation();
+        TimeRepresentation timeRepresentation =
+            Lookup.getDefault().lookup(GraphController.class).getGraphModel().getConfiguration()
+                .getTimeRepresentation();
         if (timeRepresentation != TimeRepresentation.INTERVAL) {
             return false;
         }

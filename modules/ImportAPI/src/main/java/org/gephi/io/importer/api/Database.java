@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.importer.api;
 
 import java.io.Serializable;
@@ -53,29 +54,29 @@ public interface Database extends Serializable {
 
     public String getName();
 
-    public SQLDriver getSQLDriver();
-
-    public String getHost();
-
-    public int getPort();
-
-    public String getUsername();
-
-    public String getPasswd();
-
-    public String getDBName();
-
     public void setName(String name);
+
+    public SQLDriver getSQLDriver();
 
     public void setSQLDriver(SQLDriver driver);
 
+    public String getHost();
+
     public void setHost(String host);
+
+    public int getPort();
 
     public void setPort(int port);
 
+    public String getUsername();
+
     public void setUsername(String username);
 
+    public String getPasswd();
+
     public void setPasswd(String passwd);
+
+    public String getDBName();
 
     public void setDBName(String dbName);
 

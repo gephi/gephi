@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.desktop.filters;
 
 import org.gephi.graph.api.GraphController;

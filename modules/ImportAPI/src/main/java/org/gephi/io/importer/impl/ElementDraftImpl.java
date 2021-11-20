@@ -40,6 +40,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.impl;
 
 import java.awt.Color;
@@ -107,8 +108,29 @@ public abstract class ElementDraftImpl implements ElementDraft {
     }
 
     @Override
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
     public Color getColor() {
         return color;
+    }
+
+    @Override
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    @Override
+    public void setColor(String color) {
+        Color cl = ImportUtils.parseColor(color);
+        if (cl != null) {
+            setColor(cl);
+        } else {
+            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_ColorParse", color, id);
+            container.getReport().logIssue(new Issue(message, Issue.Level.WARNING));
+        }
     }
 
     @Override
@@ -117,8 +139,18 @@ public abstract class ElementDraftImpl implements ElementDraft {
     }
 
     @Override
+    public void setLabelVisible(boolean labelVisible) {
+        this.labelVisible = labelVisible;
+    }
+
+    @Override
     public float getLabelSize() {
         return labelSize;
+    }
+
+    @Override
+    public void setLabelSize(float size) {
+        this.labelSize = size;
     }
 
     @Override
@@ -127,13 +159,20 @@ public abstract class ElementDraftImpl implements ElementDraft {
     }
 
     @Override
-    public void setLabel(String label) {
-        this.label = label;
+    public void setLabelColor(Color color) {
+        this.labelColor = color;
     }
 
     @Override
-    public void setColor(Color color) {
-        this.color = color;
+    public void setLabelColor(String color) {
+        Color cl = ImportUtils.parseColor(color);
+        if (cl != null) {
+            setLabelColor(cl);
+        } else {
+            String message =
+                NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_LabelColorParse", color, id);
+            container.getReport().logIssue(new Issue(message, Issue.Level.WARNING));
+        }
     }
 
     @Override
@@ -164,32 +203,6 @@ public abstract class ElementDraftImpl implements ElementDraft {
     }
 
     @Override
-    public void setColor(String color) {
-        Color cl = ImportUtils.parseColor(color);
-        if (cl != null) {
-            setColor(cl);
-        } else {
-            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_ColorParse", color, id);
-            container.getReport().logIssue(new Issue(message, Issue.Level.WARNING));
-        }
-    }
-
-    @Override
-    public void setLabelVisible(boolean labelVisible) {
-        this.labelVisible = labelVisible;
-    }
-
-    @Override
-    public void setLabelSize(float size) {
-        this.labelSize = size;
-    }
-
-    @Override
-    public void setLabelColor(Color color) {
-        this.labelColor = color;
-    }
-
-    @Override
     public void setLabelColor(String r, String g, String b) {
         setLabelColor(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
     }
@@ -208,17 +221,6 @@ public abstract class ElementDraftImpl implements ElementDraft {
     }
 
     @Override
-    public void setLabelColor(String color) {
-        Color cl = ImportUtils.parseColor(color);
-        if (cl != null) {
-            setLabelColor(cl);
-        } else {
-            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_LabelColorParse", color, id);
-            container.getReport().logIssue(new Issue(message, Issue.Level.WARNING));
-        }
-    }
-
-    @Override
     public void setValue(String key, Object value) {
         if (value == null) {
             throw new NullPointerException("Value can't be null");
@@ -232,14 +234,17 @@ public abstract class ElementDraftImpl implements ElementDraft {
         try {
             setAttributeValue(column, value);
         } catch (Exception ex) {
-            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_SetValueError", value.toString(), id, ex.getMessage());
+            String message = NbBundle
+                .getMessage(ElementDraftImpl.class, "ElementDraftException_SetValueError", value.toString(), id,
+                    ex.getMessage());
             container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
         }
     }
 
     @Override
     public void setValue(String key, Object value, String dateTime) {
-        setValue(key, value, container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(dateTime) : AttributeUtils.parseDateTime(dateTime));
+        setValue(key, value, container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(dateTime) :
+            AttributeUtils.parseDateTime(dateTime));
     }
 
     @Override
@@ -248,7 +253,9 @@ public abstract class ElementDraftImpl implements ElementDraft {
         try {
             setAttributeValue(column, value, timestamp);
         } catch (Exception ex) {
-            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_SetValueTimestampError", value.toString(), id, timestamp, ex.getMessage());
+            String message = NbBundle
+                .getMessage(ElementDraftImpl.class, "ElementDraftException_SetValueTimestampError", value.toString(),
+                    id, timestamp, ex.getMessage());
             container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
         }
     }
@@ -256,15 +263,19 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void setValue(String key, Object value, String startDateTime, String endDateTime) {
         double start, end;
-        if (startDateTime == null || startDateTime.isEmpty() || "-inf".equalsIgnoreCase(startDateTime) || "-infinity".equalsIgnoreCase(startDateTime)) {
+        if (startDateTime == null || startDateTime.isEmpty() || "-inf".equalsIgnoreCase(startDateTime) ||
+            "-infinity".equalsIgnoreCase(startDateTime)) {
             start = Double.NEGATIVE_INFINITY;
         } else {
-            start = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(startDateTime) : AttributeUtils.parseDateTime(startDateTime);
+            start = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(startDateTime) :
+                AttributeUtils.parseDateTime(startDateTime);
         }
-        if (endDateTime == null || endDateTime.isEmpty() || "inf".equalsIgnoreCase(endDateTime) || "infinity".equalsIgnoreCase(endDateTime)) {
+        if (endDateTime == null || endDateTime.isEmpty() || "inf".equalsIgnoreCase(endDateTime) ||
+            "infinity".equalsIgnoreCase(endDateTime)) {
             end = Double.POSITIVE_INFINITY;
         } else {
-            end = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(endDateTime) : AttributeUtils.parseDateTime(endDateTime);
+            end = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(endDateTime) :
+                AttributeUtils.parseDateTime(endDateTime);
         }
         setValue(key, value, start, end);
     }
@@ -276,7 +287,9 @@ public abstract class ElementDraftImpl implements ElementDraft {
             setAttributeValue(column, value, start, end);
         } catch (Exception ex) {
             String interval = "[" + start + "," + end + "]";
-            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_SetValueIntervalError", value.toString(), id, interval, ex.getMessage());
+            String message = NbBundle
+                .getMessage(ElementDraftImpl.class, "ElementDraftException_SetValueIntervalError", value.toString(), id,
+                    interval, ex.getMessage());
             container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
         }
     }
@@ -305,7 +318,9 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void parseAndSetValue(String key, String value, String dateTime) {
-        parseAndSetValue(key, value, container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(dateTime) : AttributeUtils.parseDateTime(dateTime));
+        parseAndSetValue(key, value,
+            container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(dateTime) :
+                AttributeUtils.parseDateTime(dateTime));
     }
 
     @Override
@@ -318,15 +333,19 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void parseAndSetValue(String key, String value, String startDateTime, String endDateTime) {
         double start, end;
-        if (startDateTime == null || startDateTime.isEmpty() || "-inf".equalsIgnoreCase(startDateTime) || "-infinity".equalsIgnoreCase(startDateTime)) {
+        if (startDateTime == null || startDateTime.isEmpty() || "-inf".equalsIgnoreCase(startDateTime) ||
+            "-infinity".equalsIgnoreCase(startDateTime)) {
             start = Double.NEGATIVE_INFINITY;
         } else {
-            start = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(startDateTime) : AttributeUtils.parseDateTime(startDateTime);
+            start = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(startDateTime) :
+                AttributeUtils.parseDateTime(startDateTime);
         }
-        if (endDateTime == null || endDateTime.isEmpty() || "inf".equalsIgnoreCase(endDateTime) || "infinity".equalsIgnoreCase(endDateTime)) {
+        if (endDateTime == null || endDateTime.isEmpty() || "inf".equalsIgnoreCase(endDateTime) ||
+            "infinity".equalsIgnoreCase(endDateTime)) {
             end = Double.POSITIVE_INFINITY;
         } else {
-            end = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(endDateTime) : AttributeUtils.parseDateTime(endDateTime);
+            end = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(endDateTime) :
+                AttributeUtils.parseDateTime(endDateTime);
         }
         parseAndSetValue(key, value, start, end);
     }
@@ -340,13 +359,15 @@ public abstract class ElementDraftImpl implements ElementDraft {
 
     @Override
     public void addTimestamp(String dateTime) {
-        addTimestamp(container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(dateTime) : AttributeUtils.parseDateTime(dateTime));
+        addTimestamp(container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(dateTime) :
+            AttributeUtils.parseDateTime(dateTime));
     }
 
     @Override
     public void addTimestamp(double timestamp) {
         if (!container.getTimeRepresentation().equals(TimeRepresentation.TIMESTAMP)) {
-            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_NotTimestampRepresentation", id);
+            String message =
+                NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_NotTimestampRepresentation", id);
             container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
             return;
         }
@@ -359,7 +380,8 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void addTimestamps(String timestamps) {
         if (!container.getTimeRepresentation().equals(TimeRepresentation.TIMESTAMP)) {
-            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_NotTimestampRepresentation", id);
+            String message =
+                NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_NotTimestampRepresentation", id);
             container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
             return;
         }
@@ -381,15 +403,19 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void addInterval(String intervalStartDateTime, String intervalEndDateTime) {
         double start, end;
-        if (intervalStartDateTime == null || intervalStartDateTime.isEmpty() || "-inf".equalsIgnoreCase(intervalStartDateTime) || "-infinity".equalsIgnoreCase(intervalStartDateTime)) {
+        if (intervalStartDateTime == null || intervalStartDateTime.isEmpty() ||
+            "-inf".equalsIgnoreCase(intervalStartDateTime) || "-infinity".equalsIgnoreCase(intervalStartDateTime)) {
             start = Double.NEGATIVE_INFINITY;
         } else {
-            start = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(intervalStartDateTime) : AttributeUtils.parseDateTime(intervalStartDateTime);
+            start = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(intervalStartDateTime) :
+                AttributeUtils.parseDateTime(intervalStartDateTime);
         }
-        if (intervalEndDateTime == null || intervalEndDateTime.isEmpty() || "inf".equalsIgnoreCase(intervalEndDateTime) || "infinity".equalsIgnoreCase(intervalEndDateTime)) {
+        if (intervalEndDateTime == null || intervalEndDateTime.isEmpty() ||
+            "inf".equalsIgnoreCase(intervalEndDateTime) || "infinity".equalsIgnoreCase(intervalEndDateTime)) {
             end = Double.POSITIVE_INFINITY;
         } else {
-            end = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(intervalEndDateTime) : AttributeUtils.parseDateTime(intervalEndDateTime);
+            end = container.getTimeFormat().equals(TimeFormat.DOUBLE) ? Double.parseDouble(intervalEndDateTime) :
+                AttributeUtils.parseDateTime(intervalEndDateTime);
         }
         addInterval(start, end);
     }
@@ -397,7 +423,8 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void addIntervals(String intervals) {
         if (!container.getTimeRepresentation().equals(TimeRepresentation.INTERVAL)) {
-            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_NotIntervalRepresentation", id);
+            String message =
+                NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_NotIntervalRepresentation", id);
             container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
             return;
         }
@@ -414,7 +441,8 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void addInterval(double intervalStart, double intervalEnd) {
         if (!container.getTimeRepresentation().equals(TimeRepresentation.INTERVAL)) {
-            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_NotIntervalRepresentation", id);
+            String message =
+                NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_NotIntervalRepresentation", id);
             container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
             return;
         }
@@ -426,7 +454,9 @@ public abstract class ElementDraftImpl implements ElementDraft {
             timeSet.add(interval);
         } catch (Exception e) {
             String interval = "[" + intervalStart + "," + intervalEnd + "]";
-            String message = NbBundle.getMessage(ElementDraftImpl.class, "ElementDraftException_IntervalSetError", interval, id, e.getMessage());
+            String message = NbBundle
+                .getMessage(ElementDraftImpl.class, "ElementDraftException_IntervalSetError", interval, id,
+                    e.getMessage());
             container.getReport().logIssue(new Issue(message, Issue.Level.SEVERE));
         }
     }
@@ -457,7 +487,8 @@ public abstract class ElementDraftImpl implements ElementDraft {
         Class typeClass = column.getResolvedTypeClass(container);
 
         if (!value.getClass().equals(typeClass)) {
-            throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");
+            throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " +
+                value.getClass().getSimpleName() + " was found");
         }
 
         if (index >= attributes.length) {
@@ -474,7 +505,8 @@ public abstract class ElementDraftImpl implements ElementDraft {
         Class typeClass = column.getTypeClass();
         value = AttributeUtils.standardizeValue(value);
         if (!value.getClass().equals(typeClass)) {
-            throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");
+            throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " +
+                value.getClass().getSimpleName() + " was found");
         }
         if (!column.isDynamic()) {
             throw new RuntimeException("Can't set a dynamic value to a static column");
@@ -497,7 +529,8 @@ public abstract class ElementDraftImpl implements ElementDraft {
         value = AttributeUtils.standardizeValue(value);
         Class typeClass = column.getTypeClass();
         if (!value.getClass().equals(typeClass)) {
-            throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " + value.getClass().getSimpleName() + " was found");
+            throw new RuntimeException("The expected value class was " + typeClass.getSimpleName() + " and " +
+                value.getClass().getSimpleName() + " was found");
         }
         if (!column.isDynamic()) {
             throw new RuntimeException("Can't set a dynamic value to a static column");

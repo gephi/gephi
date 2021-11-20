@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.utils;
 
 import java.math.BigDecimal;
@@ -48,6 +49,7 @@ import java.util.Collection;
 
 /**
  * Class with some statistics methods for calculating values such as the average, median, sum, max and min of a list of numbers.
+ *
  * @author Eduardo Ramos
  */
 public class StatisticsUtils {
@@ -78,7 +80,8 @@ public class StatisticsUtils {
         try {
             result = sum.divide(new BigDecimal(numbersCount));
         } catch (ArithmeticException ex) {
-            result = sum.divide(new BigDecimal(numbersCount), 10, RoundingMode.HALF_EVEN);//Maximum of 10 decimal digits to avoid periodic number exception.
+            result = sum.divide(new BigDecimal(numbersCount), 10,
+                RoundingMode.HALF_EVEN);//Maximum of 10 decimal digits to avoid periodic number exception.
         }
         return result;
     }
@@ -315,7 +318,7 @@ public class StatisticsUtils {
      * <li>minimumValue</li>
      * <li>maximumValue</li>
      * </ol>
-     * 
+     *
      * <p>
      * The elements can't be null.
      * <p>
@@ -408,7 +411,8 @@ public class StatisticsUtils {
         try {
             result = sum.divide(numbersCount);
         } catch (ArithmeticException ex) {
-            result = sum.divide(numbersCount, 10, RoundingMode.HALF_EVEN);//Maximum of 10 decimal digits to avoid periodic number exception.
+            result = sum.divide(numbersCount, 10,
+                RoundingMode.HALF_EVEN);//Maximum of 10 decimal digits to avoid periodic number exception.
         }
         return result;
     }

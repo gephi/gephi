@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.process;
 
 import org.gephi.io.importer.api.ContainerLoader;
@@ -48,12 +49,12 @@ import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ImportAdjacencyListProcess extends AbstractImportProcess {
 
-    public ImportAdjacencyListProcess(SpreadsheetGeneralConfiguration generalConfig, ContainerLoader container, ProgressTicket progressTicket, SheetParser parser) {
+    public ImportAdjacencyListProcess(SpreadsheetGeneralConfiguration generalConfig, ContainerLoader container,
+                                      ProgressTicket progressTicket, SheetParser parser) {
         super(generalConfig, container, progressTicket, parser);
     }
 

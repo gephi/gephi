@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.merge.ui;
 
 import javax.swing.JComboBox;
@@ -68,6 +69,12 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
     private JComboBox[] operationSelectors;
     private Table table;
     private DialogControls dialogControls;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JPanel panel;
+    private javax.swing.JScrollPane scroll;
+    private javax.swing.JLabel titleLabel;
+    private javax.swing.JTextField titleTextField;
 
     /**
      * Creates new form BooleanLogicOperationsUI
@@ -92,7 +99,8 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
 
             private void refreshOkButton() {
                 String text = titleTextField.getText();
-                dialogControls.setOkButtonEnabled(text != null && !text.isEmpty() && !table.hasColumn(text));//Title not empty and not repeated.
+                dialogControls.setOkButtonEnabled(
+                    text != null && !text.isEmpty() && !table.hasColumn(text));//Title not empty and not repeated.
             }
         });
     }
@@ -172,49 +180,48 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
         titleLabel = new javax.swing.JLabel();
         titleTextField = new javax.swing.JTextField();
 
-        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.descriptionLabel.text")); // NOI18N
+        descriptionLabel.setText(org.openide.util.NbBundle
+            .getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.descriptionLabel.text")); // NOI18N
 
         panel.setLayout(new java.awt.GridLayout(0, 1, 0, 20));
         scroll.setViewportView(panel);
 
-        titleLabel.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.titleLabel.text")); // NOI18N
+        titleLabel.setText(org.openide.util.NbBundle
+            .getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.titleLabel.text")); // NOI18N
 
-        titleTextField.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.titleTextField.text")); // NOI18N
+        titleTextField.setText(org.openide.util.NbBundle
+            .getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.titleTextField.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
-                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(titleLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                        .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(titleLabel)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(titleLabel)
-                    .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(titleLabel)
+                        .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JPanel panel;
-    private javax.swing.JScrollPane scroll;
-    private javax.swing.JLabel titleLabel;
-    private javax.swing.JTextField titleTextField;
     // End of variables declaration//GEN-END:variables
 }

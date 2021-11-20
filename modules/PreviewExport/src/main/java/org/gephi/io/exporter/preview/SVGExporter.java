@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.preview;
 
 import java.io.Writer;
@@ -82,7 +83,7 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
         controller.getModel(workspace).getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, 1.0);
         controller.refreshPreview(workspace);
-        
+
         PreviewProperties props = controller.getModel(workspace).getProperties();
         props.putValue(SVGTarget.SCALE_STROKES, scaleStrokes);
         props.putValue(PreviewProperty.MARGIN, new Float((float) margin));
@@ -147,11 +148,11 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
         this.workspace = workspace;
     }
 
-    public void setScaleStrokes(boolean scaleStrokes) {
-        this.scaleStrokes = scaleStrokes;
-    }
-
     public boolean isScaleStrokes() {
         return scaleStrokes;
+    }
+
+    public void setScaleStrokes(boolean scaleStrokes) {
+        this.scaleStrokes = scaleStrokes;
     }
 }

@@ -39,12 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.database.drivers;
 
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class SQLUtils {

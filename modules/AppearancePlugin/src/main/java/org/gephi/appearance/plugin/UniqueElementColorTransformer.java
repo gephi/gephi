@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.plugin;
 
 import org.gephi.appearance.spi.SimpleTransformer;
@@ -47,11 +48,11 @@ import org.gephi.graph.api.Element;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author mbastian
  */
 @ServiceProvider(service = Transformer.class)
-public class UniqueElementColorTransformer extends AbstractUniqueColorTransformer implements SimpleTransformer<Element> {
+public class UniqueElementColorTransformer extends AbstractUniqueColorTransformer
+    implements SimpleTransformer<Element> {
 
     @Override
     public void transform(Element element) {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.importer.plugin.database;
 
 import org.gephi.io.importer.api.AbstractDatabase;
@@ -46,7 +47,6 @@ import org.gephi.io.importer.api.PropertiesAssociations.EdgeProperties;
 import org.gephi.io.importer.api.PropertiesAssociations.NodeProperties;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class EdgeListDatabaseImpl extends AbstractDatabase {

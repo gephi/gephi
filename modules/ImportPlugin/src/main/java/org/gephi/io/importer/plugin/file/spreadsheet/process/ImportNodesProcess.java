@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.process;
 
 import java.io.IOException;
@@ -52,7 +53,6 @@ import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ImportNodesProcess extends AbstractImportProcess {
@@ -61,7 +61,8 @@ public class ImportNodesProcess extends AbstractImportProcess {
     public static final String NODE_LABEL = "label";
 
 
-    public ImportNodesProcess(SpreadsheetGeneralConfiguration generalConfig, SheetParser parser, ContainerLoader container, ProgressTicket progressTicket) throws IOException {
+    public ImportNodesProcess(SpreadsheetGeneralConfiguration generalConfig, SheetParser parser,
+                              ContainerLoader container, ProgressTicket progressTicket) throws IOException {
         super(generalConfig, container, progressTicket, parser);
     }
 

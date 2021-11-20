@@ -39,16 +39,19 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.api.datatables;
 
 /**
  * <p>Builder interface for providing a default <code>DataTablesEventListener</code> when it has not been set.</p>
+ *
  * @author Eduardo
  */
 public interface DataTablesEventListenerBuilder {
 
     /**
      * Get default implementation
+     *
      * @return listener
      */
     DataTablesEventListener getDataTablesEventListener();

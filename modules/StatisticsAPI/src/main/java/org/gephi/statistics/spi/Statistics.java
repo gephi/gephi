@@ -40,6 +40,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.statistics.spi;
 
 
@@ -59,6 +60,7 @@ public interface Statistics {
      * <p>
      * It is preferable to work on <b>visible</b> graphs, to be synchronized with the
      * visualization.
+     *
      * @param graphModel The graph model
      */
     public void execute(GraphModel graphModel);
@@ -66,6 +68,7 @@ public interface Statistics {
     /**
      * Returns an HTML string that displays the statistics result. Can contains
      * complex HTML snippets and images.
+     *
      * @return An HTML string that displays the results for this Statistics
      */
     public String getReport();

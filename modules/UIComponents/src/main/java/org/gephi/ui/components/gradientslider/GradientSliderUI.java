@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components.gradientslider;
 
 import java.awt.AlphaComposite;
@@ -60,14 +61,14 @@ import javax.swing.JComponent;
 
 /**
  * The UI for the GradientSlider class.
- *
+ * <p>
  * There are 3 properties you can use to customize the UI of a GradientSlider.
  * You can set these for each slider by calling
  * <code>slider.putClientProperty(key,value);</code>
- * <P>
+ * <p>
  * Or you can set these globally by calling:
  * <BR><code>UIManager.put(key,value);</code>
- * <P>
+ * <p>
  * The three properties are:
  * <TABLE BORDER="1" CELLPADDING="5" summary="">
  * <TR>
@@ -106,6 +107,9 @@ import javax.swing.JComponent;
  */
 public class GradientSliderUI extends MultiThumbSliderUI {
 
+    static TexturePaint checkerPaint;
+    static GeneralPath hTriangle = null;
+    static GeneralPath vTriangle = null;
     int TRIANGLE_SIZE = 8;
     /**
      * The width of this image is the absolute widest the track will ever
@@ -119,6 +123,18 @@ public class GradientSliderUI extends MultiThumbSliderUI {
 
     public GradientSliderUI(GradientSlider slider) {
         super(slider);
+    }
+
+    private static void createCheckerPaint() {
+        int k = 4;
+        BufferedImage bi = new BufferedImage(2 * k, 2 * k, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = bi.createGraphics();
+        g.setColor(Color.white);
+        g.fillRect(0, 0, 2 * k, 2 * k);
+        g.setColor(Color.lightGray);
+        g.fillRect(0, 0, k, k);
+        g.fillRect(k, k, k, k);
+        checkerPaint = new TexturePaint(bi, new Rectangle(0, 0, bi.getWidth(), bi.getHeight()));
     }
 
     @Override
@@ -160,9 +176,9 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         int[] argb = new int[c.length];
         for (int a = 0; a < argb.length; a++) {
             argb[a] = ((c[a].getAlpha() & 0xff) << 24)
-                    + ((c[a].getRed() & 0xff) << 16)
-                    + ((c[a].getGreen() & 0xff) << 8)
-                    + ((c[a].getBlue() & 0xff) << 0);
+                + ((c[a].getRed() & 0xff) << 16)
+                + ((c[a].getGreen() & 0xff) << 8)
+                + ((c[a].getBlue() & 0xff) << 0);
         }
         int max;
         if (slider.getOrientation() == GradientSlider.HORIZONTAL) {
@@ -216,9 +232,9 @@ public class GradientSliderUI extends MultiThumbSliderUI {
                 a2 = 255;
             }
             array[z] = (((int) (a1 * (1 - colorFraction) + a2 * colorFraction)) << 24)
-                    + (((int) (r1 * (1 - colorFraction) + r2 * colorFraction)) << 16)
-                    + (((int) (g1 * (1 - colorFraction) + g2 * colorFraction)) << 8)
-                    + (((int) (b1 * (1 - colorFraction) + b2 * colorFraction)));
+                + (((int) (r1 * (1 - colorFraction) + r2 * colorFraction)) << 16)
+                + (((int) (g1 * (1 - colorFraction) + g2 * colorFraction)) << 8)
+                + (((int) (b1 * (1 - colorFraction) + b2 * colorFraction)));
         }
         img.getRaster().setDataElements(0, 0, max, 1, array);
     }
@@ -287,19 +303,6 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         super.calculateGeometry();
         calculateImage();
     }
-    static TexturePaint checkerPaint;
-
-    private static void createCheckerPaint() {
-        int k = 4;
-        BufferedImage bi = new BufferedImage(2 * k, 2 * k, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = bi.createGraphics();
-        g.setColor(Color.white);
-        g.fillRect(0, 0, 2 * k, 2 * k);
-        g.setColor(Color.lightGray);
-        g.fillRect(0, 0, k, k);
-        g.fillRect(k, k, k, k);
-        checkerPaint = new TexturePaint(bi, new Rectangle(0, 0, bi.getWidth(), bi.getHeight()));
-    }
 
     /**
      * The "frame" includes the trackRect and possible some extra padding. For
@@ -317,15 +320,15 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         if (slider.getOrientation() == GradientSlider.HORIZONTAL) {
             int curve = Math.min(TRIANGLE_SIZE - 2, trackRect.height / 2);
             return new RoundRectangle2D.Float(
-                    trackRect.x - curve, trackRect.y,
-                    trackRect.width + 2 * curve, trackRect.height,
-                    curve * 2, curve * 2);
+                trackRect.x - curve, trackRect.y,
+                trackRect.width + 2 * curve, trackRect.height,
+                curve * 2, curve * 2);
         } else {
             int curve = Math.min(TRIANGLE_SIZE - 2, trackRect.width / 2);
             return new RoundRectangle2D.Float(
-                    trackRect.x, trackRect.y - curve,
-                    trackRect.width, trackRect.height + 2 * curve,
-                    curve * 2, curve * 2);
+                trackRect.x, trackRect.y - curve,
+                trackRect.width, trackRect.height + 2 * curve,
+                curve * 2, curve * 2);
         }
     }
 
@@ -363,7 +366,7 @@ public class GradientSliderUI extends MultiThumbSliderUI {
             //flip horizontal:
             double x1 = trackRect.x;
             double x2 = trackRect.x + trackRect.width;
-                //m00*x1+m02 = x2
+            //m00*x1+m02 = x2
             //m00*x2+m02 = x1
             double m00 = (x2 - x1) / (x1 - x2);
             double m02 = x1 - m00 * x2;
@@ -387,13 +390,13 @@ public class GradientSliderUI extends MultiThumbSliderUI {
             PaintUtils.drawBevel(g, trackRect);
         } else {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
+                RenderingHints.VALUE_ANTIALIAS_ON);
             Shape oldClip = g.getClip();
             int first, last;
             Color[] colors = ((GradientSlider) slider).getColors();
             float[] f = slider.getThumbPositions();
             if ((slider.isInverted() == false && slider.getOrientation() == GradientSlider.HORIZONTAL)
-                    || (slider.isInverted() == true && slider.getOrientation() == GradientSlider.VERTICAL)) {
+                || (slider.isInverted() == true && slider.getOrientation() == GradientSlider.VERTICAL)) {
                 first = 0;
                 last = colors.length - 1;
                 while (f[first] < 0) {
@@ -418,14 +421,14 @@ public class GradientSliderUI extends MultiThumbSliderUI {
                 g.fillRect(0, 0, trackRect.x, slider.getHeight());
                 g.setColor(colors[last]);
                 g.fillRect(trackRect.x + trackRect.width, 0,
-                        slider.getWidth() - (trackRect.x + trackRect.width), slider.getHeight());
+                    slider.getWidth() - (trackRect.x + trackRect.width), slider.getHeight());
             } else {
                 g.clip(frame);
                 g.setColor(colors[first]);
                 g.fillRect(0, 0, slider.getWidth(), trackRect.y);
                 g.setColor(colors[last]);
                 g.fillRect(0, trackRect.y + trackRect.height,
-                        slider.getWidth(), slider.getHeight() - (trackRect.y + trackRect.height));
+                    slider.getWidth(), slider.getHeight() - (trackRect.y + trackRect.height));
             }
             g.setStroke(new BasicStroke(1));
             g.setClip(oldClip);
@@ -464,8 +467,6 @@ public class GradientSliderUI extends MultiThumbSliderUI {
     @Override
     protected void paintFocus(Graphics2D g) {
     }
-    static GeneralPath hTriangle = null;
-    static GeneralPath vTriangle = null;
 
     @Override
     protected void paintThumbs(Graphics2D g) {
@@ -501,7 +502,7 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         Composite oldComposite = g.getComposite();
 
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                indication));
+            indication));
 
         for (int a = 0; a < thumbPositions.length; a++) {
             if (f[a] >= 0 && f[a] <= 1 && a != selected) {
@@ -518,8 +519,8 @@ public class GradientSliderUI extends MultiThumbSliderUI {
                 float brightness = Math.max(0, thumbIndications[a] * .6f);
 
                 g.setColor(new Color((int) (255 * brightness),
-                        (int) (255 * brightness),
-                        (int) (255 * brightness)));
+                    (int) (255 * brightness),
+                    (int) (255 * brightness)));
                 g.fill(shape);
                 g.translate(-.5f, -.5f);
 
@@ -534,7 +535,7 @@ public class GradientSliderUI extends MultiThumbSliderUI {
         }
 
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                indication));
+            indication));
 
         if (selected != -1 && f[selected] >= 0 && f[selected] <= 1) {
             if (orientation == GradientSlider.HORIZONTAL) {

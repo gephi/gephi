@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.exporter.spi;
 
 /**
@@ -50,7 +51,8 @@ public interface GraphFileExporterBuilder extends FileExporterBuilder {
 
     /**
      * Builds a new graph exporter instance, ready to be used.
-     * @return  a new graph exporter
+     *
+     * @return a new graph exporter
      */
     @Override
     public GraphExporter buildExporter();

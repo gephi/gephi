@@ -39,14 +39,15 @@
 
  Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.scale;
 
 import org.gephi.layout.spi.LayoutBuilder;
 
 public class ExpandLayout extends AbstractScaleLayout {
-    
+
     public ExpandLayout(LayoutBuilder layoutBuilder, double scale) {
         super(layoutBuilder, scale);
     }
-    
+
 }

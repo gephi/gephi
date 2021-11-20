@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.gephi.appearance;
 
 import org.gephi.appearance.api.AttributeFunction;
@@ -20,17 +21,21 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 
 /**
- *
  * @author mbastian
  */
-public class AttributeFunctionImpl extends FunctionImpl implements RankingFunction, PartitionFunction, AttributeFunction {
+public class AttributeFunctionImpl extends FunctionImpl
+    implements RankingFunction, PartitionFunction, AttributeFunction {
 
-    public AttributeFunctionImpl(String id, Graph graph, Column column, Transformer transformer, TransformerUI transformerUI, RankingImpl ranking, Interpolator interpolator) {
-        super(id, null, AttributeUtils.isNodeColumn(column) ? Node.class : Edge.class, graph, column, transformer, transformerUI, null, ranking, interpolator);
+    public AttributeFunctionImpl(String id, Graph graph, Column column, Transformer transformer,
+                                 TransformerUI transformerUI, RankingImpl ranking, Interpolator interpolator) {
+        super(id, null, AttributeUtils.isNodeColumn(column) ? Node.class : Edge.class, graph, column, transformer,
+            transformerUI, null, ranking, interpolator);
     }
 
-    public AttributeFunctionImpl(String id, Graph graph, Column column, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition) {
-        super(id, null, AttributeUtils.isNodeColumn(column) ? Node.class : Edge.class, graph, column, transformer, transformerUI, partition, null, null);
+    public AttributeFunctionImpl(String id, Graph graph, Column column, Transformer transformer,
+                                 TransformerUI transformerUI, PartitionImpl partition) {
+        super(id, null, AttributeUtils.isNodeColumn(column) ? Node.class : Edge.class, graph, column, transformer,
+            transformerUI, partition, null, null);
     }
 
     @Override

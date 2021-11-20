@@ -39,10 +39,10 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.openord;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class Node implements Cloneable {

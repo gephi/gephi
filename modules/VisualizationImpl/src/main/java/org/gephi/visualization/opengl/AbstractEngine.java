@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.opengl;
 
 import com.jogamp.opengl.GL2;
@@ -73,12 +74,6 @@ import org.gephi.visualization.text.TextManager;
  * @author Mathieu Bastian
  */
 public abstract class AbstractEngine implements Engine, VizArchitecture {
-
-    //Enums
-    public enum Limits {
-
-        MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z
-    }
 
     //Architecture
     protected GraphDrawable graphDrawable;
@@ -249,6 +244,20 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         return edgeModeler;
     }
 
+    public NodeModel[] getNodeModelsForNodes(Node[] nodes) {
+        return dataBridge.getNodeModelsForNodes(nodes);
+    }
+
+    public EdgeModel[] getEdgeModelsForEdges(Edge[] edges) {
+        return dataBridge.getEdgeModelsForEdges(edges);
+    }
+
+    //Enums
+    public enum Limits {
+
+        MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z
+    }
+
     protected class EngineLifeCycle {
 
         private boolean started;
@@ -302,13 +311,5 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
                 textManager.initArchitecture();
             }
         }
-    }
-    
-    public NodeModel[] getNodeModelsForNodes(Node[] nodes) {
-        return dataBridge.getNodeModelsForNodes(nodes);
-    }
-
-    public EdgeModel[] getEdgeModelsForEdges(Edge[] edges) {
-        return dataBridge.getEdgeModelsForEdges(edges);
     }
 }

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import org.gephi.datalab.spi.nodes.NodesManipulator;
@@ -47,10 +48,11 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for MergeNodes nodes manipulator.
+ *
  * @author Eduardo Ramos
  */
-@ServiceProvider(service=NodesManipulatorBuilder.class)
-public class MergeNodesBuilder implements NodesManipulatorBuilder{
+@ServiceProvider(service = NodesManipulatorBuilder.class)
+public class MergeNodesBuilder implements NodesManipulatorBuilder {
 
     @Override
     public NodesManipulator getNodesManipulator() {

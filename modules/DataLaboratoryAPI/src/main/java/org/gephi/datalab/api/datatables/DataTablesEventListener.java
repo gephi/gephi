@@ -39,14 +39,16 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.api.datatables;
 
 /**
  * <p>This is the interface for a listener of <code>DataTablesController</code> requests.</p>
  * <p><b>Only data table UI should be an implementation of this listener</b></p>
- * @see DataTablesController
+ *
  * @author Eduardo Ramos
+ * @see DataTablesController
  */
 public interface DataTablesEventListener extends DataTablesCommonInterface {
-    
+
 }

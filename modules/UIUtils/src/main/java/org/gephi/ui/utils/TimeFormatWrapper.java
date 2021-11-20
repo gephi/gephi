@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.ui.utils;
 
 import org.gephi.graph.api.TimeFormat;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class TimeFormatWrapper {

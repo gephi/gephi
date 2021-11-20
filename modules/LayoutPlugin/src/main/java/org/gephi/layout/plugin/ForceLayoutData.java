@@ -39,12 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.layout.plugin;
 
 import org.gephi.layout.plugin.force.ForceVector;
 
 /**
- *
  * @author Helder Suzuki
  */
 public class ForceLayoutData extends ForceVector {

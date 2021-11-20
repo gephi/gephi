@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.timeline.api;
 
 import org.gephi.graph.api.TimeFormat;
@@ -90,7 +91,7 @@ public interface TimelineController {
      * @param min the lower bound
      * @param max the upper bound
      * @throws IllegalArgumentException if <code>min</code> is superior or equal than
-     * <code>max</code> or out of bounds
+     *                                  <code>max</code> or out of bounds
      */
     public void setCustomBounds(double min, double max);
 
@@ -107,14 +108,14 @@ public interface TimelineController {
      * with.
      *
      * @param from the lower bound
-     * @param to the upper bound
+     * @param to   the upper bound
      * @throws IllegalArgumentException if <code>min</code> is superior or equal than
-     * <code>max</code> or out of bounds
+     *                                  <code>max</code> or out of bounds
      */
     public void setInterval(double from, double to);
-    
+
     public void setTimeFormat(TimeFormat timeFormat);
-    
+
 
     /**
      * Starts the timeline animation using the current delay, step size and play
@@ -164,7 +165,7 @@ public interface TimelineController {
      *
      * @param column the column to select
      * @throws IllegalArgumentException if <code>column</code> is not a graph
-     * column
+     *                                  column
      */
     public void selectColumn(String column);
 

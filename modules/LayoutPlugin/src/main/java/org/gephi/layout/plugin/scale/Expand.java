@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.scale;
 
 import javax.swing.Icon;
@@ -50,14 +51,13 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Helder Suzuki
  */
 @ServiceProvider(service = LayoutBuilder.class)
 public class Expand implements LayoutBuilder {
 
     private final ExpandLayoutUI ui = new ExpandLayoutUI();
-    
+
     @Override
     public String getName() {
         return NbBundle.getMessage(Expand.class, "expand.name");

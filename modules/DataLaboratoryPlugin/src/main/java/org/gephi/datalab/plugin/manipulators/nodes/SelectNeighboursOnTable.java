@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
@@ -52,9 +53,10 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that selects in nodes table all neighbours of a node.
+ *
  * @author Eduardo Ramos
  */
-public class SelectNeighboursOnTable extends BasicNodesManipulator{
+public class SelectNeighboursOnTable extends BasicNodesManipulator {
     private Node node;
     private Node[] neighbours;
 
@@ -103,6 +105,7 @@ public class SelectNeighboursOnTable extends BasicNodesManipulator{
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-select-row.png", true);
+        return ImageUtilities
+            .loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-select-row.png", true);
     }
 }

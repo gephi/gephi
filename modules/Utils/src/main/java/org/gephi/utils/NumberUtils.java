@@ -39,22 +39,24 @@
 
  Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class NumberUtils {
 
+    public static final double EPS = 1e-5;
+
     public static <T extends Number> T parseNumber(String str, Class<T> type) throws UnsupportedOperationException {
         try {
             /*
-         * Try to access the staticFactory method for: 
-         * Byte, Short, Integer, Long, Double, and Float
+             * Try to access the staticFactory method for:
+             * Byte, Short, Integer, Long, Double, and Float
              */
             Method m = type.getMethod("valueOf", String.class);
             Object o = m.invoke(type, str);
@@ -63,20 +65,18 @@ public class NumberUtils {
             /* Try to access the constructor for BigDecimal or BigInteger*/
             try {
                 Constructor<? extends Number> ctor = type
-                        .getConstructor(String.class);
+                    .getConstructor(String.class);
                 return (T) ctor.newInstance(str);
             } catch (ReflectiveOperationException e2) {
                 /* AtomicInteger and AtomicLong not supported */
                 throw new UnsupportedOperationException(
-                        "Cannot convert string to " + type.getName());
+                    "Cannot convert string to " + type.getName());
             }
         } catch (ReflectiveOperationException e2) {
             throw new UnsupportedOperationException("Cannot convert string to "
-                    + type.getName());
+                + type.getName());
         }
     }
-
-    public static final double EPS = 1e-5;
 
     public static boolean equalsEpsilon(double a, double b) {
         return equals(a, b, EPS);

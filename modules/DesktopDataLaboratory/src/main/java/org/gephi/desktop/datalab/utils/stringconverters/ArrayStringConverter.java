@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.utils.stringconverters;
 
 import org.gephi.graph.api.AttributeUtils;
@@ -58,7 +59,7 @@ public class ArrayStringConverter implements StringValue {
         if (value != null) {
             str = AttributeUtils.printArray(value);
         }
-        
+
         return str;
     }
 }

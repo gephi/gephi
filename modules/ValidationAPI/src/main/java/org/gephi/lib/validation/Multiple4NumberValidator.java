@@ -47,7 +47,6 @@ import org.netbeans.validation.api.Validator;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public final class Multiple4NumberValidator implements Validator<String> {
@@ -57,12 +56,12 @@ public final class Multiple4NumberValidator implements Validator<String> {
         boolean result = false;
         try {
             Integer i = Integer.parseInt(model);
-            result = i > 0 && i%4 ==0;
+            result = i > 0 && i % 4 == 0;
         } catch (Exception e) {
         }
         if (!result) {
             String message = NbBundle.getMessage(Multiple4NumberValidator.class,
-                    "Multiple4NumberValidator_NOT_MULTIPLE", model);
+                "Multiple4NumberValidator_NOT_MULTIPLE", model);
             problems.add(message);
         }
         return result;

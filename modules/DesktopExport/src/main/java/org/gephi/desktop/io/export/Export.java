@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.io.export;
 
 import java.awt.event.ActionEvent;
@@ -55,7 +56,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.actions.CallableSystemAction;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class Export extends CallableSystemAction {
@@ -89,7 +89,7 @@ public class Export extends CallableSystemAction {
                 menu.setEnabled(false);
             }
         });
-        boolean enabled = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace()!=null;
+        boolean enabled = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace() != null;
         menu.setEnabled(enabled);
     }
 

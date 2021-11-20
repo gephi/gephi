@@ -58,7 +58,7 @@ import javax.swing.Icon;
 public interface CustomDirectoryProvider {
     /**
      * Determines if custom directory provider is enabled.
-     * 
+     *
      * @return true if custom directory provider is enabled, false otherwise
      */
     boolean isEnabled();
@@ -66,16 +66,15 @@ public interface CustomDirectoryProvider {
     /**
      * Determines if given directory represents valid custom directory. This can be determined by the
      * content of given directory. Returns false if given argument isn't directory.
-     * 
+     *
      * @param directory input file
-     * 
      * @return true if given directoru represent valid custom directory, false otherwise
      */
     boolean isValidCustomDirectory(File directory);
 
     /**
      * Returns icon for custom directory. Icon is showd in the JFileChooser dialog.
-     * 
+     *
      * @return icon for custom directory
      */
     Icon getCustomDirectoryIcon();

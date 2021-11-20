@@ -39,19 +39,19 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.impl;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.io.importer.api.ElementDraft;
 import org.gephi.io.importer.api.Issue;
 import org.openide.util.NbBundle;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class ElementFactoryImpl implements ElementDraft.Factory {
 
-    protected final ImportContainerImpl container;
     protected final static AtomicInteger NODE_IDS = new AtomicInteger();
     protected final static AtomicInteger EDGE_IDS = new AtomicInteger();
+    protected final ImportContainerImpl container;
 
     public ElementFactoryImpl(ImportContainerImpl container) {
         this.container = container;

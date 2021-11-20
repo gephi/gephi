@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.gephi.desktop.datalab.tables.popup;
 
 import java.awt.Point;
@@ -16,7 +17,6 @@ import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Node;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class NodesPopupAdapter extends AbstractPopupAdapter<Node> {
@@ -44,7 +44,8 @@ public class NodesPopupAdapter extends AbstractPopupAdapter<Node> {
             }
             lastManipulatorType = em.getType();
             if (em.isAvailable()) {
-                contextMenu.add(PopupMenuUtils.createMenuItemFromNodesManipulator(em, clickedElement, selectedElements.toArray(new Node[0])));
+                contextMenu.add(PopupMenuUtils
+                    .createMenuItemFromNodesManipulator(em, clickedElement, selectedElements.toArray(new Node[0])));
             }
         }
 

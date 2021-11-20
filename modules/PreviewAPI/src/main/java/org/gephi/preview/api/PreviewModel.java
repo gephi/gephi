@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.api;
 
 import org.gephi.graph.api.Edge;
@@ -95,7 +96,7 @@ public interface PreviewModel {
      * <code>type</code>. <p> The source is the graph object behind the item (e.g.
      * {@link Node} or {@link Edge}) and the type a default or a custom type. <p> Default types are {@link Item#NODE}, {@link Item#EDGE}, {@link Item#NODE_LABEL} and {@link Item#EDGE_LABEL}.
      *
-     * @param type the item's type
+     * @param type   the item's type
      * @param source the item's source object
      * @return the item or
      * <code>null</code> if not found

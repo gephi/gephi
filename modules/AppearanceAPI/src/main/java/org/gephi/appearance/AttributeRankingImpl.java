@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
 import org.gephi.graph.api.AttributeUtils;
@@ -51,7 +52,6 @@ import org.gephi.graph.api.Index;
 import org.gephi.graph.api.types.TimeMap;
 
 /**
- *
  * @author mbastian
  */
 public class AttributeRankingImpl extends RankingImpl {
@@ -73,7 +73,8 @@ public class AttributeRankingImpl extends RankingImpl {
             min = index.getMinValue(column);
             max = index.getMaxValue(column);
         } else {
-            ElementIterable<? extends Element> iterable = AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
+            ElementIterable<? extends Element> iterable =
+                AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
 
             if (column.isDynamic()) {
                 refreshDynamic(iterable);

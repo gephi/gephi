@@ -39,15 +39,17 @@
 
 package org.gephi.lib.gleem.linalg;
 
-/** Thrown to indicate a mismatch of dimensionality of a matrix or
-    vector. */
+/**
+ * Thrown to indicate a mismatch of dimensionality of a matrix or
+ * vector.
+ */
 
 public class DimensionMismatchException extends RuntimeException {
-  public DimensionMismatchException() {
-    super();
-  }
+    public DimensionMismatchException() {
+        super();
+    }
 
-  public DimensionMismatchException(String msg) {
-    super(msg);
-  }
+    public DimensionMismatchException(String msg) {
+        super(msg);
+    }
 }

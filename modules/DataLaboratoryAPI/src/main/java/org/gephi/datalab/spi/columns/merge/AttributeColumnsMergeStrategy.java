@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi.columns.merge;
 
 import org.gephi.datalab.spi.Manipulator;
@@ -48,15 +49,17 @@ import org.gephi.graph.api.Table;
 /**
  * <p>Service for defining strategies for merging attribute columns of a table.</p>
  * <p>Has the same interface as a manipulator.</p>
- * @see Manipulator
+ *
  * @author Eduardo Ramos
+ * @see Manipulator
  */
-public interface AttributeColumnsMergeStrategy extends Manipulator{
+public interface AttributeColumnsMergeStrategy extends Manipulator {
 
     /**
      * Prepare columns (with their table) for this merge strategy.
      * At least <b>1</b> column will be set up to merge always.
-     * @param table Table of the columns
+     *
+     * @param table   Table of the columns
      * @param columns Columns to merge
      */
     void setup(Table table, Column[] columns);

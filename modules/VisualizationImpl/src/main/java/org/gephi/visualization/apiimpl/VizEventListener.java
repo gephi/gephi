@@ -39,12 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.apiimpl;
 
 import java.util.EventListener;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface VizEventListener extends EventListener {

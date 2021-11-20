@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.api;
 
 import org.gephi.filters.spi.Category;
@@ -67,26 +68,26 @@ public interface FilterLibrary extends Lookup.Provider {
      * edges.
      */
     public final static Category TOPOLOGY = new Category(
-            NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Topology"),
-            null,
-            null);
+        NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Topology"),
+        null,
+        null);
 
     /**
      * Default <code>Category</code> for attributes filters. Use this category
      * for filters working on attribute values.
      */
     public final static Category ATTRIBUTES = new Category(
-            NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Attributes"),
-            null,
-            null);
+        NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Attributes"),
+        null,
+        null);
 
     /**
      * Default <code>Category</code> for filters working on edges only.
      */
     public final static Category EDGE = new Category(
-            NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Edge"),
-            null,
-            null);
+        NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Edge"),
+        null,
+        null);
 
     /**
      * Adds <code>builder</code> to this library.

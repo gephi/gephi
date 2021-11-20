@@ -6,7 +6,6 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import org.gephi.visualization.model.node.NodeModel;
 
 /**
- *
  * @author mbastian
  */
 public class Octant {
@@ -148,7 +147,8 @@ public class Octant {
         if (nodesGarbage == null) {
             nodesGarbage = new int[10];
         } else if (nodesGarbageLength == nodesGarbage.length) {
-            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * nodesGarbage.length) >>> 16, nodesGarbageLength + 1), Integer.MAX_VALUE);
+            final int newLength = (int) Math
+                .min(Math.max((ONEOVERPHI * nodesGarbage.length) >>> 16, nodesGarbageLength + 1), Integer.MAX_VALUE);
             final int t[] = new int[newLength];
             System.arraycopy(nodesGarbage, 0, t, 0, nodesGarbage.length);
             nodesGarbage = t;
@@ -164,7 +164,8 @@ public class Octant {
         if (nodes == null) {
             nodes = new NodeModel[10];
         } else if (index >= nodes.length) {
-            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * nodes.length) >>> 16, index + 1), Integer.MAX_VALUE);
+            final int newLength =
+                (int) Math.min(Math.max((ONEOVERPHI * nodes.length) >>> 16, index + 1), Integer.MAX_VALUE);
             final NodeModel t[] = new NodeModel[newLength];
             System.arraycopy(nodes, 0, t, 0, nodes.length);
             nodes = t;

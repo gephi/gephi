@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.spi;
 
 import org.gephi.io.importer.api.ContainerLoader;
@@ -61,7 +62,7 @@ public interface Importer {
      * Run the import process.
      *
      * @param loader the container where imported data will be pushed
-     * @return          <code>true</code> if the import is successful or
+     * @return <code>true</code> if the import is successful or
      * <code>false</code> if it has been cancelled
      */
     public boolean execute(ContainerLoader loader);

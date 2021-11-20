@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.api;
 
 import org.gephi.filters.spi.Filter;
@@ -86,7 +87,7 @@ public interface FilterController {
      * query.
      *
      * @param builder the builder that can create the filter that is to be
-     * wrapped in a new query
+     *                wrapped in a new query
      * @return a query that is wrapping <code>builder</code>
      */
     public Query createQuery(FilterBuilder builder);
@@ -119,7 +120,7 @@ public interface FilterController {
      * Renames <code>query</code> with <code>name</code>.
      *
      * @param query the query that is to be renamed
-     * @param name the new query's name
+     * @param name  the new query's name
      */
     public void rename(Query query, String name);
 
@@ -128,19 +129,19 @@ public interface FilterController {
      * <code>subQuery</code> already has a parent query, it will be removed
      * first.
      *
-     * @param query the query that <code>subQuery</code> is to be added as a new
-     * child
+     * @param query    the query that <code>subQuery</code> is to be added as a new
+     *                 child
      * @param subQuery the query that is to be added as a child of <code>
-     * query</code>
+     *                 query</code>
      */
     public void setSubQuery(Query query, Query subQuery);
 
     /**
      * Removes <code>query</code> from <code>parent</code> query.
      *
-     * @param query the query that is to be removed from <code>parent</code>
+     * @param query  the query that is to be removed from <code>parent</code>
      * @param parent the query that <code>query</code> is to be removed as a
-     * child
+     *               child
      */
     public void removeSubQuery(Query query, Query parent);
 

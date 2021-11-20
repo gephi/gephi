@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet;
 
 import org.gephi.io.importer.api.FileType;
@@ -49,14 +50,13 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Eduardo Ramos
  */
 @ServiceProvider(service = FileImporterBuilder.class)
 public final class ImporterSpreadsheetCSVBuilder implements FileImporterBuilder {
 
     public static final String IDENTIFER = "spreadsheet_csv";
-    public static final String[] EXTENSIONS = new String[]{".csv", ".tsv", ".edges"};
+    public static final String[] EXTENSIONS = new String[] {".csv", ".tsv", ".edges"};
 
     @Override
     public FileImporter buildImporter() {
@@ -70,7 +70,7 @@ public final class ImporterSpreadsheetCSVBuilder implements FileImporterBuilder 
 
     @Override
     public FileType[] getFileTypes() {
-        return new FileType[]{
+        return new FileType[] {
             new FileType(EXTENSIONS, NbBundle.getMessage(getClass(), "fileType_Spreadsheet_Name"))
         };
     }

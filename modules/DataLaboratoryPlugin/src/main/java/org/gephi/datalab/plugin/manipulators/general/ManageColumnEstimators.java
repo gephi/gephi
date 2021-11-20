@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.general;
 
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class ManageColumnEstimators implements PluginGeneralActionsManipulator {
         for (int i = 0; i < columns.length; i++) {
             Column column = columns[i];
             Estimator estimator = estimators[i];
-            
+
             column.setEstimator(estimator);
         }
     }
@@ -89,20 +90,20 @@ public class ManageColumnEstimators implements PluginGeneralActionsManipulator {
     public String getDescription() {
         return NbBundle.getMessage(ManageColumnEstimators.class, "ManageColumnEstimators.description");
     }
-    
-    public List<Column> getColumns(){
+
+    public List<Column> getColumns() {
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
-        
+
         Table table;
-        if(Lookup.getDefault().lookup(DataTablesController.class).isNodeTableMode()){
+        if (Lookup.getDefault().lookup(DataTablesController.class).isNodeTableMode()) {
             table = graphModel.getNodeTable();
         } else {
             table = graphModel.getEdgeTable();
         }
-        
+
         List<Column> availableColumns = new ArrayList<>();
         for (Column column : table) {
-            if(TimeMap.class.isAssignableFrom(column.getTypeClass())){
+            if (TimeMap.class.isAssignableFrom(column.getTypeClass())) {
                 availableColumns.add(column);
             }
         }

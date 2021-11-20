@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.filters.query;
 
 import javax.swing.Action;
@@ -48,7 +49,6 @@ import org.openide.nodes.Children;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ParameterNode extends AbstractNode {

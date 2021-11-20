@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.impl;
 
 import java.beans.PropertyChangeEvent;
@@ -50,24 +51,17 @@ import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectInformation;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ProjectInformationImpl implements ProjectInformation {
 
-    public enum Status {
-
-        NEW, OPEN, CLOSED, INVALID
-    }
-
     //Data
     private final Project project;
+    //Event
+    private final transient List<PropertyChangeListener> listeners;
     private String name;
     private Status status = Status.CLOSED;
     private File file;
-    //Event
-    private final transient List<PropertyChangeListener> listeners;
-
     public ProjectInformationImpl(Project project, String name) {
         this.project = project;
         this.name = name;
@@ -122,15 +116,15 @@ public class ProjectInformationImpl implements ProjectInformation {
         }
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         String oldName = this.name;
         this.name = name;
         fireChangeEvent(ProjectInformation.EVENT_RENAME, oldName, name);
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -157,11 +151,16 @@ public class ProjectInformationImpl implements ProjectInformation {
 
     public void fireChangeEvent(String eventName, Object oldValue, Object newValue) {
         if ((oldValue == null && newValue != null) || (oldValue != null && newValue == null)
-                || (oldValue != null && !oldValue.equals(newValue))) {
+            || (oldValue != null && !oldValue.equals(newValue))) {
             PropertyChangeEvent event = new PropertyChangeEvent(this, eventName, oldValue, newValue);
             for (PropertyChangeListener listener : listeners) {
                 listener.propertyChange(event);
             }
         }
+    }
+
+    public enum Status {
+
+        NEW, OPEN, CLOSED, INVALID
     }
 }

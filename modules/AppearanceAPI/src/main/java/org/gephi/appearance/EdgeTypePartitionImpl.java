@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
 import java.util.ArrayList;
@@ -50,7 +51,6 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 
 /**
- *
  * @author mbastian
  */
 public class EdgeTypePartitionImpl extends PartitionImpl {

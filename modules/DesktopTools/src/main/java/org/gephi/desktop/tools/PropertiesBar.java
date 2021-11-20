@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.tools;
 
 import java.awt.BorderLayout;
@@ -62,13 +63,12 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class PropertiesBar extends JPanel {
 
-    private JPanel propertiesBar;
     private final SelectionBar selectionBar;
+    private JPanel propertiesBar;
 
     public PropertiesBar() {
         super(new BorderLayout());
@@ -113,8 +113,10 @@ public class PropertiesBar extends JPanel {
         JButton fullScreenButton = new JButton();
         fullScreenButton.setIcon(new ImageIcon(getClass().getResource("/org/gephi/desktop/tools/gephilogo_std.png")));
         fullScreenButton.setRolloverEnabled(true);
-        fullScreenButton.setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/desktop/tools/gephilogo_glow.png")));
-        fullScreenButton.setToolTipText(NbBundle.getMessage(PropertiesBar.class, "PropertiesBar.fullScreenButton.tooltip"));
+        fullScreenButton
+            .setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/desktop/tools/gephilogo_glow.png")));
+        fullScreenButton
+            .setToolTipText(NbBundle.getMessage(PropertiesBar.class, "PropertiesBar.fullScreenButton.tooltip"));
         fullScreenButton.setBorderPainted(false);
         fullScreenButton.setContentAreaFilled(false);
         fullScreenButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

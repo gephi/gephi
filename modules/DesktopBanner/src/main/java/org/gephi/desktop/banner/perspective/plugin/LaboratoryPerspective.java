@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.banner.perspective.plugin;
 
 import javax.swing.Icon;
@@ -49,7 +50,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Data Laboratory perspective
- * 
+ *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Perspective.class, position = 200)
@@ -57,7 +58,8 @@ public class LaboratoryPerspective implements Perspective {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/desktop/banner/perspective/plugin/resources/laboratory.png", false);
+        return ImageUtilities
+            .loadImageIcon("org/gephi/desktop/banner/perspective/plugin/resources/laboratory.png", false);
     }
 
     @Override

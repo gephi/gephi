@@ -39,12 +39,12 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.desktop.appearance;
 
 import java.beans.PropertyChangeListener;
 
 /**
- *
  * @author mbastian
  */
 public interface AppearanceUIModelListener extends PropertyChangeListener {

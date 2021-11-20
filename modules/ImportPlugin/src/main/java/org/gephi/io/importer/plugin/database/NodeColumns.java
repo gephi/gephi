@@ -1,12 +1,11 @@
 package org.gephi.io.importer.plugin.database;
 
-import org.gephi.io.importer.api.ElementDraft;
-import org.gephi.io.importer.api.NodeDraft;
-import org.gephi.io.importer.api.PropertiesAssociations;
-
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import org.gephi.io.importer.api.ElementDraft;
+import org.gephi.io.importer.api.NodeDraft;
+import org.gephi.io.importer.api.PropertiesAssociations;
 
 class NodeColumns {
 
@@ -23,7 +22,8 @@ class NodeColumns {
         return result;
     }
 
-    NodeDraft getNodeDraft(final ElementDraft.Factory factory, final ResultSet rs, final int idColumn) throws SQLException {
+    NodeDraft getNodeDraft(final ElementDraft.Factory factory, final ResultSet rs, final int idColumn)
+        throws SQLException {
         String id = getIdValue(rs, idColumn);
 
         final NodeDraft node;
@@ -36,7 +36,9 @@ class NodeColumns {
     }
 
     private String getIdValue(final ResultSet rs, final int idColumn) throws SQLException {
-        if (idColumn == -1) return null;
+        if (idColumn == -1) {
+            return null;
+        }
 
         return rs.getString(idColumn);
     }

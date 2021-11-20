@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.statistics.plugin.builder;
 
 import org.gephi.statistics.plugin.EigenvectorCentrality;
@@ -48,7 +49,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author pjmcswee
  */
 @ServiceProvider(service = StatisticsBuilder.class)

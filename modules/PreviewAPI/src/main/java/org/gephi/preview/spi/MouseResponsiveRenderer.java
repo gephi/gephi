@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2012 Gephi Consortium.
  */
+
 package org.gephi.preview.spi;
 
 /**

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization;
 
 import org.gephi.graph.api.Column;
@@ -70,7 +71,6 @@ import org.openide.util.Utilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = VisualizationController.class)
@@ -78,17 +78,6 @@ public class VizController implements VisualizationController {
 
     //Singleton
     private static VizController instance;
-
-    public VizController() {
-    }
-
-    public synchronized static VizController getInstance() {
-        if (instance == null) {
-            instance = (VizController) Lookup.getDefault().lookup(VisualizationController.class);
-            instance.initInstances();
-        }
-        return instance;
-    }
     //Architecture
     private GLAbstractListener drawable;
     private AbstractEngine engine;
@@ -103,6 +92,16 @@ public class VizController implements VisualizationController {
     private SelectionManager selectionManager;
     //Variable
     private VizModel currentModel;
+    public VizController() {
+    }
+
+    public synchronized static VizController getInstance() {
+        if (instance == null) {
+            instance = (VizController) Lookup.getDefault().lookup(VisualizationController.class);
+            instance.initInstances();
+        }
+        return instance;
+    }
 
     public void initInstances() {
         vizConfig = new VizConfig();
@@ -216,22 +215,22 @@ public class VizController implements VisualizationController {
             selectionManager.selectNodes(null);
         }
     }
-    
+
     @Override
     public void resetEdgesSelection() {
         if (selectionManager != null) {
             selectionManager.selectEdges(null);
         }
     }
-    
+
     public void selectNode(Node node) {
-        selectNodes(new Node[]{node});
+        selectNodes(new Node[] {node});
     }
 
     public void selectEdge(Edge edge) {
-        selectEdges(new Edge[]{edge});
+        selectEdges(new Edge[] {edge});
     }
-    
+
     @Override
     public void selectNodes(Node[] nodes) {
         if (selectionManager != null) {

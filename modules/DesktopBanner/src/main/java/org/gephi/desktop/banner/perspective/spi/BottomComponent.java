@@ -39,19 +39,19 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.banner.perspective.spi;
 
 import javax.swing.JComponent;
 
 /**
- *
  * @author mbastian
  */
 public interface BottomComponent {
-    
+
     public JComponent getComponent();
-    
-    public void setVisible(boolean visible);
-    
+
     public boolean isVisible();
+
+    public void setVisible(boolean visible);
 }

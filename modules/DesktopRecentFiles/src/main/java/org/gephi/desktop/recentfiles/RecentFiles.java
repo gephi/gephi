@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.recentfiles;
 
 import java.awt.event.ActionEvent;
@@ -58,7 +59,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.actions.CallableSystemAction;
 
 /**
- *
  * @author Sébastien Heymann
  */
 public class RecentFiles extends CallableSystemAction {

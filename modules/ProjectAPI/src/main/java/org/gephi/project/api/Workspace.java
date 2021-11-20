@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.api;
 
 import org.gephi.project.spi.WorkspacePersistenceProvider;
@@ -61,11 +62,11 @@ import org.openide.util.Lookup;
  * <code>add()</code> method when initialize:
  * <pre>public void initialize(Workspace workspace) {
  *      workspace.add(new MyDataModel())
- *}
+ * }
  * </pre> When a workspace is selected, retrieve the workspace's data model:
  * <pre>public void select(Workspace workspace) {
  *      MyDataModel model = workspace.getLookup().lookup(MyDataModel.class);
- *}
+ * }
  * </pre>
  *
  * @author Mathieu Bastian

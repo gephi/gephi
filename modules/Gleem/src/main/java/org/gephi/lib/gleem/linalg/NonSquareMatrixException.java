@@ -39,15 +39,17 @@
 
 package org.gephi.lib.gleem.linalg;
 
-/** Thrown to indicate a non-square matrix during an operation
-    requiring one. */
+/**
+ * Thrown to indicate a non-square matrix during an operation
+ * requiring one.
+ */
 
 public class NonSquareMatrixException extends RuntimeException {
-  public NonSquareMatrixException() {
-    super();
-  }
+    public NonSquareMatrixException() {
+        super();
+    }
 
-  public NonSquareMatrixException(String msg) {
-    super(msg);
-  }
+    public NonSquareMatrixException(String msg) {
+        super(msg);
+    }
 }

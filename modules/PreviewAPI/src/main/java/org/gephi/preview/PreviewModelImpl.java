@@ -39,15 +39,30 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview;
 
 import java.beans.PropertyEditorManager;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import org.gephi.preview.api.*;
+import org.gephi.preview.api.CanvasSize;
+import org.gephi.preview.api.Item;
+import org.gephi.preview.api.ManagedRenderer;
+import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.presets.DefaultPreset;
 import org.gephi.preview.spi.MouseResponsiveRenderer;
 import org.gephi.preview.spi.PreviewMouseListener;
@@ -63,7 +78,6 @@ import org.gephi.utils.Serialization;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class PreviewModelImpl implements PreviewModel {
@@ -107,7 +121,8 @@ public class PreviewModelImpl implements PreviewModel {
             PropertyEditorManager.registerEditor(DependantColor.class, BasicDependantColorPropertyEditor.class);
         }
         if (PropertyEditorManager.findEditor(DependantOriginalColor.class) == null) {
-            PropertyEditorManager.registerEditor(DependantOriginalColor.class, BasicDependantOriginalColorPropertyEditor.class);
+            PropertyEditorManager
+                .registerEditor(DependantOriginalColor.class, BasicDependantOriginalColorPropertyEditor.class);
         }
         if (PropertyEditorManager.findEditor(EdgeColor.class) == null) {
             PropertyEditorManager.registerEditor(EdgeColor.class, BasicEdgeColorPropertyEditor.class);
@@ -141,14 +156,16 @@ public class PreviewModelImpl implements PreviewModel {
         for (PreviewMouseListener listener : Lookup.getDefault().lookupAll(PreviewMouseListener.class)) {
             for (Renderer renderer : getManagedEnabledRenderers()) {
                 if (renderer instanceof MouseResponsiveRenderer) {
-                    if (((MouseResponsiveRenderer) renderer).needsPreviewMouseListener(listener) && !listeners.contains(listener)) {
+                    if (((MouseResponsiveRenderer) renderer).needsPreviewMouseListener(listener) &&
+                        !listeners.contains(listener)) {
                         listeners.add(listener);
                     }
                 }
             }
         }
 
-        Collections.reverse(listeners);//First listeners to receive events will be the ones coming from last called renderers.
+        Collections
+            .reverse(listeners);//First listeners to receive events will be the ones coming from last called renderers.
         enabledMouseListeners = listeners.toArray(new PreviewMouseListener[0]);
     }
 
@@ -204,7 +221,7 @@ public class PreviewModelImpl implements PreviewModel {
         if (value instanceof List) {
             return ((List<Item>) value).toArray(new Item[0]);
         } else if (value instanceof Item) {
-            return new Item[]{(Item) value};
+            return new Item[] {(Item) value};
         }
         return new Item[0];
     }
@@ -298,6 +315,21 @@ public class PreviewModelImpl implements PreviewModel {
         return managedRenderers;
     }
 
+    @Override
+    public void setManagedRenderers(ManagedRenderer[] managedRenderers) {
+        //Validate no null ManagedRenderers
+        for (ManagedRenderer managedRenderer : managedRenderers) {
+            if (managedRenderer == null) {
+                throw new IllegalArgumentException("managedRenderers should not contain null values");
+            }
+        }
+
+        this.managedRenderers = managedRenderers;
+        completeManagedRenderersListIfNecessary();
+        prepareManagedListeners();
+        reloadProperties();
+    }
+
     /**
      * Makes sure that managedRenderers contains every renderer existing implementations. If some renderers are not in the list, they are added in default implementation order at the end of the list
      * and not enabled.
@@ -326,9 +358,9 @@ public class PreviewModelImpl implements PreviewModel {
      * Removes unnecessary properties from not enabled renderers
      */
     private void reloadProperties() {
-        if(properties == null){
+        if (properties == null) {
             initProperties();
-        }else{
+        } else {
             PreviewProperties newProperties = new PreviewProperties();//Ensure that the properties object doesn't change
 
             //Properties from renderers
@@ -352,21 +384,6 @@ public class PreviewModelImpl implements PreviewModel {
                 properties.addProperty(property);
             }
         }
-    }
-
-    @Override
-    public void setManagedRenderers(ManagedRenderer[] managedRenderers) {
-        //Validate no null ManagedRenderers
-        for (ManagedRenderer managedRenderer : managedRenderers) {
-            if (managedRenderer == null) {
-                throw new IllegalArgumentException("managedRenderers should not contain null values");
-            }
-        }
-
-        this.managedRenderers = managedRenderers;
-        completeManagedRenderersListIfNecessary();
-        prepareManagedListeners();
-        reloadProperties();
     }
 
     @Override
@@ -409,7 +426,7 @@ public class PreviewModelImpl implements PreviewModel {
             simpleValueEntry = simpleValuesIterator.next();
 
             if (simpleValueEntry.getKey().equals("width")
-                    || simpleValueEntry.getKey().equals("height")) {
+                || simpleValueEntry.getKey().equals("height")) {
                 continue;
             }
 
@@ -472,7 +489,8 @@ public class PreviewModelImpl implements PreviewModel {
                     } else if ("managedrenderer".equalsIgnoreCase(name)) {
                         String rendererClass = reader.getAttributeValue(null, "class");
                         if (availableRenderers.containsKey(rendererClass)) {
-                            managedRenderersList.add(new ManagedRenderer(availableRenderers.get(rendererClass), Boolean.parseBoolean(reader.getAttributeValue(null, "enabled"))));
+                            managedRenderersList.add(new ManagedRenderer(availableRenderers.get(rendererClass),
+                                Boolean.parseBoolean(reader.getAttributeValue(null, "enabled"))));
                         }
                     }
                     break;
@@ -490,8 +508,9 @@ public class PreviewModelImpl implements PreviewModel {
                             } else {//Read preview simple value:
                                 if (simpleValueClass != null) {
                                     if (!propName.equals("width")
-                                            && !propName.equals("height")) {
-                                        Object value = Serialization.readValueFromText(reader.getText(), simpleValueClass);
+                                        && !propName.equals("height")) {
+                                        Object value =
+                                            Serialization.readValueFromText(reader.getText(), simpleValueClass);
                                         if (value != null) {
                                             props.putValue(propName, value);
                                         }

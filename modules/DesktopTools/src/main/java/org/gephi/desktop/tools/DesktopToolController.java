@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.tools;
 
 import java.awt.event.ActionEvent;
@@ -73,7 +74,6 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ToolController.class)
@@ -119,7 +119,8 @@ public class DesktopToolController implements ToolController {
                 handlers.add(h);
 
             } else {
-                throw new RuntimeException("The ToolEventListener " + toolListener.getClass().getSimpleName() + " cannot be recognized");
+                throw new RuntimeException(
+                    "The ToolEventListener " + toolListener.getClass().getSimpleName() + " cannot be recognized");
             }
         }
         currentHandlers = handlers.toArray(new ToolEventHandler[0]);
@@ -224,7 +225,8 @@ public class DesktopToolController implements ToolController {
                 if (selectionManager.isRectangleSelection() && currentTool != null) {
                     toolbar.clearSelection();
                     unselect();
-                } else if (selectionManager.isSelectionEnabled() && currentTool != null && currentTool.getSelectionType() == ToolSelectionType.NONE) {
+                } else if (selectionManager.isSelectionEnabled() && currentTool != null &&
+                    currentTool.getSelectionType() == ToolSelectionType.NONE) {
                     toolbar.clearSelection();
                     unselect();
                 } else if (selectionManager.isDraggingEnabled() && currentTool != null) {
@@ -409,8 +411,8 @@ public class DesktopToolController implements ToolController {
                 @Override
                 public void handleEvent(VizEvent event) {
                     float[] data = (float[]) event.getData();
-                    int[] viewport = new int[]{(int) data[0], (int) data[1]};
-                    float[] threed = new float[]{data[2], data[3]};
+                    int[] viewport = new int[] {(int) data[0], (int) data[1]};
+                    float[] threed = new float[] {data[2], data[3]};
                     toolEventListener.mouseClick(viewport, threed);
                 }
 

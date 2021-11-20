@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.processor.plugin;
 
 import javax.swing.JPanel;

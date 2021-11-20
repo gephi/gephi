@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.ui;
 
 import javax.swing.JPanel;
@@ -65,16 +66,23 @@ import org.openide.util.NbPreferences;
  * @author Eduardo Ramos
  */
 public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
-    
+
     private static final String TIMESTAMP_PREFERENCE = "ConvertColumnToDynamicTimestampsUI.intervalStart";
     private static final String REPLACE_COLUMN_PREFERENCE = "ConvertColumnToDynamicTimestampsUI.replaceColumn";
-    
+
     private static final String DEFAULT_TIMESTAMP = "0";
 
     private ConvertColumnToDynamic manipulator;
     private Table table;
     private DialogControls dialogControls;
     private ValidationPanel validationPanel;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JCheckBox replaceColumnCheckbox;
+    private javax.swing.JLabel timestampLabel;
+    private javax.swing.JTextField timestampText;
+    private javax.swing.JLabel titleLabel;
+    private javax.swing.JTextField titleTextField;
 
     /**
      * Creates new form DuplicateColumnUI
@@ -82,8 +90,10 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
     public ConvertColumnToDynamicTimestampsUI() {
         initComponents();
 
-        timestampText.setText(NbPreferences.forModule(ConvertColumnToDynamicTimestampsUI.class).get(TIMESTAMP_PREFERENCE, DEFAULT_TIMESTAMP));
-        replaceColumnCheckbox.setSelected(NbPreferences.forModule(ConvertColumnToDynamicTimestampsUI.class).getBoolean(REPLACE_COLUMN_PREFERENCE, false));
+        timestampText.setText(NbPreferences.forModule(ConvertColumnToDynamicTimestampsUI.class)
+            .get(TIMESTAMP_PREFERENCE, DEFAULT_TIMESTAMP));
+        replaceColumnCheckbox.setSelected(NbPreferences.forModule(ConvertColumnToDynamicTimestampsUI.class)
+            .getBoolean(REPLACE_COLUMN_PREFERENCE, false));
     }
 
     private void buildValidationPanel() {
@@ -104,16 +114,21 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
     }
 
     @Override
-    public void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column, DialogControls dialogControls) {
+    public void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column,
+                      DialogControls dialogControls) {
         this.table = table;
         this.dialogControls = dialogControls;
         this.manipulator = (ConvertColumnToDynamic) m;
 
         buildValidationPanel();
 
-        descriptionLabel.setText(NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicUI.descriptionLabel.text", column.getTitle()));
-        titleTextField.setText(NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicUI.new.title", column.getTitle()));
-        
+        descriptionLabel.setText(NbBundle
+            .getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicUI.descriptionLabel.text",
+                column.getTitle()));
+        titleTextField.setText(NbBundle
+            .getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicUI.new.title",
+                column.getTitle()));
+
         refreshTitleEnabledState();
     }
 
@@ -121,16 +136,17 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
     public void unSetup() {
         String timestampString = timestampText.getText();
         boolean replaceColumn = replaceColumnCheckbox.isSelected();
-        
+
         NbPreferences.forModule(ConvertColumnToDynamicTimestampsUI.class).put(TIMESTAMP_PREFERENCE, timestampString);
-        NbPreferences.forModule(ConvertColumnToDynamicTimestampsUI.class).putBoolean(REPLACE_COLUMN_PREFERENCE, replaceColumn);
-        
+        NbPreferences.forModule(ConvertColumnToDynamicTimestampsUI.class)
+            .putBoolean(REPLACE_COLUMN_PREFERENCE, replaceColumn);
+
         if (!validationPanel.isProblem()) {
             manipulator.setTitle(titleTextField.getText());
             manipulator.setReplaceColumn(replaceColumn);
-            
+
             double timestamp = AttributeUtils.parseDateTimeOrTimestamp(timestampString);
-            
+
             manipulator.setLow(timestamp);
             manipulator.setHigh(timestamp);
         }
@@ -170,15 +186,20 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
         timestampLabel = new javax.swing.JLabel();
         timestampText = new javax.swing.JTextField();
 
-        titleLabel.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.titleLabel.text")); // NOI18N
+        titleLabel.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class,
+            "ConvertColumnToDynamicTimestampsUI.titleLabel.text")); // NOI18N
 
-        titleTextField.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.titleTextField.text")); // NOI18N
+        titleTextField.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class,
+            "ConvertColumnToDynamicTimestampsUI.titleTextField.text")); // NOI18N
 
         descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setText(null);
 
-        replaceColumnCheckbox.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.replaceColumnCheckbox.text")); // NOI18N
-        replaceColumnCheckbox.setToolTipText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.replaceColumnCheckbox.toolTipText")); // NOI18N
+        replaceColumnCheckbox.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class,
+            "ConvertColumnToDynamicTimestampsUI.replaceColumnCheckbox.text")); // NOI18N
+        replaceColumnCheckbox.setToolTipText(org.openide.util.NbBundle
+            .getMessage(ConvertColumnToDynamicTimestampsUI.class,
+                "ConvertColumnToDynamicTimestampsUI.replaceColumnCheckbox.toolTipText")); // NOI18N
         replaceColumnCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         replaceColumnCheckbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -186,55 +207,57 @@ public class ConvertColumnToDynamicTimestampsUI extends javax.swing.JPanel imple
             }
         });
 
-        timestampLabel.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class, "ConvertColumnToDynamicTimestampsUI.timestampLabel.text")); // NOI18N
+        timestampLabel.setText(org.openide.util.NbBundle.getMessage(ConvertColumnToDynamicTimestampsUI.class,
+            "ConvertColumnToDynamicTimestampsUI.timestampLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(replaceColumnCheckbox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(timestampLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(timestampText)))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(replaceColumnCheckbox)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 61,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(timestampLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 108,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(timestampText)))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(timestampLabel)
-                    .addComponent(timestampText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(titleLabel)
-                    .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(replaceColumnCheckbox))
-                .addGap(24, 24, 24))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(timestampLabel)
+                        .addComponent(timestampText, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(titleLabel)
+                        .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(replaceColumnCheckbox))
+                    .addGap(24, 24, 24))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void replaceColumnCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceColumnCheckboxActionPerformed
+    private void replaceColumnCheckboxActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceColumnCheckboxActionPerformed
         refreshTitleEnabledState();
     }//GEN-LAST:event_replaceColumnCheckboxActionPerformed
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JCheckBox replaceColumnCheckbox;
-    private javax.swing.JLabel timestampLabel;
-    private javax.swing.JTextField timestampText;
-    private javax.swing.JLabel titleLabel;
-    private javax.swing.JTextField titleTextField;
     // End of variables declaration//GEN-END:variables
 }

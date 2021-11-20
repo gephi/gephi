@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.tables;
 
 import java.awt.event.KeyAdapter;
@@ -59,14 +60,16 @@ import org.gephi.tools.api.EditWindowController;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public final class NodesDataTable extends AbstractElementsDataTable<Node> {
 
+    private final List<PropertyDataColumn<Node>> propertiesColumns = new ArrayList<>();
+
+
     public NodesDataTable() {
         super();
-        
+
         //Add listener of table selection to refresh edit window when the selection changes (and if the table is not being refreshed):
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
@@ -84,7 +87,7 @@ public final class NodesDataTable extends AbstractElementsDataTable<Node> {
                 }
             }
         });
-        
+
         table.addMouseListener(new NodesPopupAdapter(this));
         table.addKeyListener(new KeyAdapter() {
 
@@ -106,13 +109,10 @@ public final class NodesDataTable extends AbstractElementsDataTable<Node> {
             }
         });
     }
-    
-    
-
-    private final List<PropertyDataColumn<Node>> propertiesColumns = new ArrayList<>();
 
     @Override
-    public List<? extends ElementDataColumn<Node>> getFakeDataColumns(GraphModel graphModel, DataTablesModel dataTablesModel) {
+    public List<? extends ElementDataColumn<Node>> getFakeDataColumns(GraphModel graphModel,
+                                                                      DataTablesModel dataTablesModel) {
         return propertiesColumns;
     }
 }

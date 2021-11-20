@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components;
 
 import java.awt.Color;
@@ -56,10 +57,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicSliderUI;
-import javax.swing.plaf.basic.BasicSliderUI.TrackListener;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class JRangeSlider extends JSlider {
@@ -69,12 +68,13 @@ public class JRangeSlider extends JSlider {
      * and 100.
      */
     public JRangeSlider() {
-        
+
     }
 
     /**
      * Constructs a RangeSlider with the specified default minimum and maximum
      * values.
+     *
      * @param min minimum
      * @param max maximum
      */
@@ -105,6 +105,7 @@ public class JRangeSlider extends JSlider {
 
     /**
      * Sets the lower value in the range.
+     *
      * @param value lower value
      */
     @Override
@@ -121,11 +122,12 @@ public class JRangeSlider extends JSlider {
 
         // Set new value and extent, and fire a single change event.
         getModel().setRangeProperties(newValue, newExtent, getMinimum(),
-                getMaximum(), getValueIsAdjusting());
+            getMaximum(), getValueIsAdjusting());
     }
 
     /**
      * Returns the upper value in the range.
+     *
      * @return upper value
      */
     public int getUpperValue() {
@@ -134,6 +136,7 @@ public class JRangeSlider extends JSlider {
 
     /**
      * Sets the upper value in the range.
+     *
      * @param value upper value
      */
     public void setUpperValue(int value) {
@@ -160,26 +163,37 @@ public class JRangeSlider extends JSlider {
 
             // Set new value and extent, and fire a single change event.
             getModel().setRangeProperties(newValue, extent, getMinimum(),
-                    getMaximum(), getValueIsAdjusting());
+                getMaximum(), getValueIsAdjusting());
         }
     }
 
     private static class JRangeSliderBasicUI extends BasicSliderUI {
 
-        /** Color of selected range. */
+        /**
+         * Color of selected range.
+         */
         //private Color rangeColor = new Color(168,223,85,178);//nice green
         private Color rangeColor = new Color(49, 220, 251, 178);//nice vista blue
-        /** Location and size of thumb for upper value. */
+        /**
+         * Location and size of thumb for upper value.
+         */
         private Rectangle upperThumbRect;
-        /** Indicator that determines whether upper thumb is selected. */
+        /**
+         * Indicator that determines whether upper thumb is selected.
+         */
         private boolean upperThumbSelected;
-        /** Indicator set when lower thumb is being dragged. */
+        /**
+         * Indicator set when lower thumb is being dragged.
+         */
         private transient boolean lowerDragging;
-        /** Indicator set when upper thumb is being dragged. */
+        /**
+         * Indicator set when upper thumb is being dragged.
+         */
         private transient boolean upperDragging;
 
         /**
          * Constructs a RangeSliderUI for the specified slider component.
+         *
          * @param slider RangeSlider
          */
         public JRangeSliderBasicUI(JSlider slider) {
@@ -385,7 +399,7 @@ public class JRangeSlider extends JSlider {
 
             // Draw thumb.
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
+                RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.translate(knobBounds.x, knobBounds.y);
 
             g2d.setColor(Color.CYAN);
@@ -414,7 +428,7 @@ public class JRangeSlider extends JSlider {
 
             // Draw thumb.
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
+                RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.translate(knobBounds.x, knobBounds.y);
 
             g2d.setColor(Color.PINK);
@@ -448,7 +462,8 @@ public class JRangeSlider extends JSlider {
 
             upperThumbRect.setLocation(x, y);
 
-            SwingUtilities.computeUnion(upperThumbRect.x, upperThumbRect.y, upperThumbRect.width, upperThumbRect.height, upperUnionRect);
+            SwingUtilities.computeUnion(upperThumbRect.x, upperThumbRect.y, upperThumbRect.width, upperThumbRect.height,
+                upperUnionRect);
             slider.repaint(upperUnionRect.x, upperUnionRect.y, upperUnionRect.width, upperUnionRect.height);
         }
 

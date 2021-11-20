@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.branding.desktop.reporter;
 
 import java.awt.Dimension;
@@ -53,7 +54,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class Report {

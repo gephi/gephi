@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.upgrader;
 
 import java.io.File;
@@ -56,14 +57,13 @@ import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
 /**
- *
  * @author mbastian
  */
 public class Upgrader {
 
     private final static String UPGRADER_LAST_VERSION = "Upgrader_Last_Version";
     private final static List<String> VERSION_TO_CHECK
-            = Arrays.asList(new String[]{"0.9.0"});
+        = Arrays.asList(new String[] {"0.9.0"});
 
     public void upgrade() {
         String currentVersion = getCurrentVersion();
@@ -72,7 +72,8 @@ public class Upgrader {
         String lastVersion = NbPreferences.forModule(Upgrader.class).get(UPGRADER_LAST_VERSION, null);
         if (lastVersion == null || !lastVersion.equals(currentVersion)) {
             File latestPreviousVersion = checkPrevious();
-            if (latestPreviousVersion != null && !latestPreviousVersion.getName().replace(".", "").equals(currentVersion)) {
+            if (latestPreviousVersion != null &&
+                !latestPreviousVersion.getName().replace(".", "").equals(currentVersion)) {
                 File source = new File(latestPreviousVersion, "dev");
                 File dest = new File(System.getProperty("netbeans.user"));
                 if (source.exists() && dest.exists()) {
@@ -100,7 +101,8 @@ public class Upgrader {
     private boolean showRestartDialog() {
         String msg = NbBundle.getMessage(Upgrader.class, "Upgrader.restart.message");
         String title = NbBundle.getMessage(Upgrader.class, "Upgrader.restart.title");
-        NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, title, NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE);
+        NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, title, NotifyDescriptor.YES_NO_OPTION,
+            NotifyDescriptor.QUESTION_MESSAGE);
 
         if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
             return true;
@@ -111,7 +113,8 @@ public class Upgrader {
     private boolean showUpgradeDialog(File source) {
         String msg = NbBundle.getMessage(Upgrader.class, "Upgrader.message", source.getName());
         String title = NbBundle.getMessage(Upgrader.class, "Upgrader.title");
-        NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, title, NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE);
+        NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, title, NotifyDescriptor.YES_NO_OPTION,
+            NotifyDescriptor.QUESTION_MESSAGE);
 
         if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
             return true;

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.banner;
 
 import java.awt.Component;
@@ -58,6 +59,13 @@ class BannerRootPanelLayout implements LayoutManager2 {
 
     public BannerRootPanelLayout(JComponent toolbar) {
         _toolbar = toolbar;
+    }
+
+    private static void hideMenu(JRootPane rootPane) {
+        JMenuBar menu = rootPane.getJMenuBar();
+        if (menu != null) {
+            menu.setVisible(false);
+        }
     }
 
     @Override
@@ -190,12 +198,5 @@ class BannerRootPanelLayout implements LayoutManager2 {
 
     @Override
     public void invalidateLayout(Container target) {
-    }
-
-    private static void hideMenu(JRootPane rootPane) {
-        JMenuBar menu = rootPane.getJMenuBar();
-        if (menu != null) {
-            menu.setVisible(false);
-        }
     }
 }

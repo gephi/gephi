@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.utils;
 
 import java.awt.Color;
@@ -75,6 +76,7 @@ import org.openide.util.NbBundle;
 /**
  * Utils class to build and change charts.
  * Scatter plots implemented to be able to draw or not lines and linear regression.
+ *
  * @author Eduardo Ramos
  */
 public class ChartsUtils {
@@ -82,20 +84,26 @@ public class ChartsUtils {
     /**
      * Prepares a HTML report for the given statistics data and charts.
      * For preparing the statistics data see the method <code>getAllStatistics</code> of the <code>StatisticsUtils</code> class.
-     * @param dataName Name of the data
-     * @param statistics Statistics obtained from the method <code>getAllStatistics</code> of the <code>StatisticsUtils</code> class
-     * @param boxPlot Box-plot jfreechart or null
-     * @param scatterPlot Scatter-plot jfreechart or null
-     * @param histogram Histogram-plot jfreechart or null
-     * @param boxPlotDimension Dimension for the box-plot or null to use a default dimension
+     *
+     * @param dataName             Name of the data
+     * @param statistics           Statistics obtained from the method <code>getAllStatistics</code> of the <code>StatisticsUtils</code> class
+     * @param boxPlot              Box-plot jfreechart or null
+     * @param scatterPlot          Scatter-plot jfreechart or null
+     * @param histogram            Histogram-plot jfreechart or null
+     * @param boxPlotDimension     Dimension for the box-plot or null to use a default dimension
      * @param scatterPlotDimension Dimension for the scatter plot or null to use a default dimension
-     * @param histogramDimension Dimension for the histogram or null to use a default dimension
+     * @param histogramDimension   Dimension for the histogram or null to use a default dimension
      * @return
      */
-    public static String getStatisticsReportHTML(final String dataName, final BigDecimal[] statistics, final JFreeChart boxPlot, final JFreeChart scatterPlot, final JFreeChart histogram, final Dimension boxPlotDimension, final Dimension scatterPlotDimension, final Dimension histogramDimension) {
+    public static String getStatisticsReportHTML(final String dataName, final BigDecimal[] statistics,
+                                                 final JFreeChart boxPlot, final JFreeChart scatterPlot,
+                                                 final JFreeChart histogram, final Dimension boxPlotDimension,
+                                                 final Dimension scatterPlotDimension,
+                                                 final Dimension histogramDimension) {
         final StringBuilder sb = new StringBuilder();
         sb.append("<html>");
-        sb.append(NbBundle.getMessage(ChartsUtils.class, "ChartsUtils.report.header", HTMLEscape.stringToHTMLString(dataName)));
+        sb.append(NbBundle
+            .getMessage(ChartsUtils.class, "ChartsUtils.report.header", HTMLEscape.stringToHTMLString(dataName)));
         sb.append("<hr>");
         if (statistics != null) {//There are numbers and statistics can be shown:
             sb.append("<ul>");
@@ -134,7 +142,8 @@ public class ChartsUtils {
     /**
      * Build a new box-plot from an array of numbers using a default title and yLabel.
      * String dataName will be used for xLabel.
-     * @param numbers Numbers for building box-plot
+     *
+     * @param numbers  Numbers for building box-plot
      * @param dataName Name of the numbers data
      * @return Prepared box-plot
      */
@@ -169,13 +178,15 @@ public class ChartsUtils {
      * Build new scatter plot from numbers array using a default title and xLabel.
      * String dataName will be used for yLabel.
      * Appearance can be changed later with the other methods of ChartsUtils.
-     * @param numbers Numbers for the scatter plot
-     * @param dataName Name of the numbers data
-     * @param useLines Indicates if lines have to be drawn instead of shapes
+     *
+     * @param numbers             Numbers for the scatter plot
+     * @param dataName            Name of the numbers data
+     * @param useLines            Indicates if lines have to be drawn instead of shapes
      * @param useLinearRegression Indicates if the scatter plot has to have linear regreesion line drawn
      * @return Scatter plot for the data and appearance options
      */
-    public static JFreeChart buildScatterPlot(final Number[] numbers, final String dataName, final boolean useLines, final boolean useLinearRegression) {
+    public static JFreeChart buildScatterPlot(final Number[] numbers, final String dataName, final boolean useLines,
+                                              final boolean useLinearRegression) {
         if (numbers == null || numbers.length == 0) {
             return null;
         }
@@ -187,35 +198,38 @@ public class ChartsUtils {
         }
         dataset.addSeries(series);
         JFreeChart scatterPlot = buildScatterPlot(dataset,
-                getMessage("ChartsUtils.report.scatter-plot.title"),
-                getMessage("ChartsUtils.report.scatter-plot.xLabel"),
-                dataName,
-                useLines,
-                useLinearRegression);
+            getMessage("ChartsUtils.report.scatter-plot.title"),
+            getMessage("ChartsUtils.report.scatter-plot.xLabel"),
+            dataName,
+            useLines,
+            useLinearRegression);
 
         return scatterPlot;
     }
 
     /**
      * Build new Scatter plot. Appearance can be changed later with the other methods of ChartsUtils.
-     * @param data Data for the plot
-     * @param title Title for the chart
-     * @param xLabel Text for x label
-     * @param yLabel Text for y label
-     * @param useLines Indicates if lines have to be drawn instead of shapes
+     *
+     * @param data                Data for the plot
+     * @param title               Title for the chart
+     * @param xLabel              Text for x label
+     * @param yLabel              Text for y label
+     * @param useLines            Indicates if lines have to be drawn instead of shapes
      * @param useLinearRegression Indicates if the scatter plot has to have linear regreesion line drawn
      * @return Scatter plot for the data and appearance options
      */
-    public static JFreeChart buildScatterPlot(final XYSeriesCollection data, final String title, final String xLabel, final String yLabel, final boolean useLines, final boolean useLinearRegression) {
+    public static JFreeChart buildScatterPlot(final XYSeriesCollection data, final String title, final String xLabel,
+                                              final String yLabel, final boolean useLines,
+                                              final boolean useLinearRegression) {
         JFreeChart scatterPlot = ChartFactory.createXYLineChart(
-                title,
-                xLabel,
-                yLabel,
-                data,
-                PlotOrientation.VERTICAL,
-                true,
-                true,
-                false);
+            title,
+            xLabel,
+            yLabel,
+            data,
+            PlotOrientation.VERTICAL,
+            true,
+            true,
+            false);
 
         XYPlot plot = (XYPlot) scatterPlot.getPlot();
         plot.setBackgroundPaint(java.awt.Color.WHITE);
@@ -230,8 +244,9 @@ public class ChartsUtils {
     /**
      * Build new histogram from the given numbers array using a default title and xLabel.
      * String dataName will be used for yLabel.
-     * @param numbers Numbers for the histogram
-     * @param dataName Name of the numbers data
+     *
+     * @param numbers   Numbers for the histogram
+     * @param dataName  Name of the numbers data
      * @param divisions Divisions for the histogram
      * @return Prepared histogram
      */
@@ -247,25 +262,27 @@ public class ChartsUtils {
             doubleNumbers[i] = numbers[i].doubleValue();
         }
 
-        dataset.addSeries(dataName, doubleNumbers, divisions > 0 ? divisions : 10);//Use 10 divisions if divisions number is invalid.
+        dataset.addSeries(dataName, doubleNumbers,
+            divisions > 0 ? divisions : 10);//Use 10 divisions if divisions number is invalid.
 
         JFreeChart histogram = ChartFactory.createHistogram(
-                getMessage("ChartsUtils.report.histogram.title"),
-                dataName,
-                getMessage("ChartsUtils.report.histogram.yLabel"),
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                true,
-                false);
+            getMessage("ChartsUtils.report.histogram.title"),
+            dataName,
+            getMessage("ChartsUtils.report.histogram.yLabel"),
+            dataset,
+            PlotOrientation.VERTICAL,
+            true,
+            true,
+            false);
 
         return histogram;
     }
 
     /**
      * Modify a scatter plot to show lines instead or shapes or not.
+     *
      * @param scatterPlot Scatter plot to modify
-     * @param enabled Indicates if lines have to be shown
+     * @param enabled     Indicates if lines have to be shown
      */
     public static void setScatterPlotLinesEnabled(final JFreeChart scatterPlot, final boolean enabled) {
         XYPlot plot = (XYPlot) scatterPlot.getPlot();
@@ -285,8 +302,9 @@ public class ChartsUtils {
 
     /**
      * Modify a scatter plot to show linear regression or not.
+     *
      * @param scatterPlot Scatter plot to modify
-     * @param enabled Indicates if linear regression has to be shown
+     * @param enabled     Indicates if linear regression has to be shown
      */
     public static void setScatterPlotLinearRegressionEnabled(final JFreeChart scatterPlot, final boolean enabled) {
         XYPlot plot = (XYPlot) scatterPlot.getPlot();
@@ -354,28 +372,32 @@ public class ChartsUtils {
         sb.append("</li>");
     }
 
-    private static void writeBoxPlot(final StringBuilder sb, JFreeChart boxPlot, Dimension dimension) throws IOException {
+    private static void writeBoxPlot(final StringBuilder sb, JFreeChart boxPlot, Dimension dimension)
+        throws IOException {
         if (dimension == null) {
             dimension = new Dimension(300, 500);
         }
         writeChart(sb, boxPlot, dimension, "box-plot.png");
     }
 
-    private static void writeScatterPlot(final StringBuilder sb, JFreeChart scatterPlot, Dimension dimension) throws IOException {
+    private static void writeScatterPlot(final StringBuilder sb, JFreeChart scatterPlot, Dimension dimension)
+        throws IOException {
         if (dimension == null) {
             dimension = new Dimension(600, 400);
         }
         writeChart(sb, scatterPlot, dimension, "scatter-plot.png");
     }
 
-    private static void writeHistogram(final StringBuilder sb, final JFreeChart histogram, Dimension dimension) throws IOException {
+    private static void writeHistogram(final StringBuilder sb, final JFreeChart histogram, Dimension dimension)
+        throws IOException {
         if (dimension == null) {
             dimension = new Dimension(600, 400);
         }
         writeChart(sb, histogram, dimension, "histogram.png");
     }
 
-    private static void writeChart(final StringBuilder sb, final JFreeChart chart, final Dimension dimension, final String fileName) throws IOException {
+    private static void writeChart(final StringBuilder sb, final JFreeChart chart, final Dimension dimension,
+                                   final String fileName) throws IOException {
         TempDir tempDir = TempDirUtils.createTempDir();
         String imageFile = "";
         File file = tempDir.createFile(fileName);

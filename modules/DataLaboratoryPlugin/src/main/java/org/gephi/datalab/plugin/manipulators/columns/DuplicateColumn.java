@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
@@ -56,6 +57,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * AttributeColumnsManipulator that duplicate a Column of a Table setting the same values for the rows.
  * Allows the user to select the title and AttributeType of the new column in the UI
+ *
  * @author Eduardo Ramos
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
@@ -84,7 +86,7 @@ public class DuplicateColumn implements AttributeColumnsManipulator {
     }
 
     @Override
-    public AttributeColumnsManipulatorUI getUI(Table table,Column column) {
+    public AttributeColumnsManipulatorUI getUI(Table table, Column column) {
         return new DuplicateColumnUI();
     }
 

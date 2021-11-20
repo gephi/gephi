@@ -13,7 +13,6 @@ import org.jdesktop.swingx.renderer.ComponentProvider;
 import org.jdesktop.swingx.renderer.JRendererLabel;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public abstract class AbstractSparklinesGraphicsComponentProvider extends ComponentProvider<JLabel> {
@@ -76,7 +75,7 @@ public abstract class AbstractSparklinesGraphicsComponentProvider extends Compon
         if (yValues.length == 1) {
             //SparklineGraph needs at least 2 values, duplicate the only one we have to get a sparkline with a single line showing that the value does not change over time
             xValues = null;
-            yValues = new Number[]{yValues[0], yValues[0]};
+            yValues = new Number[] {yValues[0], yValues[0]};
         }
 
         Color background;
@@ -88,13 +87,13 @@ public abstract class AbstractSparklinesGraphicsComponentProvider extends Compon
 
         //Note: Can't use interactive SparklineComponent because TableCellEditors don't receive mouse events.
         final SparklineParameters sparklineParameters = new SparklineParameters(
-                rendererLabel.getWidth() - 1,
-                rendererLabel.getHeight() - 1,
-                Color.BLUE,
-                background,
-                Color.RED,
-                Color.GREEN,
-                null
+            rendererLabel.getWidth() - 1,
+            rendererLabel.getHeight() - 1,
+            Color.BLUE,
+            background,
+            Color.RED,
+            Color.GREEN,
+            null
         );
         final BufferedImage image = SparklineGraph.draw(xValues, yValues, sparklineParameters);
 

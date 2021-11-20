@@ -39,13 +39,28 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import org.gephi.graph.api.*;
-import org.gephi.preview.api.*;
-import org.gephi.preview.spi.*;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.Node;
+import org.gephi.preview.api.Item;
+import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewMouseEvent;
+import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.api.RenderTarget;
+import org.gephi.preview.spi.ItemBuilder;
+import org.gephi.preview.spi.MouseResponsiveRenderer;
+import org.gephi.preview.spi.PreviewMouseListener;
+import org.gephi.preview.spi.RenderTargetBuilder;
+import org.gephi.preview.spi.Renderer;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -56,18 +71,18 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = PreviewController.class)
 public class PreviewControllerImpl implements PreviewController {
 
-    private PreviewModelImpl model;
     //Other controllers
     private final GraphController graphController;
+    private PreviewModelImpl model;
     //Registered renderers
     private Renderer[] registeredRenderers = null;
     private Boolean anyPluginRendererRegistered = null;
+    private boolean mousePressed = false;
 
     public PreviewControllerImpl() {
         graphController = Lookup.getDefault().lookup(GraphController.class);
@@ -124,7 +139,8 @@ public class PreviewControllerImpl implements PreviewController {
         previewModel.clear();
 
         //Directed graph?
-        previewModel.getProperties().putValue(PreviewProperty.DIRECTED, graphModel.isDirected() || graphModel.isMixed());
+        previewModel.getProperties()
+            .putValue(PreviewProperty.DIRECTED, graphModel.isDirected() || graphModel.isMixed());
 
         //Graph
         Graph graph = graphModel.getGraphVisible();
@@ -215,7 +231,8 @@ public class PreviewControllerImpl implements PreviewController {
 
     @Override
     public void render(RenderTarget target, Renderer[] renderers, Workspace workspace) {
-        render(target, renderers != null ? renderers : getModel(workspace).getManagedEnabledRenderers(), getModel(workspace));
+        render(target, renderers != null ? renderers : getModel(workspace).getManagedEnabledRenderers(),
+            getModel(workspace));
     }
 
     private synchronized void render(RenderTarget target, Renderer[] renderers, PreviewModelImpl previewModel) {
@@ -339,7 +356,6 @@ public class PreviewControllerImpl implements PreviewController {
         }
         return anyPluginRendererRegistered;
     }
-    private boolean mousePressed = false;
 
     @Override
     public boolean sendMouseEvent(PreviewMouseEvent event) {
@@ -355,7 +371,8 @@ public class PreviewControllerImpl implements PreviewController {
         PreviewModel previewModel = getModel(workspace);
 
         //Avoid drag events arriving to listeners if they did not consume previous press event.
-        if ((event.type != PreviewMouseEvent.Type.DRAGGED && event.type != PreviewMouseEvent.Type.RELEASED) || mousePressed) {
+        if ((event.type != PreviewMouseEvent.Type.DRAGGED && event.type != PreviewMouseEvent.Type.RELEASED) ||
+            mousePressed) {
             for (PreviewMouseListener listener : previewModel.getEnabledMouseListeners()) {
                 switch (event.type) {
                     case CLICKED:

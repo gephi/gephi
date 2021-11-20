@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.impl;
 
 import org.gephi.io.importer.api.ColumnDraft;
@@ -47,7 +48,6 @@ import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class EdgeDraftImpl extends ElementDraftImpl implements EdgeDraft {
@@ -63,20 +63,10 @@ public class EdgeDraftImpl extends ElementDraftImpl implements EdgeDraft {
         super(container, id);
     }
 
-    //SETTERS
+    //GETTERS
     @Override
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    @Override
-    public void setType(Object type) {
-        this.type = type;
-    }
-
-    @Override
-    public void setDirection(EdgeDirection direction) {
-        this.direction = direction;
+    public NodeDraftImpl getSource() {
+        return source;
     }
 
     @Override
@@ -85,24 +75,24 @@ public class EdgeDraftImpl extends ElementDraftImpl implements EdgeDraft {
     }
 
     @Override
-    public void setTarget(NodeDraft nodeTarget) {
-        this.target = (NodeDraftImpl) nodeTarget;
-    }
-
-    //GETTERS
-    @Override
-    public NodeDraftImpl getSource() {
-        return source;
-    }
-
-    @Override
     public NodeDraftImpl getTarget() {
         return target;
     }
 
     @Override
+    public void setTarget(NodeDraft nodeTarget) {
+        this.target = (NodeDraftImpl) nodeTarget;
+    }
+
+    @Override
     public double getWeight() {
         return weight;
+    }
+
+    //SETTERS
+    @Override
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 
     @Override
@@ -111,8 +101,18 @@ public class EdgeDraftImpl extends ElementDraftImpl implements EdgeDraft {
     }
 
     @Override
+    public void setDirection(EdgeDirection direction) {
+        this.direction = direction;
+    }
+
+    @Override
     public Object getType() {
         return type;
+    }
+
+    @Override
+    public void setType(Object type) {
+        this.type = type;
     }
 
     @Override

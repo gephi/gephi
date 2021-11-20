@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 import javax.swing.Icon;
@@ -74,7 +75,8 @@ public class JoinNumberColumns implements AttributeColumnsMergeStrategy, General
 
     @Override
     public void execute() {
-        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).joinWithSeparatorMerge(table, columns, double[].class, columnTitle, SEPARATOR);
+        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class)
+            .joinWithSeparatorMerge(table, columns, double[].class, columnTitle, SEPARATOR);
     }
 
     @Override

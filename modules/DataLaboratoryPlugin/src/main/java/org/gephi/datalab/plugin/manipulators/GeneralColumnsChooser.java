@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators;
 
 import org.gephi.datalab.plugin.manipulators.nodes.ClearNodesData;
@@ -47,26 +48,30 @@ import org.gephi.graph.api.Column;
 /**
  * Interface in common for choosing columns to manipulate.
  * Used to be able to get/set the columns to clear in the GeneralChooseColumnsUI.
+ *
  * @author Eduardo Ramos
  * @see ClearNodesData
  */
-public interface GeneralColumnsChooser{
+public interface GeneralColumnsChooser {
 
     /**
      * Provide columns to show in the UI to be selected or not.
      * Normally provide all table columns that can be manipulated.
+     *
      * @return Columns to show in the GeneralChooseColumnsUI
      */
     Column[] getColumns();
 
     /**
      * The GeneralChooseColumnsUI will use this method to set the columns to finally manipulate, after the GeneralChooseColumnsUI is closed.
+     *
      * @param columnsToClearData Columns to manipulate
      */
     void setColumns(Column[] columnsToClearData);
 
     /**
      * Provide title for the GeneralChooseColumnsUI.
+     *
      * @return Title name
      */
     String getName();

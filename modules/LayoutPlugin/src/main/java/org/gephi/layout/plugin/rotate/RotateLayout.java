@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.rotate;
 
 import java.util.ArrayList;
@@ -108,12 +109,12 @@ public class RotateLayout extends AbstractLayout implements Layout {
         List<LayoutProperty> properties = new ArrayList<>();
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
-                    NbBundle.getMessage(getClass(), "rotate.angle.name"),
-                    null,
-                    "clockwise.angle.name",
-                    NbBundle.getMessage(getClass(), "rotate.angle.desc"),
-                    "getAngle", "setAngle"));
+                this, Double.class,
+                NbBundle.getMessage(getClass(), "rotate.angle.name"),
+                null,
+                "clockwise.angle.name",
+                NbBundle.getMessage(getClass(), "rotate.angle.desc"),
+                "getAngle", "setAngle"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }

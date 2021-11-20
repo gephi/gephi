@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.sheets.csv;
 
 import org.apache.commons.csv.CSVRecord;
 import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetRow;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class CSVSheetRow implements SheetRow {

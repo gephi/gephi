@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 /**
@@ -55,33 +56,16 @@ package org.gephi.io.importer.api;
  */
 public final class Issue {
 
-    public enum Level {
-
-        INFO(100),
-        WARNING(200),
-        SEVERE(500),
-        CRITICAL(1000);
-        private final int levelInt;
-
-        Level(int levelInt) {
-            this.levelInt = levelInt;
-        }
-
-        public int toInteger() {
-            return levelInt;
-        }
-    }
     private final Throwable throwable;
     private final String message;
     private final Level level;
-
     /**
      * Constructs a new issue with a throwable and a level.
      * <p>
      * The message is set based on throwable.
      *
      * @param throwable throwable
-     * @param level level
+     * @param level     level
      */
     public Issue(Throwable throwable, Level level) {
         this.throwable = throwable;
@@ -92,8 +76,8 @@ public final class Issue {
     /**
      * Constructs a new issue with a message, level and throwable.
      *
-     * @param message message
-     * @param level level
+     * @param message   message
+     * @param level     level
      * @param throwable throwable
      */
     public Issue(String message, Level level, Throwable throwable) {
@@ -106,7 +90,7 @@ public final class Issue {
      * Constructs a new issue with a message and a level.
      *
      * @param message message
-     * @param level level
+     * @param level   level
      */
     public Issue(String message, Level level) {
         this.message = message;
@@ -144,5 +128,22 @@ public final class Issue {
     @Override
     public String toString() {
         return "Issue{" + "message=" + message + ", level=" + level + '}';
+    }
+
+    public enum Level {
+
+        INFO(100),
+        WARNING(200),
+        SEVERE(500),
+        CRITICAL(1000);
+        private final int levelInt;
+
+        Level(int levelInt) {
+            this.levelInt = levelInt;
+        }
+
+        public int toInteger() {
+            return levelInt;
+        }
     }
 }

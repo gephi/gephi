@@ -39,12 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components.richtooltip;
 
 import javax.swing.plaf.PanelUI;
 
 /**
- *
  * @author Mathieu Bastian
  */
 abstract class RichTooltipPanelUI extends PanelUI {

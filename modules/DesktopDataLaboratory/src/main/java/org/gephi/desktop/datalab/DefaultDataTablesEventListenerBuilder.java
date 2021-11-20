@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab;
 
 import java.lang.reflect.InvocationTargetException;
@@ -72,7 +73,8 @@ public class DefaultDataTablesEventListenerBuilder implements DataTablesEventLis
                 SwingUtilities.invokeAndWait(new Runnable() {
                     @Override
                     public void run() {
-                        listenerHolder.add((DataTableTopComponent) WindowManager.getDefault().findTopComponent("DataTableTopComponent"));
+                        listenerHolder.add((DataTableTopComponent) WindowManager.getDefault()
+                            .findTopComponent("DataTableTopComponent"));
                     }
                 });
             } catch (InterruptedException ex) {

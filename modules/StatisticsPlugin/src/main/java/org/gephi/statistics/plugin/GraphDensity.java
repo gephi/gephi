@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.statistics.plugin;
 
 import java.text.DecimalFormat;
@@ -50,29 +51,32 @@ import org.gephi.statistics.spi.Statistics;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author pjmcswee
  */
 public class GraphDensity implements Statistics {
 
-    /** The density of the graph.*/
+    /**
+     * The density of the graph.
+     */
     private double density;
-    /** */
+    /**
+     *
+     */
     private boolean isDirected;
 
     public GraphDensity() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (graphController != null && graphController.getGraphModel()!= null) {
+        if (graphController != null && graphController.getGraphModel() != null) {
             isDirected = graphController.getGraphModel().isDirected();
         }
     }
 
-    public void setDirected(boolean isDirected) {
-        this.isDirected = isDirected;
-    }
-
     public boolean getDirected() {
         return isDirected;
+    }
+
+    public void setDirected(boolean isDirected) {
+        this.isDirected = isDirected;
     }
 
     public double getDensity() {
@@ -87,10 +91,10 @@ public class GraphDensity implements Statistics {
         } else {
             graph = graphModel.getUndirectedGraphVisible();
         }
-        
+
         density = calculateDensity(graph, isDirected);
     }
-    
+
     public double calculateDensity(Graph graph, boolean isGraphDirected) {
         double result;
 
@@ -106,7 +110,6 @@ public class GraphDensity implements Statistics {
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -114,12 +117,12 @@ public class GraphDensity implements Statistics {
         NumberFormat f = new DecimalFormat("#0.000");
 
         return "<HTML> <BODY> <h1>Graph Density  Report </h1> "
-                + "<hr>"
-                + "<br>"
-                + "<h2> Parameters: </h2>"
-                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
-                + "<br> <h2> Results: </h2>"
-                + "Density: " + f.format(density)
-                + "</BODY></HTML>";
+            + "<hr>"
+            + "<br>"
+            + "<h2> Parameters: </h2>"
+            + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
+            + "<br> <h2> Results: </h2>"
+            + "Density: " + f.format(density)
+            + "</BODY></HTML>";
     }
 }

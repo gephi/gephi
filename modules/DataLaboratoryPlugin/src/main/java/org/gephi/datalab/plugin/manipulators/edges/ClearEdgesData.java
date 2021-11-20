@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.edges;
 
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ import org.openide.util.NbBundle;
 
 /**
  * Edges manipulator that clears the given columns data of one or more edges except the id and computed attributes.
+ *
  * @author Eduardo Ramos
  */
 public class ClearEdgesData extends BasicEdgesManipulator implements GeneralColumnsChooser {

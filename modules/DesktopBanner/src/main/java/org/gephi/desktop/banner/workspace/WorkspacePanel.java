@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.banner.workspace;
 
 import java.awt.BorderLayout;
@@ -81,7 +82,8 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
         initComponents();
 
         // Init component
-        workspaceIcon = ImageUtilities.image2Icon(ImageUtilities.loadImage("org/gephi/desktop/banner/workspace/resources/workspace.png"));
+        workspaceIcon = ImageUtilities
+            .image2Icon(ImageUtilities.loadImage("org/gephi/desktop/banner/workspace/resources/workspace.png"));
         tabDataModel = new DefaultTabDataModel();
 
         WinsysInfoForTabbedContainer ws = new WinsysInfoForTabbedContainer() {
@@ -110,11 +112,12 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
             public void actionPerformed(ActionEvent e) {
                 TabActionEvent tabActionEvent = (TabActionEvent) e;
                 if (tabActionEvent.getActionCommand().equals(TabbedContainer.COMMAND_CLOSE)) {
-                    String message = NbBundle.getMessage(WorkspacePanel.class, "WorkspacePanel_closeWorkspace_Question");
+                    String message =
+                        NbBundle.getMessage(WorkspacePanel.class, "WorkspacePanel_closeWorkspace_Question");
                     String title = NbBundle.getMessage(WorkspacePanel.class, "WorkspacePanel_closeWorkspace_Title");
                     NotifyDescriptor dd = new NotifyDescriptor(message, title,
-                            NotifyDescriptor.YES_NO_OPTION,
-                            NotifyDescriptor.QUESTION_MESSAGE, null, null);
+                        NotifyDescriptor.YES_NO_OPTION,
+                        NotifyDescriptor.QUESTION_MESSAGE, null, null);
                     Object retType = DialogDisplayer.getDefault().notify(dd);
                     if (retType == NotifyDescriptor.YES_OPTION) {
                         TabData tabData = tabDataModel.getTab(tabActionEvent.getTabIndex());
@@ -151,8 +154,11 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
             if (workspaces.length > 0) {
                 for (Workspace workspace : workspaces) {
                     int index = tabDataModel.size();
-                    WorkspaceInformation workspaceInformation = workspace.getLookup().lookup(WorkspaceInformation.class);
-                    tabDataModel.addTab(index, new TabData(new WorkspaceComponent(workspace), null, workspaceInformation.getName(), workspaceInformation.getSource()));
+                    WorkspaceInformation workspaceInformation =
+                        workspace.getLookup().lookup(WorkspaceInformation.class);
+                    tabDataModel.addTab(index,
+                        new TabData(new WorkspaceComponent(workspace), null, workspaceInformation.getName(),
+                            workspaceInformation.getSource()));
                     if (workspaceProvider.getCurrentWorkspace() == workspace) {
                         tabbedContainer.getSelectionModel().setSelectedIndex(index);
                         workspace.getLookup().lookup(WorkspaceInformation.class).addChangeListener(this);
@@ -192,8 +198,8 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
             @Override
             public void run() {
                 tabDataModel.addTab(tabDataModel.size(), new TabData(new WorkspaceComponent(workspace), workspaceIcon,
-                        workspaceInformation.getName(),
-                        workspaceInformation.getSource()));
+                    workspaceInformation.getName(),
+                    workspaceInformation.getSource()));
                 if (tabDataModel.size() == 1) {
                     tabbedContainer.getSelectionModel().setSelectedIndex(0);
 
@@ -272,7 +278,7 @@ public class WorkspacePanel extends javax.swing.JPanel implements WorkspaceListe
             final WorkspaceInformation workspaceInformation = (WorkspaceInformation) evt.getSource();
             final int index = tabbedContainer.getSelectionModel().getSelectedIndex();
             if (tabDataModel.getTab(index).getTooltip() == null
-                    || !tabDataModel.getTab(index).getTooltip().equals(workspaceInformation.getSource())) {
+                || !tabDataModel.getTab(index).getTooltip().equals(workspaceInformation.getSource())) {
                 SwingUtilities.invokeLater(new Runnable() {
 
                     @Override

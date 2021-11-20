@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.utils.stringconverters;
 
 import java.text.DecimalFormat;
@@ -57,6 +58,7 @@ public class DoubleStringConverter implements StringValue {
      * Formatter for limiting precision to 6 decimals, avoiding precision errors (epsilon).
      */
     public static final DecimalFormat FORMAT = new DecimalFormat("0.0#####");
+
     static {
         DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.ENGLISH);
         symbols.setInfinity("Infinity");
@@ -69,7 +71,7 @@ public class DoubleStringConverter implements StringValue {
         if (value != null) {
             str = FORMAT.format(value);
         }
-        
+
         return str;
     }
 }

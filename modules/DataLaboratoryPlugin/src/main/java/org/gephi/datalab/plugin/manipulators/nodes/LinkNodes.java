@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
@@ -62,19 +63,22 @@ import org.openide.util.NbBundle;
  */
 public class LinkNodes extends BasicNodesManipulator {
 
-    private Node[] nodes;
-    private Node sourceNode;
     private static boolean directed;
     private static GraphModel graphModel;
+    private Node[] nodes;
+    private Node sourceNode;
 
     @Override
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes = nodes;
-        this.sourceNode = clickedNode;//Choose clicked node as source by default (but the user can select it or other one in the UI)
+        this.sourceNode =
+            clickedNode;//Choose clicked node as source by default (but the user can select it or other one in the UI)
 
         GraphModel currentGraphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel();
-        if (graphModel != currentGraphModel) {//If graph model has changed since last execution, change default mode for edges to create in UI, else keep this parameter across calls
-            directed = currentGraphModel.isDirected() || currentGraphModel.isMixed();//Get graph directed state. Set to true if graph is directed or mixed
+        if (graphModel !=
+            currentGraphModel) {//If graph model has changed since last execution, change default mode for edges to create in UI, else keep this parameter across calls
+            directed = currentGraphModel.isDirected() ||
+                currentGraphModel.isMixed();//Get graph directed state. Set to true if graph is directed or mixed
             graphModel = currentGraphModel;
         }
     }
@@ -84,7 +88,7 @@ public class LinkNodes extends BasicNodesManipulator {
         if (nodes.length > 1) {
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
             gec.createEdges(sourceNode, nodes, directed);
-        }else{
+        } else {
             AddEdgeToGraph manipulator = new AddEdgeToGraph();
             manipulator.setSource(sourceNode);
             DataLaboratoryHelper.getDefault().executeManipulator(manipulator);
@@ -108,7 +112,8 @@ public class LinkNodes extends BasicNodesManipulator {
 
     @Override
     public ManipulatorUI getUI() {
-        return nodes.length > 1 ? new LinkNodesUI() : null;//Use link nodes UI if more than one node selected, otherwise add edge to graph action will be called in execute.
+        return nodes.length > 1 ? new LinkNodesUI() :
+            null;//Use link nodes UI if more than one node selected, otherwise add edge to graph action will be called in execute.
     }
 
     @Override

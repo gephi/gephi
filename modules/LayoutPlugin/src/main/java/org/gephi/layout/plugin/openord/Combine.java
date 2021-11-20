@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.openord;
 
 import java.text.DecimalFormat;
@@ -47,7 +48,6 @@ import org.gephi.graph.api.Graph;
 import org.openide.util.Exceptions;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class Combine implements Runnable {

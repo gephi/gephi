@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.spi;
 
 import javax.swing.Icon;
@@ -113,6 +114,7 @@ public interface FilterBuilder {
 
     /**
      * Notification when the filter is destroyed, to perform clean-up tasks.
+     *
      * @param filter filter to be destroyed
      */
     public void destroy(Filter filter);

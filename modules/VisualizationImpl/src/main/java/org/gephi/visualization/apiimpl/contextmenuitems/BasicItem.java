@@ -1,4 +1,3 @@
-
 /*
  Copyright 2008-2010 Gephi
  Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -40,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
@@ -49,7 +49,6 @@ import org.gephi.graph.api.Node;
 import org.gephi.visualization.spi.GraphContextMenuItem;
 
 /**
- *
  * @author Eduardo
  */
 public abstract class BasicItem implements GraphContextMenuItem {

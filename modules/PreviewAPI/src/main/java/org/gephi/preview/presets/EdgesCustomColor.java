@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.presets;
 
 import java.awt.Color;
@@ -56,7 +57,7 @@ public class EdgesCustomColor extends PreviewPreset {
         //Default
         DefaultPreset defaultPreset = new DefaultPreset();
         properties.putAll(defaultPreset.getProperties());
-        
+
         //Custom values
         properties.put(PreviewProperty.NODE_LABEL_SHOW_BOX, Boolean.TRUE);
         properties.put(PreviewProperty.NODE_LABEL_BOX_COLOR, new DependantColor(Color.WHITE));

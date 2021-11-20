@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.timeline;
 
 import org.joda.time.DateTime;
@@ -49,7 +50,6 @@ import org.joda.time.Period;
 import org.joda.time.PeriodType;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class DateTick {
@@ -68,29 +68,6 @@ public class DateTick {
         for (int i = 0; i < types.length; i++) {
             this.tickPeriods[i] = new TickPeriod(min, max, types[i]);
         }
-    }
-
-    public int getTypeCount() {
-        return tickPeriods.length;
-    }
-
-    public Interval[] getIntervals(int type) {
-        return tickPeriods[type].getIntervals();
-    }
-
-    public String getTickValue(int type, DateTime dateTime) {
-        return tickPeriods[type].getTickValue(dateTime);
-    }
-
-    public DurationFieldType getDurationType(int type) {
-        return tickPeriods[type].getDurationType();
-    }
-
-    public int getTickPixelPosition(long ms, int width) {
-        long minMs = min.getMillis();
-        long maxMs = max.getMillis();
-        long duration = maxMs - minMs;
-        return (int) ((ms - minMs) * width / duration);
     }
 
     public static DateTick create(double min, double max, int width) {
@@ -142,17 +119,41 @@ public class DateTick {
             }
 
             //Number of ticks
-            Period p = new Period(minDate, maxDate, PeriodType.forFields(new DurationFieldType[]{bottomType.getDurationType()}));
+            Period p = new Period(minDate, maxDate,
+                PeriodType.forFields(new DurationFieldType[] {bottomType.getDurationType()}));
             int intervals = p.get(bottomType.getDurationType());
             if (intervals > 0) {
                 int intervalSize = width / intervals;
                 if (intervalSize >= MIN_PIXELS) {
-                    return new DateTick(minDate, maxDate, new DateTimeFieldType[]{topType, bottomType});
+                    return new DateTick(minDate, maxDate, new DateTimeFieldType[] {topType, bottomType});
                 }
             }
         }
 
-        return new DateTick(minDate, maxDate, new DateTimeFieldType[]{topType});
+        return new DateTick(minDate, maxDate, new DateTimeFieldType[] {topType});
+    }
+
+    public int getTypeCount() {
+        return tickPeriods.length;
+    }
+
+    public Interval[] getIntervals(int type) {
+        return tickPeriods[type].getIntervals();
+    }
+
+    public String getTickValue(int type, DateTime dateTime) {
+        return tickPeriods[type].getTickValue(dateTime);
+    }
+
+    public DurationFieldType getDurationType(int type) {
+        return tickPeriods[type].getDurationType();
+    }
+
+    public int getTickPixelPosition(long ms, int width) {
+        long minMs = min.getMillis();
+        long maxMs = max.getMillis();
+        long duration = maxMs - minMs;
+        return (int) ((ms - minMs) * width / duration);
     }
 
     private static class TickPeriod {
@@ -166,7 +167,7 @@ public class DateTick {
         public TickPeriod(DateTime min, DateTime max, DateTimeFieldType type) {
             this.min = min;
             this.max = max;
-            this.period = new Period(min, max, PeriodType.forFields(new DurationFieldType[]{type.getDurationType()}));
+            this.period = new Period(min, max, PeriodType.forFields(new DurationFieldType[] {type.getDurationType()}));
             this.interval = new Interval(min, max);
             this.type = type;
         }

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.partition;
 
 import java.util.ArrayList;
@@ -53,7 +54,14 @@ import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.AbstractAttributeFilter;
 import org.gephi.filters.plugin.AbstractAttributeFilterBuilder;
 import org.gephi.filters.plugin.graph.RangeUI;
-import org.gephi.filters.spi.*;
+import org.gephi.filters.spi.Category;
+import org.gephi.filters.spi.CategoryBuilder;
+import org.gephi.filters.spi.EdgeFilter;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.filters.spi.RangeFilter;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
@@ -66,16 +74,15 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = CategoryBuilder.class)
 public class PartitionCountBuilder implements CategoryBuilder {
 
     private final static Category PARTITION_COUNT = new Category(
-            NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.name"),
-            null,
-            FilterLibrary.ATTRIBUTES);
+        NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.name"),
+        null,
+        FilterLibrary.ATTRIBUTES);
 
     @Override
     public Category getCategory() {
@@ -119,9 +126,9 @@ public class PartitionCountBuilder implements CategoryBuilder {
 
         public PartitionCountFilterBuilder(Column column, AppearanceModel model) {
             super(column,
-                    PARTITION_COUNT,
-                    NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.description"),
-                    null);
+                PARTITION_COUNT,
+                NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.description"),
+                null);
             this.model = model;
         }
 
@@ -144,15 +151,16 @@ public class PartitionCountBuilder implements CategoryBuilder {
         }
     }
 
-    public static abstract class PartitionCountFilter<K extends Element> extends AbstractAttributeFilter<K> implements RangeFilter {
+    public static abstract class PartitionCountFilter<K extends Element> extends AbstractAttributeFilter<K>
+        implements RangeFilter {
 
         protected AppearanceModel appearanceModel;
-        private Range range;
         protected Partition partition;
+        private Range range;
 
         public PartitionCountFilter(Column column, AppearanceModel model) {
             super(NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.name"),
-                    column);
+                column);
             this.column = column;
             this.appearanceModel = model;
 

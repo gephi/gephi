@@ -40,6 +40,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.preview;
 
 import com.itextpdf.text.BaseColor;
@@ -149,40 +150,44 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         return landscape;
     }
 
+    public void setLandscape(boolean landscape) {
+        this.landscape = landscape;
+    }
+
     public float getMarginBottom() {
         return marginBottom;
-    }
-
-    public float getMarginLeft() {
-        return marginLeft;
-    }
-
-    public float getMarginRight() {
-        return marginRight;
-    }
-
-    public float getMarginTop() {
-        return marginTop;
-    }
-
-    public Rectangle getPageSize() {
-        return pageSize;
     }
 
     public void setMarginBottom(float marginBottom) {
         this.marginBottom = marginBottom;
     }
 
+    public float getMarginLeft() {
+        return marginLeft;
+    }
+
     public void setMarginLeft(float marginLeft) {
         this.marginLeft = marginLeft;
+    }
+
+    public float getMarginRight() {
+        return marginRight;
     }
 
     public void setMarginRight(float marginRight) {
         this.marginRight = marginRight;
     }
 
+    public float getMarginTop() {
+        return marginTop;
+    }
+
     public void setMarginTop(float marginTop) {
         this.marginTop = marginTop;
+    }
+
+    public Rectangle getPageSize() {
+        return pageSize;
     }
 
     public void setPageSize(Rectangle pageSize) {
@@ -195,17 +200,13 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
     }
 
     @Override
-    public void setWorkspace(Workspace workspace) {
-        this.workspace = workspace;
-    }
-
-    public void setLandscape(boolean landscape) {
-        this.landscape = landscape;
+    public Workspace getWorkspace() {
+        return workspace;
     }
 
     @Override
-    public Workspace getWorkspace() {
-        return workspace;
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 
     @Override

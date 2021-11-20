@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.sheet;
 
 import java.io.IOException;
@@ -48,7 +49,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public final class ErrorSheet implements SheetParser {
@@ -58,6 +58,7 @@ public final class ErrorSheet implements SheetParser {
     static {
         ERROR_HEADER.put("error", 0);
     }
+
     private final SheetRow errorRow;
 
     public ErrorSheet(final String error) {

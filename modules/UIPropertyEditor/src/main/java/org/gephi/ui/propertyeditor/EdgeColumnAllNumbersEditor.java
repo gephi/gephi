@@ -39,10 +39,10 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.propertyeditor;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class EdgeColumnAllNumbersEditor extends AbstractAttributeColumnPropertyEditor {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.timeline;
 
 import java.awt.event.ActionEvent;
@@ -46,7 +47,7 @@ import java.awt.event.ActionListener;
 import org.openide.util.Lookup;
 
 public final class TimelineWindowAction implements ActionListener {
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         BottomComponentImpl bottomComponent = Lookup.getDefault().lookup(BottomComponentImpl.class);

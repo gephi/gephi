@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import javax.swing.Icon;
@@ -68,7 +69,8 @@ public class JoinWithSeparator implements AttributeRowsMergeStrategy {
     private String separator, result;
 
     public JoinWithSeparator() {
-        separator = NbPreferences.forModule(JoinWithSeparator.class).get(SEPARATOR_SAVED_PREFERENCES, DEFAULT_SEPARATOR);
+        separator =
+            NbPreferences.forModule(JoinWithSeparator.class).get(SEPARATOR_SAVED_PREFERENCES, DEFAULT_SEPARATOR);
     }
 
     @Override
@@ -89,7 +91,7 @@ public class JoinWithSeparator implements AttributeRowsMergeStrategy {
         Object value;
         StringBuilder sb;
         final int rowsCount = rows.length;
-        
+
         TimeFormat timeFormat = column.getTable().getGraph().getModel().getTimeFormat();
         DateTimeZone timeZone = column.getTable().getGraph().getModel().getTimeZone();
 

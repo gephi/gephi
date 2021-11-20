@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Dimension;
@@ -70,6 +71,7 @@ import org.openide.util.NbBundle;
 
 /**
  * AttributeColumnsManipulator that shows a report with a list of the different values of a column and their frequency of appearance.
+ *
  * @author Eduardo Ramos
  */
 //@ServiceProvider(service = AttributeColumnsManipulator.class)
@@ -98,7 +100,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
     }
 
     @Override
-    public AttributeColumnsManipulatorUI getUI(Table table,Column column) {
+    public AttributeColumnsManipulatorUI getUI(Table table, Column column) {
         return new ColumnValuesFrequencyUI();
     }
 
@@ -117,7 +119,8 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         return ImageUtilities.loadImage("org/gephi/datalab/plugin/manipulators/resources/frequency-list.png");
     }
 
-    public String getReportHTML(Table table, Column column, Map<Object, Integer> valuesFrequencies, JFreeChart pieChart, Dimension dimension) {
+    public String getReportHTML(Table table, Column column, Map<Object, Integer> valuesFrequencies, JFreeChart pieChart,
+                                Dimension dimension) {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         int totalValuesCount = ac.getTableRowsCount(table);
         ArrayList<Object> values = new ArrayList<>(valuesFrequencies.keySet());
@@ -151,7 +154,8 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         final StringBuilder sb = new StringBuilder();
 
         sb.append("<html>");
-        sb.append(NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.report.header", HTMLEscape.stringToHTMLString(column.getTitle())));
+        sb.append(NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.report.header",
+            HTMLEscape.stringToHTMLString(column.getTitle())));
         sb.append("<hr>");
         sb.append("<ol>");
 
@@ -161,7 +165,8 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         sb.append("</ol>");
         sb.append("<hr>");
 
-        if (!values.isEmpty() && values.size() <= MAX_PIE_CHART_CATEGORIES) {//Do not show pie chart if there are more than 100 different values
+        if (!values.isEmpty() && values.size() <=
+            MAX_PIE_CHART_CATEGORIES) {//Do not show pie chart if there are more than 100 different values
             try {
                 if (pieChart != null) {
                     writePieChart(sb, pieChart, dimension);
@@ -170,14 +175,16 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
                 Exceptions.printStackTrace(ex);
             }
         } else {
-            sb.append(NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.report.piechart.not-shown"));
+            sb.append(
+                NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.report.piechart.not-shown"));
         }
 
         sb.append("</html>");
         return sb.toString();
     }
 
-    private void writeValue(final StringBuilder sb, final Object value, final Map<Object, Integer> valuesFrequencies, final float totalValuesCount) {
+    private void writeValue(final StringBuilder sb, final Object value, final Map<Object, Integer> valuesFrequencies,
+                            final float totalValuesCount) {
         int frequency = valuesFrequencies.get(value);
 
         sb.append("<li>");
@@ -196,7 +203,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         sb.append("</li>");
     }
 
-    public Map<Object, Integer> buildValuesFrequencies(Table table, Column column){
+    public Map<Object, Integer> buildValuesFrequencies(Table table, Column column) {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         return ac.calculateColumnValuesFrequencies(table, column);
     }
@@ -206,10 +213,13 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         DefaultPieDataset pieDataset = new DefaultPieDataset();
 
         for (Object value : values) {
-            pieDataset.setValue(value != null ? "'" + AttributeUtils.print(value) + "'" : "null", valuesFrequencies.get(value));
+            pieDataset.setValue(value != null ? "'" + AttributeUtils.print(value) + "'" : "null",
+                valuesFrequencies.get(value));
         }
 
-        JFreeChart chart = ChartFactory.createPieChart(NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.report.piechart.title"), pieDataset, false, true, false);
+        JFreeChart chart = ChartFactory.createPieChart(
+            NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.report.piechart.title"), pieDataset,
+            false, true, false);
         return chart;
     }
 
@@ -219,7 +229,8 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         String fileName = "frequencies-pie-chart.png";
         File file = tempDir.createFile(fileName);
         String imageFile = "<center><img src=\"file:" + file.getAbsolutePath() + "\"</img></center>";
-        ChartUtilities.saveChartAsPNG(file, chart, dimension != null ? dimension.width : 1000, dimension != null ? dimension.height : 1000);
+        ChartUtilities.saveChartAsPNG(file, chart, dimension != null ? dimension.width : 1000,
+            dimension != null ? dimension.height : 1000);
 
         sb.append(imageFile);
     }

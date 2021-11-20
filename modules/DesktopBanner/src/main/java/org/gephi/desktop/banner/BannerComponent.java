@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.banner;
 
 import java.awt.Cursor;
@@ -55,14 +56,33 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class BannerComponent extends javax.swing.JPanel {
 
-    private transient JToggleButton[] buttons;
     private final transient PerspectiveController perspectiveController;
+    private transient JToggleButton[] buttons;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel bannerBackground;
+    private javax.swing.JPanel buttonsPanel;
+    private javax.swing.JPanel groupsPanel;
 
+    //Not working
+    /*public void reset() {
+    refreshSelectedPerspective();
+    for (final Perspective group : Lookup.getDefault().lookupAll(Perspective.class).toArray(new Perspective[0])) {
+    TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(group.getName());
+    if (group.getName().equals(selectedPerspective)) {
+    tpg.open();
+    } else {
+    tpg.close();
+    }
+    }
+    }*/
+    private javax.swing.JButton logoButton;
+    private javax.swing.JPanel mainPanel;
+    private javax.swing.ButtonGroup perspectivesButtonGroup;
+    private javax.swing.JPanel workspacePanel;
     public BannerComponent() {
         initComponents();
 
@@ -100,7 +120,8 @@ public class BannerComponent extends javax.swing.JPanel {
 
         //Add tabs
         for (final Perspective perspective : perspectiveController.getPerspectives()) {
-            JPerspectiveButton toggleButton = new JPerspectiveButton(perspective.getDisplayName(), perspective.getIcon());
+            JPerspectiveButton toggleButton =
+                new JPerspectiveButton(perspective.getDisplayName(), perspective.getIcon());
             toggleButton.addActionListener(new ActionListener() {
 
                 @Override
@@ -128,18 +149,6 @@ public class BannerComponent extends javax.swing.JPanel {
         return -1;
     }
 
-    //Not working
-    /*public void reset() {
-    refreshSelectedPerspective();
-    for (final Perspective group : Lookup.getDefault().lookupAll(Perspective.class).toArray(new Perspective[0])) {
-    TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(group.getName());
-    if (group.getName().equals(selectedPerspective)) {
-    tpg.open();
-    } else {
-    tpg.close();
-    }
-    }
-    }*/
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -164,15 +173,19 @@ public class BannerComponent extends javax.swing.JPanel {
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainPanel.setLayout(new java.awt.GridBagLayout());
 
-        logoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/banner/resources/logo_std.png"))); // NOI18N
-        logoButton.setToolTipText(org.openide.util.NbBundle.getMessage(BannerComponent.class, "BannerComponent.logoButton.toolTipText")); // NOI18N
+        logoButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/banner/resources/logo_std.png"))); // NOI18N
+        logoButton.setToolTipText(org.openide.util.NbBundle
+            .getMessage(BannerComponent.class, "BannerComponent.logoButton.toolTipText")); // NOI18N
         logoButton.setBorderPainted(false);
         logoButton.setContentAreaFilled(false);
         logoButton.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         logoButton.setFocusPainted(false);
         logoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        logoButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/banner/resources/logo_glow.png"))); // NOI18N
-        logoButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/banner/resources/logo_glow.png"))); // NOI18N
+        logoButton.setPressedIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/banner/resources/logo_glow.png"))); // NOI18N
+        logoButton.setRolloverIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/banner/resources/logo_glow.png"))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -195,7 +208,8 @@ public class BannerComponent extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         groupsPanel.add(buttonsPanel, gridBagConstraints);
 
-        bannerBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/banner/resources/bannerback.png"))); // NOI18N
+        bannerBackground.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/banner/resources/bannerback.png"))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -217,14 +231,6 @@ public class BannerComponent extends javax.swing.JPanel {
         add(mainPanel, java.awt.BorderLayout.CENTER);
         add(workspacePanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel bannerBackground;
-    private javax.swing.JPanel buttonsPanel;
-    private javax.swing.JPanel groupsPanel;
-    private javax.swing.JButton logoButton;
-    private javax.swing.JPanel mainPanel;
-    private javax.swing.ButtonGroup perspectivesButtonGroup;
-    private javax.swing.JPanel workspacePanel;
     // End of variables declaration//GEN-END:variables
 
     private static class JPerspectiveButton extends JToggleButton {
@@ -239,26 +245,35 @@ public class BannerComponent extends javax.swing.JPanel {
             setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
             if (UIUtils.isWindowsLookAndFeel()) {
-                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/vista-enabled.png"),
-                        ImageUtilities.icon2Image(icon), 6, 3)));
-                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/vista-mousover.png"),
-                        ImageUtilities.icon2Image(icon), 6, 3)));
-                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/vista-selected.png"),
-                        ImageUtilities.icon2Image(icon), 6, 3)));
+                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
+                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/vista-enabled.png"),
+                    ImageUtilities.icon2Image(icon), 6, 3)));
+                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
+                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/vista-mousover.png"),
+                    ImageUtilities.icon2Image(icon), 6, 3)));
+                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
+                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/vista-selected.png"),
+                    ImageUtilities.icon2Image(icon), 6, 3)));
             } else if (UIUtils.isAquaLookAndFeel()) {
-                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-enabled.png"),
-                        ImageUtilities.icon2Image(icon), 6, 3)));
-                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-mouseover.png"),
-                        ImageUtilities.icon2Image(icon), 6, 3)));
-                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-selected.png"),
-                        ImageUtilities.icon2Image(icon), 6, 3)));
+                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
+                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-enabled.png"),
+                    ImageUtilities.icon2Image(icon), 6, 3)));
+                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
+                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-mouseover.png"),
+                    ImageUtilities.icon2Image(icon), 6, 3)));
+                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
+                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-selected.png"),
+                    ImageUtilities.icon2Image(icon), 6, 3)));
             } else {
-                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/nimbus-enabled.png"),
-                        ImageUtilities.icon2Image(icon), 6, 3)));
-                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/nimbus-mouseover.png"),
-                        ImageUtilities.icon2Image(icon), 6, 3)));
-                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/nimbus-selected.png"),
-                        ImageUtilities.icon2Image(icon), 6, 3)));
+                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
+                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/nimbus-enabled.png"),
+                    ImageUtilities.icon2Image(icon), 6, 3)));
+                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
+                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/nimbus-mouseover.png"),
+                    ImageUtilities.icon2Image(icon), 6, 3)));
+                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
+                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/nimbus-selected.png"),
+                    ImageUtilities.icon2Image(icon), 6, 3)));
             }
         }
     }

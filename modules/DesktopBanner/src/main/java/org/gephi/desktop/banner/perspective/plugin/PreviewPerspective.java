@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.banner.perspective.plugin;
 
 import javax.swing.Icon;
@@ -49,10 +50,10 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Preview perspective
- * 
+ *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = Perspective.class, position=300)
+@ServiceProvider(service = Perspective.class, position = 300)
 public class PreviewPerspective implements Perspective {
 
     @Override

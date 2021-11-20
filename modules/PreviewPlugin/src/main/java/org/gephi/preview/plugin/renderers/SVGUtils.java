@@ -39,10 +39,10 @@
 
  Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.preview.plugin.renderers;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class SVGUtils {

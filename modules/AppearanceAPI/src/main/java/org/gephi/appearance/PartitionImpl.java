@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
 import java.awt.Color;
@@ -52,7 +53,6 @@ import java.util.Map;
 import org.gephi.appearance.api.Partition;
 
 /**
- *
  * @author mbastian
  */
 public abstract class PartitionImpl implements Partition {

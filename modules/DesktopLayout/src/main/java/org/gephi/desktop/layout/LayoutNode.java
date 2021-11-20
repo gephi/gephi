@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.layout;
 
 import java.util.HashMap;
@@ -47,12 +48,10 @@ import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutProperty;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
-import org.openide.nodes.Node.PropertySet;
 import org.openide.nodes.Sheet;
 import org.openide.util.Exceptions;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class LayoutNode extends AbstractNode {

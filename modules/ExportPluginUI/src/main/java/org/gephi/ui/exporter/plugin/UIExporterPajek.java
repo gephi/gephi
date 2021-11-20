@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.exporter.plugin;
 
 import javax.swing.JPanel;
@@ -49,7 +50,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Daniel Bernardes
  */
 @ServiceProvider(service = ExporterUI.class)
@@ -57,7 +57,7 @@ public class UIExporterPajek implements ExporterUI {
 
     private UIExporterPajekPanel panel;
     private ExporterPajek exporterPajek;
-    private ExporterPajekSettings settings =  new ExporterPajekSettings();
+    private ExporterPajekSettings settings = new ExporterPajekSettings();
 
     @Override
     public void setup(Exporter exporter) {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.graph;
 
 import javax.xml.stream.XMLStreamException;
@@ -93,7 +94,8 @@ public class LegacyAttributeRowsPersistenceProvider implements WorkspaceXMLPersi
         return "attributerows";
     }
 
-    public void readRows(XMLStreamReader reader, GraphModel graphModel, LegacyMapHelper mapHelper) throws XMLStreamException {
+    public void readRows(XMLStreamReader reader, GraphModel graphModel, LegacyMapHelper mapHelper)
+        throws XMLStreamException {
         Graph graph = graphModel.getGraph();
 
         boolean end = false;
@@ -124,7 +126,8 @@ public class LegacyAttributeRowsPersistenceProvider implements WorkspaceXMLPersi
         }
     }
 
-    public void readRow(XMLStreamReader reader, Element element, Table table, LegacyMapHelper mapHelper) throws XMLStreamException {
+    public void readRow(XMLStreamReader reader, Element element, Table table, LegacyMapHelper mapHelper)
+        throws XMLStreamException {
         Integer index = null;
         String value = "";
 
@@ -145,11 +148,13 @@ public class LegacyAttributeRowsPersistenceProvider implements WorkspaceXMLPersi
                     }
                     break;
                 case XMLStreamReader.END_ELEMENT:
-                    if (ELEMENT_NODE_ROW.equalsIgnoreCase(reader.getLocalName()) || ELEMENT_EDGE_ROW.equalsIgnoreCase(reader.getLocalName())) {
+                    if (ELEMENT_NODE_ROW.equalsIgnoreCase(reader.getLocalName()) ||
+                        ELEMENT_EDGE_ROW.equalsIgnoreCase(reader.getLocalName())) {
                         end = true;
                     }
                     if (!value.isEmpty() && index != null) {
-                        String id = table.getElementClass().equals(Node.class) ? mapHelper.nodeIndexToIds.get(index) : mapHelper.edgeIndexToIds.get(index);
+                        String id = table.getElementClass().equals(Node.class) ? mapHelper.nodeIndexToIds.get(index) :
+                            mapHelper.edgeIndexToIds.get(index);
                         if (id != null) {
                             Column col = table.getColumn(id);
 

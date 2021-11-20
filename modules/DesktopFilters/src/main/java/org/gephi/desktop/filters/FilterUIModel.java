@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.filters;
 
 import java.util.ArrayList;
@@ -50,17 +51,16 @@ import org.gephi.filters.spi.Category;
 import org.gephi.project.api.Workspace;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public final class FilterUIModel {
 
     private final Workspace workspace;
-    private Query selectedQuery;
     private final List<Query> expandedQueryNodes;
     private final List<Query> expandedParametersNodes;
     private final List<Category> expandedCategoryNodes;
     private final List<ChangeListener> listeners;
+    private Query selectedQuery;
 
     public FilterUIModel(Workspace workspace) {
         this.workspace = workspace;
@@ -78,6 +78,11 @@ public final class FilterUIModel {
         return selectedQuery;
     }
 
+    public void setSelectedQuery(Query query) {
+        selectedQuery = query;
+        fireChangeEvent();
+    }
+
     public Query getSelectedRoot() {
         if (selectedQuery != null) {
             Query root = selectedQuery;
@@ -87,11 +92,6 @@ public final class FilterUIModel {
             return root;
         }
         return null;
-    }
-
-    public void setSelectedQuery(Query query) {
-        selectedQuery = query;
-        fireChangeEvent();
     }
 
     public void setExpand(Query query, boolean expanded, boolean parametersExpanded) {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.io.database.drivers;
 
 import java.sql.Connection;
@@ -49,12 +50,11 @@ import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = SQLDriver.class, position = 40)
 public class SQLServerDriver implements SQLDriver {
-    
+
     public SQLServerDriver() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");

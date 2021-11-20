@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.forceAtlas2;
 
 import org.gephi.graph.api.Node;
@@ -68,7 +69,8 @@ public class ForceFactory {
         return new strongGravity(coefficient);
     }
 
-    public AttractionForce buildAttraction(boolean logAttraction, boolean distributedAttraction, boolean adjustBySize, double coefficient) {
+    public AttractionForce buildAttraction(boolean logAttraction, boolean distributedAttraction, boolean adjustBySize,
+                                           double coefficient) {
         if (adjustBySize) {
             if (logAttraction) {
                 if (distributedAttraction) {
@@ -102,7 +104,8 @@ public class ForceFactory {
 
     public abstract class AttractionForce {
 
-        public abstract void apply(Node n1, Node n2, double e); // Model for node-node attraction (e is for edge weight if needed)
+        public abstract void apply(Node n1, Node n2,
+                                   double e); // Model for node-node attraction (e is for edge weight if needed)
     }
 
     public abstract class RepulsionForce {

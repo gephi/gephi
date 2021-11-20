@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.io;
 
 import java.io.BufferedInputStream;
@@ -77,7 +78,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class LoadTask implements LongTask, Runnable {
@@ -105,7 +105,7 @@ public class LoadTask implements LongTask, Runnable {
                 if (project != null) {
                     // Enumerate workspaces
                     List<String> workspaceEntries = new ArrayList<>();
-                    for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements();) {
+                    for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements(); ) {
                         ZipEntry entry = e.nextElement();
                         if (entry.getName().matches("Workspace_[0-9]*_xml")) {
                             workspaceEntries.add(entry.getName());
@@ -113,7 +113,8 @@ public class LoadTask implements LongTask, Runnable {
                     }
 
                     // Get providers
-                    Collection<WorkspacePersistenceProvider> providers = PersistenceProviderUtils.getPersistenceProviders();
+                    Collection<WorkspacePersistenceProvider> providers =
+                        PersistenceProviderUtils.getPersistenceProviders();
 
                     //Setup progress
                     Progress.switchToDeterminate(progressTicket, (1 + providers.size()) * workspaceEntries.size());
@@ -130,14 +131,16 @@ public class LoadTask implements LongTask, Runnable {
                                     try {
                                         readWorkspaceChildrenXML((WorkspaceXMLPersistenceProvider) provider, workspace,
                                             zip);
-                                    } catch(Exception e) {
+                                    } catch (Exception e) {
                                         Logger.getLogger("").log(
                                             Level.SEVERE,
-                                            "Error while reading XML workspace persistence provider '" + provider.getIdentifier() + "'",
+                                            "Error while reading XML workspace persistence provider '" +
+                                                provider.getIdentifier() + "'",
                                             e);
                                     }
                                 } else if (provider instanceof WorkspaceBytesPersistenceProvider) {
-                                    readWorkspaceChildrenBytes((WorkspaceBytesPersistenceProvider) provider, workspace, zip);
+                                    readWorkspaceChildrenBytes((WorkspaceBytesPersistenceProvider) provider, workspace,
+                                        zip);
                                 }
                                 Progress.progress(progressTicket);
                                 if (cancel) {
@@ -160,7 +163,8 @@ public class LoadTask implements LongTask, Runnable {
                         //Set current workspace
                         WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
                         for (Workspace workspace : workspaces.getWorkspaces()) {
-                            WorkspaceInformationImpl info = workspace.getLookup().lookup(WorkspaceInformationImpl.class);
+                            WorkspaceInformationImpl info =
+                                workspace.getLookup().lookup(WorkspaceInformationImpl.class);
                             if (info.isOpen()) {
                                 workspaces.setCurrentWorkspace(workspace);
                                 break;
@@ -205,7 +209,8 @@ public class LoadTask implements LongTask, Runnable {
                     }
                     inputFactory.setXMLReporter(new XMLReporter() {
                         @Override
-                        public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                        public void report(String message, String errorType, Object relatedInformation,
+                                           Location location) throws XMLStreamException {
                         }
                     });
                     isReader = new InputStreamReader(is, "UTF-8");
@@ -252,7 +257,8 @@ public class LoadTask implements LongTask, Runnable {
                     }
                     inputFactory.setXMLReporter(new XMLReporter() {
                         @Override
-                        public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                        public void report(String message, String errorType, Object relatedInformation,
+                                           Location location) throws XMLStreamException {
                         }
                     });
                     isReader = new InputStreamReader(is, "UTF-8");
@@ -280,7 +286,8 @@ public class LoadTask implements LongTask, Runnable {
         return null;
     }
 
-    private void readWorkspaceChildrenXML(WorkspaceXMLPersistenceProvider persistenceProvider, Workspace workspace, ZipFile zipFile) throws Exception {
+    private void readWorkspaceChildrenXML(WorkspaceXMLPersistenceProvider persistenceProvider, Workspace workspace,
+                                          ZipFile zipFile) throws Exception {
         String identifier = persistenceProvider.getIdentifier();
         ZipEntry entry = zipFile.getEntry("Workspace_" + workspace.getId() + "_" + identifier + "_xml");
         if (entry != null) {
@@ -298,7 +305,8 @@ public class LoadTask implements LongTask, Runnable {
                     }
                     inputFactory.setXMLReporter(new XMLReporter() {
                         @Override
-                        public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                        public void report(String message, String errorType, Object relatedInformation,
+                                           Location location) throws XMLStreamException {
                         }
                     });
                     isReader = new InputStreamReader(is, "UTF-8");
@@ -325,7 +333,8 @@ public class LoadTask implements LongTask, Runnable {
         }
     }
 
-    private void readWorkspaceChildrenBytes(WorkspaceBytesPersistenceProvider persistenceProvider, Workspace workspace, ZipFile zipFile) throws Exception {
+    private void readWorkspaceChildrenBytes(WorkspaceBytesPersistenceProvider persistenceProvider, Workspace workspace,
+                                            ZipFile zipFile) throws Exception {
         String identifier = persistenceProvider.getIdentifier();
         ZipEntry entry = zipFile.getEntry("Workspace_" + workspace.getId() + "_" + identifier + "_bytes");
         if (entry != null) {

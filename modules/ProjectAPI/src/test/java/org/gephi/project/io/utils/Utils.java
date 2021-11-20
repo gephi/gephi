@@ -1,6 +1,5 @@
 package org.gephi.project.io.utils;
 
-import org.gephi.project.api.ProjectController;
 import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.WorkspaceProviderImpl;

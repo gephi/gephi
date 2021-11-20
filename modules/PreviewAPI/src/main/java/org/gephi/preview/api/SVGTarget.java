@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.api;
 
 import java.awt.Color;
@@ -54,11 +55,12 @@ import org.w3c.dom.Text;
  * transcode the SVG DOM in a SVG document.
  * <p>
  * To allow further document further manipulation the DOM is organized with top
- * elements. Top elements are <code>nodes</code>, <code>edges</code>, <code>node-labels</code>, 
+ * elements. Top elements are <code>nodes</code>, <code>edges</code>, <code>node-labels</code>,
  * <code>edge-labels</code> and <code>arrows</code> and are elements to append
  * items to. For instance when a node label element is created it should be appended
  * to the <code>node-label</code> element instead of directly to the root. Use
  * the <code>getTopElement()</code> method to retrieve or create top elements.
+ *
  * @author Mathieu Bastian
  */
 public interface SVGTarget extends RenderTarget {
@@ -98,6 +100,7 @@ public interface SVGTarget extends RenderTarget {
 
     /**
      * Create a new element <code>qualifiedName</code> in the document.
+     *
      * @param qualifiedName the name of the element
      * @return the newly created element
      */
@@ -105,6 +108,7 @@ public interface SVGTarget extends RenderTarget {
 
     /**
      * Create a new text node with <code>data</code> in it.
+     *
      * @param data the text data
      * @return the newly created text node
      */
@@ -114,6 +118,7 @@ public interface SVGTarget extends RenderTarget {
      * Returns the top element <code>name</code> in the document. Top elements are
      * direct children of the root node and help to organize the SVG document (e.g.
      * all edges in the same parent DOM node). Create the top element if it missing.
+     *
      * @param name the top element name to lookup
      * @return the top element
      */
@@ -121,6 +126,7 @@ public interface SVGTarget extends RenderTarget {
 
     /**
      * Returns the SVG document
+     *
      * @return the SVG document
      */
     public Document getDocument();
@@ -128,12 +134,14 @@ public interface SVGTarget extends RenderTarget {
     /**
      * When <code>SCALE_STROKES</code> property is <code>true</code> returns
      * the scale ratio to scale strokes with.
+     *
      * @return the current scale ratio
      */
     public float getScaleRatio();
 
     /**
      * Returns <code>color</code> in the hex format (e.g. #ff0000).
+     *
      * @param color the color to convert
      * @return the color in a hex format
      */

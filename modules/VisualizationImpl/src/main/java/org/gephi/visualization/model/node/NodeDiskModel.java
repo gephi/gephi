@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.model.node;
 
 import com.jogamp.opengl.GL2;
@@ -79,13 +80,16 @@ public class NodeDiskModel extends NodeModel {
                 float r = node.r();
                 float g = node.g();
                 float b = node.b();
-                gl.glColor3f(r + (lightColor[0] - r) * lightColorFactor, g + (lightColor[1] - g) * lightColorFactor, b + (lightColor[2] - b) * lightColorFactor);
+                gl.glColor3f(r + (lightColor[0] - r) * lightColorFactor, g + (lightColor[1] - g) * lightColorFactor,
+                    b + (lightColor[2] - b) * lightColorFactor);
                 gl.glCallList(modelType);
                 if (modelBorderType != 0) {
                     float rborder = 0.498f * r;
                     float gborder = 0.498f * g;
                     float bborder = 0.498f * b;
-                    gl.glColor3f(rborder + (lightColor[0] - rborder) * lightColorFactor, gborder + (lightColor[1] - gborder) * lightColorFactor, bborder + (lightColor[2] - bborder) * lightColorFactor);
+                    gl.glColor3f(rborder + (lightColor[0] - rborder) * lightColorFactor,
+                        gborder + (lightColor[1] - gborder) * lightColorFactor,
+                        bborder + (lightColor[2] - bborder) * lightColorFactor);
                     gl.glCallList(modelBorderType);
                 }
             } else {

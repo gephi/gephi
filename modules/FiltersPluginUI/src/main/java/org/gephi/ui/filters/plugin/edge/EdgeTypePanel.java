@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.gephi.ui.filters.plugin.edge;
 
 import java.awt.event.ItemEvent;
@@ -12,12 +13,12 @@ import org.gephi.filters.plugin.edge.EdgeTypeBuilder;
 import org.gephi.filters.plugin.edge.EdgeTypeBuilder.EdgeTypeFilter;
 
 /**
- *
  * @author mbastian
  */
 public class EdgeTypePanel extends javax.swing.JPanel {
 
     private EdgeTypeFilter filter;
+    private javax.swing.JComboBox comboBox;
 
     /**
      * Creates new form EdgeTypePanel
@@ -44,8 +45,8 @@ public class EdgeTypePanel extends javax.swing.JPanel {
             comboBoxModel.addElement(o);
         }
         comboBox.setModel(comboBoxModel);
-        
-        if(comboBoxModel.getSize() > 0) {
+
+        if (comboBoxModel.getSize() > 0) {
             filter.setEdgeTypeLabel(comboBoxModel.getSelectedItem());
         }
     }
@@ -58,5 +59,4 @@ public class EdgeTypePanel extends javax.swing.JPanel {
         comboBox.setModel(new DefaultComboBoxModel());
         add(comboBox, java.awt.BorderLayout.CENTER);
     }
-    private javax.swing.JComboBox comboBox;
 }

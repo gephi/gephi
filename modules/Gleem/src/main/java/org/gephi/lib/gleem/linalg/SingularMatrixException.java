@@ -39,15 +39,17 @@
 
 package org.gephi.lib.gleem.linalg;
 
-/** Thrown to indicate a singular matrix during an inversion or
-    related operation. */
+/**
+ * Thrown to indicate a singular matrix during an inversion or
+ * related operation.
+ */
 
 public class SingularMatrixException extends RuntimeException {
-  public SingularMatrixException() {
-    super();
-  }
+    public SingularMatrixException() {
+        super();
+    }
 
-  public SingularMatrixException(String msg) {
-    super(msg);
-  }
+    public SingularMatrixException(String msg) {
+        super(msg);
+    }
 }

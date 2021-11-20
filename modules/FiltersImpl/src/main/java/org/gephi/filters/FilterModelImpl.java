@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters;
 
 import java.util.ArrayList;
@@ -59,22 +60,21 @@ import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class FilterModelImpl implements FilterModel {
 
     private final FilterLibraryImpl filterLibraryImpl;
     private final LinkedList<Query> queries;
-    private FilterThread filterThread;
     private final GraphModel graphModel;
     private final Workspace workspace;
+    private final FilterAutoRefreshor autoRefreshor;
+    private FilterThread filterThread;
     private Query currentQuery;
     private boolean filtering;
     private boolean selecting;
     private GraphView currentResult;
     private boolean autoRefresh;
-    private final FilterAutoRefreshor autoRefreshor;
     //Listeners
     private List<ChangeListener> listeners;
 
@@ -141,7 +141,7 @@ public class FilterModelImpl implements FilterModel {
 
     public void setSubQuery(Query query, Query subQuery) {
         updateParameters(subQuery);
-        
+
         //Clean
         if (queries.contains(subQuery)) {
             queries.remove(subQuery);
@@ -187,16 +187,16 @@ public class FilterModelImpl implements FilterModel {
         return currentQuery != null && filtering;
     }
 
-    @Override
-    public boolean isSelecting() {
-        return currentQuery != null && selecting;
-    }
-
     public void setFiltering(boolean filtering) {
         this.filtering = filtering;
         if (filtering) {
             this.selecting = false;
         }
+    }
+
+    @Override
+    public boolean isSelecting() {
+        return currentQuery != null && selecting;
     }
 
     public void setSelecting(boolean selecting) {
@@ -268,12 +268,16 @@ public class FilterModelImpl implements FilterModel {
         return filterThread;
     }
 
+    public void setFilterThread(FilterThread filterThread) {
+        this.filterThread = filterThread;
+    }
+
     public FilterAutoRefreshor getAutoRefreshor() {
         return autoRefreshor;
     }
 
-    public void setFilterThread(FilterThread filterThread) {
-        this.filterThread = filterThread;
+    public GraphView getCurrentResult() {
+        return currentResult;
     }
 
     public void setCurrentResult(GraphView currentResult) {
@@ -283,10 +287,6 @@ public class FilterModelImpl implements FilterModel {
         } else if (currentResult == null && autoRefresh) {
             autoRefreshor.setEnable(false);
         }
-    }
-
-    public GraphView getCurrentResult() {
-        return currentResult;
     }
 
     public GraphModel getGraphModel() {

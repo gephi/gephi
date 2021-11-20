@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.opengl;
 
 import com.jogamp.opengl.GL2;
@@ -64,7 +65,6 @@ import org.gephi.visualization.selection.Cylinder;
 import org.gephi.visualization.selection.Rectangle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class CompatibilityEngine extends AbstractEngine {
@@ -151,7 +151,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (edgeModeler.isEnabled()) {
             edgeModeler.beforeDisplay(gl, glu);
 
-            for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
+            for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext(); ) {
                 EdgeModel obj = itr.next();
 
                 if (obj.markTime != markTime) {
@@ -167,7 +167,7 @@ public class CompatibilityEngine extends AbstractEngine {
         //Arrows
         if (edgeModeler.isEnabled() && vizConfig.isShowArrows() && dataBridge.isDirected()) {
             gl.glBegin(GL2.GL_TRIANGLES);
-            for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
+            for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext(); ) {
                 EdgeModel obj = itr.next();
                 if (obj.getEdge().isDirected() && obj.markTime != markTime) {
                     obj.displayArrow(gl, glu, vizModel);
@@ -180,7 +180,7 @@ public class CompatibilityEngine extends AbstractEngine {
         //Nodes
         if (nodeModeler.isEnabled()) {
             nodeModeler.beforeDisplay(gl, glu);
-            for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+            for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext(); ) {
                 NodeModel obj = itr.next();
                 if (obj.markTime != markTime) {
                     obj.display(gl, glu, vizModel);
@@ -197,7 +197,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 textManager.getNodeRenderer().beginRendering();
                 textManager.defaultNodeColor();
                 if (textManager.isSelectedOnly()) {
-                    for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+                    for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext(); ) {
                         NodeModel obj = itr.next();
                         if (obj.markTime != markTime) {
                             if (obj.isSelected() && obj.isTextVisible()) {
@@ -207,7 +207,7 @@ public class CompatibilityEngine extends AbstractEngine {
                         }
                     }
                 } else {
-                    for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+                    for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext(); ) {
                         NodeModel obj = itr.next();
                         if (obj.markTime != markTime) {
                             if (obj.isTextVisible()) {
@@ -242,7 +242,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 textManager.getEdgeRenderer().beginRendering();
                 textManager.defaultEdgeColor();
                 if (textManager.isSelectedOnly()) {
-                    for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
+                    for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext(); ) {
                         EdgeModel obj = itr.next();
                         if (obj.markTime != markTime) {
                             if ((obj.isSelected() || obj.isAutoSelected()) && obj.isTextVisible()) {
@@ -252,7 +252,7 @@ public class CompatibilityEngine extends AbstractEngine {
                         }
                     }
                 } else {
-                    for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
+                    for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext(); ) {
                         EdgeModel obj = itr.next();
                         if (obj.markTime != markTime) {
                             if (obj.isTextVisible()) {
@@ -308,7 +308,7 @@ public class CompatibilityEngine extends AbstractEngine {
             //Select with click
             boolean someSelection = false;
 
-            for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext();) {
+            for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext(); ) {
                 NodeModel obj = (NodeModel) itr.next();
                 if (isUnderMouse(obj)) {
                     if (!obj.isSelected()) {
@@ -386,7 +386,7 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         boolean someSelection = false;
-        for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext();) {
+        for (Iterator<NodeModel> itr = octree.getSelectableNodeIterator(); itr.hasNext(); ) {
             NodeModel obj = itr.next();
             if (isUnderMouse(obj)) {
                 if (!obj.isSelected()) {
@@ -449,7 +449,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public synchronized void updateLOD() {
         Iterator<NodeModel> iterator = octree.getNodeIterator();
-        for (; iterator.hasNext();) {
+        for (; iterator.hasNext(); ) {
             NodeModel obj = iterator.next();
             nodeModeler.chooseModel(obj);
         }
@@ -458,7 +458,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public synchronized List<NodeModel> getSelectedNodes() {
         List<NodeModel> selected = new ArrayList<>();
-        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext(); ) {
             NodeModel nodeModel = itr.next();
             if (nodeModel.isSelected()) {
                 selected.add(nodeModel);
@@ -470,7 +470,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public synchronized List<EdgeModel> getSelectedEdges() {
         List<EdgeModel> selected = new ArrayList<>();
-        for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
+        for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext(); ) {
             EdgeModel edgeModel = itr.next();
             if (edgeModel.isSelected()) {
                 selected.add(edgeModel);
@@ -482,7 +482,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public synchronized List<Node> getSelectedUnderlyingNodes() {
         List<Node> selected = new ArrayList<>();
-        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext();) {
+        for (Iterator<NodeModel> itr = octree.getNodeIterator(); itr.hasNext(); ) {
             NodeModel nodeModel = itr.next();
             if (nodeModel.isSelected()) {
                 selected.add(nodeModel.getNode());
@@ -494,7 +494,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public synchronized List<Edge> getSelectedUnderlyingEdges() {
         List<Edge> selected = new ArrayList<>();
-        for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext();) {
+        for (Iterator<EdgeModel> itr = octree.getEdgeIterator(); itr.hasNext(); ) {
             EdgeModel edgeModel = itr.next();
             if (edgeModel.isSelected()) {
                 selected.add(edgeModel.getEdge());
@@ -505,7 +505,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void selectObject(Model modl) {
-        selectObject(new Model[]{modl});
+        selectObject(new Model[] {modl});
     }
 
     @Override
@@ -514,7 +514,7 @@ public class CompatibilityEngine extends AbstractEngine {
             vizConfig.setRectangleSelection(false);
             customSelection = true;
         }
-        
+
         if (objs != null) {
             for (Model mdl : objs) {
                 if (mdl != null) {
@@ -522,10 +522,10 @@ public class CompatibilityEngine extends AbstractEngine {
                     anySelected = true;
                 }
             }
-            
+
             forceHighlight();
         }
-        
+
         scheduler.requireUpdateSelection();
         configChanged = true;
     }
@@ -548,21 +548,21 @@ public class CompatibilityEngine extends AbstractEngine {
     public synchronized void resetSelection() {
         resetNodesSelection();
         resetEdgesSelection();
-        
+
         customSelection = false;
         configChanged = true;
         anySelected = false;
         vizConfig.setLightenNonSelected(false);
         scheduler.requireUpdateSelection();
     }
-    
-    private void resetNodesSelection(){
+
+    private void resetNodesSelection() {
         for (NodeModel selectedNode : getSelectedNodes()) {
             selectedNode.setSelected(false);
         }
     }
-    
-    private void resetEdgesSelection(){
+
+    private void resetEdgesSelection() {
         for (EdgeModel selectedEdge : getSelectedEdges()) {
             selectedEdge.setSelected(false);
         }

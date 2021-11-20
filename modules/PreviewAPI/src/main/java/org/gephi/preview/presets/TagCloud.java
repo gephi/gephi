@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.presets;
 
 import org.gephi.preview.api.PreviewPreset;
@@ -53,7 +54,7 @@ public class TagCloud extends PreviewPreset {
         //Default
         DefaultPreset defaultPreset = new DefaultPreset();
         properties.putAll(defaultPreset.getProperties());
-        
+
         //Custom values
         properties.put(PreviewProperty.NODE_LABEL_SHOW_BOX, Boolean.TRUE);
         properties.put(PreviewProperty.NODE_LABEL_BOX_OPACITY, 80f);

@@ -1,4 +1,3 @@
-
 /*
  Copyright 2008-2010 Gephi
  Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -40,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.spi;
 
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
@@ -75,7 +75,7 @@ import org.gephi.graph.api.Node;
  * <p>
  * <b>getSubItems will be called before and after setup. Take care when the
  * nodes are null!</b>
- *
+ * <p>
  * To provide a context menu item, a class has to implement this interface and
  * have a <code>@ServiceProvider</code> annotation
  *

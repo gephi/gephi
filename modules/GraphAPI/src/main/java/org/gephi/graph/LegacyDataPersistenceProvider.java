@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.graph;
 
 import javax.xml.stream.XMLStreamException;
@@ -91,7 +92,8 @@ public class LegacyDataPersistenceProvider implements WorkspaceXMLPersistencePro
         return "Data";
     }
 
-    public void readData(XMLStreamReader reader, GraphModel graphModel, LegacyMapHelper helper) throws XMLStreamException {
+    public void readData(XMLStreamReader reader, GraphModel graphModel, LegacyMapHelper helper)
+        throws XMLStreamException {
         Graph graph = graphModel.getGraph();
 
         boolean end = false;
@@ -154,14 +156,14 @@ public class LegacyDataPersistenceProvider implements WorkspaceXMLPersistencePro
                     float g = Float.parseFloat(reader.getAttributeValue(null, "g"));
                     float b = Float.parseFloat(reader.getAttributeValue(null, "b"));
                     float alpha = Float.parseFloat(reader.getAttributeValue(null, "a"));
-                    
+
                     //Old gephi versions stored r = -1 to indicate that the edge had no color (use the node color)
                     //Since Gephi 0.9, we do that with alpha = 0
-                    if(r < 0 || g < 0 || b < 0){
+                    if (r < 0 || g < 0 || b < 0) {
                         r = g = b = 0;
                         alpha = 0;
                     }
-                    
+
                     edge.setR(r);
                     edge.setG(g);
                     edge.setB(b);

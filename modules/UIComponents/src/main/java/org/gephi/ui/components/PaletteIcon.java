@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components;
 
 import java.awt.BasicStroke;
@@ -49,7 +50,6 @@ import java.awt.Graphics2D;
 import javax.swing.Icon;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class PaletteIcon implements Icon {

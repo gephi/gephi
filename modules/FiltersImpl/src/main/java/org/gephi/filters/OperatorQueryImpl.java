@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters;
 
 import org.gephi.filters.spi.Filter;
@@ -46,7 +47,6 @@ import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.Operator;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class OperatorQueryImpl extends AbstractQueryImpl {
@@ -103,11 +103,11 @@ public class OperatorQueryImpl extends AbstractQueryImpl {
         return null;
     }
 
-    public void setSimple(boolean simple) {
-        this.simple = simple;
-    }
-
     public boolean isSimple() {
         return simple;
+    }
+
+    public void setSimple(boolean simple) {
+        this.simple = simple;
     }
 }

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.api;
 
 import com.itextpdf.text.Rectangle;
@@ -55,9 +56,10 @@ import com.itextpdf.text.pdf.PdfContentByte;
  * draw items.
  * <p>
  * When this target is instanciated it uses property values defined in the
- * {@link PreviewProperties}. Namely is uses <code>MARGIN_LEFT</code>, 
- * <code>MARGIN_TOP</code>, <code>MARGIN_BOTTOM</code>, <code>MARGIN_RIGHT</code>, 
- * <code>LANDCAPE</code> and <code>PAGESIZE</code>. 
+ * {@link PreviewProperties}. Namely is uses <code>MARGIN_LEFT</code>,
+ * <code>MARGIN_TOP</code>, <code>MARGIN_BOTTOM</code>, <code>MARGIN_RIGHT</code>,
+ * <code>LANDCAPE</code> and <code>PAGESIZE</code>.
+ *
  * @author Yudi Xue, Mathieu Bastian
  */
 public interface PDFTarget extends RenderTarget {
@@ -73,8 +75,8 @@ public interface PDFTarget extends RenderTarget {
     /**
      * Returns the <code>PDFContentBype</code> instance of the PDFTarget. PDFContentByte
      * offers a set of drawing functions which can be used by Renderer objects.
-     * 
-     * @return a PDFContentBype object 
+     *
+     * @return a PDFContentBype object
      */
     public PdfContentByte getContentByte();
 
@@ -88,14 +90,14 @@ public interface PDFTarget extends RenderTarget {
      * If <code>font</code> can't be found in iText's default fonts or registered
      * fonts it returns the default Helvetica font.
      *
-     * @param font  the reference Java font
-     * @return      the iText BaseFont, or Helvetica is not found
+     * @param font the reference Java font
+     * @return the iText BaseFont, or Helvetica is not found
      */
     public BaseFont getBaseFont(java.awt.Font font);
 
     /**
      * Returns the margin at the bottom of the page.
-     * 
+     *
      * @return the bottom margin, in pixels
      */
     public float getMarginBottom();

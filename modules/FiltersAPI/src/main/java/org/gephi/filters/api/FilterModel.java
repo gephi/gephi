@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.api;
 
 import javax.swing.event.ChangeListener;
@@ -82,7 +83,7 @@ public interface FilterModel {
     /**
      * Returns <code>true</code> if the system is currently in filtering mode.
      *
-     * @return          <code>true</code> if the result graph is filtered,
+     * @return <code>true</code> if the result graph is filtered,
      * <code>false</code> if it's in selection mode
      */
     public boolean isFiltering();
@@ -90,7 +91,7 @@ public interface FilterModel {
     /**
      * Returns <code>true</code> if the system is currently in selection mode.
      *
-     * @return          <code>true</code> if the result is selected on the graph,
+     * @return <code>true</code> if the result is selected on the graph,
      * <code>false</code> if it's filtered
      */
     public boolean isSelecting();

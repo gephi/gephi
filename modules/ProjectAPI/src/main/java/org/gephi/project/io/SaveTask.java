@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.io;
 
 import java.io.BufferedOutputStream;
@@ -48,8 +49,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
@@ -70,7 +69,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class SaveTask implements LongTask, Runnable {
@@ -84,6 +82,30 @@ public class SaveTask implements LongTask, Runnable {
     public SaveTask(Project project, File file) {
         this.project = project;
         this.file = file;
+    }
+
+    private static XMLStreamWriter newXMLWriter(OutputStream outputStream) throws Exception {
+        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+        outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
+        return outputFactory.createXMLStreamWriter(outputStream, "UTF-8");
+    }
+
+    private static String getFileExtension(File file) {
+        String name = file.getName();
+        try {
+            return name.substring(name.lastIndexOf(".") + 1);
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private static String getFileNameWithoutExt(File file) {
+        String fileName = file.getName();
+        int pos = fileName.lastIndexOf(".");
+        if (pos > 0) {
+            fileName = fileName.substring(0, pos);
+        }
+        return fileName;
     }
 
     @Override
@@ -192,7 +214,7 @@ public class SaveTask implements LongTask, Runnable {
         } finally {
             if (writeFile != null && writeFile.exists()) {
                 FileObject tempFileObject = FileUtil.toFileObject(writeFile);
-                if(tempFileObject != null) {
+                if (tempFileObject != null) {
                     try {
                         tempFileObject.delete();
                     } catch (IOException ex) {
@@ -222,7 +244,8 @@ public class SaveTask implements LongTask, Runnable {
         zipOut.closeEntry();
     }
 
-    private void writeWorkspace(Workspace workspace, OutputStream outputStream, ZipOutputStream zipOut) throws Exception {
+    private void writeWorkspace(Workspace workspace, OutputStream outputStream, ZipOutputStream zipOut)
+        throws Exception {
         //Write Project file
         zipOut.putNextEntry(new ZipEntry("Workspace_" + workspace.getId() + "_xml"));
 
@@ -241,7 +264,8 @@ public class SaveTask implements LongTask, Runnable {
         zipOut.closeEntry();
     }
 
-    private void writeWorkspaceChildrenXML(Workspace workspace, WorkspaceXMLPersistenceProvider persistenceProvider, OutputStream outputStream, ZipOutputStream zipOut) throws Exception {
+    private void writeWorkspaceChildrenXML(Workspace workspace, WorkspaceXMLPersistenceProvider persistenceProvider,
+                                           OutputStream outputStream, ZipOutputStream zipOut) throws Exception {
         String identifier = persistenceProvider.getIdentifier();
 
         //Write Project file
@@ -262,7 +286,8 @@ public class SaveTask implements LongTask, Runnable {
         zipOut.closeEntry();
     }
 
-    private void writeWorkspaceChildrenBytes(Workspace workspace, WorkspaceBytesPersistenceProvider persistenceProvider, DataOutputStream outputStream, ZipOutputStream zipOut) throws Exception {
+    private void writeWorkspaceChildrenBytes(Workspace workspace, WorkspaceBytesPersistenceProvider persistenceProvider,
+                                             DataOutputStream outputStream, ZipOutputStream zipOut) throws Exception {
         String identifier = persistenceProvider.getIdentifier();
 
         //Write Project file
@@ -274,30 +299,6 @@ public class SaveTask implements LongTask, Runnable {
 
         //Close Project file
         zipOut.closeEntry();
-    }
-
-    private static XMLStreamWriter newXMLWriter(OutputStream outputStream) throws Exception {
-        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-        outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
-        return outputFactory.createXMLStreamWriter(outputStream, "UTF-8");
-    }
-
-    private static String getFileExtension(File file) {
-        String name = file.getName();
-        try {
-            return name.substring(name.lastIndexOf(".") + 1);
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    private static String getFileNameWithoutExt(File file) {
-        String fileName = file.getName();
-        int pos = fileName.lastIndexOf(".");
-        if (pos > 0) {
-            fileName = fileName.substring(0, pos);
-        }
-        return fileName;
     }
 
     @Override

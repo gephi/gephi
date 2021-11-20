@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.model.edge;
 
 import com.jogamp.common.nio.Buffers;
@@ -53,7 +54,6 @@ import org.gephi.visualization.VizModel;
 import org.gephi.visualization.model.node.NodeModel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class SelfLoopModel extends EdgeModel {
@@ -81,7 +81,8 @@ public class SelfLoopModel extends EdgeModel {
         if (limits.getMinWeight() == limits.getMaxWeight()) {
             weightRatio = Edge2dModel.WEIGHT_MINIMUM / limits.getMinWeight();
         } else {
-            weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+            weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) /
+                (limits.getMaxWeight() - limits.getMinWeight()));
         }
         float w = weight;
         float edgeScale = vizModel.getEdgeScale();

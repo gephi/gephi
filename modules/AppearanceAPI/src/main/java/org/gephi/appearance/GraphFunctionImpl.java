@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.gephi.appearance;
 
 import org.gephi.appearance.api.GraphFunction;
@@ -15,16 +16,18 @@ import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 
 /**
- *
  * @author mbastian
  */
 public class GraphFunctionImpl extends FunctionImpl implements GraphFunction, RankingFunction, PartitionFunction {
 
-    public GraphFunctionImpl(String id, String name, Class<? extends Element> elementClass, Graph graph, Transformer transformer, TransformerUI transformerUI, RankingImpl ranking, Interpolator interpolator) {
+    public GraphFunctionImpl(String id, String name, Class<? extends Element> elementClass, Graph graph,
+                             Transformer transformer, TransformerUI transformerUI, RankingImpl ranking,
+                             Interpolator interpolator) {
         super(id, name, elementClass, graph, null, transformer, transformerUI, null, ranking, interpolator);
     }
 
-    public GraphFunctionImpl(String id, String name, Class<? extends Element> elementClass, Graph graph, Transformer transformer, TransformerUI transformerUI, PartitionImpl partition) {
+    public GraphFunctionImpl(String id, String name, Class<? extends Element> elementClass, Graph graph,
+                             Transformer transformer, TransformerUI transformerUI, PartitionImpl partition) {
         super(id, name, elementClass, graph, null, transformer, transformerUI, partition, null, null);
     }
 

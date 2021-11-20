@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.plugin.builders;
 
 import java.awt.Color;
@@ -57,7 +58,6 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ItemBuilder.class, position = 200)
@@ -78,9 +78,9 @@ public class NodeLabelBuilder implements ItemBuilder {
             if (textData != null) {
                 if (textData.getR() != -1) {
                     labelItem.setData(NodeLabelItem.COLOR, new Color((int) (textData.getR() * 255),
-                            (int) (textData.getG() * 255),
-                            (int) (textData.getB() * 255),
-                            (int) (textData.getAlpha() * 255)));
+                        (int) (textData.getG() * 255),
+                        (int) (textData.getB() * 255),
+                        (int) (textData.getAlpha() * 255)));
                 }
 //                labelItem.setData(NodeLabelItem.WIDTH, textData.getWidth());
 //                labelItem.setData(NodeLabelItem.HEIGHT, textData.getHeight());

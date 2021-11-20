@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.merge.ui;
 
 import javax.swing.JPanel;
@@ -64,6 +65,11 @@ public class JoinWithSeparatorUI extends javax.swing.JPanel implements Manipulat
     private JoinWithSeparator manipulator;
     private DialogControls dialogControls;
     private Table table;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel separatorLabel;
+    private javax.swing.JTextField separatorText;
+    private javax.swing.JLabel titleLabel;
+    private javax.swing.JTextField titleTextField;
 
     /**
      * Creates new form JoinWithSeparatorUI
@@ -88,7 +94,8 @@ public class JoinWithSeparatorUI extends javax.swing.JPanel implements Manipulat
 
             private void refreshOkButton() {
                 String text = titleTextField.getText();
-                dialogControls.setOkButtonEnabled(text != null && !text.isEmpty() && !table.hasColumn(text));//Title not empty and not repeated.
+                dialogControls.setOkButtonEnabled(
+                    text != null && !text.isEmpty() && !table.hasColumn(text));//Title not empty and not repeated.
             }
         });
     }
@@ -105,7 +112,8 @@ public class JoinWithSeparatorUI extends javax.swing.JPanel implements Manipulat
     public void unSetup() {
         manipulator.setNewColumnTitle(titleTextField.getText());
         manipulator.setSeparator(separatorText.getText());
-        NbPreferences.forModule(JoinWithSeparator.class).put(JoinWithSeparator.SEPARATOR_SAVED_PREFERENCES, separatorText.getText());
+        NbPreferences.forModule(JoinWithSeparator.class)
+            .put(JoinWithSeparator.SEPARATOR_SAVED_PREFERENCES, separatorText.getText());
     }
 
     @Override
@@ -142,47 +150,48 @@ public class JoinWithSeparatorUI extends javax.swing.JPanel implements Manipulat
         separatorLabel = new javax.swing.JLabel();
         separatorText = new javax.swing.JTextField();
 
-        titleLabel.setText(org.openide.util.NbBundle.getMessage(JoinWithSeparatorUI.class, "JoinWithSeparatorUI.titleLabel.text")); // NOI18N
+        titleLabel.setText(org.openide.util.NbBundle
+            .getMessage(JoinWithSeparatorUI.class, "JoinWithSeparatorUI.titleLabel.text")); // NOI18N
 
-        titleTextField.setText(org.openide.util.NbBundle.getMessage(JoinWithSeparatorUI.class, "JoinWithSeparatorUI.titleTextField.text")); // NOI18N
+        titleTextField.setText(org.openide.util.NbBundle
+            .getMessage(JoinWithSeparatorUI.class, "JoinWithSeparatorUI.titleTextField.text")); // NOI18N
 
-        separatorLabel.setText(org.openide.util.NbBundle.getMessage(JoinWithSeparatorUI.class, "JoinWithSeparatorUI.separatorLabel.text")); // NOI18N
+        separatorLabel.setText(org.openide.util.NbBundle
+            .getMessage(JoinWithSeparatorUI.class, "JoinWithSeparatorUI.separatorLabel.text")); // NOI18N
 
-        separatorText.setText(org.openide.util.NbBundle.getMessage(JoinWithSeparatorUI.class, "JoinWithSeparatorUI.separatorText.text")); // NOI18N
+        separatorText.setText(org.openide.util.NbBundle
+            .getMessage(JoinWithSeparatorUI.class, "JoinWithSeparatorUI.separatorText.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(titleLabel)
-                    .addComponent(separatorLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(separatorText, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
-                    .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(titleLabel)
+                        .addComponent(separatorLabel))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(separatorText, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                        .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(titleLabel)
-                    .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(separatorLabel)
-                    .addComponent(separatorText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(titleLabel)
+                        .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(separatorLabel)
+                        .addComponent(separatorText, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel separatorLabel;
-    private javax.swing.JTextField separatorText;
-    private javax.swing.JLabel titleLabel;
-    private javax.swing.JTextField titleTextField;
     // End of variables declaration//GEN-END:variables
 }

@@ -39,13 +39,17 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.edge;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.plugin.AbstractFilter;
-import org.gephi.filters.spi.*;
+import org.gephi.filters.spi.Category;
+import org.gephi.filters.spi.EdgeFilter;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -54,7 +58,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = FilterBuilder.class)
@@ -107,8 +110,8 @@ public class MutualEdgeBuilder implements FilterBuilder {
 
         @Override
         public boolean evaluate(Graph graph, Edge edge) {
-            if(edge.isDirected()) {
-                DirectedGraph directedGraph = (DirectedGraph)graph;
+            if (edge.isDirected()) {
+                DirectedGraph directedGraph = (DirectedGraph) graph;
                 return directedGraph.getMutualEdge(edge) != null;
             }
             return false;

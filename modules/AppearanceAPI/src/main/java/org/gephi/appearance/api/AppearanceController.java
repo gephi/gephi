@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
 import org.gephi.appearance.spi.Transformer;
@@ -61,7 +62,7 @@ public interface AppearanceController {
      * it is called the <b>local</b> scale.
      *
      * @param useLocalScale <code>true</code> for local, <code>false</code> for
-     * global
+     *                      global
      */
     public void setUseLocalScale(boolean useLocalScale);
 

@@ -39,12 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.generator.plugin;
 
 import org.gephi.io.generator.spi.GeneratorUI;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface RandomGraphUI extends GeneratorUI {

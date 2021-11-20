@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components.splineeditor;
 
 import java.awt.BorderLayout;
@@ -76,8 +77,8 @@ public class SplineEditor extends JDialog {
     private Component buildHeader() {
         ImageIcon icon = new ImageIcon(getClass().getResource("images/simulator.png"));
         JXHeader header = new JXHeader(NbBundle.getMessage(SplineEditor.class, "splineEditor_title"),
-                NbBundle.getMessage(SplineEditor.class, "splineEditor_header"),
-                icon);
+            NbBundle.getMessage(SplineEditor.class, "splineEditor_header"),
+            icon);
         return header;
     }
 
@@ -91,14 +92,14 @@ public class SplineEditor extends JDialog {
         return display.getControl1();
     }
 
-    public Point2D getControl2() {
-        SplineDisplay display = splineControlPanel.getDisplay();
-        return display.getControl2();
-    }
-
     public void setControl1(Point2D control1) {
         SplineDisplay display = splineControlPanel.getDisplay();
         display.setControl1(control1);
+    }
+
+    public Point2D getControl2() {
+        SplineDisplay display = splineControlPanel.getDisplay();
+        return display.getControl2();
     }
 
     public void setControl2(Point2D control2) {

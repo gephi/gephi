@@ -1,14 +1,10 @@
 package org.gephi.filters;
 
-import org.gephi.filters.plugin.attribute.AttributeEqualBuilder;
 import org.gephi.filters.plugin.graph.EgoBuilder;
 import org.gephi.filters.plugin.graph.GiantComponentBuilder;
 import org.gephi.filters.plugin.graph.HasSelfLoopBuilder;
 import org.gephi.filters.plugin.operator.INTERSECTIONBuilder;
-import org.gephi.filters.spi.Filter;
-import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.project.io.utils.GephiFormat;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class PersistenceProviderTest {
@@ -43,7 +39,7 @@ public class PersistenceProviderTest {
         FilterModelImpl filterModel = Utils.newFilterModel();
         OperatorQueryImpl query = new OperatorQueryImpl(new INTERSECTIONBuilder.IntersectionOperator());
         filterModel.setSubQuery(query, new FilterQueryImpl(null, new GiantComponentBuilder.GiantComponentFilter()));
-        filterModel.setSubQuery(query,  new FilterQueryImpl(null, new HasSelfLoopBuilder.HasSelfLoopFilter()));
+        filterModel.setSubQuery(query, new FilterQueryImpl(null, new HasSelfLoopBuilder.HasSelfLoopFilter()));
         filterModel.addFirst(query);
         GephiFormat.testXMLPersistenceProvider(new FilterModelPersistenceProvider(), filterModel.getWorkspace());
     }

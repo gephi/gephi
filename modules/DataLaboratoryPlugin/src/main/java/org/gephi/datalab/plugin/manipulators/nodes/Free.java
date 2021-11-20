@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
@@ -52,6 +53,7 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that frees (not fixed position) one or more nodes.
+ *
  * @author Eduardo Ramos
  */
 public class Free extends BasicNodesManipulator {

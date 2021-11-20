@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.events;
 
 import java.lang.ref.WeakReference;
@@ -63,17 +64,20 @@ import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.opengl.AbstractEngine;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class StandardVizEventManager implements VizEventManager {
 
+    private static final int PRESSING_FREQUENCY = 5;
+    private static final int DRAGGING_FREQUENCY = 5;
+    //
+    private final ThreadPoolExecutor pool;
     //Architecture
     private AbstractEngine engine;
     private GraphIO graphIO;
-    //
-    private final ThreadPoolExecutor pool;
     private VizEventTypeHandler[] handlers;
+    private int pressingTick = 0;
+    private int draggingTick = 0;
 
     public StandardVizEventManager() {
         pool = new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(10));
@@ -135,7 +139,8 @@ public class StandardVizEventManager implements VizEventManager {
             if (modelArray.isEmpty() || !VizController.getInstance().getVizConfig().isSelectionEnable()) {
                 float[] mousePositionViewport = graphIO.getMousePosition();
                 float[] mousePosition3d = graphIO.getMousePosition3d();
-                float[] mousePos = new float[]{mousePositionViewport[0], mousePositionViewport[1], mousePosition3d[0], mousePosition3d[1]};
+                float[] mousePos = new float[] {mousePositionViewport[0], mousePositionViewport[1], mousePosition3d[0],
+                    mousePosition3d[1]};
                 handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()].dispatch(mousePos);
             }
         }
@@ -183,8 +188,6 @@ public class StandardVizEventManager implements VizEventManager {
     public void mouseRightPress() {
         handlers[VizEvent.Type.MOUSE_RIGHT_PRESS.ordinal()].dispatch();
     }
-    private static final int PRESSING_FREQUENCY = 5;
-    private int pressingTick = 0;
 
     @Override
     public void mouseLeftPressing() {
@@ -214,8 +217,6 @@ public class StandardVizEventManager implements VizEventManager {
     public void stopDrag() {
         handlers[VizEvent.Type.STOP_DRAG.ordinal()].dispatch();
     }
-    private static final int DRAGGING_FREQUENCY = 5;
-    private int draggingTick = 0;
 
     @Override
     public void drag() {
@@ -268,11 +269,11 @@ public class StandardVizEventManager implements VizEventManager {
 
     private class VizEventTypeHandler {
 
+        protected final VizEvent.Type type;
         //Settings
         private final boolean limitRunning;
         //Data
         protected List<WeakReference<VizEventListener>> listeners;
-        protected final VizEvent.Type type;
         protected Runnable runnable;
         //States
         protected boolean running;
@@ -296,7 +297,7 @@ public class StandardVizEventManager implements VizEventManager {
         }
 
         protected synchronized void removeListener(VizEventListener listener) {
-            for (Iterator<WeakReference<VizEventListener>> itr = listeners.iterator(); itr.hasNext();) {
+            for (Iterator<WeakReference<VizEventListener>> itr = listeners.iterator(); itr.hasNext(); ) {
                 WeakReference<VizEventListener> li = itr.next();
                 if (li.get() == listener) {
                     itr.remove();

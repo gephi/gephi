@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.api.selection;
 
 import com.jogamp.opengl.GL2;
@@ -47,7 +48,6 @@ import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.model.node.NodeModel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface SelectionArea {

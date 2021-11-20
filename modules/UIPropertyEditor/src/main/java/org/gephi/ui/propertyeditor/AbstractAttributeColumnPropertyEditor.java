@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.propertyeditor;
 
 import java.beans.PropertyEditorSupport;
@@ -51,26 +52,14 @@ import org.gephi.graph.api.GraphModel;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSupport {
 
-    public enum EditorClass {
-
-        NODE, EDGE, NODEEDGE
-    }
-
-    public enum AttributeTypeClass {
-
-        ALL, NUMBER, STRING, DYNAMIC_NUMBER, ALL_NUMBER
-    }
-
-    private Column[] columns;
-    private Column selectedColumn;
     private final EditorClass editorClass;
     private final AttributeTypeClass attributeTypeClass;
-
+    private Column[] columns;
+    private Column selectedColumn;
     protected AbstractAttributeColumnPropertyEditor(EditorClass editorClass, AttributeTypeClass attributeClass) {
         this.editorClass = editorClass;
         this.attributeTypeClass = attributeClass;
@@ -84,9 +73,11 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
                 for (Column column : model.getNodeTable()) {
                     if (attributeTypeClass.equals(AttributeTypeClass.NUMBER) && isNumberColumn(column)) {
                         cols.add(column);
-                    } else if (attributeTypeClass.equals(AttributeTypeClass.DYNAMIC_NUMBER) && isDynamicNumberColumn(column)) {
+                    } else if (attributeTypeClass.equals(AttributeTypeClass.DYNAMIC_NUMBER) &&
+                        isDynamicNumberColumn(column)) {
                         cols.add(column);
-                    } else if (attributeTypeClass.equals(AttributeTypeClass.ALL_NUMBER) && (isDynamicNumberColumn(column) || isNumberColumn(column))) {
+                    } else if (attributeTypeClass.equals(AttributeTypeClass.ALL_NUMBER) &&
+                        (isDynamicNumberColumn(column) || isNumberColumn(column))) {
                         cols.add(column);
                     } else if (attributeTypeClass.equals(AttributeTypeClass.ALL)) {
                         cols.add(column);
@@ -99,9 +90,11 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
                 for (Column column : model.getEdgeTable()) {
                     if (attributeTypeClass.equals(AttributeTypeClass.NUMBER) && isNumberColumn(column)) {
                         cols.add(column);
-                    } else if (attributeTypeClass.equals(AttributeTypeClass.DYNAMIC_NUMBER) && isDynamicNumberColumn(column)) {
+                    } else if (attributeTypeClass.equals(AttributeTypeClass.DYNAMIC_NUMBER) &&
+                        isDynamicNumberColumn(column)) {
                         cols.add(column);
-                    } else if (attributeTypeClass.equals(AttributeTypeClass.ALL_NUMBER) && (isDynamicNumberColumn(column) || isNumberColumn(column))) {
+                    } else if (attributeTypeClass.equals(AttributeTypeClass.ALL_NUMBER) &&
+                        (isDynamicNumberColumn(column) || isNumberColumn(column))) {
                         cols.add(column);
                     } else if (attributeTypeClass.equals(AttributeTypeClass.ALL)) {
                         cols.add(column);
@@ -154,16 +147,27 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
     }
 
     public boolean isDynamicNumberColumn(Column column) {
-        return AttributeUtils.isDynamicType(column.getTypeClass()) && AttributeUtils.isNumberType(column.getTypeClass());
+        return AttributeUtils.isDynamicType(column.getTypeClass()) &&
+            AttributeUtils.isNumberType(column.getTypeClass());
     }
 
     public boolean isNumberColumn(Column column) {
         return AttributeUtils.isNumberType(column.getTypeClass())
-                && !AttributeUtils.isArrayType(column.getTypeClass())
-                && !AttributeUtils.isDynamicType(column.getTypeClass());
+            && !AttributeUtils.isArrayType(column.getTypeClass())
+            && !AttributeUtils.isDynamicType(column.getTypeClass());
     }
 
     public boolean isStringColumn(Column column) {
         return column.getTypeClass().equals(String.class);
+    }
+
+    public enum EditorClass {
+
+        NODE, EDGE, NODEEDGE
+    }
+
+    public enum AttributeTypeClass {
+
+        ALL, NUMBER, STRING, DYNAMIC_NUMBER, ALL_NUMBER
     }
 }

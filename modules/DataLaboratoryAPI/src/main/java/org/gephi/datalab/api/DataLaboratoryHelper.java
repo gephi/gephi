@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.api;
 
 import java.awt.Dialog;
@@ -87,10 +88,15 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = DataLaboratoryHelper.class)
 public class DataLaboratoryHelper {
 
+    public static DataLaboratoryHelper getDefault() {
+        return Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+    }
+
     /**
      * <p>Prepares an array with one new instance of every NodesManipulator
      * that has a builder registered and returns it.</p>
      * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     *
      * @return Array of all NodesManipulator implementations
      */
     public NodesManipulator[] getNodesManipulators() {
@@ -106,6 +112,7 @@ public class DataLaboratoryHelper {
      * <p>Prepares an array with one new instance of every EdgesManipulator
      * that has a builder registered and returns it.</p>
      * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     *
      * @return Array of all EdgesManipulator implementations
      */
     public EdgesManipulator[] getEdgesManipulators() {
@@ -120,6 +127,7 @@ public class DataLaboratoryHelper {
     /**
      * <p>Prepares an array with one instance of every GeneralActionsManipulator that is registered.</p>
      * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     *
      * @return Array of all GeneralActionsManipulator implementations
      */
     public GeneralActionsManipulator[] getGeneralActionsManipulators() {
@@ -132,6 +140,7 @@ public class DataLaboratoryHelper {
     /**
      * <p>Prepares an array with one instance of every PluginGeneralActionsManipulator that is registered.</p>
      * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     *
      * @return Array of all PluginGeneralActionsManipulator implementations
      */
     public PluginGeneralActionsManipulator[] getPluginGeneralActionsManipulators() {
@@ -145,6 +154,7 @@ public class DataLaboratoryHelper {
      * <p>Prepares an array that has one instance of every AttributeColumnsManipulator implementation
      * that has a builder registered and returns it.</p>
      * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     *
      * @return Array of all AttributeColumnsManipulator implementations
      */
     public AttributeColumnsManipulator[] getAttributeColumnsManipulators() {
@@ -158,11 +168,13 @@ public class DataLaboratoryHelper {
      * <p>Prepares an array with one new instance of every AttributeValueManipulator
      * that has a builder registered and returns it.</p>
      * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     *
      * @return Array of all AttributeValueManipulator implementations
      */
     public AttributeValueManipulator[] getAttributeValueManipulators() {
         ArrayList<AttributeValueManipulator> attributeValueManipulators = new ArrayList<>();
-        for (AttributeValueManipulatorBuilder am : Lookup.getDefault().lookupAll(AttributeValueManipulatorBuilder.class)) {
+        for (AttributeValueManipulatorBuilder am : Lookup.getDefault()
+            .lookupAll(AttributeValueManipulatorBuilder.class)) {
             attributeValueManipulators.add(am.getAttributeValueManipulator());
         }
         sortManipulators(attributeValueManipulators);
@@ -172,11 +184,13 @@ public class DataLaboratoryHelper {
     /**
      * <p>Prepares an array that has one new instance of every AttributeColumnsMergeStrategy implementation that is registered.</p>
      * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     *
      * @return Array of all AttributeColumnsMergeStrategy implementations
      */
     public AttributeColumnsMergeStrategy[] getAttributeColumnsMergeStrategies() {
         ArrayList<AttributeColumnsMergeStrategy> strategies = new ArrayList<>();
-        for (AttributeColumnsMergeStrategyBuilder cs : Lookup.getDefault().lookupAll(AttributeColumnsMergeStrategyBuilder.class)) {
+        for (AttributeColumnsMergeStrategyBuilder cs : Lookup.getDefault()
+            .lookupAll(AttributeColumnsMergeStrategyBuilder.class)) {
             strategies.add(cs.getAttributeColumnsMergeStrategy());
         }
         sortManipulators(strategies);
@@ -186,11 +200,13 @@ public class DataLaboratoryHelper {
     /**
      * <p>Prepares an array that has one new instance of every AttributeRowsMergeStrategy implementation that is registered.</p>
      * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     *
      * @return Array of all AttributeRowsMergeStrategy implementations
      */
     public AttributeRowsMergeStrategy[] getAttributeRowsMergeStrategies() {
         ArrayList<AttributeRowsMergeStrategy> strategies = new ArrayList<>();
-        for (AttributeRowsMergeStrategyBuilder cs : Lookup.getDefault().lookupAll(AttributeRowsMergeStrategyBuilder.class)) {
+        for (AttributeRowsMergeStrategyBuilder cs : Lookup.getDefault()
+            .lookupAll(AttributeRowsMergeStrategyBuilder.class)) {
             strategies.add(cs.getAttributeRowsMergeStrategy());
         }
         sortManipulators(strategies);
@@ -230,6 +246,7 @@ public class DataLaboratoryHelper {
     /**
      * Prepares the dialog UI of a manipulator if it has one and executes the manipulator in a separate
      * Thread when the dialog is accepted or directly if there is no UI.
+     *
      * @param m Manipulator to execute
      */
     public void executeManipulator(final Manipulator m) {
@@ -242,11 +259,14 @@ public class DataLaboratoryHelper {
                     final ManipulatorUI ui = m.getUI();
                     //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                     if (ui != null) {
-                        final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelper.class, "DataLaboratoryHelper.ui.okButton.text"));
+                        final JButton okButton = new JButton(
+                            NbBundle.getMessage(DataLaboratoryHelper.class, "DataLaboratoryHelper.ui.okButton.text"));
                         DialogControls dialogControls = new DialogControlsImpl(okButton);
                         ui.setup(m, dialogControls);
                         JPanel settingsPanel = ui.getSettingsPanel();
-                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelper.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
+                        DialogDescriptor dd = new DialogDescriptor(settingsPanel,
+                            NbBundle.getMessage(DataLaboratoryHelper.class, "SettingsPanel.title", ui.getDisplayName()),
+                            ui.isModal(), new ActionListener() {
 
                             @Override
                             public void actionPerformed(ActionEvent e) {
@@ -258,7 +278,7 @@ public class DataLaboratoryHelper {
                                 }
                             }
                         });
-                        dd.setOptions(new Object[]{okButton, DialogDescriptor.CANCEL_OPTION});
+                        dd.setOptions(new Object[] {okButton, DialogDescriptor.CANCEL_OPTION});
                         dd.setClosingOptions(null);//All options close
                         Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
                         dialog.addWindowListener(new WindowAdapter() {
@@ -281,6 +301,7 @@ public class DataLaboratoryHelper {
      * This method shows the UI of an AttributeRowsMergeStrategy if it is provided and the AttributeRowsMergeStrategy can be executed.
      * These UI only configures (calls unSetup) the AttributeRowsMergeStrategy if the dialog is accepted,
      * and it does not execute the AttributeRowsMergeStrategy.
+     *
      * @param m AttributeRowsMergeStrategy
      * @return True if the AttributeRowsMergeStrategy UI is provided
      */
@@ -288,11 +309,14 @@ public class DataLaboratoryHelper {
         final ManipulatorUI ui = m.getUI();
         //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
         if (ui != null && m.canExecute()) {
-            final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelper.class, "DataLaboratoryHelper.ui.okButton.text"));
+            final JButton okButton =
+                new JButton(NbBundle.getMessage(DataLaboratoryHelper.class, "DataLaboratoryHelper.ui.okButton.text"));
             DialogControls dialogControls = new DialogControlsImpl(okButton);
             ui.setup(m, dialogControls);
             JPanel settingsPanel = ui.getSettingsPanel();
-            DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelper.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
+            DialogDescriptor dd = new DialogDescriptor(settingsPanel,
+                NbBundle.getMessage(DataLaboratoryHelper.class, "SettingsPanel.title", ui.getDisplayName()),
+                ui.isModal(), new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -301,7 +325,7 @@ public class DataLaboratoryHelper {
                     }
                 }
             });
-            dd.setOptions(new Object[]{okButton, DialogDescriptor.CANCEL_OPTION});
+            dd.setOptions(new Object[] {okButton, DialogDescriptor.CANCEL_OPTION});
             dd.setClosingOptions(null);//All options close
             Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
             dialog.setVisible(true);
@@ -330,12 +354,14 @@ public class DataLaboratoryHelper {
     /**
      * Prepares the dialog UI of a AttributeColumnsManipulator if it has one and executes the manipulator in a separate
      * Thread when the dialog is accepted or directly if there is no UI.
-     * @param m AttributeColumnsManipulator
+     *
+     * @param m          AttributeColumnsManipulator
      * @param graphModel Graph model of the table
-     * @param table Table of the column
-     * @param column Column to manipulate
+     * @param table      Table of the column
+     * @param column     Column to manipulate
      */
-    public void executeAttributeColumnsManipulator(final AttributeColumnsManipulator m, final GraphModel graphModel, final Table table, final Column column) {
+    public void executeAttributeColumnsManipulator(final AttributeColumnsManipulator m, final GraphModel graphModel,
+                                                   final Table table, final Column column) {
         if (m.canManipulateColumn(table, column)) {
             SwingUtilities.invokeLater(new Runnable() {
 
@@ -344,11 +370,14 @@ public class DataLaboratoryHelper {
                     final AttributeColumnsManipulatorUI ui = m.getUI(table, column);
                     //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                     if (ui != null) {
-                        final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelper.class, "DataLaboratoryHelper.ui.okButton.text"));
+                        final JButton okButton = new JButton(
+                            NbBundle.getMessage(DataLaboratoryHelper.class, "DataLaboratoryHelper.ui.okButton.text"));
                         DialogControls dialogControls = new DialogControlsImpl(okButton);
                         ui.setup(m, graphModel, table, column, dialogControls);
                         JPanel settingsPanel = ui.getSettingsPanel();
-                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelper.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
+                        DialogDescriptor dd = new DialogDescriptor(settingsPanel,
+                            NbBundle.getMessage(DataLaboratoryHelper.class, "SettingsPanel.title", ui.getDisplayName()),
+                            ui.isModal(), new ActionListener() {
 
                             @Override
                             public void actionPerformed(ActionEvent e) {
@@ -360,7 +389,7 @@ public class DataLaboratoryHelper {
                                 }
                             }
                         });
-                        dd.setOptions(new Object[]{okButton, DialogDescriptor.CANCEL_OPTION});
+                        dd.setOptions(new Object[] {okButton, DialogDescriptor.CANCEL_OPTION});
                         dd.setClosingOptions(null);//All options close
                         Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
                         dialog.addWindowListener(new WindowAdapter() {
@@ -379,7 +408,8 @@ public class DataLaboratoryHelper {
         }
     }
 
-    private void executeAttributeColumnsManipulatorInOtherThread(final AttributeColumnsManipulator m, final Table table, final Column column) {
+    private void executeAttributeColumnsManipulatorInOtherThread(final AttributeColumnsManipulator m, final Table table,
+                                                                 final Column column) {
         new Thread() {
 
             @Override
@@ -453,7 +483,8 @@ public class DataLaboratoryHelper {
      * Returns the AttributeColumnsMergeStrategy with that class name or null if it does not exist
      */
     public AttributeValueManipulator getAttributeValueManipulatorByName(String name) {
-        for (AttributeValueManipulatorBuilder am : Lookup.getDefault().lookupAll(AttributeValueManipulatorBuilder.class)) {
+        for (AttributeValueManipulatorBuilder am : Lookup.getDefault()
+            .lookupAll(AttributeValueManipulatorBuilder.class)) {
             if (am.getAttributeValueManipulator().getClass().getSimpleName().equals(name)) {
                 return am.getAttributeValueManipulator();
             }
@@ -465,7 +496,8 @@ public class DataLaboratoryHelper {
      * Returns the AttributeColumnsMergeStrategy with that class name or null if it does not exist
      */
     public AttributeColumnsMergeStrategy getAttributeColumnsMergeStrategyByName(String name) {
-        for (AttributeColumnsMergeStrategyBuilder cs : Lookup.getDefault().lookupAll(AttributeColumnsMergeStrategyBuilder.class)) {
+        for (AttributeColumnsMergeStrategyBuilder cs : Lookup.getDefault()
+            .lookupAll(AttributeColumnsMergeStrategyBuilder.class)) {
             if (cs.getAttributeColumnsMergeStrategy().getClass().getSimpleName().equals(name)) {
                 return cs.getAttributeColumnsMergeStrategy();
             }
@@ -477,7 +509,8 @@ public class DataLaboratoryHelper {
      * Returns the AttributeRowsMergeStrategy with that class name or null if it does not exist
      */
     public AttributeRowsMergeStrategy getAttributeRowsMergeStrategyByName(String name) {
-        for (AttributeRowsMergeStrategyBuilder cs : Lookup.getDefault().lookupAll(AttributeRowsMergeStrategyBuilder.class)) {
+        for (AttributeRowsMergeStrategyBuilder cs : Lookup.getDefault()
+            .lookupAll(AttributeRowsMergeStrategyBuilder.class)) {
             if (cs.getAttributeRowsMergeStrategy().getClass().getSimpleName().equals(name)) {
                 return cs.getAttributeRowsMergeStrategy();
             }
@@ -494,17 +527,13 @@ public class DataLaboratoryHelper {
         }
 
         @Override
-        public void setOkButtonEnabled(boolean enabled) {
-            okButton.setEnabled(enabled);
-        }
-
-        @Override
         public boolean isOkButtonEnabled() {
             return okButton.isEnabled();
         }
-    }
 
-    public static DataLaboratoryHelper getDefault() {
-        return Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+        @Override
+        public void setOkButtonEnabled(boolean enabled) {
+            okButton.setEnabled(enabled);
+        }
     }
 }

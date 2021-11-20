@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.statistics;
 
 import java.util.ArrayList;
@@ -60,7 +61,6 @@ import org.gephi.statistics.spi.StatisticsUI;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class StatisticsModelUIImpl implements StatisticsModelUI {

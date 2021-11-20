@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.utils;
 
 import org.gephi.graph.api.AttributeUtils;
@@ -49,7 +50,6 @@ import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.graph.api.types.TimestampSet;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class Attributes {
@@ -70,11 +70,11 @@ public class Attributes {
 
     public static boolean isTimestampType(Class<?> type) {
         return TimestampSet.class.isAssignableFrom(type)
-                || TimestampMap.class.isAssignableFrom(type);
+            || TimestampMap.class.isAssignableFrom(type);
     }
 
     public static boolean isIntervalType(Class<?> type) {
         return IntervalSet.class.isAssignableFrom(type)
-                || IntervalMap.class.isAssignableFrom(type);
+            || IntervalMap.class.isAssignableFrom(type);
     }
 }

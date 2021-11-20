@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 import org.gephi.graph.api.TimeFormat;
@@ -164,7 +165,7 @@ public interface ContainerLoader {
      * If a column with this key already exists, it is ignored and return the
      * existing column.
      *
-     * @param key node column identifier
+     * @param key       node column identifier
      * @param typeClass node column type
      * @return column draft
      */
@@ -176,7 +177,7 @@ public interface ContainerLoader {
      * If a column with this key already exists, it is ignored and return the
      * existing column.
      *
-     * @param key edge column identifier
+     * @param key       edge column identifier
      * @param typeClass edge column type
      * @return column draft
      */
@@ -190,9 +191,9 @@ public interface ContainerLoader {
      * If a column with this key already exists, it is ignored and return the
      * existing column.
      *
-     * @param key node column identifier
+     * @param key       node column identifier
      * @param typeClass node column type
-     * @param dynamic true if the column needs to be dynamic, false otherwise
+     * @param dynamic   true if the column needs to be dynamic, false otherwise
      * @return column draft
      */
     public ColumnDraft addNodeColumn(String key, Class typeClass, boolean dynamic);
@@ -205,9 +206,9 @@ public interface ContainerLoader {
      * If a column with this key already exists, it is ignored and return the
      * existing column.
      *
-     * @param key edge column identifier
+     * @param key       edge column identifier
      * @param typeClass edge column type
-     * @param dynamic true if the column needs to be dynamic, false otherwise
+     * @param dynamic   true if the column needs to be dynamic, false otherwise
      * @return column draft
      */
     public ColumnDraft addEdgeColumn(String key, Class typeClass, boolean dynamic);
@@ -245,7 +246,7 @@ public interface ContainerLoader {
      * processed.
      *
      * @param start interval start
-     * @param end interval end
+     * @param end   interval end
      */
     public void setInterval(String start, String end);
 
@@ -257,6 +258,15 @@ public interface ContainerLoader {
     public void setElementIdType(ElementIdType type);
 
     /**
+     * Gets the current time representation, either <code>TIMESTAMP</code> or
+     * <code>INTERVAL</code>.
+     * <p>
+     *
+     * @return time representation
+     */
+    public TimeRepresentation getTimeRepresentation();
+
+    /**
      * Sets the current time representation, either <code>TIMESTAMP</code> or
      * <code>INTERVAL</code>.
      * <p>
@@ -265,14 +275,6 @@ public interface ContainerLoader {
      * @param timeRepresentation time representation
      */
     public void setTimeRepresentation(TimeRepresentation timeRepresentation);
-
-    /**
-     * Gets the current time representation, either <code>TIMESTAMP</code> or
-     * <code>INTERVAL</code>.
-     * <p>
-     * @return time representation
-     */
-    public TimeRepresentation getTimeRepresentation();
 
     /**
      * Sets the time zone that is used to parse date and time.
@@ -291,7 +293,7 @@ public interface ContainerLoader {
     public void setAllowParallelEdge(boolean value);
 
     public void setAutoScale(boolean autoscale);
-    
+
     public void setFillLabelWithId(boolean value);
 
     public void setEdgesMergeStrategy(EdgeMergeStrategy edgesMergeStrategy);

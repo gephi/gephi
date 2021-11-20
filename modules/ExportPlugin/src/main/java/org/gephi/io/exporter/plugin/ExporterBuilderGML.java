@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import org.gephi.io.exporter.api.FileType;
@@ -47,7 +48,6 @@ import org.gephi.io.exporter.spi.GraphFileExporterBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author megaterik
  */
 @ServiceProvider(service = GraphFileExporterBuilder.class)
@@ -60,7 +60,7 @@ public class ExporterBuilderGML implements GraphFileExporterBuilder {
 
     @Override
     public FileType[] getFileTypes() {
-        return new FileType[]{new FileType(".gml", "GML files")};
+        return new FileType[] {new FileType(".gml", "GML files")};
     }
 
     @Override

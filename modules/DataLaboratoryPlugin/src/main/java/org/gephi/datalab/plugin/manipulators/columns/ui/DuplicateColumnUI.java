@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.ui;
 
 import java.util.List;
@@ -68,6 +69,12 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
     private DuplicateColumn manipulator;
     private Table table;
     private DialogControls dialogControls;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JLabel titleLabel;
+    private javax.swing.JTextField titleTextField;
+    private javax.swing.JComboBox typeComboBox;
+    private javax.swing.JLabel typeLabel;
 
     /**
      * Creates new form DuplicateColumnUI
@@ -93,21 +100,26 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
 
             private void refreshOkButton() {
                 String text = titleTextField.getText();
-                dialogControls.setOkButtonEnabled(text != null && !text.isEmpty() && !table.hasColumn(text));//Title not empty and not repeated.
+                dialogControls.setOkButtonEnabled(
+                    text != null && !text.isEmpty() && !table.hasColumn(text));//Title not empty and not repeated.
             }
         });
     }
 
     @Override
-    public void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column, DialogControls dialogControls) {
+    public void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column,
+                      DialogControls dialogControls) {
         this.table = table;
         this.dialogControls = dialogControls;
         this.manipulator = (DuplicateColumn) m;
 
-        descriptionLabel.setText(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.descriptionLabel.text", column.getTitle()));
-        titleTextField.setText(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.new.title", column.getTitle()));
-        
-        List<SupportedColumnTypeWrapper> supportedTypesWrappers = SupportedColumnTypeWrapper.buildOrderedSupportedTypesList(graphModel);
+        descriptionLabel.setText(
+            NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.descriptionLabel.text", column.getTitle()));
+        titleTextField
+            .setText(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.new.title", column.getTitle()));
+
+        List<SupportedColumnTypeWrapper> supportedTypesWrappers =
+            SupportedColumnTypeWrapper.buildOrderedSupportedTypesList(graphModel);
 
         for (SupportedColumnTypeWrapper supportedColumnTypeWrapper : supportedTypesWrappers) {
             typeComboBox.addItem(supportedColumnTypeWrapper);
@@ -157,11 +169,14 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
         typeComboBox = new javax.swing.JComboBox();
         descriptionLabel = new javax.swing.JLabel();
 
-        titleLabel.setText(org.openide.util.NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.titleLabel.text")); // NOI18N
+        titleLabel.setText(org.openide.util.NbBundle
+            .getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.titleLabel.text")); // NOI18N
 
-        titleTextField.setText(org.openide.util.NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.titleTextField.text")); // NOI18N
+        titleTextField.setText(org.openide.util.NbBundle
+            .getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.titleTextField.text")); // NOI18N
 
-        typeLabel.setText(org.openide.util.NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.typeLabel.text")); // NOI18N
+        typeLabel.setText(org.openide.util.NbBundle
+            .getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.typeLabel.text")); // NOI18N
 
         descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setText(null);
@@ -170,41 +185,39 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(titleLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(typeLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(typeComboBox, 0, 199, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(titleLabel)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(typeLabel)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(typeComboBox, 0, 199, Short.MAX_VALUE)))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(titleLabel)
-                    .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(typeLabel)
-                    .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(titleLabel)
+                        .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(18, 18, 18)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(typeLabel)
+                        .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JLabel titleLabel;
-    private javax.swing.JTextField titleTextField;
-    private javax.swing.JComboBox typeComboBox;
-    private javax.swing.JLabel typeLabel;
     // End of variables declaration//GEN-END:variables
 }

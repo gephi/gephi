@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.util.Arrays;
@@ -86,16 +87,15 @@ public class Hits implements Statistics, LongTask {
         }
     }
 
-    public void setUndirected(boolean pUndirected) {
-        useUndirected = pUndirected;
-    }
-
     /**
-     *
      * @return
      */
     public boolean getUndirected() {
         return useUndirected;
+    }
+
+    public void setUndirected(boolean pUndirected) {
+        useUndirected = pUndirected;
     }
 
     @Override
@@ -129,7 +129,8 @@ public class Hits implements Statistics, LongTask {
         }
     }
 
-    public void calculateHits(Graph graph, double[] hubValues, double[] authorityValues, Map<Node, Integer> indices, boolean isDirected, double eps) {
+    public void calculateHits(Graph graph, double[] hubValues, double[] authorityValues, Map<Node, Integer> indices,
+                              boolean isDirected, double eps) {
 
         int N = graph.getNodeCount();
 
@@ -170,7 +171,8 @@ public class Hits implements Statistics, LongTask {
         Arrays.fill(hubValues, 1.0);
     }
 
-    void updateAutorithy(Graph graph, double[] newValues, double[] hubValues, boolean isDirected, Map<Node, Integer> indices) {
+    void updateAutorithy(Graph graph, double[] newValues, double[] hubValues, boolean isDirected,
+                         Map<Node, Integer> indices) {
         double norm = 0;
         for (Node q : indices.keySet()) {
             double auth = 0;
@@ -202,7 +204,8 @@ public class Hits implements Statistics, LongTask {
         }
     }
 
-    void updateHub(Graph graph, double[] newValues, double[] authValues, boolean isDirected, Map<Node, Integer> indices) {
+    void updateHub(Graph graph, double[] newValues, double[] authValues, boolean isDirected,
+                   Map<Node, Integer> indices) {
         double norm = 0;
         for (Node p : indices.keySet()) {
             double hub = 0;
@@ -263,7 +266,6 @@ public class Hits implements Statistics, LongTask {
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -305,48 +307,48 @@ public class Hits implements Statistics, LongTask {
         datasetAuths.addSeries(dAuthsSeries);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Hubs Distribution",
-                "Score",
-                "Count",
-                datasetHubs,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "Hubs Distribution",
+            "Score",
+            "Count",
+            datasetHubs,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dHubsSeries, true);
         String imageFile1 = ChartUtils.renderChart(chart, "hubs.png");
 
         JFreeChart chart2 = ChartFactory.createXYLineChart(
-                "Authority Distribution",
-                "Score",
-                "Count",
-                datasetAuths,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "Authority Distribution",
+            "Score",
+            "Count",
+            datasetAuths,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         chart2.removeLegend();
         ChartUtils.decorateChart(chart2);
         ChartUtils.scaleChart(chart2, dAuthsSeries, true);
         String imageFile2 = ChartUtils.renderChart(chart2, "authorities.png");
 
         String report = "<HTML> <BODY> <h1> HITS Metric Report </h1>"
-                + "<hr>"
-                + "<br />"
-                + "<h2> Parameters: </h2>  &#917; = " + this.epsilon
-                + "<br /> <h2> Results: </h2><br />"
-                + imageFile1 + "<br />" + imageFile2
-                + "<br /><br />" + "<h2> Algorithm: </h2>"
-                + "Jon M. Kleinberg, <i>Authoritative Sources in a Hyperlinked Environment</i>, in Journal of the ACM 46 (5): 604–632 (1999)<br />"
-                + "</BODY> </HTML>";
+            + "<hr>"
+            + "<br />"
+            + "<h2> Parameters: </h2>  &#917; = " + this.epsilon
+            + "<br /> <h2> Results: </h2><br />"
+            + imageFile1 + "<br />" + imageFile2
+            + "<br /><br />" + "<h2> Algorithm: </h2>"
+            +
+            "Jon M. Kleinberg, <i>Authoritative Sources in a Hyperlinked Environment</i>, in Journal of the ACM 46 (5): 604–632 (1999)<br />"
+            + "</BODY> </HTML>";
 
         return report;
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -356,7 +358,6 @@ public class Hits implements Statistics, LongTask {
     }
 
     /**
-     *
      * @param progressTicket
      */
     @Override
@@ -365,18 +366,16 @@ public class Hits implements Statistics, LongTask {
     }
 
     /**
-     *
-     * @param eps
-     */
-    public void setEpsilon(double eps) {
-        epsilon = eps;
-    }
-
-    /**
-     *
      * @return
      */
     public double getEpsilon() {
         return epsilon;
+    }
+
+    /**
+     * @param eps
+     */
+    public void setEpsilon(double eps) {
+        epsilon = eps;
     }
 }

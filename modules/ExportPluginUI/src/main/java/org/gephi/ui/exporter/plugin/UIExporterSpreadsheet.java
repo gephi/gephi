@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.ui.exporter.plugin;
 
 import javax.swing.JPanel;
@@ -49,7 +50,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Eduardo Ramos
  */
 @ServiceProvider(service = ExporterUI.class)
@@ -70,7 +70,7 @@ public class UIExporterSpreadsheet implements ExporterUI {
             exporter.setColumnIdsToExport(panel.getSelectedColumnsIds());
             exporter.setFieldDelimiter(panel.getSelectedSeparator());
             exporter.setTableToExport(panel.getSelectedTable());
-            
+
             panel.unSetup();
         }
         panel = null;

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin;
 
 import org.gephi.graph.api.Graph;
@@ -63,29 +64,6 @@ public abstract class AbstractLayout implements Layout {
         this.layoutBuilder = layoutBuilder;
     }
 
-    @Override
-    public LayoutBuilder getBuilder() {
-        return layoutBuilder;
-    }
-
-    @Override
-    public void setGraphModel(GraphModel graphModel) {
-        this.graphModel = graphModel;
-    }
-
-    @Override
-    public boolean canAlgo() {
-        return !isConverged() && graphModel != null;
-    }
-
-    public void setConverged(boolean converged) {
-        this.converged = converged;
-    }
-
-    public boolean isConverged() {
-        return converged;
-    }
-
     /**
      * See https://github.com/gephi/gephi/issues/603 Nodes position to NaN on applied layout
      *
@@ -107,5 +85,28 @@ public abstract class AbstractLayout implements Layout {
             node.setX((float) ((0.01 + Math.random()) * 1000) - 500);
             node.setY((float) ((0.01 + Math.random()) * 1000) - 500);
         }
+    }
+
+    @Override
+    public LayoutBuilder getBuilder() {
+        return layoutBuilder;
+    }
+
+    @Override
+    public void setGraphModel(GraphModel graphModel) {
+        this.graphModel = graphModel;
+    }
+
+    @Override
+    public boolean canAlgo() {
+        return !isConverged() && graphModel != null;
+    }
+
+    public boolean isConverged() {
+        return converged;
+    }
+
+    public void setConverged(boolean converged) {
+        this.converged = converged;
     }
 }

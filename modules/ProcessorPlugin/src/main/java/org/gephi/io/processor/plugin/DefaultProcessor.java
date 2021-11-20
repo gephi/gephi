@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.processor.plugin;
 
 import java.util.Objects;
@@ -128,7 +129,8 @@ public class DefaultProcessor extends AbstractProcessor {
             }
         }
 
-        GraphConfigurationWrapper originalConfig = new GraphConfigurationWrapper(graphController.getGraphModel(workspace).getConfiguration());
+        GraphConfigurationWrapper originalConfig =
+            new GraphConfigurationWrapper(graphController.getGraphModel(workspace).getConfiguration());
         if (container.getEdgeCount() == 0) {
             //Fix different config problems that are not actually problems since no edges are present:
             //A case user-friendly specially for spreadsheet import
@@ -146,9 +148,10 @@ public class DefaultProcessor extends AbstractProcessor {
                 graphController.getGraphModel(workspace).setConfiguration(configuration);
             } catch (Exception e) {
                 String message = NbBundle.getMessage(
-                        DefaultProcessor.class, "DefaultProcessor.error.configurationChangeForbidden",
-                        new GraphConfigurationWrapper(graphController.getGraphModel(workspace).getConfiguration()).toString(),
-                        new GraphConfigurationWrapper(configuration).toString()
+                    DefaultProcessor.class, "DefaultProcessor.error.configurationChangeForbidden",
+                    new GraphConfigurationWrapper(graphController.getGraphModel(workspace).getConfiguration())
+                        .toString(),
+                    new GraphConfigurationWrapper(configuration).toString()
                 );
                 report.logIssue(new Issue(message, Issue.Level.SEVERE));
             }
@@ -236,18 +239,18 @@ public class DefaultProcessor extends AbstractProcessor {
                     edge = null;
                 } else {
                     String message = NbBundle.getMessage(
-                            DefaultProcessor.class, "DefaultProcessor.error.incompatibleEdges",
-                            String.format(
-                                    "[%s -> %s; %s, type %s]",
-                                    sourceId, targetId, createDirected ? "Directed" : "Undirected", type
-                            ),
-                            String.format(
-                                    "[%s -> %s; %s; type: %s; id: %s]",
-                                    incompatibleEdge.getSource().getId(), incompatibleEdge.getTarget().getId(),
-                                    incompatibleEdge.isDirected() ? "Directed" : "Undirected",
-                                    incompatibleEdge.getTypeLabel(),
-                                    incompatibleEdge.getId()
-                            )
+                        DefaultProcessor.class, "DefaultProcessor.error.incompatibleEdges",
+                        String.format(
+                            "[%s -> %s; %s, type %s]",
+                            sourceId, targetId, createDirected ? "Directed" : "Undirected", type
+                        ),
+                        String.format(
+                            "[%s -> %s; %s; type: %s; id: %s]",
+                            incompatibleEdge.getSource().getId(), incompatibleEdge.getTarget().getId(),
+                            incompatibleEdge.isDirected() ? "Directed" : "Undirected",
+                            incompatibleEdge.getTypeLabel(),
+                            incompatibleEdge.getId()
+                        )
                     );
                     report.logIssue(new Issue(message, Issue.Level.WARNING));
 
@@ -281,11 +284,15 @@ public class DefaultProcessor extends AbstractProcessor {
         int touchedNodes = container.getNodeCount();
         int touchedEdges = container.getEdgeCount();
         if (touchedNodes != addedNodes || touchedEdges != addedEdges) {
-            Logger.getLogger(getClass().getSimpleName()).log(Level.INFO, "# Nodes loaded: {0} ({1} added)", new Object[]{touchedNodes, addedNodes});
-            Logger.getLogger(getClass().getSimpleName()).log(Level.INFO, "# Edges loaded: {0} ({1} added)", new Object[]{touchedEdges, addedEdges});
+            Logger.getLogger(getClass().getSimpleName())
+                .log(Level.INFO, "# Nodes loaded: {0} ({1} added)", new Object[] {touchedNodes, addedNodes});
+            Logger.getLogger(getClass().getSimpleName())
+                .log(Level.INFO, "# Edges loaded: {0} ({1} added)", new Object[] {touchedEdges, addedEdges});
         } else {
-            Logger.getLogger(getClass().getSimpleName()).log(Level.INFO, "# Nodes loaded: {0}", new Object[]{touchedNodes});
-            Logger.getLogger(getClass().getSimpleName()).log(Level.INFO, "# Edges loaded: {0}", new Object[]{touchedEdges});
+            Logger.getLogger(getClass().getSimpleName())
+                .log(Level.INFO, "# Nodes loaded: {0}", new Object[] {touchedNodes});
+            Logger.getLogger(getClass().getSimpleName())
+                .log(Level.INFO, "# Edges loaded: {0}", new Object[] {touchedEdges});
         }
 
         Progress.finish(progressTicket);
@@ -395,7 +402,9 @@ public class DefaultProcessor extends AbstractProcessor {
 
         @Override
         public String toString() {
-            return "GraphConfigurationWrapper{" + "nodeIdType=" + nodeIdType + ", edgeIdType=" + edgeIdType + ", edgeLabelType=" + edgeLabelType + ", edgeWeightType=" + edgeWeightType + ", edgeWeightColumn=" + edgeWeightColumn + ", timeRepresentation=" + timeRepresentation + '}';
+            return "GraphConfigurationWrapper{" + "nodeIdType=" + nodeIdType + ", edgeIdType=" + edgeIdType +
+                ", edgeLabelType=" + edgeLabelType + ", edgeWeightType=" + edgeWeightType + ", edgeWeightColumn=" +
+                edgeWeightColumn + ", timeRepresentation=" + timeRepresentation + '}';
         }
     }
 }

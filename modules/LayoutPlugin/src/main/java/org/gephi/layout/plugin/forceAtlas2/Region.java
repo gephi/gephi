@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.forceAtlas2;
 
 import java.util.ArrayList;
@@ -54,12 +55,12 @@ import org.gephi.layout.plugin.forceAtlas2.ForceFactory.RepulsionForce;
  */
 public class Region {
 
+    private final List<Node> nodes;
+    private final List<Region> subregions = new ArrayList<>();
     private double mass;
     private double massCenterX;
     private double massCenterY;
     private double size;
-    private final List<Node> nodes;
-    private final List<Region> subregions = new ArrayList<>();
 
     public Region(Node[] nodes) {
         this.nodes = new ArrayList<>();
@@ -90,7 +91,8 @@ public class Region {
             // Compute size
             size = Double.MIN_VALUE;
             for (Node n : nodes) {
-                double distance = Math.sqrt((n.x() - massCenterX) * (n.x() - massCenterX) + (n.y() - massCenterY) * (n.y() - massCenterY));
+                double distance = Math.sqrt(
+                    (n.x() - massCenterX) * (n.x() - massCenterX) + (n.y() - massCenterY) * (n.y() - massCenterY));
                 size = Math.max(size, 2 * distance);
             }
         }
@@ -183,7 +185,8 @@ public class Region {
             Node regionNode = nodes.get(0);
             Force.apply(n, regionNode);
         } else {
-            double distance = Math.sqrt((n.x() - massCenterX) * (n.x() - massCenterX) + (n.y() - massCenterY) * (n.y() - massCenterY));
+            double distance = Math.sqrt(
+                (n.x() - massCenterX) * (n.x() - massCenterX) + (n.y() - massCenterY) * (n.y() - massCenterY));
             if (distance * theta > size) {
                 Force.apply(n, this);
             } else {

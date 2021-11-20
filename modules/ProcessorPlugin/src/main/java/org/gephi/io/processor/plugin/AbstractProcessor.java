@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.processor.plugin;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -77,15 +78,14 @@ import org.openide.util.NbBundle;
 
 public abstract class AbstractProcessor implements Processor {
 
+    private final Set<Column> columnsTypeMismatchAlreadyWarned = new HashSet<>();
+    private final Object2IntOpenHashMap<Edge> edgeCountForAverage = new Object2IntOpenHashMap<>();
     protected ProgressTicket progressTicket;
     protected Workspace workspace;
     protected ContainerUnloader[] containers;
     protected GraphModel graphModel;
-
-    private final Set<Column> columnsTypeMismatchAlreadyWarned = new HashSet<>();
     protected Report report = new Report();
     protected Report reportAfterDone = new Report();
-    private final Object2IntOpenHashMap<Edge> edgeCountForAverage = new Object2IntOpenHashMap<>();
 
     protected void clean() {
         workspace = null;
@@ -109,29 +109,30 @@ public abstract class AbstractProcessor implements Processor {
         for (ColumnDraft col : columns) {
             if (!table.hasColumn(col.getId())) {
                 Class typeClass = col.getResolvedTypeClass(container);
-                
+
                 if (Attributes.isTypeAvailable(typeClass, timeRepresentation)) {
                     Object defaultValue = col.getResolvedDefaultValue(container);
                     if (defaultValue != null && !typeClass.isAssignableFrom(defaultValue.getClass())) {
                         String error = NbBundle.getMessage(
-                                AbstractProcessor.class, "AbstractProcessor.error.columnDefaultValueTypeMismatch",
-                                col.getId(),
-                                defaultValue.toString(),
-                                defaultValue.getClass().getSimpleName(),
-                                typeClass.getSimpleName()
+                            AbstractProcessor.class, "AbstractProcessor.error.columnDefaultValueTypeMismatch",
+                            col.getId(),
+                            defaultValue.toString(),
+                            defaultValue.getClass().getSimpleName(),
+                            typeClass.getSimpleName()
                         );
 
                         report.logIssue(new Issue(error, Issue.Level.SEVERE));
                         defaultValue = null;
                     }
 
-                    table.addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, defaultValue, !col.isDynamic());
+                    table
+                        .addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, defaultValue, !col.isDynamic());
                 } else {
                     String error = NbBundle.getMessage(
-                            AbstractProcessor.class, "AbstractProcessor.error.unavailableColumnType",
-                            typeClass.getSimpleName(),
-                            timeRepresentation.name(),
-                            col.getId()
+                        AbstractProcessor.class, "AbstractProcessor.error.unavailableColumnType",
+                        typeClass.getSimpleName(),
+                        timeRepresentation.name(),
+                        col.getId()
                     );
                     report.logIssue(new Issue(error, Issue.Level.SEVERE));
                 }
@@ -166,7 +167,7 @@ public abstract class AbstractProcessor implements Processor {
         }
 
         if ((nodeDraft.getX() != 0 || nodeDraft.getY() != 0 || nodeDraft.getZ() != 0)
-                && (node.x() == 0 && node.y() == 0 && node.z() == 0)) {
+            && (node.x() == 0 && node.y() == 0 && node.z() == 0)) {
             node.setX(nodeDraft.getX());
             node.setY(nodeDraft.getY());
             node.setZ(nodeDraft.getZ());
@@ -218,10 +219,10 @@ public abstract class AbstractProcessor implements Processor {
                     columnsTypeMismatchAlreadyWarned.add(column);
 
                     String error = NbBundle.getMessage(
-                            AbstractProcessor.class, "AbstractProcessor.error.columnTypeMismatch",
-                            column.getId(),
-                            column.getTypeClass().getSimpleName(),
-                            columnDraftTypeClass.getSimpleName()
+                        AbstractProcessor.class, "AbstractProcessor.error.columnTypeMismatch",
+                        column.getId(),
+                        column.getTypeClass().getSimpleName(),
+                        columnDraftTypeClass.getSimpleName()
                     );
 
                     report.logIssue(new Issue(error, Issue.Level.SEVERE));
@@ -325,15 +326,16 @@ public abstract class AbstractProcessor implements Processor {
         boolean weightColumnDraftIsDynamic = weightColumnDraft != null && weightColumnDraft.isDynamic();
 
         if (weightColumn.isDynamic() != weightColumnDraftIsDynamic) {
-            Class weightColumnDraftTypeClass = weightColumnDraft != null ? weightColumnDraft.getResolvedTypeClass(container): Double.class;
+            Class weightColumnDraftTypeClass =
+                weightColumnDraft != null ? weightColumnDraft.getResolvedTypeClass(container) : Double.class;
             if (!columnsTypeMismatchAlreadyWarned.contains(weightColumn)) {
                 columnsTypeMismatchAlreadyWarned.add(weightColumn);
 
                 String error = NbBundle.getMessage(
-                        AbstractProcessor.class, "AbstractProcessor.error.columnTypeMismatch",
-                        weightColumn.getId(),
-                        weightColumn.getTypeClass().getSimpleName(),
-                        weightColumnDraftTypeClass.getSimpleName()
+                    AbstractProcessor.class, "AbstractProcessor.error.columnTypeMismatch",
+                    weightColumn.getId(),
+                    weightColumn.getTypeClass().getSimpleName(),
+                    weightColumnDraftTypeClass.getSimpleName()
                 );
 
                 report.logIssue(new Issue(error, Issue.Level.SEVERE));
@@ -379,7 +381,8 @@ public abstract class AbstractProcessor implements Processor {
                 }
             }
         } else if (!newEdge) {
-            if (edgeDraft.getTimeSet() != null || edgeDraft.getValue("timeset") != null || edge.getAttribute("timeset") != null) {
+            if (edgeDraft.getTimeSet() != null || edgeDraft.getValue("timeset") != null ||
+                edge.getAttribute("timeset") != null) {
                 //Don't merge double (non dynamic) weights when the edges have dynamic time intervals/timestamps, they are the same edge in different periods of time
                 return;
             }
@@ -450,10 +453,10 @@ public abstract class AbstractProcessor implements Processor {
 
         if (overlappingIntervals) {
             String warning = NbBundle.getMessage(
-                    AbstractProcessor.class, "AbstractProcessor.warning.overlappingIntervals",
-                    set1.toString(graphModel.getTimeFormat(), graphModel.getTimeZone()),
-                    set2.toString(graphModel.getTimeFormat(), graphModel.getTimeZone()),
-                    merged.toString(graphModel.getTimeFormat(), graphModel.getTimeZone())
+                AbstractProcessor.class, "AbstractProcessor.warning.overlappingIntervals",
+                set1.toString(graphModel.getTimeFormat(), graphModel.getTimeZone()),
+                set2.toString(graphModel.getTimeFormat(), graphModel.getTimeZone()),
+                merged.toString(graphModel.getTimeFormat(), graphModel.getTimeZone())
             );
             report.logIssue(new Issue(warning, Issue.Level.WARNING));
         }

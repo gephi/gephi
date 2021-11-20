@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.layout.api;
 
 import java.beans.PropertyChangeListener;
@@ -52,6 +53,7 @@ import org.gephi.project.api.Workspace;
  * <p>
  * <code>PropertyChangeListener</code> can be used to receive events about
  * a change in the model.
+ *
  * @author Mathieu Bastian
  */
 public interface LayoutModel {
@@ -72,6 +74,7 @@ public interface LayoutModel {
      * <p>
      * Use this method instead of <code>LayoutBuilder.buildLayout()</code>
      * directly.
+     *
      * @param layoutBuilder the layout builder
      * @return the layout build from <code>layoutBuilder</code> with formely
      * saved properties.
@@ -93,12 +96,14 @@ public interface LayoutModel {
     /**
      * Add a property change listener for this model. The <code>listener</code>
      * is notified when layout is selected and when running flag change.
+     *
      * @param listener a property change listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener);
 
     /**
      * Remove listerner.
+     *
      * @param listener a property change listener.
      */
     public void removePropertyChangeListener(PropertyChangeListener listener);

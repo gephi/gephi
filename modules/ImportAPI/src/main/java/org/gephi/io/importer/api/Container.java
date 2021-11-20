@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 import org.gephi.io.importer.spi.Importer;
@@ -62,17 +63,12 @@ import org.gephi.io.processor.spi.Processor;
 public interface Container {
 
     /**
-     * Container factory.
+     * If exists, returns the source of the data.
+     *
+     * @return source of the data, or <code>null</code> if source is not
+     * defined.
      */
-    public interface Factory {
-
-        /**
-         * Returns a newly created container instance.
-         *
-         * @return new container
-         */
-        public Container newContainer();
-    }
+    public String getSource();
 
     /**
      * Sets the source of the data put in the container. Could be a file name.
@@ -81,14 +77,6 @@ public interface Container {
      * @throws NullPointerException if <code>source</code> is <code>null</code>
      */
     public void setSource(String source);
-
-    /**
-     * If exists, returns the source of the data.
-     *
-     * @return source of the data, or <code>null</code> if source is not
-     * defined.
-     */
-    public String getSource();
 
     /**
      * Gets the container loading interface.
@@ -113,6 +101,14 @@ public interface Container {
     public ContainerUnloader getUnloader();
 
     /**
+     * Returns the report associated to this container, if it exists.
+     *
+     * @return report set for this container or <code>null</code> if no report
+     * is defined
+     */
+    public Report getReport();
+
+    /**
      * Sets a report this container can use to report issues detected when
      * loading the container.
      * <p>
@@ -120,18 +116,10 @@ public interface Container {
      * report can be associated to a container.
      *
      * @param report set <code>report</code> as the default report for this
-     * container
+     *               container
      * @throws NullPointerException if <code>report</code> is <code>null</code>
      */
     public void setReport(Report report);
-
-    /**
-     * Returns the report associated to this container, if it exists.
-     *
-     * @return report set for this container or <code>null</code> if no report
-     * is defined
-     */
-    public Report getReport();
 
     /**
      * This method must be called after the loading is complete and before
@@ -184,4 +172,17 @@ public interface Container {
      * @return true if multigraph, false otherwise
      */
     public boolean isMultiGraph();
+
+    /**
+     * Container factory.
+     */
+    public interface Factory {
+
+        /**
+         * Returns a newly created container instance.
+         *
+         * @return new container
+         */
+        public Container newContainer();
+    }
 }

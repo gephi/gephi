@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview;
 
 import java.util.Map.Entry;
@@ -51,24 +52,23 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Eduardo Ramos
  */
-@ServiceProvider(service=WorkspaceDuplicateProvider.class)
-public class PreviewWorkspaceDuplicateProvider implements WorkspaceDuplicateProvider{
+@ServiceProvider(service = WorkspaceDuplicateProvider.class)
+public class PreviewWorkspaceDuplicateProvider implements WorkspaceDuplicateProvider {
 
     @Override
     public void duplicate(Workspace source, Workspace destination) {
-        PreviewController previewController=Lookup.getDefault().lookup(PreviewController.class);
-        PreviewModel sourceModel=previewController.getModel(source);
-        PreviewModel destModel=previewController.getModel(destination);
-        
+        PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+        PreviewModel sourceModel = previewController.getModel(source);
+        PreviewModel destModel = previewController.getModel(destination);
+
         destModel.setManagedRenderers(sourceModel.getManagedRenderers());
-        for(PreviewProperty property:sourceModel.getProperties().getProperties()){
+        for (PreviewProperty property : sourceModel.getProperties().getProperties()) {
             destModel.getProperties().putValue(property.getName(), property.getValue());
         }
-        for(Entry<String,Object> property:sourceModel.getProperties().getSimpleValues()){
+        for (Entry<String, Object> property : sourceModel.getProperties().getSimpleValues()) {
             destModel.getProperties().putValue(property.getKey(), property.getValue());
         }
-    }    
+    }
 }

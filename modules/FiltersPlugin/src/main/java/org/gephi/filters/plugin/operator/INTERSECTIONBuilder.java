@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.operator;
 
 import java.util.ArrayList;
@@ -62,7 +63,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = FilterBuilder.class)
@@ -142,7 +142,7 @@ public class INTERSECTIONBuilder implements FilterBuilder {
                 }
             }
             if (nodeFilters.size() > 0) {
-                for (Iterator<NodeFilter> itr = nodeFilters.iterator(); itr.hasNext();) {
+                for (Iterator<NodeFilter> itr = nodeFilters.iterator(); itr.hasNext(); ) {
                     NodeFilter nf = itr.next();
                     if (!nf.init(graph)) {
                         itr.remove();
@@ -167,7 +167,7 @@ public class INTERSECTIONBuilder implements FilterBuilder {
                 }
             }
             if (edgeFilters.size() > 0) {
-                for (Iterator<EdgeFilter> itr = edgeFilters.iterator(); itr.hasNext();) {
+                for (Iterator<EdgeFilter> itr = edgeFilters.iterator(); itr.hasNext(); ) {
                     EdgeFilter ef = itr.next();
                     if (!ef.init(graph)) {
                         itr.remove();

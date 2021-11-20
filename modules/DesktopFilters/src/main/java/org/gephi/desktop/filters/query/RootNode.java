@@ -39,10 +39,10 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.filters.query;
 
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.io.IOException;
 import javax.swing.Action;
@@ -61,7 +61,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.datatransfer.PasteType;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class RootNode extends AbstractNode {
@@ -103,7 +102,8 @@ public class RootNode extends AbstractNode {
                     return null;
                 }
             };
-        } else if (dropNode != null && dropNode instanceof QueryNode && ((QueryNode) dropNode).getQuery().getParent() != null) {
+        } else if (dropNode != null && dropNode instanceof QueryNode &&
+            ((QueryNode) dropNode).getQuery().getParent() != null) {
             return new PasteType() {
 
                 @Override

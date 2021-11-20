@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.welcome;
 
 import java.awt.event.ActionEvent;
@@ -57,7 +58,7 @@ public final class WelcomeAction implements ActionListener {
             public void run() {
                 WelcomeTopComponent component = WelcomeTopComponent.getInstance();
                 JDialog dialog = new JDialog(WindowManager.getDefault().getMainWindow(),
-                        component.getName(), false);
+                    component.getName(), false);
                 dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                 dialog.getContentPane().add(component);
                 dialog.setBounds(212, 237, 679, 378);

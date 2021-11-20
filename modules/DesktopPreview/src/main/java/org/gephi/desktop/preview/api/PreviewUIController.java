@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.preview.api;
 
 import java.beans.PropertyChangeListener;
 import org.gephi.preview.api.PreviewPreset;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface PreviewUIController {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.graph;
 
 import java.math.BigDecimal;
@@ -99,7 +100,8 @@ public class LegacyAttributePersistenceProvider implements WorkspaceXMLPersisten
         return "attributemodel";
     }
 
-    public void readModel(XMLStreamReader reader, GraphModel graphModel, LegacyMapHelper mapHelper) throws XMLStreamException {
+    public void readModel(XMLStreamReader reader, GraphModel graphModel, LegacyMapHelper mapHelper)
+        throws XMLStreamException {
         boolean end = false;
         while (reader.hasNext() && !end) {
             int type = reader.next();

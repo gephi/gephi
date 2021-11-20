@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.spi;
 
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Subgraph;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface Operator extends Filter {

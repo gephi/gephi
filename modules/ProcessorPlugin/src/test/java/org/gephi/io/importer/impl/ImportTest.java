@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.io.importer.impl;
 
 import java.util.HashSet;
@@ -68,23 +69,20 @@ import org.junit.rules.TestName;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ImportTest {
 
+    private static final double EPS = 0.001;
     private final ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
     private final ImportController importController = Lookup.getDefault().lookup(ImportController.class);
     private final GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
     private final Processor defaultProcessor = Lookup.getDefault().lookup(Processor.class);
     private final Processor mergeProcessor = new MergeProcessor();
-    private Workspace workspace;
-    private ImportContainerImpl container, container2, container3;
-
-    private static final double EPS = 0.001;
-
     @Rule
     public TestName testName = new TestName();
+    private Workspace workspace;
+    private ImportContainerImpl container, container2, container3;
 
     @Before
     public void setup() {
@@ -138,7 +136,8 @@ public class ImportTest {
         return buildEdge(container, source, target, weight, null);
     }
 
-    private EdgeDraft buildEdge(ContainerLoader container, NodeDraft source, NodeDraft target, double weight, Object type) {
+    private EdgeDraft buildEdge(ContainerLoader container, NodeDraft source, NodeDraft target, double weight,
+                                Object type) {
         EdgeDraft edge = container.factory().newEdgeDraft();
         edge.setSource(source);
         edge.setTarget(target);
@@ -154,7 +153,7 @@ public class ImportTest {
     private void buildMergeWeightsTestGraph(boolean multipleContainers) {
         buildMergeWeightsTestGraph(multipleContainers, false);
     }
-    
+
     private void buildMergeWeightsTestGraph(boolean multipleContainers, boolean differentTypes) {
         if (multipleContainers) {
             NodeDraft node1 = buildNode(container, "1");
@@ -208,7 +207,7 @@ public class ImportTest {
 
     private Graph processMergeWeightsTestGraph(boolean multipleContainers) {
         if (multipleContainers) {
-            importController.process(new Container[]{container, container2, container3}, mergeProcessor, workspace);
+            importController.process(new Container[] {container, container2, container3}, mergeProcessor, workspace);
 
             showReport(container.getReport());
             showReport(container2.getReport());

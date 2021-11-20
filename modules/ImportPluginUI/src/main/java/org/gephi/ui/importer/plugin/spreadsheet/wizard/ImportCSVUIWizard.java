@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.ui.importer.plugin.spreadsheet.wizard;
 
 import java.awt.Component;
@@ -75,18 +76,18 @@ public final class ImportCSVUIWizard {
             ImporterSpreadsheetCSV importer = importers[i];
             WizardPanel1CSV step1 = new WizardPanel1CSV(importer);
             WizardPanel2 step2 = new WizardPanel2(importer);
-            
+
             panels[i * 2] = step1;
             panels[i * 2 + 1] = step2;
         }
-        
+
         String[] steps = new String[panels.length];
 
         for (int i = 0; i < panels.length; i++) {
             Component c = panels[i].getComponent();
-            
+
             steps[i] = c.getName();
-            
+
             if (c instanceof JComponent) { // assume Swing components
                 JComponent jc = (JComponent) c;
                 // Sets step number of a component

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi.general;
 
 import org.gephi.datalab.spi.Manipulator;
@@ -47,8 +48,9 @@ import org.gephi.datalab.spi.Manipulator;
  * <p>This interface defines the same service as GeneralActionsManipulator, with one
  * only change: the actions are shown in a drop down panel as plugins,
  * to tell the difference between normal, basic general actions in data laboratory and plugins.</p>
+ *
  * @author Eduardo Ramos
  */
-public interface PluginGeneralActionsManipulator extends Manipulator{
+public interface PluginGeneralActionsManipulator extends Manipulator {
 
 }

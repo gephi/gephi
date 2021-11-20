@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 import javax.swing.Icon;
@@ -73,7 +74,8 @@ public class MinimumNumber implements AttributeColumnsMergeStrategy {
 
     @Override
     public void execute() {
-        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).minValueNumbersMerge(table, columns, columnTitle);
+        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class)
+            .minValueNumbersMerge(table, columns, columnTitle);
     }
 
     @Override

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.processor.spi;
 
 import org.gephi.io.importer.api.ContainerUnloader;
@@ -99,9 +100,10 @@ public interface Processor {
      * @param progressTicket progress ticket
      */
     public void setProgressTicket(ProgressTicket progressTicket);
-    
+
     /**
      * Returns the report of the processor after processing is done, with possible warnings and errors.
+     *
      * @return Processor report after processing
      */
     public Report getReport();

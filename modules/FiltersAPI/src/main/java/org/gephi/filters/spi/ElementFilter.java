@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.spi;
 
 import org.gephi.graph.api.Element;
@@ -53,8 +54,8 @@ import org.gephi.graph.api.Graph;
  * nodes or edges. As a filter can't be for nodes and edges at the same time the
  * filter has to specify K.
  *
- * @author Mathieu Bastian
  * @param <K> element class
+ * @author Mathieu Bastian
  */
 public interface ElementFilter<K extends Element> extends Filter {
 

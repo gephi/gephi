@@ -39,18 +39,16 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
-import org.openide.util.Lookup;
 
 /**
- *
  * @author mbastian
  */
 public class GraphGenerator {

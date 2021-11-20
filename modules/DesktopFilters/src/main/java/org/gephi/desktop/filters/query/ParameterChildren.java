@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.filters.query;
 
 import org.gephi.filters.api.Query;
@@ -46,7 +47,6 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ParameterChildren extends Children.Keys<Integer> {
@@ -64,6 +64,6 @@ public class ParameterChildren extends Children.Keys<Integer> {
 
     @Override
     protected Node[] createNodes(Integer key) {
-        return new Node[]{new ParameterNode(function.getPropertyName(key), function.getPropertyValue(key))};
+        return new Node[] {new ParameterNode(function.getPropertyName(key), function.getPropertyValue(key))};
     }
 }

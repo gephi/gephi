@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.selection;
 
 import com.jogamp.opengl.GL2;
@@ -53,18 +54,17 @@ import org.gephi.visualization.apiimpl.GraphIO;
 import org.gephi.visualization.model.node.NodeModel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class Cylinder implements SelectionArea {
 
+    //Variables
+    private static final float[] RECT_POINT = {1, 1};
     //Architecture
     private final GraphIO graphIO;
     private final GraphDrawable drawable;
     private final SelectionManager selectionManager;
     private final VizModel vizModel;
-    //Variables
-    private static final float[] RECT_POINT = {1, 1};
     private final float[] rectangle = new float[2];
 
     public Cylinder() {

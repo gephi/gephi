@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
@@ -53,13 +54,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- *
  * @author Anna
  */
 public class HitsTest extends TestCase {
-    
+
     private static final double EPSILON = 1e-4;
-    
+
     @Test
     public void testOneNodeHits() {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);
@@ -187,7 +187,7 @@ public class HitsTest extends TestCase {
         assertEquals(hub1, 0.4082);
         assertEquals(auth1, 0.9128);
         assertEquals(auth4, 0.1825);
-        
+
         assertEquals(hub1, hub3);
     }
 
@@ -229,10 +229,10 @@ public class HitsTest extends TestCase {
         Node n2 = graph.getNode("1");
         int index1 = indices.get(n1);
         int index2 = indices.get(n2);
-        
+
         double auth1 = authority[index1];
         double auth2 = authority[index2];
-        
+
         assertTrue(auth2 > auth1);
     }
 
@@ -481,10 +481,10 @@ public class HitsTest extends TestCase {
         Edge edge12 = graphModel.factory().newEdge(node1, node2);
         Edge edge13 = graphModel.factory().newEdge(node1, node3);
         Edge edge14 = graphModel.factory().newEdge(node1, node4);
-        
+
         Edge edge23 = graphModel.factory().newEdge(node2, node3);
         Edge edge24 = graphModel.factory().newEdge(node2, node4);
-        
+
         Edge edge32 = graphModel.factory().newEdge(node3, node2);
 
         directedGraph.addEdge(edge12);
@@ -508,19 +508,19 @@ public class HitsTest extends TestCase {
         int index2 = indices.get(node2);
         int index3 = indices.get(node3);
         int index4 = indices.get(node4);
-        
+
         assertEquals(hubs[index1], 0.7887);
         assertEquals(hubs[index2], 0.5774);
         assertEquals(hubs[index3], 0.2113);
         assertEquals(hubs[index4], 0);
-        
+
         assertEquals(authority[index1], 0);
         assertEquals(authority[index2], 0.4597);
         assertEquals(authority[index3], 0.6280);
         assertEquals(authority[index4], 0.6280);
     }
-    
-    private void assertEquals(double a, double b){
+
+    private void assertEquals(double a, double b) {
         Assert.assertEquals(a, b, EPSILON);
     }
 }

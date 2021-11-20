@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -40,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi.nodes;
 
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
@@ -50,13 +50,15 @@ import org.gephi.graph.api.Node;
  * <p><b>Please note that the methods offered in this service are the same as Visualization API GraphContextMenuItem.
  * It is possible to reuse actions implementations by adding both <code>ServiceProvider</code> annotations.</b></p>
  * Manipulator for nodes.
- * @see Manipulator
+ *
  * @author Eduardo Ramos
+ * @see Manipulator
  */
 public interface NodesManipulator extends ContextMenuItemManipulator {
     /**
      * Prepare nodes for this action.
-     * @param nodes All selected nodes to operate
+     *
+     * @param nodes       All selected nodes to operate
      * @param clickedNode The right clicked node of all nodes
      */
     void setup(Node[] nodes, Node clickedNode);

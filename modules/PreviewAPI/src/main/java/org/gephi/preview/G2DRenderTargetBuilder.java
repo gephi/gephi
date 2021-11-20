@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview;
 
 import java.awt.Color;
@@ -61,7 +62,6 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = RenderTargetBuilder.class)
@@ -159,20 +159,21 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
     public static class G2DGraphics {
 
         private final PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-        private boolean inited;
         //Drawing
         private final Image image;
         private final int width;
         private final int height;
         private final Graphics2D g2;
         private final Vector trans = new Vector();
+        private boolean inited;
         private float scaling;
         private Color background = Color.WHITE;
 
         public G2DGraphics(int width, int height) {
             this.width = width;
             this.height = height;
-            GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+            GraphicsConfiguration graphicsConfiguration =
+                GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
             image = graphicsConfiguration.createCompatibleImage(width, height, Transparency.TRANSLUCENT);
             g2 = (Graphics2D) image.getGraphics();
 
@@ -197,7 +198,7 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
             g2.setTransform(new AffineTransform());
 
             background = m.getProperties()
-                    .getColorValue(PreviewProperty.BACKGROUND_COLOR);
+                .getColorValue(PreviewProperty.BACKGROUND_COLOR);
             if (background != null) {
                 g2.setColor(background);
                 g2.fillRect(0, 0, width, height);
@@ -252,14 +253,14 @@ public class G2DRenderTargetBuilder implements RenderTargetBuilder {
         private CanvasSize getSheetCanvasSize(PreviewModel m) {
             CanvasSize cs = m.getGraphicsCanvasSize();
             float marginPercentage = m.getProperties()
-                    .getFloatValue(PreviewProperty.MARGIN);
+                .getFloatValue(PreviewProperty.MARGIN);
             float marginWidth = cs.getWidth() * marginPercentage / 100F;
             float marginHeight = cs.getHeight() * marginPercentage / 100F;
             return new CanvasSize(
-                    cs.getX() - marginWidth,
-                    cs.getY() - marginHeight,
-                    cs.getWidth() + 2F * marginWidth,
-                    cs.getHeight() + 2F * marginHeight);
+                cs.getX() - marginWidth,
+                cs.getY() - marginHeight,
+                cs.getWidth() + 2F * marginWidth,
+                cs.getHeight() + 2F * marginHeight);
         }
 
         private float computeDefaultScaling(CanvasSize cs) {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.desktop.appearance;
 
 import java.awt.Component;
@@ -69,17 +70,16 @@ import org.gephi.appearance.spi.TransformerUI;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author mbastian
  */
 public class AppearanceToolbar implements AppearanceUIModelListener {
 
     protected final AppearanceUIController controller;
-    protected AppearanceUIModel model;
     //Toolbars
     private final CategoryToolbar categoryToolbar;
     private final TransformerToolbar transformerToolbar;
     private final ControlToolbar controlToolbar;
+    protected AppearanceUIModel model;
 
     public AppearanceToolbar(AppearanceUIController controller) {
         this.controller = controller;
@@ -235,6 +235,8 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
     private class CategoryToolbar extends AbstractToolbar {
 
         private final List<ButtonGroup> buttonGroups = new ArrayList<>();
+        private javax.swing.JLabel box;
+        private javax.swing.ButtonGroup elementGroup;
 
         public CategoryToolbar() {
             //Init components
@@ -270,7 +272,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         private void clear() {
             //Clear precent buttons
             for (ButtonGroup bg : buttonGroups) {
-                for (Enumeration<AbstractButton> btns = bg.getElements(); btns.hasMoreElements();) {
+                for (Enumeration<AbstractButton> btns = bg.getElements(); btns.hasMoreElements(); ) {
                     AbstractButton btn = btns.nextElement();
                     remove(btn);
                 }
@@ -321,7 +323,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                     g.clearSelection();
                     TransformerCategory c = model.getSelectedCategory();
                     String selected = c.getDisplayName();
-                    for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
+                    for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements(); ) {
                         AbstractButton btn = btns.nextElement();
                         btn.setVisible(active);
                         if (active && btn.getName().equals(selected)) {
@@ -346,8 +348,6 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
             }
             elementGroup.setSelected(buttonModel, true);
         }
-        private javax.swing.JLabel box;
-        private javax.swing.ButtonGroup elementGroup;
     }
 
     private class TransformerToolbar extends AbstractToolbar {
@@ -360,7 +360,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         private void clear() {
             //Clear precent buttons
             for (ButtonGroup bg : buttonGroups) {
-                for (Enumeration<AbstractButton> btns = bg.getElements(); btns.hasMoreElements();) {
+                for (Enumeration<AbstractButton> btns = bg.getElements(); btns.hasMoreElements(); ) {
                     AbstractButton btn = btns.nextElement();
                     remove(btn);
                 }
@@ -415,11 +415,12 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                     for (TransformerCategory c : controller.getCategories(elmtType)) {
                         ButtonGroup g = buttonGroups.get(index);
 
-                        boolean active = model.getSelectedElementClass().equals(elmtType) && model.getSelectedCategory().equals(c);
+                        boolean active =
+                            model.getSelectedElementClass().equals(elmtType) && model.getSelectedCategory().equals(c);
                         g.clearSelection();
                         TransformerUI t = model.getSelectedTransformerUI();
 
-                        for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
+                        for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements(); ) {
                             AbstractButton btn = btns.nextElement();
                             btn.setVisible(active);
                             if (t != null && active && btn.getName().equals(t.getDisplayName())) {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.ui.importer.plugin.spreadsheet.wizard;
 
 import java.awt.Component;
@@ -79,7 +80,7 @@ public final class ImportExcelUIWizard {
             panels[i * 2] = step1;
             panels[i * 2 + 1] = step2;
         }
-        
+
         String[] steps = new String[panels.length];
 
         for (int i = 0; i < panels.length; i++) {
@@ -89,7 +90,7 @@ public final class ImportExcelUIWizard {
 
             if (c instanceof JComponent) { // assume Swing components
                 JComponent jc = (JComponent) c;
-                
+
                 // Sets step number of a component
                 // TODO if using org.openide.dialogs >= 7.8, can use WizardDescriptor.PROP_*:
                 jc.putClientProperty("WizardPanel_contentSelectedIndex", i);

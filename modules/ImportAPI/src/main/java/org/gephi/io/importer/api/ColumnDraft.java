@@ -39,11 +39,12 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 /**
  * Column draft used by containers to represent future attribute columns.
- * 
+ *
  * @author Mathieu Bastian
  */
 public interface ColumnDraft {
@@ -65,12 +66,19 @@ public interface ColumnDraft {
     public String getTitle();
 
     /**
+     * Sets the column's title.
+     *
+     * @param title column title
+     */
+    public void setTitle(String title);
+
+    /**
      * Gets the column's type.
      *
      * @return column's type
      */
     public Class getTypeClass();
-    
+
     /**
      * Gets the column's resolved (final) type taking into account the container settings and whether the column is dynamic or not.
      *
@@ -85,7 +93,16 @@ public interface ColumnDraft {
      * @return default value or null if empty
      */
     public Object getDefaultValue();
-    
+
+    /**
+     * Sets the column's default value.
+     * <p>
+     * The default default value is <code>null</code>.
+     *
+     * @param value default value
+     */
+    public void setDefaultValue(Object value);
+
     /**
      * Gets the column's resolved (final) default value taking into account the container settings and whether the column is dynamic or not.
      *
@@ -100,22 +117,6 @@ public interface ColumnDraft {
      * @return true if dynamic, false otherwise
      */
     public boolean isDynamic();
-
-    /**
-     * Sets the column's title.
-     *
-     * @param title column title
-     */
-    public void setTitle(String title);
-
-    /**
-     * Sets the column's default value.
-     * <p>
-     * The default default value is <code>null</code>.
-     *
-     * @param value default value
-     */
-    public void setDefaultValue(Object value);
 
     /**
      * Sets the column's default value as a string.

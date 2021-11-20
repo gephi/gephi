@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import org.gephi.io.exporter.api.FileType;
@@ -48,7 +49,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = GraphFileExporterBuilder.class)
@@ -62,7 +62,7 @@ public class ExporterBuilderGEXF implements GraphFileExporterBuilder {
     @Override
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gexf", NbBundle.getMessage(ExporterBuilderGEXF.class, "fileType_GEXF_Name"));
-        return new FileType[]{ft};
+        return new FileType[] {ft};
     }
 
     @Override

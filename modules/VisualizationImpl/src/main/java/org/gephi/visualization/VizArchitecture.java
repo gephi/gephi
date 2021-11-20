@@ -39,10 +39,10 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface VizArchitecture {

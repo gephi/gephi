@@ -40,6 +40,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics;
 
 import java.awt.image.BufferedImage;
@@ -66,7 +67,6 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  * @author Patrick J. McSweeney
  */

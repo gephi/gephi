@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.apiimpl;
 
 import java.awt.event.ActionEvent;
@@ -64,7 +65,6 @@ import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class GraphContextMenu {
@@ -125,7 +125,8 @@ public class GraphContextMenu {
         return items.toArray(new GraphContextMenuItem[0]);
     }
 
-    public JMenuItem createMenuItemFromGraphContextMenuItem(final GraphContextMenuItem item, final Graph graph, final Node[] nodes) {
+    public JMenuItem createMenuItemFromGraphContextMenuItem(final GraphContextMenuItem item, final Graph graph,
+                                                            final Node[] nodes) {
         ContextMenuItemManipulator[] subItems = item.getSubItems();
         if (subItems != null && item.canExecute()) {
             JMenu subMenu = new JMenu();
@@ -176,7 +177,8 @@ public class GraphContextMenu {
             }
             if (item.getMnemonicKey() != null) {
                 menuItem.setMnemonic(item.getMnemonicKey());//Mnemonic for executing the action
-                menuItem.setAccelerator(KeyStroke.getKeyStroke(item.getMnemonicKey(), KeyEvent.CTRL_DOWN_MASK));//And the same key mnemonic + ctrl for executing the action (and as a help display for the user!).
+                menuItem.setAccelerator(KeyStroke.getKeyStroke(item.getMnemonicKey(),
+                    KeyEvent.CTRL_DOWN_MASK));//And the same key mnemonic + ctrl for executing the action (and as a help display for the user!).
             }
             return menuItem;
         }

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
@@ -67,7 +68,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
@@ -670,51 +670,55 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gdf", NbBundle.getMessage(getClass(), "fileType_GDF_Name"));
-        return new FileType[]{ft};
-    }
-
-    public void setExportAttributes(boolean exportAttributes) {
-        this.exportAttributes = exportAttributes;
-    }
-
-    public void setExportColors(boolean exportColors) {
-        this.exportColors = exportColors;
-    }
-
-    public void setExportPosition(boolean exportPosition) {
-        this.exportPosition = exportPosition;
-    }
-
-    public void setNormalize(boolean normalize) {
-        this.normalize = normalize;
-    }
-
-    public void setSimpleQuotes(boolean simpleQuotes) {
-        this.simpleQuotes = simpleQuotes;
+        return new FileType[] {ft};
     }
 
     public boolean isExportAttributes() {
         return exportAttributes;
     }
 
+    public void setExportAttributes(boolean exportAttributes) {
+        this.exportAttributes = exportAttributes;
+    }
+
     public boolean isExportColors() {
         return exportColors;
+    }
+
+    public void setExportColors(boolean exportColors) {
+        this.exportColors = exportColors;
     }
 
     public boolean isExportPosition() {
         return exportPosition;
     }
 
+    public void setExportPosition(boolean exportPosition) {
+        this.exportPosition = exportPosition;
+    }
+
     public boolean isNormalize() {
         return normalize;
+    }
+
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
     }
 
     public boolean isSimpleQuotes() {
         return simpleQuotes;
     }
 
+    public void setSimpleQuotes(boolean simpleQuotes) {
+        this.simpleQuotes = simpleQuotes;
+    }
+
     public boolean isUseQuotes() {
         return useQuotes;
+    }
+
+    public void setUseQuotes(boolean useQuotes) {
+        this.useQuotes = useQuotes;
     }
 
     public boolean isExportVisibility() {
@@ -723,10 +727,6 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
     public void setExportVisibility(boolean exportVisibility) {
         this.exportVisibility = exportVisibility;
-    }
-
-    public void setUseQuotes(boolean useQuotes) {
-        this.useQuotes = useQuotes;
     }
 
     private DataTypeGDF getDataTypeGDF(Class type) {
@@ -752,6 +752,31 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         } else {
             return DataTypeGDF.VARCHAR;
         }
+    }
+
+    @Override
+    public boolean isExportVisible() {
+        return exportVisible;
+    }
+
+    @Override
+    public void setExportVisible(boolean exportVisible) {
+        this.exportVisible = exportVisible;
+    }
+
+    @Override
+    public void setWriter(Writer writer) {
+        this.writer = writer;
+    }
+
+    @Override
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    @Override
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 
     private enum DataTypeGDF {
@@ -831,30 +856,5 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         public Object getDefaultValue() {
             return defaultValue;
         }
-    }
-
-    @Override
-    public boolean isExportVisible() {
-        return exportVisible;
-    }
-
-    @Override
-    public void setExportVisible(boolean exportVisible) {
-        this.exportVisible = exportVisible;
-    }
-
-    @Override
-    public void setWriter(Writer writer) {
-        this.writer = writer;
-    }
-
-    @Override
-    public Workspace getWorkspace() {
-        return workspace;
-    }
-
-    @Override
-    public void setWorkspace(Workspace workspace) {
-        this.workspace = workspace;
     }
 }

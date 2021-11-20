@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
@@ -52,7 +53,21 @@ import java.util.logging.Logger;
 import javanet.staxutils.IndentingXMLStreamWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import org.gephi.graph.api.*;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Configuration;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Interval;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.Table;
+import org.gephi.graph.api.TimeFormat;
+import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.graph.api.types.IntervalMap;
 import org.gephi.graph.api.types.IntervalSet;
 import org.gephi.graph.api.types.TimeMap;
@@ -71,7 +86,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian, Sébastien Heymann
  */
 public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask {
@@ -264,7 +278,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 } else {
                     staticCols.add(col);
                 }
-            } else if (exportDynamic && (AttributeUtils.isEdgeColumn(col) && col.isDynamic() && col.getId().equals("weight"))) {
+            } else if (exportDynamic &&
+                (AttributeUtils.isEdgeColumn(col) && col.isDynamic() && col.getId().equals("weight"))) {
                 dynamicCols.add(col);
             }
         }
@@ -277,7 +292,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         }
     }
 
-    private void writeAttributes(XMLStreamWriter xmlWriter, Column[] cols, String mode, String attClass) throws Exception {
+    private void writeAttributes(XMLStreamWriter xmlWriter, Column[] cols, String mode, String attClass)
+        throws Exception {
         xmlWriter.writeStartElement(ATTRIBUTES);
         xmlWriter.writeAttribute(ATTRIBUTES_CLASS, attClass);
         xmlWriter.writeAttribute(ATTRIBUTES_MODE, mode);
@@ -289,9 +305,12 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.writeAttribute(ATTRIBUTE_TITLE, col.getTitle());
 
             if (col.isArray()) {
-                xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "list" + col.getTypeClass().getComponentType().getSimpleName().toLowerCase());
+                xmlWriter.writeAttribute(ATTRIBUTE_TYPE,
+                    "list" + col.getTypeClass().getComponentType().getSimpleName().toLowerCase());
             } else if (col.isDynamic()) {
-                xmlWriter.writeAttribute(ATTRIBUTE_TYPE, AttributeUtils.getStaticType((Class<? extends TimeMap>) col.getTypeClass()).getSimpleName().toLowerCase());
+                xmlWriter.writeAttribute(ATTRIBUTE_TYPE,
+                    AttributeUtils.getStaticType((Class<? extends TimeMap>) col.getTypeClass()).getSimpleName()
+                        .toLowerCase());
             } else {
                 xmlWriter.writeAttribute(ATTRIBUTE_TYPE, col.getTypeClass().getSimpleName().toLowerCase());
             }
@@ -357,7 +376,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         xmlWriter.writeEndElement();
     }
 
-    private void writeAttValue(XMLStreamWriter xmlWriter, Graph graph, Column column, Element element) throws Exception {
+    private void writeAttValue(XMLStreamWriter xmlWriter, Graph graph, Column column, Element element)
+        throws Exception {
         if (!column.isDynamic()) {
             Object val = element.getAttribute(column);
             if (val != null) {
@@ -389,11 +409,13 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                                 xmlWriter.writeAttribute(ATTVALUE_VALUE, value.toString());
                                 if (!Double.isInfinite(interval.getLow())) {
-                                    String intervalLow = AttributeUtils.printTimestampInFormat(interval.getLow(), timeFormat, timeZone);
+                                    String intervalLow =
+                                        AttributeUtils.printTimestampInFormat(interval.getLow(), timeFormat, timeZone);
                                     xmlWriter.writeAttribute(START, intervalLow);
                                 }
                                 if (!Double.isInfinite(interval.getHigh())) {
-                                    String intervalHigh = AttributeUtils.printTimestampInFormat(interval.getHigh(), timeFormat, timeZone);
+                                    String intervalHigh =
+                                        AttributeUtils.printTimestampInFormat(interval.getHigh(), timeFormat, timeZone);
                                     xmlWriter.writeAttribute(END, intervalHigh);
                                 }
                                 xmlWriter.writeEndElement();
@@ -412,7 +434,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                                 xmlWriter.writeStartElement(ATTVALUE);
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, column.getId());
                                 xmlWriter.writeAttribute(ATTVALUE_VALUE, value.toString());
-                                xmlWriter.writeAttribute(TIMESTAMP, AttributeUtils.printTimestampInFormat(timestamp, timeFormat, timeZone));
+                                xmlWriter.writeAttribute(TIMESTAMP,
+                                    AttributeUtils.printTimestampInFormat(timestamp, timeFormat, timeZone));
                                 xmlWriter.writeEndElement();
                             }
                         }
@@ -433,7 +456,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private void writeAttValues(XMLStreamWriter xmlWriter, Graph graph, Element element) throws Exception {
         List<Column> columns = new ArrayList<>();
         for (Column column : element.getAttributeColumns()) {
-            if ((exportAttributes && !column.isProperty()) || (element instanceof Edge && ((Edge) element).hasDynamicWeight() && column.getId().equals("weight"))) {
+            if ((exportAttributes && !column.isProperty()) ||
+                (element instanceof Edge && ((Edge) element).hasDynamicWeight() && column.getId().equals("weight"))) {
                 columns.add(column);
 
             }
@@ -511,11 +535,13 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                         if (!exportVisible || interval.compareTo(visibleInterval) == 0) {
                             xmlWriter.writeStartElement(SPELL);
                             if (!Double.isInfinite(interval.getLow())) {
-                                String intervalLow = AttributeUtils.printTimestampInFormat(interval.getLow(), timeFormat, timeZone);
+                                String intervalLow =
+                                    AttributeUtils.printTimestampInFormat(interval.getLow(), timeFormat, timeZone);
                                 xmlWriter.writeAttribute(START, intervalLow);
                             }
                             if (!Double.isInfinite(interval.getHigh())) {
-                                String intervalHigh = AttributeUtils.printTimestampInFormat(interval.getHigh(), timeFormat, timeZone);
+                                String intervalHigh =
+                                    AttributeUtils.printTimestampInFormat(interval.getHigh(), timeFormat, timeZone);
                                 xmlWriter.writeAttribute(END, intervalHigh);
                             }
                             xmlWriter.writeEndElement();
@@ -525,7 +551,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                     for (Double timestamp : ((TimestampSet) timeSet).toArray()) {
                         if (!exportVisible || visibleInterval.compareTo(timestamp) == 0) {
                             xmlWriter.writeStartElement(SPELL);
-                            xmlWriter.writeAttribute(TIMESTAMP, AttributeUtils.printTimestampInFormat(timestamp, timeFormat, timeZone));
+                            xmlWriter.writeAttribute(TIMESTAMP,
+                                AttributeUtils.printTimestampInFormat(timestamp, timeFormat, timeZone));
                             xmlWriter.writeEndElement();
                         }
                     }
@@ -538,12 +565,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                     xmlWriter.writeAttribute(START, intervalLow);
                 }
                 if (!Double.isInfinite(interval.getHigh())) {
-                    String intervalHigh = AttributeUtils.printTimestampInFormat(interval.getHigh(), timeFormat, timeZone);
+                    String intervalHigh =
+                        AttributeUtils.printTimestampInFormat(interval.getHigh(), timeFormat, timeZone);
                     xmlWriter.writeAttribute(END, intervalHigh);
                 }
             } else if (timeRepresentation.equals(TimeRepresentation.TIMESTAMP)) {
                 Double timestamp = ((TimestampSet) timeSet).toArray()[0];
-                xmlWriter.writeAttribute(TIMESTAMP, AttributeUtils.printTimestampInFormat(timestamp, timeFormat, timeZone));
+                xmlWriter
+                    .writeAttribute(TIMESTAMP, AttributeUtils.printTimestampInFormat(timestamp, timeFormat, timeZone));
             }
         }
     }
@@ -666,7 +695,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gexf", NbBundle.getMessage(getClass(), "fileType_GEXF_Name"));
-        return new FileType[]{ft};
+        return new FileType[] {ft};
     }
 
     private String getDateTime() {
@@ -675,48 +704,44 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         return dateFormat.format(date);
     }
 
-    public void setExportAttributes(boolean exportAttributes) {
-        this.exportAttributes = exportAttributes;
-    }
-
-    public void setExportColors(boolean exportColors) {
-        this.exportColors = exportColors;
-    }
-
-    public void setExportPosition(boolean exportPosition) {
-        this.exportPosition = exportPosition;
-    }
-
-    public void setExportSize(boolean exportSize) {
-        this.exportSize = exportSize;
-    }
-
-    public void setNormalize(boolean normalize) {
-        this.normalize = normalize;
-    }
-
-    public void setExportDynamic(boolean exportDynamic) {
-        this.exportDynamic = exportDynamic;
-    }
-
     public boolean isExportAttributes() {
         return exportAttributes;
+    }
+
+    public void setExportAttributes(boolean exportAttributes) {
+        this.exportAttributes = exportAttributes;
     }
 
     public boolean isExportColors() {
         return exportColors;
     }
 
+    public void setExportColors(boolean exportColors) {
+        this.exportColors = exportColors;
+    }
+
     public boolean isExportPosition() {
         return exportPosition;
+    }
+
+    public void setExportPosition(boolean exportPosition) {
+        this.exportPosition = exportPosition;
     }
 
     public boolean isExportSize() {
         return exportSize;
     }
 
+    public void setExportSize(boolean exportSize) {
+        this.exportSize = exportSize;
+    }
+
     public boolean isNormalize() {
         return normalize;
+    }
+
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
     }
 
     @Override
@@ -724,13 +749,17 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         return exportVisible;
     }
 
+    @Override
+    public void setExportVisible(boolean exportVisible) {
+        this.exportVisible = exportVisible;
+    }
+
     public boolean isExportDynamic() {
         return exportDynamic;
     }
 
-    @Override
-    public void setExportVisible(boolean exportVisible) {
-        this.exportVisible = exportVisible;
+    public void setExportDynamic(boolean exportDynamic) {
+        this.exportDynamic = exportDynamic;
     }
 
     @Override

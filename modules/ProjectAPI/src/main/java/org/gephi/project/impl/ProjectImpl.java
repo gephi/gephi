@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.impl;
 
 import java.io.Serializable;
@@ -50,16 +51,15 @@ import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ProjectImpl implements Project, Lookup.Provider, Serializable {
 
+    //Workspace ids
+    private final AtomicInteger workspaceIds;
     //Lookup
     private transient InstanceContent instanceContent;
     private transient AbstractLookup lookup;
-    //Workspace ids
-    private final AtomicInteger workspaceIds;
 
     public ProjectImpl(int id) {
         this(NbBundle.getMessage(ProjectImpl.class, "Project.default.prefix") + " " + id);
@@ -102,11 +102,11 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         return workspaceIds.getAndIncrement();
     }
 
-    public void setWorkspaceIds(int ids) {
-        workspaceIds.set(ids);
-    }
-
     public int getWorkspaceIds() {
         return workspaceIds.get();
+    }
+
+    public void setWorkspaceIds(int ids) {
+        workspaceIds.set(ids);
     }
 }

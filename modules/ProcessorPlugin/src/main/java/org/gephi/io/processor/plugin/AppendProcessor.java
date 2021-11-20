@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.processor.plugin;
 
 import org.gephi.io.importer.api.ContainerUnloader;
@@ -75,7 +76,7 @@ public class AppendProcessor extends DefaultProcessor implements Processor {
             } else {
                 workspace = pc.newWorkspace(pc.getCurrentProject());
             }
-            
+
             for (ContainerUnloader container : containers) {
                 processConfiguration(container, workspace);
 

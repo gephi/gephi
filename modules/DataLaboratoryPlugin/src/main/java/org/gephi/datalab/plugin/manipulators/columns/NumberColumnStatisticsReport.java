@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
@@ -55,6 +56,7 @@ import org.openide.util.NbBundle;
 
 /**
  * AttributeColumnsManipulator that shows a report with statistics values and charts of a number/number list column.
+ *
  * @author Eduardo Ramos
  */
 //@ServiceProvider(service = AttributeColumnsManipulator.class)
@@ -77,11 +79,12 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
     @Override
     public boolean canManipulateColumn(Table table, Column column) {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        return AttributeUtils.isNumberType(column.getTypeClass()) && ac.getTableRowsCount(table) > 0;//Make sure it is a number/number list column and there is at least 1 row
+        return AttributeUtils.isNumberType(column.getTypeClass()) &&
+            ac.getTableRowsCount(table) > 0;//Make sure it is a number/number list column and there is at least 1 row
     }
 
     @Override
-    public AttributeColumnsManipulatorUI getUI(Table table,Column column) {
+    public AttributeColumnsManipulatorUI getUI(Table table, Column column) {
         return new GeneralNumberListStatisticsReportUI(getColumnNumbers(table, column), column.getTitle(), getName());
     }
 

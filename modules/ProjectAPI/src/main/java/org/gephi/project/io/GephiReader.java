@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.io;
 
 import java.util.LinkedHashMap;
@@ -69,8 +70,10 @@ public class GephiReader {
                 if ("projectFile".equalsIgnoreCase(name) || "gephiFile".equalsIgnoreCase(name)) {
                     //Version
                     String version = reader.getAttributeValue(null, "version");
-                    if (version == null || version.isEmpty() || Double.parseDouble(version) < Double.parseDouble(VERSION)) {
-                        throw new GephiFormatException("Gephi project file version must be at least of version " + VERSION);
+                    if (version == null || version.isEmpty() ||
+                        Double.parseDouble(version) < Double.parseDouble(VERSION)) {
+                        throw new GephiFormatException(
+                            "Gephi project file version must be at least of version " + VERSION);
                     }
                 } else if ("project".equalsIgnoreCase(name)) {
                     String projectName = reader.getAttributeValue(null, "name");
@@ -182,7 +185,8 @@ public class GephiReader {
         return workspace;
     }
 
-    public static void readWorkspaceChildren(Workspace workspace, XMLStreamReader reader, WorkspaceXMLPersistenceProvider persistenceProvider) throws Exception {
+    public static void readWorkspaceChildren(Workspace workspace, XMLStreamReader reader,
+                                             WorkspaceXMLPersistenceProvider persistenceProvider) throws Exception {
         String identifier = persistenceProvider.getIdentifier();
         boolean end = false;
         while (reader.hasNext() && !end) {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.graph;
 
 import javax.xml.stream.XMLStreamException;
@@ -85,7 +86,8 @@ public class LegacyGraphPersistenceProvider implements WorkspaceXMLPersistencePr
         return "Dhns";
     }
 
-    private void readDhns(XMLStreamReader reader, GraphModel graphModel, LegacyMapHelper mapHelper) throws XMLStreamException {
+    private void readDhns(XMLStreamReader reader, GraphModel graphModel, LegacyMapHelper mapHelper)
+        throws XMLStreamException {
         boolean end = false;
         while (reader.hasNext() && !end) {
             Integer eventType = reader.next();
@@ -104,7 +106,8 @@ public class LegacyGraphPersistenceProvider implements WorkspaceXMLPersistencePr
         }
     }
 
-    public void readTreeStructure(XMLStreamReader reader, GraphModel graphModel, GraphFactory factory, LegacyMapHelper mapHelper) throws XMLStreamException {
+    public void readTreeStructure(XMLStreamReader reader, GraphModel graphModel, GraphFactory factory,
+                                  LegacyMapHelper mapHelper) throws XMLStreamException {
         Graph graph = graphModel.getGraph();
 
         boolean end = false;
@@ -133,7 +136,8 @@ public class LegacyGraphPersistenceProvider implements WorkspaceXMLPersistencePr
         }
     }
 
-    public void readEdges(XMLStreamReader reader, GraphModel graphModel, GraphFactory factory, LegacyMapHelper mapHelper) throws XMLStreamException {
+    public void readEdges(XMLStreamReader reader, GraphModel graphModel, GraphFactory factory,
+                          LegacyMapHelper mapHelper) throws XMLStreamException {
         Graph graph = graphModel.getGraph();
 
         boolean end = false;

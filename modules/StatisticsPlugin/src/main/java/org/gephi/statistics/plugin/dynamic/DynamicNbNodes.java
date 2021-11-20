@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin.dynamic;
 
 import java.text.DecimalFormat;
@@ -58,7 +59,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 /**
- *
  * @author Sébastien Heymann
  */
 public class DynamicNbNodes implements DynamicStatistics {
@@ -87,14 +87,14 @@ public class DynamicNbNodes implements DynamicStatistics {
         dataset.addSeries(dSeries);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "# Nodes Time Series",
-                "Time",
-                "# Nodes",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "# Nodes Time Series",
+            "Time",
+            "# Nodes",
+            dataset,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
 
         chart.removeLegend();
         ChartUtils.decorateChart(chart);
@@ -104,12 +104,12 @@ public class DynamicNbNodes implements DynamicStatistics {
         NumberFormat f = new DecimalFormat("#0.000");
 
         String report = "<HTML> <BODY> <h1>Dynamic Number of Nodes Report </h1> "
-                + "<hr>"
-                + "<br> Bounds: from " + f.format(bounds.getLow()) + " to " + f.format(bounds.getHigh())
-                + "<br> Window: " + window
-                + "<br> Tick: " + tick
-                + "<br><br><h2> Number of nodes over time: </h2>"
-                + "<br /><br />" + imageFile;
+            + "<hr>"
+            + "<br> Bounds: from " + f.format(bounds.getLow()) + " to " + f.format(bounds.getHigh())
+            + "<br> Window: " + window
+            + "<br> Tick: " + tick
+            + "<br><br><h2> Number of nodes over time: </h2>"
+            + "<br /><br />" + imageFile;
 
         /*for (Interval<Integer> count : counts) {
          report += count.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
@@ -136,8 +136,8 @@ public class DynamicNbNodes implements DynamicStatistics {
     }
 
     @Override
-    public void setBounds(Interval bounds) {
-        this.bounds = bounds;
+    public double getWindow() {
+        return window;
     }
 
     @Override
@@ -146,22 +146,22 @@ public class DynamicNbNodes implements DynamicStatistics {
     }
 
     @Override
-    public void setTick(double tick) {
-        this.tick = tick;
-    }
-
-    @Override
-    public double getWindow() {
-        return window;
-    }
-
-    @Override
     public double getTick() {
         return tick;
     }
 
     @Override
+    public void setTick(double tick) {
+        this.tick = tick;
+    }
+
+    @Override
     public Interval getBounds() {
         return bounds;
+    }
+
+    @Override
+    public void setBounds(Interval bounds) {
+        this.bounds = bounds;
     }
 }

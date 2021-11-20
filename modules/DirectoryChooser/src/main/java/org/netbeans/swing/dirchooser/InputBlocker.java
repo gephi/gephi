@@ -43,10 +43,14 @@
 
 package org.netbeans.swing.dirchooser;
 
-import java.awt.event.*;
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import javax.swing.JComponent;
+import javax.swing.JRootPane;
+import javax.swing.event.MouseInputListener;
 
 /**
  * Blocks user's input when FileChooser is busy.
@@ -54,14 +58,15 @@ import javax.swing.event.*;
  * @author Soot Phengsy
  */
 public class InputBlocker extends JComponent implements MouseInputListener {
-    
+
     public InputBlocker() {
     }
 
     private void addListeners(Component c) {
-        for( MouseListener ml : c.getMouseListeners() ) {
-            if( ml == this )
+        for (MouseListener ml : c.getMouseListeners()) {
+            if (ml == this) {
                 return;
+            }
         }
         c.addMouseListener(this);
         c.addMouseMotionListener(this);
@@ -71,12 +76,13 @@ public class InputBlocker extends JComponent implements MouseInputListener {
         c.removeMouseListener(this);
         c.removeMouseMotionListener(this);
     }
-    
+
     public void block(JRootPane rootPane) {
-        if( null == rootPane )
+        if (null == rootPane) {
             return;
+        }
         Component glassPane = rootPane.getGlassPane();
-        if( null == glassPane ) {
+        if (null == glassPane) {
             rootPane.setGlassPane(this);
             glassPane = this;
         }
@@ -84,12 +90,13 @@ public class InputBlocker extends JComponent implements MouseInputListener {
         addListeners(glassPane);
         glassPane.setVisible(true);
     }
-    
+
     public void unBlock(JRootPane rootPane) {
-        if( null == rootPane )
+        if (null == rootPane) {
             return;
+        }
         Component glassPane = rootPane.getGlassPane();
-        if( null == glassPane ) {
+        if (null == glassPane) {
             return;
         }
         removeListeners(glassPane);

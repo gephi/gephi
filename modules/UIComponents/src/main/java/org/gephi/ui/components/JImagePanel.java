@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.Color;
@@ -72,6 +73,20 @@ public class JImagePanel extends JPanel {
         setImageAlign(imageAlign);
     }
 
+    protected static Image loadImage(Image image) {
+        mTracker.addImage(image, 0);
+
+        try {
+            mTracker.waitForID(0);
+        } catch (InterruptedException e) {
+            return null;
+        }
+
+        mTracker.removeImage(image, 0);
+
+        return image;
+    }
+
     //~ Methods ------------------------------------------------------------------------------------------------------------------
     public void setImage(Image image) {
         this.image = loadImage(image);
@@ -92,20 +107,6 @@ public class JImagePanel extends JPanel {
         setPreferredBackground();
 
         refresh();
-    }
-
-    protected static Image loadImage(Image image) {
-        mTracker.addImage(image, 0);
-
-        try {
-            mTracker.waitForID(0);
-        } catch (InterruptedException e) {
-            return null;
-        }
-
-        mTracker.removeImage(image, 0);
-
-        return image;
     }
 
     protected void setPreferredBackground() {
@@ -145,7 +146,8 @@ public class JImagePanel extends JPanel {
 
                 break;
             case (SwingConstants.BOTTOM):
-                graphics.drawImage(image, (getWidth() - image.getWidth(null)) / 2, getHeight() - image.getHeight(null), this);
+                graphics.drawImage(image, (getWidth() - image.getWidth(null)) / 2, getHeight() - image.getHeight(null),
+                    this);
 
                 break;
             default:

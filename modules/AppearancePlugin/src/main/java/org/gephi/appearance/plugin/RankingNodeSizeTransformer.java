@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.plugin;
 
 import org.gephi.appearance.api.Interpolator;
@@ -50,7 +51,6 @@ import org.gephi.graph.api.Node;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author mbastian
  */
 @ServiceProvider(service = Transformer.class)
@@ -80,12 +80,12 @@ public class RankingNodeSizeTransformer implements RankingTransformer<Element> {
         return maxSize;
     }
 
-    public float getMinSize() {
-        return minSize;
-    }
-
     public void setMaxSize(float maxSize) {
         this.maxSize = maxSize;
+    }
+
+    public float getMinSize() {
+        return minSize;
     }
 
     public void setMinSize(float minSize) {

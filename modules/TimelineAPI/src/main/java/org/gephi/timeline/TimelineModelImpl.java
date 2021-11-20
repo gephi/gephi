@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.timeline;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -49,18 +50,17 @@ import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineModel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class TimelineModelImpl implements TimelineModel {
 
-    private boolean enabled;
     private final GraphModel graphModel;
+    private final AtomicBoolean playing;
+    private boolean enabled;
     private double customMin;
     private double customMax;
     //Animation
     private int playDelay;
-    private final AtomicBoolean playing;
     private double playStep;
     private PlayMode playMode;
     //Chart
@@ -89,6 +89,10 @@ public class TimelineModelImpl implements TimelineModel {
         return enabled;
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @Override
     public double getMin() {
         return graphModel.getTimeBounds().getLow();
@@ -103,6 +107,10 @@ public class TimelineModelImpl implements TimelineModel {
         return previousMin;
     }
 
+    public void setPreviousMin(double previousMin) {
+        this.previousMin = previousMin;
+    }
+
     public double getPreviousMax() {
         return previousMax;
     }
@@ -111,18 +119,22 @@ public class TimelineModelImpl implements TimelineModel {
         this.previousMax = previousMax;
     }
 
-    public void setPreviousMin(double previousMin) {
-        this.previousMin = previousMin;
-    }
-
     @Override
     public double getCustomMin() {
         return customMin;
     }
 
+    public void setCustomMin(double customMin) {
+        this.customMin = customMin;
+    }
+
     @Override
     public double getCustomMax() {
         return customMax;
+    }
+
+    public void setCustomMax(double customMax) {
+        this.customMax = customMax;
     }
 
     @Override
@@ -154,18 +166,6 @@ public class TimelineModelImpl implements TimelineModel {
         return graphModel.getTimeFormat();
     }
 
-    public void setCustomMax(double customMax) {
-        this.customMax = customMax;
-    }
-
-    public void setCustomMin(double customMin) {
-        this.customMin = customMin;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-    
     public void setInterval(double start, double end) {
         this.interval = new Interval(start, end);
     }

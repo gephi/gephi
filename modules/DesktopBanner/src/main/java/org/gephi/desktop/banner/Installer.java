@@ -39,12 +39,18 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.banner;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.SwingUtilities;
 import org.gephi.desktop.banner.perspective.spi.BottomComponent;
 import org.gephi.perspective.api.PerspectiveController;
 import org.openide.modules.ModuleInstall;

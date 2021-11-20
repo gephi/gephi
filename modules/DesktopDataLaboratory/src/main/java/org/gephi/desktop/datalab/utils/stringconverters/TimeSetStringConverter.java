@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.utils.stringconverters;
 
 import org.gephi.desktop.datalab.utils.GraphModelProvider;
@@ -51,7 +52,7 @@ import org.jdesktop.swingx.renderer.StringValue;
  * @author Eduardo Ramos
  */
 public class TimeSetStringConverter implements StringValue {
-    
+
     private final GraphModelProvider graphModelProvider;
 
     public TimeSetStringConverter(GraphModelProvider graphModelProvider) {
@@ -63,9 +64,10 @@ public class TimeSetStringConverter implements StringValue {
         String str = null;
         if (value != null) {
             TimeSet timeSet = (TimeSet) value;
-            str = timeSet.toString(graphModelProvider.getGraphModel().getTimeFormat(), graphModelProvider.getGraphModel().getTimeZone());
+            str = timeSet.toString(graphModelProvider.getGraphModel().getTimeFormat(),
+                graphModelProvider.getGraphModel().getTimeZone());
         }
-        
+
         return str;
     }
 }

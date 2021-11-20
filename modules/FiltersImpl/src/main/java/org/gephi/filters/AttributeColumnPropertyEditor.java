@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters;
 
 import java.beans.PropertyEditorSupport;
@@ -47,7 +48,6 @@ import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphModel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class AttributeColumnPropertyEditor extends PropertyEditorSupport {
@@ -56,13 +56,13 @@ public class AttributeColumnPropertyEditor extends PropertyEditorSupport {
     private GraphModel model;
 
     @Override
-    public void setValue(Object value) {
-        this.column = (Column) value;
+    public Object getValue() {
+        return column;
     }
 
     @Override
-    public Object getValue() {
-        return column;
+    public void setValue(Object value) {
+        this.column = (Column) value;
     }
 
     @Override
@@ -78,10 +78,6 @@ public class AttributeColumnPropertyEditor extends PropertyEditorSupport {
 
     }
 
-    public void setGraphModel(GraphModel model) {
-        this.model = model;
-    }
-
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         if (!text.equals("null")) {
@@ -92,5 +88,9 @@ public class AttributeColumnPropertyEditor extends PropertyEditorSupport {
                 column = model.getEdgeTable().getColumn(arr[1]);
             }
         }
+    }
+
+    public void setGraphModel(GraphModel model) {
+        this.model = model;
     }
 }

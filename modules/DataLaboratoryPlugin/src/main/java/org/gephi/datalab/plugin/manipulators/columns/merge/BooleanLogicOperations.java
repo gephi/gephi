@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 import javax.swing.Icon;
@@ -73,7 +74,8 @@ public class BooleanLogicOperations implements AttributeColumnsMergeStrategy {
 
     @Override
     public void execute() {
-        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).booleanLogicOperationsMerge(table, columns, booleanOperations, newColumnTitle);
+        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class)
+            .booleanLogicOperationsMerge(table, columns, booleanOperations, newColumnTitle);
     }
 
     @Override
@@ -89,11 +91,11 @@ public class BooleanLogicOperations implements AttributeColumnsMergeStrategy {
     @Override
     public boolean canExecute() {
         for (Column column : columns) {
-            if(column.getTypeClass() != Boolean.class){
+            if (column.getTypeClass() != Boolean.class) {
                 return false;
             }
         }
-        
+
         return true;
     }
 

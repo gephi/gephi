@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import junit.framework.TestCase;
@@ -51,11 +52,10 @@ import org.gephi.graph.api.UndirectedGraph;
 import org.junit.Test;
 
 /**
- *
  * @author Anna
  */
 public class GraphDensityTest extends TestCase {
-    
+
     @Test
     public void testOneNodeDensity() {
         GraphModel graphModel = GraphGenerator.generateNullUndirectedGraph(1);

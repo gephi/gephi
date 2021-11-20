@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet;
 
 import java.io.FileInputStream;
@@ -58,7 +59,6 @@ import org.gephi.utils.CharsetToolkit;
 import org.openide.filesystems.FileUtil;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ImporterSpreadsheetCSV extends AbstractImporterSpreadsheet {
@@ -74,15 +74,16 @@ public class ImporterSpreadsheetCSV extends AbstractImporterSpreadsheet {
     @Override
     public SheetParser createParser() throws IOException {
         boolean withFirstRecordAsHeader
-                = generalConfig.getMode() == SpreadsheetGeneralConfiguration.Mode.NODES_TABLE
-                || generalConfig.getMode() == SpreadsheetGeneralConfiguration.Mode.EDGES_TABLE;
+            = generalConfig.getMode() == SpreadsheetGeneralConfiguration.Mode.NODES_TABLE
+            || generalConfig.getMode() == SpreadsheetGeneralConfiguration.Mode.EDGES_TABLE;
 
         return createParser(withFirstRecordAsHeader);
     }
 
     private SheetParser createParser(boolean withFirstRecordAsHeader) throws IOException {
         try {
-            CSVParser csvParser = SpreadsheetUtils.configureCSVParser(file, fieldDelimiter, charset, withFirstRecordAsHeader);
+            CSVParser csvParser =
+                SpreadsheetUtils.configureCSVParser(file, fieldDelimiter, charset, withFirstRecordAsHeader);
             return new CSVSheetParser(csvParser);
         } catch (Exception ex) {
             if (report != null) {

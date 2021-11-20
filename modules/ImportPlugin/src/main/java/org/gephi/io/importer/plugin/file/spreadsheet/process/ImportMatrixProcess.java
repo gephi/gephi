@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.process;
 
 import java.util.ArrayList;
@@ -50,12 +51,12 @@ import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ImportMatrixProcess extends AbstractImportProcess {
 
-    public ImportMatrixProcess(SpreadsheetGeneralConfiguration generalConfig, ContainerLoader container, ProgressTicket progressTicket, SheetParser parser) {
+    public ImportMatrixProcess(SpreadsheetGeneralConfiguration generalConfig, ContainerLoader container,
+                               ProgressTicket progressTicket, SheetParser parser) {
         super(generalConfig, container, progressTicket, parser);
     }
 
@@ -109,7 +110,8 @@ public class ImportMatrixProcess extends AbstractImportProcess {
                                     }
                                 }
                             } else {
-                                logError(getMessage("ImportMatrixProcess.error.invalidRowLength", row.size() - 1, targetLabels.size()));
+                                logError(getMessage("ImportMatrixProcess.error.invalidRowLength", row.size() - 1,
+                                    targetLabels.size()));
                                 break;
                             }
                         }
@@ -123,7 +125,8 @@ public class ImportMatrixProcess extends AbstractImportProcess {
         }
 
         if (rowCount != targetLabels.size()) {
-            logWarning(getMessage("ImportMatrixProcess.warning.inconsistentNumberOfLines", rowCount, targetLabels.size()));
+            logWarning(
+                getMessage("ImportMatrixProcess.warning.inconsistentNumberOfLines", rowCount, targetLabels.size()));
         } else if (!sourceLabels.equals(targetLabels)) {
             logWarning(getMessage("ImportMatrixProcess.warning.inconsistentLabels"));
         }

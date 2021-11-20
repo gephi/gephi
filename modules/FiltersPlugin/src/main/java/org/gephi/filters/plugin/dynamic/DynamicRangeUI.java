@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.dynamic;
 
 import javax.swing.JPanel;
 import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder.DynamicRangeFilter;
 
 /**
- *
  * @author mbastian
  */
 public interface DynamicRangeUI {

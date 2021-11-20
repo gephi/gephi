@@ -3,7 +3,6 @@ package org.gephi.project.io;
 import java.io.File;
 import java.io.IOException;
 import org.gephi.project.impl.ProjectImpl;
-import org.gephi.project.io.utils.GephiFormat;
 import org.gephi.project.io.utils.MockXMLPersistenceProvider;
 import org.gephi.project.io.utils.MockXMLPersistenceProviderFailRead;
 import org.gephi.project.io.utils.MockXMLPersistenceProviderFailWrite;

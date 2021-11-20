@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.preview;
 
 import java.beans.PropertyChangeEvent;
@@ -152,7 +153,8 @@ public class PreviewUIControllerImpl implements PreviewUIController {
                 model = new PreviewUIModelImpl(previewModel);
                 pc.getCurrentWorkspace().add(model);
             }
-            Float visibilityRatio = previewController.getModel().getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
+            Float visibilityRatio =
+                previewController.getModel().getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
             if (visibilityRatio != null) {
                 ((PreviewUIModelImpl) model).setVisibilityRatio(visibilityRatio);
             }
@@ -180,6 +182,7 @@ public class PreviewUIControllerImpl implements PreviewUIController {
 //            fireEvent(GRAPH_CHANGED, true);
 //        }
 //    }
+
     /**
      * Refreshes the preview applet.
      */
@@ -192,7 +195,8 @@ public class PreviewUIControllerImpl implements PreviewUIController {
                     model.setRefreshing(true);
                     fireEvent(REFRESHING, true);
 
-                    previewController.getModel().getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, model.getVisibilityRatio());
+                    previewController.getModel().getProperties()
+                        .putValue(PreviewProperty.VISIBILITY_RATIO, model.getVisibilityRatio());
                     previewController.refreshPreview();
 
                     fireEvent(REFRESHED, model);
@@ -213,7 +217,8 @@ public class PreviewUIControllerImpl implements PreviewUIController {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                PreviewSettingsTopComponent pstc = (PreviewSettingsTopComponent) WindowManager.getDefault().findTopComponent("PreviewSettingsTopComponent");
+                PreviewSettingsTopComponent pstc = (PreviewSettingsTopComponent) WindowManager.getDefault()
+                    .findTopComponent("PreviewSettingsTopComponent");
                 pstc.enableRefreshButton();
             }
         });
@@ -233,7 +238,8 @@ public class PreviewUIControllerImpl implements PreviewUIController {
 
     @Override
     public PreviewPreset[] getDefaultPresets() {
-        return new PreviewPreset[]{new DefaultPreset(), new DefaultCurved(), new DefaultStraight(), new TextOutline(), new BlackBackground(), new EdgesCustomColor(), new TagCloud()};
+        return new PreviewPreset[] {new DefaultPreset(), new DefaultCurved(), new DefaultStraight(), new TextOutline(),
+            new BlackBackground(), new EdgesCustomColor(), new TagCloud()};
     }
 
     @Override

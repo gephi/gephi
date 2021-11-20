@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.model.edge;
 
 import com.jogamp.opengl.GL2;
@@ -53,16 +54,16 @@ import org.gephi.visualization.model.node.NodeModel;
 public abstract class EdgeModel implements Model, TextModel {
 
     protected final Edge edge;
+    //Color
+    protected final float[] color = new float[4];
+    //Mark
+    public int markTime;
     protected float weight;
     //Flags
     protected boolean selected;
-    //Mark
-    public int markTime;
     //Id
     protected int octantSourceId;
     protected int octantTargetId;
-    //Color
-    protected final float[] color = new float[4];
 
     public EdgeModel(Edge edge) {
         this.edge = edge;
@@ -84,13 +85,13 @@ public abstract class EdgeModel implements Model, TextModel {
     }
 
     @Override
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+    public boolean isSelected() {
+        return selected;
     }
 
     @Override
-    public boolean isSelected() {
-        return selected;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public float getWeight() {
@@ -107,11 +108,6 @@ public abstract class EdgeModel implements Model, TextModel {
     }
 
     @Override
-    public void setText(String text) {
-        edge.getTextProperties().setText(text);
-    }
-
-    @Override
     public float getTextWidth() {
         return edge.getTextProperties().getWidth();
     }
@@ -124,6 +120,11 @@ public abstract class EdgeModel implements Model, TextModel {
     @Override
     public String getText() {
         return edge.getTextProperties().getText();
+    }
+
+    @Override
+    public void setText(String text) {
+        edge.getTextProperties().setText(text);
     }
 
     @Override
@@ -165,12 +166,12 @@ public abstract class EdgeModel implements Model, TextModel {
         return octantSourceId;
     }
 
-    public int getOctantTargetId() {
-        return octantTargetId;
-    }
-
     public void setOctantSourceId(int octantSourceId) {
         this.octantSourceId = octantSourceId;
+    }
+
+    public int getOctantTargetId() {
+        return octantTargetId;
     }
 
     public void setOctantTargetId(int octantTargetId) {

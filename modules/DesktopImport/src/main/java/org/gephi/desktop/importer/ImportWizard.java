@@ -40,6 +40,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.importer;
 
 import java.awt.Dialog;
@@ -88,7 +89,9 @@ public final class ImportWizard implements ActionListener {
             }
 
             if (importer == null) {
-                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "ImportWizard.error_no_matching_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
+                    NbBundle.getMessage(getClass(), "ImportWizard.error_no_matching_importer"),
+                    NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(msg);
                 return;
             }

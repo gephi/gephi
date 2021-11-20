@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.scale;
 
 import java.util.ArrayList;
@@ -107,12 +108,12 @@ public abstract class AbstractScaleLayout extends AbstractLayout implements Layo
         List<LayoutProperty> properties = new ArrayList<>();
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
-                    NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.name"),
-                    null,
-                    "ScaleLayout.scaleFactor.name",
-                    NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.desc"),
-                    "getScale", "setScale"));
+                this, Double.class,
+                NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.name"),
+                null,
+                "ScaleLayout.scaleFactor.name",
+                NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.desc"),
+                "getScale", "setScale"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }

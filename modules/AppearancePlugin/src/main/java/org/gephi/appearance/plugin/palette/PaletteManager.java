@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.plugin.palette;
 
 import java.awt.Color;
@@ -62,12 +63,26 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
- *
  * @author mbastian
  */
 public class PaletteManager {
 
+    public static final String COLORS = "PaletteColors";
+    private final static int RECENT_PALETTE_SIZE = 5;
+    protected static String DEFAULT_NODE_NAME = "prefs";
     private static PaletteManager instance;
+    private final List<Preset> presets;
+    private final Collection<Palette> defaultPalettes;
+    private final LinkedList<Palette> recentPalette;
+    private final Color DEFAULT_COLOR = Color.LIGHT_GRAY;
+    protected String nodeName = null;
+    private PaletteManager() {
+        nodeName = "recentpartitionpalettes";
+        presets = loadPresets();
+        defaultPalettes = loadDefaultPalettes();
+        recentPalette = new LinkedList<>();
+        retrieve();
+    }
 
     public synchronized static PaletteManager getInstance() {
         if (instance == null) {
@@ -75,21 +90,44 @@ public class PaletteManager {
         }
         return instance;
     }
-    protected static String DEFAULT_NODE_NAME = "prefs";
-    public static final String COLORS = "PaletteColors";
-    private final static int RECENT_PALETTE_SIZE = 5;
-    private final List<Preset> presets;
-    private final Collection<Palette> defaultPalettes;
-    private final LinkedList<Palette> recentPalette;
-    private final Color DEFAULT_COLOR = Color.LIGHT_GRAY;
-    protected String nodeName = null;
 
-    private PaletteManager() {
-        nodeName = "recentpartitionpalettes";
-        presets = loadPresets();
-        defaultPalettes = loadDefaultPalettes();
-        recentPalette = new LinkedList<>();
-        retrieve();
+    private static Collection<Palette> loadDefaultPalettes() {
+        try {
+            return loadPalettes("palette_default.csv");
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    private static Collection<Palette> loadPalettes(String fileName) throws IOException {
+        LineNumberReader reader =
+            new LineNumberReader(new InputStreamReader(PaletteManager.class.getResourceAsStream(fileName)));
+        String line;
+        List<List<Color>> palettes = new ArrayList<>();
+        while ((line = reader.readLine()) != null) {
+            List<Color> palette = new ArrayList<>();
+            String[] split = line.split(",");
+            for (String colorStr : split) {
+                if (!colorStr.isEmpty()) {
+                    palette.add(parseHexColor(colorStr.trim()));
+                }
+            }
+            if (!palette.isEmpty()) {
+                palettes.add(palette);
+            }
+        }
+        List<Palette> result = new ArrayList<>();
+        for (List<Color> cls : palettes) {
+            Palette plt = new Palette(cls.toArray(new Color[0]));
+            result.add(plt);
+        }
+        return result;
+    }
+
+    private static Color parseHexColor(String hexColor) {
+        int rgb = Integer.parseInt(hexColor.replaceFirst("#", ""), 16);
+        return new Color(rgb);
     }
 
     public Palette randomPalette(int colorCount) {
@@ -166,7 +204,8 @@ public class PaletteManager {
     private List<Preset> loadPresets() {
         List<Preset> presetList = new ArrayList<>();
         try {
-            LineNumberReader reader = new LineNumberReader(new InputStreamReader(PaletteManager.class.getResourceAsStream("palette_presets.csv")));
+            LineNumberReader reader = new LineNumberReader(
+                new InputStreamReader(PaletteManager.class.getResourceAsStream("palette_presets.csv")));
             reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -186,44 +225,6 @@ public class PaletteManager {
             Exceptions.printStackTrace(ex);
         }
         return presetList;
-    }
-
-    private static Collection<Palette> loadDefaultPalettes() {
-        try {
-            return loadPalettes("palette_default.csv");
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        return Collections.EMPTY_LIST;
-    }
-
-    private static Collection<Palette> loadPalettes(String fileName) throws IOException {
-        LineNumberReader reader = new LineNumberReader(new InputStreamReader(PaletteManager.class.getResourceAsStream(fileName)));
-        String line;
-        List<List<Color>> palettes = new ArrayList<>();
-        while ((line = reader.readLine()) != null) {
-            List<Color> palette = new ArrayList<>();
-            String[] split = line.split(",");
-            for (String colorStr : split) {
-                if (!colorStr.isEmpty()) {
-                    palette.add(parseHexColor(colorStr.trim()));
-                }
-            }
-            if (!palette.isEmpty()) {
-                palettes.add(palette);
-            }
-        }
-        List<Palette> result = new ArrayList<>();
-        for (List<Color> cls : palettes) {
-            Palette plt = new Palette(cls.toArray(new Color[0]));
-            result.add(plt);
-        }
-        return result;
-    }
-
-    private static Color parseHexColor(String hexColor) {
-        int rgb = Integer.parseInt(hexColor.replaceFirst("#", ""), 16);
-        return new Color(rgb);
     }
 
     private void retrieve() {

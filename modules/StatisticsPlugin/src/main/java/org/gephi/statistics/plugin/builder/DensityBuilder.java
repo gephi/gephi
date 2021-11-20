@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.statistics.plugin.builder;
 
 import org.gephi.statistics.plugin.GraphDensity;
@@ -49,9 +50,10 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * The statistics builder the graph denstiy statistics
+ *
  * @author pjmcswee
  */
-@ServiceProvider(service=StatisticsBuilder.class)
+@ServiceProvider(service = StatisticsBuilder.class)
 public class DensityBuilder implements StatisticsBuilder {
 
     @Override

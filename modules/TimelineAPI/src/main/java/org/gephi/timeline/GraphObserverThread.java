@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.gephi.timeline;
 
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Interval;
 
 /**
- *
  * @author mbastian
  */
 public class GraphObserverThread extends Thread {
@@ -30,7 +30,7 @@ public class GraphObserverThread extends Thread {
         while (!stop) {
             GraphModel graphModel = timelineModel.getGraphModel();
             Interval bounds = graphModel.getTimeBounds();
-            if(!bounds.equals(interval)) {
+            if (!bounds.equals(interval)) {
                 interval = bounds;
                 timelineController.setMinMax(interval.getLow(), interval.getHigh());
             }

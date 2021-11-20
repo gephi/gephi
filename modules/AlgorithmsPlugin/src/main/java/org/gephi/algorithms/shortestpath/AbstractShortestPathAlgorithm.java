@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.algorithms.shortestpath;
 
 import java.awt.Color;
@@ -48,7 +49,6 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public abstract class AbstractShortestPathAlgorithm {

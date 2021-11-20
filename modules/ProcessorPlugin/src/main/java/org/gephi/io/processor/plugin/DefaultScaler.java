@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.processor.plugin;
 
 import org.gephi.io.importer.api.Container;
@@ -47,7 +48,6 @@ import org.gephi.io.processor.spi.Scaler;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Scaler.class)

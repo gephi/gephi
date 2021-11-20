@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.presets;
 
 import org.gephi.preview.api.PreviewPreset;
@@ -46,7 +47,6 @@ import org.gephi.preview.api.PreviewProperty;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class DefaultStraight extends PreviewPreset {
@@ -57,7 +57,7 @@ public class DefaultStraight extends PreviewPreset {
         //Default
         DefaultPreset defaultPreset = new DefaultPreset();
         properties.putAll(defaultPreset.getProperties());
-        
+
         //Custom values
         properties.put(PreviewProperty.SHOW_EDGE_LABELS, Boolean.TRUE);
         properties.put(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);

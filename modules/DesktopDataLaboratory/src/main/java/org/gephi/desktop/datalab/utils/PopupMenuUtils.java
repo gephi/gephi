@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.utils;
 
 import java.awt.event.ActionEvent;
@@ -62,11 +63,13 @@ import org.openide.util.NbBundle;
 
 /**
  * Utils for building popup menus at right click on nodes/edges rows.
+ *
  * @author Eduardo Ramos
  */
 public class PopupMenuUtils {
 
-    public static JMenuItem createMenuItemFromNodesManipulator(final NodesManipulator item, final Node clickedNode,final Node[] nodes) {
+    public static JMenuItem createMenuItemFromNodesManipulator(final NodesManipulator item, final Node clickedNode,
+                                                               final Node[] nodes) {
         ContextMenuItemManipulator[] subItems = item.getSubItems();
         if (subItems != null && item.canExecute()) {
             JMenu subMenu = new JMenu();
@@ -77,7 +80,7 @@ public class PopupMenuUtils {
             subMenu.setIcon(item.getIcon());
             Integer lastItemType = null;
             for (ContextMenuItemManipulator subItem : subItems) {
-                ((NodesManipulator)subItem).setup(nodes,clickedNode);
+                ((NodesManipulator) subItem).setup(nodes, clickedNode);
                 if (lastItemType == null) {
                     lastItemType = subItem.getType();
                 }
@@ -86,10 +89,10 @@ public class PopupMenuUtils {
                 }
                 lastItemType = subItem.getType();
                 if (subItem.isAvailable()) {
-                    subMenu.add(createMenuItemFromNodesManipulator((NodesManipulator) subItem,clickedNode,nodes));
+                    subMenu.add(createMenuItemFromNodesManipulator((NodesManipulator) subItem, clickedNode, nodes));
                 }
             }
-            if(item.getMnemonicKey()!=null){
+            if (item.getMnemonicKey() != null) {
                 subMenu.setMnemonic(item.getMnemonicKey());//Mnemonic for opening a sub menu
             }
             return subMenu;
@@ -117,15 +120,17 @@ public class PopupMenuUtils {
             } else {
                 menuItem.setEnabled(false);
             }
-            if(item.getMnemonicKey()!=null){
+            if (item.getMnemonicKey() != null) {
                 menuItem.setMnemonic(item.getMnemonicKey());//Mnemonic for executing the action
-                menuItem.setAccelerator(KeyStroke.getKeyStroke(item.getMnemonicKey(),KeyEvent.CTRL_DOWN_MASK));//And the same key mnemonic + ctrl for executing the action (and as a help display for the user!).
+                menuItem.setAccelerator(KeyStroke.getKeyStroke(item.getMnemonicKey(),
+                    KeyEvent.CTRL_DOWN_MASK));//And the same key mnemonic + ctrl for executing the action (and as a help display for the user!).
             }
             return menuItem;
         }
     }
 
-    public static JMenuItem createMenuItemFromEdgesManipulator(final EdgesManipulator item, final Edge clickedEdge,final Edge[] edges) {
+    public static JMenuItem createMenuItemFromEdgesManipulator(final EdgesManipulator item, final Edge clickedEdge,
+                                                               final Edge[] edges) {
         ContextMenuItemManipulator[] subItems = item.getSubItems();
         if (subItems != null && item.canExecute()) {
             JMenu subMenu = new JMenu();
@@ -136,7 +141,7 @@ public class PopupMenuUtils {
             subMenu.setIcon(item.getIcon());
             Integer lastItemType = null;
             for (ContextMenuItemManipulator subItem : subItems) {
-                ((EdgesManipulator)subItem).setup(edges,clickedEdge);
+                ((EdgesManipulator) subItem).setup(edges, clickedEdge);
                 if (lastItemType == null) {
                     lastItemType = subItem.getType();
                 }
@@ -145,10 +150,10 @@ public class PopupMenuUtils {
                 }
                 lastItemType = subItem.getType();
                 if (subItem.isAvailable()) {
-                    subMenu.add(createMenuItemFromEdgesManipulator((EdgesManipulator) subItem,clickedEdge,edges));
+                    subMenu.add(createMenuItemFromEdgesManipulator((EdgesManipulator) subItem, clickedEdge, edges));
                 }
             }
-            if(item.getMnemonicKey()!=null){
+            if (item.getMnemonicKey() != null) {
                 subMenu.setMnemonic(item.getMnemonicKey());//Mnemonic for opening a sub menu
             }
             return subMenu;
@@ -176,9 +181,10 @@ public class PopupMenuUtils {
             } else {
                 menuItem.setEnabled(false);
             }
-            if(item.getMnemonicKey()!=null){
+            if (item.getMnemonicKey() != null) {
                 menuItem.setMnemonic(item.getMnemonicKey());//Mnemonic for executing the action
-                menuItem.setAccelerator(KeyStroke.getKeyStroke(item.getMnemonicKey(),KeyEvent.CTRL_DOWN_MASK));//And the same key mnemonic + ctrl for executing the action (and as a help display for the user!).
+                menuItem.setAccelerator(KeyStroke.getKeyStroke(item.getMnemonicKey(),
+                    KeyEvent.CTRL_DOWN_MASK));//And the same key mnemonic + ctrl for executing the action (and as a help display for the user!).
             }
             return menuItem;
         }
@@ -223,7 +229,7 @@ public class PopupMenuUtils {
             lastManipulatorType = am.getType();
             subMenu.add(PopupMenuUtils.createMenuItemFromManipulator(am));
         }
-        if(subMenu.getMenuComponentCount()==0){
+        if (subMenu.getMenuComponentCount() == 0) {
             subMenu.setEnabled(false);
         }
         return subMenu;

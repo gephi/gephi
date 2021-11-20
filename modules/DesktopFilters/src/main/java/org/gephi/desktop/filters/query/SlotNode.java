@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.filters.query;
 
 import java.awt.datatransfer.Transferable;
@@ -61,7 +62,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.datatransfer.PasteType;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class SlotNode extends AbstractNode {

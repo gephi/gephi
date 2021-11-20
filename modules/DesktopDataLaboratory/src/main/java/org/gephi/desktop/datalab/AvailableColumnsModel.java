@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab;
 
 import java.util.ArrayList;
@@ -120,7 +121,7 @@ public class AvailableColumnsModel {
     public Column[] getAvailableColumns() {
         List<Column> availableColumnsList = new ArrayList<>();
         for (Column column : table) {
-            if(availableColumns.contains(column)){
+            if (availableColumns.contains(column)) {
                 availableColumnsList.add(column);
             }
         }
@@ -136,12 +137,12 @@ public class AvailableColumnsModel {
      */
     public synchronized void syncronizeTableColumns() {
         Set<Column> availableColumnsCopy = new HashSet<>(availableColumns);
-        
+
         removeAllColumns();
-        
+
         //Detect new columns and make them available by default:
         //Also keep existing available columns as available.
-        
+
         //Note: We need to remove all columns and add them all again because there could be a new column with the same title but different index 
         //if the old one with the same title was removed, and we should not keep the old column with same title.
         for (Column column : table) {
