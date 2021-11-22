@@ -111,3 +111,8 @@ dev_id.cer
 
 *.iml
 .idea/
+*.project
+.settings/**
+**/.settings/**
+**/.classpath
+**/.factorypath
