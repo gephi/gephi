@@ -599,7 +599,7 @@ public class SpreadsheetTest {
         try {
             expected = new String(Files.readAllBytes(Paths
                 .get(getClass().getResource("/org/gephi/io/importer/plugin/file/spreadsheet/expected/" +
-                    testName.getMethodName().replace("_AutoDetectImporter", "") + "_edges.csv").toURI()))).trim();
+                    testName.getMethodName().replace("_AutoDetectImporter", "") + "_edges.csv").toURI()))).trim().replace("\r", "");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -625,7 +625,7 @@ public class SpreadsheetTest {
             expected = new String(Files.readAllBytes(Paths
                 .get(getClass().getResource(
                     "/org/gephi/io/importer/plugin/file/spreadsheet/expected/" + testName.getMethodName() +
-                        "_nodes.csv").toURI()))).trim();
+                        "_nodes.csv").toURI()))).trim().replace("\r", "");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
