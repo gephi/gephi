@@ -16,7 +16,7 @@
     <name>ImportPlugin</name>
 
     <properties>
-        <gephi.apache-poi.version>5.0.0</gephi.apache-poi.version>
+        <gephi.apache-poi.version>5.1.0</gephi.apache-poi.version>
         <gephi.woodstox.version>6.2.7</gephi.woodstox.version>
     </properties>
 
