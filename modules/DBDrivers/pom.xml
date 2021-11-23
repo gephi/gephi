@@ -18,7 +18,7 @@
     <properties>
         <gephi.sqlite.version>3.36.0.3</gephi.sqlite.version>
         <gephi.mysql.version>8.0.27</gephi.mysql.version>
-        <gephi.postgresql.version>42.3.0</gephi.postgresql.version>
+        <gephi.postgresql.version>42.3.1</gephi.postgresql.version>
         <gephi.sqlserver.version>9.4.0.jre8</gephi.sqlserver.version>
     </properties>
 
