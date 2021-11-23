@@ -65,8 +65,9 @@ public class GraphGenerator {
 
     public GraphGenerator addIntNodeColumn() {
         graphModel.getNodeTable().addColumn(INT_COLUMN, Integer.class);
+        int age = 10;
         for (Node node : graphModel.getGraph().getNodes()) {
-            node.setAttribute(INT_COLUMN, (int) (Math.random() * 100));
+            node.setAttribute(INT_COLUMN, age++);
         }
         return this;
     }
