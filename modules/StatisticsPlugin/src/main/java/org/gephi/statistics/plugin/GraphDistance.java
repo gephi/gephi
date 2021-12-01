@@ -358,6 +358,11 @@ public class GraphDistance implements Statistics, LongTask {
         radius = Integer.MAX_VALUE;
     }
 
+
+    public double computeBetweennessNormalizationFactor(int nodeCount) {
+        return (nodeCount - 1.d) * (nodeCount - 2.d);
+    }
+
     private void calculateCorrection(Graph graph, HashMap<Node, Integer> indicies,
                                      double[] nodeBetweenness, boolean directed, boolean normalized) {
 
@@ -368,11 +373,17 @@ public class GraphDistance implements Statistics, LongTask {
             int s_index = indicies.get(s);
 
             if (!directed) {
-                nodeBetweenness[s_index] /= 2;
+                nodeBetweenness[s_index] /= 2.d;
             }
             if (normalized) {
-                nodeBetweenness[s_index] /= directed ? (n - 1) * (n - 2) : (n - 1) * (n - 2) / 2;
+                double betweennessNormalizationFactor = computeBetweennessNormalizationFactor(n);
+                if (!directed) {
+                    betweennessNormalizationFactor /= 2;
+                }
+                nodeBetweenness[s_index] /= betweennessNormalizationFactor;
+
             }
+
         }
     }
 
