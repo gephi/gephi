@@ -10,6 +10,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+//import org.apache.commons.math3.special.Gamma;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -40,6 +41,12 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         Graph graph = graphModel.getUndirectedGraphVisible();
         execute(graph);
     }
+
+
+
+
+
+
 
     public void execute(Graph graph) {
         isCanceled = false;
@@ -122,17 +129,80 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
     }
 
     private StatisticalInferenceClustering.Community updateBestCommunity(StatisticalInferenceClustering.CommunityStructure theStructure, int node_id) {
-        double best = 0.;
+        // Total number of edges (graph size)
+        Double E = theStructure.graphWeightSum;
+        // Total number of edges from one community to the same one
+        Double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
+        // Total number of edges from one community to another
+        Double e_out = E - e_in;
+
+        double best = Double.MAX_VALUE;
         StatisticalInferenceClustering.Community bestCommunity = null;
         Set<StatisticalInferenceClustering.Community> iter = theStructure.nodeConnectionsWeight[node_id].keySet();
         for (StatisticalInferenceClustering.Community com : iter) {
-            double qValue = q(node_id, com, theStructure);
-            if (qValue > best) {
-                best = qValue;
+            double deltaValue = delta(node_id, com, theStructure);
+            if (deltaValue < best) {
+                best = deltaValue;
                 bestCommunity = com;
             }
         }
         return bestCommunity;
+    }
+
+    private double delta(int node, StatisticalInferenceClustering.Community community, StatisticalInferenceClustering.CommunityStructure theStructure) {
+        Float edgesToFloat = theStructure.nodeConnectionsWeight[node].get(community);
+        double edgesTo = 0;
+        if (edgesToFloat != null) {
+            edgesTo = edgesToFloat.doubleValue();
+        }
+
+        // We need:
+        // * The number of nodes in each community
+        // theStructure.communities.stream().forEach(e->e.nodes.size());
+        // * The total number of edges that are between communities (not inside)
+        // NOTE: WRONG
+        // This is the sum, for each node, and for each community, of their weight (weighted connexions)
+        // Arrays.stream(theStructure.nodeConnectionsWeight).map(hm -> hm.values().stream().mapToDouble(d->d).sum()).mapToDouble(d->d).sum();
+        // * The total number of edges inside each community
+        // * The number of communities
+        // theStructure.communities.size()
+        // * We need the degree of each node
+        //
+
+        // Number of edges of target community (with itself or another one)
+        Double e_r_target = community.weightSum;
+        // Number of edges within target community
+        Double e_rr_target = community.internalWeightSum;
+        // Number of nodes of target community
+        int n_r_target = community.nodes.size();
+
+        // Number of edges of current (where the node belongs) community (with itself or another one)
+        Double e_r_current = theStructure.nodeCommunities[node].weightSum;
+        // Number of edges within current community (where the node belongs)
+        Double e_rr_current = theStructure.nodeCommunities[node].internalWeightSum;
+        // Number of nodes of target community
+        int n_r_current = theStructure.nodeCommunities[node].nodes.size();
+
+        // Description length: before
+        //Double S_b = Gamma.logGamma(e_r_target);
+
+        // Count the gains and losses
+        // -> loop over the neighbors
+
+        // Check if some communities would disappear (?)
+        // Aggregate the computations to obtain the delta for the change
+
+        double weightSum = community.weightSum;
+        double nodeWeight = theStructure.weights[node];
+        double qValue = currentResolution * edgesTo - (nodeWeight * weightSum) / (2.0 * theStructure.graphWeightSum);
+        if ((theStructure.nodeCommunities[node] == community) && (theStructure.nodeCommunities[node].size() > 1)) {
+            qValue = currentResolution * edgesTo -
+                    (nodeWeight * (weightSum - nodeWeight)) / (2.0 * theStructure.graphWeightSum);
+        }
+        if ((theStructure.nodeCommunities[node] == community) && (theStructure.nodeCommunities[node].size() == 1)) {
+            qValue = 0.;
+        }
+        return qValue;
     }
 
     private int[] fillComStructure(Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure, int[] comStructure) {
@@ -271,25 +341,33 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         HashMap<Node, Integer> map;
         StatisticalInferenceClustering.Community[] nodeCommunities;
         Graph graph;
-        double[] weights;
-        double graphWeightSum;
-        List<StatisticalInferenceClustering.ModEdge>[] topology;
+        double[] weights; // The weighted degree of the nodes (in short)
+        double graphWeightSum; // The weighted sum of degrees
+        List<ComputationEdge>[] topology;
         List<StatisticalInferenceClustering.Community> communities;
         int N;
         HashMap<Integer, StatisticalInferenceClustering.Community> invMap;
+
 
         CommunityStructure(Graph graph) {
             this.graph = graph;
             N = graph.getNodeCount();
             invMap = new HashMap<>();
+            // nodeConnectionsWeight is basically a table of, for each node, then for each community,
+            // how many connections they have.
             nodeConnectionsWeight = new HashMap[N];
+            // nodeConnectionsCount is basically the same thing but unweighted. Remarkably, in case of parallel edges,
+            // but not taking weights into account, nodeConnectionsWeight will still count 1 for each parallel edges,
+            // while nodeConnectionsCount will count just 1.
             nodeConnectionsCount = new HashMap[N];
+            // nodeCommunities is an index of which community each node belongs to
             nodeCommunities = new StatisticalInferenceClustering.Community[N];
-            map = new HashMap<>();
+            map = new HashMap<>(); // keeps track of the integer ids of the nodes
+            // The topology is basically an index of the outbound computation edges for each node
             topology = new ArrayList[N];
             communities = new ArrayList<>();
             int index = 0;
-            weights = new double[N];
+            weights = new double[N]; // The weight is basically the weighted degree of a node
 
             NodeIterable nodesIterable = graph.getNodes();
             for (Node node : nodesIterable) {
@@ -330,7 +408,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                     for (int edgeType : edgeTypes) {
                         for (Edge edge : graph.getEdges(node, neighbor, edgeType)) {
                             if (useWeight) {
-                                // TODO: the algorithm only works with integer algorithms
+                                // TODO: the algorithm only works with integer weights
                                 //weight += edge.getWeight(graph.getView());
                             } else {
                                 weight += 1;
@@ -341,8 +419,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                     //Finally add a single edge with the summed weight of all parallel edges:
                     //Fixes issue #1419 Getting null pointer error when trying to calculate modularity
                     weights[node_index] += weight;
-                    StatisticalInferenceClustering.ModEdge me = new StatisticalInferenceClustering.ModEdge(node_index, neighbor_index, weight);
-                    topology[node_index].add(me);
+                    ComputationEdge ce = new ComputationEdge(node_index, neighbor_index, weight);
+                    topology[node_index].add(ce);
                     StatisticalInferenceClustering.Community adjCom = nodeCommunities[neighbor_index];
 
                     nodeConnectionsWeight[node_index].put(adjCom, weight);
@@ -373,7 +451,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             to.add(node);
             nodeCommunities[node] = to;
 
-            for (StatisticalInferenceClustering.ModEdge e : topology[node]) {
+            for (ComputationEdge e : topology[node]) {
                 int neighbor = e.target;
 
                 ////////
@@ -442,7 +520,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
         private void removeNodeFromItsCommunity(int node) {
             StatisticalInferenceClustering.Community community = nodeCommunities[node];
-            for (StatisticalInferenceClustering.ModEdge e : topology[node]) {
+            for (ComputationEdge e : topology[node]) {
                 int neighbor = e.target;
 
                 ////////
@@ -507,7 +585,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
         private void zoomOut() {
             int M = communities.size();
-            ArrayList<StatisticalInferenceClustering.ModEdge>[] newTopology = new ArrayList[M];
+            ArrayList<ComputationEdge>[] newTopology = new ArrayList[M];
             int index = 0;
             nodeCommunities = new StatisticalInferenceClustering.Community[M];
             nodeConnectionsWeight = new HashMap[M];
@@ -537,7 +615,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                     } else {
                         weightSum += weight;
                     }
-                    StatisticalInferenceClustering.ModEdge e = new StatisticalInferenceClustering.ModEdge(index, target, weight);
+                    ComputationEdge e = new ComputationEdge(index, target, weight);
                     newTopology[index].add(e);
                 }
                 weights[index] = weightSum;
@@ -550,7 +628,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             for (int i = 0; i < M; i++) {
                 StatisticalInferenceClustering.Community com = nodeCommunities[i];
                 communities.add(com);
-                for (StatisticalInferenceClustering.ModEdge e : newTopology[i]) {
+                for (ComputationEdge e : newTopology[i]) {
                     nodeConnectionsWeight[i].put(nodeCommunities[e.target], e.weight);
                     nodeConnectionsCount[i].put(nodeCommunities[e.target], 1);
                     com.connectionsWeight.put(nodeCommunities[e.target], e.weight);
@@ -567,7 +645,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
     class Community {
 
-        double weightSum;
+        double weightSum; // e_r, i.e. sum of edge weights for the community, inside and outside altogether
+        double internalWeightSum; // e_rr, i.e. sum of internal edge weights
         StatisticalInferenceClustering.CommunityStructure structure;
         List<Integer> nodes;
         HashMap<StatisticalInferenceClustering.Community, Float> connectionsWeight;
@@ -578,7 +657,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             connectionsWeight = new HashMap<>();
             connectionsCount = new HashMap<>();
             nodes = new ArrayList<>();
-            //mHidden = pCom.mHidden;
         }
 
         public Community(StatisticalInferenceClustering.CommunityStructure structure) {
@@ -595,17 +673,20 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         public void seed(int node) {
             nodes.add(node);
             weightSum += structure.weights[node];
+            internalWeightSum = 0;
         }
 
         public boolean add(int node) {
             nodes.add(node);
             weightSum += structure.weights[node];
+            internalWeightSum += structure.nodeConnectionsWeight[node].get(structure.nodeCommunities[node]);
             return true;
         }
 
         public boolean remove(int node) {
             boolean result = nodes.remove((Integer) node);
             weightSum -= structure.weights[node];
+            internalWeightSum -= structure.nodeConnectionsWeight[node].get(structure.nodeCommunities[node]);
             if (nodes.isEmpty()) {
                 structure.communities.remove(this);
             }
@@ -613,33 +694,13 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
     }
 
-    private double q(int node, StatisticalInferenceClustering.Community community, StatisticalInferenceClustering.CommunityStructure theStructure) {
-        int currentResolution = 1; // TODO: REMOVE ME (currentResolution should not appear in statistical inference)
-        Float edgesToFloat = theStructure.nodeConnectionsWeight[node].get(community);
-        double edgesTo = 0;
-        if (edgesToFloat != null) {
-            edgesTo = edgesToFloat.doubleValue();
-        }
-        double weightSum = community.weightSum;
-        double nodeWeight = theStructure.weights[node];
-        double qValue = currentResolution * edgesTo - (nodeWeight * weightSum) / (2.0 * theStructure.graphWeightSum);
-        if ((theStructure.nodeCommunities[node] == community) && (theStructure.nodeCommunities[node].size() > 1)) {
-            qValue = currentResolution * edgesTo -
-                    (nodeWeight * (weightSum - nodeWeight)) / (2.0 * theStructure.graphWeightSum);
-        }
-        if ((theStructure.nodeCommunities[node] == community) && (theStructure.nodeCommunities[node].size() == 1)) {
-            qValue = 0.;
-        }
-        return qValue;
-    }
-
-    class ModEdge {
+    class ComputationEdge {
 
         int source;
         int target;
         float weight;
 
-        public ModEdge(int s, int t, float w) {
+        public ComputationEdge(int s, int t, float w) {
             source = s;
             target = t;
             weight = w;
