@@ -645,14 +645,34 @@
                                 </goals>
                                 <configuration>
                                     <target name="downloadJRE" description="Download JRE">
-                                        <!-- Download and untar JRE -->
-                                        <exec dir="${project.build.directory}" executable="curl">
+                                        <!-- Download JRE (Mac OS X) -->
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="curl">
+                                            <arg line="-L"/>
+                                            <arg line="-C"/>
+                                            <arg line="-"/>
+                                            <arg line="-o"/>
+                                            <arg line="jre.zip"/>
+                                            <arg line="${gephi.bundle.jre.macos}"/>
+                                        </exec>
+
+                                        <!-- Download JRE (Windows) -->
+                                        <exec dir="${project.build.directory}" os="Windows" executable="curl">
                                             <arg line="-L"/>
                                             <arg line="-C"/>
                                             <arg line="-"/>
                                             <arg line="-o"/>
                                             <arg line="jre.zip"/>
                                             <arg line="${gephi.bundle.jre.windows}"/>
+                                        </exec>
+
+                                        <!-- Download JRE (Linux) -->
+                                        <exec dir="${project.build.directory}" os="Linux" executable="curl">
+                                            <arg line="-L"/>
+                                            <arg line="-C"/>
+                                            <arg line="-"/>
+                                            <arg line="-o"/>
+                                            <arg line="jre.zip"/>
+                                            <arg line="${gephi.bundle.jre.linux}"/>
                                         </exec>
 
                                         <!-- Unzip archive -->
@@ -882,6 +902,30 @@
                                             <arg value="staple"/>
                                             <arg value="${project.artifactId}-${project.version}.dmg"/>
                                         </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+
+                            <!-- Create tar.gz bundle for Linux  -->
+                            <execution>
+                                <id>create-targz</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${skipCreateTargz}</skip>
+                                    <target>
+                                        <!-- Get the JRE folder name -->
+                                        <path id="jre_name">
+                                            <dirset dir="${project.build.directory}/${brandingToken}/jre" includes="jdk*" />
+                                        </path>
+                                        <property name="bundle.jre.path" refid="jre_name" />
+                                        <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
+
+                                        <!-- Configure relative JRE path into gephi.conf -->
+                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre/${bundle.jre.name}&quot;"/>
+                                        <chmod file="${project.build.directory}/${brandingToken}/jre/**" perm="+x" type="both"/>
                                     </target>
                                 </configuration>
                             </execution>
