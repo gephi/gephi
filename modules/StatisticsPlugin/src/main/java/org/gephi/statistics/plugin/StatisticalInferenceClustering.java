@@ -19,13 +19,10 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
     private boolean isCanceled;
     private StatisticalInferenceClustering.CommunityStructure structure;
-    public static final String MODULARITY_CLASS = "modularity_class";
+    public static final String STAT_INF_CLASS = "stat_inf_class";
     private ProgressTicket progress;
     private double descriptionLength;
-    private double modularityResolution;
-    private boolean isRandomized = false;
-    private boolean useWeight = true;
-    private double resolution = 1.;
+    private boolean useWeight = false;
 
     @Override
     public boolean cancel() {
@@ -35,7 +32,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
     @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
-
+        this.progress = progressTicket;
     }
 
     @Override
@@ -54,12 +51,10 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
             if (graph.getNodeCount() > 0) {//Fixes issue #713 Modularity Calculation Throws Exception On Empty Graph
                 HashMap<String, Double> computedModularityMetrics =
-                        computePartition(graph, structure, comStructure, resolution, isRandomized, useWeight);
+                        computePartition(graph, structure, comStructure, useWeight);
                 descriptionLength = computedModularityMetrics.get("modularity");
-                modularityResolution = computedModularityMetrics.get("modularityResolution");
             } else {
                 descriptionLength = 0;
-                modularityResolution = 0;
             }
 
             saveValues(comStructure, graph, structure);
@@ -70,7 +65,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
     protected HashMap<String, Double> computePartition(Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure,
                                                         int[] comStructure,
-                                                        double currentResolution, boolean randomized,
                                                         boolean weighted) {
         isCanceled = false;
         Progress.start(progress);
@@ -91,13 +85,13 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             while (localChange) {
                 localChange = false;
                 int start = 0;
-                if (randomized) {
-                    start = Math.abs(rand.nextInt()) % theStructure.N;
-                }
+                // Randomize
+                start = Math.abs(rand.nextInt()) % theStructure.N;
+
                 int step = 0;
                 for (int i = start; step < theStructure.N; i = (i + 1) % theStructure.N) {
                     step++;
-                    StatisticalInferenceClustering.Community bestCommunity = updateBestCommunity(theStructure, i, currentResolution);
+                    StatisticalInferenceClustering.Community bestCommunity = updateBestCommunity(theStructure, i);
                     if ((theStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
                         theStructure.moveNodeTo(i, bestCommunity);
                         localChange = true;
@@ -120,9 +114,9 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         fillComStructure(graph, theStructure, comStructure);
         double[] degreeCount = fillDegreeCount(graph, theStructure, comStructure, nodeDegrees, weighted);
 
-        double computedModularity = finalQ(comStructure, degreeCount, graph, theStructure, totalWeight, 1., weighted);
+        double computedModularity = finalQ(comStructure, degreeCount, graph, theStructure, totalWeight, weighted);
         double computedModularityResolution =
-                finalQ(comStructure, degreeCount, graph, theStructure, totalWeight, currentResolution, weighted);
+                finalQ(comStructure, degreeCount, graph, theStructure, totalWeight, weighted);
 
         results.put("modularity", computedModularity);
         results.put("modularityResolution", computedModularityResolution);
@@ -130,12 +124,12 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         return results;
     }
 
-    private StatisticalInferenceClustering.Community updateBestCommunity(StatisticalInferenceClustering.CommunityStructure theStructure, int node_id, double currentResolution) {
+    private StatisticalInferenceClustering.Community updateBestCommunity(StatisticalInferenceClustering.CommunityStructure theStructure, int node_id) {
         double best = 0.;
         StatisticalInferenceClustering.Community bestCommunity = null;
         Set<StatisticalInferenceClustering.Community> iter = theStructure.nodeConnectionsWeight[node_id].keySet();
         for (StatisticalInferenceClustering.Community com : iter) {
-            double qValue = q(node_id, com, theStructure, currentResolution);
+            double qValue = q(node_id, com, theStructure);
             if (qValue > best) {
                 best = qValue;
                 bestCommunity = com;
@@ -176,9 +170,10 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
     }
 
     private double finalQ(int[] struct, double[] degrees, Graph graph,
-                          StatisticalInferenceClustering.CommunityStructure theStructure, double totalWeight, double usedResolution,
+                          StatisticalInferenceClustering.CommunityStructure theStructure, double totalWeight,
                           boolean weighted) {
 
+        int usedResolution = 1; // TODO: REMOVE ME (currentResolution should not appear in statistical inference)
         double res = 0;
         double[] internal = new double[degrees.length];
         for (Node n : graph.getNodes()) {
@@ -207,9 +202,9 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
     private void saveValues(int[] struct, Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure) {
         Table nodeTable = graph.getModel().getNodeTable();
-        Column modCol = nodeTable.getColumn(MODULARITY_CLASS);
+        Column modCol = nodeTable.getColumn(STAT_INF_CLASS);
         if (modCol == null) {
-            modCol = nodeTable.addColumn(MODULARITY_CLASS, "Modularity Class", Integer.class, 0);
+            modCol = nodeTable.addColumn(STAT_INF_CLASS, "Modularity Class", Integer.class, 0);
         }
         for (Node n : graph.getNodes()) {
             int n_index = theStructure.map.get(n);
@@ -222,7 +217,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         //Distribution series
         Map<Integer, Integer> sizeDist = new HashMap<>();
         for (Node n : structure.graph.getNodes()) {
-            Integer v = (Integer) n.getAttribute(MODULARITY_CLASS);
+            Integer v = (Integer) n.getAttribute(STAT_INF_CLASS);
             if (!sizeDist.containsKey(v)) {
                 sizeDist.put(v, 0);
             }
@@ -250,23 +245,23 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
         NumberFormat f = new DecimalFormat("#0.000");
 
-        String report = "<HTML> <BODY> <h1>Modularity Report </h1> "
+        String report = "<HTML> <BODY> <h1>Statistical Inference Report </h1> "
                 + "<hr>"
-                + "<h2> Parameters: </h2>"
-                + "Randomize:  " + (isRandomized ? "On" : "Off") + "<br>"
-                + "Use edge weights:  " + (useWeight ? "On" : "Off") + "<br>"
-                + "Resolution:  " + (resolution) + "<br>"
                 + "<br> <h2> Results: </h2>"
-                + "Modularity: " + f.format(descriptionLength) + "<br>"
-                + "Modularity with resolution: " + f.format(modularityResolution) + "<br>"
+                + "Description Length: " + f.format(descriptionLength) + "<br>"
                 + "Number of Communities: " + structure.communities.size()
                 + "<br /><br />" + imageFile
                 + "<br /><br />" + "<h2> Algorithm: </h2>"
-                +
-                "Vincent D Blondel, Jean-Loup Guillaume, Renaud Lambiotte, Etienne Lefebvre, <i>Fast unfolding of communities in large networks</i>, in Journal of Statistical Mechanics: Theory and Experiment 2008 (10), P1000<br />"
-                + "<br /><br />" + "<h2> Resolution: </h2>"
-                +
-                "R. Lambiotte, J.-C. Delvenne, M. Barahona <i>Laplacian Dynamics and Multiscale Modular Structure in Networks 2009<br />"
+                + "Statistical inference of assortative community structures<br />"
+                + "Lizhi Zhang, Tiago P. Peixoto<br />"
+                + "Phys. Rev. Research 2 043271 (2020)<br />"
+                + "https://dx.doi.org/10.1103/PhysRevResearch.2.043271<br /><br />"
+                + "<br /><br />"
+                + "Bayesian stochastic blockmodeling<br />"
+                + "Tiago P. Peixoto<br />"
+                + "Chapter in “Advances in Network Clustering and Blockmodeling,” edited by<br />"
+                + "P. Doreian, V. Batagelj, A. Ferligoj (Wiley, 2019)<br />"
+                + "https://dx.doi.org/10.1002/9781119483298.ch11<br />"
                 + "</BODY> </HTML>";
 
         return report;
@@ -338,7 +333,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                     for (int edgeType : edgeTypes) {
                         for (Edge edge : graph.getEdges(node, neighbor, edgeType)) {
                             if (useWeight) {
-                                weight += edge.getWeight(graph.getView());
+                                // TODO: the algorithm only works with integer algorithms
+                                //weight += edge.getWeight(graph.getView());
                             } else {
                                 weight += 1;
                             }
@@ -620,7 +616,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
     }
 
-    private double q(int node, StatisticalInferenceClustering.Community community, StatisticalInferenceClustering.CommunityStructure theStructure, double currentResolution) {
+    private double q(int node, StatisticalInferenceClustering.Community community, StatisticalInferenceClustering.CommunityStructure theStructure) {
+        int currentResolution = 1; // TODO: REMOVE ME (currentResolution should not appear in statistical inference)
         Float edgesToFloat = theStructure.nodeConnectionsWeight[node].get(community);
         double edgesTo = 0;
         if (edgesToFloat != null) {
