@@ -78,6 +78,7 @@
                     <publicPackages>
                         <publicPackage>org.apache.commons.codec.*</publicPackage>
                         <publicPackage>org.apache.commons.compress.*</publicPackage>
+                        <publicPackage>org.apache.commons.math3.*</publicPackage>
                         <publicPackage>org.jfree.*</publicPackage>
                         <publicPackage>gnu.trove.*</publicPackage>
                         <publicPackage>org.apache.commons.csv.*</publicPackage>
