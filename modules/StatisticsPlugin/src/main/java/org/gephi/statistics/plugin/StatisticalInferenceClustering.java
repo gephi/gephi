@@ -10,8 +10,9 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-//import org.apache.commons.math3.special.Gamma;
+import org.apache.commons.math3.special.Gamma;
 
+import java.net.NetworkInterface;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
@@ -23,7 +24,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
     public static final String STAT_INF_CLASS = "stat_inf_class";
     private ProgressTicket progress;
     private double descriptionLength;
-    private boolean useWeight = false;
+    private final boolean useWeight = false;
 
     @Override
     public boolean cancel() {
@@ -135,12 +136,23 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         Double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
         // Total number of edges from one community to another
         Double e_out = E - e_in;
+        // Total number of communities
+        Double B = Double.valueOf(theStructure.communities.size());
+        // Total number of nodes (not metanodes!!!)
+        Double N = Double.valueOf(theStructure.graph.getNodeCount());
+
+        // Neighbors
+        ArrayList<Integer> neighbors = new ArrayList();
+        for (ComputationEdge e : theStructure.topology[node_id]) {
+            int neighbor = e.target;
+            neighbors.add(neighbor);
+        }
 
         double best = Double.MAX_VALUE;
         StatisticalInferenceClustering.Community bestCommunity = null;
         Set<StatisticalInferenceClustering.Community> iter = theStructure.nodeConnectionsWeight[node_id].keySet();
         for (StatisticalInferenceClustering.Community com : iter) {
-            double deltaValue = delta(node_id, com, theStructure);
+            double deltaValue = delta(node_id, com, theStructure, neighbors, e_in, e_out, E, B, N);
             if (deltaValue < best) {
                 best = deltaValue;
                 bestCommunity = com;
@@ -149,25 +161,31 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         return bestCommunity;
     }
 
-    private double delta(int node, StatisticalInferenceClustering.Community community, StatisticalInferenceClustering.CommunityStructure theStructure) {
+    private static double lBinom(double n, double m) {
+        return Gamma.logGamma(n+1) - Gamma.logGamma(n - m + 1) - Gamma.logGamma(m + 1);
+    }
+
+    private double delta(int node,
+                         StatisticalInferenceClustering.Community community,
+                         StatisticalInferenceClustering.CommunityStructure theStructure,
+                         ArrayList<Integer> neighbors,
+                         Double e_in,
+                         Double e_out,
+                         Double E,
+                         Double B,
+                         Double N
+    ) {
         Float edgesToFloat = theStructure.nodeConnectionsWeight[node].get(community);
         double edgesTo = 0;
         if (edgesToFloat != null) {
             edgesTo = edgesToFloat.doubleValue();
         }
 
-        // We need:
-        // * The number of nodes in each community
-        // theStructure.communities.stream().forEach(e->e.nodes.size());
-        // * The total number of edges that are between communities (not inside)
-        // NOTE: WRONG
-        // This is the sum, for each node, and for each community, of their weight (weighted connexions)
-        // Arrays.stream(theStructure.nodeConnectionsWeight).map(hm -> hm.values().stream().mapToDouble(d->d).sum()).mapToDouble(d->d).sum();
-        // * The total number of edges inside each community
-        // * The number of communities
-        // theStructure.communities.size()
-        // * We need the degree of each node
-        //
+        // Node degree
+        Double k = theStructure.weights[node];
+        // Node weight
+        Double nodeWeight = theStructure.weights[node];
+        // TODO: Clarify whether the node weight is what we think it is!!!!
 
         // Number of edges of target community (with itself or another one)
         Double e_r_target = community.weightSum;
@@ -184,25 +202,69 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         int n_r_current = theStructure.nodeCommunities[node].nodes.size();
 
         // Description length: before
-        //Double S_b = Gamma.logGamma(e_r_target);
+        Double S_b = 0.;
+        S_b += Gamma.logGamma(e_r_current + 1);
+        S_b += Gamma.logGamma(e_r_target + 1);
+        S_b -= (e_rr_current/2) * Math.log(2) + Gamma.logGamma(e_rr_current/2 + 1);
+        S_b -= (e_rr_target/2) * Math.log(2) + Gamma.logGamma(e_rr_target/2 + 1);
+        S_b -= Gamma.logGamma(e_out + 1);
 
         // Count the gains and losses
         // -> loop over the neighbors
-
-        // Check if some communities would disappear (?)
-        // Aggregate the computations to obtain the delta for the change
-
-        double weightSum = community.weightSum;
-        double nodeWeight = theStructure.weights[node];
-        double qValue = currentResolution * edgesTo - (nodeWeight * weightSum) / (2.0 * theStructure.graphWeightSum);
-        if ((theStructure.nodeCommunities[node] == community) && (theStructure.nodeCommunities[node].size() > 1)) {
-            qValue = currentResolution * edgesTo -
-                    (nodeWeight * (weightSum - nodeWeight)) / (2.0 * theStructure.graphWeightSum);
+        Double delta_e_out = 0.;
+        Double delta_e_in = 0.;
+        Double delta_e_rr_current = 0.;
+        Double delta_e_rr_target = 0.;
+        for (Integer nei : neighbors) {
+            if (theStructure.nodeCommunities[node] == theStructure.nodeCommunities[nei]) {
+                // The node will leave the neighbor's community
+                delta_e_rr_current -= 2;
+                delta_e_in -= 1;
+            } else {
+                // The node will not leave the neighbor's community
+                delta_e_out -= 1;
+            }
+            if (community == theStructure.nodeCommunities[nei]) {
+                // The node will arrive in the neighbor's community
+                delta_e_rr_current += 2;
+                delta_e_in += 1;
+            } else {
+                // The node will not arrive in the neighbor's community
+                delta_e_out += 1;
+            }
         }
-        if ((theStructure.nodeCommunities[node] == community) && (theStructure.nodeCommunities[node].size() == 1)) {
-            qValue = 0.;
+        Double delta_B = 0.;
+        if (theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]) {
+            // The node is the only one in the community
+            delta_B = -1.;
         }
-        return qValue;
+        // Note: if it were possible to add the node to an empty group, we would have to check that
+        // the target group is empty or not, and if so, add one to delta_B.
+
+        // Description length: after
+        Double S_a = 0.;
+        S_a += Gamma.logGamma(e_r_current - k + 1);
+        S_a += Gamma.logGamma(e_r_target + k + 1);
+        S_a -= (e_rr_current/2 + delta_e_rr_current/2) * Math.log(2) + Gamma.logGamma(e_rr_current/2 + delta_e_rr_current/2 + 1);
+        S_a -= (e_rr_target/2 + delta_e_rr_target/2) * Math.log(2) + Gamma.logGamma(e_rr_target/2 + delta_e_rr_target/2 + 1);
+        S_a -= Gamma.logGamma(e_out + 1);
+
+        S_b += e_out * lBinom(B, 2);
+        S_b += lBinom(B + e_in - 1, e_in);
+        if (B>1) {
+            S_b += Math.log(E + 1);
+        }
+
+        S_a += (e_out + delta_e_out) * lBinom(B + delta_B, 2);
+        S_a += lBinom(B + delta_B + e_in + delta_e_in - 1, e_in + delta_e_in);
+        if (delta_B>1) {
+            S_a += Math.log(E + 1);
+        }
+
+        S_b = lBinom(B + N - 1, N) - Gamma.logGamma(n_r_current + 1) - Gamma.logGamma(n_r_target + 1);
+        S_a = lBinom(B + delta_B + N - 1, N) - Gamma.logGamma(n_r_current + nodeWeight + 1) - Gamma.logGamma(n_r_target + nodeWeight + 1);
+
+        return S_a - S_b;
     }
 
     private int[] fillComStructure(Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure, int[] comStructure) {
@@ -646,6 +708,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
     class Community {
 
         double weightSum; // e_r, i.e. sum of edge weights for the community, inside and outside altogether
+        // Note: here we count the internal edges twice
         double internalWeightSum; // e_rr, i.e. sum of internal edge weights
         StatisticalInferenceClustering.CommunityStructure structure;
         List<Integer> nodes;
