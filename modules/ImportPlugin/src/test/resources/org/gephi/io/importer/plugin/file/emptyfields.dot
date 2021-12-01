@@ -1,0 +1,4 @@
+graph {
+  a -- b [color=""]
+  b -- c [color=blue,lhead=""]
+}
