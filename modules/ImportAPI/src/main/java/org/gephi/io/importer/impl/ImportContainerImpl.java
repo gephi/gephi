@@ -134,6 +134,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         factory = new ElementFactoryImpl(this);
         nodeColumns = new Object2ObjectLinkedOpenHashMap<>();
         edgeColumns = new Object2ObjectLinkedOpenHashMap<>();
+        report = new Report();
     }
 
     @Override
