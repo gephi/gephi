@@ -225,7 +225,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         data.swapInterval = 0;
 
         LWJGLRenderingTargetAWT renderingTarget = new LWJGLRenderingTargetAWT(null);
-        ;
+
 
         final AWTGLCanvas glCanvas = new AWTGLCanvas(data) {
             @Override
@@ -240,8 +240,8 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             }
         };
 
-        add(glCanvas, BorderLayout.CENTER);
         remove(waitingLabel);
+        add(glCanvas, BorderLayout.CENTER);
 
         final VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> engine = VizEngineFactory.newEngine(
                 renderingTarget,
@@ -299,12 +299,14 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         final Runnable renderLoop = new Runnable() {
             @Override
             public void run() {
-                if (!glCanvas.isValid() || !renderingTarget.isRunning()) {
+                if (!renderingTarget.isRunning()) {
                     stopRendering(engine);
                     return;
                 }
 
-                glCanvas.render();
+                if (glCanvas.isValid()) {
+                    glCanvas.render();
+                }
                 SwingUtilities.invokeLater(this);
             }
         };
