@@ -636,6 +636,35 @@
                                     </target>
                                 </configuration>
                             </execution>
+
+                            <execution>
+                                <id>download-jre</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target name="downloadJRE" description="Download JRE">
+                                        <!-- Download and untar JRE -->
+                                        <exec dir="${project.build.directory}" executable="curl">
+                                            <arg line="-L"/>
+                                            <arg line="-C"/>
+                                            <arg line="-"/>
+                                            <arg line="-o"/>
+                                            <arg line="jre.zip"/>
+                                            <arg line="${gephi.bundle.jre.windows}"/>
+                                        </exec>
+
+                                        <!-- Unzip archive -->
+                                        <mkdir dir="${project.build.directory}/${brandingToken}/jre"/>
+                                        <exec dir="${project.build.directory}" executable="tar">
+                                            <arg line="-zxf"/>
+                                            <arg line="jre.zip"/>
+                                            <arg line="-C &quot;${brandingToken}/jre&quot;"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
                             
                             <!-- Execute InnoSetup with the gephi.iss script -->
                             <execution>
@@ -649,6 +678,17 @@
                                     <target name="createInstaller" description="Create Windows installer with InnoSetup">
                                         <echo message="Creating windows installer with InnoSetup"/>
                                         <delete file="${project.artifactId}-${project.version}.setup.exe" failonerror="false"/>
+
+                                        <!-- Get the JRE folder name -->
+                                        <path id="jre_name">
+                                            <dirset dir="${project.build.directory}/${brandingToken}/jre" includes="jdk*" />
+                                        </path>
+                                        <property name="bundle.jre.path" refid="jre_name" />
+                                        <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
+
+                                        <!-- Configure relative JRE path into gephi.conf -->
+                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;../jre/${bundle.jre.name}&quot;"/>
+                                        <chmod file="${project.build.directory}/${brandingToken}/jre/**" perm="+x" type="both"/>
 
                                         <!-- Windows -->
                                         <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe" osfamily="windows">
@@ -720,23 +760,18 @@
                                         <replace file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" token="`dirname &quot;$PRG&quot;`" value="`dirname &quot;$PRG&quot;`&quot;/../Resources/${brandingToken}/bin&quot;"/>
                                         <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/${brandingToken}" perm="ugo+rx"/>
 
-                                        <!-- Download and untar JRE -->
-                                        <exec dir="${project.build.directory}" executable="curl">
-                                            <arg line="-L"/>
-                                            <arg line="-C"/>
-                                            <arg line="-"/>
-                                            <arg line="-o"/>
-                                            <arg line="jdk.tar.gz"/>
-                                            <arg line="${gephi.bundle.jre.url}"/>
-                                        </exec>
+                                        <!-- Get the JRE folder name -->
+                                        <path id="jre_name">
+                                            <dirset dir="${project.build.directory}/${brandingToken}/jre" includes="jdk*" />
+                                        </path>
+                                        <property name="bundle.jre.path" refid="jre_name" />
+                                        <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
-                                        <!-- Unzip archive -->
-                                        <mkdir dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns"/>
-                                        <exec dir="${project.build.directory}" executable="tar">
-                                            <arg line="-zxf"/>
-                                            <arg line="jdk.tar.gz"/>
-                                            <arg line="-C &quot;${gephi.appbundle.name}.app/Contents/PlugIns&quot;"/>
-                                        </exec>
+                                        <!-- Move the JRE in the /Contents/PlugIns folder and cleanup -->
+                                        <move file="${project.build.directory}/${brandingToken}/jre/${bundle.jre.name}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" />
+                                        <delete includeEmptyDirs="true">
+                                            <fileset dir="${project.build.directory}/${brandingToken}/jre"/>
+                                        </delete>
 
                                         <!-- Remove quarantine bit set recursively on JRE -->
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="xattr">
@@ -744,13 +779,6 @@
                                             <arg line="com.apple.quarantine"/>
                                             <arg line="&quot;${gephi.appbundle.name}.app/Contents/PlugIns&quot;"/>
                                         </exec>
-
-                                        <!-- Get the JRE folder name -->
-                                        <path id="jre_name">
-                                            <dirset dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" includes="jdk*" />
-                                        </path>
-                                        <property name="bundle.jre.path" refid="jre_name" />
-                                        <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
                                         <!-- Configure relative JRE path into gephi.conf -->
                                         <replace file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;../../PlugIns/${bundle.jre.name}/Contents/Home&quot;"/>
