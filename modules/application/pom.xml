@@ -788,9 +788,9 @@
                                         <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
                                         <!-- Move the JRE in the /Contents/PlugIns folder and cleanup -->
-                                        <move file="${project.build.directory}/${brandingToken}/jre/${bundle.jre.name}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" />
+                                        <move file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre/${bundle.jre.name}" todir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/PlugIns" />
                                         <delete includeEmptyDirs="true">
-                                            <fileset dir="${project.build.directory}/${brandingToken}/jre"/>
+                                            <fileset dir="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/jre"/>
                                         </delete>
 
                                         <!-- Remove quarantine bit set recursively on JRE -->
