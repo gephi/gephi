@@ -50,9 +50,9 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             int[] comStructure = new int[graph.getNodeCount()];
 
             if (graph.getNodeCount() > 0) {//Fixes issue #713 Modularity Calculation Throws Exception On Empty Graph
-                HashMap<String, Double> computedModularityMetrics =
+                HashMap<String, Double> computedStatInfMetrics =
                         computePartition(graph, structure, comStructure, useWeight);
-                descriptionLength = computedModularityMetrics.get("modularity");
+                descriptionLength = computedStatInfMetrics.get("descriptionLength");
             } else {
                 descriptionLength = 0;
             }
@@ -114,12 +114,9 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         fillComStructure(graph, theStructure, comStructure);
         double[] degreeCount = fillDegreeCount(graph, theStructure, comStructure, nodeDegrees, weighted);
 
-        double computedModularity = finalQ(comStructure, degreeCount, graph, theStructure, totalWeight, weighted);
-        double computedModularityResolution =
-                finalQ(comStructure, degreeCount, graph, theStructure, totalWeight, weighted);
+        double computedDescriptionLength = finalDL(comStructure, degreeCount, graph, theStructure, totalWeight, weighted);
 
-        results.put("modularity", computedModularity);
-        results.put("modularityResolution", computedModularityResolution);
+        results.put("descriptionLength", computedDescriptionLength);
 
         return results;
     }
@@ -169,9 +166,9 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         return degreeCount;
     }
 
-    private double finalQ(int[] struct, double[] degrees, Graph graph,
-                          StatisticalInferenceClustering.CommunityStructure theStructure, double totalWeight,
-                          boolean weighted) {
+    private double finalDL(int[] struct, double[] degrees, Graph graph,
+                           StatisticalInferenceClustering.CommunityStructure theStructure, double totalWeight,
+                           boolean weighted) {
 
         int usedResolution = 1; // TODO: REMOVE ME (currentResolution should not appear in statistical inference)
         double res = 0;
