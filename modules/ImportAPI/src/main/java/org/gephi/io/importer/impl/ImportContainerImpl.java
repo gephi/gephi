@@ -50,12 +50,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+
+import java.util.*;
+
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.TimeFormat;
@@ -169,7 +166,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
         if (nodeMap.containsKey(nodeDraftImpl.getId())) {
             String message = NbBundle
-                .getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraftImpl.getId());
+                    .getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraftImpl.getId());
             report.logIssue(new Issue(message, Level.WARNING));
             return;
         }
@@ -193,13 +190,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 node.setCreatedAuto(true);
                 if (!reportedUnknownNode) {
                     String message =
-                        NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_AutoNodeCreated");
+                            NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_AutoNodeCreated");
                     report.logIssue(new Issue(message, Level.INFO));
                     reportedUnknownNode = true;
                 }
             } else {
                 String message =
-                    NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_UnknowNodeId", id);
+                        NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_UnknowNodeId", id);
                 report.logIssue(new Issue(message, Level.SEVERE));
             }
         } else {
@@ -222,7 +219,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         NodeDraftImpl targetNode = getNode(target);
         if (sourceNode != null && targetNode != null) {
             boolean undirected = edgeDefault.equals(EdgeDirectionDefault.UNDIRECTED) ||
-                (undirectedEdgesCount > 0 && directedEdgesCount == 0);
+                    (undirectedEdgesCount > 0 && directedEdgesCount == 0);
             long edgeId = getLongId(sourceNode, targetNode, !undirected);
             for (Long2ObjectMap l : edgeTypeSets) {
                 if (l != null) {
@@ -242,13 +239,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         EdgeDraftImpl edgeDraftImpl = (EdgeDraftImpl) edgeDraft;
         if (edgeDraftImpl.getSource() == null) {
             String message =
-                NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_MissingNodeSource");
+                    NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_MissingNodeSource");
             report.logIssue(new Issue(message, Level.SEVERE));
             return;
         }
         if (edgeDraftImpl.getTarget() == null) {
             String message =
-                NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_MissingNodeTarget");
+                    NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_MissingNodeTarget");
             report.logIssue(new Issue(message, Level.SEVERE));
             return;
         }
@@ -256,7 +253,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         //Check if already exists
         if (edgeMap.containsKey(edgeDraftImpl.getId())) {
             String message = NbBundle
-                .getMessage(ImportContainerImpl.class, "ImportContainerException_edgeExist", edgeDraftImpl.getId());
+                    .getMessage(ImportContainerImpl.class, "ImportContainerException_edgeExist", edgeDraftImpl.getId());
             report.logIssue(new Issue(message, Level.WARNING));
             return;
         }
@@ -275,16 +272,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 case DIRECTED:
                     if (edgeDraftImpl.getDirection().equals(EdgeDirection.UNDIRECTED)) {
                         report.logIssue(new Issue(NbBundle
-                            .getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type",
-                                edgeDefault, edgeDraftImpl.getId()), Level.SEVERE));
+                                .getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type",
+                                        edgeDefault, edgeDraftImpl.getId()), Level.SEVERE));
                         return;
                     }
                     break;
                 case UNDIRECTED:
                     if (edgeDraftImpl.getDirection().equals(EdgeDirection.DIRECTED)) {
                         report.logIssue(new Issue(NbBundle
-                            .getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type",
-                                edgeDefault, edgeDraftImpl.getId()), Level.SEVERE));
+                                .getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type",
+                                        edgeDefault, edgeDraftImpl.getId()), Level.SEVERE));
                         return;
                     }
                     break;
@@ -304,8 +301,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (edgeTypeSet.containsKey(sourceTargetLong)) {
             if (!parameters.isParallelEdges()) {
                 report.logIssue(new Issue(NbBundle
-                    .getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge_Forbidden",
-                        edgeDraftImpl.getId()), Level.SEVERE));
+                        .getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge_Forbidden",
+                                edgeDraftImpl.getId()), Level.SEVERE));
                 return;
             } else {
                 int[] edges = edgeTypeSet.get(sourceTargetLong);
@@ -316,13 +313,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
                 if (!reportedParallelEdges) {
                     report.logIssue(new Issue(NbBundle
-                        .getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge_Merged",
-                            edgeDraftImpl.getId()), Level.INFO));
+                            .getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge_Merged",
+                                    edgeDraftImpl.getId()), Level.INFO));
                     reportedParallelEdges = true;
                 }
             }
         } else {
-            edgeTypeSet.put(sourceTargetLong, new int[] {index});
+            edgeTypeSet.put(sourceTargetLong, new int[]{index});
         }
 
         //Self loop
@@ -331,17 +328,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
 
         //Direction
-        EdgeDirection direction = edgeDraftImpl.getDirection();
-        if (direction != null) {
-            //Counting
-            switch (direction) {
-                case DIRECTED:
-                    directedEdgesCount++;
-                    break;
-                case UNDIRECTED:
-                    undirectedEdgesCount++;
-                    break;
-            }
+        final boolean directed = isEdgeDirected(edgeDraft);
+
+        if (directed) {
+            directedEdgesCount++;
+        } else {
+            undirectedEdgesCount++;
         }
 
         //Adding
@@ -370,18 +362,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             return;
         }
 
-        boolean directed = edgeDraftImpl.getDirection() == EdgeDirection.DIRECTED;
+        final boolean directed = isEdgeDirected(edgeDraftImpl);
 
-        if (edgeDraftImpl.getDirection() != null) {
-            //UnCounting
-            switch (edgeDraftImpl.getDirection()) {
-                case DIRECTED:
-                    directedEdgesCount--;
-                    break;
-                case UNDIRECTED:
-                    undirectedEdgesCount--;
-                    break;
-            }
+        if (directed) {
+            directedEdgesCount--;
+        } else {
+            undirectedEdgesCount--;
         }
 
         if (edgeDraftImpl.isSelfLoop()) {
@@ -389,28 +375,38 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
 
         int edgeType = getEdgeType(edgeDraftImpl.getType());
-        long sourceTargetLong = getLongId(edgeDraftImpl.getSource(), edgeDraftImpl.getTarget(), directed);
+        long sourceTargetLong = getLongId(edgeDraftImpl);
         ensureLongSetArraySize(edgeType);
         Long2ObjectMap<int[]> edgeTypeSet = edgeTypeSets[edgeType];
 
         //Get index
-        int index = edgeMap.removeInt(id);
+        final int index = edgeMap.removeInt(id);
 
         //Update edgeType set
         int[] edges = edgeTypeSet.remove(sourceTargetLong);
-        if (edges.length > 1) {
-            int[] newEdges = new int[edges.length - 1];
-            int i = 0;
-            for (int e : edges) {
-                if (e != index) {
-                    newEdges[i++] = e;
+        if (Arrays.binarySearch(edges, index) >= 0) {
+            if (edges.length > 1) {
+                int[] newEdges = new int[edges.length - 1];
+                int i = 0;
+                for (int e : edges) {
+                    if (e != index) {
+                        newEdges[i++] = e;
+                    }
                 }
+                edgeTypeSet.put(sourceTargetLong, newEdges);
+            } else {
+                edgeTypeSet.put(sourceTargetLong, new int[0]);
             }
-            edgeTypeSet.put(sourceTargetLong, newEdges);
         }
 
         //Remove edge
         edgeList.set(index, null);
+    }
+
+    private boolean isEdgeDirected(EdgeDraft edgeDraft) {
+        final EdgeDirection direction = edgeDraft.getDirection();
+        return edgeDefault.equals(EdgeDirectionDefault.DIRECTED)
+                || (edgeDefault.equals(EdgeDirectionDefault.MIXED) && direction != EdgeDirection.UNDIRECTED);
     }
 
     @Override
@@ -505,16 +501,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             nodeColumns.put(key, column);
             if (dynamic) {
                 report.log(NbBundle
-                    .getMessage(ImportContainerImpl.class, "ImportContainerLog.AddDynamicNodeColumn", key,
-                        typeClass.getSimpleName()));
+                        .getMessage(ImportContainerImpl.class, "ImportContainerLog.AddDynamicNodeColumn", key,
+                                typeClass.getSimpleName()));
             } else {
                 report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.AddNodeColumn", key,
-                    typeClass.getSimpleName()));
+                        typeClass.getSimpleName()));
             }
         } else if (!column.getTypeClass().equals(typeClass)) {
             report.logIssue(new Issue(NbBundle
-                .getMessage(ImportContainerImpl.class, "ImportContainerException_Column_Type_Mismatch", key,
-                    column.getTypeClass()), Level.SEVERE));
+                    .getMessage(ImportContainerImpl.class, "ImportContainerException_Column_Type_Mismatch", key,
+                            column.getTypeClass()), Level.SEVERE));
         }
         return column;
     }
@@ -543,16 +539,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             edgeColumns.put(key, column);
             if (dynamic) {
                 report.log(NbBundle
-                    .getMessage(ImportContainerImpl.class, "ImportContainerLog.AddDynamicEdgeColumn", key,
-                        typeClass.getSimpleName()));
+                        .getMessage(ImportContainerImpl.class, "ImportContainerLog.AddDynamicEdgeColumn", key,
+                                typeClass.getSimpleName()));
             } else {
                 report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.AddEdgeColumn", key,
-                    typeClass.getSimpleName()));
+                        typeClass.getSimpleName()));
             }
         } else if (!column.getTypeClass().equals(typeClass)) {
             report.logIssue(new Issue(NbBundle
-                .getMessage(ImportContainerImpl.class, "ImportContainerException_Column_Type_Mismatch", key,
-                    column.getTypeClass()), Level.SEVERE));
+                    .getMessage(ImportContainerImpl.class, "ImportContainerException_Column_Type_Mismatch", key,
+                            column.getTypeClass()), Level.SEVERE));
         }
         return column;
     }
@@ -592,28 +588,28 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         try {
             double start, end;
             if (startDateTime == null || startDateTime.trim().isEmpty() || "-inf".equalsIgnoreCase(startDateTime) ||
-                "-infinity".equalsIgnoreCase(startDateTime)) {
+                    "-infinity".equalsIgnoreCase(startDateTime)) {
                 start = Double.NEGATIVE_INFINITY;
             } else {
                 start = timeFormat.equals(TimeFormat.DOUBLE) ? Double.parseDouble(startDateTime) :
-                    AttributeUtils.parseDateTime(startDateTime);
+                        AttributeUtils.parseDateTime(startDateTime);
             }
             if (endDateTime == null || endDateTime.trim().isEmpty() || "inf".equalsIgnoreCase(endDateTime) ||
-                "infinity".equalsIgnoreCase(endDateTime)) {
+                    "infinity".equalsIgnoreCase(endDateTime)) {
                 end = Double.POSITIVE_INFINITY;
             } else {
                 end = timeFormat.equals(TimeFormat.DOUBLE) ? Double.parseDouble(endDateTime) :
-                    AttributeUtils.parseDateTime(endDateTime);
+                        AttributeUtils.parseDateTime(endDateTime);
             }
             this.interval = new Interval(start, end);
         } catch (Exception e) {
             report.logIssue(new Issue(NbBundle
-                .getMessage(ImportContainerImpl.class, "ImportContainerException_Interval_Parse_Error",
-                    "[" + startDateTime + "," + endDateTime + "]"), Level.SEVERE));
+                    .getMessage(ImportContainerImpl.class, "ImportContainerException_Interval_Parse_Error",
+                            "[" + startDateTime + "," + endDateTime + "]"), Level.SEVERE));
             return;
         }
         report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.GraphInterval",
-            "[" + startDateTime + "," + endDateTime + "]"));
+                "[" + startDateTime + "," + endDateTime + "]"));
     }
 
     @Override
@@ -630,12 +626,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public void setTimestamp(String timestamp) {
         try {
             double t = timeFormat.equals(TimeFormat.DOUBLE) ? Double.parseDouble(timestamp) :
-                AttributeUtils.parseDateTime(timestamp);
+                    AttributeUtils.parseDateTime(timestamp);
             this.timestamp = t;
         } catch (Exception e) {
             report.logIssue(new Issue(NbBundle
-                .getMessage(ImportContainerImpl.class, "ImportContainerException_Timestamp_Parse_Error", timestamp),
-                Level.SEVERE));
+                    .getMessage(ImportContainerImpl.class, "ImportContainerException_Timestamp_Parse_Error", timestamp),
+                    Level.SEVERE));
             return;
         }
         report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.GraphTimestamp", timestamp));
@@ -651,7 +647,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (this.elementIdType != type) {
             this.elementIdType = type;
             report.log(NbBundle
-                .getMessage(ImportContainerImpl.class, "ImportContainerLog.ElementIdType", elementIdType.toString()));
+                    .getMessage(ImportContainerImpl.class, "ImportContainerLog.ElementIdType", elementIdType.toString()));
         }
     }
 
@@ -662,13 +658,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             String id = edge.getId();
             if (edge.getWeight() < 0f) {
                 report.logIssue(new Issue(
-                    NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Negative_Weight", id),
-                    Level.WARNING));
+                        NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Negative_Weight", id),
+                        Level.WARNING));
             } else if (edge.getWeight() == 0) {
                 removeEdge(edge);
                 report.logIssue(new Issue(
-                    NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Weight_Zero_Ignored", id),
-                    Level.SEVERE));
+                        NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Weight_Zero_Ignored", id),
+                        Level.SEVERE));
             }
         }
 
@@ -700,8 +696,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 }
             } catch (NumberFormatException e) {
                 report.logIssue(new Issue(NbBundle
-                    .getMessage(ImportContainerImpl.class, "ImportContainerException_ElementIdType_Parse_Error",
-                        elementIdType), Level.WARNING));
+                        .getMessage(ImportContainerImpl.class, "ImportContainerException_ElementIdType_Parse_Error",
+                                elementIdType), Level.WARNING));
                 elementIdType = ElementIdType.STRING;
             }
         }
@@ -747,23 +743,23 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         //Print TimeFormat
         if (dynamicGraph) {
             report.log(
-                NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeFormat", timeFormat.toString()));
+                    NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeFormat", timeFormat.toString()));
             report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeRepresentation",
-                timeRepresentation.toString()));
+                    timeRepresentation.toString()));
             report.log(
-                NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeZone", timeZone.toString()));
+                    NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeZone", timeZone.toString()));
         }
 
         //Print edge label type
         if (lastEdgeType != null) {
             report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.EdgeLabelType",
-                lastEdgeType.getSimpleName()));
+                    lastEdgeType.getSimpleName()));
         }
 
         //Print edge types
         if (isMultiGraph()) {
             report.log(NbBundle
-                .getMessage(ImportContainerImpl.class, "ImportContainerLog.MultiGraphCount", edgeTypeMap.size() - 1));
+                    .getMessage(ImportContainerImpl.class, "ImportContainerLog.MultiGraphCount", edgeTypeMap.size() - 1));
         }
 
         return true;
@@ -788,11 +784,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             //Force undirected
             for (EdgeDraftImpl edge : edgeList.toArray(new EdgeDraftImpl[0])) {
                 final boolean notAlreadyRemoved = edge != null
-                    && edgeMap.containsKey(edge.getId());
+                        && edgeMap.containsKey(edge.getId());
 
                 if (notAlreadyRemoved && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
                     EdgeDraftImpl opposite = getOpposite(edge);
-                    if (opposite != null) {
+                    if (opposite != null && edgeMap.containsKey(opposite.getId())) {
                         mergeDirectedEdges(opposite, edge);
                         removeEdge(opposite);
                     }
@@ -959,7 +955,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (this.edgeDefault != edgeDefault) {
             this.edgeDefault = edgeDefault;
             report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Set_EdgeDefault",
-                edgeDefault.toString()));
+                    edgeDefault.toString()));
         }
     }
 
@@ -1010,23 +1006,23 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (type != null) {
             Class cl = type.getClass();
             if (!(cl.equals(Integer.class)
-                || cl.equals(String.class)
-                || cl.equals(Float.class)
-                || cl.equals(Double.class)
-                || cl.equals(Short.class)
-                || cl.equals(Byte.class)
-                || cl.equals(Long.class)
-                || cl.equals(Character.class)
-                || cl.equals(Boolean.class))) {
+                    || cl.equals(String.class)
+                    || cl.equals(Float.class)
+                    || cl.equals(Double.class)
+                    || cl.equals(Short.class)
+                    || cl.equals(Byte.class)
+                    || cl.equals(Long.class)
+                    || cl.equals(Character.class)
+                    || cl.equals(Boolean.class))) {
                 report.logIssue(new Issue(
-                    NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Unsupported_Edge_type"),
-                    Level.SEVERE));
+                        NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Unsupported_Edge_type"),
+                        Level.SEVERE));
                 type = null;
             }
             if (type != null && lastEdgeType != null && !lastEdgeType.equals(type.getClass())) {
                 report.logIssue(new Issue(NbBundle
-                    .getMessage(ImportContainerImpl.class, "ImportContainerException_Unsupported_Edge_type_Conflict",
-                        type.getClass().getSimpleName(), lastEdgeType.getSimpleName()), Level.SEVERE));
+                        .getMessage(ImportContainerImpl.class, "ImportContainerException_Unsupported_Edge_type_Conflict",
+                                type.getClass().getSimpleName(), lastEdgeType.getSimpleName()), Level.SEVERE));
                 type = null;
             }
         }
@@ -1053,21 +1049,19 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     private long getLongId(EdgeDraftImpl edge) {
-        EdgeDirection direction = edge.getDirection();
-        boolean directed = edgeDefault.equals(EdgeDirectionDefault.DIRECTED)
-            || (edgeDefault.equals(EdgeDirectionDefault.MIXED) && direction != EdgeDirection.UNDIRECTED);
+        final boolean directed = isEdgeDirected(edge);
         return getLongId(edge.getSource(), edge.getTarget(), directed);
     }
 
     private long getLongId(NodeDraftImpl source, NodeDraftImpl target, boolean directed) {
         if (directed) {
-            long edgeId = ((long) source.hashCode()) << 32;
-            edgeId = edgeId | (long) (target.hashCode());
+            long edgeId = ((long) source.getSequentialId()) << 32;
+            edgeId = edgeId | (long) (target.getSequentialId());
             return edgeId;
         } else {
             long edgeId =
-                ((long) (source.hashCode() > target.hashCode() ? source.hashCode() : target.hashCode())) << 32;
-            edgeId = edgeId | (long) (source.hashCode() > target.hashCode() ? target.hashCode() : source.hashCode());
+                    ((long) (Math.max(source.getSequentialId(), target.getSequentialId()))) << 32;
+            edgeId = edgeId | (long) (Math.min(source.getSequentialId(), target.getSequentialId()));
             return edgeId;
         }
     }
