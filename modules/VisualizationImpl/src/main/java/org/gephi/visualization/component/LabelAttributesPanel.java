@@ -42,20 +42,18 @@
 
 package org.gephi.visualization.component;
 
+import net.miginfocom.swing.MigLayout;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.GraphController;
+import org.openide.util.Lookup;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import javax.swing.ButtonModel;
-import javax.swing.JCheckBox;
-import net.miginfocom.swing.MigLayout;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.GraphController;
-import org.gephi.visualization.text.TextModelImpl;
-import org.openide.util.Lookup;
 
 /**
  * @author Mathieu Bastian
@@ -66,7 +64,6 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
     private ButtonModel selectedModel;
     private boolean showProperties = true;
     //Model
-    private TextModelImpl textModel;
     private AttributesCheckBox[] nodeCheckBoxs;
     private AttributesCheckBox[] edgeCheckBoxs;
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -113,8 +110,8 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
         });
     }
 
-    public void setup(TextModelImpl model) {
-        this.textModel = model;
+    public void setup(/* TODO */) {
+//        TODO
         refresh();
     }
 
@@ -133,9 +130,10 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
                 }
             }
 
-            if (textModel.getNodeTextColumns() != null) {
-                selectedColumns = Arrays.asList(textModel.getNodeTextColumns());
-            }
+            //TODO
+//            if (textModel.getNodeTextColumns() != null) {
+//                selectedColumns = Arrays.asList(textModel.getNodeTextColumns());
+//            }
             nodeCheckBoxs = new AttributesCheckBox[availableColumns.size()];
             target = nodeCheckBoxs;
         } else {
@@ -149,9 +147,10 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
                 }
             }
 
-            if (textModel.getEdgeTextColumns() != null) {
-                selectedColumns = Arrays.asList(textModel.getEdgeTextColumns());
-            }
+            //TODO
+//            if (textModel.getEdgeTextColumns() != null) {
+//                selectedColumns = Arrays.asList(textModel.getEdgeTextColumns());
+//            }
             edgeCheckBoxs = new AttributesCheckBox[availableColumns.size()];
             target = edgeCheckBoxs;
         }
@@ -185,7 +184,8 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
             }
         }
         if (edgeColumnsList.size() > 0 || nodeColumnsList.size() > 0) {
-            textModel.setTextColumns(nodeColumnsList.toArray(new Column[0]), edgeColumnsList.toArray(new Column[0]));
+            //TODO
+//            textModel.setTextColumns(nodeColumnsList.toArray(new Column[0]), edgeColumnsList.toArray(new Column[0]));
         }
     }
 

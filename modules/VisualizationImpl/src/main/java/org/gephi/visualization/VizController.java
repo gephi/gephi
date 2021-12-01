@@ -45,29 +45,12 @@ package org.gephi.visualization;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceListener;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.selection.SelectionManager;
-import org.gephi.visualization.apiimpl.GraphDrawable;
-import org.gephi.visualization.apiimpl.GraphIO;
-import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.apiimpl.VizEventManager;
-import org.gephi.visualization.bridge.DataBridge;
-import org.gephi.visualization.events.StandardVizEventManager;
-import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.opengl.CompatibilityEngine;
-import org.gephi.visualization.scheduler.CompatibilityScheduler;
 import org.gephi.visualization.screenshot.ScreenshotMaker;
-import org.gephi.visualization.swing.GLAbstractListener;
-import org.gephi.visualization.swing.GraphCanvas;
-import org.gephi.visualization.swing.NewtGraphCanvas;
-import org.gephi.visualization.swing.StandardGraphIO;
-import org.gephi.visualization.text.TextManager;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -79,19 +62,12 @@ public class VizController implements VisualizationController {
     //Singleton
     private static VizController instance;
     //Architecture
-    private GLAbstractListener drawable;
-    private AbstractEngine engine;
-    private Scheduler scheduler;
     private VizConfig vizConfig;
-    private GraphIO graphIO;
     private VizEventManager vizEventManager;
     private GraphLimits limits;
-    private DataBridge dataBridge;
-    private TextManager textManager;
     private ScreenshotMaker screenshotMaker;
     private SelectionManager selectionManager;
     //Variable
-    private VizModel currentModel;
     public VizController() {
     }
 
@@ -104,123 +80,62 @@ public class VizController implements VisualizationController {
     }
 
     public void initInstances() {
-        vizConfig = new VizConfig();
-        graphIO = new StandardGraphIO();
-        engine = new CompatibilityEngine();
-        vizEventManager = new StandardVizEventManager();
-        scheduler = new CompatibilityScheduler();
-        limits = new GraphLimits();
-        dataBridge = new DataBridge();
-        textManager = new TextManager();
-        screenshotMaker = new ScreenshotMaker();
-        currentModel = new VizModel(true);
-        selectionManager = new SelectionManager();
-
-        if (vizConfig.isUseGLJPanel()) {
-            //No more supported
-        } else if (Utilities.isMac()) {
-            drawable = createCanvas();
-        } else {
-            drawable = createNewtCanvas();
-        }
-        drawable.initArchitecture();
-        engine.initArchitecture();
-        ((CompatibilityScheduler) scheduler).initArchitecture();
-        ((StandardGraphIO) graphIO).initArchitecture();
-        dataBridge.initArchitecture();
-        textManager.initArchitecture();
-        screenshotMaker.initArchitecture();
-        vizEventManager.initArchitecture();
-        selectionManager.initArchitecture();
-
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(new WorkspaceListener() {
-            @Override
-            public void initialize(Workspace workspace) {
-                if (workspace.getLookup().lookup(VizModel.class) == null) {
-                    workspace.add(new VizModel(workspace));
-                }
-            }
-
-            @Override
-            public void select(Workspace workspace) {
-                engine.reinit();
-            }
-
-            @Override
-            public void unselect(Workspace workspace) {
-            }
-
-            @Override
-            public void close(Workspace workspace) {
-            }
-
-            @Override
-            public void disable() {
-                engine.reinit();
-            }
-        });
-
-        if (pc.getCurrentWorkspace() != null) {
-            engine.reinit();
-        }
+//        vizConfig = new VizConfig();
+//        vizEventManager = new StandardVizEventManager();
+//        limits = new GraphLimits();
+//        textManager = new TextManager();
+//        currentModel = new VizModel(true);
+//        selectionManager = new SelectionManager();
+//
+//        textManager.initArchitecture();
+//        screenshotMaker.initArchitecture();
+//        vizEventManager.initArchitecture();
+        //TODO
     }
 
     public void refreshWorkspace() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        VizModel model = null;
-        if (pc.getCurrentWorkspace() == null) {
-            model = new VizModel(true);
-        } else {
-            model = pc.getCurrentWorkspace().getLookup().lookup(VizModel.class);
-            if (model == null) {
-                model = new VizModel(pc.getCurrentWorkspace());
-                pc.getCurrentWorkspace().add(model);
-
-            }
-        }
-        if (model != currentModel) {
-            model.setListeners(currentModel.getListeners());
-            model.getTextModel().setListeners(currentModel.getTextModel().getListeners());
-            currentModel.setListeners(null);
-            currentModel.getTextModel().setListeners(null);
-            currentModel = model;
-            currentModel.init();
-        }
+//        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+//        VizModel model = null;
+//        if (pc.getCurrentWorkspace() == null) {
+//            model = new VizModel(true);
+//        } else {
+//            model = pc.getCurrentWorkspace().getLookup().lookup(VizModel.class);
+//            if (model == null) {
+//                model = new VizModel(pc.getCurrentWorkspace());
+//                pc.getCurrentWorkspace().add(model);
+//
+//            }
+//        }
+//        if (model != currentModel) {
+//            model.setListeners(currentModel.getListeners());
+//            model.getTextModel().setListeners(currentModel.getTextModel().getListeners());
+//            currentModel.setListeners(null);
+//            currentModel.getTextModel().setListeners(null);
+//            currentModel = model;
+//            currentModel.init();
+//        }
+        //TODO
     }
 
     public void destroy() {
-        engine.stopDisplay();
-        drawable.destroy();
-        engine = null;
-        scheduler = null;
-        graphIO = null;
-        vizEventManager = null;
-        dataBridge = null;
-        textManager = null;
-        screenshotMaker = null;
-        selectionManager = null;
+//        vizEventManager = null;
+//        textManager = null;
+        //TODO
     }
 
     @Override
     public void resetSelection() {
-        if (selectionManager != null) {
-            selectionManager.resetSelection();
-        }
+        //TODO
     }
 
     @Override
     public void resetNodesSelection() {
-        if (selectionManager != null) {
-            selectionManager.selectNodes(null);
-        }
+        //TODO
     }
 
     @Override
     public void resetEdgesSelection() {
-        if (selectionManager != null) {
-            selectionManager.selectEdges(null);
-        }
+        //TODO
     }
 
     public void selectNode(Node node) {
@@ -233,18 +148,12 @@ public class VizController implements VisualizationController {
 
     @Override
     public void selectNodes(Node[] nodes) {
-        if (selectionManager != null) {
-            currentModel.setAutoSelectNeighbor(false);
-            selectionManager.selectNodes(nodes);
-        }
+        //TODO
     }
 
     @Override
     public void selectEdges(Edge[] edges) {
-        if (selectionManager != null) {
-            currentModel.setAutoSelectNeighbor(false);
-            selectionManager.selectEdges(edges);
-        }
+        //TODO
     }
 
     @Override
@@ -257,44 +166,12 @@ public class VizController implements VisualizationController {
         return new Column[0];
     }
 
-    public VizModel getVizModel() {
-        return currentModel;
-    }
-
-    public GraphDrawable getDrawable() {
-        return drawable;
-    }
-
-    public AbstractEngine getEngine() {
-        return engine;
-    }
-
-    public GraphIO getGraphIO() {
-        return graphIO;
-    }
-
-    public Scheduler getScheduler() {
-        return scheduler;
-    }
-
     public VizConfig getVizConfig() {
         return vizConfig;
     }
 
     public VizEventManager getVizEventManager() {
         return vizEventManager;
-    }
-
-    public GraphLimits getLimits() {
-        return limits;
-    }
-
-    public DataBridge getDataBridge() {
-        return dataBridge;
-    }
-
-    public TextManager getTextManager() {
-        return textManager;
     }
 
     public ScreenshotMaker getScreenshotMaker() {
@@ -304,33 +181,4 @@ public class VizController implements VisualizationController {
     public SelectionManager getSelectionManager() {
         return selectionManager;
     }
-
-    public GraphCanvas createCanvas() {
-        GraphCanvas canvas = new GraphCanvas();
-        return canvas;
-    }
-
-    public NewtGraphCanvas createNewtCanvas() {
-        NewtGraphCanvas canvas = new NewtGraphCanvas();
-        return canvas;
-    }
-
-//
-//    @Override
-//    public AttributeColumn[] getNodeTextColumns() {
-//        if (currentModel != null && currentModel.getTextModel() != null) {
-//            TextModelImpl textModel = currentModel.getTextModel();
-//            return textModel.getNodeTextColumns();
-//        }
-//        return new AttributeColumn[0];
-//    }
-//
-//    @Override
-//    public AttributeColumn[] getEdgeTextColumns() {
-//        if (currentModel != null && currentModel.getTextModel() != null) {
-//            TextModelImpl textModel = currentModel.getTextModel();
-//            return textModel.getEdgeTextColumns();
-//        }
-//        return new AttributeColumn[0];
-//    }
 }

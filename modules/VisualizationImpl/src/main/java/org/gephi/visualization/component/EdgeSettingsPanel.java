@@ -42,19 +42,9 @@
 
 package org.gephi.visualization.component;
 
-import java.awt.Color;
-import java.awt.color.ColorSpace;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.ui.components.JColorButton;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.VizModel;
+
+import java.awt.*;
 
 /**
  * @author Mathieu Bastian
@@ -85,128 +75,130 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
     }
 
     public void setup() {
-        VizModel vizModel = VizController.getInstance().getVizModel();
-        vizModel.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("init")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("edgeHasUniColor")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("showEdges")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("edgeUniColor")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("edgeSelectionColor")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("edgeInSelectionColor")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("edgeOutSelectionColor")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("edgeBothSelectionColor")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("edgeScale")) {
-                    refreshSharedConfig();
-                }
-            }
-        });
-        refreshSharedConfig();
-
-        showEdgesCheckbox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                vizModel.setShowEdges(showEdgesCheckbox.isSelected());
-                setEnable(true);
-            }
-        });
-        ((JColorButton) edgeColorButton)
-            .addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    VizModel vizModel = VizController.getInstance().getVizModel();
-                    vizModel.setEdgeUniColor(((JColorButton) edgeColorButton).getColorArray());
-                }
-            });
-        sourceNodeColorCheckbox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                vizModel.setEdgeHasUniColor(!sourceNodeColorCheckbox.isSelected());
-            }
-        });
-        selectionColorCheckbox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                vizModel.setEdgeSelectionColor(selectionColorCheckbox.isSelected());
-            }
-        });
-        edgeInSelectionColorChooser.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                vizModel.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor().getComponents(null));
-            }
-        });
-        edgeBothSelectionColorChooser.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                vizModel.setEdgeBothSelectionColor(edgeBothSelectionColorChooser.getColor().getComponents(null));
-            }
-        });
-        edgeOutSelectionColorChooser.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                vizModel.setEdgeOutSelectionColor(edgeOutSelectionColorChooser.getColor().getComponents(null));
-            }
-        });
-        scaleSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                if (vizModel.getEdgeScale() != (scaleSlider.getValue() / 10f + 0.1f)) {
-                    vizModel.setEdgeScale(scaleSlider.getValue() / 10f + 0.1f);
-                }
-            }
-        });
+//        VizModel vizModel = VizController.getInstance().getVizModel();
+//        vizModel.addPropertyChangeListener(new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                if (evt.getPropertyName().equals("init")) {
+//                    refreshSharedConfig();
+//                } else if (evt.getPropertyName().equals("edgeHasUniColor")) {
+//                    refreshSharedConfig();
+//                } else if (evt.getPropertyName().equals("showEdges")) {
+//                    refreshSharedConfig();
+//                } else if (evt.getPropertyName().equals("edgeUniColor")) {
+//                    refreshSharedConfig();
+//                } else if (evt.getPropertyName().equals("edgeSelectionColor")) {
+//                    refreshSharedConfig();
+//                } else if (evt.getPropertyName().equals("edgeInSelectionColor")) {
+//                    refreshSharedConfig();
+//                } else if (evt.getPropertyName().equals("edgeOutSelectionColor")) {
+//                    refreshSharedConfig();
+//                } else if (evt.getPropertyName().equals("edgeBothSelectionColor")) {
+//                    refreshSharedConfig();
+//                } else if (evt.getPropertyName().equals("edgeScale")) {
+//                    refreshSharedConfig();
+//                }
+//            }
+//        });
+//        refreshSharedConfig();
+//
+//        showEdgesCheckbox.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                VizModel vizModel = VizController.getInstance().getVizModel();
+//                vizModel.setShowEdges(showEdgesCheckbox.isSelected());
+//                setEnable(true);
+//            }
+//        });
+//        ((JColorButton) edgeColorButton)
+//            .addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
+//                @Override
+//                public void propertyChange(PropertyChangeEvent evt) {
+//                    VizModel vizModel = VizController.getInstance().getVizModel();
+//                    vizModel.setEdgeUniColor(((JColorButton) edgeColorButton).getColorArray());
+//                }
+//            });
+//        sourceNodeColorCheckbox.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                VizModel vizModel = VizController.getInstance().getVizModel();
+//                vizModel.setEdgeHasUniColor(!sourceNodeColorCheckbox.isSelected());
+//            }
+//        });
+//        selectionColorCheckbox.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                VizModel vizModel = VizController.getInstance().getVizModel();
+//                vizModel.setEdgeSelectionColor(selectionColorCheckbox.isSelected());
+//            }
+//        });
+//        edgeInSelectionColorChooser.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                VizModel vizModel = VizController.getInstance().getVizModel();
+//                vizModel.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor().getComponents(null));
+//            }
+//        });
+//        edgeBothSelectionColorChooser.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                VizModel vizModel = VizController.getInstance().getVizModel();
+//                vizModel.setEdgeBothSelectionColor(edgeBothSelectionColorChooser.getColor().getComponents(null));
+//            }
+//        });
+//        edgeOutSelectionColorChooser.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                VizModel vizModel = VizController.getInstance().getVizModel();
+//                vizModel.setEdgeOutSelectionColor(edgeOutSelectionColorChooser.getColor().getComponents(null));
+//            }
+//        });
+//        scaleSlider.addChangeListener(new ChangeListener() {
+//            @Override
+//            public void stateChanged(ChangeEvent e) {
+//                VizModel vizModel = VizController.getInstance().getVizModel();
+//                if (vizModel.getEdgeScale() != (scaleSlider.getValue() / 10f + 0.1f)) {
+//                    vizModel.setEdgeScale(scaleSlider.getValue() / 10f + 0.1f);
+//                }
+//            }
+//        });
+        //TODO
     }
 
     private void refreshSharedConfig() {
-        VizModel vizModel = VizController.getInstance().getVizModel();
-        setEnable(!vizModel.isDefaultModel());
-        if (vizModel.isDefaultModel()) {
-            return;
-        }
-        if (showEdgesCheckbox.isSelected() != vizModel.isShowEdges()) {
-            showEdgesCheckbox.setSelected(vizModel.isShowEdges());
-        }
-        float[] edgeCol = vizModel.getEdgeUniColor();
-        ((JColorButton) edgeColorButton).setColor(new Color(edgeCol[0], edgeCol[1], edgeCol[2], edgeCol[3]));
-
-        if (sourceNodeColorCheckbox.isSelected() != !vizModel.isEdgeHasUniColor()) {
-            sourceNodeColorCheckbox.setSelected(!vizModel.isEdgeHasUniColor());
-        }
-        if (selectionColorCheckbox.isSelected() != vizModel.isEdgeSelectionColor()) {
-            selectionColorCheckbox.setSelected(vizModel.isEdgeSelectionColor());
-        }
-        Color in = new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB), vizModel.getEdgeInSelectionColor(), 1f);
-        Color out = new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB), vizModel.getEdgeOutSelectionColor(), 1f);
-        Color both = new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB), vizModel.getEdgeBothSelectionColor(), 1f);
-        if (!edgeInSelectionColorChooser.getColor().equals(in)) {
-            edgeInSelectionColorChooser.setColor(in);
-        }
-        if (!edgeBothSelectionColorChooser.getColor().equals(both)) {
-            edgeBothSelectionColorChooser.setColor(both);
-        }
-        if (!edgeOutSelectionColorChooser.getColor().equals(out)) {
-            edgeOutSelectionColorChooser.setColor(out);
-        }
-        if (scaleSlider.getValue() / 10f + 0.1f != vizModel.getEdgeScale()) {
-            scaleSlider.setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
-        }
+//        VizModel vizModel = VizController.getInstance().getVizModel();
+//        setEnable(!vizModel.isDefaultModel());
+//        if (vizModel.isDefaultModel()) {
+//            return;
+//        }
+//        if (showEdgesCheckbox.isSelected() != vizModel.isShowEdges()) {
+//            showEdgesCheckbox.setSelected(vizModel.isShowEdges());
+//        }
+//        float[] edgeCol = vizModel.getEdgeUniColor();
+//        ((JColorButton) edgeColorButton).setColor(new Color(edgeCol[0], edgeCol[1], edgeCol[2], edgeCol[3]));
+//
+//        if (sourceNodeColorCheckbox.isSelected() != !vizModel.isEdgeHasUniColor()) {
+//            sourceNodeColorCheckbox.setSelected(!vizModel.isEdgeHasUniColor());
+//        }
+//        if (selectionColorCheckbox.isSelected() != vizModel.isEdgeSelectionColor()) {
+//            selectionColorCheckbox.setSelected(vizModel.isEdgeSelectionColor());
+//        }
+//        Color in = new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB), vizModel.getEdgeInSelectionColor(), 1f);
+//        Color out = new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB), vizModel.getEdgeOutSelectionColor(), 1f);
+//        Color both = new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB), vizModel.getEdgeBothSelectionColor(), 1f);
+//        if (!edgeInSelectionColorChooser.getColor().equals(in)) {
+//            edgeInSelectionColorChooser.setColor(in);
+//        }
+//        if (!edgeBothSelectionColorChooser.getColor().equals(both)) {
+//            edgeBothSelectionColorChooser.setColor(both);
+//        }
+//        if (!edgeOutSelectionColorChooser.getColor().equals(out)) {
+//            edgeOutSelectionColorChooser.setColor(out);
+//        }
+//        if (scaleSlider.getValue() / 10f + 0.1f != vizModel.getEdgeScale()) {
+//            scaleSlider.setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
+//        }
+        //TODO
     }
 
     private void setEnable(boolean enable) {

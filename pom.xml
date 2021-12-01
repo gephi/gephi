@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.gephi</groupId>
@@ -8,7 +9,7 @@
     <packaging>pom</packaging>
 
     <name>gephi</name>
-    
+
     <!-- Project Metadata -->
     <url>https://gephi.org</url>
     <description>Gephi - The Open Graph Viz Platform</description>
@@ -17,7 +18,7 @@
         <url>https://gephi.org</url>
     </organization>
     <inceptionYear>2007</inceptionYear>
-    
+
     <!-- Licenses -->
     <licenses>
         <license>
@@ -31,14 +32,14 @@
             <comments>GPL v3 License</comments>
         </license>
     </licenses>
-    
+
     <!-- SCM -->
     <scm>
         <connection>scm:git:git://github.com/gephi/gephi.git</connection>
         <developerConnection>scm:git:git@github.com:gephi/gephi.git</developerConnection>
         <url>https://github.com/gephi/gephi</url>
     </scm>
-    
+
     <!-- Developers -->
     <developers>
         <developer>
@@ -127,21 +128,27 @@
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
         <gephi.build.timestamp>${maven.build.timestamp}</gephi.build.timestamp>
-        
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gephi.maven.requiredVersion>3.6.3</gephi.maven.requiredVersion>
         <netbeans.run.params.ide/>
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
-        
+
         <!-- Netbeans Platform version -->
         <netbeans.version>RELEASE125</netbeans.version>
-        
+
         <!-- GraphStore version -->
-        <graphstore.version>0.5.9</graphstore.version>
+        <graphstore.version>0.6.1-SNAPSHOT</graphstore.version>
+
+        <!-- VizEngine version -->
+        <gephi.viz-engine.version>1.0.0-SNAPSHOT</gephi.viz-engine.version>
+        <gephi.lwjgl.version>3.3.0</gephi.lwjgl.version>
+        <gephi.lwjgl3-awt.version>0.1.9-SNAPSHOT</gephi.lwjgl3-awt.version>
+        <gephi.joml.version>1.10.2</gephi.joml.version>
 
         <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
-        
+
         <!-- Modules specification version, overrides project version -->
         <gephi.modules.specification.version>0.9.3</gephi.modules.specification.version>
 
@@ -151,39 +158,45 @@
         <gephi.javac.showDeprecation>true</gephi.javac.showDeprecation>
         <gephi.javac.showWarnings>true</gephi.javac.showWarnings>
         <gephi.javac.fork>true</gephi.javac.fork>
-        
+
         <!-- Testing settings -->
         <gephi.test.maxMemory>768M</gephi.test.maxMemory>
         <gephi.test.reportsDirectory>${project.build.directory}/surefire-reports/plain</gephi.test.reportsDirectory>
-        
+
         <!-- NBM Plugin settings -->
         <brandingToken>gephi</brandingToken>
         <all.clusters>${project.build.directory}/${brandingToken}</all.clusters>
         <gephi.netbeans.useOSGiDependencies>false</gephi.netbeans.useOSGiDependencies>
         <gephi.app.title>Gephi ${project.version}</gephi.app.title>
-        
+
         <!-- Update centers URLs -->
-        <gephi.update.center.official.url>https://raw.githubusercontent.com/gephi/gephi/gh-pages/${project.version}/netbeans_site/updates.xml</gephi.update.center.official.url>
-        <gephi.update.center.thirdparty.url>https://raw.githubusercontent.com/gephi/gephi-plugins/gh-pages/plugins/${project.version}/updates.xml</gephi.update.center.thirdparty.url>
-        
+        <gephi.update.center.official.url>
+            https://raw.githubusercontent.com/gephi/gephi/gh-pages/${project.version}/netbeans_site/updates.xml
+        </gephi.update.center.official.url>
+        <gephi.update.center.thirdparty.url>
+            https://raw.githubusercontent.com/gephi/gephi-plugins/gh-pages/plugins/${project.version}/updates.xml
+        </gephi.update.center.thirdparty.url>
+
         <!-- Mac OS X bundle settings -->
         <gephi.appbundle.name>Gephi</gephi.appbundle.name>
-        <gephi.bundle.jre.url>https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jre_x64_mac_hotspot_11.0.12_7.tar.gz</gephi.bundle.jre.url>
+        <gephi.bundle.jre.url>
+            https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jre_x64_mac_hotspot_11.0.12_7.tar.gz
+        </gephi.bundle.jre.url>
 
         <!-- Mac OS X signing identity - must match with a verified Apple developer certificate in the keychain -->
         <gephi.codesign.identity>Developer ID Application</gephi.codesign.identity>
-        
+
         <!-- Repository URLs -->
         <gephi.ossrh.repository.id>ossrh</gephi.ossrh.repository.id>
         <gephi.ossrh.repository.url>https://oss.sonatype.org/content/repositories/snapshots</gephi.ossrh.repository.url>
-        
+
         <!-- SCM -->
         <gephi.scm>git</gephi.scm>
-        
+
         <!-- Installers settings -->
         <gephi.menu.app.name>Gephi ${project.version}</gephi.menu.app.name>
         <gephi.innosetup.path>C:/Program Files (x86)/Inno Setup 6</gephi.innosetup.path>
-        
+
         <!-- GitHub site-plugin authentication -->
         <github.global.server>github</github.global.server>
 
@@ -195,13 +208,13 @@
         <gephi.apple.notarization.password/>
         <gephi.apple.notarization.teamId/>
         <gephi.apple.notarization.timeout>10m</gephi.apple.notarization.timeout>
-        
+
         <!--==== Dependency Versions ==================================================================================-->
-        
+
         <gephi.slf4j.version>1.7.32</gephi.slf4j.version>
         <!-- TODO: change to new sentry sdk -->
         <gephi.sentry.raven.version>8.0.3</gephi.sentry.raven.version>
-        
+
         <!--==== Plugin Versions ==================================================================================-->
 
         <gephi.maven-antrun-plugin.version>3.0.0</gephi.maven-antrun-plugin.version>
@@ -226,7 +239,7 @@
 
         <gephi.maven-jarsigner-plugin.version>3.0.0</gephi.maven-jarsigner-plugin.version>
 
-        <gephi.maven-javadoc-plugin.version>3.3.1</gephi.maven-javadoc-plugin.version> 
+        <gephi.maven-javadoc-plugin.version>3.3.1</gephi.maven-javadoc-plugin.version>
 
         <gephi.maven-license-plugin.version>1.9.0</gephi.maven-license-plugin.version>
 
@@ -243,25 +256,25 @@
         <gephi.build-helper-maven-plugin.version>3.2.0</gephi.build-helper-maven-plugin.version>
 
         <gephi.nbm-maven-plugin.version>4.6</gephi.nbm-maven-plugin.version>
-        
-        <gephi.wagon-maven-plugin.version>2.0.2</gephi.wagon-maven-plugin.version>  
-        
+
+        <gephi.wagon-maven-plugin.version>2.0.2</gephi.wagon-maven-plugin.version>
+
         <gephi.nexus-staging-maven-plugin.version>1.6.8</gephi.nexus-staging-maven-plugin.version>
-        
+
         <gephi.site-maven-plugin.version>0.12</gephi.site-maven-plugin.version>
-        
+
         <gephi.versions-maven-plugin.version>2.8.1</gephi.versions-maven-plugin.version>
 
         <gephi.maven-checkstyle-plugin.version>3.1.2</gephi.maven-checkstyle-plugin.version>
 
         <gephi.checkstyle.version>9.1</gephi.checkstyle.version>
     </properties>
-    
+
     <!-- Maven required version -->
     <prerequisites>
         <maven>${gephi.maven.requiredVersion}</maven>
     </prerequisites>
- 
+
     <!-- Repositories -->
     <repositories>
         <repository>
@@ -270,7 +283,7 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository>  
+        </repository>
     </repositories>
 
     <!-- Locations of the artifacts published -->
@@ -280,7 +293,7 @@
             <url>${gephi.ossrh.repository.url}</url>
         </snapshotRepository>
     </distributionManagement>
-    
+
     <!-- List all dependencies with versions so it can be used in child POMs 
     without explicit versions -->
     <dependencyManagement>
@@ -407,6 +420,158 @@
                 <artifactId>graphstore</artifactId>
                 <version>${graphstore.version}</version>
             </dependency>
+
+            <!-- Viz engine -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>viz-engine-core</artifactId>
+                <version>${gephi.viz-engine.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>viz-engine-lwjgl</artifactId>
+                <version>${gephi.viz-engine.version}</version>
+            </dependency>
+
+            <!-- LWJGL -->
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-linux</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-macos</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-windows</classifier>
+            </dependency>
+
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-jawt</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-glfw</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-glfw</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-linux</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-glfw</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-macos</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-glfw</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-windows</classifier>
+            </dependency>
+
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-opengl</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-opengl</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-linux</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-opengl</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-macos</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-opengl</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-windows</classifier>
+            </dependency>
+
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-stb</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-stb</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-linux</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-stb</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-macos</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-stb</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-windows</classifier>
+            </dependency>
+
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-jemalloc</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-jemalloc</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-linux</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-jemalloc</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-macos</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.lwjgl</groupId>
+                <artifactId>lwjgl-jemalloc</artifactId>
+                <version>${gephi.lwjgl.version}</version>
+                <classifier>natives-windows</classifier>
+            </dependency>
+
+            <dependency>
+                <groupId>org.lwjglx</groupId>
+                <artifactId>lwjgl3-awt</artifactId>
+                <version>${gephi.lwjgl3-awt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.joml</groupId>
+                <artifactId>joml</artifactId>
+                <version>${gephi.joml.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>gephi-branding</artifactId>
@@ -815,7 +980,7 @@
     </dependencies>
 
     <build>
-        
+
         <!-- Plugins installed with versions -->
         <pluginManagement>
             <plugins>
@@ -828,6 +993,7 @@
                     <artifactId>versions-maven-plugin</artifactId>
                     <version>${gephi.versions-maven-plugin.version}</version>
                     <configuration>
+                        <!--suppress UnresolvedMavenProperty -->
                         <rulesUri>file:///${session.executionRootDirectory}/maven-version-rules.xml</rulesUri>
                     </configuration>
                 </plugin>
@@ -894,8 +1060,8 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId> 
-                    <version>${gephi.maven-resources-plugin.version}</version> 
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${gephi.maven-resources-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -951,9 +1117,9 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        
+
         <!-- Plugins configuration ===============================================================-->
-        
+
         <plugins>
 
             <!-- Compiler -->
@@ -969,41 +1135,41 @@
                     </compilerArgument>
                 </configuration>
             </plugin>
- 
+
             <!-- Skip unit tests in non-deployment or release mode -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <skipTests>true</skipTests>
-                    <trimStackTrace>false</trimStackTrace>                                                              
+                    <trimStackTrace>false</trimStackTrace>
                 </configuration>
             </plugin>
-            
+
             <!-- Copy and apply filtering on manifest.mf file -->
-            <plugin> 
-                <artifactId>maven-resources-plugin</artifactId> 
-                <executions> 
-                    <execution> 
-                        <id>generate-modules-xml</id> 
-                        <phase>generate-resources</phase> 
-                        <goals> 
-                            <goal>copy-resources</goal> 
-                        </goals> 
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-modules-xml</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/</outputDirectory> 
-                            <resources> 
-                                <resource> 
-                                    <directory>src/main/nbm</directory> 
-                                    <includes> 
+                            <outputDirectory>${basedir}/target/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/nbm</directory>
+                                    <includes>
                                         <include>manifest.mf</include>
-                                    </includes> 
-                                    <filtering>true</filtering> 
-                                </resource> 
-                            </resources> 
-                        </configuration> 
-                    </execution> 
-                </executions> 
+                                    </includes>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Jar plugin, required for NBM -->
@@ -1017,7 +1183,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            
+
             <!-- NBM options -->
             <plugin>
                 <groupId>org.apache.netbeans.utilities</groupId>
@@ -1028,12 +1194,12 @@
                     <brandingToken>${brandingToken}</brandingToken>
                     <cluster>${brandingToken}</cluster>
                     <useOSGiDependencies>${gephi.netbeans.useOSGiDependencies}</useOSGiDependencies>
-                    
+
                     <!-- NBM settings -->
                     <requiresRestart>true</requiresRestart>
                     <licenseName>CDDL 1.0 and GNU GPL v3</licenseName>
                     <licenseFile>../../COPYING.txt</licenseFile>
-                    
+
                     <!-- Installer settings -->
                     <templateFile>src/main/app-resources/template.xml</templateFile>
                     <userSettings>
@@ -1085,12 +1251,12 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <!-- Profiles -->
     <profiles>
         <profile>
             <id>enableTests</id>
-            
+
             <build>
                 <plugins>
                     <plugin>
@@ -1103,11 +1269,11 @@
                 </plugins>
             </build>
         </profile>
-        
+
         <!-- Profile for nightly builds and releases -->
         <profile>
             <id>deployment</id>
-            
+
             <!-- Override compile properties to be less verbose -->
             <properties>
                 <gephi.javac.showDeprecation>false</gephi.javac.showDeprecation>
@@ -1124,7 +1290,7 @@
                             <skipTests>false</skipTests>
                         </configuration>
                     </plugin>
-				
+
                     <!-- Nexus staging, https://oss.sonatype.org/ -->
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
@@ -1169,7 +1335,7 @@
                 </plugins>
             </build>
         </profile>
-        
+
         <!-- Profile to create Javadoc -->
         <profile>
             <id>create-javadoc</id>
@@ -1212,18 +1378,17 @@
                             <show>private</show>
                             <nohelp>true</nohelp>
                             <detectLinks>false</detectLinks>
-                            <detectOfflineLinks>true</detectOfflineLinks>   
+                            <detectOfflineLinks>true</detectOfflineLinks>
                             <quiet>false</quiet>
-                            <doclint>none</doclint>
                             <source>8</source>
                         </configuration>
                         <executions>
-                            <execution> 
+                            <execution>
                                 <id>attach-javadocs</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>jar</goal>
-                                </goals> 
+                                </goals>
                             </execution>
                             <execution>
                                 <id>aggregate</id>
@@ -1235,11 +1400,15 @@
                                 <configuration>
                                     <show>public</show>
                                     <doctitle>Gephi ${project.version} API Index</doctitle>
-                                    <subpackages>org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.api.types:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.appearance.api:org.gephi.appearance.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress</subpackages>
+                                    <subpackages>
+                                        org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.api.types:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.appearance.api:org.gephi.appearance.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress
+                                    </subpackages>
                                     <nohelp>true</nohelp>
                                     <detectLinks>false</detectLinks>
                                     <detectOfflineLinks>true</detectOfflineLinks>
-                                    <sourcepath>modules/LongTaskAPI/src/main/java;modules/DataLaboratoryAPI/src/main/java;modules/FiltersAPI/src/main/java;modules/GraphAPI/src/main/java;modules/ExportAPI/src/main/java;modules/GeneratorAPI/src/main/java;modules/ImportAPI/src/main/java;modules/LayoutAPI/src/main/java;modules/PerspectiveAPI/src/main/java;modules/PreviewAPI/src/main/java;modules/ProjectAPI/src/main/java;modules/AppearanceAPI/src/main/java;modules/StatisticsAPI/src/main/java;modules/TimelineAPI/src/main/java;modules/ToolsAPI/src/main/java;modules/VisualizationAPI/src/main/java;${project.build.directory}/graphstore-sources</sourcepath>
+                                    <sourcepath>
+                                        modules/LongTaskAPI/src/main/java;modules/DataLaboratoryAPI/src/main/java;modules/FiltersAPI/src/main/java;modules/GraphAPI/src/main/java;modules/ExportAPI/src/main/java;modules/GeneratorAPI/src/main/java;modules/ImportAPI/src/main/java;modules/LayoutAPI/src/main/java;modules/PerspectiveAPI/src/main/java;modules/PreviewAPI/src/main/java;modules/ProjectAPI/src/main/java;modules/AppearanceAPI/src/main/java;modules/StatisticsAPI/src/main/java;modules/TimelineAPI/src/main/java;modules/ToolsAPI/src/main/java;modules/VisualizationAPI/src/main/java;${project.build.directory}/graphstore-sources
+                                    </sourcepath>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1278,7 +1447,7 @@
                                 <id>attach-sources</id>
                                 <goals>
                                     <goal>jar-no-fork</goal>
-                                </goals> 
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
@@ -1308,32 +1477,32 @@
                 </plugins>
             </build>
         </profile>
-        
+
         <!-- Properties for release -->
         <profile>
             <id>release</id>
             <properties>
             </properties>
         </profile>
-        
+
         <!-- Profile activated for windows/macos release only. Should be called alone so it only creates the windows installer/compressed dmg -->
         <profile>
             <id>release-extra</id>
             <build>
                 <plugins>
-                    
+
                     <!-- Skip Javadoc creation -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <executions>
-                            <execution> 
+                            <execution>
                                 <id>attach-javadocs</id>
                                 <phase>none</phase>
                             </execution>
                         </executions>
                     </plugin>
-            
+
                     <!-- Skip sources attach -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -1341,7 +1510,7 @@
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
-                                <phase>none</phase> 
+                                <phase>none</phase>
                             </execution>
                         </executions>
                     </plugin>
@@ -1349,7 +1518,7 @@
             </build>
         </profile>
     </profiles>
-                
+
     <!-- List of modules -->
     <modules>
         <module>modules/branding</module>

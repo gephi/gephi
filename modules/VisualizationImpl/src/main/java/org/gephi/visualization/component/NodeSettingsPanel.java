@@ -42,9 +42,6 @@
 
 package org.gephi.visualization.component;
 
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.VizModel;
-
 /**
  * @author Mathieu Bastian
  */
@@ -58,8 +55,8 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
     }
 
     public void setup() {
-        VizModel vizModel = VizController.getInstance().getVizModel();
-
+//        VizModel vizModel = VizController.getInstance().getVizModel();
+        //TODO
     }
 
     public void setEnable(boolean enable) {

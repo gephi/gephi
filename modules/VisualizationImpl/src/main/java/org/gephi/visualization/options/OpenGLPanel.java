@@ -42,12 +42,12 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.visualization.options;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.opengl.GraphicalConfiguration;
 import org.openide.util.NbPreferences;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 final class OpenGLPanel extends javax.swing.JPanel {
 
@@ -210,17 +210,19 @@ final class OpenGLPanel extends javax.swing.JPanel {
             NbPreferences.forModule(VizConfig.class).getBoolean(VizConfig.SHOW_FPS, VizConfig.DEFAULT_SHOW_FPS));
 
         //OpenGLInfo
-        GraphicalConfiguration gc = VizController.getInstance().getDrawable().getGraphicalConfiguration();
-        if (gc != null) {
-            openInfoText.setText(gc.getVendor() + "\n" + gc.getRenderer() + "\nOpenGL2 " + gc.getVersionStr());
-        }
+//        GraphicalConfiguration gc = VizController.getInstance().getDrawable().getGraphicalConfiguration();
+//        if (gc != null) {
+//            openInfoText.setText(gc.getVendor() + "\n" + gc.getRenderer() + "\nOpenGL2 " + gc.getVersionStr());
+//        }
+        //TODO
     }
 
     void store() {
         NbPreferences.forModule(VizConfig.class).putInt(VizConfig.ANTIALIASING, antiAliasing);
         NbPreferences.forModule(VizConfig.class).putBoolean(VizConfig.SHOW_FPS, fpsCheckbox.isSelected());
 
-        VizController.getInstance().getEngine().reinit();
+//        VizController.getInstance().getEngine().reinit();
+        //TODO
     }
 
     boolean valid() {

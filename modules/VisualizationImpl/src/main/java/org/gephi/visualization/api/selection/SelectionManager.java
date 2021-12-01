@@ -42,17 +42,17 @@
 
 package org.gephi.visualization.api.selection;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.model.Model;
-import org.gephi.visualization.opengl.AbstractEngine;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Mathieu Bastian
@@ -61,7 +61,6 @@ public class SelectionManager implements VizArchitecture {
 
     private final List<ChangeListener> listeners;
     private VizConfig vizConfig;
-    private AbstractEngine engine;
     //Settings
     private int mouseSelectionDiameter;
     private boolean mouseSelectionZoomProportionnal;
@@ -76,7 +75,8 @@ public class SelectionManager implements VizArchitecture {
     @Override
     public void initArchitecture() {
         this.vizConfig = VizController.getInstance().getVizConfig();
-        this.engine = VizController.getInstance().getEngine();
+//        this.engine = VizController.getInstance().getEngine();
+        //TODO
         mouseSelectionDiameter = vizConfig.getMouseSelectionDiameter();
         selectionUpdateWhileDragging = vizConfig.isMouseSelectionUpdateWhileDragging();
     }
@@ -103,7 +103,8 @@ public class SelectionManager implements VizArchitecture {
     }
 
     public void setRectangleSelection() {
-        engine.setRectangleSelection(true);
+//        engine.setRectangleSelection(true);
+        //TODO
         vizConfig.setDraggingEnable(false);
         vizConfig.setCustomSelection(false);
         vizConfig.setSelectionEnable(true);
@@ -112,7 +113,8 @@ public class SelectionManager implements VizArchitecture {
     }
 
     public void setDirectMouseSelection() {
-        engine.setRectangleSelection(false);
+//        engine.setRectangleSelection(false);
+        //TODO
         vizConfig.setSelectionEnable(true);
         vizConfig.setDraggingEnable(false);
         vizConfig.setCustomSelection(false);
@@ -121,7 +123,8 @@ public class SelectionManager implements VizArchitecture {
     }
 
     public void setDraggingMouseSelection() {
-        engine.setRectangleSelection(false);
+//        engine.setRectangleSelection(false);
+        //TODO
         vizConfig.setDraggingEnable(true);
         vizConfig.setMouseSelectionUpdateWhileDragging(false);
         vizConfig.setSelectionEnable(true);
@@ -143,11 +146,14 @@ public class SelectionManager implements VizArchitecture {
             vizConfig.setCustomSelection(false);
             setDirectMouseSelection();
         }
-        engine.resetSelection();
+//        engine.resetSelection();
+        //TODO
     }
 
     public List<Node> getSelectedNodes() {
-        return engine.getSelectedUnderlyingNodes();
+        return Collections.emptyList();
+        //TODO
+//        return engine.getSelectedUnderlyingNodes();
     }
 
     public void selectNode(Node node) {
@@ -163,8 +169,9 @@ public class SelectionManager implements VizArchitecture {
             setCustomSelection();
         }
 
-        Model[] models = engine.getNodeModelsForNodes(nodes);
-        engine.selectObject(models);
+//        Model[] models = engine.getNodeModelsForNodes(nodes);
+//        engine.selectObject(models);
+        //TODO
     }
 
     public void selectEdges(Edge[] edges) {
@@ -172,14 +179,16 @@ public class SelectionManager implements VizArchitecture {
             setCustomSelection();
         }
 
-        Model[] models = engine.getEdgeModelsForEdges(edges);
-        engine.selectObject(models);
+//        Model[] models = engine.getEdgeModelsForEdges(edges);
+//        engine.selectObject(models);
+        //TODO
     }
 
     public void centerOnNode(Node node) {
         if (node != null) {
-            VizController.getInstance().getGraphIO().centerOnCoordinate(node.x(), node.y(), node.z() + node.size() * 8);
-            engine.getScheduler().requireUpdateVisible();
+//            VizController.getInstance().getGraphIO().centerOnCoordinate(node.x(), node.y(), node.z() + node.size() * 8);
+//            engine.getScheduler().requireUpdateVisible();
+            //TODO
         }
     }
 

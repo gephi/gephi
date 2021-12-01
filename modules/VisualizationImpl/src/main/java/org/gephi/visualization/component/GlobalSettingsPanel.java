@@ -42,17 +42,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.visualization.component;
 
-import java.awt.Color;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.ui.components.JColorButton;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.VizModel;
-import org.gephi.visualization.apiimpl.GraphIO;
+
+import java.awt.*;
 
 /**
  * @author Mathieu Bastian
@@ -75,76 +67,78 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
     }
 
     public void setup() {
-        VizModel vizModel = VizController.getInstance().getVizModel();
-        vizModel.addPropertyChangeListener(new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("init")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("backgroundColor")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("autoSelectNeighbor")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("lightenNonSelectedAuto")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("use3d")) {
-                    refreshSharedConfig();
-                }
-            }
-        });
-        refreshSharedConfig();
-        hightlightCheckBox.addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                vizModel.setLightenNonSelectedAuto(hightlightCheckBox.isSelected());
-            }
-        });
-        ((JColorButton) backgroundColorButton)
-            .addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
-
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    VizModel vizModel = VizController.getInstance().getVizModel();
-                    vizModel.setBackgroundColor(((JColorButton) backgroundColorButton).getColor());
-                }
-            });
-        autoSelectNeigborCheckbox.addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                vizModel.setAutoSelectNeighbor(autoSelectNeigborCheckbox.isSelected());
-            }
-        });
-        zoomSlider.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int cam = (int) VizController.getInstance().getVizModel().getCameraDistance();
-                if (zoomSlider.getValue() != cam && cam < zoomSlider.getMaximum()) {
-                    GraphIO io = VizController.getInstance().getGraphIO();
-                    io.setCameraDistance(zoomSlider.getValue());
-                }
-            }
-        });
+//        VizModel vizModel = VizController.getInstance().getVizModel();
+//        vizModel.addPropertyChangeListener(new PropertyChangeListener() {
+//
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                if (evt.getPropertyName().equals("init")) {
+//                    refreshSharedConfig();
+//                } else if (evt.getPropertyName().equals("backgroundColor")) {
+//                    refreshSharedConfig();
+//                } else if (evt.getPropertyName().equals("autoSelectNeighbor")) {
+//                    refreshSharedConfig();
+//                } else if (evt.getPropertyName().equals("lightenNonSelectedAuto")) {
+//                    refreshSharedConfig();
+//                } else if (evt.getPropertyName().equals("use3d")) {
+//                    refreshSharedConfig();
+//                }
+//            }
+//        });
+//        refreshSharedConfig();
+//        hightlightCheckBox.addItemListener(new ItemListener() {
+//
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                VizModel vizModel = VizController.getInstance().getVizModel();
+//                vizModel.setLightenNonSelectedAuto(hightlightCheckBox.isSelected());
+//            }
+//        });
+//        ((JColorButton) backgroundColorButton)
+//            .addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
+//
+//                @Override
+//                public void propertyChange(PropertyChangeEvent evt) {
+//                    VizModel vizModel = VizController.getInstance().getVizModel();
+//                    vizModel.setBackgroundColor(((JColorButton) backgroundColorButton).getColor());
+//                }
+//            });
+//        autoSelectNeigborCheckbox.addItemListener(new ItemListener() {
+//
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                VizModel vizModel = VizController.getInstance().getVizModel();
+//                vizModel.setAutoSelectNeighbor(autoSelectNeigborCheckbox.isSelected());
+//            }
+//        });
+//        zoomSlider.addChangeListener(new ChangeListener() {
+//
+//            @Override
+//            public void stateChanged(ChangeEvent e) {
+//                int cam = (int) VizController.getInstance().getVizModel().getCameraDistance();
+//                if (zoomSlider.getValue() != cam && cam < zoomSlider.getMaximum()) {
+//                    GraphIO io = VizController.getInstance().getGraphIO();
+//                    io.setCameraDistance(zoomSlider.getValue());
+//                }
+//            }
+//        });
+        //TODO
     }
 
     private void refreshSharedConfig() {
-        VizModel vizModel = VizController.getInstance().getVizModel();
-        setEnable(!vizModel.isDefaultModel());
-        if (vizModel.isDefaultModel()) {
-            return;
-        }
-        if (autoSelectNeigborCheckbox.isSelected() != vizModel.isAutoSelectNeighbor()) {
-            autoSelectNeigborCheckbox.setSelected(vizModel.isAutoSelectNeighbor());
-        }
-        ((JColorButton) backgroundColorButton).setColor(vizModel.getBackgroundColor());
-        if (hightlightCheckBox.isSelected() != vizModel.isLightenNonSelectedAuto()) {
-            hightlightCheckBox.setSelected(vizModel.isLightenNonSelectedAuto());
-        }
+//        VizModel vizModel = VizController.getInstance().getVizModel();
+//        setEnable(!vizModel.isDefaultModel());
+//        if (vizModel.isDefaultModel()) {
+//            return;
+//        }
+//        if (autoSelectNeigborCheckbox.isSelected() != vizModel.isAutoSelectNeighbor()) {
+//            autoSelectNeigborCheckbox.setSelected(vizModel.isAutoSelectNeighbor());
+//        }
+//        ((JColorButton) backgroundColorButton).setColor(vizModel.getBackgroundColor());
+//        if (hightlightCheckBox.isSelected() != vizModel.isLightenNonSelectedAuto()) {
+//            hightlightCheckBox.setSelected(vizModel.isLightenNonSelectedAuto());
+//        }
+        //TODO
     }
 
     private void setEnable(boolean enable) {
@@ -157,10 +151,11 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
     }
 
     private void refreshZoom() {
-        int zoomValue = (int) VizController.getInstance().getVizModel().getCameraDistance();
-        if (zoomSlider.getValue() != zoomValue) {
-            zoomSlider.setValue(zoomValue);
-        }
+//        int zoomValue = (int) VizController.getInstance().getVizModel().getCameraDistance();
+//        if (zoomSlider.getValue() != zoomValue) {
+//            zoomSlider.setValue(zoomValue);
+//        }
+        //TODO
     }
 
     /**

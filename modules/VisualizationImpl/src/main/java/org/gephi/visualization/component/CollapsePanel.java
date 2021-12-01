@@ -42,13 +42,12 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.visualization.component;
 
-import java.awt.BorderLayout;
+import org.gephi.ui.utils.UIUtils;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JComponent;
-import javax.swing.UIManager;
-import org.gephi.ui.utils.UIUtils;
-import org.gephi.visualization.VizController;
 
 /**
  * @author Mathieu Bastian
@@ -106,9 +105,6 @@ public class CollapsePanel extends javax.swing.JPanel {
                         getClass().getResource("/org/gephi/visualization/component/arrowUp_rollover.png"))); // NOI18N
                 }
                 extendedPanel.setVisible(ext);
-
-                // Workaround for JOGL bug 1274
-                (VizController.getInstance().getDrawable()).reinitWindow();
             }
         });
         if (!extended) {

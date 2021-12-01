@@ -42,69 +42,59 @@
 
 package org.gephi.visualization.apiimpl;
 
+import org.gephi.datalab.api.DataLaboratoryHelper;
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
+import org.gephi.visualization.spi.GraphContextMenuItem;
+import org.openide.util.Lookup;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
-import org.gephi.datalab.api.DataLaboratoryHelper;
-import org.gephi.datalab.spi.ContextMenuItemManipulator;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.Node;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.bridge.DataBridge;
-import org.gephi.visualization.model.node.NodeModel;
-import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.spi.GraphContextMenuItem;
-import org.openide.util.Lookup;
 
 /**
  * @author Mathieu Bastian
  */
 public class GraphContextMenu {
 
-    private final VizConfig config;
-    private final AbstractEngine engine;
-    private final DataBridge dataBridge;
-
     public GraphContextMenu() {
-        config = VizController.getInstance().getVizConfig();
-        engine = VizController.getInstance().getEngine();
-        dataBridge = VizController.getInstance().getDataBridge();
+//        config = VizController.getInstance().getVizConfig();
+//        engine = VizController.getInstance().getEngine();
+//        dataBridge = VizController.getInstance().getDataBridge();
     }
 
     public JPopupMenu getMenu() {
-        GraphContextMenuItem[] items = getGraphContextMenuItems();
-        final List<NodeModel> selectedNodeModels = engine.getSelectedNodes();
-        Node[] selectedNodes = new Node[selectedNodeModels.size()];
-        int i = 0;
-        for (NodeModel nm : selectedNodeModels) {
-            selectedNodes[i++] = nm.getNode();
-        }
-        final Graph graph = dataBridge.getGraph();
+//        GraphContextMenuItem[] items = getGraphContextMenuItems();
+//        final List<NodeModel> selectedNodeModels = engine.getSelectedNodes();
+//        Node[] selectedNodes = new Node[selectedNodeModels.size()];
+//        int i = 0;
+//        for (NodeModel nm : selectedNodeModels) {
+//            selectedNodes[i++] = nm.getNode();
+//        }
+//        final Graph graph = dataBridge.getGraph();
         JPopupMenu contextMenu = new JPopupMenu();
 
-        //Add items ordered:
-        Integer lastItemType = null;
-        for (GraphContextMenuItem item : items) {
-            item.setup(graph, selectedNodes);
-            if (lastItemType == null) {
-                lastItemType = item.getType();
-            }
-            if (lastItemType != item.getType()) {
-                contextMenu.addSeparator();
-            }
-            lastItemType = item.getType();
-            if (item.isAvailable()) {
-                contextMenu.add(createMenuItemFromGraphContextMenuItem(item, graph, selectedNodes));
-            }
-        }
+//        //Add items ordered:
+//        Integer lastItemType = null;
+//        for (GraphContextMenuItem item : items) {
+//            item.setup(graph, selectedNodes);
+//            if (lastItemType == null) {
+//                lastItemType = item.getType();
+//            }
+//            if (lastItemType != item.getType()) {
+//                contextMenu.addSeparator();
+//            }
+//            lastItemType = item.getType();
+//            if (item.isAvailable()) {
+//                contextMenu.add(createMenuItemFromGraphContextMenuItem(item, graph, selectedNodes));
+//            }
+//        }
+        //TODO
 
         return contextMenu;
     }

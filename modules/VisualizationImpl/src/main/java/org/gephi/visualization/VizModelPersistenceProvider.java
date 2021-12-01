@@ -59,30 +59,32 @@ public class VizModelPersistenceProvider implements WorkspaceXMLPersistenceProvi
 
     @Override
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {
-        VizModel model = workspace.getLookup().lookup(VizModel.class);
-        if (model != null) {
-            try {
-                model.writeXML(writer);
-            } catch (XMLStreamException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
+//        VizModel model = workspace.getLookup().lookup(VizModel.class);
+//        if (model != null) {
+//            try {
+//                model.writeXML(writer);
+//            } catch (XMLStreamException ex) {
+//                throw new RuntimeException(ex);
+//            }
+//        }
+        //TODO
     }
 
     @Override
     public void readXML(XMLStreamReader reader, Workspace workspace) {
-        VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
-        if (vizModel == null) {
-            vizModel = new VizModel(workspace);
-            workspace.add(vizModel);
-        }
-        Lookup.getDefault().lookup(VizController.class)
-            .refreshWorkspace();//Necessary to get events from reading xml properties such as background color changed
-        try {
-            vizModel.readXML(reader, workspace);
-        } catch (XMLStreamException ex) {
-            throw new RuntimeException(ex);
-        }
+//        VizModel vizModel = workspace.getLookup().lookup(VizModel.class);
+//        if (vizModel == null) {
+//            vizModel = new VizModel(workspace);
+//            workspace.add(vizModel);
+//        }
+//        Lookup.getDefault().lookup(VizController.class)
+//            .refreshWorkspace();//Necessary to get events from reading xml properties such as background color changed
+//        try {
+//            vizModel.readXML(reader, workspace);
+//        } catch (XMLStreamException ex) {
+//            throw new RuntimeException(ex);
+//        }
+        //TODO
     }
 
     @Override

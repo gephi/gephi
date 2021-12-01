@@ -47,11 +47,11 @@ package org.gephi.visualization.api.selection;
  */
 public interface SelectionType {
 
-    public SelectionArea getSelectionArea();
-
-    public void setSelectionArea(SelectionArea selectionArea);
-
-    public String getName();
-
-    public void setName(String name);
+//    public SelectionArea getSelectionArea();
+//
+//    public void setSelectionArea(SelectionArea selectionArea);
+//
+//    public String getName();
+//
+//    public void setName(String name);
 }

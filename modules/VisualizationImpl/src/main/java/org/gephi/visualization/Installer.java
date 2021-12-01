@@ -42,7 +42,6 @@
 
 package org.gephi.visualization;
 
-import com.jogamp.opengl.GLProfile;
 import org.openide.modules.ModuleInstall;
 
 public class Installer extends ModuleInstall {
@@ -51,9 +50,6 @@ public class Installer extends ModuleInstall {
     public void restored() {
         // Disable JOGL's default icons
         System.setProperty("newt.window.icons", "null,null");
-
-        //Init JOGL, recommended
-        GLProfile.initSingleton();
     }
 
     @Override

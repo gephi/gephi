@@ -42,30 +42,9 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.visualization.component;
 
-import com.connectina.swing.fontchooser.JFontChooser;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.ui.components.JColorButton;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.VizModel;
-import org.gephi.visualization.text.ColorMode;
-import org.gephi.visualization.text.SizeMode;
-import org.gephi.visualization.text.TextManager;
-import org.gephi.visualization.text.TextModelImpl;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
-import org.openide.util.NbBundle;
-import org.openide.windows.WindowManager;
+
+import java.awt.*;
 
 /**
  * @author Mathieu Bastian
@@ -107,240 +86,243 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
     }
 
     public void setup() {
-        VizModel vizModel = VizController.getInstance().getVizModel();
-        TextModelImpl model = vizModel.getTextModel();
-        vizModel.addPropertyChangeListener(new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("init")) {
-                    refreshSharedConfig();
-                }
-            }
-        });
-
-        //NodePanel
-        showNodeLabelsCheckbox.addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                boolean value = showNodeLabelsCheckbox.isSelected();
-                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-                if (value != model.isShowNodeLabels()) {
-                    model.setShowNodeLabels(value);
-                    setEnable(true);
-                }
-            }
-        });
-        nodeFontButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-                Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getNodeFont());
-                if (font != null && font != model.getNodeFont()) {
-                    model.setNodeFont(font);
-                }
-            }
-        });
-        ((JColorButton) nodeColorButton)
-            .addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
-
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-                    if (!model.getNodeColor().equals(((JColorButton) nodeColorButton).getColor())) {
-                        model.setNodeColor(((JColorButton) nodeColorButton).getColor());
-                    }
-
-                }
-            });
-        nodeSizeSlider.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-                if (model.getNodeSizeFactor() != nodeSizeSlider.getValue() / 100f) {
-                    model.setNodeSizeFactor(nodeSizeSlider.getValue() / 100f);
-                }
-            }
-        });
-
-        //EdgePanel
-        showEdgeLabelsCheckbox.addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                boolean value = showEdgeLabelsCheckbox.isSelected();
-                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-                if (value != model.isShowEdgeLabels()) {
-                    model.setShowEdgeLabels(value);
-                    setEnable(true);
-                }
-            }
-        });
-        edgeFontButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-                Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getEdgeFont());
-                if (font != null && font != model.getEdgeFont()) {
-                    model.setEdgeFont(font);
-                }
-            }
-        });
-        ((JColorButton) edgeColorButton)
-            .addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
-
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-                    if (!model.getEdgeColor().equals(((JColorButton) edgeColorButton).getColor())) {
-                        model.setEdgeColor(((JColorButton) edgeColorButton).getColor());
-                    }
-                }
-            });
-        edgeSizeSlider.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-                model.setEdgeSizeFactor(edgeSizeSlider.getValue() / 100f);
-            }
-        });
-
-        //General
-        final TextManager textManager = VizController.getInstance().getTextManager();
-        final DefaultComboBoxModel sizeModeModel = new DefaultComboBoxModel(textManager.getSizeModes());
-        sizeModeCombo.setModel(sizeModeModel);
-        final DefaultComboBoxModel colorModeModel = new DefaultComboBoxModel(textManager.getColorModes());
-        colorModeCombo.setModel(colorModeModel);
-        sizeModeCombo.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-                if (model.getSizeMode() != sizeModeModel.getSelectedItem()) {
-                    model.setSizeMode((SizeMode) sizeModeModel.getSelectedItem());
-                }
-            }
-        });
-        colorModeCombo.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-                if (model.getColorMode() != colorModeModel.getSelectedItem()) {
-                    model.setColorMode((ColorMode) colorModeModel.getSelectedItem());
-                }
-            }
-        });
-        hideNonSelectedCheckbox.addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-                if (model.isSelectedOnly() != hideNonSelectedCheckbox.isSelected()) {
-                    model.setSelectedOnly(hideNonSelectedCheckbox.isSelected());
-                }
-            }
-        });
-
-        //Attributes
-        configureLabelsButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-                LabelAttributesPanel panel = new LabelAttributesPanel();
-                panel.setup(model);
-                DialogDescriptor dd = new DialogDescriptor(panel,
-                    NbBundle.getMessage(VizBarController.class, "LabelAttributesPanel.title"), true,
-                    NotifyDescriptor.OK_CANCEL_OPTION, null, null);
-                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                    panel.unsetup();
-                    return;
-                }
-            }
-        });
-
-        //Evt
-        model.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                refreshSharedConfig();
-            }
-        });
-        refreshSharedConfig();
+//        VizModel vizModel = VizController.getInstance().getVizModel();
+//        TextModelImpl model = vizModel.getTextModel();
+//        vizModel.addPropertyChangeListener(new PropertyChangeListener() {
+//
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                if (evt.getPropertyName().equals("init")) {
+//                    refreshSharedConfig();
+//                }
+//            }
+//        });
+//
+//        //NodePanel
+//        showNodeLabelsCheckbox.addItemListener(new ItemListener() {
+//
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                boolean value = showNodeLabelsCheckbox.isSelected();
+//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//                if (value != model.isShowNodeLabels()) {
+//                    model.setShowNodeLabels(value);
+//                    setEnable(true);
+//                }
+//            }
+//        });
+//        nodeFontButton.addActionListener(new ActionListener() {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//                Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getNodeFont());
+//                if (font != null && font != model.getNodeFont()) {
+//                    model.setNodeFont(font);
+//                }
+//            }
+//        });
+//        ((JColorButton) nodeColorButton)
+//            .addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
+//
+//                @Override
+//                public void propertyChange(PropertyChangeEvent evt) {
+//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//                    if (!model.getNodeColor().equals(((JColorButton) nodeColorButton).getColor())) {
+//                        model.setNodeColor(((JColorButton) nodeColorButton).getColor());
+//                    }
+//
+//                }
+//            });
+//        nodeSizeSlider.addChangeListener(new ChangeListener() {
+//
+//            @Override
+//            public void stateChanged(ChangeEvent e) {
+//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//                if (model.getNodeSizeFactor() != nodeSizeSlider.getValue() / 100f) {
+//                    model.setNodeSizeFactor(nodeSizeSlider.getValue() / 100f);
+//                }
+//            }
+//        });
+//
+//        //EdgePanel
+//        showEdgeLabelsCheckbox.addItemListener(new ItemListener() {
+//
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                boolean value = showEdgeLabelsCheckbox.isSelected();
+//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//                if (value != model.isShowEdgeLabels()) {
+//                    model.setShowEdgeLabels(value);
+//                    setEnable(true);
+//                }
+//            }
+//        });
+//        edgeFontButton.addActionListener(new ActionListener() {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//                Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getEdgeFont());
+//                if (font != null && font != model.getEdgeFont()) {
+//                    model.setEdgeFont(font);
+//                }
+//            }
+//        });
+//        ((JColorButton) edgeColorButton)
+//            .addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
+//
+//                @Override
+//                public void propertyChange(PropertyChangeEvent evt) {
+//                    TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//                    if (!model.getEdgeColor().equals(((JColorButton) edgeColorButton).getColor())) {
+//                        model.setEdgeColor(((JColorButton) edgeColorButton).getColor());
+//                    }
+//                }
+//            });
+//        edgeSizeSlider.addChangeListener(new ChangeListener() {
+//
+//            @Override
+//            public void stateChanged(ChangeEvent e) {
+//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//                model.setEdgeSizeFactor(edgeSizeSlider.getValue() / 100f);
+//            }
+//        });
+//
+//        //General
+//        final TextManager textManager = VizController.getInstance().getTextManager();
+//        final DefaultComboBoxModel sizeModeModel = new DefaultComboBoxModel(textManager.getSizeModes());
+//        sizeModeCombo.setModel(sizeModeModel);
+//        final DefaultComboBoxModel colorModeModel = new DefaultComboBoxModel(textManager.getColorModes());
+//        colorModeCombo.setModel(colorModeModel);
+//        sizeModeCombo.addActionListener(new ActionListener() {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//                if (model.getSizeMode() != sizeModeModel.getSelectedItem()) {
+//                    model.setSizeMode((SizeMode) sizeModeModel.getSelectedItem());
+//                }
+//            }
+//        });
+//        colorModeCombo.addActionListener(new ActionListener() {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//                if (model.getColorMode() != colorModeModel.getSelectedItem()) {
+//                    model.setColorMode((ColorMode) colorModeModel.getSelectedItem());
+//                }
+//            }
+//        });
+//        hideNonSelectedCheckbox.addItemListener(new ItemListener() {
+//
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//                if (model.isSelectedOnly() != hideNonSelectedCheckbox.isSelected()) {
+//                    model.setSelectedOnly(hideNonSelectedCheckbox.isSelected());
+//                }
+//            }
+//        });
+//
+//        //Attributes
+//        configureLabelsButton.addActionListener(new ActionListener() {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//                LabelAttributesPanel panel = new LabelAttributesPanel();
+//                panel.setup(model);
+//                DialogDescriptor dd = new DialogDescriptor(panel,
+//                    NbBundle.getMessage(VizBarController.class, "LabelAttributesPanel.title"), true,
+//                    NotifyDescriptor.OK_CANCEL_OPTION, null, null);
+//                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+//                    panel.unsetup();
+//                    return;
+//                }
+//            }
+//        });
+//
+//        //Evt
+//        model.addChangeListener(new ChangeListener() {
+//
+//            @Override
+//            public void stateChanged(ChangeEvent e) {
+//                refreshSharedConfig();
+//            }
+//        });
+//        refreshSharedConfig();
+        //TODO
     }
 
     private void refreshSharedConfig() {
-        VizModel vizModel = VizController.getInstance().getVizModel();
-        setEnable(!vizModel.isDefaultModel());
-        if (vizModel.isDefaultModel()) {
-            return;
-        }
-        TextModelImpl model = vizModel.getTextModel();
-
-        //node
-        nodeFontButton.setText(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
-        ((JColorButton) nodeColorButton).setColor(model.getNodeColor());
-        if (showNodeLabelsCheckbox.isSelected() != model.isShowNodeLabels()) {
-            showNodeLabelsCheckbox.setSelected(model.isShowNodeLabels());
-        }
-        if (nodeSizeSlider.getValue() / 100f != model.getNodeSizeFactor()) {
-            nodeSizeSlider.setValue((int) (model.getNodeSizeFactor() * 100f));
-        }
-
-        //edge
-        edgeFontButton.setText(model.getEdgeFont().getFontName() + ", " + model.getEdgeFont().getSize());
-        ((JColorButton) edgeColorButton).setColor(model.getEdgeColor());
-        if (showEdgeLabelsCheckbox.isSelected() != model.isShowEdgeLabels()) {
-            showEdgeLabelsCheckbox.setSelected(model.isShowEdgeLabels());
-        }
-        if (edgeSizeSlider.getValue() / 100f != model.getEdgeSizeFactor()) {
-            edgeSizeSlider.setValue((int) (model.getEdgeSizeFactor() * 100f));
-        }
-
-        //general
-        if (hideNonSelectedCheckbox.isSelected() != model.isSelectedOnly()) {
-            hideNonSelectedCheckbox.setSelected(model.isSelectedOnly());
-        }
-        if (sizeModeCombo.getSelectedItem() != model.getSizeMode()) {
-            sizeModeCombo.setSelectedItem(model.getSizeMode());
-        }
-        if (colorModeCombo.getSelectedItem() != model.getColorMode()) {
-            colorModeCombo.setSelectedItem(model.getColorMode());
-        }
+//        VizModel vizModel = VizController.getInstance().getVizModel();
+//        setEnable(!vizModel.isDefaultModel());
+//        if (vizModel.isDefaultModel()) {
+//            return;
+//        }
+//        TextModelImpl model = vizModel.getTextModel();
+//
+//        //node
+//        nodeFontButton.setText(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
+//        ((JColorButton) nodeColorButton).setColor(model.getNodeColor());
+//        if (showNodeLabelsCheckbox.isSelected() != model.isShowNodeLabels()) {
+//            showNodeLabelsCheckbox.setSelected(model.isShowNodeLabels());
+//        }
+//        if (nodeSizeSlider.getValue() / 100f != model.getNodeSizeFactor()) {
+//            nodeSizeSlider.setValue((int) (model.getNodeSizeFactor() * 100f));
+//        }
+//
+//        //edge
+//        edgeFontButton.setText(model.getEdgeFont().getFontName() + ", " + model.getEdgeFont().getSize());
+//        ((JColorButton) edgeColorButton).setColor(model.getEdgeColor());
+//        if (showEdgeLabelsCheckbox.isSelected() != model.isShowEdgeLabels()) {
+//            showEdgeLabelsCheckbox.setSelected(model.isShowEdgeLabels());
+//        }
+//        if (edgeSizeSlider.getValue() / 100f != model.getEdgeSizeFactor()) {
+//            edgeSizeSlider.setValue((int) (model.getEdgeSizeFactor() * 100f));
+//        }
+//
+//        //general
+//        if (hideNonSelectedCheckbox.isSelected() != model.isSelectedOnly()) {
+//            hideNonSelectedCheckbox.setSelected(model.isSelectedOnly());
+//        }
+//        if (sizeModeCombo.getSelectedItem() != model.getSizeMode()) {
+//            sizeModeCombo.setSelectedItem(model.getSizeMode());
+//        }
+//        if (colorModeCombo.getSelectedItem() != model.getColorMode()) {
+//            colorModeCombo.setSelectedItem(model.getColorMode());
+//        }
+        //TODO
     }
 
     public void setEnable(boolean enable) {
-        showEdgeLabelsCheckbox.setEnabled(enable);
-        showNodeLabelsCheckbox.setEnabled(enable);
-        sizeModeCombo.setEnabled(enable);
-        colorModeCombo.setEnabled(enable);
-        hideNonSelectedCheckbox.setEnabled(enable);
-        labelColorMode.setEnabled(enable);
-        labelSizeMode.setEnabled(enable);
-        configureLabelsButton.setEnabled(enable);
-
-        TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
-        boolean edgeValue = model.isShowEdgeLabels();
-        edgeFontButton.setEnabled(enable && edgeValue);
-        edgeColorButton.setEnabled(enable && edgeValue);
-        edgeSizeSlider.setEnabled(enable && edgeValue);
-        labelEdgeColor.setEnabled(enable && edgeValue);
-        labelEdgeFont.setEnabled(enable && edgeValue);
-        labelEdgeSize.setEnabled(enable && edgeValue);
-        boolean nodeValue = model.isShowNodeLabels();
-        nodeFontButton.setEnabled(enable && nodeValue);
-        nodeColorButton.setEnabled(enable && nodeValue);
-        nodeSizeSlider.setEnabled(enable && nodeValue);
-        labelNodeColor.setEnabled(enable && nodeValue);
-        labelNodeFont.setEnabled(enable && nodeValue);
-        labelNodeSize.setEnabled(enable && nodeValue);
+//        showEdgeLabelsCheckbox.setEnabled(enable);
+//        showNodeLabelsCheckbox.setEnabled(enable);
+//        sizeModeCombo.setEnabled(enable);
+//        colorModeCombo.setEnabled(enable);
+//        hideNonSelectedCheckbox.setEnabled(enable);
+//        labelColorMode.setEnabled(enable);
+//        labelSizeMode.setEnabled(enable);
+//        configureLabelsButton.setEnabled(enable);
+//
+//        TextModelImpl model = VizController.getInstance().getVizModel().getTextModel();
+//        boolean edgeValue = model.isShowEdgeLabels();
+//        edgeFontButton.setEnabled(enable && edgeValue);
+//        edgeColorButton.setEnabled(enable && edgeValue);
+//        edgeSizeSlider.setEnabled(enable && edgeValue);
+//        labelEdgeColor.setEnabled(enable && edgeValue);
+//        labelEdgeFont.setEnabled(enable && edgeValue);
+//        labelEdgeSize.setEnabled(enable && edgeValue);
+//        boolean nodeValue = model.isShowNodeLabels();
+//        nodeFontButton.setEnabled(enable && nodeValue);
+//        nodeColorButton.setEnabled(enable && nodeValue);
+//        nodeSizeSlider.setEnabled(enable && nodeValue);
+//        labelNodeColor.setEnabled(enable && nodeValue);
+//        labelNodeFont.setEnabled(enable && nodeValue);
+//        labelNodeSize.setEnabled(enable && nodeValue);
+        //TODO
     }
 
     /**

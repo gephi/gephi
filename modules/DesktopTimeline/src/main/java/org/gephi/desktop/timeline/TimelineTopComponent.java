@@ -42,28 +42,12 @@
 
 package org.gephi.desktop.timeline;
 
-import java.awt.CardLayout;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JSeparator;
-import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.api.TimelineModelEvent;
 import org.gephi.timeline.api.TimelineModelListener;
 import org.gephi.ui.components.CloseButton;
 import org.gephi.ui.utils.UIUtils;
-import org.gephi.visualization.VizController;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -72,6 +56,13 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Top component corresponding to the Timeline component
@@ -399,7 +390,8 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 if (visible != TimelineTopComponent.this.isVisible()) {
 
                     TimelineTopComponent.this.setVisible(visible);
-                    VizController.getInstance().getDrawable().reinitWindow();
+//                    VizController.getInstance().getDrawable().reinitWindow();
+                    //TODO
                 }
             }
         });
