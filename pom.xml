@@ -200,7 +200,7 @@
         
         <gephi.slf4j.version>1.7.32</gephi.slf4j.version>
         <!-- TODO: change to new sentry sdk -->
-        <gephi.sentry.raven.version>8.0.3</gephi.sentry.raven.version>
+        <gephi.sentry.version>5.4.2</gephi.sentry.version>
         
         <!--==== Plugin Versions ==================================================================================-->
 
@@ -778,15 +778,15 @@
                 <version>${gephi.slf4j.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.getsentry.raven</groupId>
-                <artifactId>raven</artifactId>
-                <version>${gephi.sentry.raven.version}</version>
-                <exclusions>
+                <groupId>io.sentry</groupId>
+                <artifactId>sentry</artifactId>
+                <version>${gephi.sentry.version}</version>
+                <!-- exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-api</artifactId>
                     </exclusion>
-                </exclusions>
+                </exclusions -->
             </dependency>
 
             <!-- Test JARs -->

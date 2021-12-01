@@ -42,11 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.branding.desktop.reporter;
 
-import com.getsentry.raven.Raven;
-import com.getsentry.raven.RavenFactory;
-import com.getsentry.raven.event.Event;
-import com.getsentry.raven.event.EventBuilder;
-import com.getsentry.raven.event.interfaces.ExceptionInterface;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
@@ -59,11 +54,17 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.MissingResourceException;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import io.sentry.Sentry;
+import io.sentry.SentryEvent;
+import io.sentry.SentryLevel;
+import io.sentry.protocol.SentryException;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDisplayer;
@@ -82,11 +83,11 @@ public class ReportController {
 
     private static final String POST_URL =
         "https://d007fbbdeb6241b5b2c542a6bc548cf3:4a1af110df484e838da9243c1496ebe9@app.getsentry.com/85815";
-
-    private final Raven raven;
-
+    
     public ReportController() {
-        raven = RavenFactory.ravenInstance(POST_URL);
+        Sentry.init(options -> {
+            options.setDsn(POST_URL);
+        });
     }
 
     public void sendReport(final Report report) {
@@ -122,26 +123,26 @@ public class ReportController {
     }
 
     private void sendSentryReport(Report report) {
-        EventBuilder eventBuilder = new EventBuilder().withMessage(report.getThrowable().getMessage())
-            .withLevel(Event.Level.ERROR)
-            .withSentryInterface(new ExceptionInterface(report.getThrowable()))
-            .withRelease(report.getVersion())
-            .withServerName("Gephi Desktop")//Avoid raven looking up 'localhost' as hostname
-            .withExtra("OS", report.getOs())
-            .withExtra("Heap memory usage", report.getHeapMemoryUsage())
-            .withExtra("Non heap memory usage", report.getNonHeapMemoryUsage())
-            .withExtra("Processors", report.getNumberOfProcessors())
-            .withExtra("Screen devices", report.getScreenDevices())
-            .withExtra("Screen size", report.getScreenSize())
-            .withExtra("User description", report.getUserDescription())
-            .withExtra("User email", report.getUserEmail())
-            .withExtra("VM", report.getVm())
-            .withExtra("OpenGL Vendor", report.getGlVendor())
-            .withExtra("OpenGL Renderer", report.getGlRenderer())
-            .withExtra("OpenGL Version", report.getGlVersion())
-            .withExtra("Log", report.getLog());
+        SentryEvent event = new SentryEvent();
+        event.setLevel(SentryLevel.ERROR);
+        event.setRelease(report.getVersion());
+        event.setServerName("Gephi Desktop");
+        event.setExtra("OS", report.getOs());
+        event.setExtra("Heap memory usage", report.getHeapMemoryUsage());
+        event.setExtra("Non heap memory usage", report.getNonHeapMemoryUsage());
+        event.setExtra("Processors", report.getNumberOfProcessors());
+        event.setExtra("Screen devices", report.getScreenDevices());
+        event.setExtra("Screen size", report.getScreenSize());
+        event.setExtra("User description", report.getUserDescription()); // GDPR compliant?
+        event.setExtra("User email", report.getUserEmail()); // GDPR compliant?
+        event.setExtra("VM", report.getVm());
+        event.setExtra("OpenGL Vendor", report.getGlVendor());
+        event.setExtra("OpenGL Renderer", report.getGlRenderer());
+        event.setExtra("OpenGL Version", report.getGlVersion());
+        event.setExtra("Log", report.getLog());
+        event.setThrowable(report.getThrowable());
 
-        raven.sendEvent(eventBuilder);
+        Sentry.captureEvent(event);
     }
 
     public Document buildReportDocument(Report report) {
