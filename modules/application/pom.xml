@@ -687,7 +687,7 @@
                                         <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
                                         <!-- Configure relative JRE path into gephi.conf -->
-                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;../jre/${bundle.jre.name}&quot;"/>
+                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre\${bundle.jre.name}&quot;"/>
                                         <chmod file="${project.build.directory}/${brandingToken}/jre/**" perm="+x" type="both"/>
 
                                         <!-- Windows -->
