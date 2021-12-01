@@ -113,11 +113,11 @@ public class ImporterGML implements FileImporter, LongTask {
     private ArrayList<Object> parseList(LineNumberReader reader) throws IOException {
 
         ArrayList<Object> list = new ArrayList<>();
-        char t;
+        char t = ' ';
         boolean readString = false;
         String stringBuffer = new String();
 
-        while (reader.ready()) {
+        while (reader.ready() && (t != ((char) -1))) {
             t = (char) reader.read();
             if (readString) {
                 if (t == '"') {
