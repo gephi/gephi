@@ -156,7 +156,6 @@ public class VizConfig {
     public static final boolean DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL = false;
     public static final boolean DEFAULT_MOUSE_SELECTION_WHILE_DRAGGING = false;
     public static final boolean DEFAULT_DISABLE_LOD = false;
-    public static final boolean DEFAULT_SHOW_HULLS = true;
     public static final float DEFAULT_EDGE_SCALE = 2f;
     //Default config - loaded in the VizModel
     protected Color defaultBackgroundColor = ColorUtils.decode(
