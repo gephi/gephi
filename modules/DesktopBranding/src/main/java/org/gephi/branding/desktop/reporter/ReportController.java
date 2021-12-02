@@ -82,7 +82,7 @@ import org.w3c.dom.Document;
 public class ReportController {
 
     private static final String POST_URL =
-        "https://d007fbbdeb6241b5b2c542a6bc548cf3:4a1af110df484e838da9243c1496ebe9@app.getsentry.com/85815";
+        "https://d007fbbdeb6241b5b2c542a6bc548cf3@o43889.ingest.sentry.io/85815";
     
     public ReportController() {
         Sentry.init(options -> {
