@@ -44,6 +44,7 @@ package org.gephi.project.io;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
+import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.ProjectsImpl;

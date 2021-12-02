@@ -66,6 +66,7 @@ import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.project.api.LegacyGephiFormatException;
+import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.spi.ProjectPropertiesUI;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
@@ -121,11 +122,13 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             public void fatalError(Throwable t) {
                 unlockProjectActions();
 
-                if (t instanceof LegacyGephiFormatException) {
+                if (t instanceof LegacyGephiFormatException || t instanceof GephiFormatException) {
                     NotifyDescriptor.Message msg =
                         new NotifyDescriptor.Message(t.getLocalizedMessage(), NotifyDescriptor.WARNING_MESSAGE);
                     DialogDisplayer.getDefault().notify(msg);
-                } else {
+                }
+
+                if(!(t instanceof LegacyGephiFormatException)) {
                     Exceptions.printStackTrace(t);
                 }
             }
