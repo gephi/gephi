@@ -133,8 +133,6 @@ public class ReportController {
         event.setExtra("Processors", report.getNumberOfProcessors());
         event.setExtra("Screen devices", report.getScreenDevices());
         event.setExtra("Screen size", report.getScreenSize());
-        event.setExtra("User description", report.getUserDescription()); // GDPR compliant?
-        event.setExtra("User email", report.getUserEmail()); // GDPR compliant?
         event.setExtra("VM", report.getVm());
         event.setExtra("OpenGL Vendor", report.getGlVendor());
         event.setExtra("OpenGL Renderer", report.getGlRenderer());
