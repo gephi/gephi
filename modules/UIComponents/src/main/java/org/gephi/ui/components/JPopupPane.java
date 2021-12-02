@@ -73,12 +73,12 @@ import org.openide.windows.WindowManager;
 //Author Milos Kleint (mkleint@netbeans.org)
 public class JPopupPane {
 
-    private HideAWTListener hideListener;
-    private JComponent ancestor;
+    private final HideAWTListener hideListener;
+    private final JComponent ancestor;
     private boolean showingPopup = false;
     private JPopupPaneComponent pane;
     private JWindow popupWindow;
-    private JPanel view;
+    private final JPanel view;
 
     public JPopupPane(JComponent ancestor, JPanel content) {
         this.ancestor = ancestor;
@@ -136,8 +136,8 @@ public class JPopupPane {
 
     private static class BottomLineBorder implements Border {
 
-        private Insets ins = new Insets(0, 0, 1, 0);
-        private Color col = new Color(221, 229, 248);
+        private final Insets ins = new Insets(0, 0, 1, 0);
+        private final Color col = new Color(221, 229, 248);
 
         public BottomLineBorder() {
         }

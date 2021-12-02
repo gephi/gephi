@@ -58,6 +58,7 @@ public class WorkspaceInformationImpl implements WorkspaceInformation {
     private String name;
     private Status status = Status.CLOSED;
     private String source;
+
     public WorkspaceInformationImpl(String name) {
         this.name = name;
     }

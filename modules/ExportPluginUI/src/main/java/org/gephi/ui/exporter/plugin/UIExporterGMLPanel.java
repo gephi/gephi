@@ -65,6 +65,7 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
     private javax.swing.JLabel normalizeLabel;
     private javax.swing.JLabel spacesLabel;
     private javax.swing.JTextField spacesTextField;
+
     /**
      * Creates new customizer UIExporterGMLPanel
      */

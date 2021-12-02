@@ -76,8 +76,8 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
 
     private static final Color invalidRegexColor = new Color(254, 150, 150);
     private Mode mode = Mode.NODES_TABLE;
-    private SearchReplaceController searchReplaceController;
-    private DataTablesController dataTablesController;
+    private final SearchReplaceController searchReplaceController;
+    private final DataTablesController dataTablesController;
     private SearchOptions searchOptions;
     private SearchResult searchResult = null;
     private Pattern regexPattern;
@@ -224,8 +224,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         } else {
             boolean canReplace = searchReplaceController.canReplace(searchResult);
             replaceButton.setEnabled(canReplace);
-            replaceAllButton.setEnabled(columnsToSearchComboBox.getSelectedIndex() > 0 ? canReplace :
-                true);//Disable replace all when the current search result cannot be replaced and
+            replaceAllButton.setEnabled(columnsToSearchComboBox.getSelectedIndex() <= 0 || canReplace);//Disable replace all when the current search result cannot be replaced and
         }
 
         if (regexPattern == null) {
@@ -622,6 +621,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
             nextResult();
         }
     }//GEN-LAST:event_searchTextKeyPressed
+
     public enum Mode {
 
         NODES_TABLE,

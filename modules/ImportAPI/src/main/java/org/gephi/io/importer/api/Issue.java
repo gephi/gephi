@@ -59,6 +59,7 @@ public final class Issue {
     private final Throwable throwable;
     private final String message;
     private final Level level;
+
     /**
      * Constructs a new issue with a throwable and a level.
      * <p>

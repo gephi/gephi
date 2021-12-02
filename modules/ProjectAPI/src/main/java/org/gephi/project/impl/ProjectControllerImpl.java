@@ -70,6 +70,7 @@ public class ProjectControllerImpl implements ProjectController {
     //Data
     private final ProjectsImpl projects = new ProjectsImpl();
     private final List<WorkspaceListener> listeners;
+
     public ProjectControllerImpl() {
 
         //Listeners

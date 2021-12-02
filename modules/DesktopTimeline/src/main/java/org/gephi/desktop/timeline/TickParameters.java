@@ -57,6 +57,7 @@ public class TickParameters {
     private int fontSize = 12;
     private final Font font = new Font("Helvetica", Font.PLAIN, fontSize);
     private double fontFactor = 6.;
+
     public TickParameters(TickType type) {
         this.type = type;
     }

@@ -76,8 +76,8 @@ import org.openide.util.NbBundle;
  */
 public class RendererManager extends javax.swing.JPanel implements PropertyChangeListener {
 
-    private ArrayList<RendererCheckBox> renderersList = new ArrayList<>();
-    private PreviewController previewController;
+    private final ArrayList<RendererCheckBox> renderersList = new ArrayList<>();
+    private final PreviewController previewController;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler fill;
     private javax.swing.Box.Filler glue;
@@ -348,7 +348,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
 
     class RendererCheckBox extends JCheckBox implements ActionListener {
 
-        private Renderer renderer;
+        private final Renderer renderer;
 
         public RendererCheckBox(Renderer renderer, boolean selected) {
             this.renderer = renderer;
@@ -374,8 +374,8 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
 
     class MoveRendererButton extends JButton implements ActionListener {
 
-        private int index;//Original index in renderers list
-        private boolean up;//Move up or move down
+        private final int index;//Original index in renderers list
+        private final boolean up;//Move up or move down
 
         public MoveRendererButton(int index, boolean up) {
             super(ImageUtilities

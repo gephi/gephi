@@ -235,8 +235,8 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
     private class CategoryToolbar extends AbstractToolbar {
 
         private final List<ButtonGroup> buttonGroups = new ArrayList<>();
-        private javax.swing.JLabel box;
-        private javax.swing.ButtonGroup elementGroup;
+        private final javax.swing.JLabel box;
+        private final javax.swing.ButtonGroup elementGroup;
 
         public CategoryToolbar() {
             //Init components

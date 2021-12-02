@@ -166,7 +166,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
                 matcher.appendReplacement(sb, replacement);
                 int replaceLong = sb.length();
                 matcher.appendTail(sb);
-                str = str.substring(0, result.getStart()) + sb.toString();
+                str = str.substring(0, result.getStart()) + sb;
 
                 result.getSearchOptions().setRegionStart(result.getStart() + replaceLong);
                 Lookup.getDefault().lookup(AttributeColumnsController.class).setAttributeValue(str, attributes, column);

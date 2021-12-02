@@ -70,14 +70,14 @@ public interface StatisticsController {
      * @throws IllegalArgumentException if <code>statistics</code> doesn't
      *                                  implement {@link LongTask}
      */
-    public void execute(Statistics statistics, LongTaskListener listener);
+    void execute(Statistics statistics, LongTaskListener listener);
 
     /**
      * Executes <code>statistics</code> in the current thread.
      *
      * @param statistics the statistics to execute
      */
-    public void execute(Statistics statistics);
+    void execute(Statistics statistics);
 
     /**
      * Finds the builder from the statistics class.
@@ -85,7 +85,7 @@ public interface StatisticsController {
      * @param statistics the statistics class
      * @return the builder, or <code>null</code> if not found
      */
-    public StatisticsBuilder getBuilder(Class<? extends Statistics> statistics);
+    StatisticsBuilder getBuilder(Class<? extends Statistics> statistics);
 
     /**
      * Returns the current <code>StatisticsModel</code>, from the current
@@ -93,7 +93,7 @@ public interface StatisticsController {
      *
      * @return the current <code>StatisticsModel</code>
      */
-    public StatisticsModel getModel();
+    StatisticsModel getModel();
 
     /**
      * Returns the <code>StatisticsModel</code> for <code>workspace</code>
@@ -102,5 +102,5 @@ public interface StatisticsController {
      * @return the <code>StatisticsModel</code> associated to
      * <code>workspace</code>
      */
-    public StatisticsModel getModel(Workspace workspace);
+    StatisticsModel getModel(Workspace workspace);
 }

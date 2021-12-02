@@ -61,7 +61,7 @@ public interface GeneratorController {
      *
      * @return generators array that are available
      */
-    public Generator[] getGenerators();
+    Generator[] getGenerators();
 
     /**
      * Execute a generator task in a background thread.
@@ -71,5 +71,5 @@ public interface GeneratorController {
      *
      * @param generator the generator that is to be executed
      */
-    public void generate(Generator generator);
+    void generate(Generator generator);
 }

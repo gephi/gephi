@@ -62,6 +62,7 @@ public class PageRankPanel extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXLabel jXLabel2;
     private javax.swing.JLabel labelE;
     private javax.swing.JLabel labelP;
+
     public PageRankPanel() {
         initComponents();
 

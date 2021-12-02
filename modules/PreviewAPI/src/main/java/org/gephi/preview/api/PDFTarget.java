@@ -64,13 +64,13 @@ import com.itextpdf.text.pdf.PdfContentByte;
  */
 public interface PDFTarget extends RenderTarget {
 
-    public static final String PDF_CONTENT_BYTE = "pdf.contentbyte";
-    public static final String MARGIN_LEFT = "pdf.margin.left";
-    public static final String MARGIN_TOP = "pdf.margin.top";
-    public static final String MARGIN_BOTTOM = "pfd.margin.bottom";
-    public static final String MARGIN_RIGHT = "pdf.margin.right";
-    public static final String LANDSCAPE = "pdf.landscape";
-    public static final String PAGESIZE = "pdf.pagesize";
+    String PDF_CONTENT_BYTE = "pdf.contentbyte";
+    String MARGIN_LEFT = "pdf.margin.left";
+    String MARGIN_TOP = "pdf.margin.top";
+    String MARGIN_BOTTOM = "pfd.margin.bottom";
+    String MARGIN_RIGHT = "pdf.margin.right";
+    String LANDSCAPE = "pdf.landscape";
+    String PAGESIZE = "pdf.pagesize";
 
     /**
      * Returns the <code>PDFContentBype</code> instance of the PDFTarget. PDFContentByte
@@ -78,7 +78,7 @@ public interface PDFTarget extends RenderTarget {
      *
      * @return a PDFContentBype object
      */
-    public PdfContentByte getContentByte();
+    PdfContentByte getContentByte();
 
     /**
      * Get a the equivalent in iText of the Java font. Base fonts are either
@@ -93,35 +93,35 @@ public interface PDFTarget extends RenderTarget {
      * @param font the reference Java font
      * @return the iText BaseFont, or Helvetica is not found
      */
-    public BaseFont getBaseFont(java.awt.Font font);
+    BaseFont getBaseFont(java.awt.Font font);
 
     /**
      * Returns the margin at the bottom of the page.
      *
      * @return the bottom margin, in pixels
      */
-    public float getMarginBottom();
+    float getMarginBottom();
 
     /**
      * Returns the margin at the left of the page.
      *
      * @return the left margin, in pixels
      */
-    public float getMarginLeft();
+    float getMarginLeft();
 
     /**
      * Returns the margin at the right of the page.
      *
      * @return the right margin, in pixels
      */
-    public float getMarginRight();
+    float getMarginRight();
 
     /**
      * Returns the margin at the top of the page.
      *
      * @return the top margin, in pixels
      */
-    public float getMarginTop();
+    float getMarginTop();
 
     /**
      * Returns whether the orientation is in landscape or portrait.
@@ -129,12 +129,12 @@ public interface PDFTarget extends RenderTarget {
      * @return <code>true</code> if the orientation is landscape, <code>false</code>
      * if portrait.
      */
-    public boolean isLandscape();
+    boolean isLandscape();
 
     /**
      * Returns the page's size.
      *
      * @return the page size
      */
-    public Rectangle getPageSize();
+    Rectangle getPageSize();
 }

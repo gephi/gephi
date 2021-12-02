@@ -135,7 +135,7 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public void rename(Query query, String name) {
-        ((AbstractQueryImpl) query).setName(name);
+        query.setName(name);
         fireChangeEvent();
     }
 
@@ -143,9 +143,7 @@ public class FilterModelImpl implements FilterModel {
         updateParameters(subQuery);
 
         //Clean
-        if (queries.contains(subQuery)) {
-            queries.remove(subQuery);
-        }
+        queries.remove(subQuery);
         if (subQuery.getParent() != null) {
             ((AbstractQueryImpl) subQuery.getParent()).removeSubQuery(subQuery);
         }
@@ -315,8 +313,8 @@ public class FilterModelImpl implements FilterModel {
             AbstractQueryImpl absQuery = (AbstractQueryImpl) query;
             for (Query q : absQuery.getDescendantsAndSelf()) {
                 if (q instanceof FilterQueryImpl) {
-                    Filter f = ((FilterQueryImpl) q).getFilter();
-                    FilterBuilder builder = ((FilterQueryImpl) q).getBuilder();
+                    Filter f = q.getFilter();
+                    FilterBuilder builder = q.getBuilder();
                     if (builder != null) {
                         builder.destroy(f);
                     }

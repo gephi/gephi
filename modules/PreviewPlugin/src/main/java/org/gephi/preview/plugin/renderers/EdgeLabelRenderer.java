@@ -67,14 +67,12 @@ import org.gephi.preview.api.Vector;
 import org.gephi.preview.plugin.builders.EdgeBuilder;
 import org.gephi.preview.plugin.builders.EdgeLabelBuilder;
 import org.gephi.preview.plugin.builders.NodeBuilder;
-import org.gephi.preview.plugin.items.EdgeItem;
 import org.gephi.preview.plugin.items.EdgeLabelItem;
 import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
-import org.gephi.preview.types.EdgeColor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
@@ -128,8 +126,8 @@ public class EdgeLabelRenderer implements Renderer {
             Edge edge = (Edge) item.getSource();
             Item edgeItem = previewModel.getItem(Item.EDGE, edge);
 
-            NodeItem sourceItem = (NodeItem) edgeItem.getData(EdgeRenderer.SOURCE);
-            NodeItem targetItem = (NodeItem) edgeItem.getData(EdgeRenderer.TARGET);
+            NodeItem sourceItem = edgeItem.getData(EdgeRenderer.SOURCE);
+            NodeItem targetItem = edgeItem.getData(EdgeRenderer.TARGET);
 
             item.setData(EDGE_COLOR, EdgeRenderer.getColor(edgeItem, properties));
             if (edge.isSelfLoop()) {

@@ -43,6 +43,7 @@ Portions Copyrighted 2016 Gephi Consortium.
 package org.gephi.ui.importer.plugin.spreadsheet.wizard;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import org.gephi.io.importer.plugin.file.spreadsheet.ImporterSpreadsheetCSV;
@@ -62,7 +63,7 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
 
     private final ImporterSpreadsheetCSV importer;
 
-    private WizardPanel1CSV wizard1;
+    private final WizardPanel1CSV wizard1;
     private ValidationPanel validationPanel;
 
     private boolean initialized = false;
@@ -134,7 +135,7 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
             charsetComboBox.setSelectedItem(selectedCharset.name());
         } else {
             charsetComboBox
-                .setSelectedItem(Charset.forName("UTF-8").name());//UTF-8 by default, not system default charset
+                .setSelectedItem(StandardCharsets.UTF_8.name());//UTF-8 by default, not system default charset
         }
 
         //File path:
@@ -416,7 +417,7 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
 
     class SeparatorWrapper {
 
-        private Character separator;
+        private final Character separator;
         private String displayText;
 
         public SeparatorWrapper(Character separator) {

@@ -78,9 +78,7 @@ public class AvailableColumnsModel {
      */
     public synchronized boolean addAvailableColumn(Column column) {
         if (canAddAvailableColumn()) {
-            if (!availableColumns.contains(column)) {
-                availableColumns.add(column);
-            }
+            availableColumns.add(column);
             return true;
         } else {
             return false;

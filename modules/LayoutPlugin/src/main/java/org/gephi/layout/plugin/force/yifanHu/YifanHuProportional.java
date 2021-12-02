@@ -57,7 +57,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = LayoutBuilder.class)
 public class YifanHuProportional implements LayoutBuilder {
 
-    private YifanHuProportionalLayoutUI ui = new YifanHuProportionalLayoutUI();
+    private final YifanHuProportionalLayoutUI ui = new YifanHuProportionalLayoutUI();
 
     @Override
     public YifanHuLayout buildLayout() {

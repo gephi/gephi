@@ -93,9 +93,9 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
 
     private final String NO_SELECTION = "---";
     //Component
-    private transient PropertySheet propertySheet;
-    private transient RendererManager rendererManager;
-    private transient JTabbedPane tabbedPane;
+    private final transient PropertySheet propertySheet;
+    private final transient RendererManager rendererManager;
+    private final transient JTabbedPane tabbedPane;
     //State
     private int defaultPresetLimit;
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -114,6 +114,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
     private javax.swing.JButton saveButton;
     private javax.swing.JToolBar southToolbar;
     private javax.swing.JButton svgExportButton;
+
     public PreviewSettingsTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(PreviewSettingsTopComponent.class, "CTL_PreviewSettingsTopComponent"));
@@ -151,7 +152,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         //Ratio
         ratioSlider.addChangeListener(new ChangeListener() {
 
-            NumberFormat formatter = NumberFormat.getPercentInstance();
+            final NumberFormat formatter = NumberFormat.getPercentInstance();
 
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -295,7 +296,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
      * @return the graph visibility ratio
      */
     public float getVisibilityRatio() {
-        float value = (Integer) ratioSlider.getValue();
+        float value = ratioSlider.getValue();
 
         if (value < 0) {
             value = 0;

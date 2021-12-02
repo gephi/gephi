@@ -10,32 +10,32 @@ import org.junit.Test;
 
 public class GEXFTest {
 
-  @Test
-  public void testBasicGraph() {
-    ImporterGEXF importer = new ImporterGEXF();
-    importer.setReader(Utils.getReader("basic.gexf"));
+    @Test
+    public void testBasicGraph() {
+        ImporterGEXF importer = new ImporterGEXF();
+        importer.setReader(Utils.getReader("basic.gexf"));
 
-    Container container = new ImportContainerImpl();
-    importer.execute(container.getLoader());
+        Container container = new ImportContainerImpl();
+        importer.execute(container.getLoader());
 
-    Assert.assertTrue(container.verify());
+        Assert.assertTrue(container.verify());
 
-    ContainerUnloader unloader = container.getUnloader();
-    NodeDraft[] nodes = Utils.toNodesArray(unloader);
-    EdgeDraft[] edges = Utils.toEdgesArray(unloader);
+        ContainerUnloader unloader = container.getUnloader();
+        NodeDraft[] nodes = Utils.toNodesArray(unloader);
+        EdgeDraft[] edges = Utils.toEdgesArray(unloader);
 
-    Utils.assertSameIds(nodes, "0", "1");
-    Utils.assertSameIds(edges, "0");
-  }
+        Utils.assertSameIds(nodes, "0", "1");
+        Utils.assertSameIds(edges, "0");
+    }
 
-  @Test
-  public void testZeroWeight() {
-    ImporterGEXF importer = new ImporterGEXF();
-    importer.setReader(Utils.getReader("zeroweight.gexf"));
+    @Test
+    public void testZeroWeight() {
+        ImporterGEXF importer = new ImporterGEXF();
+        importer.setReader(Utils.getReader("zeroweight.gexf"));
 
-    Container container = new ImportContainerImpl();
-    importer.execute(container.getLoader());
+        Container container = new ImportContainerImpl();
+        importer.execute(container.getLoader());
 
-    Assert.assertTrue(container.verify());
-  }
+        Assert.assertTrue(container.verify());
+    }
 }

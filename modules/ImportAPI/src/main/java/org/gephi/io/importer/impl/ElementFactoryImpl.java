@@ -61,7 +61,8 @@ public class ElementFactoryImpl implements ElementDraft.Factory {
 
     @Override
     public NodeDraftImpl newNodeDraft() {
-        return new NodeDraftImpl(container, String.valueOf(NODE_IDS.getAndIncrement()), nextSequentialNodeId.getAndIncrement());
+        return new NodeDraftImpl(container, String.valueOf(NODE_IDS.getAndIncrement()),
+            nextSequentialNodeId.getAndIncrement());
     }
 
     @Override

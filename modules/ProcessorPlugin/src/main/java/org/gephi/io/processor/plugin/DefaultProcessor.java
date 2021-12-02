@@ -394,10 +394,7 @@ public class DefaultProcessor extends AbstractProcessor {
             if (!Objects.equals(this.edgeWeightColumn, other.edgeWeightColumn)) {
                 return false;
             }
-            if (this.timeRepresentation != other.timeRepresentation) {
-                return false;
-            }
-            return true;
+            return this.timeRepresentation == other.timeRepresentation;
         }
 
         @Override

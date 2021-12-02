@@ -316,11 +316,7 @@ public class LayoutModelImpl implements LayoutModel {
                 return true;
             }
             LayoutPropertyKey s = (LayoutPropertyKey) obj;
-            if (s.layoutClassName.equals(layoutClassName) && s.name.equals(name)) {
-                return true;
-            }
-
-            return false;
+            return s.layoutClassName.equals(layoutClassName) && s.name.equals(name);
         }
 
         @Override

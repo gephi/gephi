@@ -71,7 +71,7 @@ public interface DynamicStatistics extends Statistics {
      * @param graphModel the graph model
      */
     @Override
-    public void execute(GraphModel graphModel);
+    void execute(GraphModel graphModel);
 
     /**
      * Iteration of the dynamic statistics algorithm on a new interval. The
@@ -80,26 +80,26 @@ public interface DynamicStatistics extends Statistics {
      * @param window   a snapshot of the graph at the current interval
      * @param interval the interval of the current snapshot
      */
-    public void loop(GraphView window, Interval interval);
+    void loop(GraphView window, Interval interval);
 
     /**
      * Called at the end of the process after all loops.
      */
-    public void end();
+    void end();
 
     /**
      * Returns the window duration
      *
      * @return the window duration
      */
-    public double getWindow();
+    double getWindow();
 
     /**
      * Sets the window duration
      *
      * @param window the window duration
      */
-    public void setWindow(double window);
+    void setWindow(double window);
 
     /**
      * Returns the tick. The tick is how much the window is moved to the right
@@ -107,7 +107,7 @@ public interface DynamicStatistics extends Statistics {
      *
      * @return the tick
      */
-    public double getTick();
+    double getTick();
 
     /**
      * Sets the tick. The tick is how much the window is moved to the right
@@ -115,19 +115,19 @@ public interface DynamicStatistics extends Statistics {
      *
      * @param tick the tick
      */
-    public void setTick(double tick);
+    void setTick(double tick);
 
     /**
      * Returns the min and max bounds.
      *
      * @return the bounds
      */
-    public Interval getBounds();
+    Interval getBounds();
 
     /**
      * Sets the minimum and maximum bound
      *
      * @param bounds the min and max bounds
      */
-    public void setBounds(Interval bounds);
+    void setBounds(Interval bounds);
 }

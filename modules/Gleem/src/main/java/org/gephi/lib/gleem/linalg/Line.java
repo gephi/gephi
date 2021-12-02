@@ -52,7 +52,7 @@ public class Line {
     /**
      * For computing projections along line
      */
-    private Vec3f alongVec;
+    private final Vec3f alongVec;
 
     /**
      * Default constructor initializes line to point (0, 0, 0) and

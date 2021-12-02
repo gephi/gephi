@@ -85,7 +85,7 @@ public class TimelineControllerImpl implements TimelineController {
     private GraphModel graphModel;
     private ScheduledExecutorService playExecutor;
     private FilterModel filterModel;
-    private FilterController filterController;
+    private final FilterController filterController;
 
     public TimelineControllerImpl() {
         listeners = new ArrayList<>();

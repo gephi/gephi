@@ -57,6 +57,7 @@ public class ModularityPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox randomizeCheckbox;
     private javax.swing.JTextField resolutionTextField;
     private javax.swing.JCheckBox useWeightCheckbox;
+
     public ModularityPanel() {
         initComponents();
     }

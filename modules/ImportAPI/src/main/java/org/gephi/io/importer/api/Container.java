@@ -68,7 +68,7 @@ public interface Container {
      * @return source of the data, or <code>null</code> if source is not
      * defined.
      */
-    public String getSource();
+    String getSource();
 
     /**
      * Sets the source of the data put in the container. Could be a file name.
@@ -76,7 +76,7 @@ public interface Container {
      * @param source original source of data.
      * @throws NullPointerException if <code>source</code> is <code>null</code>
      */
-    public void setSource(String source);
+    void setSource(String source);
 
     /**
      * Gets the container loading interface.
@@ -87,7 +87,7 @@ public interface Container {
      *
      * @return containers loading interface
      */
-    public ContainerLoader getLoader();
+    ContainerLoader getLoader();
 
     /**
      * Get the container unloading interface.
@@ -98,7 +98,7 @@ public interface Container {
      *
      * @return container unloading interface
      */
-    public ContainerUnloader getUnloader();
+    ContainerUnloader getUnloader();
 
     /**
      * Returns the report associated to this container, if it exists.
@@ -106,7 +106,7 @@ public interface Container {
      * @return report set for this container or <code>null</code> if no report
      * is defined
      */
-    public Report getReport();
+    Report getReport();
 
     /**
      * Sets a report this container can use to report issues detected when
@@ -119,7 +119,7 @@ public interface Container {
      *               container
      * @throws NullPointerException if <code>report</code> is <code>null</code>
      */
-    public void setReport(Report report);
+    void setReport(Report report);
 
     /**
      * This method must be called after the loading is complete and before
@@ -130,12 +130,12 @@ public interface Container {
      * @return <code>true</code> if container data is consistent,
      * <code>false</code> otherwise
      */
-    public boolean verify();
+    boolean verify();
 
     /**
      * Close the current loading and clean content before unloading.
      */
-    public void closeLoader();
+    void closeLoader();
 
     /**
      * Returns true if this container contains a dynamic graph.
@@ -144,7 +144,7 @@ public interface Container {
      *
      * @return true if dynamic, false otherwise
      */
-    public boolean isDynamicGraph();
+    boolean isDynamicGraph();
 
     /**
      * Returns true if this container contains elements that have dynamic
@@ -154,14 +154,14 @@ public interface Container {
      *
      * @return true if dynamic attributes, false otherwise
      */
-    public boolean hasDynamicAttributes();
+    boolean hasDynamicAttributes();
 
     /**
      * Returns true if edges in this container are self-loops.
      *
      * @return true if presence of self-loops, false otherwise
      */
-    public boolean hasSelfLoops();
+    boolean hasSelfLoops();
 
     /**
      * Returns true if this container contains a multigraph.
@@ -171,18 +171,18 @@ public interface Container {
      *
      * @return true if multigraph, false otherwise
      */
-    public boolean isMultiGraph();
+    boolean isMultiGraph();
 
     /**
      * Container factory.
      */
-    public interface Factory {
+    interface Factory {
 
         /**
          * Returns a newly created container instance.
          *
          * @return new container
          */
-        public Container newContainer();
+        Container newContainer();
     }
 }

@@ -57,7 +57,7 @@ public class UIExporterGraphML implements ExporterUI {
 
     private UIExporterGraphMLPanel panel;
     private ExporterGraphML exporterGraphML;
-    private ExporterGraphMLSettings settings = new ExporterGraphMLSettings();
+    private final ExporterGraphMLSettings settings = new ExporterGraphMLSettings();
 
     @Override
     public void setup(Exporter exporter) {
@@ -99,7 +99,7 @@ public class UIExporterGraphML implements ExporterUI {
         private boolean exportPosition = true;
         private boolean exportSize = true;
         private boolean exportAttributes = true;
-        private boolean exportHierarchy = false;
+        private final boolean exportHierarchy = false;
 
         private void save(ExporterGraphML exporterGraphML) {
             this.normalize = exporterGraphML.isNormalize();

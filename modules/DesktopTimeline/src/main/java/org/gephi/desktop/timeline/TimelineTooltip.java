@@ -72,7 +72,7 @@ public class TimelineTooltip {
     private String y;
     private Timer timer;
     private RichTooltip tooltip;
-    private Lock lock = new ReentrantLock();
+    private final Lock lock = new ReentrantLock();
 
     public void setModel(TimelineModel model) {
         this.model = model;

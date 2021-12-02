@@ -20,8 +20,8 @@ public class TimestampSetGraphicsComponentProvider extends AbstractTimeSetGraphi
 
         double[] timestamps = timestampSet.toPrimitiveArray();
 
-        double starts[] = new double[timestamps.length];
-        double ends[] = new double[timestamps.length];
+        double[] starts = new double[timestamps.length];
+        double[] ends = new double[timestamps.length];
         for (int i = 0; i < timestamps.length; i++) {
             starts[i] = timestamps[i];
             ends[i] = timestamps[i];

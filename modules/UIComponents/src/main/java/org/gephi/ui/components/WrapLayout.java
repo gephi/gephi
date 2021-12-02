@@ -182,10 +182,10 @@ public class WrapLayout extends FlowLayout {
             dim.width += horizontalInsetsAndGap;
             dim.height += insets.top + insets.bottom + vgap * 2;
 
-            //	When using a scroll pane or the DecoratedLookAndFeel we need to
-            //  make sure the preferred size is less than the size of the
-            //  target containter so shrinking the container size works
-            //  correctly. Removing the horizontal gap is an easy way to do this.
+            //When using a scroll pane or the DecoratedLookAndFeel we need to
+            //make sure the preferred size is less than the size of the
+            //target containter so shrinking the container size works
+            //correctly. Removing the horizontal gap is an easy way to do this.
 
             dim.width -= (hgap + 1);
 

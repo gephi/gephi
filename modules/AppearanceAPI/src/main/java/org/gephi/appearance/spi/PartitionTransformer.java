@@ -61,5 +61,5 @@ public interface PartitionTransformer<E extends Element> extends Transformer {
      * @param partition partition configuration
      * @param value     element's value for this partition
      */
-    public void transform(E element, Partition partition, Object value);
+    void transform(E element, Partition partition, Object value);
 }

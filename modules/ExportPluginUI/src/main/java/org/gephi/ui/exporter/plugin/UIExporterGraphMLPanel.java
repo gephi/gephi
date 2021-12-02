@@ -57,6 +57,7 @@ public class UIExporterGraphMLPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox normalizeCheckbox;
     private javax.swing.JCheckBox positionExportCheckbox;
     private javax.swing.JCheckBox sizeExportCheckbox;
+
     /**
      * Creates new form UIExporterGEXFPanel
      */

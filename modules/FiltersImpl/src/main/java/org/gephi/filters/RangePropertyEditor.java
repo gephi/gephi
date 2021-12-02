@@ -65,7 +65,7 @@ public class RangePropertyEditor extends PropertyEditorSupport {
     @Override
     public String getAsText() {
         if (range != null) {
-            return range.getRangeType().getSimpleName() + " - " + range.toString();
+            return range.getRangeType().getSimpleName() + " - " + range;
         } else {
             return "null";
         }

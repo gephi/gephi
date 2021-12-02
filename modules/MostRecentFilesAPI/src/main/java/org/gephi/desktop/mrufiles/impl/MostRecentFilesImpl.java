@@ -63,9 +63,9 @@ public class MostRecentFilesImpl implements MostRecentFiles {
     public static final String MRU_FILE_LIST_PROPERTY = "MRUFileList";
     protected static String DEFAULT_NODE_NAME = "prefs";
     protected String nodeName = null;
-    private EventListenerList listenerList;
-    private List<String> mruFileList;
-    private int maxSize;
+    private final EventListenerList listenerList;
+    private final List<String> mruFileList;
+    private final int maxSize;
 
     public MostRecentFilesImpl() {
         nodeName = "mrufiles";

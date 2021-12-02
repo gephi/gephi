@@ -171,7 +171,7 @@ public class ImporterDL implements FileImporter, LongTask {
 
     private void computeHeaders() {
         //read format
-        String form = (String) headerMap.get("format");
+        String form = headerMap.get("format");
         if (form == null) {
             report.logIssue(
                 new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_formatmissing"), Issue.Level.INFO));
@@ -186,7 +186,7 @@ public class ImporterDL implements FileImporter, LongTask {
 
         // read number of nodes
         try {
-            String nArg = (String) headerMap.get("n");
+            String nArg = headerMap.get("n");
             numNodes = Integer.parseInt(nArg);
         } catch (Exception e) {
             report.logIssue(
@@ -194,7 +194,7 @@ public class ImporterDL implements FileImporter, LongTask {
         }
 
         // read number matricies
-        String mats = (String) headerMap.get("nm");
+        String mats = headerMap.get("nm");
         if (mats != null) {
             try {
                 numMatricies = Integer.parseInt(mats);
@@ -260,7 +260,7 @@ public class ImporterDL implements FileImporter, LongTask {
         int to = 1;
         double weight = 0;
         while (rowkonizer.hasMoreTokens()) {
-            String toParse = (String) rowkonizer.nextToken();
+            String toParse = rowkonizer.nextToken();
             if (to > numNodes) {
                 report.logIssue(new Issue(NbBundle
                     .getMessage(ImporterDL.class, "importerDL_error_matrixentriescount", row, startTime,

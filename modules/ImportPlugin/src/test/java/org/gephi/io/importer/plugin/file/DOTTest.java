@@ -2,7 +2,6 @@ package org.gephi.io.importer.plugin.file;
 
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerUnloader;
-import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.impl.ImportContainerImpl;
 import org.junit.Assert;

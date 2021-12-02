@@ -204,9 +204,9 @@ public class StatisticsPanel extends JPanel {
 
     private static class UIFrontEnd {
 
-        private StatisticsUI statisticsUI;
-        private StatisticsFrontEnd frontEnd;
-        private StatisticsCategory category;
+        private final StatisticsUI statisticsUI;
+        private final StatisticsFrontEnd frontEnd;
+        private final StatisticsCategory category;
         private boolean visible;
 
         public UIFrontEnd(StatisticsUI statisticsUI, StatisticsFrontEnd frontEnd, StatisticsCategory category) {

@@ -79,6 +79,7 @@ final class DefaultPanel extends javax.swing.JPanel {
     private javax.swing.JButton resetButton;
     private org.jdesktop.swingx.JXTitledSeparator titleDesign;
     private org.jdesktop.swingx.JXTitledSeparator titleLabel;
+
     DefaultPanel(DefaultOptionsPanelController controller) {
         this.controller = controller;
         initComponents();

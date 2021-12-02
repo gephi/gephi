@@ -170,7 +170,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             }
         }
 
-        Element rows[] = getTableAttributeRows(table);
+        Element[] rows = getTableAttributeRows(table);
 
         Object[] oldValues = new Object[rows.length];
         for (int i = 0; i < rows.length; i++) {

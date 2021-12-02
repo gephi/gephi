@@ -210,8 +210,8 @@ public class ReportController {
         try {
             str = MessageFormat.format(
                 NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion"), // NOI18N
-                new Object[] {System.getProperty("netbeans.buildnumber")} // NOI18N
-            );
+                // NOI18N
+                System.getProperty("netbeans.buildnumber"));
             report.setVersion(str);
         } catch (MissingResourceException ex) {
         }
@@ -242,7 +242,7 @@ public class ReportController {
             String moduleStr = "";
             SpecificationVersion specVersion = m.getSpecificationVersion();
             if (specVersion != null) {
-                moduleStr = m.getCodeName() + " [" + specVersion.toString() + "]";
+                moduleStr = m.getCodeName() + " [" + specVersion + "]";
             } else {
                 moduleStr = m.getCodeName();
             }

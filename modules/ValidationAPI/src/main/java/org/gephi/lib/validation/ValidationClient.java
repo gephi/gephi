@@ -49,5 +49,5 @@ import org.netbeans.validation.api.ui.ValidationGroup;
  */
 public interface ValidationClient {
 
-    public void validate(ValidationGroup group);
+    void validate(ValidationGroup group);
 }

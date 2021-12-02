@@ -187,12 +187,8 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
                 if (selectedBuilder != null) {
                     selectedExporter = selectedBuilder.buildExporter();
                 }
-                if (selectedExporter != null &&
-                    exportController.getExportController().getUI(selectedExporter) != null) {
-                    optionsButton.setEnabled(true);
-                } else {
-                    optionsButton.setEnabled(false);
-                }
+                optionsButton.setEnabled(selectedExporter != null &&
+                    exportController.getExportController().getUI(selectedExporter) != null);
 
                 //Selected file extension change
                 if (selectedFile != null && fileFilter != null) {

@@ -65,5 +65,5 @@ public interface RankingTransformer<E extends Element> extends Transformer {
      * @param interpolator interpolator
      * @param value        element's value for this ranking
      */
-    public void transform(E element, Ranking ranking, Interpolator interpolator, Number value);
+    void transform(E element, Ranking ranking, Interpolator interpolator, Number value);
 }

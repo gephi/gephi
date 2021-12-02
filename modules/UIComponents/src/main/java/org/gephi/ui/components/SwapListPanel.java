@@ -58,6 +58,7 @@ public class SwapListPanel extends javax.swing.JPanel {
     private javax.swing.JButton rightButton;
     private javax.swing.JScrollPane scrollPane1;
     private javax.swing.JScrollPane scrollPane2;
+
     /**
      * Creates new form SwapListPanel
      */
@@ -86,7 +87,7 @@ public class SwapListPanel extends javax.swing.JPanel {
         setLayout(new java.awt.GridBagLayout());
 
         itemList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+            final String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
 
             @Override
             public int getSize() {
@@ -112,7 +113,7 @@ public class SwapListPanel extends javax.swing.JPanel {
         add(scrollPane1, gridBagConstraints);
 
         itemList2.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+            final String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
 
             @Override
             public int getSize() {

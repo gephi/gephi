@@ -125,11 +125,11 @@ public class SpreadsheetGeneralConfiguration {
 
         private final Set<String> specialColumnNames;
 
-        private Mode() {
+        Mode() {
             this.specialColumnNames = Collections.emptySet();
         }
 
-        private Mode(List<String> specialColumnNames) {
+        Mode(List<String> specialColumnNames) {
             this.specialColumnNames = Collections.unmodifiableSet(new HashSet<>(specialColumnNames));
         }
 

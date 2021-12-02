@@ -62,6 +62,7 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox simpleQuotesCheckbox;
     private javax.swing.JCheckBox visibilityCheckbox;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
+
     /**
      * Creates new form UIExporterGDFPanel
      */

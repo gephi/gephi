@@ -165,7 +165,7 @@ public class TimeIntervalGraphics {
      * @param background Background color
      * @return Generated image for the interval
      */
-    public BufferedImage createTimeIntervalImage(double starts[], double ends[], int width, int height, Color fill,
+    public BufferedImage createTimeIntervalImage(double[] starts, double[] ends, int width, int height, Color fill,
                                                  Color border, Color background) {
         if (starts.length != ends.length) {
             throw new IllegalArgumentException("start and ends length should be equal");

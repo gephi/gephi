@@ -429,7 +429,6 @@ public class ImporterDOT implements FileImporter, LongTask {
                 if (streamTokenizer.ttype == '=') {
                     streamTokenizer.nextToken();
                     if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
-                        ;
                     } else {
                         //System.err.println("couldn't find style at line " + streamTokenizer.lineno());
                         streamTokenizer.pushBack();

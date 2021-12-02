@@ -97,6 +97,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox showEdgeLabelsCheckbox;
     private javax.swing.JCheckBox showNodeLabelsCheckbox;
     private javax.swing.JComboBox sizeModeCombo;
+
     /**
      * Creates new form LabelSettingsPanel
      */

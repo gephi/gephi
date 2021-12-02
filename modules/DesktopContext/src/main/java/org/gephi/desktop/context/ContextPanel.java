@@ -185,6 +185,7 @@ public class ContextPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 7, 5, 5);
         add(graphTypeLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
+
     private enum GraphType {
 
         DIRECTED(NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphType.directed")),

@@ -55,14 +55,14 @@ public interface WorkspaceProvider {
      *
      * @return current workspace or null if missing
      */
-    public Workspace getCurrentWorkspace();
+    Workspace getCurrentWorkspace();
 
     /**
      * Returns true if the project has a current workspace.
      *
      * @return true if has a current workspace, false otherwise
      */
-    public boolean hasCurrentWorkspace();
+    boolean hasCurrentWorkspace();
 
     /**
      * Returns all the workspaces.
@@ -71,7 +71,7 @@ public interface WorkspaceProvider {
      *
      * @return an array of all workspaces
      */
-    public Workspace[] getWorkspaces();
+    Workspace[] getWorkspaces();
 
     /**
      * Retrieve a workspace based on its unique identifier.
@@ -79,5 +79,5 @@ public interface WorkspaceProvider {
      * @param id workspace's unique identifier
      * @return found workspace or null if not found
      */
-    public Workspace getWorkspace(int id);
+    Workspace getWorkspace(int id);
 }

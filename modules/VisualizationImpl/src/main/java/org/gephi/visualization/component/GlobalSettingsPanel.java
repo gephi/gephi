@@ -67,6 +67,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelZoom;
     private javax.swing.JPanel zoomPanel;
     private javax.swing.JSlider zoomSlider;
+
     /**
      * Creates new form GlobalSettingsPanel
      */

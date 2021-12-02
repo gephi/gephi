@@ -68,6 +68,7 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
     private javax.swing.JLabel labelTitle;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JTextField titleTextField;
+
     /**
      * Creates new form ProjectPropertiesEditor
      */

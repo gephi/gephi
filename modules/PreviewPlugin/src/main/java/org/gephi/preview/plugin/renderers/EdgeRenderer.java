@@ -112,11 +112,11 @@ public class EdgeRenderer implements Renderer {
         final Item sourceItem = item.getData(SOURCE);
         final Item targetItem = item.getData(TARGET);
         final EdgeColor edgeColor
-            = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
+            = properties.getValue(PreviewProperty.EDGE_COLOR);
         final Color color = edgeColor.getColor(
-            (Color) item.getData(EdgeItem.COLOR),
-            (Color) sourceItem.getData(NodeItem.COLOR),
-            (Color) targetItem.getData(NodeItem.COLOR));
+            item.getData(EdgeItem.COLOR),
+            sourceItem.getData(NodeItem.COLOR),
+            targetItem.getData(NodeItem.COLOR));
         return new Color(
             color.getRed(),
             color.getGreen(),
@@ -172,10 +172,10 @@ public class EdgeRenderer implements Renderer {
         for (Item edge : edgeItems) {
             minWeight = Math.min(
                 minWeight,
-                (Double) edge.getData(EdgeItem.WEIGHT));
+                edge.getData(EdgeItem.WEIGHT));
             maxWeight = Math.max(
                 maxWeight,
-                (Double) edge.getData(EdgeItem.WEIGHT));
+                edge.getData(EdgeItem.WEIGHT));
         }
         properties.putValue(EDGE_MIN_WEIGHT, minWeight);
         properties.putValue(EDGE_MAX_WEIGHT, maxWeight);
@@ -214,7 +214,7 @@ public class EdgeRenderer implements Renderer {
                 && !Double.isInfinite(maxWeight)
                 && !NumberUtils.equalsEpsilon(maxWeight, minWeight)) {
                 for (final Item item : edgeItems) {
-                    double weight = (Double) item.getData(EdgeItem.WEIGHT);
+                    double weight = item.getData(EdgeItem.WEIGHT);
                     weight = rescaledWeightsDiff * (weight - minWeight) / weightDiff + minRescaledWeight;
                     setEdgeWeight(weight, properties, item);
                 }
@@ -225,7 +225,7 @@ public class EdgeRenderer implements Renderer {
             }
         } else {
             for (final Item item : edgeItems) {
-                double weight = (Double) item.getData(EdgeItem.WEIGHT);
+                double weight = item.getData(EdgeItem.WEIGHT);
 
                 if (minWeight <= 0) {
                     //Avoid negative weight
@@ -243,11 +243,11 @@ public class EdgeRenderer implements Renderer {
                 final float edgeRadius
                     = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
 
-                boolean isDirected = (Boolean) item.getData(EdgeItem.DIRECTED);
+                boolean isDirected = item.getData(EdgeItem.DIRECTED);
                 if (isDirected
                     || edgeRadius > 0F) {
                     //Target
-                    final Item targetItem = (Item) item.getData(TARGET);
+                    final Item targetItem = item.getData(TARGET);
                     final Double weight = item.getData(EdgeItem.WEIGHT);
                     //Avoid negative arrow size:
                     float arrowSize = properties.getFloatValue(
@@ -266,7 +266,7 @@ public class EdgeRenderer implements Renderer {
                     item.setData(TARGET_RADIUS, targetRadius);
 
                     //Source
-                    final Item sourceItem = (Item) item.getData(SOURCE);
+                    final Item sourceItem = item.getData(SOURCE);
                     final float sourceRadius = -(edgeRadius
                         + (Float) sourceItem.getData(NodeItem.SIZE) / 2f
                         + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH) / 2f);

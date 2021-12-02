@@ -110,11 +110,7 @@ public class Control {
         }
         Logger.getLogger("").info("Real iterations " + realIterations);
 
-        if (realIterations > 0) {
-            realFixed = true;
-        } else {
-            realFixed = false;
-        }
+        realFixed = realIterations > 0;
 
         Progress.switchToDeterminate(progressTicket, totExpectedIterations);
     }
@@ -166,7 +162,7 @@ public class Control {
 
                 Logger.getLogger("").info(String.format(
                     "Liquid stage completed in %d seconds, total energy = %f",
-                    new Object[] {timeElapsed, totEnergy}));
+                    timeElapsed, totEnergy));
 
                 STAGE = 1;
                 startTime = System.currentTimeMillis() / 1000;
@@ -200,7 +196,7 @@ public class Control {
 
                 Logger.getLogger("").info(String.format(
                     "Expansion stage completed in %d seconds, total energy = %f",
-                    new Object[] {timeElapsed, totEnergy}));
+                    timeElapsed, totEnergy));
 
                 STAGE = 2;
                 minEdges = 12;
@@ -242,7 +238,7 @@ public class Control {
 
                 Logger.getLogger("").info(String.format(
                     "Cool-down stage completed in %d seconds, total energy = %f",
-                    new Object[] {timeElapsed, totEnergy}));
+                    timeElapsed, totEnergy));
 
                 STAGE = 3;
                 iterations = 0;
@@ -268,7 +264,7 @@ public class Control {
 
                 Logger.getLogger("").info(String.format(
                     "Crunch stage completed in %d seconds, total energy = %f",
-                    new Object[] {timeElapsed, totEnergy}));
+                    timeElapsed, totEnergy));
 
                 STAGE = 5;
                 startTime = System.currentTimeMillis() / 1000;
@@ -291,17 +287,15 @@ public class Control {
 
                 Logger.getLogger("").info(String.format(
                     "Simmer stage completed in %d seconds, total energy = %f",
-                    new Object[] {timeElapsed, totEnergy}));
+                    timeElapsed, totEnergy));
 
                 STAGE = 6;
 
                 Logger.getLogger("").info(String.format(
                     "Layout completed in %d seconds with %d iterations",
-                    new Object[] {totalTime, totIterations}));
+                    totalTime, totIterations));
             }
-        } else if (STAGE == 6) {
-            return false;
-        }
+        } else return STAGE != 6;
 
         return true;
     }

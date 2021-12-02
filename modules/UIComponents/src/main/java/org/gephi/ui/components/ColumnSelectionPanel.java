@@ -59,7 +59,7 @@ import javax.swing.JPopupMenu;
 //Inspired by org.netbeans.swing.etable
 public class ColumnSelectionPanel extends JPanel {
 
-    private Map<ColumnSelectionModel, JCheckBox> checkBoxes;
+    private final Map<ColumnSelectionModel, JCheckBox> checkBoxes;
 
     public ColumnSelectionPanel(ColumnSelectionModel[] columns) {
         checkBoxes = new HashMap<>();
@@ -134,14 +134,14 @@ public class ColumnSelectionPanel extends JPanel {
         }
     }
 
-    public static interface ColumnSelectionModel {
+    public interface ColumnSelectionModel {
 
-        public boolean isEnabled();
+        boolean isEnabled();
 
-        public boolean isSelected();
+        boolean isSelected();
 
-        public void setSelected(boolean selected);
+        void setSelected(boolean selected);
 
-        public String getName();
+        String getName();
     }
 }

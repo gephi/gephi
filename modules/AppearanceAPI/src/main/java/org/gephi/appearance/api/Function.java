@@ -63,7 +63,7 @@ public interface Function {
      * @param element element to transform
      * @param graph   the graph this element belongs to
      */
-    public void transform(Element element, Graph graph);
+    void transform(Element element, Graph graph);
 
     /**
      * Returns the transformer associated with this function.
@@ -71,14 +71,14 @@ public interface Function {
      * @param <T> transformer class
      * @return transformer
      */
-    public <T extends Transformer> T getTransformer();
+    <T extends Transformer> T getTransformer();
 
     /**
      * Returns the transformer user interface associated with this function.
      *
      * @return transformer UI or null if not found
      */
-    public TransformerUI getUI();
+    TransformerUI getUI();
 
     /**
      * Returns true if this function is a simple function.
@@ -87,7 +87,7 @@ public interface Function {
      *
      * @return true if partition, false otherwise
      */
-    public boolean isSimple();
+    boolean isSimple();
 
     /**
      * Returns true if this function is based on attribute column.
@@ -96,7 +96,7 @@ public interface Function {
      *
      * @return true if attribute, false otherwise
      */
-    public boolean isAttribute();
+    boolean isAttribute();
 
     /**
      * Returns true if this function is a ranking function.
@@ -105,7 +105,7 @@ public interface Function {
      *
      * @return true if ranking, false otherwise
      */
-    public boolean isRanking();
+    boolean isRanking();
 
     /**
      * Returns true if this function is a partition function.
@@ -114,19 +114,19 @@ public interface Function {
      *
      * @return true if partition, false otherwise
      */
-    public boolean isPartition();
+    boolean isPartition();
 
     /**
      * Returns the graph this function is based on.
      *
      * @return graph
      */
-    public Graph getGraph();
+    Graph getGraph();
 
     /**
      * Returns the element class this function will be applied to.
      *
      * @return element class
      */
-    public Class<? extends Element> getElementClass();
+    Class<? extends Element> getElementClass();
 }

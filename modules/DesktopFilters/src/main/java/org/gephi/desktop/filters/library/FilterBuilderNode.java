@@ -59,8 +59,8 @@ import org.openide.util.ImageUtilities;
 public class FilterBuilderNode extends AbstractNode {
 
     public static final DataFlavor DATA_FLAVOR = new DataFlavor(FilterBuilder.class, "filterbuilder");
-    private FilterBuilder filterBuilder;
-    private FilterTransferable transferable;
+    private final FilterBuilder filterBuilder;
+    private final FilterTransferable transferable;
 
     public FilterBuilderNode(FilterBuilder filterBuilder) {
         super(Children.LEAF);

@@ -55,19 +55,19 @@ import org.openide.filesystems.FileObject;
  */
 public interface ImportControllerUI {
 
-    public void importFile(FileObject fileObject);
+    void importFile(FileObject fileObject);
 
-    public void importFiles(FileObject[] fileObjects);
+    void importFiles(FileObject[] fileObjects);
 
-    public void importStream(InputStream stream, String importerName);
+    void importStream(InputStream stream, String importerName);
 
-    public void importFile(Reader reader, String importerName);
+    void importFile(Reader reader, String importerName);
 
-    public void importDatabase(Database database, DatabaseImporter importer);
+    void importDatabase(Database database, DatabaseImporter importer);
 
-    public void importDatabase(DatabaseImporter importer);
+    void importDatabase(DatabaseImporter importer);
 
-    public void importWizard(WizardImporter importer);
+    void importWizard(WizardImporter importer);
 
-    public ImportController getImportController();
+    ImportController getImportController();
 }

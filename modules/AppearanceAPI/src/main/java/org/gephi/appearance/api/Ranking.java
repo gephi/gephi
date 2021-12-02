@@ -58,14 +58,14 @@ public interface Ranking {
      *
      * @return minimum value
      */
-    public Number getMinValue();
+    Number getMinValue();
 
     /**
      * Returns the maximum value in this ranking.
      *
      * @return maximum value
      */
-    public Number getMaxValue();
+    Number getMaxValue();
 
     /**
      * Returns the element's value for this ranking.
@@ -74,7 +74,7 @@ public interface Ranking {
      * @param graph   graph this element belongs to
      * @return the value for this ranking
      */
-    public Number getValue(Element element, Graph graph);
+    Number getValue(Element element, Graph graph);
 
     /**
      * Normalizes the given value with the interpolator.
@@ -86,5 +86,5 @@ public interface Ranking {
      * @param interpolator interpolator
      * @return normalized value
      */
-    public float normalize(Number value, Interpolator interpolator);
+    float normalize(Number value, Interpolator interpolator);
 }

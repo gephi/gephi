@@ -184,16 +184,16 @@ public final class LanguageAction extends CallableSystemAction {
         RU_RU("ru", "Русский"),
         ZH_CN("zh", "CN", "中文"),
         JA_JA("ja", "日本語");
-        private String language;
+        private final String language;
         private String country = null;
-        private String name;
+        private final String name;
 
-        private Language(String locale, String name) {
+        Language(String locale, String name) {
             this.language = locale;
             this.name = name;
         }
 
-        private Language(String language, String country, String name) {
+        Language(String language, String country, String name) {
             this.language = language;
             this.name = name;
             this.country = country;

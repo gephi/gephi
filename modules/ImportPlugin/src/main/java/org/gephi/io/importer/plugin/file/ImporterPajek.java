@@ -284,10 +284,7 @@ public class ImporterPajek implements FileImporter, LongTask {
             return nextLine;
         }
 
-        boolean is_list = false;
-        if (nextLine.toLowerCase().endsWith("list")) {
-            is_list = true;
-        }
+        boolean is_list = nextLine.toLowerCase().endsWith("list");
 
         while (br.ready()) {
             if (cancel) {

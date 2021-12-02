@@ -47,6 +47,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -223,7 +224,7 @@ public class LoadTask implements LongTask, Runnable {
                                            Location location) throws XMLStreamException {
                         }
                     });
-                    isReader = new InputStreamReader(is, "UTF-8");
+                    isReader = new InputStreamReader(is, StandardCharsets.UTF_8);
                     filterReader = new Xml10FilterReader(isReader);
                     reader = inputFactory.createXMLStreamReader(filterReader);
 
@@ -271,7 +272,7 @@ public class LoadTask implements LongTask, Runnable {
                                            Location location) throws XMLStreamException {
                         }
                     });
-                    isReader = new InputStreamReader(is, "UTF-8");
+                    isReader = new InputStreamReader(is, StandardCharsets.UTF_8);
                     filterReader = new Xml10FilterReader(isReader);
                     reader = inputFactory.createXMLStreamReader(filterReader);
 
@@ -319,7 +320,7 @@ public class LoadTask implements LongTask, Runnable {
                                            Location location) throws XMLStreamException {
                         }
                     });
-                    isReader = new InputStreamReader(is, "UTF-8");
+                    isReader = new InputStreamReader(is, StandardCharsets.UTF_8);
                     filterReader = new Xml10FilterReader(isReader);
                     reader = inputFactory.createXMLStreamReader(filterReader);
 

@@ -95,8 +95,8 @@ public class RangePanel extends javax.swing.JPanel {
                             try {
                                 if (evt.getPropertyName().equals(JRangeSliderPanel.LOWER_BOUND)) {
                                     Range oldRange = (Range) filter.getRangeProperty().getValue();
-                                    final Range newRange = new Range((Number) rangeSlider.getRange().getLowerBound(),
-                                        (Number) rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(),
+                                    final Range newRange = new Range(rangeSlider.getRange().getLowerBound(),
+                                        rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(),
                                         oldRange.getMaximum(), oldRange.getValues());
                                     if (!oldRange.equals(newRange)) {
                                         filter.getRangeProperty().setValue(newRange);
@@ -110,8 +110,8 @@ public class RangePanel extends javax.swing.JPanel {
                                     }
                                 } else if (evt.getPropertyName().equals(JRangeSliderPanel.UPPER_BOUND)) {
                                     final Range oldRange = (Range) filter.getRangeProperty().getValue();
-                                    final Range newRange = new Range((Number) rangeSlider.getRange().getLowerBound(),
-                                        (Number) rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(),
+                                    final Range newRange = new Range(rangeSlider.getRange().getLowerBound(),
+                                        rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(),
                                         oldRange.getMaximum(), oldRange.getValues());
                                     if (!oldRange.equals(newRange)) {
                                         filter.getRangeProperty().setValue(newRange);
@@ -179,17 +179,17 @@ public class RangePanel extends javax.swing.JPanel {
         double rangeLowerBound = 0.0;
         double rangeUpperBound = 0.0;
         if (range.getRangeType().equals(Integer.class)) {
-            rangeLowerBound = ((Integer) range.getLowerBound()).doubleValue();
-            rangeUpperBound = ((Integer) range.getUpperBound()).doubleValue();
+            rangeLowerBound = range.getLowerBound().doubleValue();
+            rangeUpperBound = range.getUpperBound().doubleValue();
         } else if (range.getRangeType().equals(Float.class)) {
-            rangeLowerBound = ((Float) range.getLowerBound()).doubleValue();
-            rangeUpperBound = ((Float) range.getUpperBound()).doubleValue();
+            rangeLowerBound = range.getLowerBound().doubleValue();
+            rangeUpperBound = range.getUpperBound().doubleValue();
         } else if (range.getRangeType().equals(Double.class)) {
             rangeLowerBound = ((Double) range.getLowerBound());
             rangeUpperBound = ((Double) range.getUpperBound());
         } else if (range.getRangeType().equals(Long.class)) {
-            rangeLowerBound = ((Long) range.getLowerBound()).doubleValue();
-            rangeUpperBound = ((Long) range.getUpperBound()).doubleValue();
+            rangeLowerBound = range.getLowerBound().doubleValue();
+            rangeUpperBound = range.getUpperBound().doubleValue();
         }
         histogram.setLowerBound(rangeLowerBound);
         histogram.setUpperBound(rangeUpperBound);

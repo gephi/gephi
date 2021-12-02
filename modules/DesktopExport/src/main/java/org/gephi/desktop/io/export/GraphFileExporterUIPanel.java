@@ -54,6 +54,7 @@ public class GraphFileExporterUIPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelGraph;
     private javax.swing.JLabel labelVisibleOnly;
     private javax.swing.JRadioButton visibleOnlyRadio;
+
     /**
      * Creates new form GraphFileExporterUIPanel
      */

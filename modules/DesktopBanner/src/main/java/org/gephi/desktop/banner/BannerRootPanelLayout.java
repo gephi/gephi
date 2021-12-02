@@ -55,7 +55,7 @@ import javax.swing.JRootPane;
 //Author Chris from pinkmatter - RibbonRootPaneLayout
 class BannerRootPanelLayout implements LayoutManager2 {
 
-    private JComponent _toolbar;
+    private final JComponent _toolbar;
 
     public BannerRootPanelLayout(JComponent toolbar) {
         _toolbar = toolbar;

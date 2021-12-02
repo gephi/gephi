@@ -125,6 +125,7 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
         setFont(UIManager.getFont("Label.font")); //NOI18N
         addMouseListener(this);
     }
+
     public JHTMLEditorPane(String text) {
         this();
         setText(text);
@@ -337,16 +338,16 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
                 i1 = str.indexOf("&", i2); //NOI18N
 
                 if (i1 == -1) {
-                    ostr.append(str.substring(i2, str.length()));
+                    ostr.append(str.substring(i2));
 
                     break;
                 }
 
-                ostr.append(str.substring(i2, i1));
+                ostr.append(str, i2, i1);
                 i2 = str.indexOf(";", i1); //NOI18N
 
                 if (i2 == -1) {
-                    ostr.append(str.substring(i1, str.length()));
+                    ostr.append(str.substring(i1));
 
                     break;
                 }
@@ -366,7 +367,7 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
 
                             if (tok.trim().charAt(0) == 'x') { //NOI18N
                                 radix = 16;
-                                tok = tok.substring(1, tok.length());
+                                tok = tok.substring(1);
                             }
 
                             ostr.append((char) Integer.parseInt(tok, radix));

@@ -74,7 +74,7 @@ import org.openide.util.NbBundle;
  */
 public class PreviewNode extends AbstractNode implements PropertyChangeListener {
 
-    private PropertySheet propertySheet;
+    private final PropertySheet propertySheet;
 
     public PreviewNode(PropertySheet propertySheet) {
         super(Children.LEAF);

@@ -148,8 +148,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     private boolean useSparklines = false;
     private boolean timeIntervalGraphics = false;
     private boolean showEdgesNodesLabels = false;
-    private Map<Integer, ContextMenuItemManipulator> nodesActionMappings = new HashMap<>();//For key bindings
-    private Map<Integer, ContextMenuItemManipulator> edgesActionMappings = new HashMap<>();//For key bindings
+    private final Map<Integer, ContextMenuItemManipulator> nodesActionMappings = new HashMap<>();//For key bindings
+    private final Map<Integer, ContextMenuItemManipulator> edgesActionMappings = new HashMap<>();//For key bindings
     private volatile GraphModel graphModel;
     private volatile DataTablesModel dataTablesModel;
     private volatile AvailableColumnsModel nodeAvailableColumnsModel;
@@ -160,16 +160,16 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     //Timer for the observers:
     private java.util.Timer observersTimer;
     //Table
-    private NodesDataTable nodeTable;
-    private EdgesDataTable edgeTable;
+    private final NodesDataTable nodeTable;
+    private final EdgesDataTable edgeTable;
     //General actions buttons
-    private ArrayList<JComponent> generalActionsButtons = new ArrayList<>();
+    private final ArrayList<JComponent> generalActionsButtons = new ArrayList<>();
     //States
     private DisplayTable displayTable = DisplayTable.NODE;//Display nodes by default at first.
     private ArrayList previousNodeFilterColumns = new ArrayList();
     private ArrayList previousEdgeFilterColumns = new ArrayList();
-    private Map<DisplayTable, String> filterTextByDisplayTable = new EnumMap<>(DisplayTable.class);
-    private Map<DisplayTable, Integer> filterColumnIndexByDisplayTable = new EnumMap<>(DisplayTable.class);
+    private final Map<DisplayTable, String> filterTextByDisplayTable = new EnumMap<>(DisplayTable.class);
+    private final Map<DisplayTable, Integer> filterColumnIndexByDisplayTable = new EnumMap<>(DisplayTable.class);
     //Refresh executor
     private RefreshOnceHelperThread refreshOnceHelperThread;
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1565,7 +1565,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
         private static final int CHECK_TIME_INTERVAL = 100;//100 ms.
         private volatile boolean moreEvents = false;
-        private boolean refreshTableOnly;
+        private final boolean refreshTableOnly;
 
         public RefreshOnceHelperThread() {
             refreshTableOnly = false;

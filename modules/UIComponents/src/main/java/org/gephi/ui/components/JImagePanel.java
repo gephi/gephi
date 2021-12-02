@@ -57,7 +57,7 @@ import javax.swing.SwingConstants;
 public class JImagePanel extends JPanel {
     //~ Static fields/initializers -----------------------------------------------------------------------------------------------
 
-    private static MediaTracker mTracker = new MediaTracker(new JPanel());
+    private static final MediaTracker mTracker = new MediaTracker(new JPanel());
 
     //~ Instance fields ----------------------------------------------------------------------------------------------------------
     private Image image;

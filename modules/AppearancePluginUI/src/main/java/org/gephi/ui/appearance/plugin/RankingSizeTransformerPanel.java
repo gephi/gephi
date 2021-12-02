@@ -59,12 +59,13 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelMinSize;
     private javax.swing.JSpinner maxSize;
     private javax.swing.JSpinner minSize;
+
     public RankingSizeTransformerPanel() {
         initComponents();
     }
 
     public void setup(RankingFunction function) {
-        sizeTransformer = (RankingNodeSizeTransformer) function.getTransformer();
+        sizeTransformer = function.getTransformer();
 
         final String MIN_SIZE = "RankingSizeTransformerPanel_" + sizeTransformer.getClass().getSimpleName() + "_min";
         final String MAX_SIZE = "RankingSizeTransformerPanel_" + sizeTransformer.getClass().getSimpleName() + "_max";

@@ -54,5 +54,5 @@ import org.gephi.project.api.Workspace;
  */
 public interface WorkspaceDuplicateProvider {
 
-    public void duplicate(Workspace source, Workspace destination);
+    void duplicate(Workspace source, Workspace destination);
 }

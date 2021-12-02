@@ -49,5 +49,5 @@ import javax.swing.JPanel;
  */
 public interface EgoUI {
 
-    public JPanel getPanel(EgoBuilder.EgoFilter egoFilter);
+    JPanel getPanel(EgoBuilder.EgoFilter egoFilter);
 }

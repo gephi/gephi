@@ -217,7 +217,7 @@ public class PreviewProperties {
      * @return the property's value or <code>""</code> if not found
      */
     public String getStringValue(String property) {
-        return getValue(property, "").toString();
+        return getValue(property, "");
     }
 
     /**
@@ -264,7 +264,7 @@ public class PreviewProperties {
     public <T> T getValue(String property) {
         PreviewProperty p = getProperty(property);
         if (p != null && p.getValue() != null) {
-            T value = (T) p.getValue();
+            T value = p.getValue();
             return value;
         } else if (simpleValues.containsKey(property)) {
             return (T) simpleValues.get(property);
@@ -284,7 +284,7 @@ public class PreviewProperties {
     public <T> T getValue(String property, T defaultValue) {
         PreviewProperty p = getProperty(property);
         if (p != null && p.getValue() != null) {
-            T value = (T) p.getValue();
+            T value = p.getValue();
             return value;
         } else if (simpleValues.containsKey(property)) {
             return (T) simpleValues.get(property);
@@ -303,7 +303,7 @@ public class PreviewProperties {
     public Number getNumberValue(String property, Number defaultValue) {
         PreviewProperty p = getProperty(property);
         if (p != null && p.getValue() != null && p.getValue() instanceof Number) {
-            Number value = (Number) p.getValue();
+            Number value = p.getValue();
             return value;
         } else if (simpleValues.containsKey(property) && simpleValues.get(property) instanceof Number) {
             return (Number) simpleValues.get(property);

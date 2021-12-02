@@ -49,5 +49,5 @@ import javax.swing.JPanel;
  */
 public interface EdgeTypeUI {
 
-    public JPanel getPanel(EdgeTypeBuilder.EdgeTypeFilter filter);
+    JPanel getPanel(EdgeTypeBuilder.EdgeTypeFilter filter);
 }

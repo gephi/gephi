@@ -234,13 +234,13 @@ public class AutoLayout {
         LINEAR, LOG
     }
 
-    public static interface DynamicProperty {
+    public interface DynamicProperty {
 
-        public Object getValue(float ratio);
+        Object getValue(float ratio);
 
-        public Property getProperty();
+        Property getProperty();
 
-        public String getCanonicalName();
+        String getCanonicalName();
     }
 
     private static abstract class AbstractDynamicProperty implements DynamicProperty {

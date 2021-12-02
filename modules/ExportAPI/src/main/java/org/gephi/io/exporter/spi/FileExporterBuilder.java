@@ -56,5 +56,5 @@ public interface FileExporterBuilder extends ExporterBuilder {
      *
      * @return an array of file types this exporter can read
      */
-    public FileType[] getFileTypes();
+    FileType[] getFileTypes();
 }

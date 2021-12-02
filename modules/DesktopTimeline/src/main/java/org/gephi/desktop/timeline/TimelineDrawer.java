@@ -301,18 +301,18 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
      * @return LOC_RESIZE_*
      */
     private int inPosition(int x, int r, int sf, int st) {
-        boolean resizeFrom = inRange(x, (int) sf - 1, (int) sf + r + 1);
-        boolean resizeTo = inRange(x, (int) st - r - 1, (int) st + 1);
+        boolean resizeFrom = inRange(x, sf - 1, sf + r + 1);
+        boolean resizeTo = inRange(x, st - r - 1, st + 1);
         if (resizeFrom && resizeTo) {
-            if (inRange(x, (int) sf - 1, (int) (sf + st) / 2)) {
+            if (inRange(x, sf - 1, (sf + st) / 2)) {
                 return LOC_RESIZE_FROM;
-            } else if (inRange(x, (int) (sf + st) / 2, (int) st + 1)) {
+            } else if (inRange(x, (sf + st) / 2, st + 1)) {
                 return LOC_RESIZE_TO;
             }
         }
         if (resizeFrom) {
             return LOC_RESIZE_FROM;
-        } else if (inRange(x, (int) sf + r, (int) st - r)) {
+        } else if (inRange(x, sf + r, st - r)) {
             return LOC_RESIZE_CENTER;
         } else if (resizeTo) {
             return LOC_RESIZE_TO;

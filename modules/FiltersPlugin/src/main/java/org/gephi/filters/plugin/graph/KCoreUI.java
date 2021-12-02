@@ -49,5 +49,5 @@ import javax.swing.JPanel;
  */
 public interface KCoreUI {
 
-    public JPanel getPanel(KCoreBuilder.KCoreFilter filter);
+    JPanel getPanel(KCoreBuilder.KCoreFilter filter);
 }

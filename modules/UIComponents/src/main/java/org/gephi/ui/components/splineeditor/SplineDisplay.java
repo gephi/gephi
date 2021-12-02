@@ -73,7 +73,7 @@ public class SplineDisplay extends EquationDisplay {
     private Point2D selected = null;
     private Point dragStart = null;
     private boolean isSaving = false;
-    private PropertyChangeSupport support;
+    private final PropertyChangeSupport support;
 
     SplineDisplay() {
         super(0.0, 0.0,

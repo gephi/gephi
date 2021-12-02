@@ -300,7 +300,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
         @Override
         public void focusLost(FocusEvent e) {
             Component c = (Component) e.getSource();
-            if (getProperty(slider, "MultiThumbSlider.indicateComponent", "true").toString().equals("true")) {
+            if (getProperty(slider, "MultiThumbSlider.indicateComponent", "true").equals("true")) {
                 slider.setSelectedThumb(-1);
             }
             updateIndication();
@@ -347,6 +347,7 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
     private boolean mouseIsDown = false;
     private State pressedState;
     private int dx, dy;
+
     public MultiThumbSliderUI(MultiThumbSlider slider) {
         this.slider = slider;
     }

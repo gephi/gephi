@@ -50,5 +50,5 @@ import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder.DynamicRangeFilter;
  */
 public interface DynamicRangeUI {
 
-    public JPanel getPanel(DynamicRangeFilter filter);
+    JPanel getPanel(DynamicRangeFilter filter);
 }

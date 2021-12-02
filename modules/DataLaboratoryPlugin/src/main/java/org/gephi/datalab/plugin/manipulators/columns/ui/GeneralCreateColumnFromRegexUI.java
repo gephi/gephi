@@ -264,6 +264,7 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
     public enum Mode {
 
         BOOLEAN,

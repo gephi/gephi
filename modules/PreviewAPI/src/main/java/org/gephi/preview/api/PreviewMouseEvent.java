@@ -62,6 +62,7 @@ public class PreviewMouseEvent {
      */
     public final KeyEvent keyEvent;
     private boolean consumed;
+
     public PreviewMouseEvent(int x, int y, Type type, Button button, KeyEvent keyEvent) {
         this.x = x;
         this.y = y;

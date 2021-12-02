@@ -58,9 +58,11 @@ import javax.swing.JComponent;
  */
 public class SparklineComponent extends JComponent {
 
-    private Number[] xValues, yValues;
-    private Number yMinValue, yMaxValue;
-    private SparklineParameters sparklineParameters;
+    private final Number[] xValues;
+    private final Number[] yValues;
+    private final Number yMinValue;
+    private final Number yMaxValue;
+    private final SparklineParameters sparklineParameters;
 
     public SparklineComponent(Number[] yValues, SparklineParameters sparklineParameters, boolean updateMouseXPosition) {
         this(null, yValues, null, null, sparklineParameters, updateMouseXPosition);

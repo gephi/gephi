@@ -473,11 +473,7 @@ public class ForceAtlas2 implements Layout {
 
         // Performance
         setJitterTolerance(1d);
-        if (nodesCount >= 1000) {
-            setBarnesHutOptimize(true);
-        } else {
-            setBarnesHutOptimize(false);
-        }
+        setBarnesHutOptimize(nodesCount >= 1000);
         setBarnesHutTheta(1.2);
         setThreadsCount(Math.max(1, Runtime.getRuntime().availableProcessors() - 1));
     }

@@ -345,7 +345,7 @@ public final class Report {
         @Override
         public ReportEntry next() {
             if (pointer.startsWith(";")) {
-                return new ReportEntry(pointer.substring(1, pointer.length()));
+                return new ReportEntry(pointer.substring(1));
             } else {
                 int index = pointer.indexOf(";");
                 if (index == -1) {

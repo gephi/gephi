@@ -201,9 +201,6 @@ public class AttributePartitionImpl extends PartitionImpl {
             return false;
         }
         final AttributePartitionImpl other = (AttributePartitionImpl) obj;
-        if (this.column != other.column && (this.column == null || !this.column.equals(other.column))) {
-            return false;
-        }
-        return true;
+        return this.column == other.column || (this.column != null && this.column.equals(other.column));
     }
 }

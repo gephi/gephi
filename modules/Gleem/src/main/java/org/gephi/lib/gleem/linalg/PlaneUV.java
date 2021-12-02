@@ -47,13 +47,13 @@ package org.gephi.lib.gleem.linalg;
  */
 
 public class PlaneUV {
-    private Vec3f origin = new Vec3f();
+    private final Vec3f origin = new Vec3f();
     /**
      * Normalized
      */
-    private Vec3f normal = new Vec3f();
-    private Vec3f uAxis = new Vec3f();
-    private Vec3f vAxis = new Vec3f();
+    private final Vec3f normal = new Vec3f();
+    private final Vec3f uAxis = new Vec3f();
+    private final Vec3f vAxis = new Vec3f();
 
     /**
      * Default constructor initializes normal to (0, 1, 0), origin to

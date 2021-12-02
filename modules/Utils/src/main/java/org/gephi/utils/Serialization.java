@@ -213,7 +213,7 @@ public class Serialization {
             return valueStr;
         } else if (valueClass.equals(Font.class)) {
             try {
-                String parts[] = valueStr.split("-");
+                String[] parts = valueStr.split("-");
                 return new Font(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));//bug 551877
             } catch (Exception e) {
                 return null;

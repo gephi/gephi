@@ -78,6 +78,7 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelComment;
     private javax.swing.JToggleButton nodesToggleButton;
     private javax.swing.JCheckBox showPropertiesCheckbox;
+
     /**
      * Creates new form LabelAttributesPanel
      */

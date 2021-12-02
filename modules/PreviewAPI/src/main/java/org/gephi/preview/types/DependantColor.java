@@ -53,6 +53,7 @@ public final class DependantColor {
 
     private final Color customColor;
     private final Mode mode;
+
     public DependantColor() {
         customColor = null;
         this.mode = Mode.PARENT;

@@ -87,8 +87,8 @@ public class DecoratedIcon implements Icon {
         return orig.getIconHeight();
     }
 
-    public static interface DecorationController {
+    public interface DecorationController {
 
-        public boolean isDecorated();
+        boolean isDecorated();
     }
 }

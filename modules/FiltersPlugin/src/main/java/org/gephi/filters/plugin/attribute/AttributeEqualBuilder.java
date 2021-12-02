@@ -256,13 +256,9 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         @Override
         public boolean init(Graph graph) {
             if (AttributeUtils.isNodeColumn(column)) {
-                if (graph.getNodeCount() == 0) {
-                    return false;
-                }
+                return graph.getNodeCount() != 0;
             } else if (AttributeUtils.isEdgeColumn(column)) {
-                if (graph.getEdgeCount() == 0) {
-                    return false;
-                }
+                return graph.getEdgeCount() != 0;
             }
             return true;
         }

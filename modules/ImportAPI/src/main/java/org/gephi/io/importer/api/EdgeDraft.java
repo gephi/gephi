@@ -57,7 +57,7 @@ public interface EdgeDraft extends ElementDraft {
      *
      * @return edge's weight
      */
-    public double getWeight();
+    double getWeight();
 
     /**
      * Sets this edge's weight.
@@ -66,7 +66,7 @@ public interface EdgeDraft extends ElementDraft {
      *
      * @param weight edge's weight
      */
-    public void setWeight(double weight);
+    void setWeight(double weight);
 
     /**
      * Gets this edge's type.
@@ -76,7 +76,7 @@ public interface EdgeDraft extends ElementDraft {
      *
      * @return edge's type or null if unset
      */
-    public Object getType();
+    Object getType();
 
     /**
      * Sets this edge's type.
@@ -86,42 +86,42 @@ public interface EdgeDraft extends ElementDraft {
      *
      * @param type edge type
      */
-    public void setType(Object type);
+    void setType(Object type);
 
     /**
      * Returns this edge's direction setting.
      *
      * @return edge's direction or null if unset
      */
-    public EdgeDirection getDirection();
+    EdgeDirection getDirection();
 
     /**
      * Sets this edge's direction setting.
      *
      * @param direction edge's direction
      */
-    public void setDirection(EdgeDirection direction);
+    void setDirection(EdgeDirection direction);
 
     /**
      * Get edge's source.
      *
      * @return edge's source or null if unset
      */
-    public NodeDraft getSource();
+    NodeDraft getSource();
 
     /**
      * Sets this edge's source.
      *
      * @param nodeSource node source
      */
-    public void setSource(NodeDraft nodeSource);
+    void setSource(NodeDraft nodeSource);
 
     /**
      * Get edge's target.
      *
      * @return edge's target or null if unset
      */
-    public NodeDraft getTarget();
+    NodeDraft getTarget();
 
     /**
      * Sets this edge's target.
@@ -130,7 +130,7 @@ public interface EdgeDraft extends ElementDraft {
      *
      * @param nodeTarget node target
      */
-    public void setTarget(NodeDraft nodeTarget);
+    void setTarget(NodeDraft nodeTarget);
 
     /**
      * Returns true if this edge is a self-loop.
@@ -139,5 +139,5 @@ public interface EdgeDraft extends ElementDraft {
      *
      * @return true if self-loop, false otherwise
      */
-    public boolean isSelfLoop();
+    boolean isSelfLoop();
 }

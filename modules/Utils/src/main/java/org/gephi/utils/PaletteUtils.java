@@ -64,8 +64,8 @@ public class PaletteUtils {
 
         //On choisit H et S au random
         Random random = new Random();
-        float B = random.nextFloat() * 2 / 5f + 0.6f;        //		0.6 <=   B   < 1
-        float S = random.nextFloat() * 2 / 5f + 0.6f;        //		0.6 <=   S   < 1
+        float B = random.nextFloat() * 2 / 5f + 0.6f;        //0.6 <=   B   < 1
+        float S = random.nextFloat() * 2 / 5f + 0.6f;        //0.6 <=   S   < 1
         //System.out.println("B : "+B+"  S : "+S);
 
         for (int i = 1; i <= num; i++) {
@@ -128,7 +128,7 @@ public class PaletteUtils {
 
     public static Palette get3ClassPalette(Palette palette) {
         if (palette.colors.length == 5) {
-            return new Palette(new Color[] {palette.colors[0], palette.colors[2], palette.colors[4]});
+            return new Palette(palette.colors[0], palette.colors[2], palette.colors[4]);
         }
         return palette;
 
@@ -144,7 +144,7 @@ public class PaletteUtils {
 
     public static class Palette {
 
-        private Color colors[];
+        private final Color[] colors;
 
         public Palette(Color... colors) {
             this.colors = colors;

@@ -211,8 +211,8 @@ public class GeneralChooseColumnsAndRowUI extends javax.swing.JPanel implements 
 
     private static class ColumnCheckBox {
 
-        private JCheckBox checkBox;
-        private Column column;
+        private final JCheckBox checkBox;
+        private final Column column;
 
         public ColumnCheckBox(Column column, boolean selected) {
             checkBox = new JCheckBox(column.getTitle(), selected);

@@ -319,11 +319,8 @@ public class AppearanceUIModel {
 
     protected boolean isAttributeTransformerUI(TransformerUI ui) {
         Class transformerClass = ui.getTransformerClass();
-        if (RankingTransformer.class.isAssignableFrom(transformerClass) ||
-            PartitionTransformer.class.isAssignableFrom(transformerClass)) {
-            return true;
-        }
-        return false;
+        return RankingTransformer.class.isAssignableFrom(transformerClass) ||
+            PartitionTransformer.class.isAssignableFrom(transformerClass);
     }
 
     private Map<String, Method[]> getProperties(Transformer transformer) {
@@ -372,12 +369,7 @@ public class AppearanceUIModel {
             return true;
         } else if (type.isArray()) {
             Class cmp = type.getComponentType();
-            if (cmp.isPrimitive() || cmp.equals(Color.class)) {
-                return true;
-            }
-        } else if (type.equals(Color.class)) {
-            return true;
-        }
-        return false;
+            return cmp.isPrimitive() || cmp.equals(Color.class);
+        } else return type.equals(Color.class);
     }
 }

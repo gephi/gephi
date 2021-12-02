@@ -60,13 +60,13 @@ import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.spi.FileImporterBuilder;
+import org.gephi.project.api.GephiFormatException;
+import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceProvider;
-import org.gephi.project.api.LegacyGephiFormatException;
-import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.spi.ProjectPropertiesUI;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
@@ -128,7 +128,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                     DialogDisplayer.getDefault().notify(msg);
                 }
 
-                if(!(t instanceof LegacyGephiFormatException)) {
+                if (!(t instanceof LegacyGephiFormatException)) {
                     Exceptions.printStackTrace(t);
                 }
             }

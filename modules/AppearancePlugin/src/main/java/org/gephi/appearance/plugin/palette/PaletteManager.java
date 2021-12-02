@@ -76,6 +76,7 @@ public class PaletteManager {
     private final LinkedList<Palette> recentPalette;
     private final Color DEFAULT_COLOR = Color.LIGHT_GRAY;
     protected String nodeName = null;
+
     private PaletteManager() {
         nodeName = "recentpartitionpalettes";
         presets = loadPresets();
@@ -152,7 +153,7 @@ public class PaletteManager {
         return generatePalette(colorCount, null);
     }
 
-    public int getGeneratePaletteQuality(int colorCount){
+    public int getGeneratePaletteQuality(int colorCount) {
         var quality = 50;
         if (colorCount > 300) {
             quality = 2;
@@ -165,6 +166,7 @@ public class PaletteManager {
         }
         return quality;
     }
+
     public Palette generatePalette(int colorCount, Preset preset) {
         int quality = getGeneratePaletteQuality(colorCount);
         Color[] cls = PaletteGenerator.generatePalette(colorCount, quality, preset != null ? preset.toArray() : null);

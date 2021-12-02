@@ -58,6 +58,7 @@ public class MASKEdgePanel extends javax.swing.JPanel implements ActionListener 
     private javax.swing.ButtonGroup group;
     private javax.swing.JRadioButton sourceButton;
     private javax.swing.JRadioButton targetButton;
+
     public MASKEdgePanel() {
         initComponents();
         anyButton.addActionListener(this);

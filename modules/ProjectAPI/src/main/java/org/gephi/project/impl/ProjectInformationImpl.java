@@ -62,6 +62,7 @@ public class ProjectInformationImpl implements ProjectInformation {
     private String name;
     private Status status = Status.CLOSED;
     private File file;
+
     public ProjectInformationImpl(Project project, String name) {
         this.project = project;
         this.name = name;

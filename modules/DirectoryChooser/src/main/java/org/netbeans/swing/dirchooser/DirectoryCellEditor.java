@@ -68,9 +68,9 @@ class DirectoryCellEditor extends DefaultCellEditor {
 
     public DirectoryCellEditor(JTree tree, JFileChooser fileChooser, final JTextField textField) {
         super(textField);
-        this.tree = tree;
-        this.textField = textField;
-        this.fileChooser = fileChooser;
+        DirectoryCellEditor.tree = tree;
+        DirectoryCellEditor.textField = textField;
+        DirectoryCellEditor.fileChooser = fileChooser;
     }
 
     public static JTextField getTextField() {
@@ -79,7 +79,7 @@ class DirectoryCellEditor extends DefaultCellEditor {
 
     @Override
     public boolean isCellEditable(EventObject event) {
-        return ((event instanceof MouseEvent) ? false : true);
+        return (!(event instanceof MouseEvent));
     }
 
     @Override

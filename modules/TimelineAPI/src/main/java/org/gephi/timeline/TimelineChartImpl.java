@@ -62,7 +62,7 @@ public class TimelineChartImpl implements TimelineChart {
     private final Number minX;
     private final Number maxX;
 
-    public TimelineChartImpl(String column, Number[] x, Number y[]) {
+    public TimelineChartImpl(String column, Number[] x, Number[] y) {
         this.column = column;
         this.x = x;
         this.y = y;

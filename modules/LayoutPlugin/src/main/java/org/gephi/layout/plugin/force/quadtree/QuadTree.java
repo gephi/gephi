@@ -60,7 +60,7 @@ import org.gephi.graph.spi.LayoutData;
 
 interface AddBehaviour {
 
-    public boolean addNode(NodeProperties node);
+    boolean addNode(NodeProperties node);
 }
 
 /**

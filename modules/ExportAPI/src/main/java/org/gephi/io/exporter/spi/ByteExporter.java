@@ -56,5 +56,5 @@ public interface ByteExporter extends Exporter {
      *
      * @param stream the stream the exporter is to write
      */
-    public void setOutputStream(OutputStream stream);
+    void setOutputStream(OutputStream stream);
 }
