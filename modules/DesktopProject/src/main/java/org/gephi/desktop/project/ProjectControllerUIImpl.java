@@ -65,6 +65,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceProvider;
+import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.spi.ProjectPropertiesUI;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
@@ -119,15 +120,14 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             @Override
             public void fatalError(Throwable t) {
                 unlockProjectActions();
-//                String txt = NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.error.open");
-//                String message = txt + "\n\n" + t.getMessage();
-//                if (t.getCause() != null) {
-//                    message = txt + "\n\n" + t.getCause().getClass().getSimpleName() + " - " + t.getCause().getMessage();
-//                }
-//                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(message, NotifyDescriptor.WARNING_MESSAGE);
-//                DialogDisplayer.getDefault().notify(msg);
 
-                Exceptions.printStackTrace(t);
+                if (t instanceof LegacyGephiFormatException) {
+                    NotifyDescriptor.Message msg =
+                        new NotifyDescriptor.Message(t.getLocalizedMessage(), NotifyDescriptor.WARNING_MESSAGE);
+                    DialogDisplayer.getDefault().notify(msg);
+                } else {
+                    Exceptions.printStackTrace(t);
+                }
             }
         });
         longTaskExecutor.setLongTaskListener(new LongTaskListener() {
