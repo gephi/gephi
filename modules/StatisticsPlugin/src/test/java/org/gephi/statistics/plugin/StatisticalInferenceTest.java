@@ -57,7 +57,7 @@ import java.util.HashMap;
  */
 public class StatisticalInferenceTest extends TestCase {
 
-    @Test
+    /*@Test
     public void testTwoConnectedNodesStatInf() {
         GraphModel graphModel = GraphGenerator.generateCompleteUndirectedGraph(2);
         UndirectedGraph graph = graphModel.getUndirectedGraph();
@@ -76,6 +76,142 @@ public class StatisticalInferenceTest extends TestCase {
 
         System.out.println("################## Description length found:" + descriptionLength);
         //assertEquals(descriptionLength, 0.0);
-        //assertEquals(class1, class2);
+        assertEquals(class1, class2);
+    }*/
+
+    @Test
+    public void testCLiquesBridgeGraphModularity() {
+        GraphModel graphModel = GraphModel.Factory.newInstance();
+        UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
+
+        Node node0 = graphModel.factory().newNode("0");
+        Node node1 = graphModel.factory().newNode("1");
+        Node node2 = graphModel.factory().newNode("2");
+        Node node3 = graphModel.factory().newNode("3");
+        Node node4 = graphModel.factory().newNode("4");
+        Node node5 = graphModel.factory().newNode("5");
+        Node node6 = graphModel.factory().newNode("6");
+        Node node7 = graphModel.factory().newNode("7");
+
+        undirectedGraph.addNode(node0);
+        undirectedGraph.addNode(node1);
+        undirectedGraph.addNode(node2);
+        undirectedGraph.addNode(node3);
+        undirectedGraph.addNode(node4);
+        undirectedGraph.addNode(node5);
+        undirectedGraph.addNode(node6);
+        undirectedGraph.addNode(node7);
+
+        // Clique A
+        Edge edge01 = graphModel.factory().newEdge(node0, node1, false);
+        Edge edge12 = graphModel.factory().newEdge(node1, node2, false);
+        Edge edge23 = graphModel.factory().newEdge(node2, node3, false);
+        Edge edge30 = graphModel.factory().newEdge(node3, node0, false);
+        Edge edge02 = graphModel.factory().newEdge(node0, node2, false);
+        Edge edge13 = graphModel.factory().newEdge(node1, node3, false);
+        // Bridge
+        Edge edge04 = graphModel.factory().newEdge(node0, node4, false);
+        // Clique B
+        Edge edge45 = graphModel.factory().newEdge(node4, node5, false);
+        Edge edge56 = graphModel.factory().newEdge(node5, node6, false);
+        Edge edge67 = graphModel.factory().newEdge(node6, node7, false);
+        Edge edge74 = graphModel.factory().newEdge(node7, node4, false);
+        Edge edge46 = graphModel.factory().newEdge(node4, node6, false);
+        Edge edge57 = graphModel.factory().newEdge(node5, node7, false);
+
+        undirectedGraph.addEdge(edge01);
+        undirectedGraph.addEdge(edge12);
+        undirectedGraph.addEdge(edge23);
+        undirectedGraph.addEdge(edge30);
+        undirectedGraph.addEdge(edge02);
+        undirectedGraph.addEdge(edge13);
+        undirectedGraph.addEdge(edge04);
+        undirectedGraph.addEdge(edge45);
+        undirectedGraph.addEdge(edge56);
+        undirectedGraph.addEdge(edge67);
+        undirectedGraph.addEdge(edge74);
+        undirectedGraph.addEdge(edge46);
+        undirectedGraph.addEdge(edge57);
+
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+        int[] comStructure = new int[graph.getNodeCount()];
+
+        HashMap<String, Double> sicValues = sic.computePartition(graph, theStructure, comStructure,
+                false);
+
+        double descriptionLength = sicValues.get("descriptionLength");
+
+
     }
+
+    /*@Test
+    public void testCyclicWithWeightsGraphModularity() {
+        GraphModel graphModel = GraphModel.Factory.newInstance();
+        UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
+
+        Node node1 = graphModel.factory().newNode("0");
+        Node node2 = graphModel.factory().newNode("1");
+        Node node3 = graphModel.factory().newNode("2");
+        Node node4 = graphModel.factory().newNode("3");
+        Node node5 = graphModel.factory().newNode("4");
+        Node node6 = graphModel.factory().newNode("5");
+        Node node7 = graphModel.factory().newNode("6");
+        Node node8 = graphModel.factory().newNode("7");
+
+        undirectedGraph.addNode(node1);
+        undirectedGraph.addNode(node2);
+        undirectedGraph.addNode(node3);
+        undirectedGraph.addNode(node4);
+        undirectedGraph.addNode(node5);
+        undirectedGraph.addNode(node6);
+        undirectedGraph.addNode(node7);
+        undirectedGraph.addNode(node8);
+
+        //Test 3 parallel edges summing weight = 10
+        //Related issues ==> #1419 Getting null pointer error when trying to calculate modularity; #1526 NullPointerException on Modularity Statistics with gexf with kind / parallel nodes
+        Edge edge12_1 = graphModel.factory().newEdge(node1, node2, 1, 2.f, false);
+        Edge edge12_2 = graphModel.factory().newEdge(node1, node2, 2, 5.f, false);
+        Edge edge12_3 = graphModel.factory().newEdge(node1, node2, 2, 3.f, false);
+
+        Edge edge23 = graphModel.factory().newEdge(node2, node3, false);
+        Edge edge34 = graphModel.factory().newEdge(node3, node4, 0, 10.f, false);
+        Edge edge45 = graphModel.factory().newEdge(node4, node5, false);
+        Edge edge56 = graphModel.factory().newEdge(node5, node6, 0, 10.f, false);
+        Edge edge67 = graphModel.factory().newEdge(node6, node7, false);
+
+        //Test 2 parallel edges summing weight = 10
+        Edge edge78_1 = graphModel.factory().newEdge(node7, node8, 0, 5.f, false);
+        Edge edge78_2 = graphModel.factory().newEdge(node7, node8, 0, 5.f, false);
+        Edge edge81 = graphModel.factory().newEdge(node8, node1, false);
+
+        undirectedGraph.addEdge(edge12_1);
+        undirectedGraph.addEdge(edge12_2);
+        undirectedGraph.addEdge(edge12_3);
+        undirectedGraph.addEdge(edge23);
+        undirectedGraph.addEdge(edge34);
+        undirectedGraph.addEdge(edge45);
+        undirectedGraph.addEdge(edge56);
+        undirectedGraph.addEdge(edge67);
+        undirectedGraph.addEdge(edge78_1);
+        undirectedGraph.addEdge(edge78_2);
+        undirectedGraph.addEdge(edge81);
+
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+        int[] comStructure = new int[graph.getNodeCount()];
+
+        HashMap<String, Double> sicValues = sic.computePartition(graph, theStructure, comStructure,
+                false);
+
+        double descriptionLength = sicValues.get("descriptionLength");
+
+
+    }*/
 }
