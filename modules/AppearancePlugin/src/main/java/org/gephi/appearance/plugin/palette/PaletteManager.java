@@ -152,17 +152,21 @@ public class PaletteManager {
         return generatePalette(colorCount, null);
     }
 
-    public Palette generatePalette(int colorCount, Preset preset) {
-        int quality = 50;
-        if (colorCount > 50) {
-            quality = 25;
-        } else if (colorCount > 100) {
-            quality = 10;
+    public int getGeneratePaletteQuality(int colorCount){
+        var quality = 50;
+        if (colorCount > 300) {
+            quality = 2;
         } else if (colorCount > 200) {
             quality = 5;
-        } else if (colorCount > 300) {
-            quality = 2;
+        } else if (colorCount > 100) {
+            quality = 10;
+        } else if (colorCount > 50) {
+            quality = 25;
         }
+        return quality;
+    }
+    public Palette generatePalette(int colorCount, Preset preset) {
+        int quality = getGeneratePaletteQuality(colorCount);
         Color[] cls = PaletteGenerator.generatePalette(colorCount, quality, preset != null ? preset.toArray() : null);
         return new Palette(cls);
     }

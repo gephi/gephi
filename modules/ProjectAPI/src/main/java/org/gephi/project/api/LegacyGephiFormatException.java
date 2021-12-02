@@ -40,67 +40,23 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.project.io;
+package org.gephi.project.api;
 
 import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
  */
-public class GephiFormatException extends RuntimeException {
-
-    private Throwable cause;
-    private String message;
-    private boolean isImport = false;
-
-    public GephiFormatException(Class source, Throwable cause) {
-        super(cause);
-        this.cause = cause;
-        if (source.equals(GephiReader.class)) {
-            isImport = true;
-        }
-    }
-
-    public GephiFormatException(String message) {
-        super(message);
-        this.message = message;
-    }
+public class LegacyGephiFormatException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        if (this.cause == null) {
-            return message;
-        }
         return getLocalizedMessage();
     }
 
     @Override
     public String getLocalizedMessage() {
-        if (this.cause == null) {
-            return message;
-        }
-
-        Object[] params = new Object[4];
-        params[0] = cause.getClass().getSimpleName();
-        params[1] = cause.getLocalizedMessage();
-
-        StackTraceElement[] stackTrace = cause.getStackTrace();
-        if (stackTrace != null && stackTrace.length > 0) {
-            params[2] = stackTrace[0].getClassName();
-            params[3] = stackTrace[0].getLineNumber();
-        } else {
-            params[2] = "Unknown";
-            params[3] = "Unknown";
-        }
-
-        if (isImport) {
-            return String
-                .format(NbBundle.getMessage(GephiFormatException.class, "gephiFormatException_import"), params);
-        } else //Export
-        {
-            return String
-                .format(NbBundle.getMessage(GephiFormatException.class, "gephiFormatException_export"), params);
-        }
-
+        return String
+            .format(NbBundle.getMessage(LegacyGephiFormatException.class, "gephiLegacyFormatException"));
     }
 }

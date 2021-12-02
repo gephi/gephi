@@ -60,6 +60,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLReporter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import org.gephi.project.api.GephiFormatException;
+import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.project.impl.ProjectImpl;
@@ -183,6 +185,8 @@ public class LoadTask implements LongTask, Runnable {
         } catch (Exception ex) {
             if (ex instanceof GephiFormatException) {
                 throw (GephiFormatException) ex;
+            } else if (ex instanceof LegacyGephiFormatException) {
+                throw (LegacyGephiFormatException) ex;
             }
             throw new GephiFormatException(GephiReader.class, ex);
         }
@@ -194,6 +198,12 @@ public class LoadTask implements LongTask, Runnable {
         if (entry == null) {
             // Try legacy
             entry = zipFile.getEntry("Project");
+            if (entry != null) {
+                throw new LegacyGephiFormatException();
+            } else {
+                throw new GephiFormatException(LoadTask.class,
+                    new RuntimeException("Project can't be found in the zip"));
+            }
         }
         if (entry != null) {
             InputStream is = null;

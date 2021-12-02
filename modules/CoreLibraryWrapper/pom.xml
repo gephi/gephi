@@ -20,6 +20,7 @@
         <gephi.commons-codec.version>1.15</gephi.commons-codec.version>
         <gephi.commons-compress.version>1.21</gephi.commons-compress.version>
         <gephi.commons-csv.version>1.9.0</gephi.commons-csv.version>
+        <gephi.commons-math3.version>3.6.1</gephi.commons-math3.version>
         <gephi.jfreechart.version>1.0.19</gephi.jfreechart.version>
         <gephi.itextpdf.version>5.5.13.2</gephi.itextpdf.version>
         <gephi.trove4j.version>3.0.3</gephi.trove4j.version>
@@ -40,6 +41,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>${gephi.commons-compress.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>${gephi.commons-math3.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jfree</groupId>
@@ -72,6 +78,7 @@
                     <publicPackages>
                         <publicPackage>org.apache.commons.codec.*</publicPackage>
                         <publicPackage>org.apache.commons.compress.*</publicPackage>
+                        <publicPackage>org.apache.commons.math3.*</publicPackage>
                         <publicPackage>org.jfree.*</publicPackage>
                         <publicPackage>gnu.trove.*</publicPackage>
                         <publicPackage>org.apache.commons.csv.*</publicPackage>

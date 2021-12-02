@@ -1,5 +1,7 @@
 Source,Target,Type,Label,timeset,Weight
 imbabura,loja,Undirected,,,2
+loja,elarteviveenloja,Undirected,,,714
+sosunl,elarteviveenloja,Undirected,,,2883
 elarteviveenloja,unl,Undirected,,,833
 loja,municipiodeloja,Undirected,,,58
 felizviernes,loja,Undirected,,,6
@@ -16,6 +18,8 @@ unl,sosunl,Undirected,,,71
 arcsa,salud,Undirected,,,12
 salud,elarteviveenloja,Undirected,,,35
 patriciovallejo,elarteviveenloja,Undirected,,,21
+elarteviveenloja,todaunavida,Undirected,,,164
+elarteviveenloja,videovigilanciaecu911,Undirected,,,29
 elarteviveenloja,fiavl,Undirected,,,76
 elscomediants,loja,Undirected,,,2
 temblor,loja,Undirected,,,6
@@ -23,7 +27,6 @@ loja,fiestasdequito,Undirected,,,4
 fiestasdequito,elarteviveenloja,Undirected,,,4
 ecu911,elarteviveenloja,Undirected,,,130
 cbamprendo,3h,Undirected,,,2
-todaunavida,elarteviveenloja,Undirected,,,164
 temblor,elarteviveenloja,Undirected,,,2
 unl,ecuador,Undirected,,,26
 municipiodeloja,elarteviveenloja,Undirected,,,38
@@ -87,9 +90,7 @@ teatro,benjamincarrion,Undirected,,,1
 cultura,elarteviveenloja,Undirected,,,2
 lojamiciudad,loja,Undirected,,,1
 ecu911,loja,Undirected,,,10
-videovigilanciaecu911,elarteviveenloja,Undirected,,,29
 elarteviveenloja,atenter,Undirected,,,16
-loja,elarteviveenloja,Undirected,,,714
 faustomino,elarteviveenloja,Undirected,,,1
 loja,moreno,Undirected,,,1
 elarteviveenloja,guadual,Undirected,,,1
@@ -145,8 +146,9 @@ swinger,loja,Undirected,,,1
 loja,zamora,Undirected,,,1
 zamora,cuenca,Undirected,,,1
 cuenca,machala,Undirected,,,1
+fiavl2017,loja,Undirected,,,4
 elarteviveenloja,presidencia_ec,Undirected,,,1
-sosunl,elarteviveenloja,Undirected,,,2883
+somosculturautpl,elarteviveenloja,Undirected,,,5
 loja,economianaranja,Undirected,,,1
 economianaranja,elarteviveenloja,Undirected,,,1
 raulperez,elarteviveenloja,Undirected,,,7
@@ -171,7 +173,6 @@ consultapopular,sialaconsulta,Undirected,,,1
 sialaconsulta,lojacontigolenin,Undirected,,,1
 los4mundosdelsur,parquenacionalpodoparpus,Undirected,,,3
 parquenacionalpodoparpus,elarteviveenloja,Undirected,,,3
-loja,fiavl2017,Undirected,,,4
 conexionecu911,elarteviveenloja,Undirected,,,36
 iwia,loja,Undirected,,,2
 loja,saraguro,Undirected,,,6
@@ -189,7 +190,6 @@ elarteviveenloja,artesvivas,Undirected,,,4
 artesvivas,loja,Undirected,,,4
 felizviernes,elarteviveenloja,Undirected,,,2
 elarteviveenloja,cifiunl2017,Undirected,,,2
-elarteviveenloja,somosculturautpl,Undirected,,,5
 zaruma,los4mundosdelsur,Undirected,,,20
 karcocha,elarteviveenloja,Undirected,,,4
 elarteviveenloja,weareproudofyoulauren,Undirected,,,2
