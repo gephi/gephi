@@ -45,10 +45,11 @@ package org.gephi.visualization;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.selection.SelectionManager;
 import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -63,10 +64,9 @@ public class VizController implements VisualizationController {
     private static VizController instance;
     //Architecture
     private VizConfig vizConfig;
-    private VizEventManager vizEventManager;
-    private GraphLimits limits;
     private ScreenshotMaker screenshotMaker;
     private SelectionManager selectionManager;
+
     //Variable
     public VizController() {
     }
@@ -77,6 +77,17 @@ public class VizController implements VisualizationController {
             instance.initInstances();
         }
         return instance;
+    }
+
+    public VizModel getModel() {
+        final ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+        final Workspace workspace = projectController.getCurrentWorkspace();
+
+        if (workspace != null) {
+            return workspace.getLookup().lookup(VizModel.class);
+        }
+
+        return null;
     }
 
     public void initInstances() {
@@ -168,10 +179,6 @@ public class VizController implements VisualizationController {
 
     public VizConfig getVizConfig() {
         return vizConfig;
-    }
-
-    public VizEventManager getVizEventManager() {
-        return vizEventManager;
     }
 
     public ScreenshotMaker getScreenshotMaker() {

@@ -42,24 +42,15 @@
 
 package org.gephi.visualization.component;
 
-import org.gephi.graph.api.GraphModel;
+import java.awt.AWTEvent;
+import java.awt.event.AWTEventListener;
+import java.awt.event.KeyEvent;
+import javax.swing.JComponent;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.tools.api.ToolController;
-import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
-import org.gephi.viz.engine.VizEngine;
-import org.gephi.viz.engine.VizEngineFactory;
-import org.gephi.viz.engine.lwjgl.LWJGLRenderingTarget;
-import org.gephi.viz.engine.lwjgl.LWJGLRenderingTargetAWT;
-import org.gephi.viz.engine.lwjgl.VizEngineLWJGLConfigurator;
-import org.gephi.viz.engine.lwjgl.pipeline.events.AWTEventsListener;
-import org.gephi.viz.engine.lwjgl.pipeline.events.LWJGLInputEvent;
-import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
-import org.gephi.viz.engine.util.gl.OpenGLOptions;
-import org.lwjgl.opengl.awt.AWTGLCanvas;
-import org.lwjgl.opengl.awt.GLData;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -67,37 +58,16 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.AWTEventListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
-import java.util.Collections;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 @ConvertAsProperties(dtd = "-//org.gephi.visualization.component//Graph//EN",
-        autostore = false)
+    autostore = false)
 @TopComponent.Description(preferredID = "GraphTopComponent",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.visualization.component.GraphTopComponent")
 @ActionReference(path = "Menu/Window", position = 500)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_GraphTopComponent",
-        preferredID = "GraphTopComponent")
+    preferredID = "GraphTopComponent")
 public class GraphTopComponent extends TopComponent implements AWTEventListener {
-
-    private static final boolean DISABLE_INDIRECT_RENDERING = false;
-    private static final boolean DISABLE_INSTANCED_RENDERING = false;
-    private static final boolean DISABLE_VAOS = false;
-
-    private static final boolean DEBUG = false;
-    private static final boolean USE_OPENGL_ES = false;
-
-    private static final WorldUpdaterExecutionMode UPDATE_DATA_MODE = WorldUpdaterExecutionMode.CONCURRENT_ASYNCHRONOUS;
-
-    private transient final ExecutorService LAYOUT_THREAD_POOL = Executors.newSingleThreadExecutor();
 
     private transient VizBarController vizBarController;
     private SelectionToolbar selectionToolbar;
@@ -119,17 +89,9 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         initTools();
     }
 
-    private void stopRendering(VizEngine engine) {
-        if (engine != null) {
-            engine.stop();
-        }
-
-        //TODO When you stop the program:
-//        eventsListener.destroy();
-//        stopEventListeners();
-    }
-
     private void listenToWorkspaceEvents() {
+        remove(waitingLabel);
+
         //Workspace events
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
         projectController.addWorkspaceListener(new WorkspaceListener() {
@@ -157,10 +119,12 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
             @Override
             public void unselect(Workspace workspace) {
+                deactivateWorkspaceVizEngine(workspace);
             }
 
             @Override
             public void close(Workspace workspace) {
+                deactivateWorkspaceVizEngine(workspace);
             }
 
             @Override
@@ -180,7 +144,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             }
         });
 
-        boolean hasWorkspace = projectController.getCurrentWorkspace() != null;
+        final boolean hasWorkspace = projectController.getCurrentWorkspace() != null;
         if (toolbar != null) {
             toolbar.setEnabled(hasWorkspace);
         }
@@ -199,10 +163,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         }
     }
 
-    private void stopEventListeners() {
-        LAYOUT_THREAD_POOL.shutdown();
-    }
-
     private void initCollapsePanel() {
         vizBarController = new VizBarController();
         if (VizController.getInstance().getVizConfig().isShowVizVar()) {
@@ -212,105 +172,31 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         }
     }
 
-    private void activateWorkspaceVizEngine(final Workspace workspace) {
-        final GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
-
-        final GLData data = new GLData();
-
-        if (USE_OPENGL_ES) {
-            data.api = GLData.API.GLES;
+    private void deactivateWorkspaceVizEngine(final Workspace workspace) {
+        if (workspace == null) {
+            return;
         }
 
-        data.samples = 4;//4 samples anti-aliasing
-        data.swapInterval = 0;
+        final VizEngineGraphCanvasManager manager = workspace.getLookup().lookup(VizEngineGraphCanvasManager.class);
 
-        LWJGLRenderingTargetAWT renderingTarget = new LWJGLRenderingTargetAWT(null);
+        if (manager != null) {
+            manager.destroy(this);
+        }
+    }
 
+    private void activateWorkspaceVizEngine(final Workspace workspace) {
+        if (workspace == null) {
+            return;
+        }
 
-        final AWTGLCanvas glCanvas = new AWTGLCanvas(data) {
-            @Override
-            public void initGL() {
-                renderingTarget.initializeContext();
-            }
+        VizEngineGraphCanvasManager manager = workspace.getLookup().lookup(VizEngineGraphCanvasManager.class);
 
-            @Override
-            public void paintGL() {
-                renderingTarget.display();
-                swapBuffers();
-            }
-        };
+        if (manager == null) {
+            manager = new VizEngineGraphCanvasManager(workspace);
+            workspace.add(manager);
+        }
 
-        remove(waitingLabel);
-        add(glCanvas, BorderLayout.CENTER);
-
-        final VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> engine = VizEngineFactory.newEngine(
-                renderingTarget,
-                graphModel,
-                Collections.singletonList(
-                        new VizEngineLWJGLConfigurator()
-                )
-        );
-
-        final OpenGLOptions glOptions = engine.getLookup().lookup(OpenGLOptions.class);
-        glOptions.setDisableIndirectDrawing(DISABLE_INDIRECT_RENDERING);
-        glOptions.setDisableInstancedDrawing(DISABLE_INSTANCED_RENDERING);
-        glOptions.setDisableVAOS(DISABLE_VAOS);
-        glOptions.setDebug(DEBUG);
-
-        engine.setWorldUpdatersExecutionMode(UPDATE_DATA_MODE);
-
-//        if (eventsListener != null) {
-//            eventsListener.destroy();
-        //Destroy last workspace event listener
-//        }
-
-        AWTEventsListener eventsListener = new AWTEventsListener(glCanvas, engine);
-        eventsListener.register();
-
-        renderingTarget.setup(engine);
-
-        engine.start();
-
-        //                        this.addWindowListener(new WindowAdapter() {
-//                            @Override
-//                            public void windowClosed(WindowEvent e) {
-//                                stopAll();
-//                            }
-//
-//                            @Override
-//                            public void windowActivated(WindowEvent e) {
-//                                renderingTarget.reshape(glCanvas.getWidth(), glCanvas.getHeight());
-//                            }
-//
-//                            @Override
-//                            public void windowOpened(WindowEvent e) {
-//                                renderingTarget.reshape(glCanvas.getWidth(), glCanvas.getHeight());
-//                            }
-//                        });
-        glCanvas.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent event) {
-                if (renderingTarget.getEngine() != null) {
-                    renderingTarget.reshape(event.getComponent().getWidth(), event.getComponent().getHeight());
-                }
-            }
-        });
-
-        final Runnable renderLoop = new Runnable() {
-            @Override
-            public void run() {
-                if (!renderingTarget.isRunning()) {
-                    stopRendering(engine);
-                    return;
-                }
-
-                if (glCanvas.isValid()) {
-                    glCanvas.render();
-                }
-                SwingUtilities.invokeLater(this);
-            }
-        };
-        SwingUtilities.invokeLater(renderLoop);
+        manager.init(this);
     }
 
     private void initKeyEventContextMenuActionMappings() {
@@ -385,7 +271,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         KeyEvent evt = (KeyEvent) event;
 
         if (evt.getID() == KeyEvent.KEY_RELEASED &&
-                (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK) {
+            (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK) {
 //            final ContextMenuItemManipulator item = keyActionMappings.get(evt.getKeyCode());
 //            if (item != null) {
 //                ((GraphContextMenuItem) item).setup(eventBridge.getGraph(), eventBridge.getSelectedNodes());
@@ -412,7 +298,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
         waitingLabel.setBackground(new java.awt.Color(255, 255, 255));
         org.openide.awt.Mnemonics.setLocalizedText(waitingLabel, org.openide.util.NbBundle
-                .getMessage(GraphTopComponent.class, "GraphTopComponent.waitingLabel.text")); // NOI18N
+            .getMessage(GraphTopComponent.class, "GraphTopComponent.waitingLabel.text")); // NOI18N
         waitingLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         add(waitingLabel, java.awt.BorderLayout.CENTER);
         add(collapsePanel, java.awt.BorderLayout.PAGE_END);
