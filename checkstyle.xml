@@ -26,7 +26,7 @@
 
     <property name="severity" value="warning"/>
 
-    <property name="fileExtensions" value="java, properties, xml"/>
+    <property name="fileExtensions" value="java"/>
     <!-- Excludes all 'module-info.java' files              -->
     <!-- See https://checkstyle.org/config_filefilters.html -->
     <module name="BeforeExecutionExclusionFileFilter">
@@ -42,10 +42,12 @@
     <!-- Checks for whitespace                               -->
     <!-- See http://checkstyle.org/config_whitespace.html -->
     <module name="FileTabCharacter">
+        <property name="severity" value="error"/>
         <property name="eachLine" value="true"/>
     </module>
 
     <module name="LineLength">
+        <property name="severity" value="error"/>
         <property name="fileExtensions" value="java"/>
         <!-- Gephi: changed from 100 -->
         <property name="max" value="120"/>
@@ -141,6 +143,7 @@
         <module name="UpperEll"/>
         <module name="ModifierOrder"/>
         <module name="EmptyLineSeparator">
+            <property name="severity" value="error"/>
             <property name="tokens"
                       value="PACKAGE_DEF, IMPORT, STATIC_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
                     STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF, VARIABLE_DEF, RECORD_DEF,
@@ -339,21 +342,21 @@
             <property name="allowedAnnotations" value="Override, Test"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF, COMPACT_CTOR_DEF"/>
         </module>
-        <!-- Gephi: commented out MissingJavadocMethod -->
+        <!-- Gephi: commented out MissingJavadocMethod and MissingJavadocType -->
         <!-- <module name="MissingJavadocMethod">
             <property name="scope" value="public"/>
             <property name="minLineCount" value="2"/>
             <property name="allowedAnnotations" value="Override, Test"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF,
                                    COMPACT_CTOR_DEF"/>
-        </module> -->
+        </module>
         <module name="MissingJavadocType">
             <property name="scope" value="protected"/>
             <property name="tokens"
                       value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
                       RECORD_DEF, ANNOTATION_DEF"/>
             <property name="excludeScope" value="nothing"/>
-        </module>
+        </module> -->
         <module name="MethodName">
             <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9_]*$"/>
             <message key="name.invalidPattern"
