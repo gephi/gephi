@@ -27,4 +27,15 @@ public class GEXFTest {
     Utils.assertSameIds(nodes, "0", "1");
     Utils.assertSameIds(edges, "0");
   }
+
+  @Test
+  public void testZeroWeight() {
+    ImporterGEXF importer = new ImporterGEXF();
+    importer.setReader(Utils.getReader("zeroweight.gexf"));
+
+    Container container = new ImportContainerImpl();
+    importer.execute(container.getLoader());
+
+    Assert.assertTrue(container.verify());
+  }
 }
