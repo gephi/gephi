@@ -40,8 +40,10 @@ Contributor(s):
 Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.project.io;
+package org.gephi.project.api;
 
+import org.gephi.project.io.GephiReader;
+import org.gephi.project.io.LoadTask;
 import org.openide.util.NbBundle;
 
 /**
@@ -56,7 +58,7 @@ public class GephiFormatException extends RuntimeException {
     public GephiFormatException(Class source, Throwable cause) {
         super(cause);
         this.cause = cause;
-        if (source.equals(GephiReader.class)) {
+        if (source.equals(GephiReader.class) || source.equals(LoadTask.class)) {
             isImport = true;
         }
     }
