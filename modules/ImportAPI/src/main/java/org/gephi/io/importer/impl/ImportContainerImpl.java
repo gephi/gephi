@@ -50,12 +50,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+
+import java.util.*;
+
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Interval;
 import org.gephi.graph.api.TimeFormat;
@@ -331,17 +328,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
 
         //Direction
-        EdgeDirection direction = edgeDraftImpl.getDirection();
-        if (direction != null) {
-            //Counting
-            switch (direction) {
-                case DIRECTED:
-                    directedEdgesCount++;
-                    break;
-                case UNDIRECTED:
-                    undirectedEdgesCount++;
-                    break;
-            }
+        final boolean directed = isEdgeDirected(edgeDraft);
+
+        if (directed) {
+            directedEdgesCount++;
+        } else {
+            undirectedEdgesCount++;
         }
 
         //Adding
@@ -370,18 +362,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             return;
         }
 
-        boolean directed = edgeDraftImpl.getDirection() == EdgeDirection.DIRECTED;
+        final boolean directed = isEdgeDirected(edgeDraftImpl);
 
-        if (edgeDraftImpl.getDirection() != null) {
-            //UnCounting
-            switch (edgeDraftImpl.getDirection()) {
-                case DIRECTED:
-                    directedEdgesCount--;
-                    break;
-                case UNDIRECTED:
-                    undirectedEdgesCount--;
-                    break;
-            }
+        if (directed) {
+            directedEdgesCount--;
+        } else {
+            undirectedEdgesCount--;
         }
 
         if (edgeDraftImpl.isSelfLoop()) {
@@ -389,28 +375,38 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
 
         int edgeType = getEdgeType(edgeDraftImpl.getType());
-        long sourceTargetLong = getLongId(edgeDraftImpl.getSource(), edgeDraftImpl.getTarget(), directed);
+        long sourceTargetLong = getLongId(edgeDraftImpl);
         ensureLongSetArraySize(edgeType);
         Long2ObjectMap<int[]> edgeTypeSet = edgeTypeSets[edgeType];
 
         //Get index
-        int index = edgeMap.removeInt(id);
+        final int index = edgeMap.removeInt(id);
 
         //Update edgeType set
         int[] edges = edgeTypeSet.remove(sourceTargetLong);
-        if (edges.length > 1) {
-            int[] newEdges = new int[edges.length - 1];
-            int i = 0;
-            for (int e : edges) {
-                if (e != index) {
-                    newEdges[i++] = e;
+        if (Arrays.binarySearch(edges, index) >= 0) {
+            if (edges.length > 1) {
+                int[] newEdges = new int[edges.length - 1];
+                int i = 0;
+                for (int e : edges) {
+                    if (e != index) {
+                        newEdges[i++] = e;
+                    }
                 }
+                edgeTypeSet.put(sourceTargetLong, newEdges);
+            } else {
+                edgeTypeSet.put(sourceTargetLong, new int[0]);
             }
-            edgeTypeSet.put(sourceTargetLong, newEdges);
         }
 
         //Remove edge
         edgeList.set(index, null);
+    }
+
+    private boolean isEdgeDirected(EdgeDraft edgeDraft) {
+        final EdgeDirection direction = edgeDraft.getDirection();
+        return edgeDefault.equals(EdgeDirectionDefault.DIRECTED)
+            || (edgeDefault.equals(EdgeDirectionDefault.MIXED) && direction != EdgeDirection.UNDIRECTED);
     }
 
     @Override
@@ -792,7 +788,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
                 if (notAlreadyRemoved && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
                     EdgeDraftImpl opposite = getOpposite(edge);
-                    if (opposite != null) {
+                    if (opposite != null && edgeMap.containsKey(opposite.getId())) {
                         mergeDirectedEdges(opposite, edge);
                         removeEdge(opposite);
                     }
@@ -1053,21 +1049,19 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     private long getLongId(EdgeDraftImpl edge) {
-        EdgeDirection direction = edge.getDirection();
-        boolean directed = edgeDefault.equals(EdgeDirectionDefault.DIRECTED)
-            || (edgeDefault.equals(EdgeDirectionDefault.MIXED) && direction != EdgeDirection.UNDIRECTED);
+        final boolean directed = isEdgeDirected(edge);
         return getLongId(edge.getSource(), edge.getTarget(), directed);
     }
 
     private long getLongId(NodeDraftImpl source, NodeDraftImpl target, boolean directed) {
         if (directed) {
-            long edgeId = ((long) source.hashCode()) << 32;
-            edgeId = edgeId | (long) (target.hashCode());
+            long edgeId = ((long) source.getSequentialId()) << 32;
+            edgeId = edgeId | (long) (target.getSequentialId());
             return edgeId;
         } else {
             long edgeId =
-                ((long) (source.hashCode() > target.hashCode() ? source.hashCode() : target.hashCode())) << 32;
-            edgeId = edgeId | (long) (source.hashCode() > target.hashCode() ? target.hashCode() : source.hashCode());
+                ((long) (Math.max(source.getSequentialId(), target.getSequentialId()))) << 32;
+            edgeId = edgeId | (long) (Math.min(source.getSequentialId(), target.getSequentialId()));
             return edgeId;
         }
     }
