@@ -100,6 +100,11 @@
             <groupId>io.sentry</groupId>
             <artifactId>sentry</artifactId>
         </dependency>
+	<dependency> <!-- required by Sentry -->
+	    <groupId>com.google.code.gson</groupId>
+	    <artifactId>gson</artifactId>
+        </dependency>
+
         
     </dependencies>
 
