@@ -19,6 +19,7 @@ import org.gephi.viz.engine.lwjgl.pipeline.events.LWJGLInputEvent;
 import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
+import org.joml.Vector2fc;
 import org.lwjgl.opengl.awt.AWTGLCanvas;
 import org.lwjgl.opengl.awt.GLData;
 
@@ -37,6 +38,13 @@ public class VizEngineGraphCanvasManager {
     private boolean initialized = false;
     private AWTGLCanvas glCanvas = null;
 
+    // Engine:
+    private VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> engine = null;
+    // Engine state saved for when it's restarted:
+    private Vector2fc engineTranslate = null;
+    private float engineZoom = 0;
+    private float[] engineBackgroundColor = null;
+
     public VizEngineGraphCanvasManager(Workspace workspace) {
         this.workspace = Objects.requireNonNull(workspace);
     }
@@ -52,13 +60,19 @@ public class VizEngineGraphCanvasManager {
 
         final LWJGLRenderingTargetAWT renderingTarget = new LWJGLRenderingTargetAWT(null);
 
-        final VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> engine = VizEngineFactory.newEngine(
+        this.engine = VizEngineFactory.newEngine(
             renderingTarget,
             graphModel,
             Collections.singletonList(
                 new VizEngineLWJGLConfigurator()
             )
         );
+
+        if (engineTranslate != null) {
+            engine.setTranslate(engineTranslate);
+            engine.setZoom(engineZoom);
+            engine.setBackgroundColor(engineBackgroundColor);
+        }
 
         final OpenGLOptions glOptions = engine.getLookup().lookup(OpenGLOptions.class);
         glOptions.setDisableIndirectDrawing(DISABLE_INDIRECT_RENDERING);
@@ -149,7 +163,15 @@ public class VizEngineGraphCanvasManager {
     }
 
     public synchronized void destroy(JComponent component) {
-        // TODO: Keep viz-engine state
+        // Keep viz-engine state for when it's restarted:
+        if (engine != null) {
+            this.engineTranslate = engine.getTranslate();
+            this.engineZoom = engine.getZoom();
+            this.engineBackgroundColor = engine.getBackgroundColor();
+
+            engine = null;
+        }
+
         if (glCanvas != null) {
             component.remove(glCanvas);
             glCanvas.disposeCanvas();
