@@ -102,7 +102,7 @@ public class ShortestPath implements Tool {
         listeners = new ToolEventListener[2];
         listeners[0] = new NodeClickEventListener() {
             @Override
-            public void clickNodes(Node[] nodes) {
+            public boolean clickNodes(Node[] nodes) {
                 Node n = nodes[0];
                 if (sourceNode == null) {
                     sourceNode = n;
@@ -150,11 +150,13 @@ public class ShortestPath implements Tool {
                     sourceNode = null;
                     shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status1"));
                 }
+
+                return true;
             }
         };
         listeners[1] = new MouseClickEventListener() {
             @Override
-            public void mouseClick(int[] positionViewport, float[] position3d) {
+            public boolean mouseClick(int[] positionViewport, float[] position3d) {
                 if (sourceNode != null) {
                     //Cancel
                     shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status1"));
@@ -162,6 +164,8 @@ public class ShortestPath implements Tool {
                 } else {
                     VizController.getInstance().resetSelection();
                 }
+
+                return true;
             }
         };
         return listeners;

@@ -43,35 +43,15 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.visualization.apiimpl;
 
 import org.gephi.visualization.VizArchitecture;
+import org.gephi.viz.engine.VizEngine;
+import org.gephi.viz.engine.lwjgl.pipeline.events.MouseEvent;
 
 /**
  * @author Mathieu Bastian
  */
 public interface VizEventManager extends VizArchitecture {
 
-    public void startDrag();
-
-    public void drag();
-
-    public void stopDrag();
-
-    public void mouseLeftPress();
-
-    public void mouseRightPress();
-
-    public void mouseMiddlePress();
-
-    public void mouseLeftClick();
-
-    public void mouseRightClick();
-
-    public void mouseMiddleClick();
-
-    public void mouseMove();
-
-    public void mouseLeftPressing();
-
-    public void mouseReleased();
+    public boolean processMouseEvent(VizEngine engine, MouseEvent mouseEvent);
 
     public void addListener(VizEventListener listener);
 

@@ -43,13 +43,17 @@
 package org.gephi.visualization.component;
 
 import java.awt.AWTEvent;
+import java.awt.BorderLayout;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.tools.api.ToolController;
+import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -206,15 +210,15 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     private void initTools() {
         final ToolController tc = Lookup.getDefault().lookup(ToolController.class);
         if (tc != null) {
-           if (VizController.getInstance().getVizConfig().isToolbar()) {
+            if (VizController.getInstance().getVizConfig().isToolbar()) {
                 JPanel westPanel = new JPanel(new BorderLayout(0, 0));
                 if (UIUtils.isAquaLookAndFeel()) {
                     westPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
                 }
 
                 toolbar = tc.getToolbar();
-               if (toolbar != null) {
-                  westPanel.add(toolbar, BorderLayout.CENTER);
+                if (toolbar != null) {
+                    westPanel.add(toolbar, BorderLayout.CENTER);
                 }
                 selectionToolbar = new SelectionToolbar();
                 actionsToolbar = new ActionsToolbar();
@@ -226,9 +230,9 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
             if (VizController.getInstance().getVizConfig().isPropertiesbar()) {
                 propertiesBar = tc.getPropertiesBar();
-               if (propertiesBar != null) {
-                   add(propertiesBar, BorderLayout.NORTH);
-               }
+                if (propertiesBar != null) {
+                    add(propertiesBar, BorderLayout.NORTH);
+                }
             }
             //TODO
         }

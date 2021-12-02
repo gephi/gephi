@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
+import org.gephi.visualization.VizController;
 import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.VizEngineFactory;
 import org.gephi.viz.engine.lwjgl.LWJGLRenderingTarget;
@@ -16,12 +17,15 @@ import org.gephi.viz.engine.lwjgl.LWJGLRenderingTargetAWT;
 import org.gephi.viz.engine.lwjgl.VizEngineLWJGLConfigurator;
 import org.gephi.viz.engine.lwjgl.pipeline.events.AWTEventsListener;
 import org.gephi.viz.engine.lwjgl.pipeline.events.LWJGLInputEvent;
+import org.gephi.viz.engine.lwjgl.pipeline.events.MouseEvent;
+import org.gephi.viz.engine.spi.InputListener;
 import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.joml.Vector2fc;
 import org.lwjgl.opengl.awt.AWTGLCanvas;
 import org.lwjgl.opengl.awt.GLData;
+import org.openide.util.Lookup;
 
 public class VizEngineGraphCanvasManager {
 
@@ -131,6 +135,47 @@ public class VizEngineGraphCanvasManager {
         final AWTEventsListener eventsListener = new AWTEventsListener(glCanvas, engine);
         eventsListener.register();
 
+        final VizController vizController = Lookup.getDefault().lookup(VizController.class);
+
+        engine.addInputListener(new InputListener<LWJGLRenderingTarget, LWJGLInputEvent>() {
+            @Override
+            public boolean processEvent(LWJGLInputEvent inputEvent) {
+                if (inputEvent instanceof MouseEvent) {
+                    if (vizController.getVizEventManager().processMouseEvent(engine, (MouseEvent) inputEvent)) {
+                        System.out.println("Handled");
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            @Override
+            public String getCategory() {
+                return "GephiDesktop";
+            }
+
+            @Override
+            public int getPreferenceInCategory() {
+                return 0;
+            }
+
+            @Override
+            public String getName() {
+                return "Gephi viz";
+            }
+
+            @Override
+            public void init(LWJGLRenderingTarget lwjglRenderingTarget) {
+
+            }
+
+            @Override
+            public int getOrder() {
+                return -100; // Execute before default listener of viz engine (has order = 0)
+            }
+        });
+
         component.add(glCanvas, BorderLayout.CENTER);
 
         engine.start();
@@ -169,6 +214,8 @@ public class VizEngineGraphCanvasManager {
             this.engineZoom = engine.getZoom();
             this.engineBackgroundColor = engine.getBackgroundColor();
 
+            //TODO: Keep more state of GraphRenderingOptions
+
             engine = null;
         }
 
@@ -178,5 +225,9 @@ public class VizEngineGraphCanvasManager {
             glCanvas = null;
         }
         this.initialized = false;
+    }
+
+    public VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> getEngine() {
+        return engine;
     }
 }

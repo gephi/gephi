@@ -50,6 +50,8 @@ import org.gephi.project.api.Workspace;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.api.selection.SelectionManager;
 import org.gephi.visualization.apiimpl.VizConfig;
+import org.gephi.visualization.apiimpl.VizEventManager;
+import org.gephi.visualization.events.StandardVizEventManager;
 import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -63,11 +65,11 @@ public class VizController implements VisualizationController {
     //Singleton
     private static VizController instance;
     //Architecture
+    private VizEventManager vizEventManager;
     private VizConfig vizConfig;
     private ScreenshotMaker screenshotMaker;
     private SelectionManager selectionManager;
 
-    //Variable
     public VizController() {
     }
 
@@ -91,16 +93,18 @@ public class VizController implements VisualizationController {
     }
 
     public void initInstances() {
-          vizConfig = new VizConfig();
-//        vizEventManager = new StandardVizEventManager();
-          limits = new GraphLimits();
+        vizConfig = new VizConfig();
+        vizEventManager = new StandardVizEventManager();
+        screenshotMaker = new ScreenshotMaker();
+//        limits = new GraphLimits();
 //        textManager = new TextManager();
 //        currentModel = new VizModel(true);
-          selectionManager = new SelectionManager();
+        selectionManager = new SelectionManager();
 //
 //        textManager.initArchitecture();
-          screenshotMaker.initArchitecture();
-          vizEventManager.initArchitecture();
+        screenshotMaker.initArchitecture();
+        vizEventManager.initArchitecture();
+        selectionManager.initArchitecture();
         //TODO
     }
 
@@ -129,7 +133,7 @@ public class VizController implements VisualizationController {
     }
 
     public void destroy() {
-//        vizEventManager = null;
+        vizEventManager = null;
 //        textManager = null;
         //TODO
     }
@@ -179,6 +183,10 @@ public class VizController implements VisualizationController {
 
     public VizConfig getVizConfig() {
         return vizConfig;
+    }
+
+    public VizEventManager getVizEventManager() {
+        return vizEventManager;
     }
 
     public ScreenshotMaker getScreenshotMaker() {

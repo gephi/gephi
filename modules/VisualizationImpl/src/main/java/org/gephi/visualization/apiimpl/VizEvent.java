@@ -51,6 +51,7 @@ public class VizEvent extends EventObject {
 
     private Type type;
     private Object data;
+
     public VizEvent(Object source, Type t) {
         super(source);
         this.type = t;
@@ -75,7 +76,6 @@ public class VizEvent extends EventObject {
     }
 
     public enum Type {
-
         START_DRAG,
         DRAG,
         STOP_DRAG,
@@ -86,9 +86,9 @@ public class VizEvent extends EventObject {
         MOUSE_LEFT_CLICK,
         MOUSE_MIDDLE_CLICK,
         MOUSE_RIGHT_CLICK,
-        NODE_LEFT_CLICK,
         MOUSE_LEFT_PRESSING,
         MOUSE_RELEASED,
+        NODE_LEFT_CLICK,
         NODE_LEFT_PRESS,
         NODE_LEFT_PRESSING,
     }

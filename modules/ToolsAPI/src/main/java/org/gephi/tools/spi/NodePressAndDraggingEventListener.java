@@ -66,7 +66,7 @@ public interface NodePressAndDraggingEventListener extends ToolEventListener {
      *
      * @param nodes the clicked nodes
      */
-    public void pressNodes(Node[] nodes);
+    public boolean pressNodes(Node[] nodes);
 
     /**
      * Notify mouse is dragging
@@ -74,10 +74,10 @@ public interface NodePressAndDraggingEventListener extends ToolEventListener {
      * @param displacementX distance x
      * @param displacementY distance y
      */
-    public void drag(float displacementX, float displacementY);
+    public boolean drag(float displacementX, float displacementY);
 
     /**
      * Notify mouse has been released.
      */
-    public void released();
+    public boolean released();
 }

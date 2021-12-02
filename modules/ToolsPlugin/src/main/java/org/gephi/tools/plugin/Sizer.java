@@ -86,23 +86,27 @@ public class Sizer implements Tool {
         listeners = new ToolEventListener[1];
         listeners[0] = new NodePressAndDraggingEventListener() {
             @Override
-            public void pressNodes(Node[] nodes) {
+            public boolean pressNodes(Node[] nodes) {
                 Sizer.this.nodes = nodes;
                 sizes = new float[nodes.length];
                 for (int i = 0; i < nodes.length; i++) {
                     Node n = nodes[i];
                     sizes[i] = n.size();
                 }
+
+                return true;
             }
 
             @Override
-            public void released() {
+            public boolean released() {
                 nodes = null;
                 sizerPanel.setAvgSize(-1);
+
+                return true;
             }
 
             @Override
-            public void drag(float displacementX, float displacementY) {
+            public boolean drag(float displacementX, float displacementY) {
                 if (nodes != null) {
                     float averageSize = 0f;
                     for (int i = 0; i < nodes.length; i++) {
@@ -117,7 +121,11 @@ public class Sizer implements Tool {
                     }
                     averageSize /= nodes.length;
                     sizerPanel.setAvgSize(averageSize);
+
+                    return true;
                 }
+
+                return false;
             }
         };
         return listeners;

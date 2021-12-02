@@ -268,8 +268,8 @@ public class DesktopToolController implements ToolController {
             currentListener = new VizEventListener() {
 
                 @Override
-                public void handleEvent(VizEvent event) {
-                    toolEventListener.clickNodes((Node[]) event.getData());
+                public boolean handleEvent(VizEvent event) {
+                    return toolEventListener.clickNodes((Node[]) event.getData());
                 }
 
                 @Override
@@ -303,8 +303,8 @@ public class DesktopToolController implements ToolController {
             currentListeners[0] = new VizEventListener() {
 
                 @Override
-                public void handleEvent(VizEvent event) {
-                    toolEventListener.pressingNodes((Node[]) event.getData());
+                public boolean handleEvent(VizEvent event) {
+                    return toolEventListener.pressingNodes((Node[]) event.getData());
                 }
 
                 @Override
@@ -315,8 +315,8 @@ public class DesktopToolController implements ToolController {
             currentListeners[1] = new VizEventListener() {
 
                 @Override
-                public void handleEvent(VizEvent event) {
-                    toolEventListener.released();
+                public boolean handleEvent(VizEvent event) {
+                    return toolEventListener.released();
                 }
 
                 @Override
@@ -350,8 +350,8 @@ public class DesktopToolController implements ToolController {
             currentListeners[0] = new VizEventListener() {
 
                 @Override
-                public void handleEvent(VizEvent event) {
-                    toolEventListener.pressNodes((Node[]) event.getData());
+                public boolean handleEvent(VizEvent event) {
+                    return toolEventListener.pressNodes((Node[]) event.getData());
                 }
 
                 @Override
@@ -362,9 +362,9 @@ public class DesktopToolController implements ToolController {
             currentListeners[1] = new VizEventListener() {
 
                 @Override
-                public void handleEvent(VizEvent event) {
+                public boolean handleEvent(VizEvent event) {
                     float[] mouseDrag = (float[]) event.getData();
-                    toolEventListener.drag(mouseDrag[0], mouseDrag[1]);
+                    return toolEventListener.drag(mouseDrag[0], mouseDrag[1]);
                 }
 
                 @Override
@@ -375,8 +375,8 @@ public class DesktopToolController implements ToolController {
             currentListeners[2] = new VizEventListener() {
 
                 @Override
-                public void handleEvent(VizEvent event) {
-                    toolEventListener.released();
+                public boolean handleEvent(VizEvent event) {
+                    return toolEventListener.released();
                 }
 
                 @Override
@@ -409,11 +409,12 @@ public class DesktopToolController implements ToolController {
             currentListener = new VizEventListener() {
 
                 @Override
-                public void handleEvent(VizEvent event) {
+                public boolean handleEvent(VizEvent event) {
                     float[] data = (float[]) event.getData();
                     int[] viewport = new int[] {(int) data[0], (int) data[1]};
                     float[] threed = new float[] {data[2], data[3]};
-                    toolEventListener.mouseClick(viewport, threed);
+
+                    return toolEventListener.mouseClick(viewport, threed);
                 }
 
                 @Override

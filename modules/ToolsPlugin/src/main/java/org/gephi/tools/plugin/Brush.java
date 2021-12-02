@@ -83,7 +83,10 @@ public class Brush implements Tool {
         brushPanel = null;
     }
 
-    private void brush(Node[] nodes) {
+    private boolean brush(Node[] nodes) {
+        if (nodes == null || nodes.length == 0) {
+            return false;
+        }
 
         for (Node node : nodes) {
             float r = node.r();
@@ -108,6 +111,8 @@ public class Brush implements Tool {
             node.setG(g);
             node.setB(b);
         }
+
+        return true;
     }
 
     private Node[] getDiffusedNodes(Node[] input) {
@@ -138,15 +143,16 @@ public class Brush implements Tool {
         listeners = new ToolEventListener[1];
         listeners[0] = new NodePressingEventListener() {
             @Override
-            public void pressingNodes(Node[] nodes) {
+            public boolean pressingNodes(Node[] nodes) {
                 diffusionMethod = brushPanel.getDiffusionMethod();
                 color = brushPanel.getColor().getColorComponents(color);
                 intensity = brushPanel.getIntensity();
-                brush(nodes);
+                return brush(nodes);
             }
 
             @Override
-            public void released() {
+            public boolean released() {
+                return false;
             }
         };
         return listeners;
