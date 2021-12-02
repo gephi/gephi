@@ -781,12 +781,6 @@
                 <groupId>io.sentry</groupId>
                 <artifactId>sentry</artifactId>
                 <version>${gephi.sentry.version}</version>
-                <!-- exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions -->
             </dependency>
 
             <!-- Test JARs -->
