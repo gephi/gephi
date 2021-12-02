@@ -47,7 +47,6 @@
     </module>
 
     <module name="LineLength">
-        <property name="severity" value="error"/>
         <property name="fileExtensions" value="java"/>
         <!-- Gephi: changed from 100 -->
         <property name="max" value="120"/>
