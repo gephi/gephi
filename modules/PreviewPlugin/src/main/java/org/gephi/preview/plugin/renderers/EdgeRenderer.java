@@ -145,12 +145,7 @@ public class EdgeRenderer implements Renderer {
         return ((Double) item.getData(EdgeItem.WEIGHT)).floatValue();
     }
 
-    @Override
-    public void preProcess(PreviewModel previewModel) {
-        final PreviewProperties properties = previewModel.getProperties();
-        final Item[] edgeItems = previewModel.getItems(Item.EDGE);
-
-        //Put nodes in edge item
+    protected static void putNodesInEdgeItems(PreviewModel previewModel, Item[] edgeItems) {
         for (final Item item : edgeItems) {
             final Edge edge = (Edge) item.getSource();
             final Node source = edge.getSource();
@@ -160,6 +155,15 @@ public class EdgeRenderer implements Renderer {
             item.setData(SOURCE, nodeSource);
             item.setData(TARGET, nodeTarget);
         }
+    }
+
+    @Override
+    public void preProcess(PreviewModel previewModel) {
+        final PreviewProperties properties = previewModel.getProperties();
+        final Item[] edgeItems = previewModel.getItems(Item.EDGE);
+
+        //Put nodes in edge item
+        putNodesInEdgeItems(previewModel, edgeItems);
 
         //Calculate max and min weight
         double minWeight = Double.POSITIVE_INFINITY;
