@@ -80,16 +80,16 @@ public class VizController implements VisualizationController {
     }
 
     public void initInstances() {
-//        vizConfig = new VizConfig();
+          vizConfig = new VizConfig();
 //        vizEventManager = new StandardVizEventManager();
-//        limits = new GraphLimits();
+          limits = new GraphLimits();
 //        textManager = new TextManager();
 //        currentModel = new VizModel(true);
-//        selectionManager = new SelectionManager();
+          selectionManager = new SelectionManager();
 //
 //        textManager.initArchitecture();
-//        screenshotMaker.initArchitecture();
-//        vizEventManager.initArchitecture();
+          screenshotMaker.initArchitecture();
+          vizEventManager.initArchitecture();
         //TODO
     }
 

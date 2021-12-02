@@ -320,30 +320,30 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     private void initTools() {
         final ToolController tc = Lookup.getDefault().lookup(ToolController.class);
         if (tc != null) {
-//            if (VizController.getInstance().getVizConfig().isToolbar()) {
-//                JPanel westPanel = new JPanel(new BorderLayout(0, 0));
-//                if (UIUtils.isAquaLookAndFeel()) {
-//                    westPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
-//                }
-//
-//                toolbar = tc.getToolbar();
-//                if (toolbar != null) {
-//                    westPanel.add(toolbar, BorderLayout.CENTER);
-//                }
-//                selectionToolbar = new SelectionToolbar();
-//                actionsToolbar = new ActionsToolbar();
-//
-//                westPanel.add(selectionToolbar, BorderLayout.NORTH);
-//                westPanel.add(actionsToolbar, BorderLayout.SOUTH);
-//                add(westPanel, BorderLayout.WEST);
-//            }
-//
-//            if (VizController.getInstance().getVizConfig().isPropertiesbar()) {
-//                propertiesBar = tc.getPropertiesBar();
-//                if (propertiesBar != null) {
-//                    add(propertiesBar, BorderLayout.NORTH);
-//                }
-//            }
+           if (VizController.getInstance().getVizConfig().isToolbar()) {
+                JPanel westPanel = new JPanel(new BorderLayout(0, 0));
+                if (UIUtils.isAquaLookAndFeel()) {
+                    westPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+                }
+
+                toolbar = tc.getToolbar();
+               if (toolbar != null) {
+                  westPanel.add(toolbar, BorderLayout.CENTER);
+                }
+                selectionToolbar = new SelectionToolbar();
+                actionsToolbar = new ActionsToolbar();
+
+                westPanel.add(selectionToolbar, BorderLayout.NORTH);
+                westPanel.add(actionsToolbar, BorderLayout.SOUTH);
+                add(westPanel, BorderLayout.WEST);
+            }
+
+            if (VizController.getInstance().getVizConfig().isPropertiesbar()) {
+                propertiesBar = tc.getPropertiesBar();
+               if (propertiesBar != null) {
+                   add(propertiesBar, BorderLayout.NORTH);
+               }
+            }
             //TODO
         }
 
