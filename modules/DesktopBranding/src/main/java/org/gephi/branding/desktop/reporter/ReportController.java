@@ -137,6 +137,8 @@ public class ReportController {
         event.setExtra("OpenGL Vendor", report.getGlVendor());
         event.setExtra("OpenGL Renderer", report.getGlRenderer());
         event.setExtra("OpenGL Version", report.getGlVersion());
+        // The user email is okay to store privacy-wise, because it is provided by the user voluntarily
+        event.setExtra("User email", report.getUserEmail());
         event.setExtra("Log", report.getLog());
         event.setThrowable(report.getThrowable());
 
