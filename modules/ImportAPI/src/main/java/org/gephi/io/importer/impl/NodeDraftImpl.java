@@ -59,11 +59,18 @@ public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
     protected float size;
     protected boolean fixed;
 
-    public NodeDraftImpl(ImportContainerImpl container, String id) {
+    protected final int sequentialId;
+
+    public NodeDraftImpl(ImportContainerImpl container, String id, int sequentialId) {
         super(container, id);
+        this.sequentialId = sequentialId;
     }
 
     //GETTERS
+    public int getSequentialId() {
+        return sequentialId;
+    }
+
     @Override
     public float getSize() {
         return size;
