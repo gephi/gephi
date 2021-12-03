@@ -255,7 +255,7 @@ public class StandardVizEventManager implements VizEventManager {
     }
 
     public boolean mouseMiddlePress(VizEngine engine) {
-        return handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
+        return handlers[VizEvent.Type.MOUSE_MIDDLE_PRESS.ordinal()].dispatch();
     }
 
     public boolean mouseMove(VizEngine engine) {
