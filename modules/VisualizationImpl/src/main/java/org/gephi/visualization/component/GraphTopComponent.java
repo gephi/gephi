@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.component;
 
 import java.awt.AWTEvent;
@@ -62,14 +63,14 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
 @ConvertAsProperties(dtd = "-//org.gephi.visualization.component//Graph//EN",
-        autostore = false)
+    autostore = false)
 @TopComponent.Description(preferredID = "GraphTopComponent",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.visualization.component.GraphTopComponent")
 @ActionReference(path = "Menu/Window", position = 500)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_GraphTopComponent",
-        preferredID = "GraphTopComponent")
+    preferredID = "GraphTopComponent")
 public class GraphTopComponent extends TopComponent implements AWTEventListener {
 
     private transient VizBarController vizBarController;
@@ -275,7 +276,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         KeyEvent evt = (KeyEvent) event;
 
         if (evt.getID() == KeyEvent.KEY_RELEASED
-                && (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK) {
+            && (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK) {
 //            final ContextMenuItemManipulator item = keyActionMappings.get(evt.getKeyCode());
 //            if (item != null) {
 //                ((GraphContextMenuItem) item).setup(eventBridge.getGraph(), eventBridge.getSelectedNodes());
@@ -311,8 +312,8 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     protected void componentActivated() {
         java.awt.Toolkit.getDefaultToolkit().addAWTEventListener(this, AWTEvent.KEY_EVENT_MASK);
         activateWorkspaceVizEngine(
-                Lookup.getDefault().lookup(ProjectController.class)
-                        .getCurrentWorkspace()
+            Lookup.getDefault().lookup(ProjectController.class)
+                .getCurrentWorkspace()
         );
     }
 
@@ -320,8 +321,8 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     protected void componentDeactivated() {
         java.awt.Toolkit.getDefaultToolkit().removeAWTEventListener(this);
         deactivateWorkspaceVizEngine(
-                Lookup.getDefault().lookup(ProjectController.class)
-                        .getCurrentWorkspace()
+            Lookup.getDefault().lookup(ProjectController.class)
+                .getCurrentWorkspace()
         );
     }
 

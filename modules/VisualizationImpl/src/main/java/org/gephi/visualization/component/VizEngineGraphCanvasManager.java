@@ -21,7 +21,6 @@ import org.gephi.viz.engine.lwjgl.pipeline.events.LWJGLInputEvent;
 import org.gephi.viz.engine.lwjgl.pipeline.events.MouseEvent;
 import org.gephi.viz.engine.spi.InputListener;
 import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
-import org.gephi.viz.engine.status.GraphRenderingOptions;
 import org.gephi.viz.engine.util.gl.BasicFPSAnimator;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.joml.Vector2fc;
@@ -75,11 +74,11 @@ public class VizEngineGraphCanvasManager {
         final LWJGLRenderingTargetAWT renderingTarget = new LWJGLRenderingTargetAWT();
 
         this.engine = VizEngineFactory.newEngine(
-                renderingTarget,
-                graphModel,
-                Collections.singletonList(
-                        new VizEngineLWJGLConfigurator()
-                )
+            renderingTarget,
+            graphModel,
+            Collections.singletonList(
+                new VizEngineLWJGLConfigurator()
+            )
         );
 
         workspace.add(engine);

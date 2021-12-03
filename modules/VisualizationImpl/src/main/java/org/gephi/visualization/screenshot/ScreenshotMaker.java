@@ -42,6 +42,13 @@
 
 package org.gephi.visualization.screenshot;
 
+import java.awt.Cursor;
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
@@ -52,13 +59,6 @@ import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 /**
  * @author Mathieu Bastian
@@ -102,7 +102,7 @@ public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
         width = NbPreferences.forModule(ScreenshotMaker.class).getInt(WIDTH_DEFAULT, width);
         height = NbPreferences.forModule(ScreenshotMaker.class).getInt(HEIGHT_DEFAULT, height);
         transparentBackground = NbPreferences.forModule(ScreenshotMaker.class)
-                .getBoolean(TRANSPARENT_BACKGROUND_DEFAULT, transparentBackground);
+            .getBoolean(TRANSPARENT_BACKGROUND_DEFAULT, transparentBackground);
         autoSave = NbPreferences.forModule(ScreenshotMaker.class).getBoolean(AUTOSAVE_DEFAULT, autoSave);
         finishedMessage = NbPreferences.forModule(ScreenshotMaker.class).getBoolean(SHOW_MESSAGE, finishedMessage);
 
@@ -120,7 +120,7 @@ public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
 
     public void takeScreenshot() {
         executor
-                .execute(this, this, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.progress.message"), null);
+            .execute(this, this, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.progress.message"), null);
     }
 
     @Override
@@ -151,16 +151,16 @@ public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
                 if (finishedMessage && file != null) {
                     if (autoSave) {
                         final String msg = NbBundle
-                                .getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message",
-                                        file.getAbsolutePath());
+                            .getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message",
+                                file.getAbsolutePath());
                         StatusDisplayer.getDefault().setStatusText(msg);
                     } else {
                         final String msg = NbBundle
-                                .getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message",
-                                        file.getName());
+                            .getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message",
+                                file.getName());
                         JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg,
-                                NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"),
-                                JOptionPane.INFORMATION_MESSAGE);
+                            NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"),
+                            JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             }
@@ -181,7 +181,7 @@ public class ScreenshotMaker implements VizArchitecture, LongTask, Runnable {
         panel.setup(this);
         ValidationPanel validationPanel = ScreenshotSettingsPanel.createValidationPanel(panel);
         if (validationPanel
-                .showOkCancelDialog(NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.configure.title"))) {
+            .showOkCancelDialog(NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.configure.title"))) {
             panel.unsetup(this);
         }
 //        DialogDescriptor dd = new DialogDescriptor(validationPanel, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.configure.title"));

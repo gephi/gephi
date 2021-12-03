@@ -42,16 +42,23 @@
 
 package org.gephi.visualization.component;
 
-import org.gephi.graph.api.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Mathieu Bastian

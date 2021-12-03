@@ -74,7 +74,7 @@ public interface NodePressAndDraggingEventListener extends ToolEventListener {
      *
      * @param displacementX distance x
      * @param displacementY distance y
-     * @return Event consumed 
+     * @return Event consumed
      */
     public boolean drag(float displacementX, float displacementY);
 

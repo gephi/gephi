@@ -42,12 +42,12 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.visualization.component;
 
-import org.gephi.ui.utils.UIUtils;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JComponent;
+import javax.swing.UIManager;
+import org.gephi.ui.utils.UIUtils;
 
 /**
  * @author Mathieu Bastian

@@ -42,6 +42,10 @@
 
 package org.gephi.tools.plugin;
 
+import java.awt.Color;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 import org.gephi.algorithms.shortestpath.AbstractShortestPathAlgorithm;
 import org.gephi.algorithms.shortestpath.BellmanFordShortestPathAlgorithm;
 import org.gephi.algorithms.shortestpath.DijkstraShortestPathAlgorithm;
@@ -49,15 +53,17 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
-import org.gephi.tools.spi.*;
+import org.gephi.tools.spi.MouseClickEventListener;
+import org.gephi.tools.spi.NodeClickEventListener;
+import org.gephi.tools.spi.Tool;
+import org.gephi.tools.spi.ToolEventListener;
+import org.gephi.tools.spi.ToolSelectionType;
+import org.gephi.tools.spi.ToolUI;
 import org.gephi.ui.tools.plugin.ShortestPathPanel;
 import org.gephi.visualization.VizController;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * @author Mathieu Bastian

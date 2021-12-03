@@ -42,20 +42,22 @@
 
 package org.gephi.visualization.apiimpl;
 
-import org.gephi.datalab.api.DataLaboratoryHelper;
-import org.gephi.datalab.spi.ContextMenuItemManipulator;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.Node;
-import org.gephi.visualization.spi.GraphContextMenuItem;
-import org.openide.util.Lookup;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
+import org.gephi.datalab.api.DataLaboratoryHelper;
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
+import org.gephi.visualization.spi.GraphContextMenuItem;
+import org.openide.util.Lookup;
 
 /**
  * @author Mathieu Bastian

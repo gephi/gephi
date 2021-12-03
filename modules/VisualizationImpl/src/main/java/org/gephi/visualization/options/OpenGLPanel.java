@@ -42,12 +42,10 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.visualization.options;
 
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.apiimpl.VizConfig;
-import org.openide.util.NbPreferences;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import org.gephi.visualization.apiimpl.VizConfig;
+import org.openide.util.NbPreferences;
 
 final class OpenGLPanel extends javax.swing.JPanel {
 

@@ -42,13 +42,15 @@
 
 package org.gephi.visualization.component;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import org.gephi.ui.components.JDropDownButton;
 import org.gephi.visualization.VizController;
 import org.openide.util.NbBundle;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Mathieu Bastian

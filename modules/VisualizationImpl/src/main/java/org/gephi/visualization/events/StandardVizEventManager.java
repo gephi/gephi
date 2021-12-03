@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.events;
 
 import java.lang.ref.WeakReference;
@@ -83,12 +84,11 @@ public class StandardVizEventManager implements VizEventManager {
     private VizEventTypeHandler[] handlers;
     private int pressingTick = 0;
     private int draggingTick = 0;
+    private boolean dragging = false;
+    private boolean pressing = false;
 
     public StandardVizEventManager() {
     }
-
-    private boolean dragging = false;
-    private boolean pressing = false;
 
     @Override
     public boolean processMouseEvent(VizEngine engine, MouseEvent mouseEvent) {
@@ -97,8 +97,8 @@ public class StandardVizEventManager implements VizEventManager {
 
         mouseScreenPosition.set(mouseEvent.x, mouseEvent.y);
         engine.screenCoordinatesToWorldCoordinates(
-                mouseScreenPosition.x, mouseScreenPosition.y,
-                mouseWorldPosition
+            mouseScreenPosition.x, mouseScreenPosition.y,
+            mouseWorldPosition
         );
 
         switch (mouseEvent.action) {
@@ -212,7 +212,8 @@ public class StandardVizEventManager implements VizEventManager {
         if (mouseLeftClickHandler.hasListeners()) {
             final Set<Node> selectedNodes = index.getSelectedNodes();
             if (selectedNodes.isEmpty() || !VizController.getInstance().getVizConfig().isSelectionEnable()) {
-                if (mouseLeftClickHandler.dispatch(getScreenAndWorldPositionsArray(mouseScreenPosition, mouseWorldPosition))) {
+                if (mouseLeftClickHandler.dispatch(
+                    getScreenAndWorldPositionsArray(mouseScreenPosition, mouseWorldPosition))) {
                     return true;
                 }
             }
@@ -222,7 +223,7 @@ public class StandardVizEventManager implements VizEventManager {
     }
 
     private float[] getScreenAndWorldPositionsArray(Vector2i screenPosition, Vector2f worldPosition) {
-        return new float[]{
+        return new float[] {
             screenPosition.x(), screenPosition.y(),
             worldPosition.x(), worldPosition.y()
         };
@@ -275,7 +276,7 @@ public class StandardVizEventManager implements VizEventManager {
         if (pressingTick++ >= PRESSING_FREQUENCY) {
             pressingTick = 0;
             final VizEventTypeHandler nodeLeftPressingHandler
-                    = handlers[VizEvent.Type.NODE_LEFT_PRESSING.ordinal()];
+                = handlers[VizEvent.Type.NODE_LEFT_PRESSING.ordinal()];
             if (nodeLeftPressingHandler.hasListeners()) {
                 //Check if some node are selected
                 final Set<Node> selectedNodes = index.getSelectedNodes();
@@ -307,7 +308,7 @@ public class StandardVizEventManager implements VizEventManager {
                 dragWorldDisplacement.sub(mouseWorldPosition);
 
                 return handler.dispatch(
-                        getScreenAndWorldPositionsArray(dragScreenDisplacement, dragWorldDisplacement)
+                    getScreenAndWorldPositionsArray(dragScreenDisplacement, dragWorldDisplacement)
                 );
             }
         }
@@ -376,7 +377,7 @@ public class StandardVizEventManager implements VizEventManager {
         }
 
         protected synchronized void removeListener(VizEventListener listener) {
-            for (Iterator<WeakReference<VizEventListener>> itr = listeners.iterator(); itr.hasNext();) {
+            for (Iterator<WeakReference<VizEventListener>> itr = listeners.iterator(); itr.hasNext(); ) {
                 WeakReference<VizEventListener> li = itr.next();
                 if (li.get() == listener) {
                     itr.remove();

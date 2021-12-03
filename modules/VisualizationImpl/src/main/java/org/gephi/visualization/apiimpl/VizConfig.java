@@ -229,10 +229,10 @@ public class VizConfig {
         NbPreferences.forModule(VizConfig.class).getBoolean(HIGHTLIGHT_ANIMATION, DEFAULT_HIGHTLIGHT_ANIMATION);
     protected float lightenNonSelectedFactor = 0.5f;        //Overriden in Engine
     protected float[] uniColorSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
-        .get(NODE_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_SELECTED_UNIQUE_COLOR)))
+            .get(NODE_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_SELECTED_UNIQUE_COLOR)))
         .getRGBColorComponents(null);
     protected float[] uniColorSelectedNeigborColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
-        .get(NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR)))
+            .get(NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR)))
         .getRGBColorComponents(null);
     protected int octreeDepth = NbPreferences.forModule(VizConfig.class).getInt(OCTREE_DEPTH, DEFAULT_OCTREE_DEPTH);
     protected int octreeWidth = NbPreferences.forModule(VizConfig.class).getInt(OCTREE_WIDTH, DEFAULT_OCTREE_WIDTH);

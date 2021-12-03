@@ -42,9 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.visualization.component;
 
+import java.awt.Color;
 import org.gephi.ui.components.JColorButton;
-
-import java.awt.*;
 
 /**
  * @author Mathieu Bastian

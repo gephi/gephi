@@ -42,18 +42,18 @@
 
 package org.gephi.visualization.component;
 
-import net.miginfocom.swing.MigLayout;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.GraphController;
-import org.openide.util.Lookup;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.ButtonModel;
+import javax.swing.JCheckBox;
+import net.miginfocom.swing.MigLayout;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.GraphController;
+import org.openide.util.Lookup;
 
 /**
  * @author Mathieu Bastian
