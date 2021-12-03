@@ -307,7 +307,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         S += e_out * lBinom(B, 2);
         for (Community community : theStructure.communities) {
             // Number of edges of community (with itself or another one)
-            Double e_r = theStructure.weights[community.nodes.get(0)];//community.weightSum; // FIXME: temp hack!!! the value is wrong.
+            //Double e_r = theStructure.weights[community.nodes.get(0)];//community.weightSum; // FIXME: temp hack!!! the value is wrong.
+            Double e_r = community.weightSum; // FIXME: temp hack!!! the value is wrong.
             // Number of edges within community
             Double e_rr = community.internalWeightSum;
             // Number of nodes in the  community
