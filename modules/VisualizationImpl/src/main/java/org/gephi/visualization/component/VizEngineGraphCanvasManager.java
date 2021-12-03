@@ -130,7 +130,7 @@ public class VizEngineGraphCanvasManager {
             @Override
             public void componentResized(ComponentEvent event) {
                 if (renderingTarget.getEngine() != null) {
-                    renderingTarget.reshape(event.getComponent().getWidth(), event.getComponent().getHeight());
+                    renderingTarget.reshape(glCanvas.getFramebufferWidth(), glCanvas.getFramebufferHeight());
                 }
             }
         });
@@ -138,7 +138,7 @@ public class VizEngineGraphCanvasManager {
             @Override
             public void componentResized(ComponentEvent event) {
                 if (renderingTarget.getEngine() != null) {
-                    renderingTarget.reshape(glCanvas.getWidth(), glCanvas.getHeight());
+                    renderingTarget.reshape(glCanvas.getFramebufferWidth(), glCanvas.getFramebufferHeight());
                 }
             }
         });
