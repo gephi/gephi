@@ -98,8 +98,8 @@ public class VizEngineGraphCanvasManager {
 
         engine.setWorldUpdatersExecutionMode(UPDATE_DATA_MODE);
 
-        engine.getLookup().lookup(GraphRenderingOptions.class)
-                .setShowEdges(false); //FIXME in viz engine locking
+//        engine.getLookup().lookup(GraphRenderingOptions.class)
+//                .setShowEdges(false); //FIXME in viz engine locking
 
         renderingTarget.setup(engine);
 
