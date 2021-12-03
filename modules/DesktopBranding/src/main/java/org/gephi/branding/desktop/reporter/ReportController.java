@@ -58,6 +58,7 @@ import java.util.Collections;
 import java.util.MissingResourceException;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -139,7 +140,7 @@ public class ReportController {
         event.setExtra("OpenGL Version", report.getGlVersion());
         // The user email is okay to store privacy-wise, because it is provided by the user voluntarily
         event.setExtra("User email", report.getUserEmail());
-        event.setExtra("Log", report.getLog());
+        event.setExtra("Log", anonymizeLog(report.getLog()));
         event.setThrowable(report.getThrowable());
 
         Sentry.captureEvent(event);
@@ -275,5 +276,14 @@ public class ReportController {
         } catch (Exception e) {
         }
         report.setLog(log);
+    }
+
+    /**
+     * Removes usernames from log files
+     */
+    protected static String anonymizeLog(String log) {
+        return log.replaceAll(
+                "(/((home)|(Users))/[^/\n]*)|(\\\\Users\\\\[^\\\\\n]*)",
+                "/ANONYMIZED_HOME_DIR"); // NOI18N
     }
 }
