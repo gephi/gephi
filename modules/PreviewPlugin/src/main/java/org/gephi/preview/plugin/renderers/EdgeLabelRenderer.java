@@ -67,14 +67,12 @@ import org.gephi.preview.api.Vector;
 import org.gephi.preview.plugin.builders.EdgeBuilder;
 import org.gephi.preview.plugin.builders.EdgeLabelBuilder;
 import org.gephi.preview.plugin.builders.NodeBuilder;
-import org.gephi.preview.plugin.items.EdgeItem;
 import org.gephi.preview.plugin.items.EdgeLabelItem;
 import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
-import org.gephi.preview.types.EdgeColor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
@@ -120,18 +118,18 @@ public class EdgeLabelRenderer implements Renderer {
             }
         }
 
+        //Put nodes in edge item (in case it was not done yet by EdgeRenderer)
+        EdgeRenderer.putNodesInEdgeItems(previewModel, previewModel.getItems(Item.EDGE));
+
         //Put parent color, and calculate position
         for (Item item : previewModel.getItems(Item.EDGE_LABEL)) {
             Edge edge = (Edge) item.getSource();
             Item edgeItem = previewModel.getItem(Item.EDGE, edge);
 
-            EdgeColor edgeColor = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
-            NodeItem sourceItem = (NodeItem) edgeItem.getData(EdgeRenderer.SOURCE);
-            NodeItem targetItem = (NodeItem) edgeItem.getData(EdgeRenderer.TARGET);
-            Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
-                (Color) sourceItem.getData(NodeItem.COLOR),
-                (Color) targetItem.getData(NodeItem.COLOR));
-            item.setData(EDGE_COLOR, color);
+            NodeItem sourceItem = edgeItem.getData(EdgeRenderer.SOURCE);
+            NodeItem targetItem = edgeItem.getData(EdgeRenderer.TARGET);
+
+            item.setData(EDGE_COLOR, EdgeRenderer.getColor(edgeItem, properties));
             if (edge.isSelfLoop()) {
                 //Middle
                 Float x = sourceItem.getData(NodeItem.X);
@@ -155,7 +153,7 @@ public class EdgeLabelRenderer implements Renderer {
                 Float y1 = sourceItem.getData(NodeItem.Y);
                 Float y2 = targetItem.getData(NodeItem.Y);
 
-                //Curved edgs
+                //Curved edges
                 Vector direction = new Vector(x2, y2);
                 direction.sub(new Vector(x1, y1));
                 float length = direction.mag();

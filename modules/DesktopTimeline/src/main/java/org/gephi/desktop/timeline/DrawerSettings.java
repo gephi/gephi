@@ -74,6 +74,7 @@ public class DrawerSettings {
     public int topChartMargin;
     private int lastWidth = 0;
     private int lastHeight = 0;
+
     public DrawerSettings() {
         /* DEFINE THEME HERE */
         //background.top = new Color(101, 101, 101, 255);

@@ -46,7 +46,7 @@ package org.gephi.lib.gleem.linalg;
  */
 
 public class Vecf {
-    private float[] data;
+    private final float[] data;
 
     public Vecf(int n) {
         data = new float[n];

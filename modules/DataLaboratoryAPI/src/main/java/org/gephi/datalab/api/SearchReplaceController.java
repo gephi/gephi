@@ -117,11 +117,11 @@ public interface SearchReplaceController {
      */
     class SearchOptions {
 
-        private boolean searchNodes;
+        private final boolean searchNodes;
         private Node[] nodesToSearch;
         private Edge[] edgesToSearch;
         private Integer startingRow = null, startingColumn = null;
-        private HashSet<Integer> columnsToSearch = new HashSet<>();
+        private final HashSet<Integer> columnsToSearch = new HashSet<>();
         private boolean loopToBeginning = true;
         private Pattern regexPattern;
         private boolean useRegexReplaceMode = false;

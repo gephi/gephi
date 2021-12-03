@@ -82,8 +82,8 @@ class SplineControlPanel extends JPanel {
     private SplineDisplay display;
     private int linesCount = 0;
     private Animator controller;
-    private SplineEditor editor;
-    private Evaluator point2dInterpolator = new Point2DNonLinearInterpolator();
+    private final SplineEditor editor;
+    private final Evaluator point2dInterpolator = new Point2DNonLinearInterpolator();
 
     SplineControlPanel(SplineEditor editor) {
         super(new BorderLayout());
@@ -321,8 +321,8 @@ class SplineControlPanel extends JPanel {
 
     private static class Template {
 
-        private Point2D control1;
-        private Point2D control2;
+        private final Point2D control1;
+        private final Point2D control2;
         private Image image;
 
         public Template(Point2D control1, Point2D control2) {

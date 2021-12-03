@@ -121,7 +121,7 @@ public class INTERSECTIONBuilder implements FilterBuilder {
 
         @Override
         public Graph filter(Subgraph[] graphs) {
-            Subgraph subgraph = (Subgraph) graphs[0];
+            Subgraph subgraph = graphs[0];
 
             for (int i = 1; i < graphs.length; i++) {
                 subgraph.intersection(graphs[i]);

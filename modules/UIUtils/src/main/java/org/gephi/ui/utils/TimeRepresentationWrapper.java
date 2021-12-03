@@ -75,10 +75,7 @@ public class TimeRepresentationWrapper {
             return false;
         }
         final TimeRepresentationWrapper other = (TimeRepresentationWrapper) obj;
-        if (this.timeRepresentation != other.timeRepresentation) {
-            return false;
-        }
-        return true;
+        return this.timeRepresentation == other.timeRepresentation;
     }
 
     @Override

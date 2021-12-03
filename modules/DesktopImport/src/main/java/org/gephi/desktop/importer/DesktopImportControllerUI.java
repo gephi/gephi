@@ -271,7 +271,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         ui.getDisplayName());
                 JPanel panel = ui.getPanel();
 
-                FileImporter[] fi = (FileImporter[]) entry.getValue()
+                FileImporter[] fi = entry.getValue()
                     .toArray((FileImporter[]) Array.newInstance(entry.getValue().get(0).getClass(), 0));
                 ui.setup(fi);
 

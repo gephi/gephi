@@ -66,7 +66,7 @@ public class KCorePanel extends javax.swing.JPanel implements ChangeListener {
     public void stateChanged(ChangeEvent evt) {
         FilterProperty k = filter.getProperties()[0];
         try {
-            k.setValue((Integer) degreeSpinner.getValue());
+            k.setValue(degreeSpinner.getValue());
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }

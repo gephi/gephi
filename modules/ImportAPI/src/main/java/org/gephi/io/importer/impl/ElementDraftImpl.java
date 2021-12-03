@@ -83,6 +83,11 @@ public abstract class ElementDraftImpl implements ElementDraft {
         this.attributes = new Object[0];
     }
 
+    private static Object parseValue(String value, Class type) {
+        value = value.replace("INF", "Infinity").replace("-INF", "-Infinity");
+        return AttributeUtils.parse(value, type);
+    }
+
     abstract ColumnDraft getColumn(String key);
 
     abstract ColumnDraft getColumn(String key, Class type);
@@ -311,9 +316,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
             }
         }
 
-        Class typeClass = column.getResolvedTypeClass(container);
-        Object val = AttributeUtils.parse(value, typeClass);
-        setValue(key, val);
+        setValue(key, parseValue(value, column.getResolvedTypeClass(container)));
     }
 
     @Override
@@ -326,8 +329,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void parseAndSetValue(String key, String value, double timestamp) {
         ColumnDraft column = getColumn(key);
-        Object val = AttributeUtils.parse(value, column.getTypeClass());
-        setValue(key, val, timestamp);
+        setValue(key, parseValue(value, column.getTypeClass()), timestamp);
     }
 
     @Override
@@ -353,8 +355,7 @@ public abstract class ElementDraftImpl implements ElementDraft {
     @Override
     public void parseAndSetValue(String key, String value, double start, double end) {
         ColumnDraft column = getColumn(key);
-        Object val = AttributeUtils.parse(value, column.getTypeClass());
-        setValue(key, val, start, end);
+        setValue(key, parseValue(value, column.getTypeClass()), start, end);
     }
 
     @Override

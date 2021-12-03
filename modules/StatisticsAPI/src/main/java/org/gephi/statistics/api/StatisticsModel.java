@@ -60,5 +60,5 @@ public interface StatisticsModel {
      * @param statistics a statistics class
      * @return the report or <code>null</code> if not found
      */
-    public String getReport(Class<? extends Statistics> statistics);
+    String getReport(Class<? extends Statistics> statistics);
 }

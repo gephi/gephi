@@ -63,7 +63,7 @@ public interface Statistics {
      *
      * @param graphModel The graph model
      */
-    public void execute(GraphModel graphModel);
+    void execute(GraphModel graphModel);
 
     /**
      * Returns an HTML string that displays the statistics result. Can contains
@@ -71,5 +71,5 @@ public interface Statistics {
      *
      * @return An HTML string that displays the results for this Statistics
      */
-    public String getReport();
+    String getReport();
 }

@@ -69,6 +69,7 @@ public class PlaySettingsDialog extends javax.swing.JPanel {
     private javax.swing.JRadioButton oneBoundRadio;
     private javax.swing.JSpinner stepSizeSpinner;
     private javax.swing.JRadioButton twoBoundsRadio;
+
     public PlaySettingsDialog() {
         initComponents();
     }

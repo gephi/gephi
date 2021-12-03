@@ -67,6 +67,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JPanel selectionColorPanel;
     private javax.swing.JCheckBox showEdgesCheckbox;
     private javax.swing.JCheckBox sourceNodeColorCheckbox;
+
     /**
      * Creates new form EdgeSettingsPanel
      */

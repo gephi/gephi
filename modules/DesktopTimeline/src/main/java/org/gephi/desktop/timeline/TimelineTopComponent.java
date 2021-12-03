@@ -81,9 +81,9 @@ import java.awt.event.ActionListener;
 //preferredID = "TimelineTopComponent")
 public final class TimelineTopComponent extends JPanel implements TimelineModelListener {
 
-    private transient TimelineDrawer drawer;
+    private final transient TimelineDrawer drawer;
     private transient TimelineModel model;
-    private transient TimelineController controller;
+    private final transient TimelineController controller;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
     private javax.swing.JButton columnsButton;
@@ -100,6 +100,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
     private javax.swing.JButton settingsButton;
     private transient javax.swing.JPanel timelinePanel;
     private javax.swing.JToolBar toolbarEnable;
+
     public TimelineTopComponent() {
         initComponents();
         if (UIUtils.isAquaLookAndFeel()) {

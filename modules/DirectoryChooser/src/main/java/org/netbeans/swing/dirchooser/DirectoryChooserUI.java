@@ -167,16 +167,16 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
     private static final int ACCESSORY_WIDTH = 250;
     private static final Logger LOG = Logger.getLogger(DirectoryChooserUI.class.getName());
     private static final String TIMEOUT_KEY = "nb.fileChooser.timeout"; // NOI18N
-    private static Dimension PREF_SIZE = new Dimension(425, 245);
-    private static Dimension MIN_SIZE = new Dimension(425, 245);
-    private static Dimension TREE_PREF_SIZE = new Dimension(380, 230);
+    private static final Dimension PREF_SIZE = new Dimension(425, 245);
+    private static final Dimension MIN_SIZE = new Dimension(425, 245);
+    private static final Dimension TREE_PREF_SIZE = new Dimension(380, 230);
     private static JTree tree;
     private static JFileChooser fileChooser;
     private JPanel centerPanel;
     private JLabel lookInComboBoxLabel;
     private JComboBox directoryComboBox;
     private DirectoryComboBoxModel directoryComboBoxModel;
-    private ActionListener directoryComboBoxAction = new DirectoryComboBoxAction();
+    private final ActionListener directoryComboBoxAction = new DirectoryComboBoxAction();
     private FilterTypeComboBoxModel filterTypeComboBoxModel;
     private JTextField filenameTextField;
     private JComponent placesBar;
@@ -197,7 +197,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
     private String upFolderAccessibleName = null;
     private String newFolderToolTipText = null;
     private String homeFolderTooltipText = null;
-    private Action newFolderAction = new NewDirectoryAction();
+    private final Action newFolderAction = new NewDirectoryAction();
     private BasicFileView fileView = new DirectoryChooserFileView();
     private DirectoryTreeModel model;
     private DirectoryNode newFolderNode;
@@ -603,8 +603,8 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
         centerPanel.add(treePanel, BorderLayout.CENTER);
         // control width of accessory panel, don't allow to jump (change width)
         JPanel wrapAccessory = new JPanel() {
-            private Dimension prefSize = new Dimension(ACCESSORY_WIDTH, 0);
-            private Dimension minSize = new Dimension(ACCESSORY_WIDTH, 0);
+            private final Dimension prefSize = new Dimension(ACCESSORY_WIDTH, 0);
+            private final Dimension minSize = new Dimension(ACCESSORY_WIDTH, 0);
 
             @Override
             public Dimension getMinimumSize() {
@@ -938,9 +938,9 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
 
             RequestProcessor.getDefault().post(new Runnable() {
                 DirectoryNode node;
-                ArrayList<File> list = new ArrayList<>();
+                final ArrayList<File> list = new ArrayList<>();
                 int cannotDelete;
-                ArrayList<DirectoryNode> nodes2Remove = new ArrayList<>(nodePath.length);
+                final ArrayList<DirectoryNode> nodes2Remove = new ArrayList<>(nodePath.length);
 
                 @Override
                 public void run() {
@@ -980,7 +980,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
                                 message = cannotDelete + " " + getBundle().getString("MSG_Plur_Delete");
                             }
 
-                            setSelected((File[]) list.toArray(new File[list.size()]));
+                            setSelected(list.toArray(new File[list.size()]));
 
                             JOptionPane.showConfirmDialog(fileChooser, message, getBundle().getString("MSG_Confirm"),
                                 JOptionPane.OK_OPTION);
@@ -1483,7 +1483,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
                 } else if (s.equals("componentOrientation")) {
                     ComponentOrientation o = (ComponentOrientation) e.getNewValue();
                     JFileChooser cc = (JFileChooser) e.getSource();
-                    if (o != (ComponentOrientation) e.getOldValue()) {
+                    if (o != e.getOldValue()) {
                         cc.applyComponentOrientation(o);
                     }
                 } else if (s.equals("ancestor")) {
@@ -2221,7 +2221,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
     private class DirectoryHandler extends MouseAdapter
         implements TreeSelectionListener, CellEditorListener, ActionListener,
         FocusListener, Runnable {
-        private JFileChooser fileChooser;
+        private final JFileChooser fileChooser;
         /**
          * current selection holder
          */
@@ -2419,9 +2419,7 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
         private boolean isSelectionKept(TreePath selPath) {
             if (curSelPath != null) {
                 TreePath oldSel = curSelPath.get();
-                if (oldSel != null && oldSel.equals(selPath)) {
-                    return true;
-                }
+                return oldSel != null && oldSel.equals(selPath);
             }
             return false;
         }

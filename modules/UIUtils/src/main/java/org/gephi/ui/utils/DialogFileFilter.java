@@ -56,7 +56,7 @@ import java.util.logging.Logger;
 public class DialogFileFilter extends javax.swing.filechooser.FileFilter {
 
     private String description;
-    private List<String> extensions;
+    private final List<String> extensions;
 
     public DialogFileFilter(String description) {
         if (description == null) {
@@ -149,10 +149,7 @@ public class DialogFileFilter extends javax.swing.filechooser.FileFilter {
         if (!Objects.equals(this.description, other.description)) {
             return false;
         }
-        if (!Objects.equals(this.extensions, other.extensions)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.extensions, other.extensions);
     }
 
     @Override

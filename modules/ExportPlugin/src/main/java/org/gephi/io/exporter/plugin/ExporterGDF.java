@@ -83,7 +83,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportColors = true;
     private boolean exportPosition = true;
     private boolean exportAttributes = true;
-    private boolean exportDynamicWeight = true;
+    private final boolean exportDynamicWeight = true;
     private boolean exportVisibility = false;
     //Settings Helper
     private float minSize;
@@ -204,10 +204,10 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
                         if (c.getTypeClass().equals(String.class) || c.getTypeClass().equals(String[].class)) {
                             String quote = !useQuotes ? "" : simpleQuotes ? "'" : "\"";
                             stringBuilder.append(quote);
-                            stringBuilder.append(val.toString());
+                            stringBuilder.append(val);
                             stringBuilder.append(quote);
                         } else {
-                            stringBuilder.append(val.toString());
+                            stringBuilder.append(val);
                         }
                     }
                     stringBuilder.append(",");
@@ -292,10 +292,10 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
                         if (c.getTypeClass().equals(String.class) || c.getTypeClass().equals(String[].class)) {
                             String quote = !useQuotes ? "" : simpleQuotes ? "'" : "\"";
                             stringBuilder.append(quote);
-                            stringBuilder.append(val.toString());
+                            stringBuilder.append(val);
                             stringBuilder.append(quote);
                         } else {
-                            stringBuilder.append(val.toString());
+                            stringBuilder.append(val);
                         }
                     }
                     stringBuilder.append(",");

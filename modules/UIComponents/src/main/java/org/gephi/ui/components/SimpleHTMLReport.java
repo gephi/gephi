@@ -65,6 +65,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,7 +86,7 @@ import org.openide.windows.WindowManager;
  */
 class ReportSelection implements Transferable {
 
-    private static ArrayList flavors = new ArrayList();
+    private static final ArrayList flavors = new ArrayList();
 
     static {
         try {
@@ -99,7 +100,7 @@ class ReportSelection implements Transferable {
 
     public ReportSelection(String html) {
         this.html = html;
-        String newHTML = new String();
+        String newHTML = "";
         String[] result = html.split("file:");
         boolean first = true;
         for (int i = 0; i < result.length; i++) {
@@ -115,7 +116,7 @@ class ReportSelection implements Transferable {
                 File file = new File(filename);
                 try {
                     BufferedImage image = ImageIO.read(file);
-                    ImageIO.write((RenderedImage) image, "PNG", out);
+                    ImageIO.write(image, "PNG", out);
                 } catch (Exception e) {
                     Exceptions.printStackTrace(e);
                 }
@@ -159,7 +160,7 @@ class ReportSelection implements Transferable {
 public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
     private final String LAST_PATH = "SimpleHTMLReport_Save_Last_Path";
-    private String mHTMLReport;
+    private final String mHTMLReport;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
     private javax.swing.JButton copyButton;
@@ -193,7 +194,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        displayPane = (javax.swing.JEditorPane) (new JHTMLEditorPane());
+        displayPane = new JHTMLEditorPane();
         closeButton = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         printButton = new javax.swing.JButton();
@@ -361,7 +362,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         //Write HTML file
         File htmlFile = new File(destinationFolder, "report.html");
         FileOutputStream outputStream = new FileOutputStream(htmlFile);
-        OutputStreamWriter out = new OutputStreamWriter(outputStream, "UTF-8");
+        OutputStreamWriter out = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
         out.append(replaceBuffer.toString());
         out.flush();
         out.close();
@@ -400,7 +401,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
             scaleX = Math.min(scaleX, 1.0);
             double scaleY = scaleX;
 
-            int end = (int) (pageIndex * ((1.0f / scaleY) * (double) pageFormat.getImageableHeight()));
+            int end = (int) (pageIndex * ((1.0f / scaleY) * pageFormat.getImageableHeight()));
             Rectangle allocation = new Rectangle(0,
                 -end,
                 (int) pageFormat.getImageableWidth(),
@@ -412,8 +413,8 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
                 (int) (pageFormat.getImageableWidth() / scaleX),
                 (int) (pageFormat.getImageableHeight() / scaleY));
 
-            ((Graphics2D) graphics).translate(((Graphics2D) graphics).getClipBounds().getX(),
-                ((Graphics2D) graphics).getClipBounds().getY());
+            ((Graphics2D) graphics).translate(graphics.getClipBounds().getX(),
+                graphics.getClipBounds().getY());
 
             rootView.paint(graphics, allocation);
 

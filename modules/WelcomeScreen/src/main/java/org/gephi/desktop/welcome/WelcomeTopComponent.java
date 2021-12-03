@@ -91,6 +91,7 @@ public final class WelcomeTopComponent extends JPanel {
     private javax.swing.JPanel recentPanel;
     private javax.swing.JPanel samplesPanel;
     private javax.swing.JPanel southPanel;
+
     private WelcomeTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(WelcomeTopComponent.class, "CTL_WelcomeTopComponent"));
@@ -210,8 +211,8 @@ public final class WelcomeTopComponent extends JPanel {
                 final String s = samplePath[i];
                 String tooltip = sampleTooltip[i];
 
-                String fileName = s.substring(s.lastIndexOf('/') + 1, s.length());
-                final String importer = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
+                String fileName = s.substring(s.lastIndexOf('/') + 1);
+                final String importer = fileName.substring(fileName.lastIndexOf('.'));
                 JXHyperlink fileLink = new JXHyperlink(new AbstractAction() {
 
                     @Override

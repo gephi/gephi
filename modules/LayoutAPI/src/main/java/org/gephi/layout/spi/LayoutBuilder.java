@@ -68,7 +68,7 @@ public interface LayoutBuilder {
      *
      * @return the display neame of the layout algorithm
      */
-    public String getName();
+    String getName();
 
     /**
      * User interface attributes (name, description, icon...) for all Layouts
@@ -76,12 +76,12 @@ public interface LayoutBuilder {
      *
      * @return a <code>LayoutUI</code> instance
      */
-    public LayoutUI getUI();
+    LayoutUI getUI();
 
     /**
      * Builds an instance of the Layout.
      *
      * @return a new <code>Layout</code> instance
      */
-    public Layout buildLayout();
+    Layout buildLayout();
 }

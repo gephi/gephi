@@ -66,7 +66,7 @@ public interface Filter {
      *
      * @return the filter's display name
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the filter properties. Property values can be get and set from
@@ -74,5 +74,5 @@ public interface Filter {
      *
      * @return the filter's properties
      */
-    public FilterProperty[] getProperties();
+    FilterProperty[] getProperties();
 }

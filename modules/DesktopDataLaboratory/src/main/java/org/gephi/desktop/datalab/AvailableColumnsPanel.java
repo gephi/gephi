@@ -65,7 +65,7 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
 
     private final Table table;
     private final AvailableColumnsModel availableColumnsModel;
-    private Column[] columns;
+    private final Column[] columns;
     private JCheckBox[] columnsCheckBoxes;
     private AvailableColumnsValidator validator;
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -168,7 +168,7 @@ public class AvailableColumnsPanel extends javax.swing.JPanel {
 
     class ColumnCheckBoxListener implements ActionListener {
 
-        private int index;
+        private final int index;
 
         public ColumnCheckBoxListener(int index) {
             this.index = index;

@@ -65,6 +65,7 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
     private javax.swing.JLabel maxLabel;
     private javax.swing.JLabel minLabel;
     private javax.swing.JSpinner valueSpinner;
+
     public EqualNumberPanel() {
         initComponents();
     }
@@ -73,7 +74,7 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
     public void stateChanged(ChangeEvent evt) {
         FilterProperty match = filter.getProperties()[1];
         try {
-            match.setValue((Number) valueSpinner.getValue());
+            match.setValue(valueSpinner.getValue());
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }

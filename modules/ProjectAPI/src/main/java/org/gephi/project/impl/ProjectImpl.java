@@ -58,8 +58,8 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     //Workspace ids
     private final AtomicInteger workspaceIds;
     //Lookup
-    private transient InstanceContent instanceContent;
-    private transient AbstractLookup lookup;
+    private final transient InstanceContent instanceContent;
+    private final transient AbstractLookup lookup;
 
     public ProjectImpl(int id) {
         this(NbBundle.getMessage(ProjectImpl.class, "Project.default.prefix") + " " + id);

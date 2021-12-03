@@ -57,7 +57,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = LayoutBuilder.class)
 public class YifanHu implements LayoutBuilder {
 
-    private YifanHuLayoutUI ui = new YifanHuLayoutUI();
+    private final YifanHuLayoutUI ui = new YifanHuLayoutUI();
 
     @Override
     public YifanHuLayout buildLayout() {

@@ -79,10 +79,7 @@ public class EdgesMergeStrategyWrapper {
             return false;
         }
         final EdgesMergeStrategyWrapper other = (EdgesMergeStrategyWrapper) obj;
-        if (this.instance != other.instance) {
-            return false;
-        }
-        return true;
+        return this.instance == other.instance;
     }
 
     @Override

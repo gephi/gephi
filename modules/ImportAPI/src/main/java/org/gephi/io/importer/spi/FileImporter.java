@@ -57,17 +57,17 @@ public interface FileImporter extends Importer {
      *
      * @param reader the reader on data
      */
-    public void setReader(Reader reader);
+    void setReader(Reader reader);
 
     /**
      * Optional interface to implement for {@link FileImporter} classes that need to receive the source file instead of the {@link Reader}
      */
-    public interface FileAware {
+    interface FileAware {
         /**
          * Called before showing the {@link ImporterUI} and before executing the importer.
          *
          * @param file Source file
          */
-        public void setFile(File file);
+        void setFile(File file);
     }
 }

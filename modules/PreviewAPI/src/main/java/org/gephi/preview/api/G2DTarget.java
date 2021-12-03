@@ -60,28 +60,28 @@ public interface G2DTarget extends RenderTarget {
      *
      * @return the current graphics to draw to
      */
-    public Graphics2D getGraphics();
+    Graphics2D getGraphics();
 
-    public Image getImage();
+    Image getImage();
 
-    public int getWidth();
+    int getWidth();
 
-    public int getHeight();
+    int getHeight();
 
-    public void resize(int width, int height);
+    void resize(int width, int height);
 
-    public void setMoving(boolean moving);
+    void setMoving(boolean moving);
 
-    public Vector getTranslate();
+    Vector getTranslate();
 
-    public float getScaling();
+    float getScaling();
 
-    public void setScaling(float scaling);
+    void setScaling(float scaling);
 
-    public void reset();
+    void reset();
 
     /**
      * Redraw the Processing canvas
      */
-    public void refresh();
+    void refresh();
 }

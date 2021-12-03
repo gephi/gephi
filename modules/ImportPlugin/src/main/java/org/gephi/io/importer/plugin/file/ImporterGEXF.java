@@ -52,7 +52,6 @@ import javax.xml.stream.XMLReporter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
-import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.graph.api.TimeRepresentation;
 import org.gephi.io.importer.api.ColumnDraft;
@@ -567,10 +566,8 @@ public class ImporterGEXF implements FileImporter, LongTask {
                         }
                     }
                 } else {
-                    Object valueObj = null;
                     try {
-                        valueObj = AttributeUtils.parse(value, column.getTypeClass());
-                        element.setValue(column.getId(), valueObj);
+                        element.parseAndSetValue(column.getId(), value);
                     } catch (Exception e) {
                         report.logIssue(new Issue(NbBundle
                             .getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, element,

@@ -52,9 +52,9 @@ import org.gephi.project.api.Project;
  */
 public interface ProjectPropertiesUI {
 
-    public JPanel getPanel();
+    JPanel getPanel();
 
-    public void setup(Project project);
+    void setup(Project project);
 
-    public void unsetup(Project project);
+    void unsetup(Project project);
 }

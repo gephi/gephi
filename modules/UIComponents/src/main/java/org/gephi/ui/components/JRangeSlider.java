@@ -173,7 +173,7 @@ public class JRangeSlider extends JSlider {
          * Color of selected range.
          */
         //private Color rangeColor = new Color(168,223,85,178);//nice green
-        private Color rangeColor = new Color(49, 220, 251, 178);//nice vista blue
+        private final Color rangeColor = new Color(49, 220, 251, 178);//nice vista blue
         /**
          * Location and size of thumb for upper value.
          */

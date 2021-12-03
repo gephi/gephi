@@ -77,6 +77,7 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
     private javax.swing.JSpinner limitColorSpinner;
     private javax.swing.JCheckBox limitColorsCheckbox;
     private javax.swing.JComboBox presetCombo;
+
     public PaletteGeneratorPanel() {
         initComponents();
 
@@ -91,11 +92,7 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
         limitColorsCheckbox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    limitColorSpinner.setEnabled(true);
-                } else {
-                    limitColorSpinner.setEnabled(false);
-                }
+                limitColorSpinner.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
             }
         });
 

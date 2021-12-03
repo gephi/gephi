@@ -254,7 +254,7 @@ public class UIExporterSpreadsheetPanel extends javax.swing.JPanel {
 
     private class SeparatorWrapper {
 
-        private Character separator;
+        private final Character separator;
         private String displayText;
 
         public SeparatorWrapper(Character separator) {

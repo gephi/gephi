@@ -75,12 +75,9 @@ public class DragNDropFrameAdapter {
 
             @Override
             public boolean canImport(TransferHandler.TransferSupport support) {
-                if (!support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-                    return false;
-                }
+                return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
                 //Due to bug 6759788 - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6759788
                 //Impossible to get data here and look if compatible format
-                return true;
             }
 
             @Override

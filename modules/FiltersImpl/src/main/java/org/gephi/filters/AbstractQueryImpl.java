@@ -156,7 +156,7 @@ public abstract class AbstractQueryImpl implements Query {
         }
 
         for (int i = 0; i < children.size(); i++) {
-            AbstractQueryImpl child = (AbstractQueryImpl) children.get(i);
+            AbstractQueryImpl child = children.get(i);
             AbstractQueryImpl childCopy = child.copy();
             childCopy.parent = copy;
             copy.children.add(childCopy);

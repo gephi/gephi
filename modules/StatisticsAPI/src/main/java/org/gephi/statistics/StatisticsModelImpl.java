@@ -162,7 +162,7 @@ public class StatisticsModelImpl implements StatisticsModel {
                     String path = "file:" + file.getAbsolutePath();
                     builder.append(path);
 
-                    builder.append(next.substring(endIndex, next.length()));
+                    builder.append(next.substring(endIndex));
                 } else {
                     builder.append(result[i]);
                 }
@@ -188,7 +188,7 @@ public class StatisticsModelImpl implements StatisticsModel {
                 File file = new File(filename);
                 try {
                     BufferedImage image = ImageIO.read(file);
-                    ImageIO.write((RenderedImage) image, "PNG", out);
+                    ImageIO.write(image, "PNG", out);
                 } catch (Exception e) {
                     Exceptions.printStackTrace(e);
                 }

@@ -150,7 +150,7 @@ public class NodeLabelRenderer implements Renderer {
                 fontSize *= nodeSize / 10f;
             }
             fontSize *= font.getSize();
-            Font labelFont = font.deriveFont((float) fontSize);
+            Font labelFont = font.deriveFont(fontSize);
             fontCache.put(labelFont.getSize(), labelFont);
             item.setData(FONT_SIZE, labelFont.getSize());
         }

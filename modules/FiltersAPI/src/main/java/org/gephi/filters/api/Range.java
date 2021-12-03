@@ -224,10 +224,7 @@ public final class Range {
         if (this.leftInclusive != other.leftInclusive) {
             return false;
         }
-        if (this.rightInclusive != other.rightInclusive) {
-            return false;
-        }
-        return true;
+        return this.rightInclusive == other.rightInclusive;
     }
 
     @Override

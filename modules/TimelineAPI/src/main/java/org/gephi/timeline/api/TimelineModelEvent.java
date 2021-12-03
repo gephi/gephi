@@ -53,6 +53,7 @@ public final class TimelineModelEvent {
     private final EventType type;
     private final TimelineModel source;
     private final Object data;
+
     public TimelineModelEvent(EventType type, TimelineModel source, Object data) {
         this.type = type;
         this.source = source;

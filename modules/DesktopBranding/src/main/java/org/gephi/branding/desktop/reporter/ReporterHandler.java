@@ -60,7 +60,7 @@ import org.openide.util.NbBundle;
 public class ReporterHandler extends java.util.logging.Handler implements Callable<JButton>, ActionListener {
 
     private Throwable throwable;
-    private String MEMORY_ERROR;
+    private final String MEMORY_ERROR;
 
     public ReporterHandler() {
         MEMORY_ERROR = NbBundle.getMessage(ReporterHandler.class, "OutOfMemoryError.message");

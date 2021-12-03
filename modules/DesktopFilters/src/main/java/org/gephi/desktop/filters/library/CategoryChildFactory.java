@@ -56,8 +56,8 @@ import org.openide.nodes.Node;
  */
 public class CategoryChildFactory extends ChildFactory<Object> {
 
-    private Category category;
-    private FiltersExplorer.Utils utils;
+    private final Category category;
+    private final FiltersExplorer.Utils utils;
 
     public CategoryChildFactory(FiltersExplorer.Utils utils, Category category) {
         this.utils = utils;

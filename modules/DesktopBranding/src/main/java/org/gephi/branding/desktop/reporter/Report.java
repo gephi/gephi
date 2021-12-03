@@ -58,7 +58,7 @@ import org.w3c.dom.Element;
  */
 public class Report {
 
-    private Date date;
+    private final Date date;
     private Throwable throwable;
     private String summary = "";
     private String userDescription = "";
@@ -83,8 +83,8 @@ public class Report {
     private String glRenderer = "";
     private String glVersion = "";
     //Modules
-    private List<String> enabledModules = new ArrayList<>();
-    private List<String> disabledModules = new ArrayList<>();
+    private final List<String> enabledModules = new ArrayList<>();
+    private final List<String> disabledModules = new ArrayList<>();
 
     public Report() {
         Calendar cal = Calendar.getInstance();

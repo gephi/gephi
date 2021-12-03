@@ -479,6 +479,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
             moveElementsFromListToOtherList(columnsToMergeList, availableColumnsList);
         }
     }//GEN-LAST:event_columnsToMergeListMouseClicked
+
     public enum Mode {
 
         NODES_TABLE,
@@ -487,7 +488,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
 
     private static class MergeStrategyValidator implements Validator<ComboBoxModel> {
 
-        private MergeColumnsUI ui;
+        private final MergeColumnsUI ui;
 
         public MergeStrategyValidator(MergeColumnsUI ui) {
             this.ui = ui;

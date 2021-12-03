@@ -61,6 +61,7 @@ public class EgoPanel extends javax.swing.JPanel {
     private javax.swing.JTextField nodeIdTextField;
     private javax.swing.JButton okButton;
     private javax.swing.JCheckBox withSelfCheckbox;
+
     /**
      * Creates new form EgoPanel
      */

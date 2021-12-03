@@ -189,9 +189,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                             return true;
                         }
                     }
-                } else if (keepNull) {
-                    return true;
-                }
+                } else return keepNull;
             } else {
                 TimestampSet timeSet = (TimestampSet) element.getAttribute("timeset");
                 if (timeSet != null) {
@@ -200,9 +198,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                             return true;
                         }
                     }
-                } else if (keepNull) {
-                    return true;
-                }
+                } else return keepNull;
             }
             return false;
         }

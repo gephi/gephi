@@ -122,7 +122,7 @@ public class ForceFactory {
      */
     private class linRepulsion extends RepulsionForce {
 
-        private double coefficient;
+        private final double coefficient;
 
         public linRepulsion(double c) {
             coefficient = c;
@@ -192,7 +192,7 @@ public class ForceFactory {
      */
     private class linRepulsion_antiCollision extends RepulsionForce {
 
-        private double coefficient;
+        private final double coefficient;
 
         public linRepulsion_antiCollision(double c) {
             coefficient = c;
@@ -273,7 +273,7 @@ public class ForceFactory {
 
     private class strongGravity extends RepulsionForce {
 
-        private double coefficient;
+        private final double coefficient;
 
         public strongGravity(double c) {
             coefficient = c;
@@ -313,7 +313,7 @@ public class ForceFactory {
      */
     private class linAttraction extends AttractionForce {
 
-        private double coefficient;
+        private final double coefficient;
 
         public linAttraction(double c) {
             coefficient = c;
@@ -344,7 +344,7 @@ public class ForceFactory {
      */
     private class linAttraction_massDistributed extends AttractionForce {
 
-        private double coefficient;
+        private final double coefficient;
 
         public linAttraction_massDistributed(double c) {
             coefficient = c;
@@ -375,7 +375,7 @@ public class ForceFactory {
      */
     private class logAttraction extends AttractionForce {
 
-        private double coefficient;
+        private final double coefficient;
 
         public logAttraction(double c) {
             coefficient = c;
@@ -410,7 +410,7 @@ public class ForceFactory {
      */
     private class logAttraction_degreeDistributed extends AttractionForce {
 
-        private double coefficient;
+        private final double coefficient;
 
         public logAttraction_degreeDistributed(double c) {
             coefficient = c;
@@ -445,7 +445,7 @@ public class ForceFactory {
      */
     private class linAttraction_antiCollision extends AttractionForce {
 
-        private double coefficient;
+        private final double coefficient;
 
         public linAttraction_antiCollision(double c) {
             coefficient = c;
@@ -479,7 +479,7 @@ public class ForceFactory {
      */
     private class linAttraction_degreeDistributed_antiCollision extends AttractionForce {
 
-        private double coefficient;
+        private final double coefficient;
 
         public linAttraction_degreeDistributed_antiCollision(double c) {
             coefficient = c;
@@ -513,7 +513,7 @@ public class ForceFactory {
      */
     private class logAttraction_antiCollision extends AttractionForce {
 
-        private double coefficient;
+        private final double coefficient;
 
         public logAttraction_antiCollision(double c) {
             coefficient = c;
@@ -548,7 +548,7 @@ public class ForceFactory {
      */
     private class logAttraction_degreeDistributed_antiCollision extends AttractionForce {
 
-        private double coefficient;
+        private final double coefficient;
 
         public logAttraction_degreeDistributed_antiCollision(double c) {
             coefficient = c;

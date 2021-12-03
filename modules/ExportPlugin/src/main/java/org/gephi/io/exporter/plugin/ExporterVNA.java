@@ -76,7 +76,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportSize = true;
     private boolean exportShortLabel = true;
     private boolean exportColor = true;
-    private boolean exportDynamicWeight = true;
+    private final boolean exportDynamicWeight = true;
     private boolean exportAttributes = true;
     private boolean normalize = false;
     private Writer writer;

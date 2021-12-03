@@ -390,7 +390,7 @@ class TopDialog extends JDialog {
             java.lang.reflect.Method m;
 
             try {
-                m = comp.getClass().getMethod("addActionListener", new Class[] {ActionListener.class}); // NOI18N
+                m = comp.getClass().getMethod("addActionListener", ActionListener.class); // NOI18N
 
                 try {
                     m.setAccessible(true);
@@ -405,7 +405,7 @@ class TopDialog extends JDialog {
 
             if (m != null) {
                 try {
-                    m.invoke(comp, new Object[] {l});
+                    m.invoke(comp, l);
                 } catch (Exception e) {
                     // not succeeded, so give up
                 }

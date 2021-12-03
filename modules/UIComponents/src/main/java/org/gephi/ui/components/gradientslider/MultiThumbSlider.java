@@ -193,7 +193,7 @@ public abstract class MultiThumbSlider extends JComponent {
         StringBuffer sb = new StringBuffer();
         sb.append('[');
         for (int a = 0; a < f.length; a++) {
-            sb.append(Float.toString(f[a]));
+            sb.append(f[a]);
             if (a != f.length - 1) {
                 sb.append(", ");
             }

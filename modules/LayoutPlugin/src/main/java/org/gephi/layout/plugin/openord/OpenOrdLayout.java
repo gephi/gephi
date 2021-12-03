@@ -186,8 +186,8 @@ public class OpenOrdLayout implements Layout, LongTask {
                 ratio = Math.min(1f, ratio);
                 for (Node n : nodes) {
                     if (n.fixed) {
-                        n.x = (float) (n.x - shiftX) * ratio;
-                        n.y = (float) (n.y - shiftY) * ratio;
+                        n.x = (n.x - shiftX) * ratio;
+                        n.y = (n.y - shiftY) * ratio;
                     }
                 }
             }

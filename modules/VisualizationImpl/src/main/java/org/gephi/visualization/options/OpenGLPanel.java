@@ -63,6 +63,7 @@ final class OpenGLPanel extends javax.swing.JPanel {
     private javax.swing.JTextArea openInfoText;
     private javax.swing.JPanel openglInfoPanel;
     private javax.swing.JButton resetButton;
+
     OpenGLPanel(OpenGLOptionsPanelController controller) {
         this.controller = controller;
         initComponents();

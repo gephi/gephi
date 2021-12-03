@@ -60,14 +60,14 @@ public interface Project extends Lookup.Provider {
      *
      * @param instance the instance that is to be added to the lookup
      */
-    public void add(Object instance);
+    void add(Object instance);
 
     /**
      * Removes an abilities to this project.
      *
      * @param instance the instance that is to be removed from the lookup
      */
-    public void remove(Object instance);
+    void remove(Object instance);
 
     /**
      * Gets any optional abilities of this project.
@@ -80,5 +80,5 @@ public interface Project extends Lookup.Provider {
      * @return the project's lookup
      */
     @Override
-    public Lookup getLookup();
+    Lookup getLookup();
 }

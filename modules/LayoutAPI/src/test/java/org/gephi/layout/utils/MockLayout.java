@@ -10,7 +10,7 @@ import org.openide.util.Exceptions;
 
 public class MockLayout implements Layout {
 
-    private MockLayoutBuilder builder;
+    private final MockLayoutBuilder builder;
     private double angle;
 
     public MockLayout(MockLayoutBuilder builder) {

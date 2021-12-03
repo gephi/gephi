@@ -56,7 +56,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = LayoutBuilder.class)
 public class FruchtermanReingoldBuilder implements LayoutBuilder {
 
-    private FruchtermanReingoldLayoutUI ui = new FruchtermanReingoldLayoutUI();
+    private final FruchtermanReingoldLayoutUI ui = new FruchtermanReingoldLayoutUI();
 
     @Override
     public String getName() {

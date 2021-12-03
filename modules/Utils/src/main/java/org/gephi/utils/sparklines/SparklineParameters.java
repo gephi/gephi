@@ -83,6 +83,7 @@ public class SparklineParameters {
     private Color highlightTextColor;
     private Color highlightTextBoxColor;
     private HighlightTextMode highlightTextMode;
+
     /**
      * Create a simple sparkline parameters with only lines
      *

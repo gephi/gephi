@@ -57,7 +57,7 @@ public class UIExporterPajek implements ExporterUI {
 
     private UIExporterPajekPanel panel;
     private ExporterPajek exporterPajek;
-    private ExporterPajekSettings settings = new ExporterPajekSettings();
+    private final ExporterPajekSettings settings = new ExporterPajekSettings();
 
     @Override
     public void setup(Exporter exporter) {

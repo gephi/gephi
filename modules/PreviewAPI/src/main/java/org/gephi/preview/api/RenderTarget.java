@@ -67,7 +67,7 @@ import org.gephi.preview.spi.Renderer;
  */
 public interface RenderTarget {
 
-    public static final String G2D_TARGET = "g2d";
-    public static final String SVG_TARGET = "svg";
-    public static final String PDF_TARGET = "pdf";
+    String G2D_TARGET = "g2d";
+    String SVG_TARGET = "svg";
+    String PDF_TARGET = "pdf";
 }

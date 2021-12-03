@@ -56,7 +56,7 @@ public interface GraphExporter extends Exporter {
      * @return <code>true</code> if only the visible graph has to be exported,
      * <code>false</code> for the complete graph.
      */
-    public boolean isExportVisible();
+    boolean isExportVisible();
 
     /**
      * Sets if only the visible graph has to be exported. If <code>false</code>,
@@ -64,5 +64,5 @@ public interface GraphExporter extends Exporter {
      *
      * @param exportVisible the export visible parameter value
      */
-    public void setExportVisible(boolean exportVisible);
+    void setExportVisible(boolean exportVisible);
 }

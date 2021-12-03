@@ -60,7 +60,7 @@ import org.openide.util.actions.CallableSystemAction;
  */
 public class Export extends CallableSystemAction {
 
-    private JMenu menu;
+    private final JMenu menu;
 
     public Export() {
         menu = new JMenu(NbBundle.getMessage(Export.class, "CTL_Export"));

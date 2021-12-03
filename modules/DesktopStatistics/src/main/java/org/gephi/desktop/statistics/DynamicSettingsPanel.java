@@ -487,7 +487,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
     private class DateRangeValidator implements Validator<String> {
 
-        private ComboBoxModel combo;
+        private final ComboBoxModel combo;
 
         public DateRangeValidator(ComboBoxModel comboBoxModel) {
             this.combo = comboBoxModel;
@@ -516,7 +516,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
     private class TickUnderWindowValidator implements Validator<String> {
 
-        private boolean dates;
+        private final boolean dates;
 
         public TickUnderWindowValidator(boolean dates) {
             this.dates = dates;

@@ -56,12 +56,12 @@ public interface LongTask {
      *
      * @return <code>true</code> if the task has been sucessfully cancelled, <code>false</code> otherwise
      */
-    public boolean cancel();
+    boolean cancel();
 
     /**
      * Set the progress ticket for the long task. Can't be null.
      *
      * @param progressTicket the progress ticket for this task
      */
-    public void setProgressTicket(ProgressTicket progressTicket);
+    void setProgressTicket(ProgressTicket progressTicket);
 }

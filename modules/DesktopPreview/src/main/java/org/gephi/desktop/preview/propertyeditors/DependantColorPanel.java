@@ -62,6 +62,7 @@ public class DependantColorPanel extends javax.swing.JPanel implements ItemListe
     private javax.swing.JRadioButton customRadio;
     private org.jdesktop.swingx.JXHeader jXHeader1;
     private javax.swing.JRadioButton parentRadio;
+
     /**
      * Creates new form DependantColorPanel
      */
@@ -82,11 +83,7 @@ public class DependantColorPanel extends javax.swing.JPanel implements ItemListe
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (customRadio.isSelected()) {
-            colorButton.setEnabled(true);
-        } else {
-            colorButton.setEnabled(false);
-        }
+        colorButton.setEnabled(customRadio.isSelected());
         DependantColor.Mode selectedMode = null;
         if (parentRadio.isSelected()) {
             selectedMode = DependantColor.Mode.PARENT;

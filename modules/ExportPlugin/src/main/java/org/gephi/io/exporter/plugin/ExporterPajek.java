@@ -192,7 +192,7 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
                 edgeIterable.doBreak();
                 return;
             }
-            writer.append(Integer.toString(idx.get(edge.getSource().getId().toString())) + " ");
+            writer.append(idx.get(edge.getSource().getId().toString()) + " ");
             writer.append(Integer.toString(idx.get(edge.getTarget().getId().toString())));
             if (exportEdgeWeight) {
                 writer.append(" " + edge.getWeight());

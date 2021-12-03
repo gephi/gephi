@@ -175,7 +175,7 @@ public class ImporterVNA implements FileImporter, LongTask {
                     state = State.NODE_PROPERTIES;
                     break;
                 case TIE_DATA_DEF:
-                    String tieDataLabels[] = line.split("[\\s,]+");
+                    String[] tieDataLabels = line.split("[\\s,]+");
                     tieDataColumns = new ColumnDraft[tieDataLabels.length];
                     tieAttributes = new Attributes[tieDataColumns.length];
                     if (tieDataColumns.length < 2) {
@@ -395,6 +395,7 @@ public class ImporterVNA implements FileImporter, LongTask {
 
         public final Function function;
         public final float coefficient;
+
         public EdgeWidthFunction(Function function, float coefficient) {
             this.function = function;
             this.coefficient = coefficient;

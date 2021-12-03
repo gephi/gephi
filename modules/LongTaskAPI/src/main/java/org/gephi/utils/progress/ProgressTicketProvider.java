@@ -49,5 +49,5 @@ import org.openide.util.Cancellable;
  */
 public interface ProgressTicketProvider {
 
-    public ProgressTicket createTicket(String taskName, Cancellable cancellable);
+    ProgressTicket createTicket(String taskName, Cancellable cancellable);
 }

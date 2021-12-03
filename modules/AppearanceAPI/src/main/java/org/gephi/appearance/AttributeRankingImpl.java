@@ -149,9 +149,6 @@ public class AttributeRankingImpl extends RankingImpl {
             return false;
         }
         final AttributeRankingImpl other = (AttributeRankingImpl) obj;
-        if (this.column != other.column && (this.column == null || !this.column.equals(other.column))) {
-            return false;
-        }
-        return true;
+        return this.column == other.column || (this.column != null && this.column.equals(other.column));
     }
 }

@@ -65,7 +65,7 @@ public class DelegatingChooserUI extends ComponentUI {
     static final String NB_USE_SHELL_FOLDER = "nb.FileChooser.useShellFolder";
     static final String START_TIME = "start.time";
 
-    private static boolean firstTime = true;
+    private static final boolean firstTime = true;
 
     public static ComponentUI createUI(JComponent c) {
         JFileChooser fc = (JFileChooser) c;

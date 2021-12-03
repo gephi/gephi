@@ -51,8 +51,8 @@ public class Plane {
     /**
      * Normalized
      */
-    private Vec3f normal;
-    private Vec3f point;
+    private final Vec3f normal;
+    private final Vec3f point;
 
     /**
      * Default constructor initializes normal to (0, 1, 0) and point to

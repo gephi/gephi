@@ -80,10 +80,7 @@ public class ImportModeWrapper {
             return false;
         }
         final ImportModeWrapper other = (ImportModeWrapper) obj;
-        if (this.mode != other.mode) {
-            return false;
-        }
-        return true;
+        return this.mode == other.mode;
     }
 
     @Override

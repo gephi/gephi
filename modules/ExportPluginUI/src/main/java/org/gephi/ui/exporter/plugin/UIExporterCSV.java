@@ -57,7 +57,7 @@ public class UIExporterCSV implements ExporterUI {
 
     private UIExporterCSVPanel panel;
     private ExporterCSV exporterCSV;
-    private ExporterCSVSettings settings = new ExporterCSVSettings();
+    private final ExporterCSVSettings settings = new ExporterCSVSettings();
 
     @Override
     public void setup(Exporter exporter) {

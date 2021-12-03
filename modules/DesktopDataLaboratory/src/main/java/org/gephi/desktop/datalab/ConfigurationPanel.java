@@ -76,6 +76,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox timeZoneComboBox;
     private javax.swing.JLabel timeZoneLabel;
     private javax.swing.JCheckBox useSparklinesCheckBox;
+
     /**
      * Creates new form ConfigurationPanel
      */

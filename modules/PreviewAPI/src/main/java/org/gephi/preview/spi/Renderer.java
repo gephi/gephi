@@ -116,7 +116,7 @@ public interface Renderer {
      *
      * @return User friendly renderer name, not null
      */
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * This method is called before rendering for all renderers and initializes
@@ -132,7 +132,7 @@ public interface Renderer {
      *
      * @param previewModel the model to get items from
      */
-    public void preProcess(PreviewModel previewModel);
+    void preProcess(PreviewModel previewModel);
 
     /**
      * Render <code>item</code> to <code>target</code> using the global properties
@@ -146,7 +146,7 @@ public interface Renderer {
      * @param target     the target to render the item on
      * @param properties the central properties
      */
-    public void render(Item item, RenderTarget target, PreviewProperties properties);
+    void render(Item item, RenderTarget target, PreviewProperties properties);
 
     /**
      * Returns all associated properties for this renderer. Properties can be built
@@ -154,7 +154,7 @@ public interface Renderer {
      *
      * @return a properties array
      */
-    public PreviewProperty[] getProperties();
+    PreviewProperty[] getProperties();
 
     /**
      * Based on <code>properties</code>, determine whether this renderer is
@@ -174,7 +174,7 @@ public interface Renderer {
      * @return <code>true</code> if <code>item</code> can be rendered by this
      * renderer, <code>false</code> otherwise
      */
-    public boolean isRendererForitem(Item item, PreviewProperties properties);
+    boolean isRendererForitem(Item item, PreviewProperties properties);
 
     /**
      * Based on the <code>itemBuilder</code> class and the <code>properties</code>,
@@ -200,7 +200,7 @@ public interface Renderer {
      * @param properties  the current properties
      * @return <code>true</code> if you are going to use built items for rendering, <code>false</code> otherwise
      */
-    public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties);
+    boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties);
 
     /**
      * Compute the canvas size of the item to render.
@@ -213,5 +213,5 @@ public interface Renderer {
      * @param properties the current properties
      * @return the item canvas size
      */
-    public CanvasSize getCanvasSize(Item item, PreviewProperties properties);
+    CanvasSize getCanvasSize(Item item, PreviewProperties properties);
 }

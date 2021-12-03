@@ -276,7 +276,7 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
                 if (edge != null) {
                     weight = edge.getWeight(graph.getView());
                 }
-                writer.write(Double.toString(weight) + " ");
+                writer.write(weight + " ");
                 if (makeSymmetricMatrix) {
                     for (int repeatSpace = Double.toString(weight).length(); repeatSpace < maxLengthOfEdgeWeight;
                          repeatSpace++) {

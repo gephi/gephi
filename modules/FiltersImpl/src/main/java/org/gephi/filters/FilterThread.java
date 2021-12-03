@@ -146,7 +146,7 @@ public class FilterThread extends Thread {
     private void filter(AbstractQueryImpl query) {
         FilterProcessor processor = new FilterProcessor();
         GraphModel graphModel = model.getGraphModel();
-        Graph result = processor.process((AbstractQueryImpl) query, graphModel);
+        Graph result = processor.process(query, graphModel);
         if (running) {
             GraphView view = result.getView();
             graphModel.setVisibleView(view);
@@ -163,7 +163,7 @@ public class FilterThread extends Thread {
     private void select(AbstractQueryImpl query) {
         FilterProcessor processor = new FilterProcessor();
         GraphModel graphModel = model.getGraphModel();
-        Graph result = processor.process((AbstractQueryImpl) query, graphModel);
+        Graph result = processor.process(query, graphModel);
         if (running) {
             VisualizationController visController = Lookup.getDefault().lookup(VisualizationController.class);
             if (visController != null) {

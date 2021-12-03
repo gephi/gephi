@@ -55,5 +55,5 @@ public interface GraphFileExporterBuilder extends FileExporterBuilder {
      * @return a new graph exporter
      */
     @Override
-    public GraphExporter buildExporter();
+    GraphExporter buildExporter();
 }

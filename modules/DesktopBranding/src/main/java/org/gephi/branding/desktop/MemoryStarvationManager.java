@@ -80,13 +80,13 @@ import org.openide.util.Utilities;
 public class MemoryStarvationManager implements NotificationListener {
 
     private static final String APPNAME = "gephi";
-    private static double reservedMemory = 20971520;
-    private static String IMPORTER_THREAD = "Importer";
-    private static String EXPORTER_THREAD = "Exporter";
-    private static String GENERATOR_THREAD = "Generator";
-    private static String PROJECT_THREAD = "Project IO";
-    private static String STATISTICS_THREAD = "Statistics";
-    private static String PREVIEW_THREAD = "Refresh Preview";
+    private static final double reservedMemory = 20971520;
+    private static final String IMPORTER_THREAD = "Importer";
+    private static final String EXPORTER_THREAD = "Exporter";
+    private static final String GENERATOR_THREAD = "Generator";
+    private static final String PROJECT_THREAD = "Project IO";
+    private static final String STATISTICS_THREAD = "Statistics";
+    private static final String PREVIEW_THREAD = "Refresh Preview";
     private static boolean messageDelivered = false;
 
     public void startup() {
@@ -189,10 +189,7 @@ public class MemoryStarvationManager implements NotificationListener {
         }
 
         //When launched within Netbeans
-        if (homePath.contains("NetBeans")) {
-            return true;
-        }
-        return false;
+        return homePath.contains("NetBeans");
     }
 
     private void updateConfiguration(String newXmx) throws IOException {

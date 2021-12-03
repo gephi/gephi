@@ -147,10 +147,7 @@ public class SupportedColumnTypeWrapper implements Comparable<SupportedColumnTyp
             return false;
         }
         final SupportedColumnTypeWrapper other = (SupportedColumnTypeWrapper) obj;
-        if (this.type != other.type && (this.type == null || !this.type.equals(other.type))) {
-            return false;
-        }
-        return true;
+        return this.type == other.type || (this.type != null && this.type.equals(other.type));
     }
 
     /**

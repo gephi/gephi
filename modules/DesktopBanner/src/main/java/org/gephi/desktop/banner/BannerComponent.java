@@ -83,6 +83,7 @@ public class BannerComponent extends javax.swing.JPanel {
     private javax.swing.JPanel mainPanel;
     private javax.swing.ButtonGroup perspectivesButtonGroup;
     private javax.swing.JPanel workspacePanel;
+
     public BannerComponent() {
         initComponents();
 

@@ -90,12 +90,9 @@ public class WizardPanel1 implements WizardDescriptor.ValidatingPanel {
     @Override
     public boolean isValid() {
         WizardVisualPanel1 panel = (WizardVisualPanel1) getComponent();
-        if (panel.emptyList()) {
-            return false;
-        }
+        return !panel.emptyList();
         // If it is always OK to press Next or Finish, then:
-        return true;
-        // If it depends on some condition (form filled out...), then:
+// If it depends on some condition (form filled out...), then:
         // return someCondition();
         // and when this condition changes (last form field filled in...) then:
         // fireChangeEvent();

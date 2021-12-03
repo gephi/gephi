@@ -61,7 +61,7 @@ public interface WorkspaceXMLPersistenceProvider extends WorkspacePersistencePro
      *                  provider data
      * @param workspace Current workspace being serialized
      */
-    public void writeXML(XMLStreamWriter writer, Workspace workspace);
+    void writeXML(XMLStreamWriter writer, Workspace workspace);
 
     /**
      * This is automatically called when a start element with the tag name
@@ -73,5 +73,5 @@ public interface WorkspaceXMLPersistenceProvider extends WorkspacePersistencePro
      *                  provider data previously serialized
      * @param workspace Current workspace being deserialized
      */
-    public void readXML(XMLStreamReader reader, Workspace workspace);
+    void readXML(XMLStreamReader reader, Workspace workspace);
 }

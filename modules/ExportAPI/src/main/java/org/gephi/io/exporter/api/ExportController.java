@@ -63,19 +63,19 @@ import org.gephi.project.api.Workspace;
  */
 public interface ExportController {
 
-    public void exportFile(File file) throws IOException;
+    void exportFile(File file) throws IOException;
 
-    public void exportFile(File file, Workspace workspace) throws IOException;
+    void exportFile(File file, Workspace workspace) throws IOException;
 
-    public void exportFile(File file, Exporter fileExporter) throws IOException;
+    void exportFile(File file, Exporter fileExporter) throws IOException;
 
-    public void exportWriter(Writer writer, CharacterExporter characterExporter);
+    void exportWriter(Writer writer, CharacterExporter characterExporter);
 
-    public void exportStream(OutputStream stream, ByteExporter byteExporter);
+    void exportStream(OutputStream stream, ByteExporter byteExporter);
 
-    public Exporter getFileExporter(File file);
+    Exporter getFileExporter(File file);
 
-    public Exporter getExporter(String exporterName);
+    Exporter getExporter(String exporterName);
 
-    public ExporterUI getUI(Exporter exporter);
+    ExporterUI getUI(Exporter exporter);
 }

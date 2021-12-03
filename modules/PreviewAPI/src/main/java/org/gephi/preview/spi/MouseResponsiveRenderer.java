@@ -52,5 +52,5 @@ package org.gephi.preview.spi;
  */
 public interface MouseResponsiveRenderer {
 
-    public boolean needsPreviewMouseListener(PreviewMouseListener previewMouseListener);
+    boolean needsPreviewMouseListener(PreviewMouseListener previewMouseListener);
 }

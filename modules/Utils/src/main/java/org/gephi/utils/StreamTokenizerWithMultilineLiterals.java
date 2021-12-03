@@ -199,7 +199,7 @@ public class StreamTokenizerWithMultilineLiterals {
     /* Only one of these will be non-null */
     private Reader reader = null;
     private InputStream input = null;
-    private char buf[] = new char[20];
+    private char[] buf = new char[20];
     /**
      * The next character to be considered by the nextToken method.  May also
      * be NEED_CHAR to indicate that a new character should be read, or SKIP_LF
@@ -217,7 +217,7 @@ public class StreamTokenizerWithMultilineLiterals {
     private boolean eolIsSignificantP = false;
     private boolean slashSlashCommentsP = false;
     private boolean slashStarCommentsP = false;
-    private byte ctype[] = new byte[256];
+    private final byte[] ctype = new byte[256];
 
     /**
      * Private constructor that initializes everything except the streams.
@@ -580,7 +580,7 @@ public class StreamTokenizerWithMultilineLiterals {
             pushedBack = false;
             return ttype;
         }
-        byte ct[] = ctype;
+        byte[] ct = ctype;
         sval = null;
 
         int c = peekc;
@@ -791,7 +791,6 @@ public class StreamTokenizerWithMultilineLiterals {
                 return nextToken();
             } else if (c == '/' && slashSlashCommentsP) {
                 while ((c = read()) != '\n' && c != '\r' && c >= 0) {
-                    ;
                 }
                 peekc = c;
                 return nextToken();
@@ -799,7 +798,6 @@ public class StreamTokenizerWithMultilineLiterals {
                 /* Now see if it is still a single line comment */
                 if ((ct['/'] & CT_COMMENT) != 0) {
                     while ((c = read()) != '\n' && c != '\r' && c >= 0) {
-                        ;
                     }
                     peekc = c;
                     return nextToken();
@@ -812,7 +810,6 @@ public class StreamTokenizerWithMultilineLiterals {
 
         if ((ctype & CT_COMMENT) != 0) {
             while ((c = read()) != '\n' && c != '\r' && c >= 0) {
-                ;
             }
             peekc = c;
             return nextToken();
@@ -892,7 +889,7 @@ public class StreamTokenizerWithMultilineLiterals {
                     break;
                 }
 
-                char s[] = new char[3];
+                char[] s = new char[3];
                 s[0] = s[2] = '\'';
                 s[1] = (char) ttype;
                 ret = new String(s);

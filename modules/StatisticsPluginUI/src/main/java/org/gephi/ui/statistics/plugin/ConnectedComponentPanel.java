@@ -57,6 +57,7 @@ public class ConnectedComponentPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JRadioButton undirectedRadioButton;
+
     /**
      * Creates new form ConnectedComponentPanel
      */

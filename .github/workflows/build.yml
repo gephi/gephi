@@ -19,5 +19,3 @@ jobs:
           cache: 'maven'
       - name: Build project with Maven
         run: mvn -T 4 --batch-mode -Djava.awt.headless=true verify -P enableTests
-      - name: Run checkstyle
-        run: mvn checkstyle:check

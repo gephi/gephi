@@ -51,6 +51,7 @@ import java.io.Writer;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
@@ -107,7 +108,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testAdjacencyList() throws FileNotFoundException, IOException {
+    public void testAdjacencyList() throws IOException {
         File file = FileUtil.archiveOrDirForURL(
             SpreadsheetTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/adj_list.csv"));
 
@@ -115,7 +116,7 @@ public class SpreadsheetTest {
 
         importer.setFile(file);
 
-        Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
+        Assert.assertEquals(importer.getCharset(), StandardCharsets.UTF_8);
         Assert.assertEquals(importer.getFieldDelimiter(), ';');
         Assert.assertEquals(importer.getMode(), Mode.ADJACENCY_LIST);
 
@@ -131,7 +132,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testAdjacencyList_AutoDetectImporter() throws FileNotFoundException, IOException {
+    public void testAdjacencyList_AutoDetectImporter() throws IOException {
         File file = FileUtil.archiveOrDirForURL(
             SpreadsheetTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/adj_list.csv"));
 
@@ -147,7 +148,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testMatrix_CSV() throws FileNotFoundException, IOException {
+    public void testMatrix_CSV() throws IOException {
         File file = FileUtil.archiveOrDirForURL(
             SpreadsheetTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/matrix.csv"));
 
@@ -155,7 +156,7 @@ public class SpreadsheetTest {
 
         importer.setFile(file);
 
-        Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
+        Assert.assertEquals(importer.getCharset(), StandardCharsets.UTF_8);
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
         Assert.assertEquals(importer.getMode(), Mode.MATRIX);
 
@@ -171,7 +172,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testMatrix_CSV_AutoDetectImporter() throws FileNotFoundException, IOException {
+    public void testMatrix_CSV_AutoDetectImporter() throws IOException {
         File file = FileUtil.archiveOrDirForURL(
             SpreadsheetTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/matrix.csv"));
 
@@ -185,7 +186,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testMatrix_Excel() throws FileNotFoundException, IOException {
+    public void testMatrix_Excel() throws IOException {
         File file = FileUtil.archiveOrDirForURL(
             SpreadsheetTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/matrix.xlsx"));
 
@@ -207,7 +208,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testComplexMatrix() throws FileNotFoundException, IOException {
+    public void testComplexMatrix() throws IOException {
         //File from https://github.com/gephi/gephi/issues/1661
         File file = FileUtil.archiveOrDirForURL(
             SpreadsheetTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/complex_matrix.csv"));
@@ -216,7 +217,7 @@ public class SpreadsheetTest {
 
         importer.setFile(file);
 
-        Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
+        Assert.assertEquals(importer.getCharset(), StandardCharsets.UTF_8);
         Assert.assertEquals(importer.getFieldDelimiter(), ';');
         Assert.assertEquals(importer.getMode(), Mode.MATRIX);
 
@@ -232,7 +233,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testEdgesTableRepeatedWithIds() throws FileNotFoundException, IOException {
+    public void testEdgesTableRepeatedWithIds() throws IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetTest.class
             .getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_repeated_with_ids.csv"));
 
@@ -240,7 +241,7 @@ public class SpreadsheetTest {
 
         importer.setFile(file);
 
-        Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
+        Assert.assertEquals(importer.getCharset(), StandardCharsets.UTF_8);
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
         Assert.assertEquals(importer.getMode(), Mode.EDGES_TABLE);
 
@@ -256,7 +257,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testEdgesTableRepeatedWithoutIds_Merged() throws FileNotFoundException, IOException {
+    public void testEdgesTableRepeatedWithoutIds_Merged() throws IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetTest.class
             .getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_repeated_without_ids.csv"));
 
@@ -264,7 +265,7 @@ public class SpreadsheetTest {
 
         importer.setFile(file);
 
-        Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
+        Assert.assertEquals(importer.getCharset(), StandardCharsets.UTF_8);
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
         Assert.assertEquals(importer.getMode(), Mode.EDGES_TABLE);
 
@@ -279,7 +280,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testEdgesTableRepeatedWithoutIds_Merge_Disabled() throws FileNotFoundException, IOException {
+    public void testEdgesTableRepeatedWithoutIds_Merge_Disabled() throws IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetTest.class
             .getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_repeated_without_ids.csv"));
 
@@ -287,7 +288,7 @@ public class SpreadsheetTest {
 
         importer.setFile(file);
 
-        Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
+        Assert.assertEquals(importer.getCharset(), StandardCharsets.UTF_8);
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
         Assert.assertEquals(importer.getMode(), Mode.EDGES_TABLE);
 
@@ -303,7 +304,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testEdgesTableWithTimeset_Timestamp() throws FileNotFoundException, IOException {
+    public void testEdgesTableWithTimeset_Timestamp() throws IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetTest.class
             .getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_with_timeset_timestamps.csv"));
 
@@ -311,7 +312,7 @@ public class SpreadsheetTest {
 
         importer.setFile(file);
 
-        Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
+        Assert.assertEquals(importer.getCharset(), StandardCharsets.UTF_8);
         Assert.assertEquals(importer.getFieldDelimiter(), ' ');
         Assert.assertEquals(importer.getMode(), Mode.EDGES_TABLE);
         Assert.assertEquals(importer.getTimeRepresentation(), TimeRepresentation.TIMESTAMP);
@@ -329,7 +330,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testEdgesTableWithTimeset_Interval() throws FileNotFoundException, IOException {
+    public void testEdgesTableWithTimeset_Interval() throws IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetTest.class
             .getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_with_timeset_intervals.csv"));
 
@@ -337,7 +338,7 @@ public class SpreadsheetTest {
 
         importer.setFile(file);
 
-        Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
+        Assert.assertEquals(importer.getCharset(), StandardCharsets.UTF_8);
         Assert.assertEquals(importer.getFieldDelimiter(), ' ');
         Assert.assertEquals(importer.getMode(), Mode.EDGES_TABLE);
         Assert.assertEquals(importer.getTimeRepresentation(), TimeRepresentation.INTERVAL);
@@ -355,7 +356,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testEdgesTableDynamicWeightsMerged() throws FileNotFoundException, IOException {
+    public void testEdgesTableDynamicWeightsMerged() throws IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetTest.class
             .getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_dynamic_weights.csv"));
 
@@ -363,7 +364,7 @@ public class SpreadsheetTest {
 
         importer.setFile(file);
 
-        Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
+        Assert.assertEquals(importer.getCharset(), StandardCharsets.UTF_8);
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
         Assert.assertEquals(importer.getMode(), Mode.EDGES_TABLE);
         Assert.assertEquals(importer.getTimeRepresentation(), TimeRepresentation.INTERVAL);
@@ -379,7 +380,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testEdgesTableTypesTest() throws FileNotFoundException, IOException {
+    public void testEdgesTableTypesTest() throws IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetTest.class
             .getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_types_test.csv"));
 
@@ -387,7 +388,7 @@ public class SpreadsheetTest {
 
         importer.setFile(file);
 
-        Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
+        Assert.assertEquals(importer.getCharset(), StandardCharsets.UTF_8);
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
         Assert.assertEquals(importer.getMode(), Mode.EDGES_TABLE);
         Assert.assertEquals(importer.getTimeRepresentation(), TimeRepresentation.INTERVAL);
@@ -413,7 +414,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testEdgesTableTypesTest_AutoDetectImporter() throws FileNotFoundException, IOException {
+    public void testEdgesTableTypesTest_AutoDetectImporter() throws IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetTest.class
             .getResource("/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_types_test.csv"));
 
@@ -426,7 +427,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testNodesTableTypesTest() throws FileNotFoundException, IOException {
+    public void testNodesTableTypesTest() throws IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetTest.class
             .getResource("/org/gephi/io/importer/plugin/file/spreadsheet/nodes_table_types_test.csv"));
 
@@ -434,7 +435,7 @@ public class SpreadsheetTest {
 
         importer.setFile(file);
 
-        Assert.assertEquals(importer.getCharset(), Charset.forName("UTF-8"));
+        Assert.assertEquals(importer.getCharset(), StandardCharsets.UTF_8);
         Assert.assertEquals(importer.getFieldDelimiter(), ',');
         Assert.assertEquals(importer.getMode(), Mode.NODES_TABLE);
         Assert.assertEquals(importer.getTimeRepresentation(), TimeRepresentation.INTERVAL);
@@ -463,7 +464,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testRepeatedHeaders() throws FileNotFoundException, IOException {
+    public void testRepeatedHeaders() throws IOException {
         File file = FileUtil.archiveOrDirForURL(
             SpreadsheetTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/repeated_headers.xls"));
 
@@ -491,7 +492,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testUTF8Chars() throws FileNotFoundException, IOException {
+    public void testUTF8Chars() throws IOException {
         File file = FileUtil.archiveOrDirForURL(
             SpreadsheetTest.class.getResource("/org/gephi/io/importer/plugin/file/spreadsheet/test_utf8_chars.csv"));
 
@@ -512,7 +513,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testUTF8CharsWithBOM() throws FileNotFoundException, IOException {
+    public void testUTF8CharsWithBOM() throws IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetTest.class
             .getResource("/org/gephi/io/importer/plugin/file/spreadsheet/test_utf8_chars_with_bom.csv"));
 
@@ -534,7 +535,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testEdgesTableOppositeForceUndirected_Merged() throws FileNotFoundException, IOException {
+    public void testEdgesTableOppositeForceUndirected_Merged() throws IOException {
         File file = FileUtil.archiveOrDirForURL(SpreadsheetTest.class.getResource(
             "/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_opposite_force_undirected_merged.csv"));
 
@@ -551,7 +552,7 @@ public class SpreadsheetTest {
     }
 
     @Test
-    public void testEdgesTableOppositeForceUndirected_Issue1848() throws FileNotFoundException, IOException {
+    public void testEdgesTableOppositeForceUndirected_Issue1848() throws IOException {
         //https://github.com/gephi/gephi/issues/1848
         File file = FileUtil.archiveOrDirForURL(SpreadsheetTest.class.getResource(
             "/org/gephi/io/importer/plugin/file/spreadsheet/edges_table_opposite_force_undirected_issue_1848.csv"));
@@ -574,7 +575,7 @@ public class SpreadsheetTest {
 
     private void checkEdgesSpreadsheet(boolean ignoreId) throws IOException {
         File tmpFile = File.createTempFile(testName.getMethodName(), ".csv");
-        Writer writer = new OutputStreamWriter(new FileOutputStream(tmpFile), "UTF-8");
+        Writer writer = new OutputStreamWriter(new FileOutputStream(tmpFile), StandardCharsets.UTF_8);
 
         ExporterSpreadsheet exporter = new ExporterSpreadsheet();
         exporter.setWorkspace(workspace);
@@ -599,7 +600,8 @@ public class SpreadsheetTest {
         try {
             expected = new String(Files.readAllBytes(Paths
                 .get(getClass().getResource("/org/gephi/io/importer/plugin/file/spreadsheet/expected/" +
-                    testName.getMethodName().replace("_AutoDetectImporter", "") + "_edges.csv").toURI()))).trim().replace("\r", "");
+                    testName.getMethodName().replace("_AutoDetectImporter", "") + "_edges.csv").toURI()))).trim()
+                .replace("\r", "");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -609,7 +611,7 @@ public class SpreadsheetTest {
 
     private void checkNodesSpreadsheet() throws IOException {
         File tmpFile = File.createTempFile(testName.getMethodName(), ".csv");
-        Writer writer = new OutputStreamWriter(new FileOutputStream(tmpFile), "UTF-8");
+        Writer writer = new OutputStreamWriter(new FileOutputStream(tmpFile), StandardCharsets.UTF_8);
 
         ExporterSpreadsheet exporter = new ExporterSpreadsheet();
         exporter.setWorkspace(workspace);

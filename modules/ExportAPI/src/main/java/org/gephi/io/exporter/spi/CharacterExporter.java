@@ -56,5 +56,5 @@ public interface CharacterExporter extends Exporter {
      *
      * @param writer the writer the exporter is to write
      */
-    public void setWriter(Writer writer);
+    void setWriter(Writer writer);
 }

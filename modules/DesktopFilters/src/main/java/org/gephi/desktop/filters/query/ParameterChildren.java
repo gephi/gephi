@@ -51,7 +51,7 @@ import org.openide.nodes.Node;
  */
 public class ParameterChildren extends Children.Keys<Integer> {
 
-    private Query function;
+    private final Query function;
 
     public ParameterChildren(Query function) {
         this.function = function;

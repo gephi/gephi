@@ -59,7 +59,7 @@ import org.openide.util.NbBundle;
  */
 public class RandomLayout extends AbstractLayout implements Layout {
 
-    private Random random;
+    private final Random random;
     private Graph graph;
     private boolean converged;
     private double size;

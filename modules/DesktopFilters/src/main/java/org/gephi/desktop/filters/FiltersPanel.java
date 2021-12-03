@@ -93,6 +93,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     private javax.swing.JSplitPane splitPane;
     private javax.swing.JToggleButton stopButton;
     private javax.swing.JToolBar toolbar;
+
     public FiltersPanel() {
         initComponents();
         //Toolbar
@@ -479,7 +480,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
 
     private class QueriesPanel extends JPanel implements ExplorerManager.Provider {
 
-        private ExplorerManager manager = new ExplorerManager();
+        private final ExplorerManager manager = new ExplorerManager();
 
         public QueriesPanel() {
             super(new BorderLayout());

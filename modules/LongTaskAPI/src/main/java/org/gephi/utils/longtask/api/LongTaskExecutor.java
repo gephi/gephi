@@ -174,7 +174,7 @@ public final class LongTaskExecutor {
     public synchronized void cancel() {
         if (inBackground) {
             if (executor != null) {
-                RunningLongTask rlt = (RunningLongTask) currentTask;
+                RunningLongTask rlt = currentTask;
                 if (rlt != null) {
                     boolean res = rlt.cancel();
                     if (interruptCancel && !res) {
@@ -184,7 +184,7 @@ public final class LongTaskExecutor {
                 }
             }
         } else {
-            RunningLongTask rlt = (RunningLongTask) currentTask;
+            RunningLongTask rlt = currentTask;
             if (rlt != null) {
                 boolean res = rlt.cancel();
                 if (interruptCancel && !res) {
@@ -247,7 +247,7 @@ public final class LongTaskExecutor {
         private final Runnable runnable;
         private Future<?> future;
         private ProgressTicket progress;
-        private LongTaskErrorHandler errorHandler;
+        private final LongTaskErrorHandler errorHandler;
 
         public RunningLongTask(LongTask task, Runnable runnable, String taskName, LongTaskErrorHandler errorHandler) {
             this.task = task;

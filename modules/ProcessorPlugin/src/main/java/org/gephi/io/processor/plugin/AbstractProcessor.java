@@ -241,7 +241,7 @@ public abstract class AbstractProcessor implements Processor {
                         TimeMap existingMap = (TimeMap) existingValue;
                         if (!existingMap.isEmpty()) {
                             TimeMap valMap = (TimeMap) val;
-                            TimeMap newMap = (TimeMap) existingMap;
+                            TimeMap newMap = existingMap;
 
                             Object[] keys = valMap.toKeysArray();
                             Object[] vals = valMap.toValuesArray();

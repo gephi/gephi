@@ -65,14 +65,14 @@ public interface PropertyExecutor {
      * @param callback the callback function to be notified when setting has to
      *                 be done
      */
-    public void setValue(FilterProperty property, Object value, Callback callback);
+    void setValue(FilterProperty property, Object value, Callback callback);
 
     /**
      * Callback interface for setting value. When called, setting value is done
      * in a safe window between filter execution.
      */
-    public interface Callback {
+    interface Callback {
 
-        public void setValue(Object value);
+        void setValue(Object value);
     }
 }

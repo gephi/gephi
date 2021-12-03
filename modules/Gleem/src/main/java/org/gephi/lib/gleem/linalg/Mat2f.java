@@ -46,7 +46,7 @@ package org.gephi.lib.gleem.linalg;
  */
 
 public class Mat2f {
-    private float[] data;
+    private final float[] data;
 
     /**
      * Creates new matrix initialized to the zero matrix

@@ -47,9 +47,9 @@ package org.gephi.desktop.io.export.spi;
  */
 public interface ExporterClassUI {
 
-    public String getName();
+    String getName();
 
-    public boolean isEnable();
+    boolean isEnable();
 
-    public void action();
+    void action();
 }

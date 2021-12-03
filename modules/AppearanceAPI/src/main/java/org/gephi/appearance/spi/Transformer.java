@@ -58,12 +58,12 @@ public interface Transformer {
      *
      * @return true if is node, false otherwise
      */
-    public boolean isNode();
+    boolean isNode();
 
     /**
      * True if this transformer can be applied to edges.
      *
      * @return true if is edge, false otherwise
      */
-    public boolean isEdge();
+    boolean isEdge();
 }

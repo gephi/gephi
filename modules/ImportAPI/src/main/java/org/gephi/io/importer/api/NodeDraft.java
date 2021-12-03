@@ -57,56 +57,56 @@ public interface NodeDraft extends ElementDraft {
      *
      * @return x position
      */
-    public float getX();
+    float getX();
 
     /**
      * Sets this node's X position.
      *
      * @param x x position
      */
-    public void setX(float x);
+    void setX(float x);
 
     /**
      * Returns this node's Y position.
      *
      * @return y position
      */
-    public float getY();
+    float getY();
 
     /**
      * Sets this node's Y position.
      *
      * @param y y position
      */
-    public void setY(float y);
+    void setY(float y);
 
     /**
      * Returns this node's Z position.
      *
      * @return z position
      */
-    public float getZ();
+    float getZ();
 
     /**
      * Sets this node's Z position.
      *
      * @param z z position
      */
-    public void setZ(float z);
+    void setZ(float z);
 
     /**
      * Returns this node's size.
      *
      * @return size
      */
-    public float getSize();
+    float getSize();
 
     /**
      * Sets this node's size.
      *
      * @param size size
      */
-    public void setSize(float size);
+    void setSize(float size);
 
     /**
      * Returns whether this node's position is fixed.
@@ -115,7 +115,7 @@ public interface NodeDraft extends ElementDraft {
      *
      * @return true if fixed, false otherwise
      */
-    public boolean isFixed();
+    boolean isFixed();
 
     /**
      * Sets whether this node's position is fixed.
@@ -125,12 +125,12 @@ public interface NodeDraft extends ElementDraft {
      *
      * @param fixed true if fixed, false otherwise
      */
-    public void setFixed(boolean fixed);
+    void setFixed(boolean fixed);
 
     /**
      * Returns true if this node has been automatically created.
      *
      * @return true if automatically created, false otherwise
      */
-    public boolean isCreatedAuto();
+    boolean isCreatedAuto();
 }

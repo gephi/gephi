@@ -59,9 +59,9 @@ import org.gephi.graph.api.Graph;
  */
 public interface ElementFilter<K extends Element> extends Filter {
 
-    public boolean init(Graph graph);
+    boolean init(Graph graph);
 
-    public boolean evaluate(Graph graph, K element);
+    boolean evaluate(Graph graph, K element);
 
-    public void finish();
+    void finish();
 }

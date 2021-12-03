@@ -58,7 +58,8 @@ import java.awt.Color;
 public class EdgeColor {
 
     private final Mode mode;
-    private Color customColor;
+    private final Color customColor;
+
     public EdgeColor(Mode mode) {
         customColor = Color.BLACK;
         this.mode = mode;

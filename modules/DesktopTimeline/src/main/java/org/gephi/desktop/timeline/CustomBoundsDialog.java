@@ -80,6 +80,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
     private javax.swing.JButton resetDefaultsDate;
     private javax.swing.JTextField startTextField;
     private org.jdesktop.swingx.JXHeader titleHeader;
+
     public CustomBoundsDialog() {
         initComponents();
 
@@ -320,7 +321,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
     private class TimeValidator implements Validator<String> {
 
         private final JTextField other;
-        private boolean max;
+        private final boolean max;
 
         public TimeValidator(JTextField other, boolean max) {
             this.other = other;

@@ -80,7 +80,7 @@ public class SupportSize {
      * @return the support's width
      */
     public String getWidth() {
-        return width.toString() + lengthUnit.toString();
+        return width + lengthUnit.toString();
     }
 
     /**
@@ -89,6 +89,6 @@ public class SupportSize {
      * @return the support's height
      */
     public String getHeight() {
-        return height.toString() + lengthUnit.toString();
+        return height + lengthUnit.toString();
     }
 }

@@ -121,7 +121,7 @@ public class PreviewUIControllerImpl implements PreviewUIController {
                     workspace.add(model);
                 }
                 Float visibilityRatio = previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
-                ((PreviewUIModelImpl) model).setVisibilityRatio(visibilityRatio);
+                model.setVisibilityRatio(visibilityRatio);
                 fireEvent(SELECT, model);
             }
 
@@ -156,7 +156,7 @@ public class PreviewUIControllerImpl implements PreviewUIController {
             Float visibilityRatio =
                 previewController.getModel().getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
             if (visibilityRatio != null) {
-                ((PreviewUIModelImpl) model).setVisibilityRatio(visibilityRatio);
+                model.setVisibilityRatio(visibilityRatio);
             }
             graphModel = graphController.getGraphModel(pc.getCurrentWorkspace());
         }

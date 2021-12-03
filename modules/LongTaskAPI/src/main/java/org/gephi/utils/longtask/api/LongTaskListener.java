@@ -51,5 +51,5 @@ import org.gephi.utils.longtask.spi.LongTask;
  */
 public interface LongTaskListener {
 
-    public void taskFinished(LongTask task);
+    void taskFinished(LongTask task);
 }

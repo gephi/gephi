@@ -56,7 +56,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = LayoutBuilder.class)
 public class Random implements LayoutBuilder {
 
-    private RandomLayoutUI ui = new RandomLayoutUI();
+    private final RandomLayoutUI ui = new RandomLayoutUI();
 
     @Override
     public String getName() {

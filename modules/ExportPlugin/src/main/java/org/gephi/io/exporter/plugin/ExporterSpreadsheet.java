@@ -268,6 +268,6 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
 
     public enum ExportTable {
         NODES,
-        EDGES;
+        EDGES
     }
 }

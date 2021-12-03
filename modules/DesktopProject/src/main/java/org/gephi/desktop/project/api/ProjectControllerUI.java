@@ -52,51 +52,51 @@ import org.gephi.project.api.Workspace;
  */
 public interface ProjectControllerUI {
 
-    public void saveProject();
+    void saveProject();
 
-    public void saveAsProject();
+    void saveAsProject();
 
-    public void openProject(File file);
+    void openProject(File file);
 
-    public void renameProject(final String name);
+    void renameProject(final String name);
 
-    public void projectProperties();
+    void projectProperties();
 
-    public void openFile(FileImporterBuilder[] builders);
+    void openFile(FileImporterBuilder[] builders);
 
-    public void openFile();
+    void openFile();
 
-    public Workspace newWorkspace();
+    Workspace newWorkspace();
 
-    public Workspace duplicateWorkspace();
+    Workspace duplicateWorkspace();
 
-    public Project getCurrentProject();
+    Project getCurrentProject();
 
-    public Project newProject();
+    Project newProject();
 
-    public void deleteWorkspace();
+    void deleteWorkspace();
 
-    public void closeProject();
+    void closeProject();
 
-    public void renameWorkspace(final String name);
+    void renameWorkspace(final String name);
 
-    public boolean canNewProject();
+    boolean canNewProject();
 
-    public boolean canCloseProject();
+    boolean canCloseProject();
 
-    public boolean canOpenFile();
+    boolean canOpenFile();
 
-    public boolean canSave();
+    boolean canSave();
 
-    public boolean canSaveAs();
+    boolean canSaveAs();
 
-    public boolean canNewWorkspace();
+    boolean canNewWorkspace();
 
-    public boolean canDuplicateWorkspace();
+    boolean canDuplicateWorkspace();
 
-    public boolean canDeleteWorkspace();
+    boolean canDeleteWorkspace();
 
-    public boolean canRenameWorkspace();
+    boolean canRenameWorkspace();
 
-    public boolean canProjectProperties();
+    boolean canProjectProperties();
 }

@@ -556,7 +556,7 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
 
     private class ColumnWrapper {
 
-        private Column column;
+        private final Column column;
 
         public ColumnWrapper(Column column) {
             this.column = column;

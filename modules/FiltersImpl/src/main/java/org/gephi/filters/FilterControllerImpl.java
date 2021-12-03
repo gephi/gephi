@@ -318,7 +318,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         } else {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = model.getGraphModel();
-            result = (Graph) processor.process((AbstractQueryImpl) query, graphModel);
+            result = processor.process((AbstractQueryImpl) query, graphModel);
         }
         Column nodeCol = result.getModel().getNodeTable().getColumn("filter_" + title);
         if (nodeCol == null) {
@@ -358,7 +358,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         } else {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = model.getGraphModel();
-            result = (Graph) processor.process((AbstractQueryImpl) query, graphModel);
+            result = processor.process((AbstractQueryImpl) query, graphModel);
         }
 
         final Graph graphView = result;
@@ -407,7 +407,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             result = model.getGraphModel().getGraph(view);
         } else {
             FilterProcessor processor = new FilterProcessor();
-            result = (Graph) processor.process((AbstractQueryImpl) query, model.getGraphModel());
+            result = processor.process((AbstractQueryImpl) query, model.getGraphModel());
         }
         Graph fullGraph = model.getGraphModel().getGraph();
 

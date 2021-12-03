@@ -62,7 +62,7 @@ public interface FilterLibraryMask {
      *
      * @return the <code>Category</code> this filter is describing
      */
-    public Category getCategory();
+    Category getCategory();
 
     /**
      * Returns <code>true</code> if this masks' category is valid.
@@ -70,5 +70,5 @@ public interface FilterLibraryMask {
      * @return <code>true</code> if the category is valid, <code>false</code>
      * otherwise
      */
-    public boolean isValid();
+    boolean isValid();
 }

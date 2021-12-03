@@ -69,8 +69,8 @@ public class BusyUtils {
 
     public static class BusyLabel {
 
-        private JScrollPane scrollPane;
-        private JXBusyLabel busyLabel;
+        private final JScrollPane scrollPane;
+        private final JXBusyLabel busyLabel;
         private JComponent component;
 
         private BusyLabel(JScrollPane scrollpane, String text, JComponent component) {

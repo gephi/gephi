@@ -119,10 +119,10 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
 
         props.putValue(PDFTarget.LANDSCAPE, landscape);
         props.putValue(PDFTarget.PAGESIZE, size);
-        props.putValue(PDFTarget.MARGIN_TOP, new Float((float) marginTop));
-        props.putValue(PDFTarget.MARGIN_LEFT, new Float((float) marginLeft));
-        props.putValue(PDFTarget.MARGIN_BOTTOM, new Float((float) marginBottom));
-        props.putValue(PDFTarget.MARGIN_RIGHT, new Float((float) marginRight));
+        props.putValue(PDFTarget.MARGIN_TOP, new Float(marginTop));
+        props.putValue(PDFTarget.MARGIN_LEFT, new Float(marginLeft));
+        props.putValue(PDFTarget.MARGIN_BOTTOM, new Float(marginBottom));
+        props.putValue(PDFTarget.MARGIN_RIGHT, new Float(marginRight));
         props.putValue(PDFTarget.PDF_CONTENT_BYTE, cb);
         target = (PDFTarget) controller.getRenderTarget(RenderTarget.PDF_TARGET, workspace);
         if (target instanceof LongTask) {

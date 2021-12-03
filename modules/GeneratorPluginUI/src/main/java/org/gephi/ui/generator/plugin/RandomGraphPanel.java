@@ -58,6 +58,7 @@ public class RandomGraphPanel extends javax.swing.JPanel {
     protected javax.swing.JTextField nodeField;
     private javax.swing.JLabel edgeLabel;
     private javax.swing.JLabel nodeLabel;
+
     /**
      * Creates new form RandomGraphPanel
      */
