@@ -307,8 +307,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         S += e_out * lBinom(B, 2);
         for (Community community : theStructure.communities) {
             // Number of edges of community (with itself or another one)
-            //Double e_r = theStructure.weights[community.nodes.get(0)];//community.weightSum; // FIXME: temp hack!!! the value is wrong.
-            Double e_r = community.weightSum; // FIXME: temp hack!!! the value is wrong.
+            Double e_r = community.weightSum;
             // Number of edges within community
             Double e_rr = community.internalWeightSum;
             // Number of nodes in the  community
@@ -517,7 +516,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
                 nodeConnectionsWeight[index] = new HashMap<>();
                 nodeConnectionsCount[index] = new HashMap<>();
-                weights[index] = 0;
+                weights[index] = 0; // Note: weight is degree, but we add that later on
                 graphNodeCount[index] = 1;
                 internalWeights[index] = 0;
                 nodeCommunities[index].seed(index);
@@ -537,6 +536,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             nodesIterable = graph.getNodes();
             for (Node node : nodesIterable) {
                 int node_index = map.get(node);
+                StatisticalInferenceClustering.Community com = nodeCommunities[node_index];
                 topology[node_index] = new ArrayList<>();
 
                 Set<Node> uniqueNeighbors = new HashSet<>(graph.getNeighbors(node).toCollection());
@@ -562,6 +562,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                     //Finally add a single edge with the summed weight of all parallel edges:
                     //Fixes issue #1419 Getting null pointer error when trying to calculate modularity
                     weights[node_index] += weight;
+                    com.weightSum += weight;
                     if (node_index == neighbor_index) {
                         internalWeights[node_index] += weight;
                     }
@@ -588,6 +589,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
                     graphWeightSum += weight;
                 }
+
+
 
                 if (isCanceled) {
                     nodesIterable.doBreak();
@@ -754,7 +757,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             addNodeTo(node, to);
         }
 
-        public void _moveNodeTo(int node, StatisticalInferenceClustering.Community to) {
+        protected void _moveNodeTo(int node, StatisticalInferenceClustering.Community to) {
             // NOTE: THIS IS FOR UNIT TEST PURPOSE ONLY
             moveNodeTo(node, to);
         }

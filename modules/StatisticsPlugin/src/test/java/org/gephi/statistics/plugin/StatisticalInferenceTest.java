@@ -146,4 +146,47 @@ public class StatisticalInferenceTest extends TestCase {
         assertTrue(descriptionLength_atIdealPartition < descriptionLength_atInit);
     }
 
+    @Test
+    public void testMetricsBookkeeping() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+        // Note: at initialization, each node is in its own community.
+
+        int node;
+        // The community for each node should have a weight equal to the degree of that node.
+        node = 0;
+        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
+
+        node = 1;
+        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
+
+        node = 2;
+        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
+
+        node = 3;
+        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
+
+        node = 4;
+        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
+
+        node = 5;
+        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
+
+        node = 6;
+        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
+
+        node = 7;
+        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
+
+        // Move node 1 to the same community as node 0: it now contains nodes 0 and 1 (degrees 4 and 3).
+        theStructure._moveNodeTo(1, theStructure.nodeCommunities[0]);
+        assertTrue(theStructure.nodeCommunities[0].weightSum == 7);
+
+        // Move node 1 to the same community as node 2: now, the community of node 0 contains just nodes 0 (degree 4).
+        theStructure._moveNodeTo(1, theStructure.nodeCommunities[2]);
+        assertTrue(theStructure.nodeCommunities[0].weightSum == 4);
+
+    }
+
 }
