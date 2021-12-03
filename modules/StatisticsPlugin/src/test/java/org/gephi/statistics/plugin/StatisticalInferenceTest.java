@@ -79,8 +79,7 @@ public class StatisticalInferenceTest extends TestCase {
         assertEquals(class1, class2);
     }*/
 
-    @Test
-    public void testCLiquesBridgeGraphModularity() {
+    private UndirectedGraph getCliquesBridgeGraph() {
         GraphModel graphModel = GraphModel.Factory.newInstance();
         UndirectedGraph undirectedGraph = graphModel.getUndirectedGraph();
 
@@ -134,18 +133,39 @@ public class StatisticalInferenceTest extends TestCase {
         undirectedGraph.addEdge(edge57);
 
         UndirectedGraph graph = graphModel.getUndirectedGraph();
+        return graph;
+    }
+
+    @Test
+    public void testCliquesBridgeGraph_descriptionLength() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
 
         StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
 
         StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
-        int[] comStructure = new int[graph.getNodeCount()];
 
-        HashMap<String, Double> sicValues = sic.computePartition(graph, theStructure, comStructure,
-                false);
+        // At initialization, each node is in its own community.
+        // Here we just test the description length at init.
+        // We test for the know value (from GraphTools)
 
-        double descriptionLength = sicValues.get("descriptionLength");
+        double descriptionLength_atInit = sic.computeDescriptionLength(graph, theStructure);
+        assertTrue(descriptionLength_atInit - 36.0896 < 0.0001);
 
+        // Now we move the nodes so that one community remains for each clique
+        StatisticalInferenceClustering.Community cA = theStructure.nodeCommunities[0];
+        StatisticalInferenceClustering.Community cB = theStructure.nodeCommunities[4];
+        theStructure._moveNodeTo(1, cA);
+        theStructure._moveNodeTo(2, cA);
+        theStructure._moveNodeTo(3, cA);
+        theStructure._moveNodeTo(5, cB);
+        theStructure._moveNodeTo(6, cB);
+        theStructure._moveNodeTo(7, cB);
 
+        // Now we test that the description length is shorter when the communities
+        // match the expectations (one community per clique)
+
+        double descriptionLength_atIdealPartition = sic.computeDescriptionLength(graph, theStructure);
+        assertTrue(descriptionLength_atIdealPartition < descriptionLength_atInit);
     }
 
     /*@Test

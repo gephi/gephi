@@ -753,6 +753,11 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             addNodeTo(node, to);
         }
 
+        public void _moveNodeTo(int node, StatisticalInferenceClustering.Community to) {
+            // NOTE: THIS IS FOR UNIT TEST PURPOSE ONLY
+            moveNodeTo(node, to);
+        }
+
         private void zoomOut() {
             //System.out.println("### ZOOM OUT");
             int M = communities.size();
