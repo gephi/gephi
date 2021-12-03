@@ -42,17 +42,22 @@
 
 package org.gephi.visualization.api.selection;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.visualization.CurrentWorkspaceVizEngine;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import org.gephi.viz.engine.status.GraphSelection;
+import org.joml.Vector2f;
+import org.openide.util.Lookup;
 
 /**
  * @author Mathieu Bastian
@@ -61,9 +66,10 @@ public class SelectionManager implements VizArchitecture {
 
     private final List<ChangeListener> listeners;
     private VizConfig vizConfig;
+    private CurrentWorkspaceVizEngine currentVizEngine;
     //Settings
     private int mouseSelectionDiameter;
-    private boolean mouseSelectionZoomProportionnal;
+    private boolean mouseSelectionZoomProportional;
     private boolean selectionUpdateWhileDragging;
     //States
     private boolean blocked = false;
@@ -75,10 +81,15 @@ public class SelectionManager implements VizArchitecture {
     @Override
     public void initArchitecture() {
         this.vizConfig = VizController.getInstance().getVizConfig();
-//        this.engine = VizController.getInstance().getEngine();
-        //TODO
+        this.currentVizEngine = Lookup.getDefault().lookup(CurrentWorkspaceVizEngine.class);
         mouseSelectionDiameter = vizConfig.getMouseSelectionDiameter();
         selectionUpdateWhileDragging = vizConfig.isMouseSelectionUpdateWhileDragging();
+    }
+
+    private Optional<GraphSelection> currentEngineSelectionModel() {
+        return currentVizEngine.getEngine().map(engine -> {
+            return engine.getLookup().lookup(GraphSelection.class);
+        });
     }
 
     public void blockSelection(boolean block) {
@@ -137,7 +148,6 @@ public class SelectionManager implements VizArchitecture {
         vizConfig.setSelectionEnable(false);
         vizConfig.setDraggingEnable(false);
         vizConfig.setCustomSelection(true);
-        //this.blocked = true;
         fireChangeEvent();
     }
 
@@ -146,22 +156,30 @@ public class SelectionManager implements VizArchitecture {
             vizConfig.setCustomSelection(false);
             setDirectMouseSelection();
         }
-//        engine.resetSelection();
-        //TODO
+
+        currentEngineSelectionModel().ifPresent(GraphSelection::clearSelection);
     }
 
     public List<Node> getSelectedNodes() {
-        return Collections.emptyList();
-        //TODO
-//        return engine.getSelectedUnderlyingNodes();
+        return currentEngineSelectionModel()
+            .map(selection -> (List<Node>) new ArrayList<Node>(selection.getSelectedNodes()))
+            .orElse(Collections.emptyList());
     }
 
     public void selectNode(Node node) {
-        selectNodes(new Node[] {node});
+        if (node == null) {
+            selectNodes(null);
+        } else {
+            selectNodes(new Node[] {node});
+        }
     }
 
     public void selectEdge(Edge edge) {
-        selectEdges(new Edge[] {edge});
+        if (edge == null) {
+            selectEdges(null);
+        } else {
+            selectEdges(new Edge[] {edge});
+        }
     }
 
     public void selectNodes(Node[] nodes) {
@@ -169,9 +187,15 @@ public class SelectionManager implements VizArchitecture {
             setCustomSelection();
         }
 
-//        Model[] models = engine.getNodeModelsForNodes(nodes);
-//        engine.selectObject(models);
-        //TODO
+        currentEngineSelectionModel()
+            .ifPresent(selection -> {
+                if (nodes == null) {
+                    selection.clearSelectedNodes();
+
+                } else {
+                    selection.setSelectedNodes(Arrays.asList(nodes));
+                }
+            });
     }
 
     public void selectEdges(Edge[] edges) {
@@ -179,16 +203,24 @@ public class SelectionManager implements VizArchitecture {
             setCustomSelection();
         }
 
-//        Model[] models = engine.getEdgeModelsForEdges(edges);
-//        engine.selectObject(models);
-        //TODO
+        currentEngineSelectionModel()
+            .ifPresent(selection -> {
+                if (edges == null) {
+                    selection.clearSelectedEdges();
+
+                } else {
+                    selection.setSelectedEdges(Arrays.asList(edges));
+                }
+            });
     }
 
     public void centerOnNode(Node node) {
         if (node != null) {
-//            VizController.getInstance().getGraphIO().centerOnCoordinate(node.x(), node.y(), node.z() + node.size() * 8);
-//            engine.getScheduler().requireUpdateVisible();
-            //TODO
+            currentVizEngine.getEngine().ifPresent(engine -> {
+                final Vector2f position = new Vector2f(node.x(), node.y());
+                final float size = node.size();
+                engine.centerOn(position, size, size);
+            });
         }
     }
 
@@ -200,12 +232,12 @@ public class SelectionManager implements VizArchitecture {
         this.mouseSelectionDiameter = mouseSelectionDiameter;
     }
 
-    public boolean isMouseSelectionZoomProportionnal() {
-        return mouseSelectionZoomProportionnal;
+    public boolean isMouseSelectionZoomProportional() {
+        return mouseSelectionZoomProportional;
     }
 
-    public void setMouseSelectionZoomProportionnal(boolean mouseSelectionZoomProportionnal) {
-        this.mouseSelectionZoomProportionnal = mouseSelectionZoomProportionnal;
+    public void setMouseSelectionZoomProportional(boolean mouseSelectionZoomProportional) {
+        this.mouseSelectionZoomProportional = mouseSelectionZoomProportional;
     }
 
     public boolean isSelectionUpdateWhileDragging() {

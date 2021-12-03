@@ -312,11 +312,19 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     @Override
     protected void componentActivated() {
         java.awt.Toolkit.getDefaultToolkit().addAWTEventListener(this, AWTEvent.KEY_EVENT_MASK);
+        activateWorkspaceVizEngine(
+            Lookup.getDefault().lookup(ProjectController.class)
+                .getCurrentWorkspace()
+        );
     }
 
     @Override
     protected void componentDeactivated() {
         java.awt.Toolkit.getDefaultToolkit().removeAWTEventListener(this);
+        deactivateWorkspaceVizEngine(
+            Lookup.getDefault().lookup(ProjectController.class)
+                .getCurrentWorkspace()
+        );
     }
 
     void writeProperties(java.util.Properties p) {

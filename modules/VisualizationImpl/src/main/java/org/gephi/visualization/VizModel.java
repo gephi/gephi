@@ -68,8 +68,7 @@ import org.openide.util.Lookup;
  */
 public class VizModel {
 
-    //Engine:
-    protected final VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> engine;
+    private final Workspace workspace;
 
     protected VizConfig config;
     //Variable
@@ -94,15 +93,19 @@ public class VizModel {
     protected List<PropertyChangeListener> listeners = new ArrayList<>();
     private boolean defaultModel = false;
 
-    public VizModel(Workspace workspace, VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> engine) {
+    public VizModel(Workspace workspace) {
         defaultValues();
 
-        this.engine = engine;
-
-        GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+        final GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
+        this.workspace = workspace;
 //        textModel.setTextColumns(new Column[] {gm.getNodeTable().getColumn("label")},
 //            new Column[] {gm.getEdgeTable().getColumn("label")});
         //TODO
+    }
+
+    public VizModel(boolean defaultModel) {
+        this.defaultModel = defaultModel;
+        this.workspace = null;
     }
 
     public void init() {
@@ -117,10 +120,6 @@ public class VizModel {
                 }
             }
         });
-    }
-
-    public VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> getEngine() {
-        return engine;
     }
 
     public List<PropertyChangeListener> getListeners() {
@@ -378,11 +377,19 @@ public class VizModel {
     }
 
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
-        //Fast refreh
+        final VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> engine =
+            Lookup.getDefault().lookup(CurrentWorkspaceVizEngine.class)
+                .getEngine(workspace).orElse(null);
+
+        if (engine == null) {
+            return;
+        }
+
+        //Fast refresh
         final Vector2fc cameraPosition = engine.getTranslate();
 
         //TextModel
-//        textModel.writeXML(writer);
+        //        textModel.writeXML(writer);
         //TODO
 
         //Camera

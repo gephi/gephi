@@ -412,9 +412,9 @@ public class DesktopToolController implements ToolController {
                 public boolean handleEvent(VizEvent event) {
                     float[] data = (float[]) event.getData();
                     int[] viewport = new int[] {(int) data[0], (int) data[1]};
-                    float[] threed = new float[] {data[2], data[3]};
+                    float[] worldPosition = new float[] {data[2], data[3]};
 
-                    return toolEventListener.mouseClick(viewport, threed);
+                    return toolEventListener.mouseClick(viewport, worldPosition);
                 }
 
                 @Override

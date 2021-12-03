@@ -5,8 +5,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.visualization.VizController;
@@ -28,6 +29,10 @@ import org.lwjgl.opengl.awt.GLData;
 import org.openide.util.Lookup;
 
 public class VizEngineGraphCanvasManager {
+
+    private static final ExecutorService THREAD_POOL = Executors.newSingleThreadExecutor(runnable -> {
+        return new Thread(runnable, "VizEngineGraphCanvas");
+    });
 
     private static final boolean DISABLE_INDIRECT_RENDERING = false;
     private static final boolean DISABLE_INSTANCED_RENDERING = false;
@@ -62,7 +67,7 @@ public class VizEngineGraphCanvasManager {
 
         final GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
 
-        final LWJGLRenderingTargetAWT renderingTarget = new LWJGLRenderingTargetAWT(null);
+        final LWJGLRenderingTargetAWT renderingTarget = new LWJGLRenderingTargetAWT();
 
         this.engine = VizEngineFactory.newEngine(
             renderingTarget,
@@ -71,6 +76,8 @@ public class VizEngineGraphCanvasManager {
                 new VizEngineLWJGLConfigurator()
             )
         );
+
+        workspace.add(engine);
 
         if (engineTranslate != null) {
             engine.setTranslate(engineTranslate);
@@ -142,7 +149,6 @@ public class VizEngineGraphCanvasManager {
             public boolean processEvent(LWJGLInputEvent inputEvent) {
                 if (inputEvent instanceof MouseEvent) {
                     if (vizController.getVizEventManager().processMouseEvent(engine, (MouseEvent) inputEvent)) {
-                        System.out.println("Handled");
                         return true;
                     }
                 }
@@ -162,12 +168,12 @@ public class VizEngineGraphCanvasManager {
 
             @Override
             public String getName() {
-                return "Gephi viz";
+                return "Gephi Viz Event Manager";
             }
 
             @Override
             public void init(LWJGLRenderingTarget lwjglRenderingTarget) {
-
+                //NOP
             }
 
             @Override
@@ -186,9 +192,8 @@ public class VizEngineGraphCanvasManager {
     }
 
     private void initRenderingLoop(AWTGLCanvas glCanvas) {
-        final Runnable renderLoop = new Runnable() {
-            @Override
-            public void run() {
+        final Runnable renderLoop = () -> {
+            while (true) {
                 if (!initialized) {
                     return; //Stop rendering loop
                 }
@@ -200,11 +205,10 @@ public class VizEngineGraphCanvasManager {
                 } catch (Throwable ex) {
                     //NOOP
                 }
-
-                SwingUtilities.invokeLater(this);
             }
         };
-        SwingUtilities.invokeLater(renderLoop);
+
+        THREAD_POOL.submit(renderLoop);
     }
 
     public synchronized void destroy(JComponent component) {
@@ -216,6 +220,7 @@ public class VizEngineGraphCanvasManager {
 
             //TODO: Keep more state of GraphRenderingOptions
 
+            workspace.remove(engine);
             engine = null;
         }
 
@@ -225,9 +230,5 @@ public class VizEngineGraphCanvasManager {
             glCanvas = null;
         }
         this.initialized = false;
-    }
-
-    public VizEngine<LWJGLRenderingTarget, LWJGLInputEvent> getEngine() {
-        return engine;
     }
 }

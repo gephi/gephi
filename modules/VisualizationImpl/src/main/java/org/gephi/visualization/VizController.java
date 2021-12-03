@@ -64,11 +64,14 @@ public class VizController implements VisualizationController {
 
     //Singleton
     private static VizController instance;
+    private CurrentWorkspaceVizEngine currentWorkspaceVizEngine;
     //Architecture
     private VizEventManager vizEventManager;
     private VizConfig vizConfig;
     private ScreenshotMaker screenshotMaker;
     private SelectionManager selectionManager;
+
+    private VizModel currentModel;
 
     public VizController() {
     }
@@ -93,42 +96,46 @@ public class VizController implements VisualizationController {
     }
 
     public void initInstances() {
+        currentWorkspaceVizEngine = Lookup.getDefault().lookup(CurrentWorkspaceVizEngine.class);
+
         vizConfig = new VizConfig();
         vizEventManager = new StandardVizEventManager();
         screenshotMaker = new ScreenshotMaker();
 //        limits = new GraphLimits();
 //        textManager = new TextManager();
-//        currentModel = new VizModel(true);
+        currentModel = new VizModel(true);
         selectionManager = new SelectionManager();
-//
+
+        //TODO
 //        textManager.initArchitecture();
         screenshotMaker.initArchitecture();
         vizEventManager.initArchitecture();
         selectionManager.initArchitecture();
-        //TODO
     }
 
     public void refreshWorkspace() {
-//        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-//        VizModel model = null;
-//        if (pc.getCurrentWorkspace() == null) {
-//            model = new VizModel(true);
-//        } else {
-//            model = pc.getCurrentWorkspace().getLookup().lookup(VizModel.class);
-//            if (model == null) {
-//                model = new VizModel(pc.getCurrentWorkspace());
-//                pc.getCurrentWorkspace().add(model);
-//
-//            }
-//        }
-//        if (model != currentModel) {
-//            model.setListeners(currentModel.getListeners());
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        VizModel model = null;
+        if (pc.getCurrentWorkspace() == null) {
+            model = new VizModel(true);
+        } else {
+            model = pc.getCurrentWorkspace().getLookup().lookup(VizModel.class);
+            if (model == null) {
+                model = new VizModel(pc.getCurrentWorkspace());
+                pc.getCurrentWorkspace().add(model);
+
+            }
+        }
+
+        if (model != currentModel) {
+            model.setListeners(currentModel.getListeners());
 //            model.getTextModel().setListeners(currentModel.getTextModel().getListeners());
-//            currentModel.setListeners(null);
+            //TODO
+            currentModel.setListeners(null);
 //            currentModel.getTextModel().setListeners(null);
-//            currentModel = model;
-//            currentModel.init();
-//        }
+            currentModel = model;
+            currentModel.init();
+        }
         //TODO
     }
 
@@ -140,35 +147,43 @@ public class VizController implements VisualizationController {
 
     @Override
     public void resetSelection() {
-        //TODO
+        selectionManager.resetSelection();
     }
 
     @Override
     public void resetNodesSelection() {
-        //TODO
+        selectionManager.selectNodes(null);
     }
 
     @Override
     public void resetEdgesSelection() {
-        //TODO
+        selectionManager.selectEdges(null);
     }
 
     public void selectNode(Node node) {
-        selectNodes(new Node[] {node});
+        if (node == null) {
+            selectNodes(null);
+        } else {
+            selectNodes(new Node[] {node});
+        }
     }
 
     public void selectEdge(Edge edge) {
-        selectEdges(new Edge[] {edge});
+        if (edge == null) {
+            selectEdges(null);
+        } else {
+            selectEdges(new Edge[] {edge});
+        }
     }
 
     @Override
     public void selectNodes(Node[] nodes) {
-        //TODO
+        selectionManager.selectNodes(nodes);
     }
 
     @Override
     public void selectEdges(Edge[] edges) {
-        //TODO
+        selectionManager.selectEdges(edges);
     }
 
     @Override

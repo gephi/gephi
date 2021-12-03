@@ -61,6 +61,7 @@ import org.gephi.viz.engine.VizEngine;
 import org.gephi.viz.engine.lwjgl.pipeline.events.MouseEvent;
 import org.gephi.viz.engine.status.GraphSelection;
 import org.joml.Vector2f;
+import org.joml.Vector2i;
 
 /**
  * @author Mathieu Bastian
@@ -70,7 +71,8 @@ public class StandardVizEventManager implements VizEventManager {
     private static final int PRESSING_FREQUENCY = 5;
     private static final int DRAGGING_FREQUENCY = 5;
     // State
-    private Vector2f mouseWorldPosition2d = new Vector2f(0, 0);
+    private final Vector2i mouseScreenPosition = new Vector2i(0, 0);
+    private final Vector2f mouseWorldPosition2d = new Vector2f(0, 0);
 
     //Architecture
     private VizEventTypeHandler[] handlers;
@@ -95,8 +97,9 @@ public class StandardVizEventManager implements VizEventManager {
                 }
                 return drag(engine);
             case MOVE:
+                mouseScreenPosition.set(mouseEvent.x, mouseEvent.y);
                 engine.screenCoordinatesToWorldCoordinates(
-                    mouseEvent.x, mouseEvent.y,
+                    mouseScreenPosition.x, mouseScreenPosition.y,
                     mouseWorldPosition2d
                 );
                 return mouseMove(engine);
@@ -196,14 +199,20 @@ public class StandardVizEventManager implements VizEventManager {
         if (mouseLeftClickHandler.hasListeners()) {
             final Set<Node> selectedNodes = index.getSelectedNodes();
             if (selectedNodes.isEmpty() || !VizController.getInstance().getVizConfig().isSelectionEnable()) {
-                float[] mousePos = new float[] {mouseWorldPosition2d.x(), mouseWorldPosition2d.y()};
-                if (mouseLeftClickHandler.dispatch(mousePos)) {
+                if (mouseLeftClickHandler.dispatch(getScreenAndWorldPositionsArray())) {
                     consumed = true;
                 }
             }
         }
 
         return consumed;
+    }
+
+    private float[] getScreenAndWorldPositionsArray() {
+        return new float[] {
+            mouseScreenPosition.x(), mouseScreenPosition.y(),
+            mouseWorldPosition2d.x(), mouseWorldPosition2d.y()
+        };
     }
 
     public boolean mouseLeftPress(VizEngine engine) {
@@ -279,8 +288,7 @@ public class StandardVizEventManager implements VizEventManager {
             draggingTick = 0;
             final VizEventTypeHandler handler = handlers[VizEvent.Type.DRAG.ordinal()];
             if (handler.hasListeners()) {
-                float[] mousePos = new float[] {mouseWorldPosition2d.x(), mouseWorldPosition2d.y()};
-                return handler.dispatch(mousePos);
+                return handler.dispatch(getScreenAndWorldPositionsArray());
             }
         }
 
