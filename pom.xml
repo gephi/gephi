@@ -134,7 +134,7 @@
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
         
         <!-- Netbeans Platform version -->
-        <netbeans.version>RELEASE125</netbeans.version>
+        <netbeans.version>RELEASE126</netbeans.version>
         
         <!-- GraphStore version -->
         <graphstore.version>0.6.0</graphstore.version>
