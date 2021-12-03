@@ -19,8 +19,7 @@ public class GMLTest {
 
         Assert.assertTrue(container.verify());
 
-        ContainerUnloader unloader = container.getUnloader();
-        NodeDraft[] nodes = Utils.toNodesArray(unloader);
+        NodeDraft[] nodes = Utils.toNodesArray(container);
 
         Utils.assertSameIds(nodes, "A", "B", "C");
     }

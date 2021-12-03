@@ -20,12 +20,24 @@ public class GEXFTest {
 
         Assert.assertTrue(container.verify());
 
-        ContainerUnloader unloader = container.getUnloader();
-        NodeDraft[] nodes = Utils.toNodesArray(unloader);
-        EdgeDraft[] edges = Utils.toEdgesArray(unloader);
+        NodeDraft[] nodes = Utils.toNodesArray(container);
+        EdgeDraft[] edges = Utils.toEdgesArray(container);
 
         Utils.assertSameIds(nodes, "0", "1");
         Utils.assertSameIds(edges, "0");
+    }
+
+    @Test
+    public void testDoubleInfinity() {
+        ImporterGEXF importer = new ImporterGEXF();
+        importer.setReader(Utils.getReader("infinity.gexf"));
+
+        Container container = new ImportContainerImpl();
+        importer.execute(container.getLoader());
+
+        NodeDraft node = Utils.getNode(container, "0");
+        Assert.assertEquals(Double.POSITIVE_INFINITY, node.getValue("0"));
+        Assert.assertEquals(Double.NEGATIVE_INFINITY, node.getValue("1"));
     }
 
     @Test

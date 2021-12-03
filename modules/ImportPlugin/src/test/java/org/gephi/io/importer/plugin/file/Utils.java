@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.ElementDraft;
@@ -16,15 +17,20 @@ import org.junit.Assert;
 
 public class Utils {
 
-    public static NodeDraft[] toNodesArray(ContainerUnloader containerUnloader) {
+    public static NodeDraft[] toNodesArray(Container container) {
         List<NodeDraft> result = new ArrayList<>();
-        containerUnloader.getNodes().iterator().forEachRemaining(result::add);
+        container.getUnloader().getNodes().iterator().forEachRemaining(result::add);
         return result.toArray(new NodeDraft[0]);
     }
 
-    public static EdgeDraft[] toEdgesArray(ContainerUnloader containerUnloader) {
+    public static NodeDraft getNode(Container container, String id) {
+        NodeDraft[] nodes = toNodesArray(container);
+        return Arrays.stream(nodes).filter(n -> n.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    public static EdgeDraft[] toEdgesArray(Container container) {
         List<EdgeDraft> result = new ArrayList<>();
-        containerUnloader.getEdges().iterator().forEachRemaining(result::add);
+        container.getUnloader().getEdges().iterator().forEachRemaining(result::add);
         return result.toArray(new EdgeDraft[0]);
     }
 
