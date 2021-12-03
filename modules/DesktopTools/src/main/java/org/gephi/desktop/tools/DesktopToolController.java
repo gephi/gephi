@@ -39,7 +39,6 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
-
 package org.gephi.desktop.tools;
 
 import java.awt.event.ActionEvent;
@@ -120,7 +119,7 @@ public class DesktopToolController implements ToolController {
 
             } else {
                 throw new RuntimeException(
-                    "The ToolEventListener " + toolListener.getClass().getSimpleName() + " cannot be recognized");
+                        "The ToolEventListener " + toolListener.getClass().getSimpleName() + " cannot be recognized");
             }
         }
         currentHandlers = handlers.toArray(new ToolEventHandler[0]);
@@ -225,8 +224,8 @@ public class DesktopToolController implements ToolController {
                 if (selectionManager.isRectangleSelection() && currentTool != null) {
                     toolbar.clearSelection();
                     unselect();
-                } else if (selectionManager.isSelectionEnabled() && currentTool != null &&
-                    currentTool.getSelectionType() == ToolSelectionType.NONE) {
+                } else if (selectionManager.isSelectionEnabled() && currentTool != null
+                        && currentTool.getSelectionType() == ToolSelectionType.NONE) {
                     toolbar.clearSelection();
                     unselect();
                 } else if (selectionManager.isDraggingEnabled() && currentTool != null) {
@@ -376,7 +375,9 @@ public class DesktopToolController implements ToolController {
 
                 @Override
                 public boolean handleEvent(VizEvent event) {
-                    return toolEventListener.released();
+                    toolEventListener.released();
+
+                    return false;//Never consume release events
                 }
 
                 @Override
@@ -411,8 +412,8 @@ public class DesktopToolController implements ToolController {
                 @Override
                 public boolean handleEvent(VizEvent event) {
                     float[] data = (float[]) event.getData();
-                    int[] viewport = new int[] {(int) data[0], (int) data[1]};
-                    float[] worldPosition = new float[] {data[2], data[3]};
+                    int[] viewport = new int[]{(int) data[0], (int) data[1]};
+                    float[] worldPosition = new float[]{data[2], data[3]};
 
                     return toolEventListener.mouseClick(viewport, worldPosition);
                 }

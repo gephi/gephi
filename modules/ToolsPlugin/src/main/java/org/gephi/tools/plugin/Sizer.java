@@ -39,7 +39,6 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-
 package org.gephi.tools.plugin;
 
 import javax.swing.Icon;
@@ -98,11 +97,9 @@ public class Sizer implements Tool {
             }
 
             @Override
-            public boolean released() {
+            public void released() {
                 nodes = null;
                 sizerPanel.setAvgSize(-1);
-
-                return true;
             }
 
             @Override

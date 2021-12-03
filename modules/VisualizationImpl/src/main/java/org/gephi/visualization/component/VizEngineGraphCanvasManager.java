@@ -22,6 +22,7 @@ import org.gephi.viz.engine.lwjgl.pipeline.events.MouseEvent;
 import org.gephi.viz.engine.spi.InputListener;
 import org.gephi.viz.engine.spi.WorldUpdaterExecutionMode;
 import org.gephi.viz.engine.status.GraphRenderingOptions;
+import org.gephi.viz.engine.util.gl.BasicFPSAnimator;
 import org.gephi.viz.engine.util.gl.OpenGLOptions;
 import org.joml.Vector2fc;
 import org.lwjgl.opengl.awt.AWTGLCanvas;
@@ -30,9 +31,12 @@ import org.openide.util.Lookup;
 
 public class VizEngineGraphCanvasManager {
 
+    private static final String ANIMATOR_THREAD_NAME = "VizEngineGraphCanvas";
     private static final ExecutorService THREAD_POOL = Executors.newSingleThreadExecutor(runnable -> {
-        return new Thread(runnable, "VizEngineGraphCanvas");
+        return new Thread(runnable, ANIMATOR_THREAD_NAME);
     });
+
+    private static final int MAX_FPS = 30;
 
     private static final boolean DISABLE_INDIRECT_RENDERING = false;
     private static final boolean DISABLE_INSTANCED_RENDERING = false;
@@ -53,6 +57,7 @@ public class VizEngineGraphCanvasManager {
     private Vector2fc engineTranslate = null;
     private float engineZoom = 0;
     private float[] engineBackgroundColor = null;
+    private BasicFPSAnimator graphicsAnimator;
 
     public VizEngineGraphCanvasManager(Workspace workspace) {
         this.workspace = Objects.requireNonNull(workspace);
@@ -70,11 +75,11 @@ public class VizEngineGraphCanvasManager {
         final LWJGLRenderingTargetAWT renderingTarget = new LWJGLRenderingTargetAWT();
 
         this.engine = VizEngineFactory.newEngine(
-            renderingTarget,
-            graphModel,
-            Collections.singletonList(
-                new VizEngineLWJGLConfigurator()
-            )
+                renderingTarget,
+                graphModel,
+                Collections.singletonList(
+                        new VizEngineLWJGLConfigurator()
+                )
         );
 
         workspace.add(engine);
@@ -94,7 +99,7 @@ public class VizEngineGraphCanvasManager {
         engine.setWorldUpdatersExecutionMode(UPDATE_DATA_MODE);
 
         engine.getLookup().lookup(GraphRenderingOptions.class)
-            .setShowEdges(false); //FIXME in viz engine locking
+                .setShowEdges(false); //FIXME in viz engine locking
 
         renderingTarget.setup(engine);
 
@@ -193,22 +198,13 @@ public class VizEngineGraphCanvasManager {
 
     private void initRenderingLoop(AWTGLCanvas glCanvas) {
         final Runnable renderLoop = () -> {
-            while (true) {
-                if (!initialized) {
-                    return; //Stop rendering loop
-                }
-
-                try {
-                    if (glCanvas.isValid()) {
-                        glCanvas.render();
-                    }
-                } catch (Throwable ex) {
-                    //NOOP
-                }
+            if (glCanvas.isValid()) {
+                glCanvas.render();
             }
         };
 
-        THREAD_POOL.submit(renderLoop);
+        graphicsAnimator = new BasicFPSAnimator(renderLoop, MAX_FPS);
+        THREAD_POOL.submit(graphicsAnimator);
     }
 
     public synchronized void destroy(JComponent component) {
@@ -219,7 +215,6 @@ public class VizEngineGraphCanvasManager {
             this.engineBackgroundColor = engine.getBackgroundColor();
 
             //TODO: Keep more state of GraphRenderingOptions
-
             workspace.remove(engine);
             engine = null;
         }
@@ -229,6 +224,12 @@ public class VizEngineGraphCanvasManager {
             glCanvas.disposeCanvas();
             glCanvas = null;
         }
+
         this.initialized = false;
+
+        if (graphicsAnimator != null) {
+            this.graphicsAnimator.shutdown();
+            this.graphicsAnimator = null;
+        }
     }
 }
