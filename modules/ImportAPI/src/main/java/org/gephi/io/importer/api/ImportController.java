@@ -66,35 +66,35 @@ import org.openide.filesystems.FileObject;
  */
 public interface ImportController {
 
-    public Container importFile(File file) throws FileNotFoundException;
+    Container importFile(File file) throws FileNotFoundException;
 
-    public Container importFile(File file, FileImporter importer) throws FileNotFoundException;
+    Container importFile(File file, FileImporter importer) throws FileNotFoundException;
 
-    public Container importFile(Reader reader, FileImporter importer);
+    Container importFile(Reader reader, FileImporter importer);
 
-    public Container importFile(InputStream stream, FileImporter importer);
+    Container importFile(InputStream stream, FileImporter importer);
 
-    public Container importWizard(WizardImporter importer);
+    Container importWizard(WizardImporter importer);
 
-    public FileImporter getFileImporter(FileObject fileObject);
+    FileImporter getFileImporter(FileObject fileObject);
 
-    public FileImporter getFileImporter(File file);
+    FileImporter getFileImporter(File file);
 
-    public FileImporter getFileImporter(String importerName);
+    FileImporter getFileImporter(String importerName);
 
-    public Container importDatabase(Database database, DatabaseImporter importer);
+    Container importDatabase(Database database, DatabaseImporter importer);
 
-    public void process(Container container);
+    void process(Container container);
 
-    public void process(Container container, Processor processor, Workspace workspace);
+    void process(Container container, Processor processor, Workspace workspace);
 
-    public void process(Container[] containers, Processor processor, Workspace workspace);
+    void process(Container[] containers, Processor processor, Workspace workspace);
 
-    public FileType[] getFileTypes();
+    FileType[] getFileTypes();
 
-    public boolean isFileSupported(File file);
+    boolean isFileSupported(File file);
 
-    public ImporterUI getUI(Importer importer);
+    ImporterUI getUI(Importer importer);
 
-    public ImporterWizardUI getWizardUI(Importer importer);
+    ImporterWizardUI getWizardUI(Importer importer);
 }

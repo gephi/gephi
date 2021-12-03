@@ -78,14 +78,14 @@ public interface Workspace extends Lookup.Provider {
      *
      * @param instance the instance that is to be pushed to the lookup
      */
-    public void add(Object instance);
+    void add(Object instance);
 
     /**
      * Removes an instance from this workspaces lookup.
      *
      * @param instance the instance that is to be removed from the lookup
      */
-    public void remove(Object instance);
+    void remove(Object instance);
 
     /**
      * Get any instance in the current lookup. All important API in Gephi are
@@ -104,19 +104,19 @@ public interface Workspace extends Lookup.Provider {
      * @return the workspace's lookup
      */
     @Override
-    public Lookup getLookup();
+    Lookup getLookup();
 
     /**
      * Returns the project this workspace belong to
      *
      * @return the workspace's project
      */
-    public Project getProject();
+    Project getProject();
 
     /**
      * Returns the workspace unique identifier
      *
      * @return the workspace id
      */
-    public int getId();
+    int getId();
 }

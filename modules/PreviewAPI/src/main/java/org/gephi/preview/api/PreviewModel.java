@@ -66,7 +66,7 @@ public interface PreviewModel {
      *
      * @return the preview properties
      */
-    public PreviewProperties getProperties();
+    PreviewProperties getProperties();
 
     /**
      * Returns all items with
@@ -75,7 +75,7 @@ public interface PreviewModel {
      * @param type the item's type
      * @return all items from this type
      */
-    public Item[] getItems(String type);
+    Item[] getItems(String type);
 
     /**
      * Returns all items attached to
@@ -88,7 +88,7 @@ public interface PreviewModel {
      * @return all items with
      * <code>source</code> as source
      */
-    public Item[] getItems(Object source);
+    Item[] getItems(Object source);
 
     /**
      * Returns the item attached to
@@ -101,7 +101,7 @@ public interface PreviewModel {
      * @return the item or
      * <code>null</code> if not found
      */
-    public Item getItem(String type, Object source);
+    Item getItem(String type, Object source);
 
     /**
      * <p>Returns currently managed renderers, or null.</p> <p>If
@@ -109,7 +109,7 @@ public interface PreviewModel {
      *
      * @return Enabled renderers or null
      */
-    public ManagedRenderer[] getManagedRenderers();
+    ManagedRenderer[] getManagedRenderers();
 
     /**
      * <p>Sets an user-defined array of managed renderers to use when rendering.</p> <p><b>Only</b> the renderers marked as enabled will be executed when rendering, and <b>respecting the array
@@ -119,7 +119,7 @@ public interface PreviewModel {
      *
      * @param managedRenderers Managed renderers for future renderings
      */
-    public void setManagedRenderers(ManagedRenderer[] managedRenderers);
+    void setManagedRenderers(ManagedRenderer[] managedRenderers);
 
     /**
      * Returns
@@ -128,17 +128,17 @@ public interface PreviewModel {
      *
      * @return Enabled renderers or null
      */
-    public Renderer[] getManagedEnabledRenderers();
+    Renderer[] getManagedEnabledRenderers();
 
     /*
      * Returns <code>managedPreviewMouseListeners</code> containing the <code>PreviewMouseListeners</code> that are declared by the current enabled managed renderers.
      */
-    public PreviewMouseListener[] getEnabledMouseListeners();
+    PreviewMouseListener[] getEnabledMouseListeners();
 
     /**
      * Computes the graphics canvas size.
      *
      * @return the graphics canvas size
      */
-    public CanvasSize getGraphicsCanvasSize();
+    CanvasSize getGraphicsCanvasSize();
 }

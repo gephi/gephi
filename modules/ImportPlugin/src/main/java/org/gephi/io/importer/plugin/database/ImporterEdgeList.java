@@ -79,8 +79,8 @@ public class ImporterEdgeList implements DatabaseImporter {
     private String timeIntervalStart;
     private String timeIntervalEnd;
 
-    private NodeColumns nodeColumns = new NodeColumns();
-    private EdgeColumns edgeColumns = new EdgeColumns();
+    private final NodeColumns nodeColumns = new NodeColumns();
+    private final EdgeColumns edgeColumns = new EdgeColumns();
 
     @Override
     public boolean execute(ContainerLoader container) {

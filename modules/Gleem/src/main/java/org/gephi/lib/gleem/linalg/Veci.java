@@ -45,7 +45,7 @@ package org.gephi.lib.gleem.linalg;
  */
 
 public class Veci {
-    private int[] data;
+    private final int[] data;
 
     public Veci(int n) {
         data = new int[n];

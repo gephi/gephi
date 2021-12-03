@@ -92,6 +92,7 @@ public class VizController implements VisualizationController {
     private SelectionManager selectionManager;
     //Variable
     private VizModel currentModel;
+
     public VizController() {
     }
 

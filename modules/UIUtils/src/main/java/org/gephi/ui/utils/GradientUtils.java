@@ -54,7 +54,7 @@ public class GradientUtils {
         private Color[] colors;
         private float[] positions;
 
-        public LinearGradient(Color colors[], float[] positions) {
+        public LinearGradient(Color[] colors, float[] positions) {
             if (colors == null || positions == null) {
                 throw new NullPointerException();
             }

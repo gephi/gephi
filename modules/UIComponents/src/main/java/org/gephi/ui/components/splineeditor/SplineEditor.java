@@ -106,20 +106,4 @@ public class SplineEditor extends JDialog {
         SplineDisplay display = splineControlPanel.getDisplay();
         display.setControl2(control2);
     }
-//    public Interpolator getCurrentInterpolator() {
-//        SplineDisplay display = splineControlPanel.getDisplay();
-//        Point2D control1 = display.getControl1();
-//        Point2D control2 = display.getControl2();
-//
-//        //The TimingFramework implementation doesn't respect the SMIL specification about the returned Y value
-//		/*Interpolator splines = new SplineInterpolator((float) control1.getX(),
-//        (float) control1.getY(),
-//        (float) control2.getX(), (float) control2.getY());*/
-//
-//        Interpolator splines = new BezierInterpolator((float) control1.getX(),
-//                (float) control1.getY(),
-//                (float) control2.getX(), (float) control2.getY());
-//
-//        return splines;
-//    }
 }

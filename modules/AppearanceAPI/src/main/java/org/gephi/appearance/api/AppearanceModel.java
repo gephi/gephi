@@ -59,7 +59,7 @@ public interface AppearanceModel {
      *
      * @return the workspace of this model
      */
-    public Workspace getWorkspace();
+    Workspace getWorkspace();
 
     /**
      * Returns <code>true</code> if rankings are using the currently visible
@@ -69,7 +69,7 @@ public interface AppearanceModel {
      * @return <code>true</code> if using a local scale, <code>false</code> if
      * global scale
      */
-    public boolean isLocalScale();
+    boolean isLocalScale();
 
     /**
      * Returns the node partition for this graph and column.
@@ -78,7 +78,7 @@ public interface AppearanceModel {
      * @param column column
      * @return node partition of null if it doesn't exist
      */
-    public Partition getNodePartition(Graph graph, Column column);
+    Partition getNodePartition(Graph graph, Column column);
 
     /**
      * Returns the edge partition for this graph and column.
@@ -87,7 +87,7 @@ public interface AppearanceModel {
      * @param column column
      * @return edge partition of null if it doesn't exist
      */
-    public Partition getEdgePartition(Graph graph, Column column);
+    Partition getEdgePartition(Graph graph, Column column);
 
     /**
      * Returns all node functions for the given graph.
@@ -95,7 +95,7 @@ public interface AppearanceModel {
      * @param graph graph
      * @return all node functions
      */
-    public Function[] getNodeFunctions(Graph graph);
+    Function[] getNodeFunctions(Graph graph);
 
     /**
      * Returns the node function for the given column and transformer.
@@ -105,7 +105,7 @@ public interface AppearanceModel {
      * @param transformer transformer class
      * @return node function or null if not found
      */
-    public Function getNodeFunction(Graph graph, Column column, Class<? extends Transformer> transformer);
+    Function getNodeFunction(Graph graph, Column column, Class<? extends Transformer> transformer);
 
     /**
      * Returns the node function for the given graph function identifier and
@@ -116,7 +116,7 @@ public interface AppearanceModel {
      * @param transformer   transformer class
      * @return node function or null if not found
      */
-    public Function getNodeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer);
+    Function getNodeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer);
 
     /**
      * Returns all edge functions for the given graph.
@@ -124,7 +124,7 @@ public interface AppearanceModel {
      * @param graph graph
      * @return all edge functions
      */
-    public Function[] getEdgeFunctions(Graph graph);
+    Function[] getEdgeFunctions(Graph graph);
 
     /**
      * Returns the node function for the given column and transformer.
@@ -134,7 +134,7 @@ public interface AppearanceModel {
      * @param transformer transformer class
      * @return edge function or null if not found
      */
-    public Function getEdgeFunction(Graph graph, Column column, Class<? extends Transformer> transformer);
+    Function getEdgeFunction(Graph graph, Column column, Class<? extends Transformer> transformer);
 
     /**
      * Returns the edge function for the given graph function identifier and
@@ -145,12 +145,12 @@ public interface AppearanceModel {
      * @param transformer   transformer class
      * @return edge function or null if not found
      */
-    public Function getEdgeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer);
+    Function getEdgeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer);
 
     /**
      * Identifies the non-column-based functions.
      */
-    public enum GraphFunction {
+    enum GraphFunction {
         NODE_DEGREE("degree"),
         NODE_INDEGREE("indegree"),
         NODE_OUTDEGREE("outdegree"),

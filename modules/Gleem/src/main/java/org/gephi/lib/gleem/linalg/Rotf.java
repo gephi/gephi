@@ -44,7 +44,7 @@ package org.gephi.lib.gleem.linalg;
  */
 
 public class Rotf {
-    private static float EPSILON = 1.0e-7f;
+    private static final float EPSILON = 1.0e-7f;
 
     // Representation is a quaternion. Element 0 is the scalar part (=
     // cos(theta/2)), elements 1..3 the imaginary/"vector" part (=

@@ -69,7 +69,7 @@ public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
     }
 
     public void setup(SimpleFunction function) {
-        transformer = (AbstractUniqueSizeTransformer) function.getTransformer();
+        transformer = function.getTransformer();
         sizeSpinner.setValue(transformer.getSize());
     }
 

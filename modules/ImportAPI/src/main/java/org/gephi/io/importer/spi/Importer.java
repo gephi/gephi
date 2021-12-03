@@ -65,7 +65,7 @@ public interface Importer {
      * @return <code>true</code> if the import is successful or
      * <code>false</code> if it has been cancelled
      */
-    public boolean execute(ContainerLoader loader);
+    boolean execute(ContainerLoader loader);
 
     /**
      * Returns the import container. The container is the import "result", all
@@ -73,12 +73,12 @@ public interface Importer {
      *
      * @return the import container
      */
-    public ContainerLoader getContainer();
+    ContainerLoader getContainer();
 
     /**
      * Returns the import report, filled with logs and potential issues.
      *
      * @return the import report
      */
-    public Report getReport();
+    Report getReport();
 }

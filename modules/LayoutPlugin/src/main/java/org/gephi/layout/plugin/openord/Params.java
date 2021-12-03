@@ -84,7 +84,7 @@ public enum Params {
     private final Stage crunch;
     private final Stage simmer;
 
-    private Params(Stage initial, Stage liquid, Stage expansion, Stage cooldown, Stage crunch, Stage simmer) {
+    Params(Stage initial, Stage liquid, Stage expansion, Stage cooldown, Stage crunch, Stage simmer) {
         this.initial = initial;
         this.liquid = liquid;
         this.expansion = expansion;

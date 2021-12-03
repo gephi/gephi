@@ -47,6 +47,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -60,6 +61,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLReporter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import org.gephi.project.api.GephiFormatException;
+import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.project.impl.ProjectImpl;
@@ -183,6 +186,8 @@ public class LoadTask implements LongTask, Runnable {
         } catch (Exception ex) {
             if (ex instanceof GephiFormatException) {
                 throw (GephiFormatException) ex;
+            } else if (ex instanceof LegacyGephiFormatException) {
+                throw (LegacyGephiFormatException) ex;
             }
             throw new GephiFormatException(GephiReader.class, ex);
         }
@@ -194,6 +199,12 @@ public class LoadTask implements LongTask, Runnable {
         if (entry == null) {
             // Try legacy
             entry = zipFile.getEntry("Project");
+            if (entry != null) {
+                throw new LegacyGephiFormatException();
+            } else {
+                throw new GephiFormatException(LoadTask.class,
+                    new RuntimeException("Project can't be found in the zip"));
+            }
         }
         if (entry != null) {
             InputStream is = null;
@@ -213,7 +224,7 @@ public class LoadTask implements LongTask, Runnable {
                                            Location location) throws XMLStreamException {
                         }
                     });
-                    isReader = new InputStreamReader(is, "UTF-8");
+                    isReader = new InputStreamReader(is, StandardCharsets.UTF_8);
                     filterReader = new Xml10FilterReader(isReader);
                     reader = inputFactory.createXMLStreamReader(filterReader);
 
@@ -261,7 +272,7 @@ public class LoadTask implements LongTask, Runnable {
                                            Location location) throws XMLStreamException {
                         }
                     });
-                    isReader = new InputStreamReader(is, "UTF-8");
+                    isReader = new InputStreamReader(is, StandardCharsets.UTF_8);
                     filterReader = new Xml10FilterReader(isReader);
                     reader = inputFactory.createXMLStreamReader(filterReader);
 
@@ -309,7 +320,7 @@ public class LoadTask implements LongTask, Runnable {
                                            Location location) throws XMLStreamException {
                         }
                     });
-                    isReader = new InputStreamReader(is, "UTF-8");
+                    isReader = new InputStreamReader(is, StandardCharsets.UTF_8);
                     filterReader = new Xml10FilterReader(isReader);
                     reader = inputFactory.createXMLStreamReader(filterReader);
 

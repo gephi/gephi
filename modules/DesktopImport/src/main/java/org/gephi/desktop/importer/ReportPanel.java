@@ -117,7 +117,7 @@ public class ReportPanel extends javax.swing.JPanel {
     //Container
     private Container[] containers;
     //UI
-    private ButtonGroup processorGroup = new ButtonGroup();
+    private final ButtonGroup processorGroup = new ButtonGroup();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox autoscaleCheckbox;
     private javax.swing.JCheckBox createMissingNodesCheckbox;
@@ -151,6 +151,7 @@ public class ReportPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane tab1ScrollPane;
     private javax.swing.JScrollPane tab2ScrollPane;
     private javax.swing.JTabbedPane tabbedPane;
+
     public ReportPanel() {
         try {
             SwingUtilities.invokeAndWait(new Runnable() {

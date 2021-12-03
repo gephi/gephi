@@ -69,7 +69,7 @@ public interface Processor {
      *
      * @see Importer
      */
-    public void process();
+    void process();
 
     /**
      * Sets the data containers. The processor's job is to get data from the
@@ -77,7 +77,7 @@ public interface Processor {
      *
      * @param containers the containers where data are
      */
-    public void setContainers(ContainerUnloader[] containers);
+    void setContainers(ContainerUnloader[] containers);
 
     /**
      * Sets the destination workspace for the data in the containers. If no
@@ -85,26 +85,26 @@ public interface Processor {
      *
      * @param workspace the workspace where data are to be pushed
      */
-    public void setWorkspace(Workspace workspace);
+    void setWorkspace(Workspace workspace);
 
     /**
      * Returns the processor's name.
      *
      * @return the processor display name
      */
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * Sets the progress ticket.
      *
      * @param progressTicket progress ticket
      */
-    public void setProgressTicket(ProgressTicket progressTicket);
+    void setProgressTicket(ProgressTicket progressTicket);
 
     /**
      * Returns the report of the processor after processing is done, with possible warnings and errors.
      *
      * @return Processor report after processing
      */
-    public Report getReport();
+    Report getReport();
 }

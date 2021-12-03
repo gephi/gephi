@@ -64,6 +64,7 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
     private javax.swing.JLabel labelDescription;
     private javax.swing.JLabel labelWizard;
     private javax.swing.JList wizardList;
+
     public WizardVisualPanel1() {
         initComponents();
         reloadDescription();

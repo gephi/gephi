@@ -44,7 +44,7 @@ package org.gephi.lib.gleem.linalg;
  */
 
 public class IntersectionPoint {
-    private Vec3f intPt = new Vec3f();
+    private final Vec3f intPt = new Vec3f();
     private float t;
 
     public Vec3f getIntersectionPoint() {

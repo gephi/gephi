@@ -60,6 +60,8 @@ import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.spi.FileImporterBuilder;
+import org.gephi.project.api.GephiFormatException;
+import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
@@ -119,15 +121,16 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             @Override
             public void fatalError(Throwable t) {
                 unlockProjectActions();
-//                String txt = NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.error.open");
-//                String message = txt + "\n\n" + t.getMessage();
-//                if (t.getCause() != null) {
-//                    message = txt + "\n\n" + t.getCause().getClass().getSimpleName() + " - " + t.getCause().getMessage();
-//                }
-//                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(message, NotifyDescriptor.WARNING_MESSAGE);
-//                DialogDisplayer.getDefault().notify(msg);
 
-                Exceptions.printStackTrace(t);
+                if (t instanceof LegacyGephiFormatException || t instanceof GephiFormatException) {
+                    NotifyDescriptor.Message msg =
+                        new NotifyDescriptor.Message(t.getLocalizedMessage(), NotifyDescriptor.WARNING_MESSAGE);
+                    DialogDisplayer.getDefault().notify(msg);
+                }
+
+                if (!(t instanceof LegacyGephiFormatException)) {
+                    Exceptions.printStackTrace(t);
+                }
             }
         });
         longTaskExecutor.setLongTaskListener(new LongTaskListener() {

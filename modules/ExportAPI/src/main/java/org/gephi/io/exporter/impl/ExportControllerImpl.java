@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.ByteExporter;
@@ -131,7 +132,7 @@ public class ExportControllerImpl implements ExportController {
             } catch (IOException ex) {
             }
         } else if (fileExporter instanceof CharacterExporter) {
-            Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+            Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
             ((CharacterExporter) fileExporter).setWriter(writer);
             try {
                 fileExporter.execute();
@@ -265,10 +266,6 @@ public class ExportControllerImpl implements ExportController {
 
         boolean ret = file.getName().endsWith(ext);
 
-        if (!ret) {
-            return false;
-        }
-
-        return true;
+        return ret;
     }
 }

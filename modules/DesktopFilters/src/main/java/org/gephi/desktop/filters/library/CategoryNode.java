@@ -65,7 +65,7 @@ import org.openide.util.datatransfer.PasteType;
  */
 public class CategoryNode extends AbstractNode {
 
-    private Category category;
+    private final Category category;
 
     public CategoryNode(FiltersExplorer.Utils utils, Category category) {
         super(

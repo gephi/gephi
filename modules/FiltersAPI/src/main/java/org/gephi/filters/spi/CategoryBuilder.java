@@ -66,7 +66,7 @@ public interface CategoryBuilder {
      * @param workspace workspace
      * @return the builders this category builder is building
      */
-    public FilterBuilder[] getBuilders(Workspace workspace);
+    FilterBuilder[] getBuilders(Workspace workspace);
 
     /**
      * Returns the category builders are to be grouped in. It can't be a default
@@ -74,5 +74,5 @@ public interface CategoryBuilder {
      *
      * @return the category builders belong to
      */
-    public Category getCategory();
+    Category getCategory();
 }

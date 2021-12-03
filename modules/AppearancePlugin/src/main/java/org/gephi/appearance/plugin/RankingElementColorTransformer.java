@@ -103,7 +103,7 @@ public class RankingElementColorTransformer implements RankingTransformer<Elemen
         private Color[] colors;
         private float[] positions;
 
-        public LinearGradient(Color colors[], float[] positions) {
+        public LinearGradient(Color[] colors, float[] positions) {
             if (colors == null || positions == null) {
                 throw new NullPointerException();
             }
@@ -169,10 +169,7 @@ public class RankingElementColorTransformer implements RankingTransformer<Elemen
             if (!Arrays.deepEquals(this.colors, other.colors)) {
                 return false;
             }
-            if (!Arrays.equals(this.positions, other.positions)) {
-                return false;
-            }
-            return true;
+            return Arrays.equals(this.positions, other.positions);
         }
 
         @Override

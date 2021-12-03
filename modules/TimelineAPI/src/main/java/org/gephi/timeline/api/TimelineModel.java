@@ -64,7 +64,7 @@ public interface TimelineModel {
      * @return <code>true</code> if the timeline is enabled, <code>false</code>
      * otherwise
      */
-    public boolean isEnabled();
+    boolean isEnabled();
 
     /**
      * Returns the min value of the time scale. This is the start of the earliest interval
@@ -72,7 +72,7 @@ public interface TimelineModel {
      *
      * @return the min
      */
-    public double getMin();
+    double getMin();
 
     /**
      * Returns the max value of the time scale. This is the end of the latest interval
@@ -80,21 +80,21 @@ public interface TimelineModel {
      *
      * @return the max
      */
-    public double getMax();
+    double getMax();
 
     /**
      * Returns the custom min value. This value can't be inferior than <code>min</code>
      *
      * @return the custom min
      */
-    public double getCustomMin();
+    double getCustomMin();
 
     /**
      * Returns the custom max value. This value can't be superior than <code>max</code>
      *
      * @return the custom max
      */
-    public double getCustomMax();
+    double getCustomMax();
 
     /**
      * Returns <code>true</code> if custom bounds are defined. Returns <code>false</code>
@@ -103,7 +103,7 @@ public interface TimelineModel {
      * @return <code>true</code> if custom bounds are defined, <code>false</code>
      * otherwise.
      */
-    public boolean hasCustomBounds();
+    boolean hasCustomBounds();
 
     /**
      * Returns <code>true</code> if none of the min and max time values are infinity.
@@ -111,28 +111,28 @@ public interface TimelineModel {
      * @return <code>true</code> if the time scale is valid, <code>false</code>
      * otherwise
      */
-    public boolean hasValidBounds();
+    boolean hasValidBounds();
 
     /**
      * Returns the lower bound of the interval.
      *
      * @return the interval start
      */
-    public double getIntervalStart();
+    double getIntervalStart();
 
     /**
      * Returns the upper bound of the interval.
      *
      * @return the interval end
      */
-    public double getIntervalEnd();
+    double getIntervalEnd();
 
     /**
      * Returns the current time format. Default is <code>DOUBLE</code>
      *
      * @return the current tie
      */
-    public TimeFormat getTimeFormat();
+    TimeFormat getTimeFormat();
 
     /**
      * Returns the play delay in milliseconds. Defines the time between each interval
@@ -140,7 +140,7 @@ public interface TimelineModel {
      *
      * @return the play delay
      */
-    public int getPlayDelay();
+    int getPlayDelay();
 
     /**
      * Returns the play step. Defines how much the interval is moved at each step
@@ -148,33 +148,33 @@ public interface TimelineModel {
      *
      * @return the play step
      */
-    public double getPlayStep();
+    double getPlayStep();
 
     /**
      * Returns <code>true</code> if the timeline is playing.
      *
      * @return <code>true</code> is playing, <code>false</code> otherwise
      */
-    public boolean isPlaying();
+    boolean isPlaying();
 
     /**
      * Returns the play mode. This defines how the interval is moved.
      *
      * @return the play mode
      */
-    public PlayMode getPlayMode();
+    PlayMode getPlayMode();
 
     /**
      * Returns the current timeline chart or <code>null</code> if node.
      *
      * @return the timeline chart or <code>null</code>
      */
-    public TimelineChart getChart();
+    TimelineChart getChart();
 
     /**
      * Defines how the interval is moved when animating.
      */
-    public enum PlayMode {
+    enum PlayMode {
 
         /**
          * Only one bound of the interval is moved. The interval is therefore resized.

@@ -97,10 +97,7 @@ public class Palette {
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
-        if (!Arrays.deepEquals(this.colors, other.colors)) {
-            return false;
-        }
-        return true;
+        return Arrays.deepEquals(this.colors, other.colors);
     }
 
 }

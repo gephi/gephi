@@ -54,7 +54,7 @@ public class UIExporterDL implements ExporterUI {
 
     private UIExporterDLPanel panel;
     private ExporterDL exporter;
-    private ExporterDLSettings settings = new ExporterDLSettings();
+    private final ExporterDLSettings settings = new ExporterDLSettings();
 
     @Override
     public JPanel getPanel() {

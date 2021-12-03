@@ -136,7 +136,7 @@ public class TickGraph {
                 int x = dateTick.getTickPixelPosition(ms, width);
                 if (x >= 0) {
                     //Height
-                    int h = (int) (Math.min(40, (int) (height / 15.0)));
+                    int h = Math.min(40, (int) (height / 15.0));
 
                     boolean noTickOverlap = x >= previousXLabelEnd + MIN_PIXEL_MARGIN_BETWEEN_TICKS;
 
@@ -180,7 +180,7 @@ public class TickGraph {
                 }
 
                 int xLabel = -1;
-                int yLabel = (int) (fontSize * 4);
+                int yLabel = fontSize * 4;
                 if (x >= 0) {
                     xLabel = x + 4;
                 } else if (x > ((dateTick.getTickPixelPosition(interval.getEndMillis(), width) - x) / -2)) {
@@ -255,7 +255,7 @@ public class TickGraph {
             int x = graduation.getTickPixelPosition(i, width);
             int rank = graduation.getTickRank(i);
             int h = Math.min(40, (int) (height / 15.0));
-            h = rank == 2 ? (int) (h + h) : rank == 1 ? (int) (h + h / 2.) : h;
+            h = rank == 2 ? (h + h) : rank == 1 ? (int) (h + h / 2.) : h;
             if (x > 0) {
                 g.setColor(parameters.getRealColor(rank));
                 g.drawLine(x, 0, x, h);

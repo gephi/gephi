@@ -115,14 +115,14 @@ public class ImporterGML implements FileImporter, LongTask {
         ArrayList<Object> list = new ArrayList<>();
         char t = ' ';
         boolean readString = false;
-        String stringBuffer = new String();
+        String stringBuffer = "";
 
         while (reader.ready() && (t != ((char) -1))) {
             t = (char) reader.read();
             if (readString) {
                 if (t == '"') {
                     list.add(stringBuffer);
-                    stringBuffer = new String();
+                    stringBuffer = "";
                     readString = false;
                 } else {
                     stringBuffer += t;
@@ -153,7 +153,7 @@ public class ImporterGML implements FileImporter, LongTask {
                                     list.add(stringBuffer);
                                 }
                             }
-                            stringBuffer = new String();
+                            stringBuffer = "";
                         }
                         break;
                     default:

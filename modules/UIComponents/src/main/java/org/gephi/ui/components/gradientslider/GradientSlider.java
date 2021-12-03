@@ -146,10 +146,10 @@ public class GradientSlider extends MultiThumbSlider {
             }
         }
         if (pos < thumbPositions[0]) {
-            return (Color) values[0];
+            return values[0];
         }
         if (pos > thumbPositions[thumbPositions.length - 1]) {
-            return (Color) values[values.length - 1];
+            return values[values.length - 1];
         }
         return null;
     }
@@ -261,8 +261,7 @@ public class GradientSlider extends MultiThumbSlider {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("The class \"" + name + "\" could not be found.");
         } catch (Throwable t) {
-            RuntimeException e = new RuntimeException("The class \"" + name + "\" could not be constructed.");
-            e.initCause(t);
+            RuntimeException e = new RuntimeException("The class \"" + name + "\" could not be constructed.", t);
             throw e;
         }
     }

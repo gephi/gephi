@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  */
 public class LayoutPresetPersistence {
 
-    private Map<String, List<Preset>> presets = new HashMap<>();
+    private final Map<String, List<Preset>> presets = new HashMap<>();
 
     public LayoutPresetPersistence() {
         loadPresets();
@@ -180,8 +180,8 @@ public class LayoutPresetPersistence {
 
     protected static class Preset {
 
-        private List<String> propertyNames = new ArrayList<>();
-        private List<Object> propertyValues = new ArrayList<>();
+        private final List<String> propertyNames = new ArrayList<>();
+        private final List<Object> propertyValues = new ArrayList<>();
         private String layoutClassName;
         private String name;
 
@@ -289,10 +289,7 @@ public class LayoutPresetPersistence {
                 return false;
             }
             final Preset other = (Preset) obj;
-            if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-                return false;
-            }
-            return true;
+            return (this.name == null) ? (other.name == null) : this.name.equals(other.name);
         }
 
         @Override

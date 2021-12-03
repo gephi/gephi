@@ -245,6 +245,7 @@ public class RichTooltip {
      */
     public RichTooltip() {
     }
+
     /**
      * Creates a tooltip with the specified title and description section.
      *

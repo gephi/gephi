@@ -55,5 +55,5 @@ public interface WizardImporterBuilder extends ImporterBuilder {
      * @return a new wizard importer
      */
     @Override
-    public WizardImporter buildImporter();
+    WizardImporter buildImporter();
 }

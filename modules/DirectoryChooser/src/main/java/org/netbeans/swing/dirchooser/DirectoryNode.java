@@ -68,7 +68,7 @@ public class DirectoryNode extends DefaultMutableTreeNode {
      */
     static final FileNameComparator FILE_NAME_COMPARATOR = new FileNameComparator();
     private File directory;
-    private boolean isDir;
+    private final boolean isDir;
     private boolean loaded;
     private boolean isSelected;
 

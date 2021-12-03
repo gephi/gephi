@@ -112,6 +112,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private org.jdesktop.swingx.JXHyperlink splineButton;
     private javax.swing.JToggleButton stopAutoApplyButton;
     private javax.swing.JToolBar tranformerToolbar;
+
     public AppearanceTopComponent() {
         setName(NbBundle.getMessage(AppearanceTopComponent.class, "CTL_AppearanceTopComponent"));
 

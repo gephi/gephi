@@ -91,10 +91,7 @@ public class TimeZoneWrapper {
             return false;
         }
         final TimeZoneWrapper other = (TimeZoneWrapper) obj;
-        if (this.timeZone != other.timeZone && (this.timeZone == null || !this.timeZone.equals(other.timeZone))) {
-            return false;
-        }
-        return true;
+        return this.timeZone == other.timeZone || (this.timeZone != null && this.timeZone.equals(other.timeZone));
     }
 
     @Override

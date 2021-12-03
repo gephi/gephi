@@ -75,10 +75,7 @@ public class TimeFormatWrapper {
             return false;
         }
         final TimeFormatWrapper other = (TimeFormatWrapper) obj;
-        if (this.timeFormat != other.timeFormat) {
-            return false;
-        }
-        return true;
+        return this.timeFormat == other.timeFormat;
     }
 
     public TimeFormat getTimeFormat() {

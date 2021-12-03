@@ -65,6 +65,7 @@ public class EdgeColorPanel extends javax.swing.JPanel implements ItemListener {
     private javax.swing.JRadioButton originalRadio;
     private javax.swing.JRadioButton sourceRadio;
     private javax.swing.JRadioButton targetRadio;
+
     /**
      * Creates new form EdgeColorPanel
      */
@@ -89,11 +90,7 @@ public class EdgeColorPanel extends javax.swing.JPanel implements ItemListener {
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (customRadio.isSelected()) {
-            colorButton.setEnabled(true);
-        } else {
-            colorButton.setEnabled(false);
-        }
+        colorButton.setEnabled(customRadio.isSelected());
         EdgeColor.Mode selectedMode = null;
         if (originalRadio.isSelected()) {
             selectedMode = EdgeColor.Mode.ORIGINAL;

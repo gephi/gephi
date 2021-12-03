@@ -77,19 +77,19 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
     protected double maxX;
     protected double minY;
     protected double maxY;
-    private List<DrawableEquation> equations;
-    private double originX;
-    private double originY;
-    private double majorX;
-    private int minorX;
-    private double majorY;
-    private int minorY;
+    private final List<DrawableEquation> equations;
+    private final double originX;
+    private final double originY;
+    private final double majorX;
+    private final int minorX;
+    private final double majorY;
+    private final int minorY;
     private boolean drawText = true;
     private Point dragStart;
-    private NumberFormat formatter;
-    private ZoomHandler zoomHandler;
-    private PanMotionHandler panMotionHandler;
-    private PanHandler panHandler;
+    private final NumberFormat formatter;
+    private final ZoomHandler zoomHandler;
+    private final PanMotionHandler panMotionHandler;
+    private final PanHandler panHandler;
 
     public EquationDisplay(double originX, double originY,
                            double minX, double maxX,
@@ -441,8 +441,8 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
 
     private class DrawableEquation {
 
-        private AbstractEquation equation;
-        private Color color;
+        private final AbstractEquation equation;
+        private final Color color;
 
         DrawableEquation(AbstractEquation equation, Color color) {
             this.equation = equation;

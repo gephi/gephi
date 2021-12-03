@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PushbackInputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -254,13 +255,13 @@ public class CharsetToolkit {
         // if the file has a Byte Order Marker, we can assume the file is in UTF-xx
         // otherwise, the file would not be human readable
         if (hasUTF8Bom()) {
-            return Charset.forName("UTF-8");
+            return StandardCharsets.UTF_8;
         }
         if (hasUTF16LEBom()) {
-            return Charset.forName("UTF-16LE");
+            return StandardCharsets.UTF_16LE;
         }
         if (hasUTF16BEBom()) {
-            return Charset.forName("UTF-16BE");
+            return StandardCharsets.UTF_16BE;
         }
 
         if (hasXMLHeader()) {
@@ -367,13 +368,13 @@ public class CharsetToolkit {
             if (this.enforce8Bit) {
                 return this.defaultCharset;
             } else {
-                return Charset.forName("US-ASCII");
+                return StandardCharsets.US_ASCII;
             }
         }
         // if no invalid UTF-8 were encountered, we can assume the encoding is UTF-8,
         // otherwise the file would not be human readable
         if (validU8Char) {
-            return Charset.forName("UTF-8");
+            return StandardCharsets.UTF_8;
         }
         // finally, if it's not UTF-8 nor US-ASCII, let's assume the encoding is the default encoding
         return this.defaultCharset;

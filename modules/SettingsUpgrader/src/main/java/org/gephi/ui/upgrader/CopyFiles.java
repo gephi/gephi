@@ -51,6 +51,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 import org.openide.filesystems.FileUtil;
@@ -61,11 +62,11 @@ import org.openide.util.EditableProperties;
  */
 public class CopyFiles {
 
-    private File sourceRoot;
-    private File targetRoot;
+    private final File sourceRoot;
+    private final File targetRoot;
     private EditableProperties currentProperties;
-    private Set<String> includePatterns = new HashSet<>();
-    private Set<String> excludePatterns = new HashSet<>();
+    private final Set<String> includePatterns = new HashSet<>();
+    private final Set<String> excludePatterns = new HashSet<>();
 
     private CopyFiles(File source, File target) {
         this.sourceRoot = source;
@@ -73,7 +74,7 @@ public class CopyFiles {
         //Pattern files
         try {
             InputStream is = CopyFiles.class.getResourceAsStream("/org/gephi/ui/upgrader/gephi.import");
-            Reader reader = new InputStreamReader(is, "utf-8"); // NOI18N
+            Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8); // NOI18N
             readPatterns(reader);
             reader.close();
         } catch (IOException ex) {

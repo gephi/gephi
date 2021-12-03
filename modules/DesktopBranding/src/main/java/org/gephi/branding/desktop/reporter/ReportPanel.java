@@ -69,6 +69,7 @@ public class ReportPanel extends javax.swing.JPanel {
     private javax.swing.JTextArea problemArea;
     private javax.swing.JTextField summaryTextField;
     private javax.swing.JButton viewDataButton;
+
     public ReportPanel(Report report) {
         this.reportController = new ReportController();
         this.report = report;

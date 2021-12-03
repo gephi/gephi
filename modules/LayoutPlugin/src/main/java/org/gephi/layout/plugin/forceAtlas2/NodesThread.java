@@ -50,16 +50,16 @@ import org.gephi.layout.plugin.forceAtlas2.ForceFactory.RepulsionForce;
  */
 public class NodesThread implements Runnable {
 
-    private Node[] nodes;
-    private int from;
-    private int to;
-    private Region rootRegion;
-    private boolean barnesHutOptimize;
-    private RepulsionForce Repulsion;
-    private double barnesHutTheta;
-    private double gravity;
-    private RepulsionForce GravityForce;
-    private double scaling;
+    private final Node[] nodes;
+    private final int from;
+    private final int to;
+    private final Region rootRegion;
+    private final boolean barnesHutOptimize;
+    private final RepulsionForce Repulsion;
+    private final double barnesHutTheta;
+    private final double gravity;
+    private final RepulsionForce GravityForce;
+    private final double scaling;
 
     public NodesThread(Node[] nodes, int from, int to, boolean barnesHutOptimize, double barnesHutTheta, double gravity,
                        RepulsionForce GravityForce, double scaling, Region rootRegion, RepulsionForce Repulsion) {

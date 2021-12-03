@@ -234,8 +234,8 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
 
         private final JRangeSliderPanel slider;
         private final Class<T> type;
-        private T min;
-        private T max;
+        private final T min;
+        private final T max;
         private T lowerBound;
         private T upperBound;
         private int sliderLowValue = -1;
@@ -287,7 +287,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
 
         private void setLowerBound(String bound) {
             try {
-                T v = (T) NumberUtils.parseNumber(bound, type);
+                T v = NumberUtils.parseNumber(bound, type);
 
                 if (v.compareTo(min) < 0) {
                     lowerBound = min;
@@ -307,7 +307,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
 
         private void setUpperBound(String bound) {
             try {
-                T v = (T) NumberUtils.parseNumber(bound, type);
+                T v = NumberUtils.parseNumber(bound, type);
                 if (v.compareTo(max) > 0) {
                     upperBound = max;
                 } else if (v.compareTo(lowerBound) < 0) {

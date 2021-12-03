@@ -121,8 +121,8 @@ class JMenuToggleButton extends JToggleButton {
 
     private static class LineIcon implements Icon {
 
-        private Icon origIcon;
-        private int arrowWidth;
+        private final Icon origIcon;
+        private final int arrowWidth;
 
         public LineIcon(Icon origIcon, int arrowWidth) {
             this.origIcon = origIcon;

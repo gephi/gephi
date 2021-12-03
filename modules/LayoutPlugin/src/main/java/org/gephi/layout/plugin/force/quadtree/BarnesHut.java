@@ -57,7 +57,7 @@ public class BarnesHut {
     /* theta is the parameter for Barnes-Hut opening criteria
      */
     private float theta = (float) 1.2;
-    private AbstractForce force;
+    private final AbstractForce force;
 
     public BarnesHut(AbstractForce force) {
         this.force = force;

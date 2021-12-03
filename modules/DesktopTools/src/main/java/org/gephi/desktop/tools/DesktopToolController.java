@@ -246,11 +246,11 @@ public class DesktopToolController implements ToolController {
     }
 
     //Event handlers classes
-    private static interface ToolEventHandler {
+    private interface ToolEventHandler {
 
-        public void select();
+        void select();
 
-        public void unselect();
+        void unselect();
     }
 
     //HANDLERS

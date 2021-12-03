@@ -145,7 +145,7 @@ public class ImporterVnaUI implements ImporterUI {
     public void unsetup(boolean update) {
         if (update) {
             float coefficient = 1;
-            if (((EdgeWidthFunction.Function) comboBox.getSelectedItem()).equals(EdgeWidthFunction.Function.LINEAR)) {
+            if (comboBox.getSelectedItem().equals(EdgeWidthFunction.Function.LINEAR)) {
                 try {
                     coefficient = Float.parseFloat(textField.getText());
                 } catch (NumberFormatException e) {

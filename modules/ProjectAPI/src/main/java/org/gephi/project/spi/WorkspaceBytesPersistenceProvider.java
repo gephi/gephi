@@ -57,7 +57,7 @@ public interface WorkspaceBytesPersistenceProvider extends WorkspacePersistenceP
      * @param stream    DataOutputStream stream to write to
      * @param workspace current workspace being serialized
      */
-    public void writeBytes(DataOutputStream stream, Workspace workspace);
+    void writeBytes(DataOutputStream stream, Workspace workspace);
 
     /**
      * This is automatically called when loading a project file.
@@ -65,5 +65,5 @@ public interface WorkspaceBytesPersistenceProvider extends WorkspacePersistenceP
      * @param stream    DataInputStream stream to read from
      * @param workspace current workspace being deserialized
      */
-    public void readBytes(DataInputStream stream, Workspace workspace);
+    void readBytes(DataInputStream stream, Workspace workspace);
 }

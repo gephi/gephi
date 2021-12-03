@@ -312,6 +312,7 @@ public class EditEdges extends AbstractNode {
         private Color labelsColor = null;
         private Float labelsSize = null;
         private Boolean labelsVisible = null;
+
         public MultipleEdgesPropertiesWrapper(Edge[] Edges) {
             this.edges = Edges;
         }

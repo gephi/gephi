@@ -63,6 +63,7 @@ public class GraphDistancePanel extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXLabel jXLabel2;
     private org.jdesktop.swingx.JXLabel jXLabel3;
     private javax.swing.JCheckBox normalizeButton;
+
     public GraphDistancePanel() {
         initComponents();
 

@@ -96,7 +96,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private boolean exportColors = true;
     private boolean exportPosition = true;
     private boolean exportSize = true;
-    private boolean exportDynamicWeight = true;
+    private final boolean exportDynamicWeight = true;
     private boolean exportAttributes = true;
     //Settings Helper
     private float minSize;
@@ -137,7 +137,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         return document;
     }
 
-    private void transform(Document document) throws TransformerConfigurationException, TransformerException {
+    private void transform(Document document) throws TransformerException {
         Source source = new DOMSource(document);
         Result result = new StreamResult(writer);
         Transformer transformer = TransformerFactory.newInstance().newTransformer();

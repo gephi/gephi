@@ -106,6 +106,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     private javax.swing.JPanel sketchPanel;
     private javax.swing.JLabel southBusyLabel;
     private javax.swing.JToolBar southToolbar;
+
     public PreviewTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
@@ -120,13 +121,13 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         bannerPanel.setVisible(false);
 
         //background color
-        ((JColorButton) backgroundButton)
+        backgroundButton
             .addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
                     previewController.getModel().getProperties()
-                        .putValue(PreviewProperty.BACKGROUND_COLOR, (Color) evt.getNewValue());
+                        .putValue(PreviewProperty.BACKGROUND_COLOR, evt.getNewValue());
                     PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
                     previewUIController.refreshPreview();
                 }

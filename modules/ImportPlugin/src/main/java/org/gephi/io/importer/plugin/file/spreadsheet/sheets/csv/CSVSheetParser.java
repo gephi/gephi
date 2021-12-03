@@ -69,9 +69,8 @@ public class CSVSheetParser implements SheetParser {
         if (map == null) {
             return Collections.emptyMap();
         } else {
-            if (map.containsKey(null)) {//Ignore columns without header
-                map.remove(null);
-            }
+            //Ignore columns without header
+            map.remove(null);
             return map;
         }
     }

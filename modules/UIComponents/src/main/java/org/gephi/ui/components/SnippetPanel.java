@@ -79,8 +79,9 @@ public class SnippetPanel extends JPanel implements MouseListener, KeyListener, 
     //~ Instance fields ----------------------------------------------------------------------------------------------------------
     private JComponent content;
     private String snippetName;
-    private Title title;
+    private final Title title;
     private boolean collapsed = false;
+
     //~ Constructors -------------------------------------------------------------------------------------------------------------
     public SnippetPanel(String snippetName, JComponent content) {
         this.snippetName = snippetName;

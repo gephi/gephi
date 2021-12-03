@@ -56,6 +56,7 @@ public class DegreeDistributionPanel extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXLabel descriptionLabel;
     private javax.swing.ButtonGroup directedButtonGroup;
     private org.jdesktop.swingx.JXHeader header;
+
     public DegreeDistributionPanel() {
         initComponents();
 

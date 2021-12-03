@@ -384,12 +384,9 @@ public class ImportControllerImpl implements ImportController {
                 return true;
             }
         }
-        if (fileObject.getExt().equalsIgnoreCase("zip")
+        return fileObject.getExt().equalsIgnoreCase("zip")
             || fileObject.getExt().equalsIgnoreCase("gz")
-            || fileObject.getExt().equalsIgnoreCase("bz2")) {
-            return true;
-        }
-        return false;
+            || fileObject.getExt().equalsIgnoreCase("bz2");
     }
 
     @Override

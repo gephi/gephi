@@ -85,7 +85,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportCoordinates = true;
     private boolean exportNodeSize = true;
     private boolean exportEdgeSize = true;
-    private boolean exportDynamicWeight = true;
+    private final boolean exportDynamicWeight = true;
     private boolean exportColor = true;
     private boolean exportNotRecognizedElements = true;
     //data to normalize
@@ -407,7 +407,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
      */
     private String formatTitle(String s) {
         String res =
-            s.replace("\"", "").replace("\'", "").replace("[", "").replace("]", "").replace(" ", "").replace("#", "");
+            s.replace("\"", "").replace("'", "").replace("[", "").replace("]", "").replace(" ", "").replace("#", "");
         if (s.charAt(0) >= '0' && s.charAt(0) <= '9') {
             return ("column" + res);
         } else {

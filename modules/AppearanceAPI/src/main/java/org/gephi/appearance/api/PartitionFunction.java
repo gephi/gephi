@@ -52,5 +52,5 @@ public interface PartitionFunction extends Function {
      *
      * @return partition
      */
-    public Partition getPartition();
+    Partition getPartition();
 }

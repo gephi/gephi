@@ -62,14 +62,14 @@ public interface Generator extends LongTask {
      *
      * @param container the container the graph is to be pushed
      */
-    public void generate(ContainerLoader container);
+    void generate(ContainerLoader container);
 
     /**
      * Returns the generator display name.
      *
      * @return returns the generator name
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the UI that belongs to this generator, or <code>null</code> if UI
@@ -77,5 +77,5 @@ public interface Generator extends LongTask {
      *
      * @return the UI thet belongs to this generator, or <code>null</code>
      */
-    public GeneratorUI getUI();
+    GeneratorUI getUI();
 }

@@ -71,8 +71,8 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
     private static final double MM = 2.8346456692895527;
     private final String customSizeString;
     private boolean millimeter = true;
-    private NumberFormat sizeFormatter;
-    private NumberFormat marginFormatter;
+    private final NumberFormat sizeFormatter;
+    private final NumberFormat marginFormatter;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField bottomMarginTextField;
     private javax.swing.JTextField heightTextField;
@@ -97,6 +97,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
     private org.jdesktop.swingx.JXHyperlink unitLink;
     private javax.swing.JTextField widthTextField;
     private javax.swing.JLabel widthUnitLabel;
+
     public UIExporterPDFPanel() {
         initComponents();
 
@@ -737,10 +738,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
                 return false;
             }
             final PageSizeItem other = (PageSizeItem) obj;
-            if (this.pageSize != other.pageSize && (this.pageSize == null || !this.pageSize.equals(other.pageSize))) {
-                return false;
-            }
-            return true;
+            return this.pageSize == other.pageSize || (this.pageSize != null && this.pageSize.equals(other.pageSize));
         }
 
         @Override
@@ -758,7 +756,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
 
     private static class PositiveSizeValidator implements Validator<String> {
 
-        private UIExporterPDFPanel panel;
+        private final UIExporterPDFPanel panel;
 
         public PositiveSizeValidator(UIExporterPDFPanel panel) {
             this.panel = panel;

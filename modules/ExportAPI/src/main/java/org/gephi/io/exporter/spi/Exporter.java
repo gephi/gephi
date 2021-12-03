@@ -58,19 +58,19 @@ public interface Exporter {
      * @return <code>true</code> if the operation is successful,
      * <code>false</code> if it has been cancelled
      */
-    public boolean execute();
+    boolean execute();
 
     /**
      * Returns the workspace from where data are exported
      *
      * @return the workspace the data are to be exported
      */
-    public Workspace getWorkspace();
+    Workspace getWorkspace();
 
     /**
      * Sets the worksapce from where to export data
      *
      * @param workspace the workspace to export
      */
-    public void setWorkspace(Workspace workspace);
+    void setWorkspace(Workspace workspace);
 }

@@ -309,9 +309,7 @@ public class AppearanceModelImpl implements AppearanceModel {
             } else {
                 index = localScale ? graphModel.getEdgeIndex(graph.getView()) : graphModel.getEdgeIndex();
             }
-            if (index.countValues(column) > 0) {
-                return true;
-            }
+            return index.countValues(column) > 0;
         }
         return false;
     }

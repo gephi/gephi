@@ -76,7 +76,7 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
     private SVGTarget target;
     //Settings
     private boolean scaleStrokes = false;
-    private float margin = 4;
+    private final float margin = 4;
 
     @Override
     public boolean execute() {
@@ -86,7 +86,7 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
 
         PreviewProperties props = controller.getModel(workspace).getProperties();
         props.putValue(SVGTarget.SCALE_STROKES, scaleStrokes);
-        props.putValue(PreviewProperty.MARGIN, new Float((float) margin));
+        props.putValue(PreviewProperty.MARGIN, new Float(margin));
         target = (SVGTarget) controller.getRenderTarget(RenderTarget.SVG_TARGET, workspace);
         if (target instanceof LongTask) {
             ((LongTask) target).setProgressTicket(progress);

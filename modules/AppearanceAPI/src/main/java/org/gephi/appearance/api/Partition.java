@@ -67,7 +67,7 @@ public interface Partition {
      *
      * @return values
      */
-    public Collection getValues();
+    Collection getValues();
 
     /**
      * Returns the same collection as {@link #getValues() } but sorted
@@ -75,14 +75,14 @@ public interface Partition {
      *
      * @return sorted values
      */
-    public Collection getSortedValues();
+    Collection getSortedValues();
 
     /**
      * Returns the number of elements that have a value in this partition.
      *
      * @return element count
      */
-    public int getElementCount();
+    int getElementCount();
 
     /**
      * Returns the number of elements for the given value.
@@ -90,7 +90,7 @@ public interface Partition {
      * @param value value
      * @return value count
      */
-    public int count(Object value);
+    int count(Object value);
 
     /**
      * Returns the element's value for this partition.
@@ -99,7 +99,7 @@ public interface Partition {
      * @param graph   graph this element belongs to
      * @return the value for this partition
      */
-    public Object getValue(Element element, Graph graph);
+    Object getValue(Element element, Graph graph);
 
     /**
      * Returns the color for the given value.
@@ -107,7 +107,7 @@ public interface Partition {
      * @param value value to get the color for
      * @return color or null if not defined
      */
-    public Color getColor(Object value);
+    Color getColor(Object value);
 
     /**
      * Sets the color for the given value.
@@ -115,7 +115,7 @@ public interface Partition {
      * @param value value to set the color for
      * @param color color
      */
-    public void setColor(Object value, Color color);
+    void setColor(Object value, Color color);
 
     /**
      * Sets the colors for all values. The size of <code>colors</code> must be
@@ -123,7 +123,7 @@ public interface Partition {
      *
      * @param colors colors to set
      */
-    public void setColors(Color[] colors);
+    void setColors(Color[] colors);
 
     /**
      * Returns the percentage of elements with the given value.
@@ -131,19 +131,19 @@ public interface Partition {
      * @param value value
      * @return percentage, between zero and 100
      */
-    public float percentage(Object value);
+    float percentage(Object value);
 
     /**
      * Returns the number of values this partition represents.
      *
      * @return value count
      */
-    public int size();
+    int size();
 
     /**
      * Returns the column associated with this partition.
      *
      * @return column or null if partition not based on a column
      */
-    public Column getColumn();
+    Column getColumn();
 }

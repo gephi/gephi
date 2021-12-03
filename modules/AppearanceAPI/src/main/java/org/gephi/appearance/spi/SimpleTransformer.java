@@ -56,5 +56,5 @@ public interface SimpleTransformer<E extends Element> extends Transformer {
      *
      * @param element element to transform
      */
-    public void transform(E element);
+    void transform(E element);
 }

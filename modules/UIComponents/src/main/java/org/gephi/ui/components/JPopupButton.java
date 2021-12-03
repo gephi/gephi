@@ -57,7 +57,7 @@ import javax.swing.event.ChangeListener;
  */
 public class JPopupButton extends JButton {
 
-    private ArrayList<JPopupButtonItem> items;
+    private final ArrayList<JPopupButtonItem> items;
     private JPopupButtonItem selectedItem;
     private ChangeListener listener;
 

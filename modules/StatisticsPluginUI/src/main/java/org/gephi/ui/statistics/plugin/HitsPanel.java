@@ -59,6 +59,7 @@ public class HitsPanel extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXLabel epsilonLabel;
     private org.jdesktop.swingx.JXHeader header;
     private javax.swing.JLabel labelEpsilon;
+
     public HitsPanel() {
         initComponents();
 

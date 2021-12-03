@@ -58,7 +58,7 @@ public class UIExporterPNG implements ExporterUI {
 
     private UIExporterPNGPanel panel;
     private PNGExporter exporter;
-    private ExporterPNGSettings settings = new ExporterPNGSettings();
+    private final ExporterPNGSettings settings = new ExporterPNGSettings();
     private ValidationPanel validationPanel;
 
     @Override

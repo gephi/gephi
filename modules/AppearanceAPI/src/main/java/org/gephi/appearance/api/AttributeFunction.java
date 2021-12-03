@@ -54,5 +54,5 @@ public interface AttributeFunction extends Function {
      *
      * @return column
      */
-    public Column getColumn();
+    Column getColumn();
 }

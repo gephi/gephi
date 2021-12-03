@@ -61,6 +61,7 @@ public class UIExporterPNGPanel extends javax.swing.JPanel implements Validation
     private javax.swing.JCheckBox transparentBackgroundCheckbox;
     private javax.swing.JLabel widthLabel;
     private javax.swing.JTextField widthTextField;
+
     public UIExporterPNGPanel() {
         initComponents();
     }

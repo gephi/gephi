@@ -60,6 +60,7 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
     private final AttributeTypeClass attributeTypeClass;
     private Column[] columns;
     private Column selectedColumn;
+
     protected AbstractAttributeColumnPropertyEditor(EditorClass editorClass, AttributeTypeClass attributeClass) {
         this.editorClass = editorClass;
         this.attributeTypeClass = attributeClass;

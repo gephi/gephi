@@ -46,6 +46,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import org.apache.commons.csv.CSVParser;
@@ -64,7 +65,7 @@ import org.openide.filesystems.FileUtil;
 public class ImporterSpreadsheetCSV extends AbstractImporterSpreadsheet {
 
     protected char fieldDelimiter = ',';
-    protected Charset charset = Charset.forName("UTF-8");
+    protected Charset charset = StandardCharsets.UTF_8;
 
     @Override
     public SheetParser createParserWithoutHeaders() throws IOException {
@@ -107,7 +108,7 @@ public class ImporterSpreadsheetCSV extends AbstractImporterSpreadsheet {
         try {
             FileInputStream is = new FileInputStream(file);
             CharsetToolkit charsetToolkit = new CharsetToolkit(is);
-            charsetToolkit.setDefaultCharset(Charset.forName("UTF-8"));
+            charsetToolkit.setDefaultCharset(StandardCharsets.UTF_8);
             charset = charsetToolkit.getCharset();
         } catch (Exception ex) {
         }

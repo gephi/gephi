@@ -57,7 +57,7 @@ public class OperatorQueryImpl extends AbstractQueryImpl {
     private String customName = null;
 
     public OperatorQueryImpl(Operator predicate) {
-        this.operator = (Operator) predicate;
+        this.operator = predicate;
     }
 
     @Override

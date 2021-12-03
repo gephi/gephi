@@ -182,7 +182,7 @@ public class PageRank implements Statistics, LongTask {
                 if (directed) {
                     eIter = ((DirectedGraph) graph).getOutEdges(s);
                 } else {
-                    eIter = ((UndirectedGraph) graph).getEdges(s);
+                    eIter = graph.getEdges(s);
                 }
                 for (Edge edge : eIter) {
                     if (!edge.isSelfLoop()) {

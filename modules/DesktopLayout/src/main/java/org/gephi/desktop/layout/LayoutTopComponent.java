@@ -68,7 +68,7 @@ import org.openide.windows.TopComponent;
     preferredID = "LayoutTopComponent")
 public final class LayoutTopComponent extends TopComponent {
 
-    private LayoutPanel layoutPanel;
+    private final LayoutPanel layoutPanel;
     private LayoutModel model;
 
     public LayoutTopComponent() {

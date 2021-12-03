@@ -59,6 +59,7 @@ public class UIExporterVNAPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox exportSizeCheckBox;
     private javax.swing.JCheckBox normalizeCheckBox;
     private javax.swing.JLabel normalizeLabel;
+
     /**
      * Creates new customizer UIExporterGMLPanel
      */

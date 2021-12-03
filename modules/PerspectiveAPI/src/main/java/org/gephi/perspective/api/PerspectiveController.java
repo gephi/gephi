@@ -68,7 +68,7 @@ public interface PerspectiveController {
      *
      * @return the currently selected perspective or <code>null</code>
      */
-    public Perspective getSelectedPerspective();
+    Perspective getSelectedPerspective();
 
     /**
      * Returns all perspectives installed. This is equivalent to
@@ -76,7 +76,7 @@ public interface PerspectiveController {
      *
      * @return all installed perspectives
      */
-    public Perspective[] getPerspectives();
+    Perspective[] getPerspectives();
 
     /**
      * Switch the current perspective to the given perspective. Only one perspective
@@ -84,5 +84,5 @@ public interface PerspectiveController {
      *
      * @param perspective the perspective to select
      */
-    public void selectPerspective(Perspective perspective);
+    void selectPerspective(Perspective perspective);
 }

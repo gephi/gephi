@@ -64,6 +64,7 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
     //  }
     private org.jdesktop.swingx.JXHeader header;
     private javax.swing.JRadioButton undirectedRadioButton;
+
     public ClusteringCoefficientPanel() {
         initComponents();
 

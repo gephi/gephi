@@ -75,7 +75,7 @@ import org.openide.util.NbPreferences;
 public class EdgeListPanel extends javax.swing.JPanel {
 
     static ValidationGroup group;
-    private static String NEW_CONFIGURATION_NAME
+    private static final String NEW_CONFIGURATION_NAME
         = NbBundle.getMessage(EdgeListPanel.class,
         "EdgeListPanel.template.name");
     private final String LAST_PATH = "EdgeListPanel_Sqlite_Last_Path";
@@ -86,7 +86,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
     protected javax.swing.JTextField portTextField;
     protected javax.swing.JPasswordField pwdTextField;
     protected javax.swing.JTextField userTextField;
-    private EdgeListDatabaseManager databaseManager;
+    private final EdgeListDatabaseManager databaseManager;
     private boolean inited = false;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton browseButton;
@@ -106,6 +106,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
     private javax.swing.JButton removeConfigurationButton;
     private javax.swing.JButton testConnection;
     private javax.swing.JLabel userLabel;
+
     /**
      * Creates new form EdgeListPanel
      */
@@ -242,11 +243,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         configurationCombo.setModel(new EdgeListPanel.ConfigurationComboModel());
         ConfigurationComboModel model
             = (ConfigurationComboModel) configurationCombo.getModel();
-        if (model.getSelectedItem().equals(model.templateConfiguration)) {
-            this.removeConfigurationButton.setEnabled(false);
-        } else {
-            this.removeConfigurationButton.setEnabled(true);
-        }
+        this.removeConfigurationButton.setEnabled(!model.getSelectedItem().equals(model.templateConfiguration));
         inited = true;
         group.validateAll();
     }
@@ -579,11 +576,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         ConfigurationComboModel model
             = (ConfigurationComboModel) configurationCombo.getModel();
         ConfigurationComboItem item = (ConfigurationComboItem) model.getSelectedItem();
-        if (item.equals(model.templateConfiguration)) {
-            this.removeConfigurationButton.setEnabled(false);
-        } else {
-            this.removeConfigurationButton.setEnabled(true);
-        }
+        this.removeConfigurationButton.setEnabled(!item.equals(model.templateConfiguration));
     }//GEN-LAST:event_configurationComboActionPerformed
 
     public void initEvents() {
@@ -591,7 +584,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
     private static class HostOrFileValidator implements Validator<String> {
 
-        private EdgeListPanel panel;
+        private final EdgeListPanel panel;
 
         public HostOrFileValidator(EdgeListPanel panel) {
             this.panel = panel;
@@ -612,7 +605,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
     private static class NotEmptyValidator implements Validator<String> {
 
-        private EdgeListPanel panel;
+        private final EdgeListPanel panel;
 
         public NotEmptyValidator(EdgeListPanel panel) {
             this.panel = panel;
@@ -633,7 +626,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
     private static class PortValidator implements Validator<String> {
 
-        private EdgeListPanel panel;
+        private final EdgeListPanel panel;
 
         public PortValidator(EdgeListPanel panel) {
             this.panel = panel;

@@ -76,9 +76,9 @@ import javax.swing.text.JTextComponent;
  */
 public class FileCompletionPopup extends JPopupMenu implements KeyListener {
 
-    private JList list;
-    private JTextField textField;
-    private JFileChooser chooser;
+    private final JList list;
+    private final JTextField textField;
+    private final JFileChooser chooser;
 
     public FileCompletionPopup(JFileChooser chooser, JTextField textField, Vector<File> files) {
         this.list = new JList(files);
@@ -204,12 +204,8 @@ public class FileCompletionPopup extends JPopupMenu implements KeyListener {
         if (keyCode == KeyEvent.VK_ENTER || keyCode == KeyEvent.VK_TAB) {
             return true;
         }
-        if (keyCode == KeyEvent.VK_RIGHT &&
-            (textField.getCaretPosition() >= (textField.getDocument().getLength() - 1))) {
-            return true;
-        }
-
-        return false;
+        return keyCode == KeyEvent.VK_RIGHT &&
+            (textField.getCaretPosition() >= (textField.getDocument().getLength() - 1));
     }
 
     private class FocusHandler extends FocusAdapter {

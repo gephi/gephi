@@ -49,5 +49,5 @@ import javax.swing.JPanel;
  */
 public interface EqualNumberUI {
 
-    public JPanel getPanel(AttributeEqualBuilder.EqualNumberFilter filter);
+    JPanel getPanel(AttributeEqualBuilder.EqualNumberFilter filter);
 }

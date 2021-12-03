@@ -53,13 +53,16 @@ public class ElementFactoryImpl implements ElementDraft.Factory {
     protected final static AtomicInteger EDGE_IDS = new AtomicInteger();
     protected final ImportContainerImpl container;
 
+    protected AtomicInteger nextSequentialNodeId = new AtomicInteger();
+
     public ElementFactoryImpl(ImportContainerImpl container) {
         this.container = container;
     }
 
     @Override
     public NodeDraftImpl newNodeDraft() {
-        return new NodeDraftImpl(container, String.valueOf(NODE_IDS.getAndIncrement()));
+        return new NodeDraftImpl(container, String.valueOf(NODE_IDS.getAndIncrement()),
+            nextSequentialNodeId.getAndIncrement());
     }
 
     @Override
@@ -68,7 +71,7 @@ public class ElementFactoryImpl implements ElementDraft.Factory {
             String message = NbBundle.getMessage(ElementFactoryImpl.class, "ElementFactoryException_NullNodeId");
             container.getReport().logIssue(new Issue(message, Issue.Level.CRITICAL));
         }
-        return new NodeDraftImpl(container, id);
+        return new NodeDraftImpl(container, id, nextSequentialNodeId.getAndIncrement());
     }
 
     @Override

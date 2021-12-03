@@ -56,7 +56,7 @@ import org.openide.util.Exceptions;
  */
 public class LayoutNode extends AbstractNode {
 
-    private Layout layout;
+    private final Layout layout;
     private PropertySet[] propertySets;
 
     public LayoutNode(Layout layout) {

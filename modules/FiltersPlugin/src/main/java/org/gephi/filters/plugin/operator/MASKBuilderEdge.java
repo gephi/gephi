@@ -142,7 +142,7 @@ public class MASKBuilderEdge implements FilterBuilder {
                 throw new IllegalArgumentException("Filter accepts a single graph in parameter");
             }
 
-            Graph graph = (Graph) graphs[0];
+            Graph graph = graphs[0];
             Graph mainGraph = graph.getView().getGraphModel().getGraph();
 
             List<Edge> edgesToKeep = new ArrayList<>();

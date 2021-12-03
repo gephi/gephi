@@ -60,6 +60,7 @@ public class TimeFormatDialog extends javax.swing.JPanel {
     private javax.swing.JRadioButton dateTimeRadio;
     private org.jdesktop.swingx.JXHeader headerTitle;
     private javax.swing.JRadioButton numericRadio;
+
     /**
      * Creates new form DateFormatDialog
      */

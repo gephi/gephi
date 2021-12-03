@@ -179,12 +179,12 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         Column timeIntervalColumn = getTimeIntervalColumn(table);
         final int startColumnIndex = startColumn != null ? startColumn.getIndex() : -1;
         final int endColumnIndex = endColumn != null ? endColumn.getIndex() : -1;
-        final boolean isStartColumnNumeric = startColumn != null ?
-            (!AttributeUtils.isDynamicType(startColumn.getTypeClass()) &&
-                AttributeUtils.isNumberType(startColumn.getTypeClass())) : false;
-        final boolean isEndColumnNumeric = endColumn != null ?
-            (!AttributeUtils.isDynamicType(endColumn.getTypeClass()) &&
-                AttributeUtils.isNumberType(endColumn.getTypeClass())) : false;
+        final boolean isStartColumnNumeric =
+            startColumn != null && (!AttributeUtils.isDynamicType(startColumn.getTypeClass()) &&
+                AttributeUtils.isNumberType(startColumn.getTypeClass()));
+        final boolean isEndColumnNumeric =
+            endColumn != null && (!AttributeUtils.isDynamicType(endColumn.getTypeClass()) &&
+                AttributeUtils.isNumberType(endColumn.getTypeClass()));
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Object value;

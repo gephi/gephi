@@ -19,8 +19,8 @@ public class IntervalSetGraphicsComponentProvider extends AbstractTimeSetGraphic
         IntervalSet intervalSet = (IntervalSet) value;
         double[] intervals = intervalSet.getIntervals();
 
-        double starts[] = new double[intervals.length / 2];
-        double ends[] = new double[intervals.length / 2];
+        double[] starts = new double[intervals.length / 2];
+        double[] ends = new double[intervals.length / 2];
         for (int i = 0, startIndex = 0; startIndex < intervals.length; i++, startIndex += 2) {
             starts[i] = intervals[startIndex];
             ends[i] = intervals[startIndex + 1];

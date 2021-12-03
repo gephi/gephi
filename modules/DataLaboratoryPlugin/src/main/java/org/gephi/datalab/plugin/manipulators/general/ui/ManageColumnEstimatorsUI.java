@@ -208,10 +208,7 @@ public class ManageColumnEstimatorsUI extends javax.swing.JPanel implements Mani
                 return false;
             }
             final EstimatorWrapper other = (EstimatorWrapper) obj;
-            if (this.estimator != other.estimator) {
-                return false;
-            }
-            return true;
+            return this.estimator == other.estimator;
         }
     }
 

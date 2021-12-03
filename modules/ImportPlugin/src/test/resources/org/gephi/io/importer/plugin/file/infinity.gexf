@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+    <graph defaultedgetype="directed">
+        <attributes class="node">
+            <attribute id="0" title="positive" type="double"/>
+            <attribute id="1" title="negative" type="double"/>
+        </attributes>
+        <nodes>
+            <node id="0">
+                <attvalues>
+                    <attvalue for="0" value="INF"/>
+                    <attvalue for="1" value="-INF"/>
+                </attvalues>
+            </node>
+        </nodes>
+    </graph>
+</gexf>

@@ -65,19 +65,19 @@ public interface Perspective {
      *
      * @return the perspective display name
      */
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * Return a unique identifier for this perspective.
      *
      * @return the name of the perspective
      */
-    public String getName();
+    String getName();
 
     /**
      * Return the icon of the perspective.
      *
      * @return the perspective's icon, or <code>null</code>
      */
-    public Icon getIcon();
+    Icon getIcon();
 }

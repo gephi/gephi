@@ -64,7 +64,7 @@ public interface ElementDraft {
      *
      * @return element's id
      */
-    public String getId();
+    String getId();
 
     /**
      * Returns the element's value for <code>key</code>.
@@ -72,35 +72,35 @@ public interface ElementDraft {
      * @param key key
      * @return value or null if not found
      */
-    public Object getValue(String key);
+    Object getValue(String key);
 
     /**
      * Returns the element's label.
      *
      * @return label or null if unset
      */
-    public String getLabel();
+    String getLabel();
 
     /**
      * Sets this element's label.
      *
      * @param label label
      */
-    public void setLabel(String label);
+    void setLabel(String label);
 
     /**
      * Returns the element's color.
      *
      * @return color or null if unset
      */
-    public Color getColor();
+    Color getColor();
 
     /**
      * Sets this element's color.
      *
      * @param color color
      */
-    public void setColor(Color color);
+    void setColor(Color color);
 
     /**
      * Parse and sets this element's color.
@@ -110,7 +110,7 @@ public interface ElementDraft {
      *
      * @param color color to be parsed and set
      */
-    public void setColor(String color);
+    void setColor(String color);
 
     /**
      * Returns true if the label is visible.
@@ -119,14 +119,14 @@ public interface ElementDraft {
      *
      * @return true if label is visible, false otherwise
      */
-    public boolean isLabelVisible();
+    boolean isLabelVisible();
 
     /**
      * Sets whether the label is visible.
      *
      * @param labelVisible label visible flag
      */
-    public void setLabelVisible(boolean labelVisible);
+    void setLabelVisible(boolean labelVisible);
 
     /**
      * Returns the label's size.
@@ -135,28 +135,28 @@ public interface ElementDraft {
      *
      * @return label size
      */
-    public float getLabelSize();
+    float getLabelSize();
 
     /**
      * Sets the label's size.
      *
      * @param size label size
      */
-    public void setLabelSize(float size);
+    void setLabelSize(float size);
 
     /**
      * Returns the label's color.
      *
      * @return label's color
      */
-    public Color getLabelColor();
+    Color getLabelColor();
 
     /**
      * Sets the label's color.
      *
      * @param color label color
      */
-    public void setLabelColor(Color color);
+    void setLabelColor(Color color);
 
     /**
      * Parses and sets the label's color.
@@ -166,7 +166,7 @@ public interface ElementDraft {
      *
      * @param color color to be parsed and set
      */
-    public void setLabelColor(String color);
+    void setLabelColor(String color);
 
     /**
      * Sets the <code>value</code> for <code>key</code>.
@@ -174,7 +174,7 @@ public interface ElementDraft {
      * @param key   key
      * @param value value
      */
-    public void setValue(String key, Object value);
+    void setValue(String key, Object value);
 
     /**
      * Sets the <code>value</code> for <code>key</code> at the given
@@ -184,7 +184,7 @@ public interface ElementDraft {
      * @param value     value
      * @param timestamp timestamp
      */
-    public void setValue(String key, Object value, double timestamp);
+    void setValue(String key, Object value, double timestamp);
 
     /**
      * Sets the <code>value</code> for <code>key</code> at the given interval
@@ -195,7 +195,7 @@ public interface ElementDraft {
      * @param start interval start
      * @param end   interval end
      */
-    public void setValue(String key, Object value, double start, double end);
+    void setValue(String key, Object value, double start, double end);
 
     /**
      * Sets the <code>value</code> for <code>key</code> at the given
@@ -205,7 +205,7 @@ public interface ElementDraft {
      * @param value    value
      * @param dateTime dateTime
      */
-    public void setValue(String key, Object value, String dateTime);
+    void setValue(String key, Object value, String dateTime);
 
     /**
      * Sets the <code>value</code> for <code>key</code> at the given interval
@@ -216,7 +216,7 @@ public interface ElementDraft {
      * @param startDateTime interval start datetime
      * @param endDateTime   interval end datetime
      */
-    public void setValue(String key, Object value, String startDateTime, String endDateTime);
+    void setValue(String key, Object value, String startDateTime, String endDateTime);
 
     /**
      * Parses and sets the <code>value</code> for <code>key</code>.
@@ -224,7 +224,7 @@ public interface ElementDraft {
      * @param key   key
      * @param value value
      */
-    public void parseAndSetValue(String key, String value);
+    void parseAndSetValue(String key, String value);
 
     /**
      * Parses and sets the <code>value</code> for <code>key</code> at the given
@@ -234,7 +234,7 @@ public interface ElementDraft {
      * @param value     value
      * @param timestamp timestamp
      */
-    public void parseAndSetValue(String key, String value, double timestamp);
+    void parseAndSetValue(String key, String value, double timestamp);
 
     /**
      * Parses and sets the <code>value</code> for <code>key</code> at the given
@@ -245,7 +245,7 @@ public interface ElementDraft {
      * @param start interval start
      * @param end   interval end
      */
-    public void parseAndSetValue(String key, String value, double start, double end);
+    void parseAndSetValue(String key, String value, double start, double end);
 
     /**
      * Parses and sets the <code>value</code> for <code>key</code> at the given
@@ -255,7 +255,7 @@ public interface ElementDraft {
      * @param value    value
      * @param dateTime dateTime
      */
-    public void parseAndSetValue(String key, String value, String dateTime);
+    void parseAndSetValue(String key, String value, String dateTime);
 
     /**
      * Parses and sets the <code>value</code> for <code>key</code> at the given
@@ -266,7 +266,7 @@ public interface ElementDraft {
      * @param startDateTime interval start datetime
      * @param endDateTime   interval end datetime
      */
-    public void parseAndSetValue(String key, String value, String startDateTime, String endDateTime);
+    void parseAndSetValue(String key, String value, String startDateTime, String endDateTime);
 
     /**
      * Parses and sets this element's color using string components.
@@ -277,7 +277,7 @@ public interface ElementDraft {
      * @param g green component as string
      * @param b blue component as string
      */
-    public void setColor(String r, String g, String b);
+    void setColor(String r, String g, String b);
 
     /**
      * Sets this element's color using real color numbers (i.e numbers between 0
@@ -287,7 +287,7 @@ public interface ElementDraft {
      * @param g green component as float
      * @param b blue component as float
      */
-    public void setColor(float r, float g, float b);
+    void setColor(float r, float g, float b);
 
     /**
      * Sets this element's color using int color numbers (i.e numbers between 0
@@ -297,7 +297,7 @@ public interface ElementDraft {
      * @param g green component as int
      * @param b blue component as int
      */
-    public void setColor(int r, int g, int b);
+    void setColor(int r, int g, int b);
 
     /**
      * Parses and sets the label's color using string components.
@@ -308,7 +308,7 @@ public interface ElementDraft {
      * @param g green component as string
      * @param b blue component as string
      */
-    public void setLabelColor(String r, String g, String b);
+    void setLabelColor(String r, String g, String b);
 
     /**
      * Sets the label's color using real color numbers (i.e numbers between 0
@@ -318,7 +318,7 @@ public interface ElementDraft {
      * @param g green component as float
      * @param b blue component as float
      */
-    public void setLabelColor(float r, float g, float b);
+    void setLabelColor(float r, float g, float b);
 
     /**
      * Sets the label's color using int color numbers (i.e numbers between 0 and
@@ -328,40 +328,40 @@ public interface ElementDraft {
      * @param g green component as int
      * @param b blue component as int
      */
-    public void setLabelColor(int r, int g, int b);
+    void setLabelColor(int r, int g, int b);
 
-    public void addTimestamp(double timestamp);
+    void addTimestamp(double timestamp);
 
-    public void addTimestamp(String dateTime);
+    void addTimestamp(String dateTime);
 
-    public void addTimestamps(String timestamps);
+    void addTimestamps(String timestamps);
 
-    public void addInterval(double start, double end);
+    void addInterval(double start, double end);
 
-    public void addInterval(String startDateTime, String endDateTime);
+    void addInterval(String startDateTime, String endDateTime);
 
-    public void addIntervals(String intervals);
+    void addIntervals(String intervals);
 
-    public TimeSet getTimeSet();
+    TimeSet getTimeSet();
 
-    public Iterable<ColumnDraft> getColumns();
+    Iterable<ColumnDraft> getColumns();
 
-    public Double getGraphTimestamp();
+    Double getGraphTimestamp();
 
-    public Interval getGraphInterval();
+    Interval getGraphInterval();
 
     /**
      * Node and edge draft factory. Creates node and edge to push in the
      * container.
      */
-    public interface Factory {
+    interface Factory {
 
         /**
          * Returns an empty node draft instance.
          *
          * @return an instance of <code>NodeDraft</code>
          */
-        public NodeDraft newNodeDraft();
+        NodeDraft newNodeDraft();
 
         /**
          * Returns an empty node draft instance.
@@ -369,7 +369,7 @@ public interface ElementDraft {
          * @param id node id
          * @return an instance of <code>NodeDraft</code>
          */
-        public NodeDraft newNodeDraft(String id);
+        NodeDraft newNodeDraft(String id);
 
         /**
          * Returns an empty edge draft instance. Note that <b>source</b> and
@@ -377,7 +377,7 @@ public interface ElementDraft {
          *
          * @return an instance of <code>EdgeDraft</code>
          */
-        public EdgeDraft newEdgeDraft();
+        EdgeDraft newEdgeDraft();
 
         /**
          * Returns an empty edge draft instance.
@@ -385,6 +385,6 @@ public interface ElementDraft {
          * @param id edge id
          * @return an instance of <code>EdgeDraft</code>
          */
-        public EdgeDraft newEdgeDraft(String id);
+        EdgeDraft newEdgeDraft(String id);
     }
 }

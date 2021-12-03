@@ -63,7 +63,7 @@ public class Upgrader {
 
     private final static String UPGRADER_LAST_VERSION = "Upgrader_Last_Version";
     private final static List<String> VERSION_TO_CHECK
-        = Arrays.asList(new String[] {"0.9.0"});
+        = Arrays.asList("0.9.0");
 
     public void upgrade() {
         String currentVersion = getCurrentVersion();
@@ -104,10 +104,7 @@ public class Upgrader {
         NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, title, NotifyDescriptor.YES_NO_OPTION,
             NotifyDescriptor.QUESTION_MESSAGE);
 
-        if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
-            return true;
-        }
-        return false;
+        return DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION;
     }
 
     private boolean showUpgradeDialog(File source) {
@@ -116,10 +113,7 @@ public class Upgrader {
         NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, title, NotifyDescriptor.YES_NO_OPTION,
             NotifyDescriptor.QUESTION_MESSAGE);
 
-        if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
-            return true;
-        }
-        return false;
+        return DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION;
     }
 
     private String getCurrentVersion() {

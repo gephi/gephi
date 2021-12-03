@@ -238,6 +238,7 @@ public class AddColumnUI extends javax.swing.JPanel {
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
     public enum Mode {
 
         NODES_TABLE, EDGES_TABLE

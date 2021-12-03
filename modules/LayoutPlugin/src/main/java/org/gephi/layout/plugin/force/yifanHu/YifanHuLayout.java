@@ -77,7 +77,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     private float barnesHutTheta;
     private float convergenceThreshold;
     private boolean adaptiveCooling;
-    private Displacement displacement;
+    private final Displacement displacement;
     private double energy0;
     private double energy;
     private Graph graph;
@@ -472,8 +472,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
      */
     public class ElectricalForce extends AbstractForce {
 
-        private float relativeStrength;
-        private float optimalDistance;
+        private final float relativeStrength;
+        private final float optimalDistance;
 
         public ElectricalForce(float relativeStrength, float optimalDistance) {
             this.relativeStrength = relativeStrength;

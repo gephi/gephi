@@ -58,7 +58,7 @@ import org.openide.util.NbBundle;
  */
 public class SavedQueryNode extends AbstractNode {
 
-    private Query query;
+    private final Query query;
 
     public SavedQueryNode(Query query) {
         super(Children.LEAF);

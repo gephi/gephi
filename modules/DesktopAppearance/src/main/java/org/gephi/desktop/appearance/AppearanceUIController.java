@@ -362,9 +362,7 @@ public class AppearanceUIController {
     }
 
     public void addPropertyChangeListener(AppearanceUIModelListener listener) {
-        if (!listeners.contains(listener)) {
-            listeners.add(listener);
-        }
+        listeners.add(listener);
     }
 
     public void removePropertyChangeListener(AppearanceUIModelListener listener) {
@@ -394,7 +392,7 @@ public class AppearanceUIController {
         @Override
         public void run() {
             boolean graphChanged = graphObserver.hasGraphChanged();
-            boolean columnChanged = columnObserver != null ? columnObserver.hasColumnChanged() : false;
+            boolean columnChanged = columnObserver != null && columnObserver.hasColumnChanged();
             if (graphChanged || columnChanged) {
                 Function oldValue = model.getSelectedFunction();
                 model.refreshSelectedFunction();

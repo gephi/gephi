@@ -83,8 +83,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
     private final String NO_SELECTION;
     private LayoutModel model;
-    private LayoutController controller;
-    private LayoutPresetPersistence layoutPresetPersistence;
+    private final LayoutController controller;
+    private final LayoutPresetPersistence layoutPresetPersistence;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel infoLabel;
     private javax.swing.JComboBox layoutCombobox;
@@ -479,7 +479,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
     private static class LayoutBuilderWrapper {
 
-        private LayoutBuilder layoutBuilder;
+        private final LayoutBuilder layoutBuilder;
 
         public LayoutBuilderWrapper(LayoutBuilder layoutBuilder) {
             this.layoutBuilder = layoutBuilder;
@@ -504,13 +504,13 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         private static final int LINE_GAP = 4;
         private static final int Y_BEGIN = 10;
         private static final int IMAGE_RIGHT_MARIN = 10;
-        private Image greenIcon;
-        private Image grayIcon;
+        private final Image greenIcon;
+        private final Image grayIcon;
         private Graphics g;
-        private String qualityStr;
-        private String speedStr;
+        private final String qualityStr;
+        private final String speedStr;
         private int textMaxSize;
-        private LayoutUI layoutUI;
+        private final LayoutUI layoutUI;
 
         public LayoutDescriptionImage(LayoutUI layoutUI) {
             this.layoutUI = layoutUI;

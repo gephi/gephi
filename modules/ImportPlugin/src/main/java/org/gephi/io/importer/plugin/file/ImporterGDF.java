@@ -81,8 +81,8 @@ public class ImporterGDF implements FileImporter, LongTask {
     private ProgressTicket progressTicket;
     private boolean cancel = false;
     //Extract
-    private List<String> nodeLines = new ArrayList<>();
-    private List<String> edgeLines = new ArrayList<>();
+    private final List<String> nodeLines = new ArrayList<>();
+    private final List<String> edgeLines = new ArrayList<>();
     //Columns
     private GDFColumn[] nodeColumns;
     private GDFColumn[] edgeColumns;
@@ -142,7 +142,7 @@ public class ImporterGDF implements FileImporter, LongTask {
                 if (start != end) {
                     String data = nodeLine.substring(start, end);
                     data = data.trim();
-                    if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                    if (!data.isEmpty() && !data.equalsIgnoreCase("null")) {
                         if (count == 0) {
                             //Id
                             id = data;
@@ -188,7 +188,7 @@ public class ImporterGDF implements FileImporter, LongTask {
                 if (start != end) {
                     String data = edgeLine.substring(start, end);
                     data = data.trim();
-                    if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                    if (!data.isEmpty() && !data.equalsIgnoreCase("null")) {
                         if (count == 0) {
                             NodeDraft nodeSource = container.getNode(data);
                             edge.setSource(nodeSource);
@@ -590,9 +590,11 @@ public class ImporterGDF implements FileImporter, LongTask {
         private ColumnDraft column;
         private NodeGuessColumn nodeColumn;
         private EdgeGuessColumn edgeColumn;
+
         public GDFColumn(NodeGuessColumn column) {
             this.nodeColumn = column;
         }
+
         public GDFColumn(EdgeGuessColumn column) {
             this.edgeColumn = column;
         }

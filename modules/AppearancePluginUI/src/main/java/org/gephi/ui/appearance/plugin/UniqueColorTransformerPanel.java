@@ -76,7 +76,7 @@ public class UniqueColorTransformerPanel extends javax.swing.JPanel {
     }
 
     public void setup(SimpleFunction function) {
-        transformer = (AbstractUniqueColorTransformer) function.getTransformer();
+        transformer = function.getTransformer();
         colorChooser.setColor(transformer.getColor());
         colorLabel.setText(getHex(transformer.getColor()));
     }

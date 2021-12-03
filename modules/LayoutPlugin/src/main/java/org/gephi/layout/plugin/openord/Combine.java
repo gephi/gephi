@@ -153,8 +153,8 @@ public class Combine implements Runnable {
         NumberFormat formatter = DecimalFormat.getInstance();
         formatter.setMaximumFractionDigits(2);
         for (Node node : nodes) {
-            String xStr = formatter.format((double) node.x);
-            String yStr = formatter.format((double) node.y);
+            String xStr = formatter.format(node.x);
+            String yStr = formatter.format(node.y);
         }
     }
 

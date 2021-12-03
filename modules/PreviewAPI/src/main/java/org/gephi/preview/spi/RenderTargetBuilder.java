@@ -69,7 +69,7 @@ public interface RenderTargetBuilder {
      * @param previewModel the preview model to get the dimensions and properties from
      * @return a new render target instance
      */
-    public RenderTarget buildRenderTarget(PreviewModel previewModel);
+    RenderTarget buildRenderTarget(PreviewModel previewModel);
 
     /**
      * Returns the name of the target builder. This value is used by the
@@ -77,5 +77,5 @@ public interface RenderTargetBuilder {
      *
      * @return the name of the target builder
      */
-    public String getName();
+    String getName();
 }

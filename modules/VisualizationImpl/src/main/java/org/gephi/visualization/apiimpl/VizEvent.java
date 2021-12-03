@@ -51,6 +51,7 @@ public class VizEvent extends EventObject {
 
     private Type type;
     private Object data;
+
     public VizEvent(Object source, Type t) {
         super(source);
         this.type = t;

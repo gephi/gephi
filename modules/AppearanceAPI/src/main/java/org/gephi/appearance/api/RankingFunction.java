@@ -52,7 +52,7 @@ public interface RankingFunction extends Function {
      *
      * @return ranking
      */
-    public Ranking getRanking();
+    Ranking getRanking();
 
     /**
      * Returns the interpolator.
@@ -62,12 +62,12 @@ public interface RankingFunction extends Function {
      *
      * @return interpolator
      */
-    public Interpolator getInterpolator();
+    Interpolator getInterpolator();
 
     /**
      * Sets the interpolator for this function.
      *
      * @param interpolator interpolator
      */
-    public void setInterpolator(Interpolator interpolator);
+    void setInterpolator(Interpolator interpolator);
 }

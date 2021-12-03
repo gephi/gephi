@@ -79,8 +79,8 @@ public class JDropDownButton extends JButton {
     private static final String ICON_ROLLOVER_SELECTED_LINE = "rolloverSelectedLine"; //NOI18N
     private boolean mouseInButton = false;
     private boolean mouseInArrowArea = false;
-    private Map<String, Icon> regIcons = new HashMap<>(5);
-    private Map<String, Icon> arrowIcons = new HashMap<>(5);
+    private final Map<String, Icon> regIcons = new HashMap<>(5);
+    private final Map<String, Icon> arrowIcons = new HashMap<>(5);
     private PopupMenuListener menuListener;
 
     public JDropDownButton(Icon icon, JPopupMenu popup) {

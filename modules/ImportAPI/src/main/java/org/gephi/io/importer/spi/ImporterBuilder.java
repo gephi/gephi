@@ -63,12 +63,12 @@ public interface ImporterBuilder {
      *
      * @return a new importer
      */
-    public Importer buildImporter();
+    Importer buildImporter();
 
     /**
      * Returns the name of this builder
      *
      * @return the name of this importer
      */
-    public String getName();
+    String getName();
 }

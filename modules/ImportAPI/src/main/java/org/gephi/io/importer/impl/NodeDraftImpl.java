@@ -50,6 +50,7 @@ import org.gephi.io.importer.api.NodeDraft;
  */
 public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
 
+    protected final int sequentialId;
     //Flag
     protected boolean createdAuto = false;
     //Viz attributes
@@ -59,11 +60,16 @@ public class NodeDraftImpl extends ElementDraftImpl implements NodeDraft {
     protected float size;
     protected boolean fixed;
 
-    public NodeDraftImpl(ImportContainerImpl container, String id) {
+    public NodeDraftImpl(ImportContainerImpl container, String id, int sequentialId) {
         super(container, id);
+        this.sequentialId = sequentialId;
     }
 
     //GETTERS
+    public int getSequentialId() {
+        return sequentialId;
+    }
+
     @Override
     public float getSize() {
         return size;

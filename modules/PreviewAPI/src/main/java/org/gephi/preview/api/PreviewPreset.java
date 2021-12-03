@@ -96,9 +96,7 @@ public class PreviewPreset implements Comparable<PreviewPreset> {
         }
         if (obj != null && obj instanceof PreviewPreset) {
             PreviewPreset p = (PreviewPreset) obj;
-            if (p.name.equals(name) && p.properties.equals(properties)) {
-                return true;
-            }
+            return p.name.equals(name) && p.properties.equals(properties);
         }
         return false;
     }

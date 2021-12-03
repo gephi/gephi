@@ -209,11 +209,8 @@ public final class GraphFileExporterUI implements ExporterClassUI {
                 if (selectedBuilder != null) {
                     selectedExporter = selectedBuilder.buildExporter();
                 }
-                if (selectedBuilder != null && exportController.getExportController().getUI(selectedExporter) != null) {
-                    optionsButton.setEnabled(true);
-                } else {
-                    optionsButton.setEnabled(false);
-                }
+                optionsButton.setEnabled(
+                    selectedBuilder != null && exportController.getExportController().getUI(selectedExporter) != null);
 
                 //Selected file extension change
                 if (selectedFile != null && fileFilter != null) {

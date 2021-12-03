@@ -68,7 +68,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
 
     private final RecentPalettes recentPalettes;
     private RankingElementColorTransformer colorTransformer;
-    private GradientSlider gradientSlider;
+    private final GradientSlider gradientSlider;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton colorSwatchButton;
     private javax.swing.JToolBar colorSwatchToolbar;
@@ -116,7 +116,7 @@ public class RankingColorTransformerPanel extends javax.swing.JPanel {
     }
 
     public void setup(RankingFunction function) {
-        colorTransformer = (RankingElementColorTransformer) function.getTransformer();
+        colorTransformer = function.getTransformer();
 
         float[] positionsStart = colorTransformer.getColorPositions();
         Color[] colorsStart = colorTransformer.getColors();

@@ -67,7 +67,7 @@ public interface PreviewController {
      *
      * @param workspace the workspace to get the preview model from
      */
-    public void refreshPreview(Workspace workspace);
+    void refreshPreview(Workspace workspace);
 
     /**
      * Refreshes the current preview model.
@@ -76,14 +76,14 @@ public interface PreviewController {
      * refresh graph dimensions and call all <code>Renderer.preProcess()</code>
      * method.
      */
-    public void refreshPreview();
+    void refreshPreview();
 
     /**
      * Returns the current preview model in the current workspace.
      *
      * @return the current preview model
      */
-    public PreviewModel getModel();
+    PreviewModel getModel();
 
     /**
      * Returns the preview model in <code>workspace</code>.
@@ -91,7 +91,7 @@ public interface PreviewController {
      * @param workspace the workspace to lookup
      * @return the preview model in <code>workspace</code>
      */
-    public PreviewModel getModel(Workspace workspace);
+    PreviewModel getModel(Workspace workspace);
 
     /**
      * Renders the current preview model to <code>target</code>.
@@ -101,7 +101,7 @@ public interface PreviewController {
      *
      * @param target the target to render items to
      */
-    public void render(RenderTarget target);
+    void render(RenderTarget target);
 
     /**
      * Renders the preview model in <code>workspace</code> to <code>target</code>.
@@ -112,7 +112,7 @@ public interface PreviewController {
      * @param target    the target to render items to
      * @param workspace the workspace to get the preview model from
      */
-    public void render(RenderTarget target, Workspace workspace);
+    void render(RenderTarget target, Workspace workspace);
 
     /**
      * Renders the current preview model to <code>target</code>.
@@ -123,7 +123,7 @@ public interface PreviewController {
      * @param target    the target to render items to
      * @param renderers renderers to use
      */
-    public void render(RenderTarget target, Renderer[] renderers);
+    void render(RenderTarget target, Renderer[] renderers);
 
     /**
      * Renders the preview model in <code>workspace</code> to <code>target</code>.
@@ -135,7 +135,7 @@ public interface PreviewController {
      * @param renderers renderers to use
      * @param workspace the workspace to get the preview model from
      */
-    public void render(RenderTarget target, Renderer[] renderers, Workspace workspace);
+    void render(RenderTarget target, Renderer[] renderers, Workspace workspace);
 
     /**
      * Creates a new render target of the given type.
@@ -150,7 +150,7 @@ public interface PreviewController {
      * @return a new render target or <code>null</code> if <code>name</code> is
      * unknown
      */
-    public RenderTarget getRenderTarget(String name);
+    RenderTarget getRenderTarget(String name);
 
     /**
      * Creates a new render target of the given type in the preview model
@@ -167,7 +167,7 @@ public interface PreviewController {
      * @return a new render target or <code>null</code> if <code>name</code> is
      * unknown
      */
-    public RenderTarget getRenderTarget(String name, Workspace workspace);
+    RenderTarget getRenderTarget(String name, Workspace workspace);
 
     /**
      * Uses <code>Lookup</code> to retrieve registered renderer providers but replaces default renderers with plugins that extend them.
@@ -175,14 +175,14 @@ public interface PreviewController {
      * @return Registered renderers replacing default renderers with their extension plugins in case they exist
      * @see Renderer
      */
-    public Renderer[] getRegisteredRenderers();
+    Renderer[] getRegisteredRenderers();
 
     /**
      * Returns true if any renderer plugin is registered.
      *
      * @return True if any plugin renderer is found in the system
      */
-    public boolean isAnyPluginRendererRegistered();
+    boolean isAnyPluginRendererRegistered();
 
     /**
      * Sends a <code>PreviewMouseEvent</code> to the current workspace, if any.
@@ -190,7 +190,7 @@ public interface PreviewController {
      * @param event PreviewMouseEvent
      * @return True if the event was consumed, false otherwise
      */
-    public boolean sendMouseEvent(PreviewMouseEvent event);
+    boolean sendMouseEvent(PreviewMouseEvent event);
 
     /**
      * Sends a <code>PreviewMouseEvent</code> to the given workspace.
@@ -199,5 +199,5 @@ public interface PreviewController {
      * @param workspace workspace
      * @return True if the event was consumed, false otherwise
      */
-    public boolean sendMouseEvent(PreviewMouseEvent event, Workspace workspace);
+    boolean sendMouseEvent(PreviewMouseEvent event, Workspace workspace);
 }

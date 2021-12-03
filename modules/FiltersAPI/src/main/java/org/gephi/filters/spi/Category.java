@@ -113,9 +113,7 @@ public final class Category {
         }
         if (obj instanceof Category) {
             Category cat = (Category) obj;
-            if (cat.icon == icon && cat.name.equals(name) && (cat.parent == parent || cat.parent.equals(parent))) {
-                return true;
-            }
+            return cat.icon == icon && cat.name.equals(name) && (cat.parent == parent || cat.parent.equals(parent));
         }
         return false;
     }

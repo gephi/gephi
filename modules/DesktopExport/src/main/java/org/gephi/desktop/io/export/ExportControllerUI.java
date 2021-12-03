@@ -51,7 +51,7 @@ import org.openide.filesystems.FileObject;
  */
 public interface ExportControllerUI {
 
-    public void exportFile(final FileObject fileObject, final Exporter exporter);
+    void exportFile(final FileObject fileObject, final Exporter exporter);
 
-    public ExportController getExportController();
+    ExportController getExportController();
 }

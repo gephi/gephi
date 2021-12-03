@@ -153,10 +153,7 @@ public class AppearanceControllerImpl implements AppearanceController {
     public Transformer getTransformer(TransformerUI ui) {
         Class<? extends Transformer> transformerClass = ui.getTransformerClass();
         Transformer transformer = Lookup.getDefault().lookup(transformerClass);
-        if (transformer != null) {
-            return transformer;
-        }
-        return null;
+        return transformer;
     }
 
     @Override

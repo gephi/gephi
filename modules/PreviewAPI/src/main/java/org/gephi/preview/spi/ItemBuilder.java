@@ -66,10 +66,10 @@ import org.gephi.preview.api.Item;
  */
 public interface ItemBuilder {
 
-    public static final String NODE_BUILDER = Item.NODE;
-    public static final String NODE_LABEL_BUILDER = Item.NODE_LABEL;
-    public static final String EDGE_BUILDER = Item.EDGE;
-    public static final String EDGE_LABEL_BUILDER = Item.EDGE_LABEL;
+    String NODE_BUILDER = Item.NODE;
+    String NODE_LABEL_BUILDER = Item.NODE_LABEL;
+    String EDGE_BUILDER = Item.EDGE;
+    String EDGE_LABEL_BUILDER = Item.EDGE_LABEL;
 
     /**
      * Build items from the
@@ -79,7 +79,7 @@ public interface ItemBuilder {
      * @return an array of new items, from the same type returned by
      * {@link #getType()}
      */
-    public Item[] getItems(Graph graph);
+    Item[] getItems(Graph graph);
 
     /**
      * Returns the type of this builder.
@@ -92,5 +92,5 @@ public interface ItemBuilder {
      *
      * @return the builder item type.
      */
-    public String getType();
+    String getType();
 }

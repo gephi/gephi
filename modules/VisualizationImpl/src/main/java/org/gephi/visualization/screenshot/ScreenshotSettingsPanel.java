@@ -68,6 +68,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelWidth;
     private javax.swing.JButton selectDirectoryButton;
     private javax.swing.JTextField widthTextField;
+
     /**
      * Creates new form ScreenshotSettingsPanel
      */

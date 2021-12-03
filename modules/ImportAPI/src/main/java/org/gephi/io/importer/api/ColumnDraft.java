@@ -56,28 +56,28 @@ public interface ColumnDraft {
      *
      * @return column's id
      */
-    public String getId();
+    String getId();
 
     /**
      * Gets the column's title.
      *
      * @return column's title or null if empty
      */
-    public String getTitle();
+    String getTitle();
 
     /**
      * Sets the column's title.
      *
      * @param title column title
      */
-    public void setTitle(String title);
+    void setTitle(String title);
 
     /**
      * Gets the column's type.
      *
      * @return column's type
      */
-    public Class getTypeClass();
+    Class getTypeClass();
 
     /**
      * Gets the column's resolved (final) type taking into account the container settings and whether the column is dynamic or not.
@@ -85,14 +85,14 @@ public interface ColumnDraft {
      * @param container Container
      * @return column's final type
      */
-    public Class getResolvedTypeClass(ContainerUnloader container);
+    Class getResolvedTypeClass(ContainerUnloader container);
 
     /**
      * Gets the column's default value.
      *
      * @return default value or null if empty
      */
-    public Object getDefaultValue();
+    Object getDefaultValue();
 
     /**
      * Sets the column's default value.
@@ -101,7 +101,7 @@ public interface ColumnDraft {
      *
      * @param value default value
      */
-    public void setDefaultValue(Object value);
+    void setDefaultValue(Object value);
 
     /**
      * Gets the column's resolved (final) default value taking into account the container settings and whether the column is dynamic or not.
@@ -109,14 +109,14 @@ public interface ColumnDraft {
      * @param container Container
      * @return default value or null if empty
      */
-    public Object getResolvedDefaultValue(ContainerUnloader container);
+    Object getResolvedDefaultValue(ContainerUnloader container);
 
     /**
      * Returns true if this column is dynamic.
      *
      * @return true if dynamic, false otherwise
      */
-    public boolean isDynamic();
+    boolean isDynamic();
 
     /**
      * Sets the column's default value as a string.
@@ -125,5 +125,5 @@ public interface ColumnDraft {
      *
      * @param value value to parse and to be set as default
      */
-    public void setDefaultValueString(String value);
+    void setDefaultValueString(String value);
 }

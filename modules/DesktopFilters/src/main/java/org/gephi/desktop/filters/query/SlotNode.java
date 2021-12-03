@@ -66,7 +66,7 @@ import org.openide.util.datatransfer.PasteType;
  */
 public class SlotNode extends AbstractNode {
 
-    private Query parent;
+    private final Query parent;
 
     public SlotNode(Query parent) {
         super(Children.LEAF);

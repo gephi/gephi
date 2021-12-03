@@ -58,6 +58,7 @@ public class UIExporterCSVPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox nodeIdCheckbox;
     private javax.swing.JCheckBox zeroEdgeCheckbox;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
+
     public UIExporterCSVPanel() {
         initComponents();
     }

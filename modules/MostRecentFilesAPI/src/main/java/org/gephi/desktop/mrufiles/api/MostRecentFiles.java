@@ -49,7 +49,7 @@ import java.util.List;
  */
 public interface MostRecentFiles {
 
-    public void addFile(String absolutePath);
+    void addFile(String absolutePath);
 
-    public List<String> getMRUFileList();
+    List<String> getMRUFileList();
 }

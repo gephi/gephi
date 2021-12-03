@@ -56,14 +56,14 @@ public interface ProjectMetaData {
      *
      * @return the project's keywords or empty string if missing
      */
-    public String getKeywords();
+    String getKeywords();
 
     /**
      * Sets the project's keywords.
      *
      * @param keywords keywords
      */
-    public void setKeywords(String keywords);
+    void setKeywords(String keywords);
 
     /**
      * Returns the author of this project.
@@ -72,40 +72,40 @@ public interface ProjectMetaData {
      *
      * @return project's author
      */
-    public String getAuthor();
+    String getAuthor();
 
     /**
      * Sets the project's author.
      *
      * @param author author
      */
-    public void setAuthor(String author);
+    void setAuthor(String author);
 
     /**
      * Returns the description of this project.
      *
      * @return the project's description or empty string if missing
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * Sets the project's description.
      *
      * @param description description
      */
-    public void setDescription(String description);
+    void setDescription(String description);
 
     /**
      * Returns the title of this project.
      *
      * @return the project's title or empty string if missing
      */
-    public String getTitle();
+    String getTitle();
 
     /**
      * Sets the project's title.
      *
      * @param title title
      */
-    public void setTitle(String title);
+    void setTitle(String title);
 }

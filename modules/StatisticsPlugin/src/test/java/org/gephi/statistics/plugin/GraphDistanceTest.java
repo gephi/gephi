@@ -49,6 +49,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -58,6 +59,13 @@ import org.junit.Test;
 public class GraphDistanceTest extends TestCase {
 
     private static final double TOLERANCE = 0.0001;
+
+    @Test
+    public void testBetweenessCentralityNormalizedNotNegative() {
+        GraphDistance d = new GraphDistance();
+        d.initializeStartValues();
+        Assert.assertTrue(d.computeBetweennessNormalizationFactor(60000) >= 0);
+    }
 
     @Test
     public void testOneNodeAvPathLength() {

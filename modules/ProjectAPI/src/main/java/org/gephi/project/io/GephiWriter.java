@@ -156,8 +156,8 @@ public class GephiWriter {
         try {
             return MessageFormat.format(
                 NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion"), // NOI18N
-                new Object[] {System.getProperty("netbeans.buildnumber")} // NOI18N
-            );
+                // NOI18N
+                System.getProperty("netbeans.buildnumber"));
         } catch (Exception e) {
             return "?";
         }
