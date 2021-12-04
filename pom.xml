@@ -1091,6 +1091,8 @@
                     <failsOnError>true</failsOnError>
                     <consoleOutput>false</consoleOutput>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <!-- Skipped in non-deployment -->
+                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -1107,6 +1109,8 @@
     
     <!-- Profiles -->
     <profiles>
+
+        <!-- Profile to enable tests (disabled by default in non-deployment) -->
         <profile>
             <id>enableTests</id>
             
@@ -1117,6 +1121,23 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <skipTests>false</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile to enable checkstyle (disabled by default in non-deployment) -->
+        <profile>
+            <id>enableCheckStyle</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -1136,11 +1157,21 @@
 
             <build>
                 <plugins>
+                    <!-- Enable tests -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <skipTests>false</skipTests>
+                        </configuration>
+                    </plugin>
+
+                    <!-- Enable checkstyle -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
                         </configuration>
                     </plugin>
 				
