@@ -288,7 +288,7 @@ public class StatisticalInferenceTest extends TestCase {
         UndirectedGraph graph = graphModel.getUndirectedGraph();
         StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
         StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
-        
+
         HashMap<Integer, StatisticalInferenceClustering.Community> knownCommunities = new HashMap<>();
         NodeIterable nodesIterable = graph.getNodes();
         for (Node node : nodesIterable) {
@@ -304,7 +304,78 @@ public class StatisticalInferenceTest extends TestCase {
 
         double descriptionLength = sic.computeDescriptionLength(graph, theStructure);
         assertEquals(1850.2102335828238, descriptionLength, 0.0001);
+    }
 
+    @Test
+    public void testDescriptionLength_moviegalaxies() {
+        GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "moviegalaxies.graphml");
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+
+        HashMap<Integer, StatisticalInferenceClustering.Community> knownCommunities = new HashMap<>();
+        NodeIterable nodesIterable = graph.getNodes();
+        for (Node node : nodesIterable) {
+            Integer targetCom = (Integer) node.getAttribute("key1");
+            int nodeIndex = theStructure.map.get(node);
+            StatisticalInferenceClustering.Community initCom = theStructure.nodeCommunities[nodeIndex];
+            if (knownCommunities.containsKey(targetCom)) {
+                theStructure._moveNodeTo(nodeIndex, knownCommunities.get(targetCom));
+            } else {
+                knownCommunities.put(targetCom, initCom);
+            }
+        }
+
+        double descriptionLength = sic.computeDescriptionLength(graph, theStructure);
+        assertEquals(229.04187438186472, descriptionLength, 0.0001);
+    }
+
+    @Test
+    public void testDescriptionLength_5cliques() {
+        GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "5-cliques.graphml");
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+
+        HashMap<Integer, StatisticalInferenceClustering.Community> knownCommunities = new HashMap<>();
+        NodeIterable nodesIterable = graph.getNodes();
+        for (Node node : nodesIterable) {
+            Integer targetCom = (Integer) node.getAttribute("key1");
+            int nodeIndex = theStructure.map.get(node);
+            StatisticalInferenceClustering.Community initCom = theStructure.nodeCommunities[nodeIndex];
+            if (knownCommunities.containsKey(targetCom)) {
+                theStructure._moveNodeTo(nodeIndex, knownCommunities.get(targetCom));
+            } else {
+                knownCommunities.put(targetCom, initCom);
+            }
+        }
+
+        double descriptionLength = sic.computeDescriptionLength(graph, theStructure);
+        assertEquals(150.10880360418344, descriptionLength, 0.0001);
+    }
+
+    @Test
+    public void testDescriptionLength_2cliques() {
+        GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "two-cliques.graphml");
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+
+        HashMap<Integer, StatisticalInferenceClustering.Community> knownCommunities = new HashMap<>();
+        NodeIterable nodesIterable = graph.getNodes();
+        for (Node node : nodesIterable) {
+            Integer targetCom = (Integer) node.getAttribute("key1");
+            int nodeIndex = theStructure.map.get(node);
+            StatisticalInferenceClustering.Community initCom = theStructure.nodeCommunities[nodeIndex];
+            if (knownCommunities.containsKey(targetCom)) {
+                theStructure._moveNodeTo(nodeIndex, knownCommunities.get(targetCom));
+            } else {
+                knownCommunities.put(targetCom, initCom);
+            }
+        }
+
+        double descriptionLength = sic.computeDescriptionLength(graph, theStructure);
+        assertEquals(43.479327707987835, descriptionLength, 0.0001);
     }
 
 }
