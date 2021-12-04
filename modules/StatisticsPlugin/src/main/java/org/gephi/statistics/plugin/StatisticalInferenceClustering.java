@@ -858,7 +858,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
     static class Community {
         static int count = 0;
-        private int id;
+        protected int id;
         double weightSum; // e_r, i.e. sum of edge weights for the community, inside and outside altogether
         // Note: here we count the internal edges twice
         double internalWeightSum; // e_rr, i.e. sum of internal edge weights

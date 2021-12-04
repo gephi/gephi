@@ -43,11 +43,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.statistics.plugin;
 
 import junit.framework.TestCase;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.UndirectedGraph;
-import org.junit.Assert;
+import org.gephi.graph.api.*;
+import org.gephi.io.importer.GraphImporter;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -248,5 +245,66 @@ public class StatisticalInferenceTest extends TestCase {
         assertEquals(descriptionLength_after-descriptionLength_before, descriptionLength_delta, 0.0001);
     }
 
+    @Test
+    public void testDescriptionLengthDelta() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+        // Note: at initialization, each node is in its own community.
+
+        // Compute description length
+        double descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
+
+        // Test moving node 1 to the same community as node 0
+        int node = 1;
+        StatisticalInferenceClustering.Community community = theStructure.nodeCommunities[0]; // Node 0's community
+
+        // Benchmark the delta
+        Double E = theStructure.graphWeightSum;
+        Double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
+        Double e_out = E - e_in;
+        Double B = Double.valueOf(theStructure.communities.size());
+        Double N = Double.valueOf(theStructure.graph.getNodeCount());
+        ArrayList<Integer> neighbors = new ArrayList();
+        for (StatisticalInferenceClustering.ComputationEdge e : theStructure.topology[node]) {
+            int neighbor = e.target;
+            neighbors.add(neighbor);
+        }
+        double descriptionLength_delta = sic.delta(node, community, theStructure, neighbors, e_in, e_out, E, B, N);
+
+        // Actually move the node
+        theStructure._moveNodeTo(node, community);
+
+        // Compute description length again
+        double descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
+
+        // Delta should be (approximately) equal to the difference
+        assertEquals(descriptionLength_after-descriptionLength_before, descriptionLength_delta, 0.0001);
+    }
+
+    @Test
+    public void testDescriptionLength_football() {
+        GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "football.graphml");
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+        
+        HashMap<Integer, StatisticalInferenceClustering.Community> knownCommunities = new HashMap<>();
+        NodeIterable nodesIterable = graph.getNodes();
+        for (Node node : nodesIterable) {
+            Integer targetCom = (Integer) node.getAttribute("key1");
+            int nodeIndex = theStructure.map.get(node);
+            StatisticalInferenceClustering.Community initCom = theStructure.nodeCommunities[nodeIndex];
+            if (knownCommunities.containsKey(targetCom)) {
+                theStructure._moveNodeTo(nodeIndex, knownCommunities.get(targetCom));
+            } else {
+                knownCommunities.put(targetCom, initCom);
+            }
+        }
+
+        double descriptionLength = sic.computeDescriptionLength(graph, theStructure);
+        assertEquals(1850.2102335828238, descriptionLength, 0.0001);
+
+    }
 
 }
