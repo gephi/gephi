@@ -191,6 +191,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         // -> loop over the neighbors
         Double delta_e_out = 0.;
         Double delta_e_in = 0.;
+        Double delta_e_r_current = -k;
+        Double delta_e_r_target  = +k;
         Double delta_e_rr_current = 0.;
         Double delta_e_rr_target = 0.;
         for (Integer nei : neighbors) {
@@ -225,30 +227,38 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         // Note: if it were possible to add the node to an empty group, we would have to check that
         // the target group is empty or not, and if so, add one to delta_B.
 
-        System.out.println("## Gains and losses");
+        /*
         System.out.println("delta_e_out: "+delta_e_out);
         System.out.println("delta_e_in: "+delta_e_in);
         System.out.println("delta_e_rr_current: "+delta_e_rr_current);
         System.out.println("delta_e_rr_target: "+delta_e_rr_target);
         System.out.println("delta_B: "+delta_B);
+        System.out.println("## Gains and losses");
+         */
 
         // Description length: after
         Double S_a = 0.;
-        S_a += Gamma.logGamma(e_r_current - k + 1);
-        S_a += Gamma.logGamma(e_r_target + k + 1);
-        S_a -= (e_rr_current + delta_e_rr_current) * Math.log(2) + Gamma.logGamma(e_rr_current + delta_e_rr_current + 1);
-        S_a -= (e_rr_target  + delta_e_rr_target ) * Math.log(2) + Gamma.logGamma(e_rr_target  + delta_e_rr_target  + 1);
-        S_a -= Gamma.logGamma(e_out + 1);
-        S_a += lBinom(n_r_current - nodeWeight + e_r_current - k - 1, e_r_current - k);
-        S_a += lBinom(n_r_target + nodeWeight + e_r_target + k - 1, e_r_target + k);
-
+        S_a -= Gamma.logGamma(e_out + delta_e_out + 1);
         S_a += (e_out + delta_e_out) * lBinom(B + delta_B, 2);
-        S_a += lBinom(B + delta_B + e_in + delta_e_in - 1, e_in + delta_e_in);
-        if (delta_B>1) {
-            S_a += Math.log(E + 1);
+        S_a += Gamma.logGamma(e_r_target  + delta_e_r_target  + 1);
+        S_a -= (e_rr_target  + delta_e_rr_target ) * Math.log(2) + Gamma.logGamma(e_rr_target  + delta_e_rr_target  + 1);
+        S_a -= Gamma.logGamma(n_r_target  + nodeWeight + 1);
+        S_a += lBinom(n_r_target  + nodeWeight + e_r_target  + delta_e_r_target  - 1, e_r_target  + delta_e_r_target );
+        if (delta_B == 0) {
+            // These calculations only apply if current category
+            // would still exist after moving the node
+            // (i.e. if it was not the last one)
+            S_a += Gamma.logGamma(e_r_current + delta_e_r_current + 1);
+            S_a -= (e_rr_current + delta_e_rr_current) * Math.log(2) + Gamma.logGamma(e_rr_current + delta_e_rr_current + 1);
+            S_a -= Gamma.logGamma(n_r_current - nodeWeight + 1);
+            S_a += lBinom(n_r_current - nodeWeight + e_r_current + delta_e_r_current - 1, e_r_current + delta_e_r_current);
         }
 
-        S_a += lBinom(N - 1, B + delta_B - 1) - Gamma.logGamma(n_r_current - nodeWeight + 1) - Gamma.logGamma(n_r_target + nodeWeight + 1);
+        S_a += lBinom(B + delta_B + e_in + delta_e_in - 1, e_in + delta_e_in);
+        if (B + delta_B > 1) {
+            S_a += Math.log(E + 1);
+        }
+        S_a += lBinom(N - 1, B + delta_B - 1);
 
         return S_a - S_b;
     }

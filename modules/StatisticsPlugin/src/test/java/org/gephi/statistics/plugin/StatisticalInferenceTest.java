@@ -245,7 +245,7 @@ public class StatisticalInferenceTest extends TestCase {
         double descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
 
         // Delta should be (approximately) equal to the difference
-        assertEquals(descriptionLength_after-descriptionLength_before, descriptionLength_delta);
+        assertEquals(descriptionLength_after-descriptionLength_before, descriptionLength_delta, 0.0001);
     }
 
 
