@@ -158,6 +158,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private boolean exportSize = true;
     private boolean exportAttributes = true;
     private boolean exportDynamic = true;
+    private boolean exportMeta = true;
     //Settings Helper
     private float minSize;
     private float maxSize;
@@ -252,18 +253,20 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeMeta(XMLStreamWriter xmlWriter) throws Exception {
-        xmlWriter.writeStartElement(META);
-        xmlWriter.writeAttribute(META_LASTMODIFIEDDATE, getDateTime());
+        if(exportMeta) {
+            xmlWriter.writeStartElement(META);
+            xmlWriter.writeAttribute(META_LASTMODIFIEDDATE, getDateTime());
 
-        xmlWriter.writeStartElement(META_CREATOR);
-        xmlWriter.writeCharacters("Gephi 0.9");
-        xmlWriter.writeEndElement();
+            xmlWriter.writeStartElement(META_CREATOR);
+            xmlWriter.writeCharacters("Gephi 0.9");
+            xmlWriter.writeEndElement();
 
-        xmlWriter.writeStartElement(META_DESCRIPTION);
-        xmlWriter.writeCharacters("");
-        xmlWriter.writeEndElement();
+            xmlWriter.writeStartElement(META_DESCRIPTION);
+            xmlWriter.writeCharacters("");
+            xmlWriter.writeEndElement();
 
-        xmlWriter.writeEndElement();
+            xmlWriter.writeEndElement();
+        }
     }
 
     private void writeAttributes(XMLStreamWriter xmlWriter, Table table) throws Exception {
@@ -726,6 +729,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
     public void setExportPosition(boolean exportPosition) {
         this.exportPosition = exportPosition;
+    }
+
+    public boolean isExportMeta() {
+        return exportMeta;
+    }
+
+    public void setExportMeta(boolean exportMeta) {
+        this.exportMeta = exportMeta;
     }
 
     public boolean isExportSize() {
