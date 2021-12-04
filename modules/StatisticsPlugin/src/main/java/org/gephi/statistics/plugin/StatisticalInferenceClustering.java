@@ -138,7 +138,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         return results;
     }
 
-    private double delta(int node,
+    public double delta(int node,
                          StatisticalInferenceClustering.Community community,
                          StatisticalInferenceClustering.CommunityStructure theStructure,
                          ArrayList<Integer> neighbors,

@@ -50,11 +50,13 @@ import org.gephi.graph.api.UndirectedGraph;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * @author Mathieu Jacomy
  */
+
 public class StatisticalInferenceTest extends TestCase {
 
     private UndirectedGraph getCliquesBridgeGraph() {
@@ -117,9 +119,7 @@ public class StatisticalInferenceTest extends TestCase {
     @Test
     public void testCliquesBridgeGraph_descriptionLength() {
         UndirectedGraph graph = getCliquesBridgeGraph();
-
         StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
-
         StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
 
         // At initialization, each node is in its own community.
@@ -210,4 +210,41 @@ public class StatisticalInferenceTest extends TestCase {
         Double N = Double.valueOf(theStructure.graph.getNodeCount());
         assertEquals(8., N);
     }
+
+    @Test
+    public void testSimpleDescriptionLengthDelta() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+        // Note: at initialization, each node is in its own community.
+
+        // Compute description length
+        double descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
+
+        // Benchmark moving node 1 to the same community as node 0
+        int node = 1;
+        StatisticalInferenceClustering.Community community = theStructure.nodeCommunities[0]; // Node 0's community
+        Double E = theStructure.graphWeightSum;
+        Double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
+        Double e_out = E - e_in;
+        Double B = Double.valueOf(theStructure.communities.size());
+        Double N = Double.valueOf(theStructure.graph.getNodeCount());
+        ArrayList<Integer> neighbors = new ArrayList();
+        for (StatisticalInferenceClustering.ComputationEdge e : theStructure.topology[node]) {
+            int neighbor = e.target;
+            neighbors.add(neighbor);
+        }
+        double descriptionLength_delta = sic.delta(node, community, theStructure, neighbors, e_in, e_out, E, B, N);
+
+        // Actually move the node
+        theStructure._moveNodeTo(1, theStructure.nodeCommunities[0]);
+
+        // Compute description length again
+        double descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
+
+        // Delta should be (approximately) equal to the difference
+        assertEquals(descriptionLength_after-descriptionLength_before, descriptionLength_delta);
+    }
+
+
 }
