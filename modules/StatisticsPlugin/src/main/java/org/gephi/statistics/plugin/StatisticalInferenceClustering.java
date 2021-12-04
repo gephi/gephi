@@ -602,7 +602,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
         private void addNodeTo(int node, StatisticalInferenceClustering.Community to) {
             //System.out.println("### ADD NODE "+node+" TO COMMUNITY "+to.id);
-            to.internalWeightSum += nodeConnectionsWeight[node].getOrDefault(to, 0.f);
             to.add(node);
             nodeCommunities[node] = to;
 
@@ -679,6 +678,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
                 }
             }
+            to.internalWeightSum += nodeConnectionsWeight[node].getOrDefault(to, 0.f);
         }
 
         private void removeNodeFromItsCommunity(int node) {

@@ -153,39 +153,24 @@ public class StatisticalInferenceTest extends TestCase {
         StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
         // Note: at initialization, each node is in its own community.
 
-        int node;
-        // The community for each node should have a weight equal to the degree of that node.
-        node = 0;
-        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
-
-        node = 1;
-        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
-
-        node = 2;
-        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
-
-        node = 3;
-        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
-
-        node = 4;
-        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
-
-        node = 5;
-        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
-
-        node = 6;
-        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
-
-        node = 7;
-        assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
+        for(int node=0; node<8; node++) {
+            // The community for each node should have a weight equal to the degree of that node.
+            assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
+            // The community for each node should have an inner weight equal to zero.
+            assertTrue(theStructure.nodeCommunities[node].internalWeightSum == 0);
+        }
 
         // Move node 1 to the same community as node 0: it now contains nodes 0 and 1 (degrees 4 and 3).
         theStructure._moveNodeTo(1, theStructure.nodeCommunities[0]);
         assertTrue(theStructure.nodeCommunities[0].weightSum == 7);
+        // There is 1 internal link
+        assertTrue(theStructure.nodeCommunities[0].internalWeightSum == 1);
 
         // Move node 1 to the same community as node 2: now, the community of node 0 contains just nodes 0 (degree 4).
         theStructure._moveNodeTo(1, theStructure.nodeCommunities[2]);
         assertTrue(theStructure.nodeCommunities[0].weightSum == 4);
+        // There is 0 internal link
+        assertTrue(theStructure.nodeCommunities[0].internalWeightSum == 0);
 
     }
 
