@@ -221,9 +221,11 @@ public class StatisticalInferenceTest extends TestCase {
         // Compute description length
         double descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
 
-        // Benchmark moving node 1 to the same community as node 0
+        // Test moving node 1 to the same community as node 0
         int node = 1;
         StatisticalInferenceClustering.Community community = theStructure.nodeCommunities[0]; // Node 0's community
+
+        // Benchmark the delta
         Double E = theStructure.graphWeightSum;
         Double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
         Double e_out = E - e_in;
@@ -237,7 +239,7 @@ public class StatisticalInferenceTest extends TestCase {
         double descriptionLength_delta = sic.delta(node, community, theStructure, neighbors, e_in, e_out, E, B, N);
 
         // Actually move the node
-        theStructure._moveNodeTo(1, theStructure.nodeCommunities[0]);
+        theStructure._moveNodeTo(node, community);
 
         // Compute description length again
         double descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);

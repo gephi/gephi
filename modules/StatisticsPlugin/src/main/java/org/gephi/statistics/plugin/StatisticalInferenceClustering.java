@@ -148,12 +148,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                          Double B,
                          Double N
     ) {
-        Float edgesToFloat = theStructure.nodeConnectionsWeight[node].get(community);
-        double edgesTo = 0;
-        if (edgesToFloat != null) {
-            edgesTo = edgesToFloat.doubleValue();
-        }
-
         //System.out.println("*** Compute delta for node "+node+" with respect to community "+community.id+" ***");
 
         // Node degree
@@ -177,13 +171,22 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
         // Description length: before
         Double S_b = 0.;
-        S_b += Gamma.logGamma(e_r_current + 1);
-        S_b += Gamma.logGamma(e_r_target + 1);
-        S_b -= (e_rr_current/2) * Math.log(2) + Gamma.logGamma(e_rr_current/2 + 1);
-        S_b -= (e_rr_target/2) * Math.log(2) + Gamma.logGamma(e_rr_target/2 + 1);
         S_b -= Gamma.logGamma(e_out + 1);
+        //S_b += e_out * lBinom(B, 2);
+        S_b += Gamma.logGamma(e_r_current + 1);
+        S_b += Gamma.logGamma(e_r_target  + 1);
+        S_b -= (e_rr_current) * Math.log(2) + Gamma.logGamma(e_rr_current + 1);
+        S_b -= (e_rr_target ) * Math.log(2) + Gamma.logGamma(e_rr_target  + 1);
+        //S_b -= Gamma.logGamma(n_r_current + 1);
+        //S_b -= Gamma.logGamma(n_r_target  + 1);
         S_b += lBinom(n_r_current + e_r_current - 1, e_r_current);
-        S_b += lBinom(n_r_target + e_r_target - 1, e_r_target);
+        S_b += lBinom(n_r_target  + e_r_target  - 1, e_r_target );
+        //S_b += lBinom(B + e_in - 1, e_in);
+        /*
+        if (B>1) {
+            S_b += Math.log(E + 1);
+        }
+        */
 
         // Count the gains and losses
         // -> loop over the neighbors
@@ -194,7 +197,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         for (Integer nei : neighbors) {
             if (theStructure.nodeCommunities[node] == theStructure.nodeCommunities[nei]) {
                 // The node will leave the neighbor's community
-                delta_e_rr_current -= 2;
+                delta_e_rr_current -= 1;
                 delta_e_in -= 1;
             } else {
                 // The node will not leave the neighbor's community
@@ -202,7 +205,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             }
             if (community == theStructure.nodeCommunities[nei]) {
                 // The node will arrive in the neighbor's community
-                delta_e_rr_current += 2;
+                delta_e_rr_current += 1;
                 delta_e_in += 1;
             } else {
                 // The node will not arrive in the neighbor's community
@@ -217,12 +220,19 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         // Note: if it were possible to add the node to an empty group, we would have to check that
         // the target group is empty or not, and if so, add one to delta_B.
 
+        System.out.println("## Gains and losses");
+        System.out.println("delta_e_out: "+delta_e_out);
+        System.out.println("delta_e_in: "+delta_e_in);
+        System.out.println("delta_e_rr_current: "+delta_e_rr_current);
+        System.out.println("delta_e_rr_target: "+delta_e_rr_target);
+        System.out.println("delta_B: "+delta_B);
+
         // Description length: after
         Double S_a = 0.;
         S_a += Gamma.logGamma(e_r_current - k + 1);
         S_a += Gamma.logGamma(e_r_target + k + 1);
-        S_a -= (e_rr_current/2 + delta_e_rr_current/2) * Math.log(2) + Gamma.logGamma(e_rr_current/2 + delta_e_rr_current/2 + 1);
-        S_a -= (e_rr_target/2 + delta_e_rr_target/2) * Math.log(2) + Gamma.logGamma(e_rr_target/2 + delta_e_rr_target/2 + 1);
+        S_a -= (e_rr_current + delta_e_rr_current) * Math.log(2) + Gamma.logGamma(e_rr_current + delta_e_rr_current + 1);
+        S_a -= (e_rr_target  + delta_e_rr_target ) * Math.log(2) + Gamma.logGamma(e_rr_target  + delta_e_rr_target  + 1);
         S_a -= Gamma.logGamma(e_out + 1);
         S_a += lBinom(n_r_current - nodeWeight + e_r_current - k - 1, e_r_current - k);
         S_a += lBinom(n_r_target + nodeWeight + e_r_target + k - 1, e_r_target + k);
@@ -314,7 +324,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             int n_r = community.nodes.size();
 
             S += Gamma.logGamma(e_r + 1);
-            S -= (e_rr/2) * Math.log(2) + Gamma.logGamma(e_rr/2 + 1);
+            S -= (e_rr) * Math.log(2) + Gamma.logGamma(e_rr + 1);
             S -= Gamma.logGamma(n_r + 1);
             S += lBinom(n_r + e_r - 1, e_r);
         }
