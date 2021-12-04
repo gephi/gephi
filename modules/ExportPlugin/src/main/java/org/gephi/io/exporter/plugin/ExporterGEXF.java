@@ -499,13 +499,15 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeNodeSize(XMLStreamWriter xmlWriter, Node node) throws Exception {
-        xmlWriter.writeStartElement(VIZ, NODE_SIZE, VIZ_NAMESPACE);
         float size = node.size();
         if (normalize) {
             size = (size - minSize) / (maxSize - minSize);
         }
-        xmlWriter.writeAttribute("value", "" + size);
-        xmlWriter.writeEndElement();
+        if(size != 0) {
+            xmlWriter.writeStartElement(VIZ, NODE_SIZE, VIZ_NAMESPACE);
+            xmlWriter.writeAttribute("value", "" + size);
+            xmlWriter.writeEndElement();
+        }
     }
 
     private void writeNodeColor(XMLStreamWriter xmlWriter, Node node) throws Exception {
