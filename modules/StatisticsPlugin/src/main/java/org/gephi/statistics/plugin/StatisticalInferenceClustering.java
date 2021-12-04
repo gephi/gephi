@@ -292,7 +292,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         // Total number of edges (graph size)
         Double E = theStructure.graphWeightSum;
         // Total number of edges from one community to the same one
-        Double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum(); // FIXME: it should never be negative (but it does)
+        Double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
         // Total number of edges from one community to another
         Double e_out = E - e_in;
         // Total number of communities

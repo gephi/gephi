@@ -147,7 +147,7 @@ public class StatisticalInferenceTest extends TestCase {
     }
 
     @Test
-    public void testMetricsBookkeeping() {
+    public void testCommunityWeightsBookkeeping() {
         UndirectedGraph graph = getCliquesBridgeGraph();
         StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
         StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
@@ -155,23 +155,59 @@ public class StatisticalInferenceTest extends TestCase {
 
         for(int node=0; node<8; node++) {
             // The community for each node should have a weight equal to the degree of that node.
-            assertTrue(theStructure.nodeCommunities[node].weightSum == theStructure.weights[node]);
+            assertEquals(theStructure.weights[node], theStructure.nodeCommunities[node].weightSum);
             // The community for each node should have an inner weight equal to zero.
-            assertTrue(theStructure.nodeCommunities[node].internalWeightSum == 0);
+            assertEquals(0., theStructure.nodeCommunities[node].internalWeightSum);
         }
 
         // Move node 1 to the same community as node 0: it now contains nodes 0 and 1 (degrees 4 and 3).
         theStructure._moveNodeTo(1, theStructure.nodeCommunities[0]);
-        assertTrue(theStructure.nodeCommunities[0].weightSum == 7);
+        assertEquals(7., theStructure.nodeCommunities[0].weightSum);
         // There is 1 internal link
-        assertTrue(theStructure.nodeCommunities[0].internalWeightSum == 1);
+        assertEquals(1., theStructure.nodeCommunities[0].internalWeightSum);
 
         // Move node 1 to the same community as node 2: now, the community of node 0 contains just nodes 0 (degree 4).
         theStructure._moveNodeTo(1, theStructure.nodeCommunities[2]);
-        assertTrue(theStructure.nodeCommunities[0].weightSum == 4);
+        assertEquals(4., theStructure.nodeCommunities[0].weightSum);
         // There is 0 internal link
-        assertTrue(theStructure.nodeCommunities[0].internalWeightSum == 0);
-
+        assertEquals(0., theStructure.nodeCommunities[0].internalWeightSum);
     }
 
+    @Test
+    public void testMiscMetricsBookkeeping() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+
+        // Note: at initialization, each node is in its own community.
+        // We move the nodes to just two communities, one for each clique.
+        StatisticalInferenceClustering.Community cA = theStructure.nodeCommunities[0];
+        StatisticalInferenceClustering.Community cB = theStructure.nodeCommunities[4];
+        theStructure._moveNodeTo(1, cA);
+        theStructure._moveNodeTo(2, cA);
+        theStructure._moveNodeTo(3, cA);
+        theStructure._moveNodeTo(5, cB);
+        theStructure._moveNodeTo(6, cB);
+        theStructure._moveNodeTo(7, cB);
+
+        // Total number of edges (graph size)
+        Double E = theStructure.graphWeightSum;
+        assertEquals(13., E);
+
+        // Total number of edges from one community to the same one
+        Double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
+        assertEquals(12., e_in); // 6 inner links per clique
+
+        // Total number of edges from one community to another
+        Double e_out = E - e_in;
+        assertEquals(1., e_out); // 1 bridge
+
+        // Total number of communities
+        Double B = Double.valueOf(theStructure.communities.size());
+        assertEquals(2., B);
+
+        // Total number of nodes (not metanodes!!!)
+        Double N = Double.valueOf(theStructure.graph.getNodeCount());
+        assertEquals(8., N);
+    }
 }
