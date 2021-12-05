@@ -282,6 +282,8 @@ public class StatisticalInferenceTest extends TestCase {
         assertEquals(descriptionLength_after-descriptionLength_before, descriptionLength_delta, 0.0001);
     }
 
+
+    // The five next tests are networks from Tiago Peixoto, with a reference partition and description length.
     @Test
     public void testDescriptionLength_football() {
         GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "football.graphml");
@@ -378,4 +380,12 @@ public class StatisticalInferenceTest extends TestCase {
         assertEquals(43.479327707987835, descriptionLength, 0.0001);
     }
 
+    @Test
+    public void testCliquesBridgeGraph_detectCommunities() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        sic.execute(graph);
+        double descriptionLength = sic.getDescriptionLength();
+        //assertEquals(36.08959655319456, descriptionLength, 0.01);
+    }
 }

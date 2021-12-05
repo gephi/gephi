@@ -91,6 +91,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             return results;
         }
         boolean someChange = true;
+        boolean initRound = true;
         while (someChange) {
             System.out.println("Number of partitions: "+theStructure.communities.size());
             someChange = false;
@@ -104,7 +105,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                 int step = 0;
                 for (int i = start; step < theStructure.N; i = (i + 1) % theStructure.N) {
                     step++;
-                    StatisticalInferenceClustering.Community bestCommunity = updateBestCommunity(theStructure, i);
+                    StatisticalInferenceClustering.Community bestCommunity = updateBestCommunity(theStructure, i, initRound);
                     if ((theStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
                         double S_before = computeDescriptionLength(graph, theStructure);
                         System.out.println("Move node "+i+" to com "+bestCommunity.id+" : S_before="+S_before);
@@ -118,6 +119,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                     }
                 }
                 someChange = localChange || someChange;
+                initRound = false;
                 if (isCanceled) {
                     return results;
                 }
@@ -131,7 +133,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         fillComStructure(graph, theStructure, comStructure);
         double[] degreeCount = fillDegreeCount(graph, theStructure, comStructure, nodeDegrees, weighted);
 
-        double computedDescriptionLength = finalDL(comStructure, degreeCount, graph, theStructure, totalWeight, weighted);
+        //double computedDescriptionLength = finalDL(comStructure, degreeCount, graph, theStructure, totalWeight, weighted);
+        double computedDescriptionLength = computeDescriptionLength(graph, theStructure);
 
         results.put("descriptionLength", computedDescriptionLength);
 
@@ -263,7 +266,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         return S_a - S_b;
     }
 
-    private StatisticalInferenceClustering.Community updateBestCommunity(StatisticalInferenceClustering.CommunityStructure theStructure, int node_id) {
+    private StatisticalInferenceClustering.Community updateBestCommunity(StatisticalInferenceClustering.CommunityStructure theStructure, int node_id, boolean initialization) {
         // Total number of edges (graph size)
         Double E = theStructure.graphWeightSum;
         // Total number of edges from one community to the same one
@@ -281,7 +284,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             int neighbor = e.target;
             neighbors.add(neighbor);
         }
-        System.out.println("Test best community for node "+node_id+" (currently com "+theStructure.nodeCommunities[node_id].id+")");
+        //System.out.println("Test best community for node "+node_id+" (currently com "+theStructure.nodeCommunities[node_id].id+") Initialization: "+initialization);
 
         double best = Double.MAX_VALUE;
         StatisticalInferenceClustering.Community bestCommunity = null;
@@ -289,8 +292,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         for (StatisticalInferenceClustering.Community com : iter) {
             if (com != theStructure.nodeCommunities[node_id]) {
                 double deltaValue = delta(node_id, com, theStructure, neighbors, e_in, e_out, E, B, N);
-                System.out.println("Node "+node_id+" => com "+com.id+" DELTA="+deltaValue);
-                if (deltaValue<0 && deltaValue<best) {
+                //System.out.println("Node "+node_id+" => com "+com.id+" DELTA="+deltaValue);
+                if ((deltaValue<0 || (initialization && Math.exp(-deltaValue) < Math.random())) && deltaValue<best) {
                     best = deltaValue;
                     bestCommunity = com;
                 }
@@ -298,10 +301,10 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
 
         if (bestCommunity == null) {
-            System.out.println("(NO CHANGE) com "+theStructure.nodeCommunities[node_id].id);
+            //System.out.println("(NO CHANGE) com "+theStructure.nodeCommunities[node_id].id);
             bestCommunity = theStructure.nodeCommunities[node_id];
         } else {
-            System.out.println("Best community is "+bestCommunity.id);
+            //System.out.println("Best community is "+bestCommunity.id);
         }
         return bestCommunity;
     }
@@ -414,8 +417,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             }
         }
 
-        // TODO: actually compute description length!
-        return 0.;
+        return computeDescriptionLength(graph, theStructure);
     }
 
     private void saveValues(int[] struct, Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure) {
@@ -770,7 +772,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
 
         private void moveNodeTo(int node, StatisticalInferenceClustering.Community to) {
-            //System.out.println("### MOVE NODE "+node+" TO "+to.id);
+            System.out.println("### MOVE NODE "+node+" TO COM "+to.id);
             removeNodeFromItsCommunity(node);
             addNodeTo(node, to);
         }
@@ -781,7 +783,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
 
         private void zoomOut() {
-            //System.out.println("### ZOOM OUT");
+            System.out.println("### ZOOM OUT");
             int M = communities.size();
             // The new topology uses preexisting communities as nodes
             ArrayList<ComputationEdge>[] newTopology = new ArrayList[M];
