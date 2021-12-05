@@ -150,7 +150,7 @@ public class StatisticalInferenceTest extends TestCase {
         StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
         // Note: at initialization, each node is in its own community.
 
-        for(int node=0; node<8; node++) {
+        for (int node = 0; node < 8; node++) {
             // The community for each node should have a weight equal to the degree of that node.
             assertEquals(theStructure.weights[node], theStructure.nodeCommunities[node].weightSum);
             // The community for each node should have an inner weight equal to zero.
@@ -242,7 +242,7 @@ public class StatisticalInferenceTest extends TestCase {
         double descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
 
         // Delta should be (approximately) equal to the difference
-        assertEquals(descriptionLength_after-descriptionLength_before, descriptionLength_delta, 0.0001);
+        assertEquals(descriptionLength_after - descriptionLength_before, descriptionLength_delta, 0.0001);
     }
 
     @Test
@@ -279,7 +279,7 @@ public class StatisticalInferenceTest extends TestCase {
         double descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
 
         // Delta should be (approximately) equal to the difference
-        assertEquals(descriptionLength_after-descriptionLength_before, descriptionLength_delta, 0.0001);
+        assertEquals(descriptionLength_after - descriptionLength_before, descriptionLength_delta, 0.0001);
     }
 
 
@@ -381,11 +381,114 @@ public class StatisticalInferenceTest extends TestCase {
     }
 
     @Test
+    // TODO: Make this one work!
     public void testCliquesBridgeGraph_detectCommunities() {
         UndirectedGraph graph = getCliquesBridgeGraph();
         StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
         sic.execute(graph);
         double descriptionLength = sic.getDescriptionLength();
-        //assertEquals(36.08959655319456, descriptionLength, 0.01);
+        assertEquals(36.08959655319456, descriptionLength, 0.01);
+    }
+
+    @Test
+    public void testMiscMetricsConsistentThroughZoomOut() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+
+        StatisticalInferenceClustering.Community cA1 = theStructure.nodeCommunities[0];
+        StatisticalInferenceClustering.Community cA2 = theStructure.nodeCommunities[3];
+        StatisticalInferenceClustering.Community cB = theStructure.nodeCommunities[4];
+        theStructure._moveNodeTo(1, cA1);
+        theStructure._moveNodeTo(2, cA1);
+        theStructure._moveNodeTo(5, cB);
+        theStructure._moveNodeTo(6, cB);
+        theStructure._moveNodeTo(7, cB);
+
+        // Total number of edges (graph size)
+        double E_before = theStructure.graphWeightSum;
+        // Total number of edges from one community to the same one
+        double e_in_before = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
+        // Total number of communities
+        double B_before = Double.valueOf(theStructure.communities.size());
+        // Total number of nodes (not metanodes!!!)
+        double N_before = Double.valueOf(theStructure.graph.getNodeCount());
+
+        ArrayList<Double> e_r_before = new ArrayList<>();
+        ArrayList<Double> e_rr_before = new ArrayList<>();
+        ArrayList<Integer> n_r_before = new ArrayList<>();
+        for (StatisticalInferenceClustering.Community community : theStructure.communities) {
+            // Number of edges of community (with itself or another one)
+            double e_r = community.weightSum;
+            // Number of edges within community
+            double e_rr = community.internalWeightSum;
+            // Number of nodes in the  community
+            int n_r = community.graphNodeCount;
+
+            e_r_before.add(e_r);
+            e_rr_before.add(e_rr);
+            n_r_before.add(n_r);
+        }
+
+        theStructure._zoomOut();
+
+        // Total number of edges (graph size)
+        double E_after = theStructure.graphWeightSum;
+        // Total number of edges from one community to the same one
+        double e_in_after = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
+        // Total number of communities
+        double B_after = Double.valueOf(theStructure.communities.size());
+        // Total number of nodes (not metanodes!!!)
+        double N_after = Double.valueOf(theStructure.graph.getNodeCount());
+
+        ArrayList<Double> e_r_after = new ArrayList<>();
+        ArrayList<Double> e_rr_after = new ArrayList<>();
+        ArrayList<Integer> n_r_after = new ArrayList<>();
+        for (StatisticalInferenceClustering.Community community : theStructure.communities) {
+            // Number of edges of community (with itself or another one)
+            double e_r = community.weightSum;
+            // Number of edges within community
+            double e_rr = community.internalWeightSum;
+            // Number of nodes in the  community
+            int n_r = community.graphNodeCount;
+
+            e_r_after.add(e_r);
+            e_rr_after.add(e_rr);
+            n_r_after.add(n_r);
+        }
+
+        assertEquals(E_before, E_after);
+        assertEquals(e_in_before, e_in_after);
+        assertEquals(B_before, B_after);
+        assertEquals(N_before, N_after);
+
+        assertEquals(e_r_before, e_r_after);
+        assertEquals(e_rr_before, e_rr_after);
+        assertEquals(n_r_before, n_r_after);
+    }
+
+    @Test
+    public void testDescriptionLengthConsistentThroughZoomOut() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+
+        StatisticalInferenceClustering.Community cA1 = theStructure.nodeCommunities[0];
+        StatisticalInferenceClustering.Community cA2 = theStructure.nodeCommunities[3];
+        StatisticalInferenceClustering.Community cB = theStructure.nodeCommunities[4];
+        theStructure._moveNodeTo(1, cA1);
+        theStructure._moveNodeTo(2, cA1);
+        theStructure._moveNodeTo(5, cB);
+        theStructure._moveNodeTo(6, cB);
+        theStructure._moveNodeTo(7, cB);
+
+        double descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
+
+        theStructure._zoomOut();
+
+        double descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
+
+        assertEquals(descriptionLength_before, descriptionLength_after, 0.00001);
     }
 }
+

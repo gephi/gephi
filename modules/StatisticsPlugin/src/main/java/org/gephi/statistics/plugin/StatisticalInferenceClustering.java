@@ -12,7 +12,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.apache.commons.math3.special.Gamma;
 
-import java.net.NetworkInterface;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
@@ -93,7 +92,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         boolean someChange = true;
         boolean initRound = true;
         while (someChange) {
-            System.out.println("Number of partitions: "+theStructure.communities.size());
+            //System.out.println("Number of partitions: "+theStructure.communities.size());
             someChange = false;
             boolean localChange = true;
             while (localChange) {
@@ -108,10 +107,10 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                     StatisticalInferenceClustering.Community bestCommunity = updateBestCommunity(theStructure, i, initRound);
                     if ((theStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
                         double S_before = computeDescriptionLength(graph, theStructure);
-                        System.out.println("Move node "+i+" to com "+bestCommunity.id+" : S_before="+S_before);
+                        //System.out.println("Move node "+i+" to com "+bestCommunity.id+" : S_before="+S_before);
                         theStructure.moveNodeTo(i, bestCommunity);
                         double S_after = computeDescriptionLength(graph, theStructure);
-                        System.out.println("Move node "+i+" to com "+bestCommunity.id+" : S_after="+S_after+ " (Diff = "+(S_after - S_before)+")");
+                        //System.out.println("Move node "+i+" to com "+bestCommunity.id+" : S_after="+S_after+ " (Diff = "+(S_after - S_before)+")");
                         localChange = true;
                     }
                     if (isCanceled) {
@@ -163,14 +162,14 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         // Number of edges within target community
         Double e_rr_target = community.internalWeightSum;
         // Number of nodes of target community
-        int n_r_target = community.nodes.size();
+        int n_r_target = community.graphNodeCount;
 
         // Number of edges of current (where the node belongs) community (with itself or another one)
         Double e_r_current = theStructure.nodeCommunities[node].weightSum;
         // Number of edges within current community (where the node belongs)
         Double e_rr_current = theStructure.nodeCommunities[node].internalWeightSum;
         // Number of nodes of target community
-        int n_r_current = theStructure.nodeCommunities[node].nodes.size();
+        int n_r_current = theStructure.nodeCommunities[node].graphNodeCount;
 
         // Description length: before
         Double S_b = 0.;
@@ -229,15 +228,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
         // Note: if it were possible to add the node to an empty group, we would have to check that
         // the target group is empty or not, and if so, add one to delta_B.
-
-        /*
-        System.out.println("delta_e_out: "+delta_e_out);
-        System.out.println("delta_e_in: "+delta_e_in);
-        System.out.println("delta_e_rr_current: "+delta_e_rr_current);
-        System.out.println("delta_e_rr_target: "+delta_e_rr_target);
-        System.out.println("delta_B: "+delta_B);
-        System.out.println("## Gains and losses");
-         */
 
         // Description length: after
         Double S_a = 0.;
@@ -332,7 +322,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             // Number of edges within community
             Double e_rr = community.internalWeightSum;
             // Number of nodes in the  community
-            int n_r = community.nodes.size();
+            int n_r = community.graphNodeCount;
 
             S += Gamma.logGamma(e_r + 1);
             S -= (e_rr) * Math.log(2) + Gamma.logGamma(e_rr + 1);
@@ -527,7 +517,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             communities = new ArrayList<>();
             int index = 0;
             weights = new double[N]; // The weight is basically the weighted degree of a node
-            internalWeights = new double[N]; //
+            internalWeights = new double[N];
 
             NodeIterable nodesIterable = graph.getNodes();
             for (Node node : nodesIterable) {
@@ -772,7 +762,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
 
         private void moveNodeTo(int node, StatisticalInferenceClustering.Community to) {
-            System.out.println("### MOVE NODE "+node+" TO COM "+to.id);
+            //System.out.println("### MOVE NODE "+node+" TO COM "+to.id);
             removeNodeFromItsCommunity(node);
             addNodeTo(node, to);
         }
@@ -780,6 +770,11 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         protected void _moveNodeTo(int node, StatisticalInferenceClustering.Community to) {
             // NOTE: THIS IS FOR UNIT TEST PURPOSE ONLY
             moveNodeTo(node, to);
+        }
+
+        protected void _zoomOut() {
+            // NOTE: THIS IS FOR UNIT TEST PURPOSE ONLY
+            zoomOut();
         }
 
         private void zoomOut() {
@@ -864,6 +859,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         double weightSum; // e_r, i.e. sum of edge weights for the community, inside and outside altogether
         // Note: here we count the internal edges twice
         double internalWeightSum; // e_rr, i.e. sum of internal edge weights
+        int graphNodeCount; // How many real nodes (useful after zoomOut)
         StatisticalInferenceClustering.CommunityStructure structure;
         List<Integer> nodes;
         HashMap<StatisticalInferenceClustering.Community, Float> connectionsWeight;
@@ -895,18 +891,20 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             nodes.add(node);
             weightSum += structure.weights[node];
             internalWeightSum += structure.internalWeights[node];
+            graphNodeCount += structure.graphNodeCount[node];
         }
 
         public boolean add(int node) {
             nodes.add(node);
             weightSum += structure.weights[node];
+            graphNodeCount += structure.graphNodeCount[node];
             return true;
         }
 
         public boolean remove(int node) {
             boolean result = nodes.remove((Integer) node);
             weightSum -= structure.weights[node];
-
+            graphNodeCount -= structure.graphNodeCount[node];
             if (nodes.isEmpty()) {
                 structure.communities.remove(this);
             }
