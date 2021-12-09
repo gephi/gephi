@@ -471,7 +471,7 @@ public class StatisticalInferenceTest extends TestCase {
     }
 
     @Test
-    public void testDescriptionLengthConsistentThroughZoomOut() {
+    public void testDescriptionLengthConsistentThroughZoomOut_simple() {
         UndirectedGraph graph = getCliquesBridgeGraph();
         StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
         StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
@@ -495,6 +495,43 @@ public class StatisticalInferenceTest extends TestCase {
     }
 
     @Test
+    public void testDescriptionLengthConsistentThroughZoomOut_complicated() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+
+        System.out.println("\n# Initial");
+        System.out.println("  Structure: "+theStructure.getMonitoring());
+        System.out.println("  DL: "+sic.computeDescriptionLength(graph, theStructure));
+
+        // Move the nodes in categories
+        System.out.println("\n# 1st round of group rearranging");
+        theStructure._moveNodeTo(1, theStructure.nodeCommunities[0]);
+        theStructure._moveNodeTo(3, theStructure.nodeCommunities[2]);
+        System.out.println("  Structure: "+theStructure.getMonitoring());
+        System.out.println("  DL: "+sic.computeDescriptionLength(graph, theStructure));
+
+        // Zoom out
+        theStructure._zoomOut();
+        System.out.println("\n# Zoom out");
+        System.out.println("  Structure: "+theStructure.getMonitoring());
+        System.out.println("  DL: "+sic.computeDescriptionLength(graph, theStructure));
+
+        // Move the nodes in categories
+        System.out.println("\n# 2nd round of group rearranging");
+        theStructure._moveNodeTo(1, theStructure.nodeCommunities[2]);
+        System.out.println("  Structure: "+theStructure.getMonitoring());
+        System.out.println("  DL: "+sic.computeDescriptionLength(graph, theStructure));
+
+        // Zoom out
+        System.out.println("\n# Zoom out");
+        theStructure._zoomOut();
+        System.out.println("  Structure: "+theStructure.getMonitoring());
+        System.out.println("  DL: "+sic.computeDescriptionLength(graph, theStructure));
+    }
+
+    @Test
+    // FIXME: this test does not pass
     public void testMinimizationHeuristic_football() {
         GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "football.graphml");
         UndirectedGraph graph = graphModel.getUndirectedGraph();
@@ -523,6 +560,7 @@ public class StatisticalInferenceTest extends TestCase {
     }
 
     @Test
+    // FIXME: this test does not pass
     public void testMinimizationHeuristic_moviegalaxies() {
         GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "moviegalaxies.graphml");
         UndirectedGraph graph = graphModel.getUndirectedGraph();

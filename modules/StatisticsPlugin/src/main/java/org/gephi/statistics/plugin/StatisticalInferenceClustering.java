@@ -414,7 +414,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         Table nodeTable = graph.getModel().getNodeTable();
         Column modCol = nodeTable.getColumn(STAT_INF_CLASS);
         if (modCol == null) {
-            modCol = nodeTable.addColumn(STAT_INF_CLASS, "Stat Inf Class", Integer.class, 0);
+            modCol = nodeTable.addColumn(STAT_INF_CLASS, "Inferred Class", Integer.class, 0);
         }
         for (Node n : graph.getNodes()) {
             int n_index = theStructure.map.get(n);
@@ -851,6 +851,27 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             topology = newTopology;
             invMap = newInvMap;
         }
+
+        public String getMonitoring() {
+            String monitoring = "";
+
+            int iCom = 0;
+            for (StatisticalInferenceClustering.Community com : communities) {
+                monitoring += iCom+"[";
+                int count = 0;
+                for (Integer node : com.nodes) {
+                    StatisticalInferenceClustering.Community hidden = invMap.get(node);
+                    if (count++>0) {
+                        monitoring += " ";
+                    }
+                    monitoring += "("+hidden.getMonitoring()+")";
+                }
+                monitoring += "] ";
+                iCom++;
+            }
+
+            return monitoring;
+        }
     }
 
     static class Community {
@@ -909,6 +930,18 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                 structure.communities.remove(this);
             }
             return result;
+        }
+
+        public String getMonitoring() {
+            String monitoring = "";
+            int count = 0;
+            for (int nodeIndex: nodes) {
+                if (count++>0) {
+                    monitoring += " ";
+                }
+                monitoring += "n"+nodeIndex;
+            }
+            return monitoring;
         }
     }
 
