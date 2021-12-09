@@ -137,7 +137,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
     public double delta(int node,
                          StatisticalInferenceClustering.Community community,
                          StatisticalInferenceClustering.CommunityStructure theStructure,
-                         ArrayList<Integer> neighbors,
                          Double e_in,
                          Double e_out,
                          Double E,
@@ -191,8 +190,9 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         Double delta_e_r_target  = +k;
         Double delta_e_rr_current = 0.;
         Double delta_e_rr_target = 0.;
-        for (Integer nei : neighbors) {
-            Float w = theStructure.nodeConnectionsWeight[node].getOrDefault(theStructure.nodeCommunities[nei], 0.f);
+        for (ComputationEdge e : theStructure.topology[node]) {
+            int nei = e.target;
+            Float w = e.weight;
             // Losses (as if the node disappeared)
             if (theStructure.nodeCommunities[node] == theStructure.nodeCommunities[nei]) {
                 // The neighbor is in current community, so
@@ -208,12 +208,12 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             if (community == theStructure.nodeCommunities[nei]) {
                 // The neighbor is in target community, so
                 // the node will arrive in the neighbor's community
-                delta_e_rr_target += w;
+                delta_e_rr_target += w; // add weight between node and community -> OK
                 delta_e_in += w;
             } else {
                 // The neighbor is not in target community, so
                 // the node will not arrive in the neighbor's community
-                delta_e_out += w;
+                delta_e_out += theStructure.nodeConnectionsWeight[node].getOrDefault(community, 0.f);
             }
         }
         Double delta_B = 0.;
@@ -263,12 +263,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         // Total number of nodes (not metanodes!!!)
         Double N = Double.valueOf(theStructure.graph.getNodeCount());
 
-        // Neighbors
-        ArrayList<Integer> neighbors = new ArrayList();
-        for (ComputationEdge e : theStructure.topology[node_id]) {
-            int neighbor = e.target;
-            neighbors.add(neighbor);
-        }
         //System.out.println("Test best community for node "+node_id+" (currently com "+theStructure.nodeCommunities[node_id].id+") Initialization: "+initialization);
 
         double best = Double.MAX_VALUE;
@@ -276,7 +270,10 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         Set<StatisticalInferenceClustering.Community> iter = theStructure.nodeConnectionsWeight[node_id].keySet();
         for (StatisticalInferenceClustering.Community com : iter) {
             if (com != theStructure.nodeCommunities[node_id]) {
-                double deltaValue = delta(node_id, com, theStructure, neighbors, e_in, e_out, E, B, N);
+                double deltaValue = delta(node_id, com, theStructure, e_in, e_out, E, B, N);
+                if (Double.isNaN(deltaValue)) {
+                    System.out.println("WARNING - ALGO ERROR - Statistical inference - DELTA is NaN (this is not supposed to happen)");
+                }
                 //System.out.println("Node "+node_id+" => com "+com.id+" DELTA="+deltaValue);
                 if ((deltaValue<0 || (initialization && Math.exp(-deltaValue) < Math.random())) && deltaValue<best) {
                     best = deltaValue;

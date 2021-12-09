@@ -228,12 +228,7 @@ public class StatisticalInferenceTest extends TestCase {
         Double e_out = E - e_in;
         Double B = Double.valueOf(theStructure.communities.size());
         Double N = Double.valueOf(theStructure.graph.getNodeCount());
-        ArrayList<Integer> neighbors = new ArrayList();
-        for (StatisticalInferenceClustering.ComputationEdge e : theStructure.topology[node]) {
-            int neighbor = e.target;
-            neighbors.add(neighbor);
-        }
-        double descriptionLength_delta = sic.delta(node, community, theStructure, neighbors, e_in, e_out, E, B, N);
+        double descriptionLength_delta = sic.delta(node, community, theStructure, e_in, e_out, E, B, N);
 
         // Actually move the node
         theStructure._moveNodeTo(node, community);
@@ -270,12 +265,7 @@ public class StatisticalInferenceTest extends TestCase {
         Double e_out = E - e_in;
         Double B = Double.valueOf(theStructure.communities.size());
         Double N = Double.valueOf(theStructure.graph.getNodeCount());
-        ArrayList<Integer> neighbors = new ArrayList();
-        for (StatisticalInferenceClustering.ComputationEdge e : theStructure.topology[node]) {
-            int neighbor = e.target;
-            neighbors.add(neighbor);
-        }
-        double descriptionLength_delta = sic.delta(node, community, theStructure, neighbors, e_in, e_out, E, B, N);
+        double descriptionLength_delta = sic.delta(node, community, theStructure, e_in, e_out, E, B, N);
 
         // Actually move the node
         theStructure._moveNodeTo(node, community);
@@ -286,44 +276,6 @@ public class StatisticalInferenceTest extends TestCase {
         // Delta should be (approximately) equal to the difference
         assertEquals(descriptionLength_after - descriptionLength_before, descriptionLength_delta, 0.0001);
     }
-
-    @Test
-    public void testDescriptionLengthDelta() {
-        UndirectedGraph graph = getCliquesBridgeGraph();
-        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
-        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
-        // Note: at initialization, each node is in its own community.
-
-        // Compute description length
-        double descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
-
-        // Test moving node 1 to the same community as node 0
-        int node = 1;
-        StatisticalInferenceClustering.Community community = theStructure.nodeCommunities[0]; // Node 0's community
-
-        // Benchmark the delta
-        Double E = theStructure.graphWeightSum;
-        Double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
-        Double e_out = E - e_in;
-        Double B = Double.valueOf(theStructure.communities.size());
-        Double N = Double.valueOf(theStructure.graph.getNodeCount());
-        ArrayList<Integer> neighbors = new ArrayList();
-        for (StatisticalInferenceClustering.ComputationEdge e : theStructure.topology[node]) {
-            int neighbor = e.target;
-            neighbors.add(neighbor);
-        }
-        double descriptionLength_delta = sic.delta(node, community, theStructure, neighbors, e_in, e_out, E, B, N);
-
-        // Actually move the node
-        theStructure._moveNodeTo(node, community);
-
-        // Compute description length again
-        double descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
-
-        // Delta should be (approximately) equal to the difference
-        assertEquals(descriptionLength_after - descriptionLength_before, descriptionLength_delta, 0.0001);
-    }
-
 
     // The four next tests are networks from Tiago Peixoto, with a reference partition and description length.
     @Test
@@ -545,57 +497,57 @@ public class StatisticalInferenceTest extends TestCase {
         double descriptionLength_before;
         double descriptionLength_after;
 
-        System.out.println("\n# Initial");
-        System.out.println("  Structure: "+theStructure.getMonitoring());
-        System.out.println("  DL: "+sic.computeDescriptionLength(graph, theStructure));
+        //System.out.println("\n# Initial");
+        //System.out.println("  Structure: "+theStructure.getMonitoring());
+        //System.out.println("  DL: "+sic.computeDescriptionLength(graph, theStructure));
 
         // Move the nodes in categories
-        System.out.println("\n# 1st round of group rearranging");
+        //System.out.println("\n# 1st round of group rearranging");
         theStructure._moveNodeTo(1, theStructure.nodeCommunities[0]);
         theStructure._moveNodeTo(3, theStructure.nodeCommunities[2]);
-        System.out.println("  Structure: "+theStructure.getMonitoring());
+        //System.out.println("  Structure: "+theStructure.getMonitoring());
         descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
-        System.out.println("  DL: "+descriptionLength_before);
+        //System.out.println("  DL: "+descriptionLength_before);
 
         // Zoom out
-        System.out.println("\n# Zoom out");
+        //System.out.println("\n# Zoom out");
         theStructure._zoomOut();
-        System.out.println("  Structure: "+theStructure.getMonitoring());
+        //System.out.println("  Structure: "+theStructure.getMonitoring());
         descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
-        System.out.println("  DL: "+descriptionLength_after);
+        //System.out.println("  DL: "+descriptionLength_after);
 
         assertEquals(descriptionLength_before, descriptionLength_after, 0.00001);
 
         // Move the nodes in categories
-        System.out.println("\n# 2nd round of group rearranging");
+        //System.out.println("\n# 2nd round of group rearranging");
         theStructure._moveNodeTo(1, theStructure.nodeCommunities[2]);
-        System.out.println("  Structure: "+theStructure.getMonitoring());
+        //System.out.println("  Structure: "+theStructure.getMonitoring());
         descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
-        System.out.println("  DL: "+descriptionLength_before);
+        //System.out.println("  DL: "+descriptionLength_before);
 
         // Zoom out
-        System.out.println("\n# Zoom out");
+        //System.out.println("\n# Zoom out");
         theStructure._zoomOut();
-        System.out.println("  Structure: "+theStructure.getMonitoring());
+        //System.out.println("  Structure: "+theStructure.getMonitoring());
         descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
-        System.out.println("  DL: "+descriptionLength_after);
+        //System.out.println("  DL: "+descriptionLength_after);
 
         assertEquals(descriptionLength_before, descriptionLength_after, 0.00001);
 
         // Move the nodes in categories
-        System.out.println("\n# 3rd round of group rearranging");
+        //System.out.println("\n# 3rd round of group rearranging");
         theStructure._moveNodeTo(2, theStructure.nodeCommunities[4]);
         theStructure._moveNodeTo(3, theStructure.nodeCommunities[4]);
-        System.out.println("  Structure: "+theStructure.getMonitoring());
+        //System.out.println("  Structure: "+theStructure.getMonitoring());
         descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
-        System.out.println("  DL: "+descriptionLength_before);
+        //System.out.println("  DL: "+descriptionLength_before);
 
         // Zoom out
-        System.out.println("\n# Zoom out");
+        //System.out.println("\n# Zoom out");
         theStructure._zoomOut();
-        System.out.println("  Structure: "+theStructure.getMonitoring());
+        //System.out.println("  Structure: "+theStructure.getMonitoring());
         descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
-        System.out.println("  DL: "+descriptionLength_after);
+        //System.out.println("  DL: "+descriptionLength_after);
 
         assertEquals(descriptionLength_before, descriptionLength_after, 0.00001);
     }
