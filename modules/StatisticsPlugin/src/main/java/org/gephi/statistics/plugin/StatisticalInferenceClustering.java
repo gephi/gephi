@@ -81,9 +81,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         Progress.start(progress);
         Random rand = new Random();
 
-        double totalWeight = theStructure.graphWeightSum;
-        double[] nodeDegrees = theStructure.weights.clone();
-
         HashMap<String, Double> results = new HashMap<>();
 
         if (isCanceled) {
@@ -106,10 +103,10 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                     step++;
                     StatisticalInferenceClustering.Community bestCommunity = updateBestCommunity(theStructure, i, initRound);
                     if ((theStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
-                        double S_before = computeDescriptionLength(graph, theStructure);
+                        //double S_before = computeDescriptionLength(graph, theStructure);
                         //System.out.println("Move node "+i+" to com "+bestCommunity.id+" : S_before="+S_before);
                         theStructure.moveNodeTo(i, bestCommunity);
-                        double S_after = computeDescriptionLength(graph, theStructure);
+                        //double S_after = computeDescriptionLength(graph, theStructure);
                         //System.out.println("Move node "+i+" to com "+bestCommunity.id+" : S_after="+S_after+ " (Diff = "+(S_after - S_before)+")");
                         localChange = true;
                     }
@@ -195,27 +192,28 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         Double delta_e_rr_current = 0.;
         Double delta_e_rr_target = 0.;
         for (Integer nei : neighbors) {
+            Float w = theStructure.nodeConnectionsWeight[node].getOrDefault(theStructure.nodeCommunities[nei], 0.f);
             // Losses (as if the node disappeared)
             if (theStructure.nodeCommunities[node] == theStructure.nodeCommunities[nei]) {
                 // The neighbor is in current community, so
                 // the node will leave the neighbor's community
-                delta_e_rr_current -= 1;
-                delta_e_in -= 1;
+                delta_e_rr_current -= w;
+                delta_e_in -= w;
             } else {
                 // The neighbor is not in current community, so
                 // the node will not leave the neighbor's community
-                delta_e_out -= 1;
+                delta_e_out -= w;
             }
             // Gains (as if the node reappeared)
             if (community == theStructure.nodeCommunities[nei]) {
                 // The neighbor is in target community, so
                 // the node will arrive in the neighbor's community
-                delta_e_rr_target += 1;
-                delta_e_in += 1;
+                delta_e_rr_target += w;
+                delta_e_in += w;
             } else {
                 // The neighbor is not in target community, so
                 // the node will not arrive in the neighbor's community
-                delta_e_out += 1;
+                delta_e_out += w;
             }
         }
         Double delta_B = 0.;
@@ -733,7 +731,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
 
         private void zoomOut() {
-            System.out.println("### ZOOM OUT");
+            //System.out.println("### ZOOM OUT");
             int M = communities.size();
             // The new topology uses preexisting communities as nodes
             ArrayList<ComputationEdge>[] newTopology = new ArrayList[M];
@@ -810,21 +808,17 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         public String getMonitoring() {
             String monitoring = "";
 
-            int iCom = 0;
-            int iNode = 0;
             for (StatisticalInferenceClustering.Community com : communities) {
-                monitoring += "c"+iCom+"[";
+                monitoring += "com"+com.id+"[";
                 int count = 0;
                 for (Integer node : com.nodes) {
                     StatisticalInferenceClustering.Community hidden = invMap.get(node);
                     if (count++>0) {
                         monitoring += " ";
                     }
-                    monitoring += "n"+iNode+"("+hidden.getMonitoring()+")";
-                    iNode++;
+                    monitoring += "n"+node+"("+hidden.getMonitoring()+")";
                 }
                 monitoring += "]  ";
-                iCom++;
             }
 
             return monitoring;

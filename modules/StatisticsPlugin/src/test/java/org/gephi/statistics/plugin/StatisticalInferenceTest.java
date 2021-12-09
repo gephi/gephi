@@ -246,6 +246,48 @@ public class StatisticalInferenceTest extends TestCase {
     }
 
     @Test
+    public void testDescriptionLengthDeltaWithZoomOut() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+
+        // Make some groups and zoom out.
+        theStructure._moveNodeTo(1, theStructure.nodeCommunities[0]);
+        theStructure._moveNodeTo(2, theStructure.nodeCommunities[0]);
+        theStructure._zoomOut();
+        theStructure._moveNodeTo(2, theStructure.nodeCommunities[0]);
+        theStructure._moveNodeTo(3, theStructure.nodeCommunities[1]);
+
+        // Compute description length
+        double descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
+
+        int node = 1;
+        StatisticalInferenceClustering.Community community = theStructure.nodeCommunities[0]; // Node 0's community
+
+        // Benchmark the delta
+        Double E = theStructure.graphWeightSum;
+        Double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
+        Double e_out = E - e_in;
+        Double B = Double.valueOf(theStructure.communities.size());
+        Double N = Double.valueOf(theStructure.graph.getNodeCount());
+        ArrayList<Integer> neighbors = new ArrayList();
+        for (StatisticalInferenceClustering.ComputationEdge e : theStructure.topology[node]) {
+            int neighbor = e.target;
+            neighbors.add(neighbor);
+        }
+        double descriptionLength_delta = sic.delta(node, community, theStructure, neighbors, e_in, e_out, E, B, N);
+
+        // Actually move the node
+        theStructure._moveNodeTo(node, community);
+
+        // Compute description length again
+        double descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
+
+        // Delta should be (approximately) equal to the difference
+        assertEquals(descriptionLength_after - descriptionLength_before, descriptionLength_delta, 0.0001);
+    }
+
+    @Test
     public void testDescriptionLengthDelta() {
         UndirectedGraph graph = getCliquesBridgeGraph();
         StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
@@ -559,7 +601,6 @@ public class StatisticalInferenceTest extends TestCase {
     }
 
     @Test
-    // FIXME: this test does not pass
     public void testMinimizationHeuristic_football() {
         GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "football.graphml");
         UndirectedGraph graph = graphModel.getUndirectedGraph();
@@ -588,7 +629,6 @@ public class StatisticalInferenceTest extends TestCase {
     }
 
     @Test
-    // FIXME: this test does not pass
     public void testMinimizationHeuristic_moviegalaxies() {
         GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "moviegalaxies.graphml");
         UndirectedGraph graph = graphModel.getUndirectedGraph();
