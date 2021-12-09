@@ -130,9 +130,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
 
         fillComStructure(graph, theStructure, comStructure);
-        double[] degreeCount = fillDegreeCount(graph, theStructure, comStructure, nodeDegrees, weighted);
-
-        //double computedDescriptionLength = finalDL(comStructure, degreeCount, graph, theStructure, totalWeight, weighted);
         double computedDescriptionLength = computeDescriptionLength(graph, theStructure);
 
         results.put("descriptionLength", computedDescriptionLength);
@@ -366,48 +363,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             count++;
         }
         return comStructure;
-    }
-
-    private double[] fillDegreeCount(Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure, int[] comStructure,
-                                     double[] nodeDegrees, boolean weighted) {
-        double[] degreeCount = new double[theStructure.communities.size()];
-
-        for (Node node : graph.getNodes()) {
-            int index = theStructure.map.get(node);
-            if (weighted) {
-                degreeCount[comStructure[index]] += nodeDegrees[index];
-            } else {
-                degreeCount[comStructure[index]] += graph.getDegree(node);
-            }
-
-        }
-        return degreeCount;
-    }
-
-    private double finalDL(int[] struct, double[] degrees, Graph graph,
-                           StatisticalInferenceClustering.CommunityStructure theStructure, double totalWeight,
-                           boolean weighted) {
-
-        double[] internal = new double[degrees.length];
-        for (Node n : graph.getNodes()) {
-            int n_index = theStructure.map.get(n);
-            for (Edge edge : graph.getEdges(n)) {
-                Node neighbor = graph.getOpposite(n, edge);
-                if (n == neighbor) {
-                    continue;
-                }
-                int neigh_index = theStructure.map.get(neighbor);
-                if (struct[neigh_index] == struct[n_index]) {
-                    if (weighted) {
-                        internal[struct[neigh_index]] += edge.getWeight(graph.getView());
-                    } else {
-                        internal[struct[neigh_index]]++;
-                    }
-                }
-            }
-        }
-
-        return computeDescriptionLength(graph, theStructure);
     }
 
     private void saveValues(int[] struct, Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure) {
@@ -856,17 +811,19 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             String monitoring = "";
 
             int iCom = 0;
+            int iNode = 0;
             for (StatisticalInferenceClustering.Community com : communities) {
-                monitoring += iCom+"[";
+                monitoring += "c"+iCom+"[";
                 int count = 0;
                 for (Integer node : com.nodes) {
                     StatisticalInferenceClustering.Community hidden = invMap.get(node);
                     if (count++>0) {
                         monitoring += " ";
                     }
-                    monitoring += "("+hidden.getMonitoring()+")";
+                    monitoring += "n"+iNode+"("+hidden.getMonitoring()+")";
+                    iNode++;
                 }
-                monitoring += "] ";
+                monitoring += "]  ";
                 iCom++;
             }
 
@@ -939,7 +896,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                 if (count++>0) {
                     monitoring += " ";
                 }
-                monitoring += "n"+nodeIndex;
+                monitoring += nodeIndex;
             }
             return monitoring;
         }

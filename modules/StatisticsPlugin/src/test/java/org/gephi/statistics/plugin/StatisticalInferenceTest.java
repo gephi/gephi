@@ -500,6 +500,9 @@ public class StatisticalInferenceTest extends TestCase {
         StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
         StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
 
+        double descriptionLength_before;
+        double descriptionLength_after;
+
         System.out.println("\n# Initial");
         System.out.println("  Structure: "+theStructure.getMonitoring());
         System.out.println("  DL: "+sic.computeDescriptionLength(graph, theStructure));
@@ -509,25 +512,50 @@ public class StatisticalInferenceTest extends TestCase {
         theStructure._moveNodeTo(1, theStructure.nodeCommunities[0]);
         theStructure._moveNodeTo(3, theStructure.nodeCommunities[2]);
         System.out.println("  Structure: "+theStructure.getMonitoring());
-        System.out.println("  DL: "+sic.computeDescriptionLength(graph, theStructure));
+        descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
+        System.out.println("  DL: "+descriptionLength_before);
 
         // Zoom out
-        theStructure._zoomOut();
         System.out.println("\n# Zoom out");
+        theStructure._zoomOut();
         System.out.println("  Structure: "+theStructure.getMonitoring());
-        System.out.println("  DL: "+sic.computeDescriptionLength(graph, theStructure));
+        descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
+        System.out.println("  DL: "+descriptionLength_after);
+
+        assertEquals(descriptionLength_before, descriptionLength_after, 0.00001);
 
         // Move the nodes in categories
         System.out.println("\n# 2nd round of group rearranging");
         theStructure._moveNodeTo(1, theStructure.nodeCommunities[2]);
         System.out.println("  Structure: "+theStructure.getMonitoring());
-        System.out.println("  DL: "+sic.computeDescriptionLength(graph, theStructure));
+        descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
+        System.out.println("  DL: "+descriptionLength_before);
 
         // Zoom out
         System.out.println("\n# Zoom out");
         theStructure._zoomOut();
         System.out.println("  Structure: "+theStructure.getMonitoring());
-        System.out.println("  DL: "+sic.computeDescriptionLength(graph, theStructure));
+        descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
+        System.out.println("  DL: "+descriptionLength_after);
+
+        assertEquals(descriptionLength_before, descriptionLength_after, 0.00001);
+
+        // Move the nodes in categories
+        System.out.println("\n# 3rd round of group rearranging");
+        theStructure._moveNodeTo(2, theStructure.nodeCommunities[4]);
+        theStructure._moveNodeTo(3, theStructure.nodeCommunities[4]);
+        System.out.println("  Structure: "+theStructure.getMonitoring());
+        descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
+        System.out.println("  DL: "+descriptionLength_before);
+
+        // Zoom out
+        System.out.println("\n# Zoom out");
+        theStructure._zoomOut();
+        System.out.println("  Structure: "+theStructure.getMonitoring());
+        descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
+        System.out.println("  DL: "+descriptionLength_after);
+
+        assertEquals(descriptionLength_before, descriptionLength_after, 0.00001);
     }
 
     @Test
