@@ -167,7 +167,9 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         // Description length: before
         Double S_b = 0.;
         S_b -= Gamma.logGamma(e_out + 1);
-        S_b += e_out * lBinom(B, 2);
+        if (e_out > 0) {
+            S_b += e_out * lBinom(B, 2);
+        }
         S_b += Gamma.logGamma(e_r_current + 1);
         S_b += Gamma.logGamma(e_r_target  + 1);
         S_b -= (e_rr_current) * Math.log(2) + Gamma.logGamma(e_rr_current + 1);
@@ -607,6 +609,10 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                     adjCom.connectionsCount.put(to, cEdgesto + 1);
                 }
 
+                if (node == neighbor) {
+                    continue;
+                }
+
                 Float nodeEdgesTo = nodeConnectionsWeight[node].get(adjCom);
                 if (nodeEdgesTo == null) {
                     //System.out.println("Add links from node "+node+" to community "+adjCom.id);
@@ -667,12 +673,12 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                 }
 
                 ///////////////////
-                //Remove Adjacency Community's connection to this community
+                //Remove Adjacent Community's connection to this community
                 StatisticalInferenceClustering.Community adjCom = nodeCommunities[neighbor];
                 Float oEdgesto = adjCom.connectionsWeight.get(community);
                 Integer oCountEdgesto = adjCom.connectionsCount.get(community);
                 if (oCountEdgesto - 1 == 0) {
-                    //System.out.println("Remove links from community "+adjCom.id+" to community "+community.id);
+                    //System.out.println("Remove links from community "+adjCom.id+" to community "+community.id+" *");
                     adjCom.connectionsWeight.remove(community);
                     adjCom.connectionsCount.remove(community);
                 } else {
@@ -689,7 +695,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                     Float comEdgesto = community.connectionsWeight.get(adjCom);
                     Integer comCountEdgesto = community.connectionsCount.get(adjCom);
                     if (comCountEdgesto - 1 == 0) {
-                        //System.out.println("Remove links from community "+community.id+" to community "+adjCom.id);
+                        //System.out.println("Remove links from community "+community.id+" to community "+adjCom.id+" *");
                         community.connectionsWeight.remove(adjCom);
                         community.connectionsCount.remove(adjCom);
                     } else {
@@ -702,7 +708,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                 Float nodeEgesTo = nodeConnectionsWeight[node].get(adjCom);
                 Integer nodeCountEgesTo = nodeConnectionsCount[node].get(adjCom);
                 if (nodeCountEgesTo - 1 == 0) {
-                    //System.out.println("REMOVE links from node "+node+" to community "+adjCom.id);
+                    //System.out.println("REMOVE links from node "+node+" to community "+adjCom.id+ " *");
                     nodeConnectionsWeight[node].remove(adjCom);
                     nodeConnectionsCount[node].remove(adjCom);
                 } else {
@@ -719,6 +725,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             //System.out.println("### MOVE NODE "+node+" TO COM "+to.id);
             removeNodeFromItsCommunity(node);
             addNodeTo(node, to);
+            checkIntegrity();
         }
 
         protected void _moveNodeTo(int node, StatisticalInferenceClustering.Community to) {
@@ -824,6 +831,30 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             }
 
             return monitoring;
+        }
+
+        // Useful for monitoring and debugging
+        public boolean checkIntegrity() {
+            boolean integrity = true;
+            Double E = graphWeightSum;
+            Double e_in = communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
+            Double e_out = E - e_in;
+            Double B = Double.valueOf(communities.size());
+            Double N = Double.valueOf(graph.getNodeCount());
+
+            // Check the integrity of nodeConnectionsWeight
+            double nodeComWeightSum = 0;
+            for (int node=0; node<nodeConnectionsWeight.length; node++) {
+                HashMap<StatisticalInferenceClustering.Community, Float> hm = nodeConnectionsWeight[node];
+                Collection<Float> values = hm.values();
+                nodeComWeightSum += values.stream().mapToDouble(v -> (double)v).sum();
+            }
+
+            // TODO: what should be done, in fact,
+            // is to check that for each node the sum of nodeConnectionsWeight
+            // equals its degree.
+
+            return integrity;
         }
     }
 
