@@ -227,7 +227,9 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         // Description length: after
         Double S_a = 0.;
         S_a -= Gamma.logGamma(e_out + delta_e_out + 1);
-        S_a += (e_out + delta_e_out) * lBinom(B + delta_B, 2);
+        if (e_out + delta_e_out > 0) {
+            S_a += (e_out + delta_e_out) * lBinom(B + delta_B, 2);
+        }
         S_a += Gamma.logGamma(e_r_target  + delta_e_r_target  + 1);
         S_a -= (e_rr_target  + delta_e_rr_target ) * Math.log(2) + Gamma.logGamma(e_rr_target  + delta_e_rr_target  + 1);
         S_a -= Gamma.logGamma(n_r_target  + nodeWeight + 1);
@@ -307,7 +309,9 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         double S = 0.;
 
         S -= Gamma.logGamma(e_out + 1);
-        S += e_out * lBinom(B, 2);
+        if (e_out > 0) {
+            S += e_out * lBinom(B, 2);
+        }
         for (Community community : theStructure.communities) {
             // Number of edges of community (with itself or another one)
             Double e_r = community.weightSum;

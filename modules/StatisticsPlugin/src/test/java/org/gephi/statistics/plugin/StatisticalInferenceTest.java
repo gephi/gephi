@@ -144,6 +144,35 @@ public class StatisticalInferenceTest extends TestCase {
     }
 
     @Test
+    public void testDescriptionLengthOneCommunity() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+
+        // Now we move the nodes in the same community
+        StatisticalInferenceClustering.Community com = theStructure.nodeCommunities[0];
+        theStructure._moveNodeTo(1, com);
+        theStructure._moveNodeTo(2, com);
+        theStructure._moveNodeTo(3, com);
+        theStructure._moveNodeTo(4, com);
+        theStructure._moveNodeTo(5, com);
+        theStructure._moveNodeTo(6, com);
+        theStructure._moveNodeTo(7, com);
+
+        // Now we test that the description length is shorter when the communities
+        // match the expectations (one community per clique)
+
+        double descriptionLength = sic.computeDescriptionLength(graph, theStructure);
+        assertEquals(29.93900552172898, descriptionLength, 0.0001);
+
+        // Zoom out
+        theStructure._zoomOut();
+
+        descriptionLength = sic.computeDescriptionLength(graph, theStructure);
+        assertEquals(29.93900552172898, descriptionLength, 0.0001);
+    }
+
+    @Test
     public void testCommunityWeightsBookkeeping() {
         UndirectedGraph graph = getCliquesBridgeGraph();
         StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
