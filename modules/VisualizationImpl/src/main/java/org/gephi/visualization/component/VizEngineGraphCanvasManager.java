@@ -27,6 +27,7 @@ import org.joml.Vector2fc;
 import org.lwjgl.opengl.awt.AWTGLCanvas;
 import org.lwjgl.opengl.awt.GLData;
 import org.openide.util.Lookup;
+import org.lwjgl.system.Platform;
 
 public class VizEngineGraphCanvasManager {
 
@@ -106,6 +107,14 @@ public class VizEngineGraphCanvasManager {
 
         if (USE_OPENGL_ES) {
             glData.api = GLData.API.GLES;
+        }
+
+        if (Platform.get() == Platform.MACOSX) {
+            //In mac we have to set the version or it won't give the latest automatically
+
+            glData.majorVersion = 3;
+            glData.minorVersion = 2;
+            glData.forwardCompatible = true;
         }
 
         glData.samples = 4; //4 samples anti-aliasing
