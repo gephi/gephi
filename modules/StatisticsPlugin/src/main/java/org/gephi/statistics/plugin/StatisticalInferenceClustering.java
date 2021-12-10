@@ -743,6 +743,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             nodeCommunities = new StatisticalInferenceClustering.Community[M];
             nodeConnectionsWeight = new HashMap[M];
             nodeConnectionsCount = new HashMap[M];
+            double[] oldGraphNodeCount = graphNodeCount.clone();
             HashMap<Integer, StatisticalInferenceClustering.Community> newInvMap = new HashMap<>();
             for (int i = 0; i < communities.size(); i++) {
                 // For each community "com", that we want to transform into a node in the new topology...
@@ -761,7 +762,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
                 StatisticalInferenceClustering.Community hidden = new StatisticalInferenceClustering.Community(structure);
                 for (Integer nodeInt : com.nodes) {
-                    graphNodeSum += graphNodeCount[nodeInt];
+                    graphNodeSum += oldGraphNodeCount[nodeInt];
                     StatisticalInferenceClustering.Community oldHidden = invMap.get(nodeInt);
                     hidden.nodes.addAll(oldHidden.nodes);
                 }

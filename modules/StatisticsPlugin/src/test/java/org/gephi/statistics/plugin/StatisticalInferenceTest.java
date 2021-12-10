@@ -622,5 +622,139 @@ public class StatisticalInferenceTest extends TestCase {
         double errorMargin = 0.1;
         assertEquals(targetDescLength, descriptionLength, errorMargin*targetDescLength);
     }
+
+    @Test
+    public void testDescriptionLengthZoomOut_football() {
+        GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "football.graphml");
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+
+        // We reproduce a given setting
+        StatisticalInferenceClustering.Community c0 = theStructure.nodeCommunities[74];
+        theStructure._moveNodeTo(102, c0);
+        theStructure._moveNodeTo(107, c0);
+        theStructure._moveNodeTo(49, c0);
+        theStructure._moveNodeTo(84, c0);
+        theStructure._moveNodeTo(82, c0);
+        theStructure._moveNodeTo(77, c0);
+        theStructure._moveNodeTo(72, c0);
+        theStructure._moveNodeTo(2, c0);
+        theStructure._moveNodeTo(98, c0);
+        theStructure._moveNodeTo(10, c0);
+        StatisticalInferenceClustering.Community c1 = theStructure.nodeCommunities[30];
+        theStructure._moveNodeTo(19, c1);
+        theStructure._moveNodeTo(60, c1);
+        theStructure._moveNodeTo(71, c1);
+        theStructure._moveNodeTo(18, c1);
+        theStructure._moveNodeTo(99, c1);
+        theStructure._moveNodeTo(35, c1);
+        theStructure._moveNodeTo(79, c1);
+        theStructure._moveNodeTo(38, c1);
+        theStructure._moveNodeTo(85, c1);
+        theStructure._moveNodeTo(28, c1);
+        theStructure._moveNodeTo(55, c1);
+        theStructure._moveNodeTo(6, c1);
+        theStructure._moveNodeTo(31, c1);
+        theStructure._moveNodeTo(54, c1);
+        StatisticalInferenceClustering.Community c2 = theStructure.nodeCommunities[20];
+        theStructure._moveNodeTo(36, c2);
+        theStructure._moveNodeTo(75, c2);
+        theStructure._moveNodeTo(48, c2);
+        theStructure._moveNodeTo(92, c2);
+        theStructure._moveNodeTo(58, c2);
+        theStructure._moveNodeTo(59, c2);
+        theStructure._moveNodeTo(113, c2);
+        StatisticalInferenceClustering.Community c3 = theStructure.nodeCommunities[68];
+        theStructure._moveNodeTo(8, c3);
+        theStructure._moveNodeTo(22, c3);
+        theStructure._moveNodeTo(78, c3);
+        theStructure._moveNodeTo(51, c3);
+        theStructure._moveNodeTo(111, c3);
+        theStructure._moveNodeTo(40, c3);
+        theStructure._moveNodeTo(7, c3);
+        theStructure._moveNodeTo(21, c3);
+        theStructure._moveNodeTo(108, c3);
+        StatisticalInferenceClustering.Community c4 = theStructure.nodeCommunities[70];
+        theStructure._moveNodeTo(87, c4);
+        theStructure._moveNodeTo(64, c4);
+        theStructure._moveNodeTo(63, c4);
+        theStructure._moveNodeTo(97, c4);
+        theStructure._moveNodeTo(24, c4);
+        theStructure._moveNodeTo(66, c4);
+        theStructure._moveNodeTo(56, c4);
+        theStructure._moveNodeTo(65, c4);
+        theStructure._moveNodeTo(27, c4);
+        theStructure._moveNodeTo(95, c4);
+        theStructure._moveNodeTo(76, c4);
+        theStructure._moveNodeTo(96, c4);
+        theStructure._moveNodeTo(57, c4);
+        theStructure._moveNodeTo(91, c4);
+        theStructure._moveNodeTo(86, c4);
+        theStructure._moveNodeTo(53, c4);
+        theStructure._moveNodeTo(17, c4);
+        theStructure._moveNodeTo(12, c4);
+        theStructure._moveNodeTo(44, c4);
+        theStructure._moveNodeTo(112, c4);
+        StatisticalInferenceClustering.Community c5 = theStructure.nodeCommunities[103];
+        theStructure._moveNodeTo(109, c5);
+        theStructure._moveNodeTo(37, c5);
+        theStructure._moveNodeTo(89, c5);
+        theStructure._moveNodeTo(33, c5);
+        theStructure._moveNodeTo(105, c5);
+        theStructure._moveNodeTo(25, c5);
+        theStructure._moveNodeTo(106, c5);
+        theStructure._moveNodeTo(62, c5);
+        theStructure._moveNodeTo(45, c5);
+        theStructure._moveNodeTo(1, c5);
+        theStructure._moveNodeTo(101, c5);
+        StatisticalInferenceClustering.Community c6 = theStructure.nodeCommunities[23];
+        theStructure._moveNodeTo(0, c6);
+        theStructure._moveNodeTo(93, c6);
+        theStructure._moveNodeTo(9, c6);
+        theStructure._moveNodeTo(16, c6);
+        theStructure._moveNodeTo(81, c6);
+        theStructure._moveNodeTo(41, c6);
+        theStructure._moveNodeTo(50, c6);
+        theStructure._moveNodeTo(90, c6);
+        theStructure._moveNodeTo(5, c6);
+        theStructure._moveNodeTo(4, c6);
+        StatisticalInferenceClustering.Community c7 = theStructure.nodeCommunities[100];
+        theStructure._moveNodeTo(39, c7);
+        theStructure._moveNodeTo(43, c7);
+        theStructure._moveNodeTo(14, c7);
+        theStructure._moveNodeTo(32, c7);
+        theStructure._moveNodeTo(47, c7);
+        theStructure._moveNodeTo(42, c7);
+        theStructure._moveNodeTo(34, c7);
+        theStructure._moveNodeTo(94, c7);
+        theStructure._moveNodeTo(13, c7);
+        theStructure._moveNodeTo(15, c7);
+        theStructure._moveNodeTo(26, c7);
+        theStructure._moveNodeTo(61, c7);
+        theStructure._moveNodeTo(29, c7);
+        theStructure._moveNodeTo(80, c7);
+        StatisticalInferenceClustering.Community c8 = theStructure.nodeCommunities[67];
+        theStructure._moveNodeTo(88, c8);
+        theStructure._moveNodeTo(69, c8);
+        theStructure._moveNodeTo(83, c8);
+        theStructure._moveNodeTo(73, c8);
+        theStructure._moveNodeTo(114, c8);
+        theStructure._moveNodeTo(104, c8);
+        theStructure._moveNodeTo(11, c8);
+        theStructure._moveNodeTo(52, c8);
+        theStructure._moveNodeTo(3, c8);
+        theStructure._moveNodeTo(46, c8);
+        theStructure._moveNodeTo(110, c8);
+
+        double descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
+
+        theStructure._zoomOut();
+
+        double descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
+
+        assertEquals(descriptionLength_before, descriptionLength_after, 0.00001);
+    }
+
 }
 
