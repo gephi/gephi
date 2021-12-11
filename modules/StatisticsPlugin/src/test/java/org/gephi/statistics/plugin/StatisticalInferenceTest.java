@@ -306,6 +306,66 @@ public class StatisticalInferenceTest extends TestCase {
         assertEquals(descriptionLength_after - descriptionLength_before, descriptionLength_delta, 0.0001);
     }
 
+    @Test
+    public void testDescriptionLengthDeltaWithZoomOut_x2() {
+        UndirectedGraph graph = getCliquesBridgeGraph();
+        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
+        StatisticalInferenceClustering.CommunityStructure theStructure = sic.new CommunityStructure(graph);
+
+        // Make some groups and shuffle around to stress bookkeeping
+        theStructure._moveNodeTo(4, theStructure.nodeCommunities[0]);
+        theStructure._moveNodeTo(5, theStructure.nodeCommunities[1]);
+        theStructure._moveNodeTo(6, theStructure.nodeCommunities[2]);
+        theStructure._moveNodeTo(1, theStructure.nodeCommunities[0]);
+        theStructure._moveNodeTo(4, theStructure.nodeCommunities[5]);
+        theStructure._moveNodeTo(2, theStructure.nodeCommunities[3]);
+        theStructure._moveNodeTo(6, theStructure.nodeCommunities[7]);
+        //System.out.println(theStructure.getMonitoring());
+        // > com0[n0(0) n1(1)]  com2[n5(5) n4(4)]  com6[n3(3) n2(2)]  com14[n7(7) n6(6)]
+
+        // Zoom out
+        theStructure._zoomOut();
+        //System.out.println(theStructure.getMonitoring());
+        // > com16[n0(0 1)]  com18[n1(5 4)]  com20[n2(3 2)]  com22[n3(7 6)]
+
+        // Shuffle around to stress bookkeeping
+        theStructure._moveNodeTo(2, theStructure.nodeCommunities[0]);
+        theStructure._moveNodeTo(0, theStructure.nodeCommunities[1]);
+        theStructure._moveNodeTo(1, theStructure.nodeCommunities[3]);
+        //System.out.println(theStructure.getMonitoring());
+        // > com16[n2(3 2)]  com18[n0(0 1)]  com22[n3(7 6) n1(5 4)]
+
+        // Zoom out again
+        theStructure._zoomOut();
+        //System.out.println(theStructure.getMonitoring());
+        // > com24[n0(3 2)]  com26[n1(0 1)]  com28[n2(7 6 5 4)]
+
+        // Test
+
+        // Compute description length
+        double descriptionLength_before = sic.computeDescriptionLength(graph, theStructure);
+
+        int node = 1;
+        StatisticalInferenceClustering.Community community = theStructure.nodeCommunities[0]; // Node 0's community
+
+        // Benchmark the delta
+        Double E = theStructure.graphWeightSum;
+        Double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
+        Double e_out = E - e_in;
+        Double B = Double.valueOf(theStructure.communities.size());
+        Double N = Double.valueOf(theStructure.graph.getNodeCount());
+        double descriptionLength_delta = sic.delta(node, community, theStructure, e_in, e_out, E, B, N);
+
+        // Actually move the node
+        theStructure._moveNodeTo(node, community);
+
+        // Compute description length again
+        double descriptionLength_after = sic.computeDescriptionLength(graph, theStructure);
+
+        // Delta should be (approximately) equal to the difference
+        assertEquals(descriptionLength_after - descriptionLength_before, descriptionLength_delta, 0.0001);
+    }
+
     // The four next tests are networks from Tiago Peixoto, with a reference partition and description length.
     @Test
     public void testDescriptionLength_football() {

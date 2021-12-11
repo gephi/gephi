@@ -154,14 +154,14 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         Double e_r_target = community.weightSum;
         // Number of edges within target community
         Double e_rr_target = community.internalWeightSum;
-        // Number of nodes of target community
+        // Number of real graph nodes of target community
         int n_r_target = community.graphNodeCount;
 
         // Number of edges of current (where the node belongs) community (with itself or another one)
         Double e_r_current = theStructure.nodeCommunities[node].weightSum;
         // Number of edges within current community (where the node belongs)
         Double e_rr_current = theStructure.nodeCommunities[node].internalWeightSum;
-        // Number of nodes of target community
+        // Number of real graph nodes of current community
         int n_r_current = theStructure.nodeCommunities[node].graphNodeCount;
 
         // Description length: before
@@ -195,27 +195,33 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         for (ComputationEdge e : theStructure.topology[node]) {
             int nei = e.target;
             Float w = e.weight;
-            // Losses (as if the node disappeared)
-            if (theStructure.nodeCommunities[node] == theStructure.nodeCommunities[nei]) {
-                // The neighbor is in current community, so
-                // the node will leave the neighbor's community
+            if (nei == node) {
+                // Node self-loops
                 delta_e_rr_current -= w;
-                delta_e_in -= w;
+                delta_e_rr_target += w;
             } else {
-                // The neighbor is not in current community, so
-                // the node will not leave the neighbor's community
-                delta_e_out -= w;
-            }
-            // Gains (as if the node reappeared)
-            if (community == theStructure.nodeCommunities[nei]) {
-                // The neighbor is in target community, so
-                // the node will arrive in the neighbor's community
-                delta_e_rr_target += w; // add weight between node and community -> OK
-                delta_e_in += w;
-            } else {
-                // The neighbor is not in target community, so
-                // the node will not arrive in the neighbor's community
-                delta_e_out += theStructure.nodeConnectionsWeight[node].getOrDefault(community, 0.f);
+                // Losses (as if the node disappeared)
+                if (theStructure.nodeCommunities[node] == theStructure.nodeCommunities[nei]) {
+                    // The neighbor is in current community, so
+                    // the node will leave the neighbor's community
+                    delta_e_rr_current -= w;
+                    delta_e_in -= w;
+                } else {
+                    // The neighbor is not in current community, so
+                    // the node will not leave the neighbor's community
+                    delta_e_out -= w;
+                }
+                // Gains (as if the node reappeared)
+                if (community == theStructure.nodeCommunities[nei]) {
+                    // The neighbor is in target community, so
+                    // the node will arrive in the neighbor's community
+                    delta_e_rr_target += w; // add weight between node and community -> OK
+                    delta_e_in += w;
+                } else {
+                    // The neighbor is not in target community, so
+                    // the node will not arrive in the neighbor's community
+                    delta_e_out += w;
+                }
             }
         }
         Double delta_B = 0.;
@@ -725,7 +731,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             //System.out.println("### MOVE NODE "+node+" TO COM "+to.id);
             removeNodeFromItsCommunity(node);
             addNodeTo(node, to);
-            checkIntegrity();
         }
 
         protected void _moveNodeTo(int node, StatisticalInferenceClustering.Community to) {
