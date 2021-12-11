@@ -463,19 +463,6 @@ public class StatisticalInferenceTest extends TestCase {
         assertEquals(43.479327707987835, descriptionLength, 0.0001);
     }
 
-    /*
-    // Note: this test is inconsistent. For algo reasons, there is a small chance that
-    // it randomly fails (falls into a local minimum). Only try manually.
-    @Test
-    public void testCliquesBridgeGraph_detectCommunities() {
-        UndirectedGraph graph = getCliquesBridgeGraph();
-        StatisticalInferenceClustering sic = new StatisticalInferenceClustering();
-        sic.execute(graph);
-        double descriptionLength = sic.getDescriptionLength();
-        assertEquals(32.65512182676276, descriptionLength, 0.01);
-    }
-    */
-
     @Test
     public void testMiscMetricsConsistentThroughZoomOut() {
         UndirectedGraph graph = getCliquesBridgeGraph();
