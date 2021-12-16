@@ -293,10 +293,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>gleem</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>mostrecentfiles-api</artifactId>
         </dependency>
         <dependency>

@@ -543,11 +543,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>gleem</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>mostrecentfiles-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1434,7 +1429,6 @@
         <module>modules/GeneratorAPI</module>
         <module>modules/GeneratorPlugin</module>
         <module>modules/GeneratorPluginUI</module>
-        <module>modules/Gleem</module>
         <module>modules/GraphAPI</module>
         <module>modules/ImportAPI</module>
         <module>modules/ImportPlugin</module>

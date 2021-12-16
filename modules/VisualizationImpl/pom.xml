@@ -162,10 +162,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>gleem</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>lib.validation</artifactId>
         </dependency>
         <dependency>
@@ -205,6 +201,7 @@
                         <publicPackage>org.gephi.visualization.apiimpl</publicPackage>
                         <publicPackage>org.gephi.visualization.events</publicPackage>
                         <publicPackage>org.gephi.visualization.opengl.text</publicPackage>
+                        <publicPackage>org.gephi.lib.gleem.linalg</publicPackage>
                     </publicPackages>
                     <nbmResources> 
                         <nbmResource> 
