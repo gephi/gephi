@@ -11,7 +11,6 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.gephi</groupId>
     <artifactId>gephi</artifactId>
     <packaging>nbm-application</packaging>
     <version>0.9.3-SNAPSHOT</version>
@@ -182,10 +181,6 @@
                     <artifactId>org-netbeans-modules-editor-mimelookup</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>gephi-branding</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
