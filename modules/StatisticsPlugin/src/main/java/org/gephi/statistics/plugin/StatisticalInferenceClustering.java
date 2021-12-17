@@ -17,8 +17,8 @@ import java.text.NumberFormat;
 import java.util.*;
 
 /**
-* @author Mathieu Jacomy & Tiago Peixoto
-*/
+ * @author Mathieu Jacomy & Tiago Peixoto
+ */
 
 public class StatisticalInferenceClustering implements Statistics, LongTask {
 
@@ -47,11 +47,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
     }
 
 
-
-
-
-
-
     public void execute(Graph graph) {
         isCanceled = false;
 
@@ -62,7 +57,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
             if (graph.getNodeCount() > 0) {//Fixes issue #713 Modularity Calculation Throws Exception On Empty Graph
                 HashMap<String, Double> computedStatInfMetrics =
-                        computePartition(graph, structure, comStructure, useWeight);
+                    computePartition(graph, structure, comStructure, useWeight);
                 descriptionLength = computedStatInfMetrics.get("descriptionLength");
             } else {
                 descriptionLength = 0;
@@ -74,9 +69,10 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
     }
 
-    protected HashMap<String, Double> computePartition(Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure,
-                                                        int[] comStructure,
-                                                        boolean weighted) {
+    protected HashMap<String, Double> computePartition(Graph graph,
+                                                       StatisticalInferenceClustering.CommunityStructure theStructure,
+                                                       int[] comStructure,
+                                                       boolean weighted) {
         isCanceled = false;
         Progress.start(progress);
         Random rand = new Random();
@@ -101,7 +97,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                 int step = 0;
                 for (int i = start; step < theStructure.N; i = (i + 1) % theStructure.N) {
                     step++;
-                    StatisticalInferenceClustering.Community bestCommunity = updateBestCommunity(theStructure, i, initRound);
+                    StatisticalInferenceClustering.Community bestCommunity =
+                        updateBestCommunity(theStructure, i, initRound);
                     if ((theStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
                         //double S_before = computeDescriptionLength(graph, theStructure);
                         //System.out.println("Move node "+i+" to com "+bestCommunity.id+" : S_before="+S_before);
@@ -135,13 +132,13 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
     }
 
     public double delta(int node,
-                         StatisticalInferenceClustering.Community community,
-                         StatisticalInferenceClustering.CommunityStructure theStructure,
-                         Double e_in,
-                         Double e_out,
-                         Double E,
-                         Double B,
-                         Double N
+                        StatisticalInferenceClustering.Community community,
+                        StatisticalInferenceClustering.CommunityStructure theStructure,
+                        Double e_in,
+                        Double e_out,
+                        Double E,
+                        Double B,
+                        Double N
     ) {
         //System.out.println("*** Compute delta for node "+node+" with respect to community "+community.id+" ***");
 
@@ -171,15 +168,15 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             S_b += e_out * lBinom(B, 2);
         }
         S_b += Gamma.logGamma(e_r_current + 1);
-        S_b += Gamma.logGamma(e_r_target  + 1);
+        S_b += Gamma.logGamma(e_r_target + 1);
         S_b -= (e_rr_current) * Math.log(2) + Gamma.logGamma(e_rr_current + 1);
-        S_b -= (e_rr_target ) * Math.log(2) + Gamma.logGamma(e_rr_target  + 1);
+        S_b -= (e_rr_target) * Math.log(2) + Gamma.logGamma(e_rr_target + 1);
         S_b -= Gamma.logGamma(n_r_current + 1);
         S_b -= Gamma.logGamma(n_r_target + 1);
         S_b += lBinom(n_r_current + e_r_current - 1, e_r_current);
-        S_b += lBinom(n_r_target  + e_r_target  - 1, e_r_target );
+        S_b += lBinom(n_r_target + e_r_target - 1, e_r_target);
         S_b += lBinom(B + e_in - 1, e_in);
-        if (B>1) {
+        if (B > 1) {
             S_b += Math.log(E + 1);
         }
         S_b += lBinom(N - 1, B - 1);
@@ -189,7 +186,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         Double delta_e_out = 0.;
         Double delta_e_in = 0.;
         Double delta_e_r_current = -k;
-        Double delta_e_r_target  = +k;
+        Double delta_e_r_target = +k;
         Double delta_e_rr_current = 0.;
         Double delta_e_rr_target = 0.;
         for (ComputationEdge e : theStructure.topology[node]) {
@@ -238,18 +235,20 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         if (e_out + delta_e_out > 0) {
             S_a += (e_out + delta_e_out) * lBinom(B + delta_B, 2);
         }
-        S_a += Gamma.logGamma(e_r_target  + delta_e_r_target  + 1);
-        S_a -= (e_rr_target  + delta_e_rr_target ) * Math.log(2) + Gamma.logGamma(e_rr_target  + delta_e_rr_target  + 1);
-        S_a -= Gamma.logGamma(n_r_target  + nodeWeight + 1);
-        S_a += lBinom(n_r_target  + nodeWeight + e_r_target  + delta_e_r_target  - 1, e_r_target  + delta_e_r_target );
+        S_a += Gamma.logGamma(e_r_target + delta_e_r_target + 1);
+        S_a -= (e_rr_target + delta_e_rr_target) * Math.log(2) + Gamma.logGamma(e_rr_target + delta_e_rr_target + 1);
+        S_a -= Gamma.logGamma(n_r_target + nodeWeight + 1);
+        S_a += lBinom(n_r_target + nodeWeight + e_r_target + delta_e_r_target - 1, e_r_target + delta_e_r_target);
         if (delta_B == 0) {
             // These calculations only apply if current category
             // would still exist after moving the node
             // (i.e. if it was not the last one)
             S_a += Gamma.logGamma(e_r_current + delta_e_r_current + 1);
-            S_a -= (e_rr_current + delta_e_rr_current) * Math.log(2) + Gamma.logGamma(e_rr_current + delta_e_rr_current + 1);
+            S_a -= (e_rr_current + delta_e_rr_current) * Math.log(2) +
+                Gamma.logGamma(e_rr_current + delta_e_rr_current + 1);
             S_a -= Gamma.logGamma(n_r_current - nodeWeight + 1);
-            S_a += lBinom(n_r_current - nodeWeight + e_r_current + delta_e_r_current - 1, e_r_current + delta_e_r_current);
+            S_a +=
+                lBinom(n_r_current - nodeWeight + e_r_current + delta_e_r_current - 1, e_r_current + delta_e_r_current);
         }
 
         S_a += lBinom(B + delta_B + e_in + delta_e_in - 1, e_in + delta_e_in);
@@ -261,7 +260,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         return S_a - S_b;
     }
 
-    private StatisticalInferenceClustering.Community updateBestCommunity(StatisticalInferenceClustering.CommunityStructure theStructure, int node_id, boolean initialization) {
+    private StatisticalInferenceClustering.Community updateBestCommunity(
+        StatisticalInferenceClustering.CommunityStructure theStructure, int node_id, boolean initialization) {
         // Total number of edges (graph size)
         Double E = theStructure.graphWeightSum;
         // Total number of edges from one community to the same one
@@ -282,10 +282,12 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             if (com != theStructure.nodeCommunities[node_id]) {
                 double deltaValue = delta(node_id, com, theStructure, e_in, e_out, E, B, N);
                 if (Double.isNaN(deltaValue)) {
-                    System.out.println("WARNING - ALGO ERROR - Statistical inference - DELTA is NaN (this is not supposed to happen)");
+                    System.out.println(
+                        "WARNING - ALGO ERROR - Statistical inference - DELTA is NaN (this is not supposed to happen)");
                 }
                 //System.out.println("Node "+node_id+" => com "+com.id+" DELTA="+deltaValue);
-                if ((deltaValue<0 || (initialization && Math.exp(-deltaValue) < Math.random())) && deltaValue<best) {
+                if ((deltaValue < 0 || (initialization && Math.exp(-deltaValue) < Math.random())) &&
+                    deltaValue < best) {
                     best = deltaValue;
                     bestCommunity = com;
                 }
@@ -301,7 +303,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         return bestCommunity;
     }
 
-    double computeDescriptionLength(Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure){
+    double computeDescriptionLength(Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure) {
         // Total number of edges (graph size)
         Double E = theStructure.graphWeightSum;
         // Total number of edges from one community to the same one
@@ -336,7 +338,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
         S += lBinom(B + e_in - 1, e_in);
 
-        if (B>1) {
+        if (B > 1) {
             S += Math.log(E + 1);
         }
 
@@ -354,10 +356,11 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
     }
 
     private static double lBinom(double n, double m) {
-        return Gamma.logGamma(n+1) - Gamma.logGamma(n - m + 1) - Gamma.logGamma(m + 1);
+        return Gamma.logGamma(n + 1) - Gamma.logGamma(n - m + 1) - Gamma.logGamma(m + 1);
     }
 
-    private int[] fillComStructure(Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure, int[] comStructure) {
+    private int[] fillComStructure(Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure,
+                                   int[] comStructure) {
         int count = 0;
 
         for (StatisticalInferenceClustering.Community com : theStructure.communities) {
@@ -402,14 +405,14 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         dataset1.addSeries(dSeries);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Size Distribution",
-                "Stat Inf Class",
-                "Size (number of nodes)",
-                dataset1,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "Size Distribution",
+            "Stat Inf Class",
+            "Size (number of nodes)",
+            dataset1,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dSeries, false);
@@ -418,23 +421,23 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         NumberFormat f = new DecimalFormat("#0.000");
 
         String report = "<HTML> <BODY> <h1>Statistical Inference Report </h1> "
-                + "<hr>"
-                + "<br> <h2> Results: </h2>"
-                + "Description Length: " + f.format(descriptionLength) + "<br>"
-                + "Number of Communities: " + structure.communities.size()
-                + "<br /><br />" + imageFile
-                + "<br /><br />" + "<h2> Algorithm: </h2>"
-                + "Statistical inference of assortative community structures<br />"
-                + "Lizhi Zhang, Tiago P. Peixoto<br />"
-                + "Phys. Rev. Research 2 043271 (2020)<br />"
-                + "https://dx.doi.org/10.1103/PhysRevResearch.2.043271<br /><br />"
-                + "<br /><br />"
-                + "Bayesian stochastic blockmodeling<br />"
-                + "Tiago P. Peixoto<br />"
-                + "Chapter in “Advances in Network Clustering and Blockmodeling,” edited by<br />"
-                + "P. Doreian, V. Batagelj, A. Ferligoj (Wiley, 2019)<br />"
-                + "https://dx.doi.org/10.1002/9781119483298.ch11<br />"
-                + "</BODY> </HTML>";
+            + "<hr>"
+            + "<br> <h2> Results: </h2>"
+            + "Description Length: " + f.format(descriptionLength) + "<br>"
+            + "Number of Communities: " + structure.communities.size()
+            + "<br /><br />" + imageFile
+            + "<br /><br />" + "<h2> Algorithm: </h2>"
+            + "Statistical inference of assortative community structures<br />"
+            + "Lizhi Zhang, Tiago P. Peixoto<br />"
+            + "Phys. Rev. Research 2 043271 (2020)<br />"
+            + "https://dx.doi.org/10.1103/PhysRevResearch.2.043271<br /><br />"
+            + "<br /><br />"
+            + "Bayesian stochastic blockmodeling<br />"
+            + "Tiago P. Peixoto<br />"
+            + "Chapter in “Advances in Network Clustering and Blockmodeling,” edited by<br />"
+            + "P. Doreian, V. Batagelj, A. Ferligoj (Wiley, 2019)<br />"
+            + "https://dx.doi.org/10.1002/9781119483298.ch11<br />"
+            + "</BODY> </HTML>";
 
         return report;
     }
@@ -492,7 +495,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                 graphNodeCount[index] = 1;
                 internalWeights[index] = 0;
                 nodeCommunities[index].seed(index);
-                StatisticalInferenceClustering.Community hidden = new StatisticalInferenceClustering.Community(structure);
+                StatisticalInferenceClustering.Community hidden =
+                    new StatisticalInferenceClustering.Community(structure);
                 hidden.nodes.add(index);
                 invMap.put(index, hidden);
                 communities.add(nodeCommunities[index]);
@@ -561,7 +565,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
                     graphWeightSum += weight;
                 }
-
 
 
                 if (isCanceled) {
@@ -772,7 +775,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
                 double weightSum = 0;
                 double graphNodeSum = 0;
 
-                StatisticalInferenceClustering.Community hidden = new StatisticalInferenceClustering.Community(structure);
+                StatisticalInferenceClustering.Community hidden =
+                    new StatisticalInferenceClustering.Community(structure);
                 for (Integer nodeInt : com.nodes) {
                     graphNodeSum += oldGraphNodeCount[nodeInt];
                     StatisticalInferenceClustering.Community oldHidden = invMap.get(nodeInt);
@@ -823,14 +827,14 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             String monitoring = "";
 
             for (StatisticalInferenceClustering.Community com : communities) {
-                monitoring += "com"+com.id+"[";
+                monitoring += "com" + com.id + "[";
                 int count = 0;
                 for (Integer node : com.nodes) {
                     StatisticalInferenceClustering.Community hidden = invMap.get(node);
-                    if (count++>0) {
+                    if (count++ > 0) {
                         monitoring += " ";
                     }
-                    monitoring += "n"+node+"("+hidden.getMonitoring()+")";
+                    monitoring += "n" + node + "(" + hidden.getMonitoring() + ")";
                 }
                 monitoring += "]  ";
             }
@@ -849,10 +853,10 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
             // Check the integrity of nodeConnectionsWeight
             double nodeComWeightSum = 0;
-            for (int node=0; node<nodeConnectionsWeight.length; node++) {
+            for (int node = 0; node < nodeConnectionsWeight.length; node++) {
                 HashMap<StatisticalInferenceClustering.Community, Float> hm = nodeConnectionsWeight[node];
                 Collection<Float> values = hm.values();
-                nodeComWeightSum += values.stream().mapToDouble(v -> (double)v).sum();
+                nodeComWeightSum += values.stream().mapToDouble(v -> (double) v).sum();
             }
 
             // TODO: what should be done, in fact,
@@ -924,8 +928,8 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         public String getMonitoring() {
             String monitoring = "";
             int count = 0;
-            for (int nodeIndex: nodes) {
-                if (count++>0) {
+            for (int nodeIndex : nodes) {
+                if (count++ > 0) {
                     monitoring += " ";
                 }
                 monitoring += nodeIndex;

@@ -639,7 +639,7 @@ public class StatisticalInferenceTest extends TestCase {
 
         double targetDescLength = 1850.2102335828238;
         double errorMargin = 0.1;
-        assertEquals(targetDescLength, descriptionLength, errorMargin*targetDescLength);
+        assertEquals(targetDescLength, descriptionLength, errorMargin * targetDescLength);
     }
 
     @Test
@@ -653,7 +653,7 @@ public class StatisticalInferenceTest extends TestCase {
 
         double targetDescLength = 150.10880360418344;
         double errorMargin = 0.01;
-        assertEquals(targetDescLength, descriptionLength, errorMargin*targetDescLength);
+        assertEquals(targetDescLength, descriptionLength, errorMargin * targetDescLength);
     }
 
     @Test
@@ -667,7 +667,7 @@ public class StatisticalInferenceTest extends TestCase {
 
         double targetDescLength = 229.04187438186472;
         double errorMargin = 0.1;
-        assertEquals(targetDescLength, descriptionLength, errorMargin*targetDescLength);
+        assertEquals(targetDescLength, descriptionLength, errorMargin * targetDescLength);
     }
 
     @Test
