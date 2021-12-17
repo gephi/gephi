@@ -553,11 +553,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-progress</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-branding</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1382,7 +1377,6 @@
         <module>modules/DesktopLayout</module>
         <module>modules/DesktopAppearance</module>
         <module>modules/DesktopPreview</module>
-        <module>modules/DesktopProgress</module>
         <module>modules/DesktopProject</module>
         <module>modules/DesktopStatistics</module>
         <module>modules/DesktopTools</module>
