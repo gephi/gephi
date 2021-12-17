@@ -341,10 +341,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-propertyeditor</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>layout-plugin</artifactId>
         </dependency>
         <dependency>

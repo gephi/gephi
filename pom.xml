@@ -603,11 +603,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-propertyeditor</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>layout-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
