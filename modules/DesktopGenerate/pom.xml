@@ -30,10 +30,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io-processor-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>project-api</artifactId>
         </dependency>
         <dependency>

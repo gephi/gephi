@@ -40,7 +40,7 @@ Contributor(s):
 Portions Copyrighted 2017 Gephi Consortium.
  */
 
-package org.gephi.io.importer.impl;
+package org.gephi.io.importer.plugin;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -56,6 +56,7 @@ import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
+import org.gephi.io.importer.impl.ImportContainerImpl;
 import org.gephi.io.processor.plugin.MergeProcessor;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;

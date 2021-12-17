@@ -483,16 +483,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>io-processor-plugin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>processor-plugin-ui</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>project-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1441,8 +1431,6 @@
         <module>modules/PreviewExport</module>
         <module>modules/PreviewExportUI</module>
         <module>modules/PreviewPlugin</module>
-        <module>modules/ProcessorPlugin</module>
-        <module>modules/ProcessorPluginUI</module>
         <module>modules/ProjectAPI</module>
         <module>modules/ProjectUI</module>
         <module>modules/SettingsUpgrader</module>
