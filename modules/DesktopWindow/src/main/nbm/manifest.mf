@@ -4,4 +4,4 @@ OpenIDE-Module-Install: org/gephi/desktop/banner/Installer.class
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/banner/Bundle.properties
 OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}
 OpenIDE-Module-Display-Category: Gephi UI
-OpenIDE-Module-Name: Desktop Banner
+OpenIDE-Module-Name: Desktop Window

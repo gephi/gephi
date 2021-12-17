@@ -653,7 +653,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-banner</artifactId>
+                <artifactId>desktop-window</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1366,7 +1366,7 @@
         <module>modules/DataLaboratoryAPI</module>
         <module>modules/DataLaboratoryPlugin</module>
         <module>modules/DBDrivers</module>
-        <module>modules/DesktopBanner</module>
+        <module>modules/DesktopWindow</module>
         <module>modules/DesktopBranding</module>
         <module>modules/DesktopContext</module>
         <module>modules/DesktopDataLaboratory</module>

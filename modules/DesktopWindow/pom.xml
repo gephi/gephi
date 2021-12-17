@@ -8,11 +8,11 @@
 		<relativePath>../..</relativePath>
     </parent>
 
-    <artifactId>desktop-banner</artifactId>
+    <artifactId>desktop-window</artifactId>
     <version>0.9.3-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
-    <name>DesktopBanner</name>
+    <name>DesktopWindow</name>
 
     <dependencies>
         <dependency>
