@@ -52,16 +52,20 @@
             <artifactId>org-openide-windows</artifactId>
         </dependency>
         <dependency>
-            <artifactId>org-openide-util</artifactId>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
         </dependency>
         <dependency>
-            <artifactId>org-openide-util-lookup</artifactId>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-ui</artifactId>
         </dependency>
     </dependencies>
 
