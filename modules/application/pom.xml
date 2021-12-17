@@ -213,10 +213,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>lib.validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>preview-export-ui</artifactId>
         </dependency>
         <dependency>

@@ -443,11 +443,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>lib.validation</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>preview-export-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1438,7 +1433,6 @@
         <module>modules/UIPropertyEditor</module>
         <module>modules/UIUtils</module>
         <module>modules/Utils</module>
-        <module>modules/ValidationAPI</module>
         <module>modules/VisualizationAPI</module>
         <module>modules/VisualizationImpl</module>
         <module>modules/WelcomeScreen</module>

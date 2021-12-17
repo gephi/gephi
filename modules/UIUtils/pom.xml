@@ -8,7 +8,6 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.gephi</groupId>
     <artifactId>ui-utils</artifactId>
     <version>0.9.3-SNAPSHOT</version>
     <packaging>nbm</packaging>
@@ -30,11 +29,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>lib.validation</artifactId>
+            <artifactId>core-library-wrapper</artifactId>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>core-library-wrapper</artifactId>
+            <groupId>org.netbeans</groupId>
+            <artifactId>simple-validation</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 
@@ -46,6 +46,8 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.gephi.ui.utils</publicPackage>
+                        <publicPackage>org.gephi.lib.validation</publicPackage>
+                        <publicPackage>org.netbeans.validation.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

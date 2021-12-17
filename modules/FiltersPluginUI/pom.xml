@@ -8,7 +8,6 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.gephi</groupId>
     <artifactId>filters-plugin-ui</artifactId>
     <version>0.9.3-SNAPSHOT</version>
     <packaging>nbm</packaging>
@@ -38,7 +37,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>lib.validation</artifactId>
+            <artifactId>ui-utils</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
