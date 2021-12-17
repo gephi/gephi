@@ -658,11 +658,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-recent-files</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-io-export</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1404,7 +1399,6 @@
         <module>modules/DesktopPreview</module>
         <module>modules/DesktopProgress</module>
         <module>modules/DesktopProject</module>
-        <module>modules/DesktopRecentFiles</module>
         <module>modules/DesktopStatistics</module>
         <module>modules/DesktopTools</module>
         <module>modules/DesktopTimeline</module>

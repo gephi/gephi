@@ -385,10 +385,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-recent-files</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>desktop-io-export</artifactId>
         </dependency>
         <dependency>
