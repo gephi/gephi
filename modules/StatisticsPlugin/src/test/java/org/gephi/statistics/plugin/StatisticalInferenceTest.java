@@ -628,6 +628,8 @@ public class StatisticalInferenceTest extends TestCase {
         assertEquals(descriptionLength_before, descriptionLength_after, 0.00001);
     }
 
+    /*
+    // This test is not unitary enough, it may randomly fail by design. Useful for debugging though.
     @Test
     public void testMinimizationHeuristic_football() {
         GraphModel graphModel = GraphImporter.importGraph(DummyTest.class, "football.graphml");
@@ -641,6 +643,7 @@ public class StatisticalInferenceTest extends TestCase {
         double errorMargin = 0.1;
         assertEquals(targetDescLength, descriptionLength, errorMargin * targetDescLength);
     }
+     */
 
     @Test
     public void testMinimizationHeuristic_5cliques() {
