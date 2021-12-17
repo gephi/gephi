@@ -478,11 +478,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>project-ui</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>ui-utils</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1416,7 +1411,6 @@
         <module>modules/PreviewExportUI</module>
         <module>modules/PreviewPlugin</module>
         <module>modules/ProjectAPI</module>
-        <module>modules/ProjectUI</module>
         <module>modules/SettingsUpgrader</module>
         <module>modules/StatisticsAPI</module>
         <module>modules/StatisticsPlugin</module>
@@ -1425,7 +1419,6 @@
         <module>modules/ToolsAPI</module>
         <module>modules/ToolsPlugin</module>
         <module>modules/UIComponents</module>
-        <module>modules/UIPropertyEditor</module>
         <module>modules/UIUtils</module>
         <module>modules/Utils</module>
         <module>modules/VisualizationAPI</module>
