@@ -25,6 +25,14 @@
         <skipAppleNotarization>true</skipAppleNotarization>
     </properties>
 
+    <!-- For site only -->
+    <distributionManagement>
+        <site>
+            <id>github</id>
+            <url>scm:git:ssh://git@github.com/gephi/gephi.git</url>
+        </site>
+    </distributionManagement>
+
     <!-- Dependencies -->
     <dependencies>
         <dependency>
@@ -1126,43 +1134,15 @@
             <id>push-site</id>
             <build>
                 <plugins>
-                    <!-- Copy parent's site into target/site -->
-                    <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>site</phase>
-                                <configuration>
-                                    <target>
-                                        <copy todir="${project.build.directory}/site">
-                                            <fileset dir="${basedir}/../../target/site"/>
-                                        </copy>
-                                    </target>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
                     <!-- Publish site folder to GitHub's gh-pages branch -->
                     <plugin>
-                        <groupId>com.github.github</groupId>
-                        <artifactId>site-maven-plugin</artifactId>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-publish-plugin</artifactId>
                         <configuration>
-                            <message>Creating site for ${project.version}</message>
-                            <path>${project.version}</path>
-                            <merge>true</merge>
+                            <scmBranch>gh-pages</scmBranch>
+                            <checkinComment>Creating site for ${project.version}</checkinComment>
+                            <subDirectory>${project.version}</subDirectory>
                         </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>site</goal>
-                                </goals>
-                                <phase>site</phase>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

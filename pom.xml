@@ -187,9 +187,6 @@
         <!-- Installers settings -->
         <gephi.menu.app.name>Gephi ${project.version}</gephi.menu.app.name>
         <gephi.innosetup.path>C:/Program Files (x86)/Inno Setup 6</gephi.innosetup.path>
-        
-        <!-- GitHub site-plugin authentication -->
-        <github.global.server>github</github.global.server>
 
         <!-- Run Maven with '-Dkeystorepassword=' to specify the passphrase -->
         <keystore.password/>
@@ -252,7 +249,7 @@
         
         <gephi.nexus-staging-maven-plugin.version>1.6.8</gephi.nexus-staging-maven-plugin.version>
         
-        <gephi.site-maven-plugin.version>0.12</gephi.site-maven-plugin.version>
+        <gephi.scm-publish-plugin.version>3.1.0</gephi.scm-publish-plugin.version>
         
         <gephi.versions-maven-plugin.version>2.8.1</gephi.versions-maven-plugin.version>
 
@@ -898,9 +895,9 @@
                     <version>${gephi.nexus-staging-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>com.github.github</groupId>
-                    <artifactId>site-maven-plugin</artifactId>
-                    <version>${gephi.site-maven-plugin.version}</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-publish-plugin</artifactId>
+                    <version>${gephi.scm-publish-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -1027,6 +1024,7 @@
                         <phase>site</phase>
                         <goals>
                             <goal>site</goal>
+                            <goal>stage</goal>
                         </goals>
                         <configuration>
                             <skip>true</skip>
