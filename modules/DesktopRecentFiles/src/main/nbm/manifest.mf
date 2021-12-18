@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module-Layer: org/gephi/desktop/recentfiles/layer.xml
-OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/recentfiles/Bundle.properties
-AutoUpdate-Essential-Module: true
-OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}
-OpenIDE-Module-Display-Category: Gephi UI
-OpenIDE-Module-Name: Desktop RecentFiles

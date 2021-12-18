@@ -11,7 +11,6 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.gephi</groupId>
     <artifactId>gephi</artifactId>
     <packaging>nbm-application</packaging>
     <version>0.9.3-SNAPSHOT</version>
@@ -184,10 +183,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>gephi-branding</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-nbjunit</artifactId>
             <scope>test</scope>
@@ -218,10 +213,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>lib.validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>preview-export-ui</artifactId>
         </dependency>
         <dependency>
@@ -247,18 +238,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-importer-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>io-processor-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>processor-plugin-ui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>project-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -298,10 +277,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>gleem</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>mostrecentfiles-api</artifactId>
         </dependency>
         <dependency>
@@ -323,10 +298,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-progress</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -359,10 +330,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ui-propertyeditor</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -402,10 +369,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-recent-files</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>desktop-io-export</artifactId>
         </dependency>
         <dependency>
@@ -418,7 +381,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-banner</artifactId>
+            <artifactId>desktop-window</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

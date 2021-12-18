@@ -413,11 +413,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>gephi-branding</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>utils-longtask</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -444,11 +439,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>io-exporter-preview</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>lib.validation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -484,21 +474,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>io-importer-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>io-processor-plugin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>processor-plugin-ui</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>project-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -548,11 +523,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>gleem</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>mostrecentfiles-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -579,11 +549,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-context</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-progress</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -624,11 +589,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>filters-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>ui-propertyeditor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -678,11 +638,6 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-recent-files</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>desktop-io-export</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -698,7 +653,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>desktop-banner</artifactId>
+                <artifactId>desktop-window</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1402,7 +1357,6 @@
                 
     <!-- List of modules -->
     <modules>
-        <module>modules/branding</module>
         <module>modules/application</module>
         <module>modules/AlgorithmsPlugin</module>
         <module>modules/AppearanceAPI</module>
@@ -1412,7 +1366,7 @@
         <module>modules/DataLaboratoryAPI</module>
         <module>modules/DataLaboratoryPlugin</module>
         <module>modules/DBDrivers</module>
-        <module>modules/DesktopBanner</module>
+        <module>modules/DesktopWindow</module>
         <module>modules/DesktopBranding</module>
         <module>modules/DesktopContext</module>
         <module>modules/DesktopDataLaboratory</module>
@@ -1423,9 +1377,7 @@
         <module>modules/DesktopLayout</module>
         <module>modules/DesktopAppearance</module>
         <module>modules/DesktopPreview</module>
-        <module>modules/DesktopProgress</module>
         <module>modules/DesktopProject</module>
-        <module>modules/DesktopRecentFiles</module>
         <module>modules/DesktopStatistics</module>
         <module>modules/DesktopTools</module>
         <module>modules/DesktopTimeline</module>
@@ -1440,7 +1392,6 @@
         <module>modules/GeneratorAPI</module>
         <module>modules/GeneratorPlugin</module>
         <module>modules/GeneratorPluginUI</module>
-        <module>modules/Gleem</module>
         <module>modules/GraphAPI</module>
         <module>modules/ImportAPI</module>
         <module>modules/ImportPlugin</module>
@@ -1453,10 +1404,7 @@
         <module>modules/PreviewExport</module>
         <module>modules/PreviewExportUI</module>
         <module>modules/PreviewPlugin</module>
-        <module>modules/ProcessorPlugin</module>
-        <module>modules/ProcessorPluginUI</module>
         <module>modules/ProjectAPI</module>
-        <module>modules/ProjectUI</module>
         <module>modules/SettingsUpgrader</module>
         <module>modules/StatisticsAPI</module>
         <module>modules/StatisticsPlugin</module>
@@ -1465,10 +1413,8 @@
         <module>modules/ToolsAPI</module>
         <module>modules/ToolsPlugin</module>
         <module>modules/UIComponents</module>
-        <module>modules/UIPropertyEditor</module>
         <module>modules/UIUtils</module>
         <module>modules/Utils</module>
-        <module>modules/ValidationAPI</module>
         <module>modules/VisualizationAPI</module>
         <module>modules/VisualizationImpl</module>
         <module>modules/WelcomeScreen</module>
