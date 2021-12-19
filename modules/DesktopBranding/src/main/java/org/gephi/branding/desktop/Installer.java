@@ -64,6 +64,7 @@ import javax.swing.UIManager;
 import org.gephi.branding.desktop.reporter.ReporterHandler;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.ProjectController;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -90,6 +91,11 @@ public class Installer extends ModuleInstall {
 
         //GTK Slider issue #529913
         UIManager.put("Slider.paintValue", Boolean.FALSE);
+
+        //JTabbedPane issue JDK-8257595
+        if (UIUtils.isAquaLookAndFeel()) {
+            UIManager.put("TabbedPane.foreground", Color.BLACK);
+        }
 
         //Handler
         if (System.getProperty("org.gephi.crashReporter.enabled", "true").equals("true")) {
