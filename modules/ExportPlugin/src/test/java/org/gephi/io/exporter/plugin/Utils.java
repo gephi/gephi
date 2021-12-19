@@ -17,7 +17,7 @@ public class Utils {
     }
 
     private static String cleanString(String str) {
-        return str.replaceAll("[\\n\\t ]", "");
+        return str.replaceAll("[\\n\\t\\r ]", "");
     }
 
     public static String getResourceContent(String fileName) throws IOException {
