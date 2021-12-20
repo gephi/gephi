@@ -134,6 +134,12 @@ public class Installer extends ModuleInstall {
                 DragNDropFrameAdapter.register();
             }
         });
+
+        try {
+            Desktop.getDesktop().setOpenFileHandler(new ProjectOpenFilesHandler());
+        } catch (Exception e) {
+            Logger.getLogger(Installer.class.getName()).log(Level.WARNING, "Can't setup OpenFilesHandler", e);
+        }
     }
 
     @Override
