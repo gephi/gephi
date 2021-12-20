@@ -8,7 +8,6 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.gephi</groupId>
     <artifactId>datalab-plugin</artifactId>
     <version>0.9.3-SNAPSHOT</version>
     <packaging>nbm</packaging>
@@ -87,10 +86,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>lib.validation</artifactId>
         </dependency>
     </dependencies>
 

@@ -8,7 +8,6 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.gephi</groupId>
     <artifactId>io-importer-plugin</artifactId>
     <version>0.9.3-SNAPSHOT</version>
     <packaging>nbm</packaging>
@@ -21,6 +20,10 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>project-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>graph-api</artifactId>
@@ -70,16 +73,6 @@
 
         <!-- Test only -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>project-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>io-processor-plugin</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-modules-masterfs</artifactId>
             <scope>test</scope>
@@ -99,6 +92,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.gephi.io.importer.plugin.*</publicPackage>
+                        <publicPackage>org.gephi.io.processor.plugin</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

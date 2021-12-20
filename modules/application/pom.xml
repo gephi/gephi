@@ -11,7 +11,6 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.gephi</groupId>
     <artifactId>gephi</artifactId>
     <packaging>nbm-application</packaging>
     <version>0.9.3-SNAPSHOT</version>
@@ -25,6 +24,14 @@
         <skipCreateDmg>true</skipCreateDmg>
         <skipAppleNotarization>true</skipAppleNotarization>
     </properties>
+
+    <!-- For site only -->
+    <distributionManagement>
+        <site>
+            <id>github</id>
+            <url>scm:git:ssh://git@github.com/gephi/gephi.git</url>
+        </site>
+    </distributionManagement>
 
     <!-- Dependencies -->
     <dependencies>
@@ -184,10 +191,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>gephi-branding</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-nbjunit</artifactId>
             <scope>test</scope>
@@ -218,10 +221,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>lib.validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>preview-export-ui</artifactId>
         </dependency>
         <dependency>
@@ -247,18 +246,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io-importer-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>io-processor-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>processor-plugin-ui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>project-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -298,10 +285,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>gleem</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>mostrecentfiles-api</artifactId>
         </dependency>
         <dependency>
@@ -323,10 +306,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-progress</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -359,10 +338,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filters-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ui-propertyeditor</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -402,10 +377,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-recent-files</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>desktop-io-export</artifactId>
         </dependency>
         <dependency>
@@ -418,7 +389,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-banner</artifactId>
+            <artifactId>desktop-window</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -759,7 +730,19 @@
                                             <arg value="--timestamp"/>
                                             <arg value="--options"/>
                                             <arg value="runtime"/>
-                                            <arg value="${project.build.directory}/${brandingToken}/platform/modules/lib/libjnidispatch-nb.jnilib" />
+                                            <arg value="${project.build.directory}/${brandingToken}/platform/modules/lib/x86_64/libjnidispatch-nb.jnilib" />
+                                        </exec>
+                                        <exec dir="${project.build.directory}" os="Mac OS X" executable="codesign">
+                                            <arg value="--entitlements" />
+                                            <arg value="${project.build.directory}/Entitlements.plist" />
+                                            <arg value="--sign"/>
+                                            <arg value="${gephi.codesign.identity}"/>
+                                            <arg value="--deep"/>
+                                            <arg value="--force"/>
+                                            <arg value="--timestamp"/>
+                                            <arg value="--options"/>
+                                            <arg value="runtime"/>
+                                            <arg value="${project.build.directory}/${brandingToken}/platform/modules/lib/aarch64/libjnidispatch-nb.jnilib" />
                                         </exec>
 
                                         <!-- Create folders -->
@@ -1163,43 +1146,15 @@
             <id>push-site</id>
             <build>
                 <plugins>
-                    <!-- Copy parent's site into target/site -->
-                    <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>site</phase>
-                                <configuration>
-                                    <target>
-                                        <copy todir="${project.build.directory}/site">
-                                            <fileset dir="${basedir}/../../target/site"/>
-                                        </copy>
-                                    </target>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
                     <!-- Publish site folder to GitHub's gh-pages branch -->
                     <plugin>
-                        <groupId>com.github.github</groupId>
-                        <artifactId>site-maven-plugin</artifactId>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-publish-plugin</artifactId>
                         <configuration>
-                            <message>Creating site for ${project.version}</message>
-                            <path>${project.version}</path>
-                            <merge>true</merge>
+                            <scmBranch>gh-pages</scmBranch>
+                            <checkinComment>Creating site for ${project.version}</checkinComment>
+                            <subDirectory>${project.version}</subDirectory>
                         </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>site</goal>
-                                </goals>
-                                <phase>site</phase>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

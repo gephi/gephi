@@ -61,11 +61,6 @@
             <artifactId>io-importer-plugin</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>io-processor-plugin</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
