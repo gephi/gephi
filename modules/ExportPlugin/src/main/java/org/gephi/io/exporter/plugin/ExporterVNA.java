@@ -47,6 +47,7 @@ import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.ColumnIterable;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
@@ -154,8 +155,10 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
      */
 
     private boolean atLeastOneNonStandartAttribute(GraphModel graphModel) {
-        for (Column col : graphModel.getNodeTable()) {
+        ColumnIterable columnIterable = graphModel.getNodeTable();
+        for (Column col : columnIterable) {
             if (!col.isProperty()) {
+                columnIterable.doBreak();
                 return true;
             }
         }
