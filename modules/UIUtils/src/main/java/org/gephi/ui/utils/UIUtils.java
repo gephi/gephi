@@ -52,7 +52,11 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
 import java.awt.image.PixelGrabber;
+import java.awt.image.RGBImageFilter;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.AbstractButton;
 import javax.swing.JLabel;
@@ -561,5 +565,50 @@ public final class UIUtils {
         }
 
         return result[0];
+    }
+
+    public static Image generateSelectedDarkImage(final Image image) {
+        final ImageFilter filter =  new IconImageFilter() {
+            @Override
+            int getGreyFor(final int gray) {
+                return gray * 75 / 100;
+            }
+        };
+        return map(image, filter);
+    }
+
+    static Image generateFilteredImage(Image image, ImageFilter filter) {
+        final ImageProducer prod = new FilteredImageSource(image.getSource(), filter);
+        return Toolkit.getDefaultToolkit().createImage(prod);
+    }
+
+    private static Image map(Image image, ImageFilter filter) {
+        return generateFilteredImage(image, filter);
+    }
+
+    private abstract static class IconImageFilter extends RGBImageFilter {
+        IconImageFilter() {
+            super();
+            canFilterIndexColorModel = true;
+        }
+
+        @Override
+        public final int filterRGB(final int x, final int y, final int rgb) {
+            final int red = (rgb >> 16) & 0xff;
+            final int green = (rgb >> 8) & 0xff;
+            final int blue = rgb & 0xff;
+            final int gray = getGreyFor((int)((0.30 * red + 0.59 * green + 0.11 * blue) / 3));
+
+            return (rgb & 0xff000000) | (grayTransform(red, gray) << 16) | (grayTransform(green, gray) << 8) | (grayTransform(blue, gray) << 0);
+        }
+
+        private static int grayTransform(final int color, final int gray) {
+            int result = color - gray;
+            if (result < 0) result = 0;
+            if (result > 255) result = 255;
+            return result;
+        }
+
+        abstract int getGreyFor(int gray);
     }
 }
