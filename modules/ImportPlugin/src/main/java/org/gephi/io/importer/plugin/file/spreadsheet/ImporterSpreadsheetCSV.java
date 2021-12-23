@@ -117,7 +117,8 @@ public class ImporterSpreadsheetCSV extends AbstractImporterSpreadsheet {
     private void autoDetectFieldDelimiter() {
         //Very simple naive detector but should work in most cases:
         try (LineNumberReader reader = ImportUtils.getTextReader(FileUtil.toFileObject(file))) {
-            String line = reader.readLine();
+            String line = reader.readLine().trim()
+                .replaceAll(" , ", ",").replaceAll(" ; ", ";");
 
             //Check for typical delimiter chars in the header
             int commaCount = 0;
