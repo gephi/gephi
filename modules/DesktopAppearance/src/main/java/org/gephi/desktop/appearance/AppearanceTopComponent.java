@@ -232,7 +232,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                         }
 
                         if (transformerPanel != null) {
-                            transformerPanel.setOpaque(false);
+                            transformerPanel.setOpaque(true);
                             centerPanel.add(transformerPanel, BorderLayout.CENTER);
                         }
 
@@ -508,10 +508,11 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         setLayout(new java.awt.BorderLayout());
 
         mainPanel.setLayout(new java.awt.GridBagLayout());
+        mainPanel.setOpaque(true);
 
         categoryToolbar.setFloatable(false);
         categoryToolbar.setRollover(true);
-        categoryToolbar.setOpaque(false);
+        categoryToolbar.setOpaque(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -522,7 +523,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
         tranformerToolbar.setFloatable(false);
         tranformerToolbar.setRollover(true);
-        tranformerToolbar.setOpaque(false);
+        tranformerToolbar.setOpaque(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -531,7 +532,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.weightx = 1.0;
         mainPanel.add(tranformerToolbar, gridBagConstraints);
 
-        attributePanel.setOpaque(false);
+        attributePanel.setOpaque(true);
         attributePanel.setLayout(new java.awt.GridBagLayout());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -550,7 +551,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.weightx = 1.0;
         mainPanel.add(attributePanel, gridBagConstraints);
 
-        centerPanel.setOpaque(false);
+        centerPanel.setOpaque(true);
         centerPanel.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -563,13 +564,15 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         controlToolbar.setFloatable(false);
         controlToolbar.setRollover(true);
         controlToolbar.setMargin(new java.awt.Insets(0, 4, 0, 0));
-        controlToolbar.setOpaque(false);
+        controlToolbar.setOpaque(true);
 
         localScaleButton.setIcon(new javax.swing.ImageIcon(
             getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png"))); // NOI18N
         localScaleButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.localScaleButton.toolTipText")); // NOI18N
         localScaleButton.setFocusable(false);
+        localScaleButton.setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png")).getImage())))); // NOI18N
         controlToolbar.add(localScaleButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle
@@ -592,7 +595,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 3);
         mainPanel.add(controlToolbar, gridBagConstraints);
 
-        controlPanel.setOpaque(false);
+        controlPanel.setOpaque(true);
         controlPanel.setLayout(new java.awt.GridBagLayout());
 
         applyButton.setIcon(new javax.swing.ImageIcon(
@@ -629,7 +632,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
         autoApplyToolbar.setFloatable(false);
         autoApplyToolbar.setRollover(true);
-        autoApplyToolbar.setOpaque(false);
+        autoApplyToolbar.setOpaque(true);
 
         enableAutoButton.setIcon(new javax.swing.ImageIcon(
             getClass().getResource("/org/gephi/desktop/appearance/resources/chain.png"))); // NOI18N

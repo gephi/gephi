@@ -245,6 +245,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
             setRollover(true);
             Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
             setBorder(b);
+            setOpaque(true);
         }
 
         @Override

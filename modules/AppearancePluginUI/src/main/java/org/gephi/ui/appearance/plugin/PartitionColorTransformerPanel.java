@@ -100,9 +100,6 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
     public PartitionColorTransformerPanel() {
         initComponents();
         palettePopupButton = new PalettePopupButton();
-        if (UIUtils.isAquaLookAndFeel()) {
-            backPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
-        }
     }
 
     public JButton getPaletteButton() {
