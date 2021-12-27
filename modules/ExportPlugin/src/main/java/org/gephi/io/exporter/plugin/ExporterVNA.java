@@ -223,8 +223,8 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             minY = Math.min(minY, node.y());
             maxY = Math.max(maxY, node.y());
 
-            minSize = Math.min(minSize, node.r());
-            maxSize = Math.max(maxSize, node.r());
+            minSize = Math.min(minSize, node.size());
+            maxSize = Math.max(maxSize, node.size());
         }
     }
 
