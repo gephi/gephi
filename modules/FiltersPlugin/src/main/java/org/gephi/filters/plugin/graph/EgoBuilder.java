@@ -127,21 +127,21 @@ public class EgoBuilder implements FilterBuilder {
 
             Set<Node> result = new HashSet<>();
 
-            Set<Node> neighbours = new HashSet<>();
-            neighbours.addAll(nodes);
+            Set<Node> neighbours = new HashSet<>(nodes);
 
             for (int i = 0; i < depth; i++) {
+                boolean newNodes = false;
                 Node[] nei = neighbours.toArray(new Node[0]);
                 neighbours.clear();
                 for (Node n : nei) {
                     for (Node neighbor : graph.getNeighbors(n)) {
                         if (!result.contains(neighbor)) {
                             neighbours.add(neighbor);
-                            result.add(neighbor);
+                            newNodes = result.add(neighbor) || newNodes;
                         }
                     }
                 }
-                if (neighbours.isEmpty()) {
+                if (!newNodes || neighbours.isEmpty()) {
                     break;
                 }
             }
