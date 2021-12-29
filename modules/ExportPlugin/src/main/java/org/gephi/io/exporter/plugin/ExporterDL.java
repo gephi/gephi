@@ -168,12 +168,14 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
         HashSet<String> labelUsed = new HashSet<>();
         //edgelist format forbids equal nodes
         if (useLabels) {
-            for (Node node : graph.getNodes()) {
+            NodeIterable nodeIterable = graph.getNodes();
+            for (Node node : nodeIterable) {
                 if (labelUsed.contains(node.getLabel())) {
                     for (int i = 0; ; i++) {
                         if (!labelUsed.contains(node.getLabel() + "_" + i)) {
                             idToLabel.put(node.getId(), node.getLabel() + "_" + i);
                             labelUsed.add(node.getLabel() + "_" + i);
+                            nodeIterable.doBreak();
                             break;
                         }
                     }
