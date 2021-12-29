@@ -75,6 +75,13 @@ public interface ContainerUnloader {
     boolean hasEdgeColumn(String key);
 
     /**
+     * Returns true if the container contains nodes that were auto-created from edges.
+     *
+     * @return true if contains auto nodes, false otherwise
+     */
+    boolean containsAutoNodes();
+
+    /**
      * Returns the node column draft with <code>key</code> as identifier.
      *
      * @param key node column key
