@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.gephi.io.importer.api.Container;
-import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.ElementDraft;
 import org.gephi.io.importer.api.NodeDraft;
@@ -36,8 +35,14 @@ public class Utils {
 
     public static void assertSameIds(ElementDraft[] actual, String... ids) {
         Assert.assertEquals(ids.length, actual.length);
-        Assert.assertEquals(Arrays.stream(actual).map(ElementDraft::getId).collect(Collectors.toSet()),
-            new HashSet<>(Arrays.asList(ids)));
+        Assert.assertEquals(new HashSet<>(Arrays.asList(ids)),
+            Arrays.stream(actual).map(ElementDraft::getId).collect(Collectors.toSet()));
+    }
+
+    public static void assertSameLabels(ElementDraft[] actual, String... labels) {
+        Assert.assertEquals(labels.length, actual.length);
+        Assert.assertEquals(new HashSet<>(Arrays.asList(labels)),
+            Arrays.stream(actual).map(ElementDraft::getLabel).collect(Collectors.toSet()));
     }
 
     public static Reader getReader(String fileName) {
