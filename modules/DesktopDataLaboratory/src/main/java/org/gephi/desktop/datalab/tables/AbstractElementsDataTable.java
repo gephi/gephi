@@ -215,7 +215,7 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
         return table;
     }
 
-    public boolean setFilterPattern(String regularExpr, int column) {
+    public boolean setFilterPattern(String regularExpr, final int column) {
         try {
             if (Objects.equals(filterPattern, regularExpr)) {
                 return true;
@@ -228,7 +228,17 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
                 if (!regularExpr.startsWith("(?i)")) {   //CASE_INSENSITIVE
                     regularExpr = "(?i)" + regularExpr;
                 }
-                RowFilter rowFilter = RowFilter.regexFilter(regularExpr, column);
+                List<RowFilter<Object,Object>> filters = new ArrayList<>(2);
+                // Not null values
+                filters.add(new RowFilter<>() {
+                    @Override
+                    public boolean include(Entry<?, ?> entry) {
+                        return entry.getValue(column) != null;
+                    }
+                });
+                filters.add(RowFilter.regexFilter(regularExpr, column));
+                RowFilter<Object, Object> rowFilter = RowFilter.andFilter(filters);
+
                 table.setRowFilter(rowFilter);
             }
         } catch (PatternSyntaxException e) {
