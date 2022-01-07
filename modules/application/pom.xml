@@ -627,7 +627,7 @@
                                         </exec>
 
                                         <!-- Download JRE (Windows) -->
-                                        <exec dir="${project.build.directory}" os="Windows" executable="curl">
+                                        <exec dir="${project.build.directory}" osfamily="windows" executable="curl">
                                             <arg line="-L"/>
                                             <arg line="-C"/>
                                             <arg line="-"/>
