@@ -69,6 +69,7 @@ import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
+import org.openide.util.Utilities;
 import org.openide.windows.IOColorLines;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
@@ -135,10 +136,12 @@ public class Installer extends ModuleInstall {
             }
         });
 
-        try {
-            Desktop.getDesktop().setOpenFileHandler(new ProjectOpenFilesHandler());
-        } catch (Exception e) {
-            Logger.getLogger(Installer.class.getName()).log(Level.WARNING, "Can't setup OpenFilesHandler", e);
+        if(Utilities.isMac()) {
+            try {
+                Desktop.getDesktop().setOpenFileHandler(new ProjectOpenFilesHandler());
+            } catch (Exception e) {
+                Logger.getLogger(Installer.class.getName()).log(Level.WARNING, "Can't setup OpenFilesHandler", e);
+            }
         }
     }
 
