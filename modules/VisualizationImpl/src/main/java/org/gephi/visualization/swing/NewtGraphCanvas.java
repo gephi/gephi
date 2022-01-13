@@ -47,7 +47,8 @@ import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
-import java.awt.Component;
+
+import java.awt.*;
 import javax.swing.JPopupMenu;
 import javax.swing.ToolTipManager;
 import org.gephi.ui.utils.UIUtils;
@@ -65,7 +66,8 @@ public class NewtGraphCanvas extends GLAbstractListener {
         super();
         glWindow = GLWindow.create(getCaps());
 //        glWindow.setSurfaceScale(new float[]{ScalableSurface.AUTOMAX_PIXELSCALE, ScalableSurface.AUTOMAX_PIXELSCALE});
-        glCanvas = new NewtCanvasAWT(glWindow);
+        glCanvas = new HighDPIFixCanvas(glWindow);
+//        glCanvas = new NewtCanvasAWT(glWindow);
 
         super.initDrawable(glWindow);
 //        glCanvas.setFocusable(true);
@@ -85,8 +87,8 @@ public class NewtGraphCanvas extends GLAbstractListener {
 
     @Override
     protected void init(GL2 gl) {
-        globalScale = glWindow.getCurrentSurfaceScale(new float[2])[0];
-
+//        globalScale = glWindow.getCurrentSurfaceScale(new float[2])[0];
+        globalScale = (float) glCanvas.getGraphicsConfiguration().getDefaultTransform().getScaleX();
         engine.startDisplay();
     }
 
@@ -97,6 +99,13 @@ public class NewtGraphCanvas extends GLAbstractListener {
             // Workaround for JOGL bug 1274
             glCanvas.setNEWTChild(null);
             glCanvas.setNEWTChild(glWindow);
+        } else {
+            // Fix issue when closing the collapse panel
+            Container c = graphComponent.getParent();
+            if (c != null) {
+                c.remove(graphComponent);
+                c.add(graphComponent, BorderLayout.CENTER);
+            }
         }
     }
 
@@ -137,5 +146,29 @@ public class NewtGraphCanvas extends GLAbstractListener {
     public void destroy() {
         super.destroy();
         glCanvas.getNEWTChild().destroy();
+    }
+
+    public class HighDPIFixCanvas extends NewtCanvasAWT {
+
+
+        public HighDPIFixCanvas(GLWindow glWindow) {
+            super(glWindow);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            Dimension d = super.getPreferredSize();
+            return new Dimension(d.width, d.height);
+        }
+
+        @Override
+        public int getWidth() {
+            return (int) (super.getWidth() * getGlobalScale());
+        }
+
+        @Override
+        public int getHeight() {
+            return (int) (super.getHeight() * getGlobalScale());
+        }
     }
 }
