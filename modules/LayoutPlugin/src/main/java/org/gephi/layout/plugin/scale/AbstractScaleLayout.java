@@ -87,11 +87,13 @@ public abstract class AbstractScaleLayout extends AbstractLayout implements Layo
             yMean /= graph.getNodeCount();
 
             for (Node n : graph.getNodes()) {
-                double dx = (n.x() - xMean) * getScale();
-                double dy = (n.y() - yMean) * getScale();
+                if (!n.isFixed()) {
+                    double dx = (n.x() - xMean) * getScale();
+                    double dy = (n.y() - yMean) * getScale();
 
-                n.setX((float) (xMean + dx));
-                n.setY((float) (yMean + dy));
+                    n.setX((float) (xMean + dx));
+                    n.setY((float) (yMean + dy));
+                }
             }
             setConverged(true);
         } finally {

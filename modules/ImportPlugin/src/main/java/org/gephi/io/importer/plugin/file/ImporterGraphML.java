@@ -57,6 +57,7 @@ import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDirectionDefault;
 import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.ElementDraft;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.PropertiesAssociations;
@@ -94,6 +95,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
     private static final String ATTRIBUTE_FOR = "for";
     private static final String ATTVALUE = "data";
     private static final String ATTVALUE_FOR = "key";
+    private static final String DESC = "desc";
     private final PropertiesAssociations properties = new PropertiesAssociations();
     private final HashMap<String, NodeProperties> nodePropertiesAttributes = new HashMap<>();
     private final HashMap<String, EdgeProperties> edgePropertiesAttributes = new HashMap<>();
@@ -262,6 +264,8 @@ public class ImporterGraphML implements FileImporter, LongTask {
                         readNodeAttValue(reader, node);
                     } else if (NODE.equalsIgnoreCase(name)) {
                         readNode(reader, node);
+                    } else if (DESC.equals(name)) {
+                        readDesc(reader, node);
                     }
                     break;
 
@@ -379,6 +383,31 @@ public class ImporterGraphML implements FileImporter, LongTask {
         }
     }
 
+    private void readDesc(XMLStreamReader reader, ElementDraft element) throws Exception {
+        StringBuilder value = new StringBuilder();
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int xmltype = reader.next();
+
+            switch (xmltype) {
+                case XMLStreamReader.CHARACTERS:
+                    if (!xmlReader.isWhiteSpace()) {
+                        value.append(xmlReader.getText());
+                    }
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    if (DESC.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        end = true;
+                    }
+                    break;
+            }
+        }
+
+        if (!value.toString().isEmpty()) {
+            element.setLabel(value.toString());
+        }
+    }
+
     private void readEdge(XMLStreamReader reader) throws Exception {
         String id = "";
         String source = "";
@@ -441,8 +470,11 @@ public class ImporterGraphML implements FileImporter, LongTask {
 
             switch (elemType) {
                 case XMLStreamReader.START_ELEMENT:
-                    if (ATTVALUE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                    String name = xmlReader.getLocalName();
+                    if (ATTVALUE.equalsIgnoreCase(name)) {
                         readEdgeAttValue(reader, edge);
+                    } else if (DESC.equals(name)) {
+                        readDesc(reader, edge);
                     }
                     break;
 

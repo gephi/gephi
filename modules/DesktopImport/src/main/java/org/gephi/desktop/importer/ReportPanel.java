@@ -446,6 +446,12 @@ public class ReportPanel extends javax.swing.JPanel {
                     //NOOP
                 }
 
+                // Create Missing Nodes Checkbox should be disabled if no missing nodes found
+                createMissingNodesCheckbox.setEnabled(containers[0].getUnloader().containsAutoNodes());
+
+                // Self-Loop Checkbox should be disabled if no self loops found
+                selfLoopCheckBox.setEnabled(containers[0].hasSelfLoops());
+
                 autoscaleCheckbox.setSelected(autoscalePref);
                 selfLoopCheckBox.setSelected(selfLoopPref);
                 createMissingNodesCheckbox.setSelected(createMissingNodesPref);

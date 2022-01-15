@@ -1004,6 +1004,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return lastEdgeType;
     }
 
+    @Override
+    public boolean containsAutoNodes() {
+        return reportedUnknownNode;
+    }
+
     //Utility
     private int getEdgeType(Object type) {
         //Verify

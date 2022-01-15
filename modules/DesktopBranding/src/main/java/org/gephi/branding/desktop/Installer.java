@@ -64,10 +64,12 @@ import javax.swing.UIManager;
 import org.gephi.branding.desktop.reporter.ReporterHandler;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.ProjectController;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
+import org.openide.util.Utilities;
 import org.openide.windows.IOColorLines;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
@@ -90,6 +92,11 @@ public class Installer extends ModuleInstall {
 
         //GTK Slider issue #529913
         UIManager.put("Slider.paintValue", Boolean.FALSE);
+
+        //JTabbedPane issue JDK-8257595
+        if (UIUtils.isAquaLookAndFeel()) {
+            UIManager.put("TabbedPane.foreground", Color.BLACK);
+        }
 
         //Handler
         if (System.getProperty("org.gephi.crashReporter.enabled", "true").equals("true")) {
@@ -128,6 +135,14 @@ public class Installer extends ModuleInstall {
                 DragNDropFrameAdapter.register();
             }
         });
+
+        if(Utilities.isMac()) {
+            try {
+                Desktop.getDesktop().setOpenFileHandler(new ProjectOpenFilesHandler());
+            } catch (Exception e) {
+                Logger.getLogger(Installer.class.getName()).log(Level.WARNING, "Can't setup OpenFilesHandler", e);
+            }
+        }
     }
 
     @Override

@@ -81,8 +81,10 @@ public class RandomLayout extends AbstractLayout implements Layout {
         graph.readLock();
         try {
             for (Node n : graph.getNodes()) {
-                n.setX((float) (-size / 2 + size * random.nextDouble()));
-                n.setY((float) (-size / 2 + size * random.nextDouble()));
+                if (!n.isFixed()) {
+                    n.setX((float) (-size / 2 + size * random.nextDouble()));
+                    n.setY((float) (-size / 2 + size * random.nextDouble()));
+                }
             }
             converged = true;
         } finally {

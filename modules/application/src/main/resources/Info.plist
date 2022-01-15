@@ -51,7 +51,7 @@
                 <key>CFBundleTypeName</key>
                 <string>Gephi Project File</string>
                 <key>CFBundleTypeRole</key>
-                <string>Viewer</string>
+                <string>Editor</string>
             </dict>
             <dict>
                 <key>CFBundleTypeExtensions</key>
@@ -61,7 +61,7 @@
                 <key>CFBundleTypeName</key>
                 <string>GEXF Graph File</string>
                 <key>CFBundleTypeRole</key>
-                <string>Viewer</string>
+                <string>Editor</string>
             </dict>
         </array>
     </dict>

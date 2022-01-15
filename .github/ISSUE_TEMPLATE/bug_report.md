@@ -1,4 +1,15 @@
+---
+name: Bug report
+about: Create a report to help us improve Gephi
+title: ''
+labels: To review
+assignees: ''
+
+---
+
 <!--- Cannot find Java 1.8? Please check this https://github.com/gephi/gephi/issues/1787 and don't create a new issue -->
+
+<!-- Want to try the latest development version and see if the issue persists? Check https://github.com/gephi/gephi#nightly-builds -->
 
 ## Expected Behavior
 
