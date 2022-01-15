@@ -1,5 +1,6 @@
 package org.gephi.statistics.plugin;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import org.gephi.graph.api.*;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -282,6 +283,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             if (com != theStructure.nodeCommunities[node_id]) {
                 double deltaValue = delta(node_id, com, theStructure, e_in, e_out, E, B, N);
                 if (Double.isNaN(deltaValue)) {
+                    // TODO: change this to an exception
                     System.out.println(
                         "WARNING - ALGO ERROR - Statistical inference - DELTA is NaN (this is not supposed to happen)");
                 }
