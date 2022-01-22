@@ -1098,7 +1098,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (id == null) {
             throw new NullPointerException();
         }
-        if (id.trim().isEmpty()) {
+        if (id.isEmpty()) {
             throw new IllegalArgumentException("The id can't be empty");
         }
     }
