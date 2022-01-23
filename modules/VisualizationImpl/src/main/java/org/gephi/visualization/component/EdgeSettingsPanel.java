@@ -255,6 +255,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         labelScale = new javax.swing.JLabel();
         scaleSlider = new javax.swing.JSlider();
 
+        setOpaque(true);
         showEdgesCheckbox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         showEdgesCheckbox.setText(org.openide.util.NbBundle
             .getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.showEdgesCheckbox.text")); // NOI18N
@@ -272,7 +273,6 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         sourceNodeColorCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         sourceNodeColorCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
 
-        selectionColorPanel.setOpaque(false);
         selectionColorPanel.setLayout(new java.awt.GridBagLayout());
 
         selectionColorCheckbox.setText(org.openide.util.NbBundle
@@ -395,7 +395,6 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
         selectionColorPanel.add(labelBoth, gridBagConstraints);
 
-        scalePanel.setOpaque(false);
         scalePanel.setLayout(new java.awt.GridBagLayout());
 
         labelScale.setText(org.openide.util.NbBundle

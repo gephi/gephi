@@ -378,7 +378,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         hideNonSelectedCheckbox = new javax.swing.JCheckBox();
         configureLabelsButton = new javax.swing.JButton();
 
-        nodePanel.setOpaque(false);
+        nodePanel.setOpaque(true);
 
         showNodeLabelsCheckbox.setText(org.openide.util.NbBundle
             .getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.showNodeLabelsCheckbox.text")); // NOI18N
@@ -461,7 +461,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        edgePanel.setOpaque(false);
+        edgePanel.setOpaque(true);
 
         showEdgeLabelsCheckbox.setText(org.openide.util.NbBundle
             .getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.showEdgeLabelsCheckbox.text")); // NOI18N

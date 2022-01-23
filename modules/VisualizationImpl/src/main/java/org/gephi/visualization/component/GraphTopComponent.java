@@ -153,9 +153,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         if (tc != null) {
             if (VizController.getInstance().getVizConfig().isToolbar()) {
                 JPanel westPanel = new JPanel(new BorderLayout(0, 0));
-                if (UIUtils.isAquaLookAndFeel()) {
-                    westPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
-                }
 
                 toolbar = tc.getToolbar();
                 if (toolbar != null) {
