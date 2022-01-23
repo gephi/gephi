@@ -88,6 +88,7 @@ public class SelectionToolbar extends JToolBar {
                 }
             }
         });
+        mouseButton.setFocusPainted(false);
         add(mouseButton);
 
         //Rectangle
@@ -104,6 +105,7 @@ public class SelectionToolbar extends JToolBar {
                 }
             }
         });
+        rectangleButton.setFocusPainted(false);
         add(rectangleButton);
 
         //Drag
@@ -119,6 +121,7 @@ public class SelectionToolbar extends JToolBar {
                 }
             }
         });
+        dragButton.setFocusPainted(false);
         add(dragButton);
         addSeparator();
 
@@ -151,7 +154,7 @@ public class SelectionToolbar extends JToolBar {
         setFloatable(false);
         setOrientation(JToolBar.VERTICAL);
         putClientProperty("JToolBar.isRollover", Boolean.TRUE); //NOI18N
-        setOpaque(false);
+        setOpaque(true);
         setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
     }
 

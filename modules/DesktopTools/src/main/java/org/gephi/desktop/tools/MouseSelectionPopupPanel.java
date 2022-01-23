@@ -132,6 +132,8 @@ public class MouseSelectionPopupPanel extends javax.swing.JPanel {
         proportionnalZoomCheckbox = new javax.swing.JCheckBox();
 
         setLayout(new java.awt.GridBagLayout());
+        setOpaque(true);
+        diameterSlider.setOpaque(true);
 
         labelDiameter.setText(org.openide.util.NbBundle
             .getMessage(MouseSelectionPopupPanel.class, "MouseSelectionPopupPanel.labelDiameter.text")); // NOI18N

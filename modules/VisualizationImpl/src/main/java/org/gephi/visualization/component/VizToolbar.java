@@ -71,9 +71,7 @@ public class VizToolbar extends JToolBar {
         setFloatable(false);
         putClientProperty("JToolBar.isRollover", Boolean.TRUE); //NOI18N
         setBorder(BorderFactory.createEmptyBorder(2, 0, 4, 0));
-        if (UIUtils.isAquaLookAndFeel()) {
-            setBackground(UIManager.getColor("NbExplorerView.background"));
-        }
+        setOpaque(true);
     }
 
     public void setEnable(final boolean enabled) {
