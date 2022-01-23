@@ -116,7 +116,7 @@ public class Edit implements Tool {
 
             @Override
             public int getPosition() {
-                return 200;
+                return 10;
             }
         };
     }
