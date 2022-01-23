@@ -766,6 +766,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 .getMessage(ImportContainerImpl.class, "ImportContainerLog.MultiGraphCount", edgeTypeMap.size() - 1));
         }
 
+        //Check that not all alpha are zeros
+        checkColorAlpha(nodeList, "Node");
+        checkColorAlpha(edgeList, "Edge");
+
         return true;
     }
 
@@ -1083,6 +1087,25 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             return edgeList.get(opposites[0]);
         }
         return null;
+    }
+
+    private void checkColorAlpha(ObjectList<? extends ElementDraft> objectList, String elementType) {
+        if (!objectList.isEmpty()) {
+            int validElement = 0;
+            int withAlphaZero = 0;
+            for (ElementDraft element : objectList) {
+                if (element.getColor() != null) {
+                    validElement++;
+                    withAlphaZero += element.getColor().getAlpha() == 0 ? 1 : 0;
+                }
+            }
+            if (validElement > 0 && validElement == withAlphaZero) {
+                report.logIssue(new Issue(
+                    NbBundle.getMessage(ImportContainerImpl.class,
+                        "ImportContainerException_" + elementType + "_Color_Alpha_AllZero"),
+                    Level.WARNING));
+            }
+        }
     }
 
     private void checkElementDraftImpl(ElementDraft elmt) {
