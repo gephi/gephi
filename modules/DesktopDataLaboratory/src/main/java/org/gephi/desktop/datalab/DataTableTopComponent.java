@@ -218,9 +218,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
         controlToolbar.setBorder(b);
         if (UIUtils.isAquaLookAndFeel()) {
-            controlToolbar.setBackground(UIManager.getColor("NbExplorerView.background"));
+            controlToolbar.setOpaque(true);
         }
-
 
         //Init tables
         nodeTable = new NodesDataTable();
@@ -1314,6 +1313,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         columnManipulatorsPanel = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
+        setOpaque(true);
 
         controlToolbar.setFloatable(false);
         controlToolbar.setRollover(true);
