@@ -1094,7 +1094,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             int validElement = 0;
             int withAlphaZero = 0;
             for (ElementDraft element : objectList) {
-                if (element.getColor() != null) {
+                if (element != null && element.getColor() != null) {
                     validElement++;
                     withAlphaZero += element.getColor().getAlpha() == 0 ? 1 : 0;
                 }
