@@ -69,14 +69,6 @@
                     <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>org-netbeans-libs-osgi</artifactId>
-                    <groupId>org.netbeans.api</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-libs-felix</artifactId>
-                    <groupId>org.netbeans.modules</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>org-netbeans-libs-jsr223</artifactId>
                     <groupId>org.netbeans.api</groupId>
                 </exclusion>
@@ -87,10 +79,6 @@
                 <exclusion>
                     <artifactId>org-netbeans-libs-junit4</artifactId>
                     <groupId>org.netbeans.api</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-modules-core-kit</artifactId>
-                    <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
                     <artifactId>org-netbeans-modules-netbinox</artifactId>
@@ -110,14 +98,6 @@
                 </exclusion>
                 <exclusion>
                     <artifactId>org-netbeans-modules-editor-mimelookup-impl</artifactId>
-                    <groupId>org.netbeans.modules</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-modules-print</artifactId>
-                    <groupId>org.netbeans.api</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-modules-favorites</artifactId>
                     <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
