@@ -116,3 +116,5 @@ dev_id.cer
 **/.settings/**
 **/.classpath
 **/.factorypath
+modules/DesktopBranding/src/main/nbm-branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
+modules/DesktopBranding/src/main/nbm-branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/
