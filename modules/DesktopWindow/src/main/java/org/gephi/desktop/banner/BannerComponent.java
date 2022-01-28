@@ -100,7 +100,7 @@ public class BannerComponent extends javax.swing.JPanel {
 
                 if (desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
                     try {
-                        java.net.URI uri = new java.net.URI("http://gephi.org");
+                        java.net.URI uri = new java.net.URI("https://gephi.org");
                         desktop.browse(uri);
                     } catch (Exception ex) {
                         Exceptions.printStackTrace(ex);
@@ -110,9 +110,8 @@ public class BannerComponent extends javax.swing.JPanel {
             }
         });
 
-        //This defines the height of the banner bar - with an extra height on MacOS X
-//        mainPanel.setPreferredSize(new Dimension(100, 35 + (UIUtils.isAquaLookAndFeel() ? 10 : 0)));
-        setPreferredSize(new Dimension(100, 55 + (UIUtils.isAquaLookAndFeel() ? 10 : 0)));
+        //This defines the height of the banner bar
+        setPreferredSize(new Dimension(100, 65));
     }
 
     private void addGroupTabs() {
@@ -245,37 +244,15 @@ public class BannerComponent extends javax.swing.JPanel {
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-            if (UIUtils.isWindowsLookAndFeel()) {
-                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
-                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/vista-enabled.png"),
-                    ImageUtilities.icon2Image(icon), 6, 3)));
-                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
-                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/vista-mousover.png"),
-                    ImageUtilities.icon2Image(icon), 6, 3)));
-                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
-                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/vista-selected.png"),
-                    ImageUtilities.icon2Image(icon), 6, 3)));
-            } else if (UIUtils.isAquaLookAndFeel()) {
-                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
-                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-enabled.png"),
-                    ImageUtilities.icon2Image(icon), 6, 3)));
-                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
-                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-mouseover.png"),
-                    ImageUtilities.icon2Image(icon), 6, 3)));
-                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
-                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-selected.png"),
-                    ImageUtilities.icon2Image(icon), 6, 3)));
-            } else {
-                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
-                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/nimbus-enabled.png"),
-                    ImageUtilities.icon2Image(icon), 6, 3)));
-                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
-                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/nimbus-mouseover.png"),
-                    ImageUtilities.icon2Image(icon), 6, 3)));
-                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
-                    ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/nimbus-selected.png"),
-                    ImageUtilities.icon2Image(icon), 6, 3)));
-            }
+            setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
+                ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-enabled.png"),
+                ImageUtilities.icon2Image(icon), 6, 3)));
+            setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
+                ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-mouseover.png"),
+                ImageUtilities.icon2Image(icon), 6, 3)));
+            setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(
+                ImageUtilities.loadImage("org/gephi/desktop/banner/perspective/resources/aqua-selected.png"),
+                ImageUtilities.icon2Image(icon), 6, 3)));
         }
     }
 }
