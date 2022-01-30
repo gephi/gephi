@@ -67,7 +67,7 @@ public interface Partition {
      *
      * @return values
      */
-    Collection getValues();
+    Collection getValues(Graph graph);
 
     /**
      * Returns the same collection as {@link #getValues() } but sorted
@@ -75,14 +75,14 @@ public interface Partition {
      *
      * @return sorted values
      */
-    Collection getSortedValues();
+    Collection getSortedValues(Graph graph);
 
     /**
      * Returns the number of elements that have a value in this partition.
      *
      * @return element count
      */
-    int getElementCount();
+    int getElementCount(Graph graph);
 
     /**
      * Returns the number of elements for the given value.
@@ -90,7 +90,7 @@ public interface Partition {
      * @param value value
      * @return value count
      */
-    int count(Object value);
+    int count(Object value, Graph graph);
 
     /**
      * Returns the element's value for this partition.
@@ -118,27 +118,19 @@ public interface Partition {
     void setColor(Object value, Color color);
 
     /**
-     * Sets the colors for all values. The size of <code>colors</code> must be
-     * equal to <code>size()</code>.
-     *
-     * @param colors colors to set
-     */
-    void setColors(Color[] colors);
-
-    /**
      * Returns the percentage of elements with the given value.
      *
      * @param value value
      * @return percentage, between zero and 100
      */
-    float percentage(Object value);
+    float percentage(Object value, Graph graph);
 
     /**
      * Returns the number of values this partition represents.
      *
      * @return value count
      */
-    int size();
+    int size(Graph graph);
 
     /**
      * Returns the column associated with this partition.

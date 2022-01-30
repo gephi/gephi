@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.gephi.appearance.api.Partition;
+import org.gephi.graph.api.Graph;
 
 /**
  * @author mbastian
@@ -74,28 +75,14 @@ public abstract class PartitionImpl implements Partition {
     }
 
     @Override
-    public void setColors(Color[] colors) {
-        Collection c = getSortedValues();
-        if (c.size() != colors.length) {
-            throw new IllegalArgumentException("The colors size must match the partition size");
-        }
-        int i = 0;
-        for (Object o : c) {
-            setColor(o, colors[i++]);
-        }
-    }
-
-    protected abstract void refresh();
-
-    @Override
-    public Collection getSortedValues() {
-        List values = new ArrayList(getValues());
-        Collections.sort(values, new Comparator() {
+    public Collection getSortedValues(Graph graph) {
+        List values = new ArrayList(getValues(graph));
+        values.sort(new Comparator() {
             @Override
             public int compare(Object o1, Object o2) {
-                float p1 = percentage(o1);
-                float p2 = percentage(o2);
-                return p1 > p2 ? -1 : p1 < p2 ? 1 : 0;
+                float p1 = percentage(o1, graph);
+                float p2 = percentage(o2, graph);
+                return Float.compare(p2, p1);
             }
         });
         return values;

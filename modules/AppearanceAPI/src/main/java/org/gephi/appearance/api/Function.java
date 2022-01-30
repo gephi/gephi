@@ -65,6 +65,8 @@ public interface Function {
      */
     void transform(Element element, Graph graph);
 
+    void transformAll(Iterable<? extends Element> elementIterable, Graph graph);
+
     /**
      * Returns the transformer associated with this function.
      *
@@ -115,13 +117,6 @@ public interface Function {
      * @return true if partition, false otherwise
      */
     boolean isPartition();
-
-    /**
-     * Returns the graph this function is based on.
-     *
-     * @return graph
-     */
-    Graph getGraph();
 
     /**
      * Returns the element class this function will be applied to.

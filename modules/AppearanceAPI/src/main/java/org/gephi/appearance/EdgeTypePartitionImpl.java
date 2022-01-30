@@ -55,24 +55,17 @@ import org.gephi.graph.api.GraphModel;
  */
 public class EdgeTypePartitionImpl extends PartitionImpl {
 
-    protected final Graph graph;
-    protected final GraphModel model;
 
-    public EdgeTypePartitionImpl(Graph graph) {
+    public EdgeTypePartitionImpl() {
         super();
-        this.graph = graph;
-        this.model = graph.getModel();
     }
 
     @Override
-    protected void refresh() {
-    }
-
-    @Override
-    public Collection getValues() {
-        Object[] labels = model.getEdgeTypeLabels();
+    public Collection getValues(Graph graph) {
+        Object[] labels = graph.getModel().getEdgeTypeLabels();
         ArrayList<Object> col = new ArrayList<>(labels.length);
         for (Object l : labels) {
+            //TODO
             if (!(l == null && graph.getEdgeCount(0) == 0)) {
                 col.add(l);
             }
@@ -86,24 +79,24 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
     }
 
     @Override
-    public int getElementCount() {
+    public int getElementCount(Graph graph) {
         return graph.getEdgeCount();
     }
 
     @Override
-    public int count(Object value) {
-        return graph.getEdgeCount(model.getEdgeType(value));
+    public int count(Object value, Graph graph) {
+        return graph.getEdgeCount(graph.getModel().getEdgeType(value));
     }
 
     @Override
-    public float percentage(Object value) {
-        int count = count(value);
+    public float percentage(Object value, Graph graph) {
+        int count = count(value, graph);
         return (float) count / graph.getEdgeCount();
     }
 
     @Override
-    public int size() {
-        int size = model.getEdgeTypeCount();
+    public int size(Graph graph) {
+        int size = graph.getModel().getEdgeTypeCount();
         return graph.getEdgeCount(0) == 0 ? size - 1 : size;
     }
 

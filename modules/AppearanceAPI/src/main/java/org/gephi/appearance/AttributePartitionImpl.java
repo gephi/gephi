@@ -58,126 +58,47 @@ import org.gephi.graph.api.types.TimeMap;
  */
 public class AttributePartitionImpl extends PartitionImpl {
 
-    protected final Graph graph;
-    protected final Index index;
     protected final Column column;
-    protected final Map<Object, Integer> parts;
-    protected int elements;
 
-    public AttributePartitionImpl(Column column, Index index) {
+    public AttributePartitionImpl(Column column) {
         super();
         this.column = column;
-        this.index = index;
-        this.graph = null;
-        this.parts = null;
-    }
-
-    public AttributePartitionImpl(Column column, Graph graph) {
-        super();
-        this.column = column;
-        this.index = null;
-        this.graph = graph;
-        this.parts = new HashMap<>();
     }
 
     @Override
-    protected void refresh() {
-        if (graph != null) {
-            parts.clear();
-            elements = 0;
-            ElementIterable<? extends Element> iterable =
-                AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
-
-            if (column.isDynamic()) {
-                refreshDynamic(iterable);
-            } else {
-                refreshNotIndexed(iterable);
-            }
-        }
+    public Object getValue(Element element, Graph graph) {
+        return element.getAttribute(column, graph.getView());
     }
 
-    private void refreshNotIndexed(ElementIterable<? extends Element> iterable) {
-        for (Element el : iterable) {
-            Object val = el.getAttribute(column);
-            Integer count = parts.get(val);
-            if (count == null) {
-                count = 0;
-            }
-            parts.put(val, ++count);
-            elements++;
-        }
-    }
-
-    private void refreshDynamic(ElementIterable<? extends Element> iterable) {
-        for (Element el : iterable) {
-            if (TimeMap.class.isAssignableFrom(column.getTypeClass())) {
-                TimeMap val = (TimeMap) el.getAttribute(column);
-                if (val != null) {
-                    Object[] va = val.toValuesArray();
-                    for (Object v : va) {
-                        Integer count = parts.get(v);
-                        if (count == null) {
-                            count = 0;
-                        }
-                        parts.put(v, ++count);
-                        elements++;
-                    }
-                }
-            }
-        }
+    private Index<Element> getIndex(Graph graph) {
+        return graph.getModel().getElementIndex(column.getTable(), graph.getView());
     }
 
     @Override
-    public Object getValue(Element element, Graph gr) {
-        return element.getAttribute(column, gr.getView());
+    public Collection getValues(Graph graph) {
+        return getIndex(graph).values(column);
     }
 
     @Override
-    public Collection getValues() {
-        if (index != null) {
-            return index.values(column);
-        } else {
-            return parts.keySet();
-        }
+    public int getElementCount(Graph graph) {
+        return getIndex(graph).countElements(column);
     }
 
     @Override
-    public int getElementCount() {
-        if (index != null) {
-            return index.countElements(column);
-        } else {
-            return elements;
-        }
+    public int count(Object value, Graph graph) {
+        return getIndex(graph).count(column, value);
     }
 
     @Override
-    public int count(Object value) {
-        if (index != null) {
-            return index.count(column, value);
-        } else {
-            Integer c = parts.get(value);
-            return c != null ? c : 0;
-        }
+    public float percentage(Object value, Graph graph) {
+        Index<Element> index = getIndex(graph);
+        int count = index.count(column, value);
+        return 100f * ((float) count / index.countElements(column));
     }
 
     @Override
-    public float percentage(Object value) {
-        if (index != null) {
-            int count = index.count(column, value);
-            return 100f * ((float) count / index.countElements(column));
-        } else {
-            Integer c = parts.get(value);
-            return 100f * (c != null ? c.floatValue() / elements : 0f);
-        }
-    }
-
-    @Override
-    public int size() {
-        if (index != null) {
-            return index.countValues(column);
-        } else {
-            return parts.size();
-        }
+    public int size(Graph graph) {
+            return getIndex(graph).countValues(column);
     }
 
     @Override

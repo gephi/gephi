@@ -49,17 +49,28 @@ import org.gephi.graph.api.Graph;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class AttributePartitionTest extends TestCase {
+public class AttributePartitionTest {
+
+    @Test
+    public void testEmpty() {
+        Graph graph = GraphGenerator.build().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+        AttributePartitionImpl attributePartition = new AttributePartitionImpl(column);
+
+        Assert.assertEquals(0, attributePartition.getElementCount(graph));
+        Assert.assertEquals(0, attributePartition.getValues(graph).size());
+        Assert.assertEquals(0, attributePartition.getSortedValues(graph).size());
+        Assert.assertEquals(0, attributePartition.size(graph));
+    }
 
     @Test
     public void testIntColumn() {
         Graph graph = GraphGenerator.build().generateTinyGraph().addIntNodeColumn().getGraph();
         Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
 
-        AttributePartitionImpl p = new AttributePartitionImpl(column, graph);
-        p.refresh();
-        Assert.assertEquals(graph.getNodeCount(), p.getElementCount());
-        Assert.assertEquals(graph.getNodeCount(), p.getValues().size());
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        Assert.assertEquals(graph.getNodeCount(), p.getElementCount(graph));
+        Assert.assertEquals(graph.getNodeCount(), p.getValues(graph).size());
         Assert.assertNotNull(p.getValue(graph.getNodes().toArray()[0], graph));
     }
 }

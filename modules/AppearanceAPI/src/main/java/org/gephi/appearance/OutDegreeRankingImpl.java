@@ -52,11 +52,8 @@ import org.gephi.graph.api.Node;
  */
 public class OutDegreeRankingImpl extends RankingImpl {
 
-    private final DirectedGraph graph;
-
-    public OutDegreeRankingImpl(DirectedGraph graph) {
+    public OutDegreeRankingImpl() {
         super();
-        this.graph = graph;
     }
 
     @Override
@@ -65,17 +62,28 @@ public class OutDegreeRankingImpl extends RankingImpl {
     }
 
     @Override
-    protected void refresh() {
-        if (graph.getNodeCount() > 0) {
-            int minV = Integer.MAX_VALUE;
-            int maxV = Integer.MIN_VALUE;
-            for (Node n : graph.getNodes()) {
-                int degree = graph.getOutDegree(n);
-                minV = Math.min(degree, minV);
-                maxV = Math.max(degree, maxV);
+    public Number getMinValue(Graph graph) {
+        if(graph.getNodeCount() > 0) {
+            int min = Integer.MAX_VALUE;
+            DirectedGraph directedGraph = (DirectedGraph) graph;
+            for (Node node : directedGraph.getNodes()) {
+                min = Math.min(directedGraph.getOutDegree(node), min);
             }
-            min = minV;
-            max = maxV;
+            return min;
         }
+        return 0;
+    }
+
+    @Override
+    public Number getMaxValue(Graph graph) {
+        if(graph.getNodeCount() > 0) {
+            int max = Integer.MIN_VALUE;
+            DirectedGraph directedGraph = (DirectedGraph) graph;
+            for (Node node : directedGraph.getNodes()) {
+                max = Math.max(directedGraph.getOutDegree(node), max);
+            }
+            return max;
+        }
+        return 0;
     }
 }

@@ -17,8 +17,8 @@ import org.gephi.graph.api.Graph;
  */
 public class SimpleFunctionImpl extends FunctionImpl implements SimpleFunction {
 
-    public SimpleFunctionImpl(String id, Class<? extends Element> elementClass, Graph graph, Transformer transformer,
+    public SimpleFunctionImpl(String name, Class<? extends Element> elementClass, Transformer transformer,
                               TransformerUI transformerUI) {
-        super(id, null, elementClass, graph, null, transformer, transformerUI, null, null, null);
+        super(name, elementClass, null, transformer, transformerUI, null, null);
     }
 }

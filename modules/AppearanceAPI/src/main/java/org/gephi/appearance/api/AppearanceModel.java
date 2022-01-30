@@ -92,60 +92,16 @@ public interface AppearanceModel {
     /**
      * Returns all node functions for the given graph.
      *
-     * @param graph graph
      * @return all node functions
      */
-    Function[] getNodeFunctions(Graph graph);
-
-    /**
-     * Returns the node function for the given column and transformer.
-     *
-     * @param graph       graph
-     * @param column      column
-     * @param transformer transformer class
-     * @return node function or null if not found
-     */
-    Function getNodeFunction(Graph graph, Column column, Class<? extends Transformer> transformer);
-
-    /**
-     * Returns the node function for the given graph function identifier and
-     * transformer.
-     *
-     * @param graph         graph
-     * @param graphFunction graphFunction
-     * @param transformer   transformer class
-     * @return node function or null if not found
-     */
-    Function getNodeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer);
+    Function[] getNodeFunctions();
 
     /**
      * Returns all edge functions for the given graph.
      *
-     * @param graph graph
      * @return all edge functions
      */
-    Function[] getEdgeFunctions(Graph graph);
-
-    /**
-     * Returns the node function for the given column and transformer.
-     *
-     * @param graph       graph
-     * @param column      column
-     * @param transformer transformer class
-     * @return edge function or null if not found
-     */
-    Function getEdgeFunction(Graph graph, Column column, Class<? extends Transformer> transformer);
-
-    /**
-     * Returns the edge function for the given graph function identifier and
-     * transformer.
-     *
-     * @param graph         graph
-     * @param graphFunction graphFunction
-     * @param transformer   transformer class
-     * @return edge function or null if not found
-     */
-    Function getEdgeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer);
+    Function[] getEdgeFunctions();
 
     /**
      * Identifies the non-column-based functions.

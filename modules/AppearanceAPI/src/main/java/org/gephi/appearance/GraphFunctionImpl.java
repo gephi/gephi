@@ -20,25 +20,24 @@ import org.gephi.graph.api.Graph;
  */
 public class GraphFunctionImpl extends FunctionImpl implements GraphFunction, RankingFunction, PartitionFunction {
 
-    public GraphFunctionImpl(String id, String name, Class<? extends Element> elementClass, Graph graph,
-                             Transformer transformer, TransformerUI transformerUI, RankingImpl ranking,
-                             Interpolator interpolator) {
-        super(id, name, elementClass, graph, null, transformer, transformerUI, null, ranking, interpolator);
+    public GraphFunctionImpl(String name, Class<? extends Element> elementClass,
+                             Transformer transformer, TransformerUI transformerUI, RankingImpl ranking) {
+        super(name, elementClass, null, transformer, transformerUI, null, ranking);
     }
 
-    public GraphFunctionImpl(String id, String name, Class<? extends Element> elementClass, Graph graph,
+    public GraphFunctionImpl(String name, Class<? extends Element> elementClass,
                              Transformer transformer, TransformerUI transformerUI, PartitionImpl partition) {
-        super(id, name, elementClass, graph, null, transformer, transformerUI, partition, null, null);
+        super(name, elementClass, null, transformer, transformerUI, partition, null);
     }
 
     @Override
     public Interpolator getInterpolator() {
-        return interpolator;
+        return ranking.getInterpolator();
     }
 
     @Override
     public void setInterpolator(Interpolator interpolator) {
-        this.interpolator = interpolator;
+        ranking.setInterpolator(interpolator);
     }
 
     @Override

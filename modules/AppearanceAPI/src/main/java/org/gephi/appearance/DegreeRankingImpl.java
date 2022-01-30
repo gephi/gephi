@@ -42,6 +42,7 @@
 
 package org.gephi.appearance;
 
+import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
@@ -51,11 +52,8 @@ import org.gephi.graph.api.Node;
  */
 public class DegreeRankingImpl extends RankingImpl {
 
-    private final Graph graph;
-
-    public DegreeRankingImpl(Graph graph) {
+    public DegreeRankingImpl() {
         super();
-        this.graph = graph;
     }
 
     @Override
@@ -64,17 +62,28 @@ public class DegreeRankingImpl extends RankingImpl {
     }
 
     @Override
-    protected void refresh() {
-        if (graph.getNodeCount() > 0) {
-            int minV = Integer.MAX_VALUE;
-            int maxV = Integer.MIN_VALUE;
-            for (Node n : graph.getNodes()) {
-                int degree = graph.getDegree(n);
-                minV = Math.min(degree, minV);
-                maxV = Math.max(degree, maxV);
+    public Number getMinValue(Graph graph) {
+        if(graph.getNodeCount() > 0) {
+            int min = Integer.MAX_VALUE;
+            DirectedGraph directedGraph = (DirectedGraph) graph;
+            for (Node node : directedGraph.getNodes()) {
+                min = Math.min(directedGraph.getDegree(node), min);
             }
-            min = minV;
-            max = maxV;
+            return min;
         }
+        return 0;
+    }
+
+    @Override
+    public Number getMaxValue(Graph graph) {
+        if(graph.getNodeCount() > 0) {
+            int max = Integer.MIN_VALUE;
+            DirectedGraph directedGraph = (DirectedGraph) graph;
+            for (Node node : directedGraph.getNodes()) {
+                max = Math.max(directedGraph.getDegree(node), max);
+            }
+            return max;
+        }
+        return 0;
     }
 }

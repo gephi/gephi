@@ -26,6 +26,8 @@ public class GraphGenerator {
     public static final String INTERVAL_DOUBLE_COLUMN = "price";
     public static final String FIRST_NODE = "1";
     public static final String SECOND_NODE = "2";
+    public static final String FIRST_EDGE = "1";
+    public static final int INT_COLUMN_MIN_VALUE = 10;
 
     private final GraphModel graphModel;
     private Workspace workspace;
@@ -57,7 +59,7 @@ public class GraphGenerator {
     public GraphGenerator generateTinyGraph() {
         Node n1 = graphModel.factory().newNode(FIRST_NODE);
         Node n2 = graphModel.factory().newNode(SECOND_NODE);
-        Edge e = graphModel.factory().newEdge(n1, n2);
+        Edge e = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0,1.0, true);
         graphModel.getDirectedGraph().addNode(n1);
         graphModel.getDirectedGraph().addNode(n2);
         graphModel.getDirectedGraph().addEdge(e);
@@ -66,7 +68,7 @@ public class GraphGenerator {
 
     public GraphGenerator addIntNodeColumn() {
         graphModel.getNodeTable().addColumn(INT_COLUMN, Integer.class);
-        int age = 10;
+        int age = INT_COLUMN_MIN_VALUE;
         for (Node node : graphModel.getGraph().getNodes()) {
             node.setAttribute(INT_COLUMN, age++);
         }
@@ -148,21 +150,21 @@ public class GraphGenerator {
         }
 
         public Graph generate() {
-            Random random = new Random();
+            Random random = new Random(42);
 
             graphModel.getGraph().writeLock();
 
             Graph graph = graphModel.getGraph();
             for (int i = 0; i < numberOfNodes; i++) {
-                Node node = graphModel.factory().newNode(i);
+                Node node = graphModel.factory().newNode(String.valueOf(i));
                 graph.addNode(node);
             }
 
             if (wiringProbability > 0) {
                 for (int i = 0; i < numberOfNodes - 1; i++) {
-                    Node source = graphModel.getGraph().getNode(i);
+                    Node source = graphModel.getGraph().getNode(String.valueOf(i));
                     for (int j = i + 1; j < numberOfNodes; j++) {
-                        Node target = graphModel.getGraph().getNode(j);
+                        Node target = graphModel.getGraph().getNode(String.valueOf(j));
 
                         if (random.nextDouble() < wiringProbability && source != target) {
                             Edge edge = graphModel.factory().newEdge(source, target, 0, true);

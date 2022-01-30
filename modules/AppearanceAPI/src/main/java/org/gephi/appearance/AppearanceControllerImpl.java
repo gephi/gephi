@@ -120,9 +120,7 @@ public class AppearanceControllerImpl implements AppearanceController {
                 iterable = graph.getEdges();
             }
             try {
-                for (Element element : iterable) {
-                    function.transform(element, graph);
-                }
+                function.transformAll(iterable, graph);
             } catch (Exception e) {
                 iterable.doBreak();
                 if (e instanceof RuntimeException) {

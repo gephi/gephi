@@ -42,10 +42,12 @@
 
 package org.gephi.appearance;
 
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Index;
 import org.gephi.graph.api.types.TimeMap;
 
 /**
@@ -53,39 +55,30 @@ import org.gephi.graph.api.types.TimeMap;
  */
 public class EdgeWeightRankingImpl extends RankingImpl {
 
-    private final Graph graph;
-
-    public EdgeWeightRankingImpl(Graph graph) {
+    public EdgeWeightRankingImpl() {
         super();
-        this.graph = graph;
     }
 
     @Override
-    public Number getValue(Element element, Graph gr) {
-        return ((Edge) element).getWeight(gr.getView());
+    public Number getValue(Element element, Graph graph) {
+        return ((Edge) element).getWeight(graph.getView());
     }
 
     @Override
-    protected void refresh() {
-        if (graph.getEdgeCount() > 0) {
-            double minV = Double.MAX_VALUE;
-            double maxV = Double.MIN_VALUE;
-            for (Edge e : graph.getEdges()) {
-                if (e.hasDynamicWeight()) {
-                    TimeMap timeMap = (TimeMap) e.getAttribute("weight");
-                    if (timeMap != null) {
-                        Double numMin = (Double) timeMap.get(graph.getView().getTimeInterval(), Estimator.MIN);
-                        Double numMax = (Double) timeMap.get(graph.getView().getTimeInterval(), Estimator.MAX);
-                        minV = Math.min(numMin, minV);
-                        maxV = Math.max(numMax, maxV);
-                    }
-                } else {
-                    minV = Math.min(e.getWeight(), minV);
-                    maxV = Math.max(e.getWeight(), maxV);
-                }
-            }
-            min = minV;
-            max = maxV;
-        }
+    public Number getMinValue(Graph graph) {
+        return getIndex(graph).getMinValue(getColumn(graph));
+    }
+
+    @Override
+    public Number getMaxValue(Graph graph) {
+        return getIndex(graph).getMaxValue(getColumn(graph));
+    }
+
+    private Index<Element> getIndex(Graph graph) {
+        return graph.getModel().getElementIndex(graph.getModel().getEdgeTable(), graph.getView());
+    }
+
+    private Column getColumn(Graph graph) {
+        return graph.getModel().getEdgeTable().getColumn("weight");
     }
 }
