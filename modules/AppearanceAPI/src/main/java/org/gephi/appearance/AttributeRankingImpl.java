@@ -42,6 +42,7 @@
 
 package org.gephi.appearance;
 
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
@@ -57,30 +58,30 @@ import org.gephi.graph.api.types.TimeMap;
  */
 public class AttributeRankingImpl extends RankingImpl {
 
-    protected final Column column;
+    protected final WeakReference<Column> column;
 
     public AttributeRankingImpl(Column column) {
         super();
-        this.column = column;
+        this.column = new WeakReference<>(column);
     }
 
     @Override
     public Number getMinValue(Graph graph) {
-        return getIndex(graph).getMinValue(column);
+        return getIndex(graph).getMinValue(column.get());
     }
 
     @Override
     public Number getMaxValue(Graph graph) {
-        return getIndex(graph).getMaxValue(column);
+        return getIndex(graph).getMaxValue(column.get());
     }
 
     private Index<Element> getIndex(Graph graph) {
-        return graph.getModel().getElementIndex(column.getTable(), graph.getView());
+        return graph.getModel().getElementIndex(column.get().getTable(), graph.getView());
     }
 
     @Override
     public Number getValue(Element element, Graph graph) {
-        return (Number) element.getAttribute(column, graph.getView());
+        return (Number) element.getAttribute(column.get(), graph.getView());
     }
 
     @Override

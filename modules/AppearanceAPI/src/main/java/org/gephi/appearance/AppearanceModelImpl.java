@@ -60,7 +60,6 @@ import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -76,7 +75,6 @@ public class AppearanceModelImpl implements AppearanceModel {
 
     private final Workspace workspace;
     private final GraphModel graphModel;
-    private final Interpolator defaultInterpolator;
     // Transformers
     private final List<Transformer> nodeTransformers;
     private final List<Transformer> edgeTransformers;
@@ -98,7 +96,6 @@ public class AppearanceModelImpl implements AppearanceModel {
     public AppearanceModelImpl(Workspace workspace) {
         this.workspace = workspace;
         this.graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        this.defaultInterpolator = Interpolator.LINEAR;
         this.transformerUIs = initTransformerUIs();
         this.nodeTransformers = initNodeTransformers();
         this.edgeTransformers = initEdgeTransformers();
@@ -133,13 +130,46 @@ public class AppearanceModelImpl implements AppearanceModel {
     }
 
     @Override
-    public Partition getNodePartition(Graph graph, Column column) {
-        return null;
+    public Partition getNodePartition(Column column) {
+        return nodeAttributePartitions.get(column);
     }
 
     @Override
-    public Partition getEdgePartition(Graph graph, Column column) {
-        return null;
+    public Partition getEdgePartition(Column column) {
+        return edgeAttributePartitions.get(column);
+    }
+
+    protected Ranking getDegreeRanking() {
+        return degreeRanking;
+    }
+
+    protected Ranking getInDegreeRanking() {
+        return inDegreeRanking;
+    }
+
+    protected Ranking getOutDegreeRanking() {
+        return outDegreeRanking;
+    }
+
+    protected Ranking getEdgeWeightRanking() {
+        return edgeWeightRanking;
+    }
+
+    protected Partition getEdgeTypePartition() {
+        return edgeTypePartition;
+    }
+
+    protected Ranking getNodeRanking(Column column) {
+        return nodeAttributeRankings.get(column);
+    }
+
+    protected Ranking getEdgeRanking(Column column) {
+        return edgeAttributeRankings.get(column);
+    }
+
+    // Only for testing
+    protected int countNodeAttributeRanking() {
+        return nodeAttributeRankings.size();
     }
 
     @Override
@@ -170,39 +200,42 @@ public class AppearanceModelImpl implements AppearanceModel {
         List<Transformer> transformers = table.isNodeTable() ? nodeTransformers : edgeTransformers;
         for (Column column : table) {
             if (!column.isProperty()) {
-                transformers.stream().forEach(t -> {
-                    if (column.isNumber() && t instanceof RankingTransformer) {
-                        res.addAll(getAttributeFunctions(column, t));
-                    } else if (t instanceof PartitionTransformer) {
+                transformers.forEach(t -> {
+                    if ((column.isNumber() && t instanceof RankingTransformer) || t instanceof PartitionTransformer) {
                         res.addAll(getAttributeFunctions(column, t));
                     }
                 });
             }
         }
-        return null;
+        return res;
     }
 
     private List<Function> getAttributeFunctions(Column column, Transformer transformer) {
         List<Function> res = new ArrayList<>();
         if (transformer instanceof RankingTransformer) {
-            if (transformer.isNode()) {
-                RankingImpl ranking = nodeAttributeRankings.computeIfAbsent(column, k -> new AttributeRankingImpl(column));
+            if (transformer.isNode() && column.getTable().isNodeTable()) {
+                RankingImpl ranking =
+                    nodeAttributeRankings.computeIfAbsent(column, k -> new AttributeRankingImpl(column));
                 res.add(new AttributeFunctionImpl(getId("node", transformer, column), column,
                     transformer, getTransformerUI(transformer), ranking));
             }
-            if (transformer.isEdge()) {
-                RankingImpl ranking = edgeAttributeRankings.computeIfAbsent(column, k -> new AttributeRankingImpl(column));
+            if (transformer.isEdge() && column.getTable().isEdgeTable()) {
+                RankingImpl ranking =
+                    edgeAttributeRankings.computeIfAbsent(column, k -> new AttributeRankingImpl(column));
                 res.add(new AttributeFunctionImpl(getId("edge", transformer, column), column,
                     transformer, getTransformerUI(transformer), ranking));
             }
-        } else if (transformer instanceof PartitionTransformer) {
-            if (transformer.isNode()) {
-                PartitionImpl partition = nodeAttributePartitions.computeIfAbsent(column, k -> new AttributePartitionImpl(column));
+        }
+        if (transformer instanceof PartitionTransformer) {
+            if (transformer.isNode() && column.getTable().isNodeTable()) {
+                PartitionImpl partition =
+                    nodeAttributePartitions.computeIfAbsent(column, k -> new AttributePartitionImpl(column));
                 res.add(new AttributeFunctionImpl(getId("node", transformer, column), column, transformer,
                     getTransformerUI(transformer), partition));
             }
-            if (transformer.isEdge()) {
-                PartitionImpl partition = edgeAttributePartitions.computeIfAbsent(column, k -> new AttributePartitionImpl(column));
+            if (transformer.isEdge() && column.getTable().isEdgeTable()) {
+                PartitionImpl partition =
+                    edgeAttributePartitions.computeIfAbsent(column, k -> new AttributePartitionImpl(column));
                 res.add(new AttributeFunctionImpl(getId("edge", transformer, column), column, transformer,
                     getTransformerUI(transformer), partition));
             }

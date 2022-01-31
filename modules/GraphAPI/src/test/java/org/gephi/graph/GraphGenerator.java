@@ -129,6 +129,10 @@ public class GraphGenerator {
         return graphModel.getGraph();
     }
 
+    public GraphModel getGraphModel() {
+        return graphModel;
+    }
+
     public Workspace getWorkspace() {
         return workspace;
     }

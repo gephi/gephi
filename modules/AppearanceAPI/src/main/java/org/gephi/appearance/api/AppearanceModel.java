@@ -72,22 +72,20 @@ public interface AppearanceModel {
     boolean isLocalScale();
 
     /**
-     * Returns the node partition for this graph and column.
+     * Returns the node partition for thid column.
      *
-     * @param graph  graph
      * @param column column
      * @return node partition of null if it doesn't exist
      */
-    Partition getNodePartition(Graph graph, Column column);
+    Partition getNodePartition(Column column);
 
     /**
-     * Returns the edge partition for this graph and column.
+     * Returns the edge partition for this column.
      *
-     * @param graph  graph
      * @param column column
      * @return edge partition of null if it doesn't exist
      */
-    Partition getEdgePartition(Graph graph, Column column);
+    Partition getEdgePartition(Column column);
 
     /**
      * Returns all node functions for the given graph.

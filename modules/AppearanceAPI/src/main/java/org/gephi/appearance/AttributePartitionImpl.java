@@ -42,6 +42,7 @@
 
 package org.gephi.appearance;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,52 +59,52 @@ import org.gephi.graph.api.types.TimeMap;
  */
 public class AttributePartitionImpl extends PartitionImpl {
 
-    protected final Column column;
+    protected final WeakReference<Column> column;
 
     public AttributePartitionImpl(Column column) {
         super();
-        this.column = column;
+        this.column = new WeakReference<>(column);
     }
 
     @Override
     public Object getValue(Element element, Graph graph) {
-        return element.getAttribute(column, graph.getView());
+        return element.getAttribute(column.get(), graph.getView());
     }
 
     private Index<Element> getIndex(Graph graph) {
-        return graph.getModel().getElementIndex(column.getTable(), graph.getView());
+        return graph.getModel().getElementIndex(column.get().getTable(), graph.getView());
     }
 
     @Override
     public Collection getValues(Graph graph) {
-        return getIndex(graph).values(column);
+        return getIndex(graph).values(column.get());
     }
 
     @Override
     public int getElementCount(Graph graph) {
-        return getIndex(graph).countElements(column);
+        return getIndex(graph).countElements(column.get());
     }
 
     @Override
     public int count(Object value, Graph graph) {
-        return getIndex(graph).count(column, value);
+        return getIndex(graph).count(column.get(), value);
     }
 
     @Override
     public float percentage(Object value, Graph graph) {
         Index<Element> index = getIndex(graph);
-        int count = index.count(column, value);
-        return 100f * ((float) count / index.countElements(column));
+        int count = index.count(column.get(), value);
+        return 100f * ((float) count / index.countElements(column.get()));
     }
 
     @Override
     public int size(Graph graph) {
-            return getIndex(graph).countValues(column);
+            return getIndex(graph).countValues(column.get());
     }
 
     @Override
     public Column getColumn() {
-        return column;
+        return column.get();
     }
 
     @Override
