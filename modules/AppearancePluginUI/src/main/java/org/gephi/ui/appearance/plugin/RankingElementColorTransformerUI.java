@@ -40,14 +40,14 @@
  Portions Copyrighted 2013 Gephi Consortium.
  */
 
-package org.gephi.ui.appearance.plugin.size;
+package org.gephi.ui.appearance.plugin;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.RankingFunction;
-import org.gephi.appearance.plugin.RankingNodeSizeTransformer;
+import org.gephi.appearance.plugin.RankingElementColorTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
@@ -58,14 +58,14 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * @author mbastian
  */
-@ServiceProvider(service = TransformerUI.class, position = 400)
-public class RankingElementSizeTransformerUI implements TransformerUI {
+@ServiceProvider(service = TransformerUI.class, position = 200)
+public class RankingElementColorTransformerUI implements TransformerUI {
 
-    private RankingSizeTransformerPanel panel;
+    private RankingColorTransformerPanel panel;
 
     @Override
     public TransformerCategory getCategory() {
-        return DefaultCategory.SIZE;
+        return DefaultCategory.COLOR;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class RankingElementSizeTransformerUI implements TransformerUI {
 
     @Override
     public String getDisplayName() {
-        return NbBundle.getMessage(RankingElementSizeTransformerUI.class, "Attribute.ranking.name");
+        return NbBundle.getMessage(RankingElementColorTransformerUI.class, "Attribute.ranking.name");
     }
 
     @Override
@@ -86,7 +86,7 @@ public class RankingElementSizeTransformerUI implements TransformerUI {
     @Override
     public synchronized JPanel getPanel(Function function) {
         if (panel == null) {
-            panel = new RankingSizeTransformerPanel();
+            panel = new RankingColorTransformerPanel();
         }
         panel.setup((RankingFunction) function);
         return panel;
@@ -99,6 +99,6 @@ public class RankingElementSizeTransformerUI implements TransformerUI {
 
     @Override
     public Class<? extends RankingTransformer> getTransformerClass() {
-        return RankingNodeSizeTransformer.class;
+        return RankingElementColorTransformer.class;
     }
 }

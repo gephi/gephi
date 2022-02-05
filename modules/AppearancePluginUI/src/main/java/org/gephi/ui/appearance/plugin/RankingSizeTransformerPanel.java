@@ -40,7 +40,7 @@
  Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.ui.appearance.plugin.size;
+package org.gephi.ui.appearance.plugin;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;

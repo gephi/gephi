@@ -40,7 +40,7 @@
  Portions Copyrighted 2013 Gephi Consortium.
  */
 
-package org.gephi.ui.appearance.plugin.unique;
+package org.gephi.ui.appearance.plugin;
 
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;

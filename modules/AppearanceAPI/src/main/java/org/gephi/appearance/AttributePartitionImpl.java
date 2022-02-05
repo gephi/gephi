@@ -105,7 +105,10 @@ public class AttributePartitionImpl extends PartitionImpl {
     @Override
     public boolean isValid(Graph graph) {
         Column col = column.get();
-        return col != null && col.getIndex() != -1;
+        if(col != null && col.getIndex() != -1) {
+            return !col.isNumber();
+        }
+        return false;
     }
 
     @Override

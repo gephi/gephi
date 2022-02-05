@@ -40,15 +40,15 @@
  Portions Copyrighted 2013 Gephi Consortium.
  */
 
-package org.gephi.ui.appearance.plugin.color;
+package org.gephi.ui.appearance.plugin;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.Function;
-import org.gephi.appearance.api.RankingFunction;
-import org.gephi.appearance.plugin.RankingElementColorTransformer;
-import org.gephi.appearance.spi.RankingTransformer;
+import org.gephi.appearance.api.SimpleFunction;
+import org.gephi.appearance.plugin.UniqueLabelColorTransformer;
+import org.gephi.appearance.spi.SimpleTransformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.ui.appearance.plugin.category.DefaultCategory;
@@ -58,24 +58,19 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * @author mbastian
  */
-@ServiceProvider(service = TransformerUI.class, position = 200)
-public class RankingElementColorTransformerUI implements TransformerUI {
+@ServiceProvider(service = TransformerUI.class, position = 500)
+public class UniqueLabelColorTransformerUI implements TransformerUI {
 
-    private RankingColorTransformerPanel panel;
-
-    @Override
-    public TransformerCategory getCategory() {
-        return DefaultCategory.COLOR;
-    }
-
-    @Override
-    public Icon getIcon() {
-        return null;
-    }
+    private UniqueColorTransformerPanel panel;
 
     @Override
     public String getDisplayName() {
-        return NbBundle.getMessage(RankingElementColorTransformerUI.class, "Attribute.ranking.name");
+        return NbBundle.getMessage(UniqueLabelColorTransformerUI.class, "Unique.name");
+    }
+
+    @Override
+    public TransformerCategory getCategory() {
+        return DefaultCategory.LABEL_COLOR;
     }
 
     @Override
@@ -84,11 +79,16 @@ public class RankingElementColorTransformerUI implements TransformerUI {
     }
 
     @Override
+    public Icon getIcon() {
+        return null;
+    }
+
+    @Override
     public synchronized JPanel getPanel(Function function) {
         if (panel == null) {
-            panel = new RankingColorTransformerPanel();
+            panel = new UniqueColorTransformerPanel();
         }
-        panel.setup((RankingFunction) function);
+        panel.setup((SimpleFunction) function);
         return panel;
     }
 
@@ -98,7 +98,7 @@ public class RankingElementColorTransformerUI implements TransformerUI {
     }
 
     @Override
-    public Class<? extends RankingTransformer> getTransformerClass() {
-        return RankingElementColorTransformer.class;
+    public Class<? extends SimpleTransformer> getTransformerClass() {
+        return UniqueLabelColorTransformer.class;
     }
 }
