@@ -13,21 +13,20 @@ import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.graph.api.Element;
-import org.gephi.graph.api.Graph;
 
 /**
  * @author mbastian
  */
 public class GraphFunctionImpl extends FunctionImpl implements GraphFunction, RankingFunction, PartitionFunction {
 
-    public GraphFunctionImpl(String name, Class<? extends Element> elementClass,
+    public GraphFunctionImpl(AppearanceModelImpl model, String name, Class<? extends Element> elementClass,
                              Transformer transformer, TransformerUI transformerUI, RankingImpl ranking) {
-        super(name, elementClass, null, transformer, transformerUI, null, ranking);
+        super(model, name, elementClass, null, transformer, transformerUI, null, ranking);
     }
 
-    public GraphFunctionImpl(String name, Class<? extends Element> elementClass,
+    public GraphFunctionImpl(AppearanceModelImpl model, String name, Class<? extends Element> elementClass,
                              Transformer transformer, TransformerUI transformerUI, PartitionImpl partition) {
-        super(name, elementClass, null, transformer, transformerUI, partition, null);
+        super(model, name, elementClass, null, transformer, transformerUI, partition, null);
     }
 
     @Override

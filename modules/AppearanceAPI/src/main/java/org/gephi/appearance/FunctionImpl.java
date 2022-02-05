@@ -43,10 +43,7 @@
 package org.gephi.appearance;
 
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.gephi.appearance.api.Function;
-import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.SimpleTransformer;
@@ -61,6 +58,7 @@ import org.gephi.graph.api.Graph;
  */
 public abstract class FunctionImpl implements Function {
 
+    protected final AppearanceModelImpl model;
     protected final Class<? extends Element> elementClass;
     protected final String name;
     protected final Column column;
@@ -69,12 +67,13 @@ public abstract class FunctionImpl implements Function {
     protected final PartitionImpl partition;
     protected final RankingImpl ranking;
 
-    protected FunctionImpl(String name, Class<? extends Element> elementClass, Column column,
+    protected FunctionImpl(AppearanceModelImpl model, String name, Class<? extends Element> elementClass, Column column,
                            Transformer transformer, TransformerUI transformerUI, PartitionImpl partition,
                            RankingImpl ranking) {
         if (name == null) {
             throw new NullPointerException("The name can't be null");
         }
+        this.model = model;
         this.name = name;
         this.elementClass = elementClass;
         this.column = column;
@@ -89,7 +88,8 @@ public abstract class FunctionImpl implements Function {
     }
 
     @Override
-    public void transform(Element element, Graph graph) {
+    public void transform(Element element) {
+        Graph graph = getGraph();
         if (isSimple()) {
             ((SimpleTransformer) transformer).transform(element);
         } else if (isRanking()) {
@@ -103,7 +103,8 @@ public abstract class FunctionImpl implements Function {
     }
 
     @Override
-    public void transformAll(Iterable<? extends Element> elementIterable, Graph graph) {
+    public void transformAll(Iterable<? extends Element> elementIterable) {
+        Graph graph = getGraph();
         if (isSimple()) {
             elementIterable.forEach(((SimpleTransformer) transformer)::transform);
         } else if (isRanking()) {
@@ -120,6 +121,20 @@ public abstract class FunctionImpl implements Function {
                 ((PartitionTransformer) transformer).transform(e, partition, val);
             });
         }
+    }
+
+    public boolean isValid() {
+        if (isRanking()) {
+            return ranking.isValid(getGraph());
+        } else if (isPartition()) {
+            return partition.isValid(getGraph());
+        }
+        return true;
+    }
+
+    @Override
+    public Graph getGraph() {
+        return model.getGraph();
     }
 
     @Override
@@ -155,6 +170,11 @@ public abstract class FunctionImpl implements Function {
     @Override
     public Class<? extends Element> getElementClass() {
         return elementClass;
+    }
+
+    @Override
+    public AppearanceModelImpl getModel() {
+        return model;
     }
 
     @Override

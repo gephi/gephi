@@ -56,7 +56,7 @@ public interface Ranking {
     /**
      * Returns the minimum value in this ranking.
      *
-     * @param graph   graph to query
+     * @param graph graph to query
      * @return minimum value
      */
     Number getMinValue(Graph graph);
@@ -64,7 +64,7 @@ public interface Ranking {
     /**
      * Returns the maximum value in this ranking.
      *
-     * @param graph   graph to query
+     * @param graph graph to query
      * @return maximum value
      */
     Number getMaxValue(Graph graph);

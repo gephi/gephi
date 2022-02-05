@@ -44,14 +44,10 @@ package org.gephi.appearance;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
-import org.gephi.graph.api.ElementIterable;
-import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Index;
-import org.gephi.graph.api.types.TimeMap;
 
 /**
  * @author mbastian
@@ -82,6 +78,12 @@ public class AttributeRankingImpl extends RankingImpl {
     @Override
     public Number getValue(Element element, Graph graph) {
         return (Number) element.getAttribute(column.get(), graph.getView());
+    }
+
+    @Override
+    public boolean isValid(Graph graph) {
+        Column col = column.get();
+        return col != null && col.getIndex() != -1;
     }
 
     @Override

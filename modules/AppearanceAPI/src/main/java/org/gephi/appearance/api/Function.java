@@ -61,11 +61,15 @@ public interface Function {
      * Transforms the given element.
      *
      * @param element element to transform
-     * @param graph   the graph this element belongs to
      */
-    void transform(Element element, Graph graph);
+    void transform(Element element);
 
-    void transformAll(Iterable<? extends Element> elementIterable, Graph graph);
+    /**
+     * Transforms all the given elements.
+     *
+     * @param elementIterable element iterable to tranform
+     */
+    void transformAll(Iterable<? extends Element> elementIterable);
 
     /**
      * Returns the transformer associated with this function.
@@ -124,4 +128,18 @@ public interface Function {
      * @return element class
      */
     Class<? extends Element> getElementClass();
+
+    /**
+     * Returns the graph this function is being applied on.
+     *
+     * @return graph
+     */
+    Graph getGraph();
+
+    /**
+     * Returns the model this function belongs to.
+     *
+     * @return model
+     */
+    AppearanceModel getModel();
 }

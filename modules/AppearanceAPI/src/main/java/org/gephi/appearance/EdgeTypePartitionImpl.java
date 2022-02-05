@@ -42,13 +42,13 @@
 
 package org.gephi.appearance;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphModel;
 
 /**
  * @author mbastian
@@ -62,15 +62,10 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
 
     @Override
     public Collection getValues(Graph graph) {
-        Object[] labels = graph.getModel().getEdgeTypeLabels();
-        ArrayList<Object> col = new ArrayList<>(labels.length);
-        for (Object l : labels) {
-            //TODO
-            if (!(l == null && graph.getEdgeCount(0) == 0)) {
-                col.add(l);
-            }
-        }
-        return col;
+        int[] types = graph.getModel().getEdgeTypes();
+        return Arrays.stream(types).filter(t -> graph.getEdgeCount(t) > 0)
+            .mapToObj(t -> graph.getModel().getEdgeTypeLabel(t)).collect(
+                Collectors.toList());
     }
 
     @Override
@@ -103,5 +98,10 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
     @Override
     public Column getColumn() {
         return null;
+    }
+
+    @Override
+    public boolean isValid(Graph graph) {
+        return graph.getModel().getEdgeTypeCount() > 1;
     }
 }

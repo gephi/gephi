@@ -45,10 +45,8 @@ package org.gephi.appearance;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
-import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Index;
-import org.gephi.graph.api.types.TimeMap;
 
 /**
  * @author mbastian
@@ -80,5 +78,10 @@ public class EdgeWeightRankingImpl extends RankingImpl {
 
     private Column getColumn(Graph graph) {
         return graph.getModel().getEdgeTable().getColumn("weight");
+    }
+
+    @Override
+    public boolean isValid(Graph graph) {
+        return true;
     }
 }

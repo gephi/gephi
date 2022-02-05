@@ -50,7 +50,6 @@ import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 import org.gephi.appearance.api.AppearanceModel;
 import org.gephi.appearance.api.Function;
-import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Partition;
 import org.gephi.appearance.api.Ranking;
 import org.gephi.appearance.spi.PartitionTransformer;
@@ -60,6 +59,7 @@ import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -90,6 +90,9 @@ public class AppearanceModelImpl implements AppearanceModel {
     private final Map<Column, AttributeRankingImpl> edgeAttributeRankings;
     private final Map<Column, AttributePartitionImpl> nodeAttributePartitions;
     private final Map<Column, AttributePartitionImpl> edgeAttributePartitions;
+    // Static functions
+    private final List<FunctionImpl> nodeStaticFunctions;
+    private final List<FunctionImpl> edgeStaticFunctions;
     // LocalScale (if true, uses visible graph)
     private boolean localScale = false;
 
@@ -109,24 +112,36 @@ public class AppearanceModelImpl implements AppearanceModel {
         edgeAttributeRankings = new WeakHashMap<>();
         nodeAttributePartitions = new WeakHashMap<>();
         edgeAttributePartitions = new WeakHashMap<>();
+
+        // Static functions
+        nodeStaticFunctions = getNodeSimpleFunctions();
+        nodeStaticFunctions.addAll(getNodeRankingFunctions());
+        edgeStaticFunctions = getEdgeSimpleFunctions();
+        edgeStaticFunctions.addAll(getRankingAndPartitionEdgeFunctions());
+    }
+
+    protected Graph getGraph() {
+        if (localScale) {
+            return graphModel.getGraphVisible();
+        } else {
+            return graphModel.getGraph();
+        }
     }
 
     @Override
     public Function[] getNodeFunctions() {
-        List<Function> res = new ArrayList<>();
-        res.addAll(getNodeRankingFunctions());
+        List<FunctionImpl> res = new ArrayList<>();
+        res.addAll(nodeStaticFunctions);
         res.addAll(getAttributeFunctions(graphModel.getNodeTable()));
-        res.addAll(getNodeSimpleFunctions());
-        return res.toArray(new Function[0]);
+        return res.stream().filter(FunctionImpl::isValid).toArray(Function[]::new);
     }
 
     @Override
     public Function[] getEdgeFunctions() {
-        List<Function> res = new ArrayList<>();
-        res.addAll(getRankingAndPartitionEdgeFunctions());
+        List<FunctionImpl> res = new ArrayList<>();
+        res.addAll(edgeStaticFunctions);
         res.addAll(getAttributeFunctions(graphModel.getEdgeTable()));
-        res.addAll(getEdgeSimpleFunctions());
-        return res.toArray(new Function[0]);
+        return res.stream().filter(FunctionImpl::isValid).toArray(Function[]::new);
     }
 
     @Override
@@ -186,17 +201,13 @@ public class AppearanceModelImpl implements AppearanceModel {
         this.localScale = localScale;
     }
 
-    private List<Function> getNodeRankingFunctions() {
-        return nodeTransformers.stream().filter(t -> t instanceof RankingTransformer).flatMap(t -> {
-            List<Function> res = new ArrayList<>();
-            res.addAll(getDegreeFunctions(t));
-
-            return res.stream();
-        }).collect(Collectors.toList());
+    private List<FunctionImpl> getNodeRankingFunctions() {
+        return nodeTransformers.stream().filter(t -> t instanceof RankingTransformer)
+            .flatMap(t -> getDegreeFunctions(t).stream()).collect(Collectors.toList());
     }
 
-    private List<Function> getAttributeFunctions(Table table) {
-        List<Function> res = new ArrayList<>();
+    private List<FunctionImpl> getAttributeFunctions(Table table) {
+        List<FunctionImpl> res = new ArrayList<>();
         List<Transformer> transformers = table.isNodeTable() ? nodeTransformers : edgeTransformers;
         for (Column column : table) {
             if (!column.isProperty()) {
@@ -210,19 +221,19 @@ public class AppearanceModelImpl implements AppearanceModel {
         return res;
     }
 
-    private List<Function> getAttributeFunctions(Column column, Transformer transformer) {
-        List<Function> res = new ArrayList<>();
+    private List<FunctionImpl> getAttributeFunctions(Column column, Transformer transformer) {
+        List<FunctionImpl> res = new ArrayList<>();
         if (transformer instanceof RankingTransformer) {
             if (transformer.isNode() && column.getTable().isNodeTable()) {
                 RankingImpl ranking =
                     nodeAttributeRankings.computeIfAbsent(column, k -> new AttributeRankingImpl(column));
-                res.add(new AttributeFunctionImpl(getId("node", transformer, column), column,
+                res.add(new AttributeFunctionImpl(this, getId("node", transformer, column), column,
                     transformer, getTransformerUI(transformer), ranking));
             }
             if (transformer.isEdge() && column.getTable().isEdgeTable()) {
                 RankingImpl ranking =
                     edgeAttributeRankings.computeIfAbsent(column, k -> new AttributeRankingImpl(column));
-                res.add(new AttributeFunctionImpl(getId("edge", transformer, column), column,
+                res.add(new AttributeFunctionImpl(this, getId("edge", transformer, column), column,
                     transformer, getTransformerUI(transformer), ranking));
             }
         }
@@ -230,30 +241,30 @@ public class AppearanceModelImpl implements AppearanceModel {
             if (transformer.isNode() && column.getTable().isNodeTable()) {
                 PartitionImpl partition =
                     nodeAttributePartitions.computeIfAbsent(column, k -> new AttributePartitionImpl(column));
-                res.add(new AttributeFunctionImpl(getId("node", transformer, column), column, transformer,
+                res.add(new AttributeFunctionImpl(this, getId("node", transformer, column), column, transformer,
                     getTransformerUI(transformer), partition));
             }
             if (transformer.isEdge() && column.getTable().isEdgeTable()) {
                 PartitionImpl partition =
                     edgeAttributePartitions.computeIfAbsent(column, k -> new AttributePartitionImpl(column));
-                res.add(new AttributeFunctionImpl(getId("edge", transformer, column), column, transformer,
+                res.add(new AttributeFunctionImpl(this, getId("edge", transformer, column), column, transformer,
                     getTransformerUI(transformer), partition));
             }
         }
         return res;
     }
 
-    private List<Function> getNodeSimpleFunctions() {
+    private List<FunctionImpl> getNodeSimpleFunctions() {
         return Lookup.getDefault().lookupAll(Transformer.class).stream()
             .filter(t -> t instanceof SimpleTransformer && t.isNode())
-            .map(t -> new SimpleFunctionImpl(getId("node", t, "simple"), Node.class, t, getTransformerUI(t)))
+            .map(t -> new SimpleFunctionImpl(this, getId("node", t, "simple"), Node.class, t, getTransformerUI(t)))
             .collect(Collectors.toList());
     }
 
-    private List<Function> getEdgeSimpleFunctions() {
+    private List<FunctionImpl> getEdgeSimpleFunctions() {
         return Lookup.getDefault().lookupAll(Transformer.class).stream()
             .filter(t -> t instanceof SimpleTransformer && t.isEdge())
-            .map(t -> new SimpleFunctionImpl(getId("edge", t, "simple"), Edge.class, t, getTransformerUI(t)))
+            .map(t -> new SimpleFunctionImpl(this, getId("edge", t, "simple"), Edge.class, t, getTransformerUI(t)))
             .collect(Collectors.toList());
     }
 
@@ -261,13 +272,16 @@ public class AppearanceModelImpl implements AppearanceModel {
         List<GraphFunctionImpl> res = new ArrayList<>();
         TransformerUI transformerUI = getTransformerUI(transformer);
 
-        res.add(new GraphFunctionImpl(NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.Degree.name"),
-            Node.class, transformer, transformerUI, degreeRanking));
+        res.add(
+            new GraphFunctionImpl(this, NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.Degree.name"),
+                Node.class, transformer, transformerUI, degreeRanking));
 
-        res.add(new GraphFunctionImpl(NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.InDegree.name"),
+        res.add(new GraphFunctionImpl(this,
+            NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.InDegree.name"),
             Node.class, transformer, transformerUI, inDegreeRanking));
         res.add(
-            new GraphFunctionImpl(NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.OutDegree.name"),
+            new GraphFunctionImpl(this,
+                NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.OutDegree.name"),
                 Node.class, transformer, transformerUI, outDegreeRanking));
         return res;
     }
@@ -278,14 +292,15 @@ public class AppearanceModelImpl implements AppearanceModel {
             TransformerUI transformerUI = getTransformerUI(t);
 
             if (t instanceof RankingTransformer) {
-                res.add(new GraphFunctionImpl(
+                res.add(new GraphFunctionImpl(this,
                     NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Weight.name"), Edge.class, t,
                     transformerUI, edgeWeightRanking));
             }
 
             if (t instanceof PartitionTransformer) {
                 res.add(
-                    new GraphFunctionImpl(NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Type.name"),
+                    new GraphFunctionImpl(this,
+                        NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Type.name"),
                         Edge.class, t, transformerUI, edgeTypePartition));
             }
             return res.stream();

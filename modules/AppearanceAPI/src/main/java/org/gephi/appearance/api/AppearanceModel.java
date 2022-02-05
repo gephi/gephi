@@ -42,9 +42,7 @@
 
 package org.gephi.appearance.api;
 
-import org.gephi.appearance.spi.Transformer;
 import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Graph;
 import org.gephi.project.api.Workspace;
 
 /**

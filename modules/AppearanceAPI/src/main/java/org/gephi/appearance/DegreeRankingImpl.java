@@ -63,7 +63,7 @@ public class DegreeRankingImpl extends RankingImpl {
 
     @Override
     public Number getMinValue(Graph graph) {
-        if(graph.getNodeCount() > 0) {
+        if (graph.getNodeCount() > 0) {
             int min = Integer.MAX_VALUE;
             DirectedGraph directedGraph = (DirectedGraph) graph;
             for (Node node : directedGraph.getNodes()) {
@@ -76,7 +76,7 @@ public class DegreeRankingImpl extends RankingImpl {
 
     @Override
     public Number getMaxValue(Graph graph) {
-        if(graph.getNodeCount() > 0) {
+        if (graph.getNodeCount() > 0) {
             int max = Integer.MIN_VALUE;
             DirectedGraph directedGraph = (DirectedGraph) graph;
             for (Node node : directedGraph.getNodes()) {
@@ -85,5 +85,10 @@ public class DegreeRankingImpl extends RankingImpl {
             return max;
         }
         return 0;
+    }
+
+    @Override
+    public boolean isValid(Graph graph) {
+        return true;
     }
 }

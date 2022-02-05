@@ -110,24 +110,22 @@ public class AppearanceControllerImpl implements AppearanceController {
 
     @Override
     public void transform(Function function) {
-        if (model != null) {
-            GraphModel graphModel = model.getGraphModel();
-            Graph graph = graphModel.getGraphVisible();
-            ElementIterable<? extends Element> iterable;
-            if (function.getElementClass().equals(Node.class)) {
-                iterable = graph.getNodes();
+        GraphModel graphModel = function.getGraph().getModel();
+        Graph graph = graphModel.getGraphVisible();
+        ElementIterable<? extends Element> iterable;
+        if (function.getElementClass().equals(Node.class)) {
+            iterable = graph.getNodes();
+        } else {
+            iterable = graph.getEdges();
+        }
+        try {
+            function.transformAll(iterable);
+        } catch (Exception e) {
+            iterable.doBreak();
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
             } else {
-                iterable = graph.getEdges();
-            }
-            try {
-                function.transformAll(iterable, graph);
-            } catch (Exception e) {
-                iterable.doBreak();
-                if (e instanceof RuntimeException) {
-                    throw (RuntimeException) e;
-                } else {
-                    throw new RuntimeException(e);
-                }
+                throw new RuntimeException(e);
             }
         }
     }

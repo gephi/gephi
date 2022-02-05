@@ -44,15 +44,10 @@ package org.gephi.appearance;
 
 import java.lang.ref.WeakReference;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
-import org.gephi.graph.api.ElementIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Index;
-import org.gephi.graph.api.types.TimeMap;
 
 /**
  * @author mbastian
@@ -99,12 +94,18 @@ public class AttributePartitionImpl extends PartitionImpl {
 
     @Override
     public int size(Graph graph) {
-            return getIndex(graph).countValues(column.get());
+        return getIndex(graph).countValues(column.get());
     }
 
     @Override
     public Column getColumn() {
         return column.get();
+    }
+
+    @Override
+    public boolean isValid(Graph graph) {
+        Column col = column.get();
+        return col != null && col.getIndex() != -1;
     }
 
     @Override

@@ -72,11 +72,14 @@ public abstract class RankingImpl implements Ranking {
         if (minValue.equals(maxValue)) {
             return 1f;
         }
-        if(value == null) {
+        if (value == null) {
             return 0f;
         }
         float normalizedValue =
-            (float) (value.doubleValue() - minValue.doubleValue()) / (float) (maxValue.doubleValue() - minValue.doubleValue());
+            (float) (value.doubleValue() - minValue.doubleValue()) /
+                (float) (maxValue.doubleValue() - minValue.doubleValue());
         return interpolator.interpolate(normalizedValue);
     }
+
+    public abstract boolean isValid(Graph graph);
 }
