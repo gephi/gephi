@@ -40,7 +40,7 @@
  Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.ui.appearance.plugin;
+package org.gephi.ui.appearance.plugin.color;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -54,6 +54,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.plugin.RankingElementColorTransformer;
+import org.gephi.ui.appearance.plugin.RecentPalettes;
 import org.gephi.ui.components.PaletteIcon;
 import org.gephi.ui.components.gradientslider.GradientSlider;
 import org.gephi.ui.components.gradientslider.MultiThumbSlider;

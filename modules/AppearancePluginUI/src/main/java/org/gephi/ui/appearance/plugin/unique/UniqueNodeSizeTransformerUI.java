@@ -40,7 +40,7 @@
  Portions Copyrighted 2013 Gephi Consortium.
  */
 
-package org.gephi.ui.appearance.plugin;
+package org.gephi.ui.appearance.plugin.unique;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;

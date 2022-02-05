@@ -40,15 +40,15 @@
  Portions Copyrighted 2013 Gephi Consortium.
  */
 
-package org.gephi.ui.appearance.plugin;
+package org.gephi.ui.appearance.plugin.unique;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.Function;
-import org.gephi.appearance.api.RankingFunction;
-import org.gephi.appearance.plugin.RankingLabelSizeTransformer;
-import org.gephi.appearance.spi.RankingTransformer;
+import org.gephi.appearance.api.SimpleFunction;
+import org.gephi.appearance.plugin.UniqueLabelSizeTransformer;
+import org.gephi.appearance.spi.SimpleTransformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.ui.appearance.plugin.category.DefaultCategory;
@@ -58,24 +58,19 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * @author mbastian
  */
-@ServiceProvider(service = TransformerUI.class, position = 800)
-public class RankingLabelSizeTransformerUI implements TransformerUI {
+@ServiceProvider(service = TransformerUI.class, position = 700)
+public class UniqueLabelSizeTransformerUI implements TransformerUI {
 
-    private RankingSizeTransformerPanel panel;
+    private UniqueSizeTransformerPanel panel;
+
+    @Override
+    public String getDisplayName() {
+        return NbBundle.getMessage(UniqueLabelSizeTransformerUI.class, "Unique.name");
+    }
 
     @Override
     public TransformerCategory getCategory() {
         return DefaultCategory.LABEL_SIZE;
-    }
-
-    @Override
-    public Icon getIcon() {
-        return null;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return NbBundle.getMessage(RankingLabelSizeTransformerUI.class, "Attribute.ranking.name");
     }
 
     @Override
@@ -84,11 +79,16 @@ public class RankingLabelSizeTransformerUI implements TransformerUI {
     }
 
     @Override
+    public Icon getIcon() {
+        return null;
+    }
+
+    @Override
     public synchronized JPanel getPanel(Function function) {
         if (panel == null) {
-            panel = new RankingSizeTransformerPanel();
+            panel = new UniqueSizeTransformerPanel();
         }
-        panel.setup((RankingFunction) function);
+        panel.setup((SimpleFunction) function);
         return panel;
     }
 
@@ -98,7 +98,7 @@ public class RankingLabelSizeTransformerUI implements TransformerUI {
     }
 
     @Override
-    public Class<? extends RankingTransformer> getTransformerClass() {
-        return RankingLabelSizeTransformer.class;
+    public Class<? extends SimpleTransformer> getTransformerClass() {
+        return UniqueLabelSizeTransformer.class;
     }
 }

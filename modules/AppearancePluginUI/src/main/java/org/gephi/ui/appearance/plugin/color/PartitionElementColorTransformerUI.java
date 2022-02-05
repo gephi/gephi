@@ -40,15 +40,15 @@
  Portions Copyrighted 2013 Gephi Consortium.
  */
 
-package org.gephi.ui.appearance.plugin;
+package org.gephi.ui.appearance.plugin.color;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.Function;
-import org.gephi.appearance.api.SimpleFunction;
-import org.gephi.appearance.plugin.UniqueElementColorTransformer;
-import org.gephi.appearance.spi.SimpleTransformer;
+import org.gephi.appearance.api.PartitionFunction;
+import org.gephi.appearance.plugin.PartitionElementColorTransformer;
+import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
 import org.gephi.ui.appearance.plugin.category.DefaultCategory;
@@ -58,15 +58,10 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * @author mbastian
  */
-@ServiceProvider(service = TransformerUI.class, position = 100)
-public class UniqueElementColorTransformerUI implements TransformerUI {
+@ServiceProvider(service = TransformerUI.class, position = 200)
+public class PartitionElementColorTransformerUI implements TransformerUI {
 
-    private UniqueColorTransformerPanel panel;
-
-    @Override
-    public String getDisplayName() {
-        return NbBundle.getMessage(UniqueElementColorTransformerUI.class, "Unique.name");
-    }
+    private PartitionColorTransformerPanel panel;
 
     @Override
     public TransformerCategory getCategory() {
@@ -74,8 +69,8 @@ public class UniqueElementColorTransformerUI implements TransformerUI {
     }
 
     @Override
-    public String getDescription() {
-        return null;
+    public String getDisplayName() {
+        return NbBundle.getMessage(PartitionElementColorTransformerUI.class, "Attribute.partition.name");
     }
 
     @Override
@@ -84,21 +79,29 @@ public class UniqueElementColorTransformerUI implements TransformerUI {
     }
 
     @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
     public synchronized JPanel getPanel(Function function) {
         if (panel == null) {
-            panel = new UniqueColorTransformerPanel();
+            panel = new PartitionColorTransformerPanel();
         }
-        panel.setup((SimpleFunction) function);
+        panel.setup((PartitionFunction) function);
         return panel;
     }
 
     @Override
     public synchronized AbstractButton[] getControlButton() {
-        return null;
+        if (panel == null) {
+            panel = new PartitionColorTransformerPanel();
+        }
+        return new AbstractButton[] {panel.getPaletteButton()};
     }
 
     @Override
-    public Class<? extends SimpleTransformer> getTransformerClass() {
-        return UniqueElementColorTransformer.class;
+    public Class<? extends PartitionTransformer> getTransformerClass() {
+        return PartitionElementColorTransformer.class;
     }
 }

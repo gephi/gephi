@@ -40,12 +40,14 @@
  Portions Copyrighted 2011 Gephi Consortium.
  */
 
-package org.gephi.ui.appearance.plugin;
+package org.gephi.ui.appearance.plugin.size;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.appearance.api.RankingFunction;
+import org.gephi.appearance.plugin.RankingLabelSizeTransformer;
 import org.gephi.appearance.plugin.RankingNodeSizeTransformer;
+import org.gephi.appearance.plugin.RankingSizeTransformer;
 import org.openide.util.NbPreferences;
 
 /**
@@ -53,10 +55,7 @@ import org.openide.util.NbPreferences;
  */
 public class RankingSizeTransformerPanel extends javax.swing.JPanel {
 
-    private RankingNodeSizeTransformer sizeTransformer;
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel labelMaxSize;
-    private javax.swing.JLabel labelMinSize;
+    private RankingSizeTransformer sizeTransformer;
     private javax.swing.JSpinner maxSize;
     private javax.swing.JSpinner minSize;
 
@@ -79,21 +78,15 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
 
         minSize.setValue(minSizeStart);
         maxSize.setValue(maxSizeStart);
-        minSize.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                sizeTransformer.setMinSize((Float) minSize.getValue());
-                NbPreferences.forModule(RankingSizeTransformerPanel.class)
-                    .putFloat(MIN_SIZE, (Float) minSize.getValue());
-            }
+        minSize.addChangeListener(e -> {
+            sizeTransformer.setMinSize((Float) minSize.getValue());
+            NbPreferences.forModule(RankingSizeTransformerPanel.class)
+                .putFloat(MIN_SIZE, (Float) minSize.getValue());
         });
-        maxSize.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                sizeTransformer.setMaxSize((Float) maxSize.getValue());
-                NbPreferences.forModule(RankingSizeTransformerPanel.class)
-                    .putFloat(MAX_SIZE, (Float) maxSize.getValue());
-            }
+        maxSize.addChangeListener(e -> {
+            sizeTransformer.setMaxSize((Float) maxSize.getValue());
+            NbPreferences.forModule(RankingSizeTransformerPanel.class)
+                .putFloat(MAX_SIZE, (Float) maxSize.getValue());
         });
     }
 
@@ -106,9 +99,10 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        labelMinSize = new javax.swing.JLabel();
+        javax.swing.JLabel labelMinSize = new javax.swing.JLabel();
         minSize = new javax.swing.JSpinner();
-        labelMaxSize = new javax.swing.JLabel();
+        // Variables declaration - do not modify//GEN-BEGIN:variables
+        javax.swing.JLabel labelMaxSize = new javax.swing.JLabel();
         maxSize = new javax.swing.JSpinner();
 
         setPreferredSize(new java.awt.Dimension(225, 114));

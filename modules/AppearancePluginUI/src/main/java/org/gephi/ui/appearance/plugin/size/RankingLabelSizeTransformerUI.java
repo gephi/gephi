@@ -40,14 +40,14 @@
  Portions Copyrighted 2013 Gephi Consortium.
  */
 
-package org.gephi.ui.appearance.plugin;
+package org.gephi.ui.appearance.plugin.size;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.RankingFunction;
-import org.gephi.appearance.plugin.RankingNodeSizeTransformer;
+import org.gephi.appearance.plugin.RankingLabelSizeTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
@@ -58,14 +58,14 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * @author mbastian
  */
-@ServiceProvider(service = TransformerUI.class, position = 400)
-public class RankingElementSizeTransformerUI implements TransformerUI {
+@ServiceProvider(service = TransformerUI.class, position = 800)
+public class RankingLabelSizeTransformerUI implements TransformerUI {
 
     private RankingSizeTransformerPanel panel;
 
     @Override
     public TransformerCategory getCategory() {
-        return DefaultCategory.SIZE;
+        return DefaultCategory.LABEL_SIZE;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class RankingElementSizeTransformerUI implements TransformerUI {
 
     @Override
     public String getDisplayName() {
-        return NbBundle.getMessage(RankingElementSizeTransformerUI.class, "Attribute.ranking.name");
+        return NbBundle.getMessage(RankingLabelSizeTransformerUI.class, "Attribute.ranking.name");
     }
 
     @Override
@@ -99,6 +99,6 @@ public class RankingElementSizeTransformerUI implements TransformerUI {
 
     @Override
     public Class<? extends RankingTransformer> getTransformerClass() {
-        return RankingNodeSizeTransformer.class;
+        return RankingLabelSizeTransformer.class;
     }
 }

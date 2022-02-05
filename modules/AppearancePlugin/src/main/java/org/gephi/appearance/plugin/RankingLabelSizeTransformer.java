@@ -54,10 +54,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author mbastian
  */
 @ServiceProvider(service = Transformer.class)
-public class RankingLabelSizeTransformer implements RankingTransformer<Element> {
-
-    protected float minSize = 1f;
-    protected float maxSize = 4f;
+public class RankingLabelSizeTransformer extends RankingSizeTransformer<Element> {
 
     @Override
     public void transform(Element element, Ranking ranking, Number value, float normalisedValue) {
@@ -73,21 +70,5 @@ public class RankingLabelSizeTransformer implements RankingTransformer<Element> 
     @Override
     public boolean isEdge() {
         return true;
-    }
-
-    public float getMaxSize() {
-        return maxSize;
-    }
-
-    public void setMaxSize(float maxSize) {
-        this.maxSize = maxSize;
-    }
-
-    public float getMinSize() {
-        return minSize;
-    }
-
-    public void setMinSize(float minSize) {
-        this.minSize = minSize;
     }
 }

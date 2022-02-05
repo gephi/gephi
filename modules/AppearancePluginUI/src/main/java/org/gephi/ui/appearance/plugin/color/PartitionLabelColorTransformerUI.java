@@ -40,14 +40,14 @@
  Portions Copyrighted 2013 Gephi Consortium.
  */
 
-package org.gephi.ui.appearance.plugin;
+package org.gephi.ui.appearance.plugin.color;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.PartitionFunction;
-import org.gephi.appearance.plugin.PartitionElementColorTransformer;
+import org.gephi.appearance.plugin.PartitionLabelColorTransformer;
 import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
@@ -58,19 +58,19 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * @author mbastian
  */
-@ServiceProvider(service = TransformerUI.class, position = 200)
-public class PartitionElementColorTransformerUI implements TransformerUI {
+@ServiceProvider(service = TransformerUI.class, position = 600)
+public class PartitionLabelColorTransformerUI implements TransformerUI {
 
     private PartitionColorTransformerPanel panel;
 
     @Override
     public TransformerCategory getCategory() {
-        return DefaultCategory.COLOR;
+        return DefaultCategory.LABEL_COLOR;
     }
 
     @Override
     public String getDisplayName() {
-        return NbBundle.getMessage(PartitionElementColorTransformerUI.class, "Attribute.partition.name");
+        return NbBundle.getMessage(PartitionLabelColorTransformerUI.class, "Attribute.partition.name");
     }
 
     @Override
@@ -102,6 +102,6 @@ public class PartitionElementColorTransformerUI implements TransformerUI {
 
     @Override
     public Class<? extends PartitionTransformer> getTransformerClass() {
-        return PartitionElementColorTransformer.class;
+        return PartitionLabelColorTransformer.class;
     }
 }
