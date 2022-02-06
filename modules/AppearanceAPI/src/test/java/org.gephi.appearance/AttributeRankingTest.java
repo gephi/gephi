@@ -36,4 +36,21 @@ public class AttributeRankingTest {
         Assert.assertEquals(1f, attributeRanking.getNormalizedValue(n2, graph), 0);
     }
 
+    @Test
+    public void testIsValidStringColumn() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addStringNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.STRING_COLUMN);
+
+        AttributeRankingImpl p = new AttributeRankingImpl(column);
+        Assert.assertFalse(p.isValid(graph));
+    }
+
+    @Test
+    public void testIsValidIntColumn() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+
+        AttributeRankingImpl p = new AttributeRankingImpl(column);
+        Assert.assertTrue(p.isValid(graph));
+    }
 }

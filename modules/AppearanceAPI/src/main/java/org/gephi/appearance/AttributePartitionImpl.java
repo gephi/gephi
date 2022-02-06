@@ -106,7 +106,7 @@ public class AttributePartitionImpl extends PartitionImpl {
     public boolean isValid(Graph graph) {
         Column col = column.get();
         if(col != null && col.getIndex() != -1) {
-            return !col.isNumber();
+            return !col.isNumber() || getIndex(graph.getModel().getGraph()).countValues(col) > 1;
         }
         return false;
     }

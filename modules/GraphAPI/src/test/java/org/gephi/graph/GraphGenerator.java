@@ -20,6 +20,7 @@ public class GraphGenerator {
 
     public static final String INT_COLUMN = "age";
     public static final String DOUBLE_COLUMN = "value";
+    public static final String STRING_COLUMN = "country";
     public static final String TIMESTAMP_SET_COLUMN = "events";
     public static final String INTERVAL_SET_COLUMN = "events";
     public static final String TIMESTAMP_DOUBLE_COLUMN = "price";
@@ -27,6 +28,7 @@ public class GraphGenerator {
     public static final String FIRST_NODE = "1";
     public static final String SECOND_NODE = "2";
     public static final String FIRST_EDGE = "1";
+    public static final String[] STRING_COLUMN_VALUES = new String[] {"France", "Germany"};
     public static final int INT_COLUMN_MIN_VALUE = 10;
 
     private final GraphModel graphModel;
@@ -81,6 +83,13 @@ public class GraphGenerator {
         for (Node node : graphModel.getGraph().getNodes()) {
             node.setAttribute(DOUBLE_COLUMN, val++);
         }
+        return this;
+    }
+
+    public GraphGenerator addStringNodeColumn() {
+        graphModel.getNodeTable().addColumn(STRING_COLUMN, String.class);
+        graphModel.getGraph().getNode(FIRST_NODE).setAttribute(STRING_COLUMN, STRING_COLUMN_VALUES[0]);
+        graphModel.getGraph().getNode(SECOND_NODE).setAttribute(STRING_COLUMN, STRING_COLUMN_VALUES[1]);
         return this;
     }
 

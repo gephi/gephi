@@ -42,14 +42,20 @@
 
 package org.gephi.appearance;
 
-import junit.framework.TestCase;
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class AttributePartitionTest {
+
+    private static void clearNodeAttributes(Graph graph) {
+        for (Node n : graph.getNodes()) {
+            n.clearAttributes();
+        }
+    }
 
     @Test
     public void testEmpty() {
@@ -72,5 +78,29 @@ public class AttributePartitionTest {
         Assert.assertEquals(graph.getNodeCount(), p.getElementCount(graph));
         Assert.assertEquals(graph.getNodeCount(), p.getValues(graph).size());
         Assert.assertNotNull(p.getValue(graph.getNodes().toArray()[0], graph));
+    }
+
+    @Test
+    public void testIsValidStringColumn() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addStringNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.STRING_COLUMN);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        Assert.assertTrue(p.isValid(graph));
+
+        clearNodeAttributes(graph);
+        Assert.assertTrue(p.isValid(graph));
+    }
+
+    @Test
+    public void testIsValidIntColumn() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        Assert.assertTrue(p.isValid(graph));
+
+        clearNodeAttributes(graph);
+        Assert.assertFalse(p.isValid(graph));
     }
 }

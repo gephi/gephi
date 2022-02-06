@@ -51,7 +51,6 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
@@ -128,9 +127,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             centerPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
 
-        //Hide for now
-        localScaleButton.setVisible(false);
-
         refreshModel(model);
     }
 
@@ -152,6 +148,10 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             refreshControls();
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.START_STOP_AUTO_APPLY)) {
             refreshControls();
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SET_LOCAL_SCALE)) {
+            refreshControls();
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.ATTRIBUTE_LIST)) {
+            refreshCombo();
         }
         //        if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
         //            listButton.setSelected((Boolean) pce.getNewValue());
@@ -248,63 +248,62 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     }
 
     private void refreshCombo() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
+        if (model != null && model.getSelectedTransformerUI() != null &&
+            model.isAttributeTransformerUI(model.getSelectedTransformerUI())) {
+
+
+            final List<Function> rows = new ArrayList<>(model.getFunctions());
+
+            Collections.sort(rows, (o1, o2) -> {
+                if (o1.isAttribute() && !o2.isAttribute()) {
+                    return 1;
+                } else if (!o1.isAttribute() && o2.isAttribute()) {
+                    return -1;
+                }
+                return o1.toString().compareTo(o2.toString());
+            });
+
+            SwingUtilities.invokeLater(() -> {
                 final DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
-                if (model != null) {
-                    TransformerUI ui = model.getSelectedTransformerUI();
-                    if (ui != null && model.isAttributeTransformerUI(ui)) {
 
-                        //Ranking
-                        Function selectedColumn = model.getSelectedFunction();
-                        attibuteBox.removeItemListener(attributeListener);
+                //Ranking
+                Function selectedColumn = model.getSelectedFunction();
+                attibuteBox.removeItemListener(attributeListener);
 
-                        comboBoxModel.addElement(NO_SELECTION);
-                        comboBoxModel.setSelectedItem(NO_SELECTION);
+                comboBoxModel.addElement(NO_SELECTION);
+                comboBoxModel.setSelectedItem(NO_SELECTION);
 
-                        List<Function> rows = new ArrayList<>();
-                        rows.addAll(model.getFunctions());
-
-                        Collections.sort(rows, new Comparator<Function>() {
-                            @Override
-                            public int compare(Function o1, Function o2) {
-                                if (o1.isAttribute() && !o2.isAttribute()) {
-                                    return 1;
-                                } else if (!o1.isAttribute() && o2.isAttribute()) {
-                                    return -1;
-                                }
-                                return o1.toString().compareTo(o2.toString());
-                            }
-                        });
-                        for (Function r : rows) {
-                            comboBoxModel.addElement(r);
-                            if (selectedColumn != null && selectedColumn.equals(r)) {
-                                comboBoxModel.setSelectedItem(r);
-                            }
-                        }
-                        attributeListener = new ItemListener() {
-                            @Override
-                            public void itemStateChanged(ItemEvent e) {
-                                if (model != null) {
-                                    if (!attibuteBox.getSelectedItem().equals(NO_SELECTION)) {
-                                        Function selectedItem = (Function) attibuteBox.getSelectedItem();
-                                        Function selectedFunction = model.getSelectedFunction();
-                                        if (selectedFunction != selectedItem) {
-                                            controller.setSelectedFunction(selectedItem);
-                                        }
-                                    } else {
-                                        controller.setSelectedFunction(null);
-                                    }
-                                }
-                            }
-                        };
-                        attibuteBox.addItemListener(attributeListener);
+                for (Function r : rows) {
+                    comboBoxModel.addElement(r);
+                    if (selectedColumn != null && selectedColumn.equals(r)) {
+                        comboBoxModel.setSelectedItem(r);
                     }
                 }
+                attributeListener = new ItemListener() {
+                    @Override
+                    public void itemStateChanged(ItemEvent e) {
+                        if (model != null) {
+                            if (!attibuteBox.getSelectedItem().equals(NO_SELECTION)) {
+                                Function selectedItem = (Function) attibuteBox.getSelectedItem();
+                                Function selectedFunction = model.getSelectedFunction();
+                                if (selectedFunction != selectedItem) {
+                                    controller.setSelectedFunction(selectedItem);
+                                }
+                            } else {
+                                controller.setSelectedFunction(null);
+                            }
+                        }
+                    }
+                };
+                attibuteBox.addItemListener(attributeListener);
+
                 attibuteBox.setModel(comboBoxModel);
-            }
-        });
+            });
+        } else {
+            SwingUtilities.invokeLater(() -> {
+                attibuteBox.setModel(new DefaultComboBoxModel());
+            });
+        }
     }
 
     private void refreshControls() {
@@ -313,10 +312,10 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             public void run() {
                 if (model != null && model.getSelectedFunction() != null) {
                     enableAutoButton.setEnabled(true);
-                    if (model.getAutoAppyTransformer() != null) {
+                    if (model.getAutoApplyTransformer() != null) {
                         applyButton.setVisible(false);
                         enableAutoButton.setSelected(true);
-                        AutoAppyTransformer aat = model.getAutoAppyTransformer();
+                        AutoAppyTransformer aat = model.getAutoApplyTransformer();
                         if (aat.isRunning()) {
                             autoApplyButton.setVisible(false);
                             stopAutoApplyButton.setVisible(true);
@@ -348,7 +347,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
     private void initControls() {
         //Add ranking controls
-//        toolbar.addRankingControl(localScaleButton);
+        toolbar.addRankingControl(localScaleButton);
         toolbar.addRankingControl(splineButton);
 
         //Add partition controls
@@ -409,7 +408,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.setAutoApply(model.getAutoAppyTransformer() == null);
+                controller.setAutoApply(model.getAutoApplyTransformer() == null);
             }
         });
         stopAutoApplyButton.setVisible(false);
@@ -571,8 +570,9 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         localScaleButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.localScaleButton.toolTipText")); // NOI18N
         localScaleButton.setFocusable(false);
-        localScaleButton.setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png")).getImage())))); // NOI18N
+        localScaleButton
+            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((new javax.swing.ImageIcon(
+                getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png")).getImage())))); // NOI18N
         controlToolbar.add(localScaleButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle

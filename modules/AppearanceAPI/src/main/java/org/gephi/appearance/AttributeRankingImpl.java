@@ -84,7 +84,7 @@ public class AttributeRankingImpl extends RankingImpl {
     public boolean isValid(Graph graph) {
         Column col = column.get();
         if(col != null && col.getIndex() != -1) {
-            return col.isNumber();
+            return col.isNumber() && !col.isArray();
         }
         return false;
     }

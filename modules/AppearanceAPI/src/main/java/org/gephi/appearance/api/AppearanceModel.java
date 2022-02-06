@@ -43,6 +43,7 @@
 package org.gephi.appearance.api;
 
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 
 /**
@@ -98,6 +99,13 @@ public interface AppearanceModel {
      * @return all edge functions
      */
     Function[] getEdgeFunctions();
+
+    /**
+     * Returns the graph model this model is associated with.
+     *
+     * @return the graph model
+     */
+    GraphModel getGraphModel();
 
     /**
      * Identifies the non-column-based functions.

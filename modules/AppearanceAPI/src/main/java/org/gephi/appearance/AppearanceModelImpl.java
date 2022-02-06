@@ -311,7 +311,8 @@ public class AppearanceModelImpl implements AppearanceModel {
         return transformerUIs.get(transformer.getClass());
     }
 
-    protected GraphModel getGraphModel() {
+    @Override
+    public GraphModel getGraphModel() {
         return graphModel;
     }
 

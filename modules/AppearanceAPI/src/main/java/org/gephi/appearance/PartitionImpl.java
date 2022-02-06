@@ -76,13 +76,10 @@ public abstract class PartitionImpl implements Partition {
     @Override
     public Collection getSortedValues(Graph graph) {
         List values = new ArrayList(getValues(graph));
-        values.sort(new Comparator() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                float p1 = percentage(o1, graph);
-                float p2 = percentage(o2, graph);
-                return Float.compare(p2, p1);
-            }
+        values.sort((o1, o2) -> {
+            int c1 = count(o1, graph);
+            int c2 = count(o2, graph);
+            return Integer.compare(c2, c1);
         });
         return values;
     }
