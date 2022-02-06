@@ -110,7 +110,7 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
         labelMinSize.setText(org.openide.util.NbBundle
             .getMessage(RankingSizeTransformerPanel.class, "RankingSizeTransformerPanel.labelMinSize.text")); // NOI18N
 
-        minSize.setModel(new javax.swing.SpinnerNumberModel(1.0f, 0.1f, null, 0.5f));
+        minSize.setModel(new javax.swing.SpinnerNumberModel(1.0f, 0.01f, null, 0.5f));
 
         labelMaxSize.setText(org.openide.util.NbBundle
             .getMessage(RankingSizeTransformerPanel.class, "RankingSizeTransformerPanel.labelMaxSize.text")); // NOI18N
@@ -125,12 +125,12 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
                     .addContainerGap()
                     .addComponent(labelMinSize)
                     .addGap(8, 8, 8)
-                    .addComponent(minSize, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                    .addComponent(minSize, javax.swing.GroupLayout.PREFERRED_SIZE, 60,
                         javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(18, 18, 18)
                     .addComponent(labelMaxSize)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(maxSize, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                    .addComponent(maxSize, javax.swing.GroupLayout.PREFERRED_SIZE, 60,
                         javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
