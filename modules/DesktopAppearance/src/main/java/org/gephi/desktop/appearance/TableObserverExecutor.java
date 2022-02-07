@@ -2,9 +2,7 @@ package org.gephi.desktop.appearance;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import org.gephi.appearance.api.Function;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.TableObserver;
 import org.openide.util.Lookup;
@@ -53,12 +51,12 @@ public class TableObserverExecutor implements Runnable {
     public void run() {
         synchronized (this) {
             String selectedElementClass = model.selectedElementClass;
-            if(nodeTableObserver != null && selectedElementClass.equals(AppearanceUIController.NODE_ELEMENT)) {
-                if(nodeTableObserver.hasTableChanged()) {
+            if (nodeTableObserver != null && selectedElementClass.equals(AppearanceUIController.NODE_ELEMENT)) {
+                if (nodeTableObserver.hasTableChanged()) {
                     controller.refreshColumnsList();
                 }
-            } else if(edgeTableObserver != null && selectedElementClass.equals(AppearanceUIController.EDGE_ELEMENT)) {
-                if(edgeTableObserver.hasTableChanged()) {
+            } else if (edgeTableObserver != null && selectedElementClass.equals(AppearanceUIController.EDGE_ELEMENT)) {
+                if (edgeTableObserver.hasTableChanged()) {
                     controller.refreshColumnsList();
                 }
             }
