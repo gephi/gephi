@@ -167,6 +167,7 @@
         <gephi.update.center.thirdparty.url>https://raw.githubusercontent.com/gephi/gephi-plugins/gh-pages/plugins/${project.version}/updates.xml</gephi.update.center.thirdparty.url>
 
         <!-- JRE locations -->
+        <!-- for more details about the parameters supported by this API, see https://api.adoptium.net/q/swagger-ui/#/Binary/getBinary -->
         <gephi.bundle.jre.macos>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/mac/x64/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.macos>
         <gephi.bundle.jre.windows>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/windows/x64/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.windows>
         <gephi.bundle.jre.linux>https://api.adoptium.net/v3/binary/latest/11/${gephi.javac.release}/linux/x64/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.linux>
