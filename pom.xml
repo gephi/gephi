@@ -167,9 +167,9 @@
         <gephi.update.center.thirdparty.url>https://raw.githubusercontent.com/gephi/gephi-plugins/gh-pages/plugins/${project.version}/updates.xml</gephi.update.center.thirdparty.url>
 
         <!-- JRE locations -->
-        <gephi.bundle.jre.macos>https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.13%2B8/OpenJDK11U-jre_x64_mac_hotspot_11.0.13_8.tar.gz</gephi.bundle.jre.macos>
-        <gephi.bundle.jre.windows>https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.13%2B8/OpenJDK11U-jre_x64_windows_hotspot_11.0.13_8.zip</gephi.bundle.jre.windows>
-        <gephi.bundle.jre.linux>https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.13%2B8/OpenJDK11U-jre_x64_linux_hotspot_11.0.13_8.tar.gz</gephi.bundle.jre.linux>
+        <gephi.bundle.jre.macos>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/mac/x64/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.macos>
+        <gephi.bundle.jre.windows>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/windows/x64/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.windows>
+        <gephi.bundle.jre.linux>https://api.adoptium.net/v3/binary/latest/11/${gephi.javac.release}/linux/x64/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.linux>
 
         <!-- Mac OS X bundle settings -->
         <gephi.appbundle.name>Gephi</gephi.appbundle.name>
