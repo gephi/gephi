@@ -45,7 +45,6 @@ package org.gephi.appearance;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,4 +84,6 @@ public abstract class PartitionImpl implements Partition {
     }
 
     public abstract boolean isValid(Graph graph);
+
+    public abstract Class getValueType();
 }

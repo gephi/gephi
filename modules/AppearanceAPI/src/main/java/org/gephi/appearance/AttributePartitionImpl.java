@@ -103,9 +103,14 @@ public class AttributePartitionImpl extends PartitionImpl {
     }
 
     @Override
+    public Class getValueType() {
+        return getColumn().getTypeClass();
+    }
+
+    @Override
     public boolean isValid(Graph graph) {
         Column col = column.get();
-        if(col != null && col.getIndex() != -1) {
+        if (col != null && col.getIndex() != -1) {
             return !col.isNumber() || getIndex(graph.getModel().getGraph()).countValues(col) > 1;
         }
         return false;

@@ -83,7 +83,7 @@ public class AttributeRankingImpl extends RankingImpl {
     @Override
     public boolean isValid(Graph graph) {
         Column col = column.get();
-        if(col != null && col.getIndex() != -1) {
+        if (col != null && col.getIndex() != -1) {
             return col.isNumber() && !col.isArray();
         }
         return false;
@@ -106,5 +106,10 @@ public class AttributeRankingImpl extends RankingImpl {
         }
         final AttributeRankingImpl other = (AttributeRankingImpl) obj;
         return Objects.equals(this.column, other.column);
+    }
+
+    @Override
+    public Column getColumn() {
+        return column.get();
     }
 }

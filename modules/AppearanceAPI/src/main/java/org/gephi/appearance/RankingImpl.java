@@ -44,6 +44,7 @@ package org.gephi.appearance;
 
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 
@@ -52,7 +53,9 @@ import org.gephi.graph.api.Graph;
  */
 public abstract class RankingImpl implements Ranking {
 
-    protected Interpolator interpolator = Interpolator.LINEAR;
+    public static Interpolator DEFAULT_INTERPOLATOR = Interpolator.LINEAR;
+
+    protected Interpolator interpolator = DEFAULT_INTERPOLATOR;
 
     public Interpolator getInterpolator() {
         return interpolator;
@@ -82,4 +85,9 @@ public abstract class RankingImpl implements Ranking {
     }
 
     public abstract boolean isValid(Graph graph);
+
+    @Override
+    public Column getColumn() {
+        return null;
+    }
 }

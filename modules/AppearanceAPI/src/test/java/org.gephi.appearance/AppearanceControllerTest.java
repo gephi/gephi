@@ -13,9 +13,13 @@ import org.gephi.appearance.spi.Transformer;
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
+import org.gephi.project.api.ProjectController;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.netbeans.junit.MockServices;
+import org.openide.util.Lookup;
 
 public class AppearanceControllerTest {
 
@@ -24,6 +28,8 @@ public class AppearanceControllerTest {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
         AppearanceControllerImpl controller = new AppearanceControllerImpl();
+        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+
         Assert.assertFalse(controller.getModel().isLocalScale());
 
         Node node = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
@@ -56,6 +62,7 @@ public class AppearanceControllerTest {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
         AppearanceControllerImpl controller = new AppearanceControllerImpl();
+        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
 
         Node node1 = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
         Node node2 = generator.getGraph().getNode(GraphGenerator.SECOND_NODE);
@@ -78,6 +85,7 @@ public class AppearanceControllerTest {
         MockServices.setServices(FixedTransformer.class);
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
         AppearanceControllerImpl controller = new AppearanceControllerImpl();
+        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
 
         Node node1 = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
         Node node2 = generator.getGraph().getNode(GraphGenerator.SECOND_NODE);

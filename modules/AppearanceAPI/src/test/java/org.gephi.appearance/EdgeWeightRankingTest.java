@@ -13,8 +13,8 @@ public class EdgeWeightRankingTest {
         Graph graph = GraphGenerator.build().getGraph();
         EdgeWeightRankingImpl weightRanking = new EdgeWeightRankingImpl();
 
-        Assert.assertEquals(0, weightRanking.getMinValue(graph));
-        Assert.assertEquals(0, weightRanking.getMaxValue(graph));
+        Assert.assertNull(weightRanking.getMinValue(graph));
+        Assert.assertNull(weightRanking.getMaxValue(graph));
     }
 
     @Test

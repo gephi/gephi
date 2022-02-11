@@ -135,6 +135,10 @@ public class AppearanceControllerImpl implements AppearanceController {
         return model;
     }
 
+    protected void setModel(AppearanceModelImpl model) {
+        this.model = model;
+    }
+
     @Override
     public AppearanceModelImpl getModel(Workspace workspace) {
         AppearanceModelImpl m = workspace.getLookup().lookup(AppearanceModelImpl.class);

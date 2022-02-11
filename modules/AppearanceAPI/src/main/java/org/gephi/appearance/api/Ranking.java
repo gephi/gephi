@@ -42,6 +42,7 @@
 
 package org.gephi.appearance.api;
 
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 
@@ -98,4 +99,11 @@ public interface Ranking {
      * @return normalized value
      */
     float normalize(Number value, Interpolator interpolator, Number minValue, Number maxValue);
+
+    /**
+     * Returns the column associated with this partition.
+     *
+     * @return column or null if partition not based on a column
+     */
+    Column getColumn();
 }

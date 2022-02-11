@@ -4,7 +4,6 @@ import java.util.Random;
 import org.gephi.graph.api.Configuration;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.types.IntervalDoubleMap;
@@ -13,7 +12,7 @@ import org.gephi.graph.api.types.TimestampDoubleMap;
 import org.gephi.graph.api.types.TimestampSet;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.netbeans.junit.MockServices;
+import org.gephi.workspace.impl.WorkspaceImpl;
 import org.openide.util.Lookup;
 
 public class GraphGenerator {
@@ -50,7 +49,7 @@ public class GraphGenerator {
         return new GraphGenerator(configuration);
     }
 
-    public GraphGenerator withWorkspace() {
+    public GraphGenerator withProject() {
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
         projectController.newProject();
         workspace = projectController.getCurrentWorkspace();
@@ -58,10 +57,16 @@ public class GraphGenerator {
         return this;
     }
 
+    public GraphGenerator withWorkspace() {
+        workspace = new WorkspaceImpl(null, 0);
+        workspace.add(graphModel);
+        return this;
+    }
+
     public GraphGenerator generateTinyGraph() {
         Node n1 = graphModel.factory().newNode(FIRST_NODE);
         Node n2 = graphModel.factory().newNode(SECOND_NODE);
-        Edge e = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0,1.0, true);
+        Edge e = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0, 1.0, true);
         graphModel.getDirectedGraph().addNode(n1);
         graphModel.getDirectedGraph().addNode(n2);
         graphModel.getDirectedGraph().addEdge(e);

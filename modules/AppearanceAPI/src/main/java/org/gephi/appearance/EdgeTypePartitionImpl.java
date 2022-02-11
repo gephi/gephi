@@ -55,9 +55,11 @@ import org.gephi.graph.api.Graph;
  */
 public class EdgeTypePartitionImpl extends PartitionImpl {
 
+    private final Class valueType;
 
-    public EdgeTypePartitionImpl() {
+    public EdgeTypePartitionImpl(Class valueType) {
         super();
+        this.valueType = valueType;
     }
 
     @Override
@@ -98,6 +100,11 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
     @Override
     public Column getColumn() {
         return null;
+    }
+
+    @Override
+    public Class getValueType() {
+        return valueType;
     }
 
     @Override

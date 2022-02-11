@@ -107,7 +107,7 @@ public class AppearanceModelImpl implements AppearanceModel {
         inDegreeRanking = new InDegreeRankingImpl();
         outDegreeRanking = new OutDegreeRankingImpl();
         edgeWeightRanking = new EdgeWeightRankingImpl();
-        edgeTypePartition = new EdgeTypePartitionImpl();
+        edgeTypePartition = new EdgeTypePartitionImpl(graphModel.getConfiguration().getEdgeLabelType());
         nodeAttributeRankings = new WeakHashMap<>();
         edgeAttributeRankings = new WeakHashMap<>();
         nodeAttributePartitions = new WeakHashMap<>();
@@ -118,6 +118,9 @@ public class AppearanceModelImpl implements AppearanceModel {
         nodeStaticFunctions.addAll(getNodeRankingFunctions());
         edgeStaticFunctions = getEdgeSimpleFunctions();
         edgeStaticFunctions.addAll(getRankingAndPartitionEdgeFunctions());
+
+        //Init
+        initAttributeRankingsAndPartitions();
     }
 
     protected Graph getGraph() {
@@ -154,7 +157,34 @@ public class AppearanceModelImpl implements AppearanceModel {
         return edgeAttributePartitions.get(column);
     }
 
-    protected Ranking getDegreeRanking() {
+    protected RankingImpl[] getNodeRankings() {
+        List<RankingImpl> rankings = new ArrayList<>();
+        rankings.add(degreeRanking);
+        rankings.add(inDegreeRanking);
+        rankings.add(outDegreeRanking);
+        rankings.addAll(nodeAttributeRankings.values());
+        return rankings.toArray(new RankingImpl[0]);
+    }
+
+    protected RankingImpl[] getEdgeRankings() {
+        List<RankingImpl> rankings = new ArrayList<>();
+        rankings.add(edgeWeightRanking);
+        rankings.addAll(edgeAttributeRankings.values());
+        return rankings.toArray(new RankingImpl[0]);
+    }
+
+    protected PartitionImpl[] getNodePartitions() {
+        return nodeAttributePartitions.values().toArray(new AttributePartitionImpl[0]);
+    }
+
+    protected PartitionImpl[] getEdgePartitions() {
+        List<PartitionImpl> partitions = new ArrayList<>();
+        partitions.add(edgeTypePartition);
+        partitions.addAll(edgeAttributePartitions.values());
+        return partitions.toArray(new PartitionImpl[0]);
+    }
+
+    protected RankingImpl getDegreeRanking() {
         return degreeRanking;
     }
 
@@ -174,7 +204,7 @@ public class AppearanceModelImpl implements AppearanceModel {
         return edgeTypePartition;
     }
 
-    protected Ranking getNodeRanking(Column column) {
+    protected RankingImpl getNodeRanking(Column column) {
         return nodeAttributeRankings.get(column);
     }
 
@@ -223,7 +253,7 @@ public class AppearanceModelImpl implements AppearanceModel {
 
     private List<FunctionImpl> getAttributeFunctions(Column column, Transformer transformer) {
         List<FunctionImpl> res = new ArrayList<>();
-        if (transformer instanceof RankingTransformer) {
+        if (transformer instanceof RankingTransformer && column.isNumber()) {
             if (transformer.isNode() && column.getTable().isNodeTable()) {
                 RankingImpl ranking =
                     nodeAttributeRankings.computeIfAbsent(column, k -> new AttributeRankingImpl(column));
@@ -252,6 +282,25 @@ public class AppearanceModelImpl implements AppearanceModel {
             }
         }
         return res;
+    }
+
+    private void initAttributeRankingsAndPartitions() {
+        for (Column column : graphModel.getNodeTable()) {
+            if (!column.isProperty()) {
+                if (column.isNumber()) {
+                    nodeAttributeRankings.put(column, new AttributeRankingImpl(column));
+                }
+                nodeAttributePartitions.put(column, new AttributePartitionImpl(column));
+            }
+        }
+        for (Column column : graphModel.getEdgeTable()) {
+            if (!column.isProperty()) {
+                if (column.isNumber()) {
+                    edgeAttributeRankings.put(column, new AttributeRankingImpl(column));
+                }
+                edgeAttributePartitions.put(column, new AttributePartitionImpl(column));
+            }
+        }
     }
 
     private List<FunctionImpl> getNodeSimpleFunctions() {
