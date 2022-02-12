@@ -69,7 +69,11 @@ public abstract class PartitionImpl implements Partition {
 
     @Override
     public void setColor(Object value, Color color) {
-        colorMap.put(value, color);
+        if(color.equals(Partition.DEFAULT_COLOR)) {
+            colorMap.remove(value);
+        } else {
+            colorMap.put(value, color);
+        }
     }
 
     @Override

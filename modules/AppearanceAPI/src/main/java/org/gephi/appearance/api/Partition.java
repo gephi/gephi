@@ -61,6 +61,8 @@ import org.gephi.graph.api.Graph;
  */
 public interface Partition {
 
+    public static Color DEFAULT_COLOR = Color.LIGHT_GRAY;
+
     /**
      * Returns the collection of values this partition represents. Each value
      * has at least one element.
@@ -70,7 +72,7 @@ public interface Partition {
     Collection getValues(Graph graph);
 
     /**
-     * Returns the same collection as {@link #getValues() } but sorted
+     * Returns the same collection as {@link #getValues(Graph graph) } but sorted
      * descendant in counts.
      *
      * @return sorted values

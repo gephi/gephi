@@ -3,6 +3,8 @@ package org.gephi.desktop.appearance;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.TableObserver;
 import org.openide.util.Lookup;
@@ -50,15 +52,21 @@ public class TableObserverExecutor implements Runnable {
     @Override
     public void run() {
         synchronized (this) {
-            String selectedElementClass = model.selectedElementClass;
-            if (nodeTableObserver != null && selectedElementClass.equals(AppearanceUIController.NODE_ELEMENT)) {
-                if (nodeTableObserver.hasTableChanged()) {
-                    controller.refreshColumnsList();
+            try {
+                String selectedElementClass = model.selectedElementClass;
+                if (nodeTableObserver != null && selectedElementClass.equals(AppearanceUIController.NODE_ELEMENT)) {
+                    if (nodeTableObserver.hasTableChanged()) {
+                        controller.refreshColumnsList();
+                    }
+                } else if (edgeTableObserver != null &&
+                    selectedElementClass.equals(AppearanceUIController.EDGE_ELEMENT)) {
+                    if (edgeTableObserver.hasTableChanged()) {
+                        controller.refreshColumnsList();
+                    }
                 }
-            } else if (edgeTableObserver != null && selectedElementClass.equals(AppearanceUIController.EDGE_ELEMENT)) {
-                if (edgeTableObserver.hasTableChanged()) {
-                    controller.refreshColumnsList();
-                }
+            } catch (Exception e) {
+                Logger.getLogger(TableObserverExecutor.class.getName())
+                    .log(Level.SEVERE, "Error while refreshing appearance's column list", e);
             }
         }
     }

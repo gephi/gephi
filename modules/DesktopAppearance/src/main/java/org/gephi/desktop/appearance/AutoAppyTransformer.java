@@ -65,12 +65,7 @@ public class AutoAppyTransformer implements Runnable {
     }
 
     public void start() {
-        executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "Appearance Auto Transformer");
-            }
-        });
+        executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Appearance Auto Transformer"));
         executor.scheduleWithFixedDelay(this, 0, getDelayInMs(), TimeUnit.MILLISECONDS);
     }
 

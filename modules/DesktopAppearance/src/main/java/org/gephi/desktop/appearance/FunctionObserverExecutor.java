@@ -3,6 +3,8 @@ package org.gephi.desktop.appearance;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.appearance.api.Function;
 import org.openide.util.Lookup;
 
@@ -32,11 +34,14 @@ public class FunctionObserverExecutor implements Runnable {
 
     @Override
     public void run() {
-        synchronized (this) {
+        try {
             Function selectedFunction = model.getSelectedFunction();
             if (selectedFunction != null && selectedFunction.hasChanged()) {
                 controller.refreshFunction();
             }
+        } catch (Exception e) {
+            Logger.getLogger(TableObserverExecutor.class.getName())
+                .log(Level.SEVERE, "Error while refreshing appearance's function", e);
         }
     }
 

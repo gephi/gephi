@@ -115,12 +115,10 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         values = partition.getSortedValues(function.getGraph());
 
         List<Object> nullColors = new ArrayList<>();
-        Color defaultColor = Color.LIGHT_GRAY;
         for (Object val : values) {
             Color c = partition.getColor(val);
             if (c == null) {
                 nullColors.add(val);
-                partition.setColor(val, defaultColor);
             }
         }
 
@@ -265,7 +263,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
                                                        int row, int column) {
             Color color = function.getPartition().getColor(value);
             if (color == null) {
-                color = Color.BLACK;
+                color = Partition.DEFAULT_COLOR;
             }
             setBackground(color);
             return this;

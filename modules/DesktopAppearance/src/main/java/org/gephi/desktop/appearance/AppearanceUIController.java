@@ -267,7 +267,6 @@ public class AppearanceUIController {
 
     public void refreshFunction() {
         if (model != null) {
-            System.out.println("Refresh");
             firePropertyChangeEvent(AppearanceUIModelEvent.REFRESH_FUNCTION, null, null);
         }
     }
