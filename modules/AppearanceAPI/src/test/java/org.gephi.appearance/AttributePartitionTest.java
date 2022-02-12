@@ -103,4 +103,20 @@ public class AttributePartitionTest {
         clearNodeAttributes(graph);
         Assert.assertFalse(p.isValid(graph));
     }
+
+    @Test
+    public void testVersion() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        int version = p.getVersion(graph);
+        n1.setAttribute(column, 99);
+        Assert.assertNotEquals(version, version = p.getVersion(graph));
+        Assert.assertEquals(version, p.getVersion(graph));
+
+        graph.removeNode(n1);
+        Assert.assertNotEquals(version, p.getVersion(graph));
+    }
 }

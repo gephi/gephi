@@ -1,0 +1,50 @@
+package org.gephi.desktop.appearance;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import org.gephi.appearance.api.Function;
+import org.openide.util.Lookup;
+
+public class FunctionObserverExecutor implements Runnable {
+
+    private static final long DEFAULT_DELAY = 1000;  //ms
+    private final AppearanceUIModel model;
+    private final AppearanceUIController controller;
+    private ScheduledExecutorService executor;
+
+    public FunctionObserverExecutor(AppearanceUIModel model) {
+        this.model = model;
+        this.controller = Lookup.getDefault().lookup(AppearanceUIController.class);
+    }
+
+    public void start() {
+        executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Appearance Function Observer"));
+        executor.scheduleWithFixedDelay(this, getDelayInMs(), getDelayInMs(), TimeUnit.MILLISECONDS);
+    }
+
+    public void stop() {
+        if (executor != null && !executor.isShutdown()) {
+            executor.shutdown();
+        }
+        executor = null;
+    }
+
+    @Override
+    public void run() {
+        synchronized (this) {
+            Function selectedFunction = model.getSelectedFunction();
+            if (selectedFunction != null && selectedFunction.hasChanged()) {
+                controller.refreshFunction();
+            }
+        }
+    }
+
+    public boolean isRunning() {
+        return executor != null;
+    }
+
+    private long getDelayInMs() {
+        return DEFAULT_DELAY;
+    }
+}

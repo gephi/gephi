@@ -46,7 +46,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import org.gephi.appearance.api.AppearanceController;
 import org.gephi.appearance.api.Function;
 import org.openide.util.Lookup;
 

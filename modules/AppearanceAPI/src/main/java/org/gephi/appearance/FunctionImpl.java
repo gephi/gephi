@@ -43,6 +43,7 @@
 package org.gephi.appearance;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
@@ -66,6 +67,8 @@ public abstract class FunctionImpl implements Function {
     protected final TransformerUI transformerUI;
     protected final PartitionImpl partition;
     protected final RankingImpl ranking;
+    // Version
+    protected final AtomicInteger version;
 
     protected FunctionImpl(AppearanceModelImpl model, String name, Class<? extends Element> elementClass, Column column,
                            Transformer transformer, TransformerUI transformerUI, PartitionImpl partition,
@@ -85,6 +88,7 @@ public abstract class FunctionImpl implements Function {
         this.transformerUI = transformerUI;
         this.partition = partition;
         this.ranking = ranking;
+        this.version = new AtomicInteger(Integer.MIN_VALUE);
     }
 
     @Override
@@ -120,6 +124,16 @@ public abstract class FunctionImpl implements Function {
                 Object val = partition.getValue(e, graph);
                 ((PartitionTransformer) transformer).transform(e, partition, val);
             });
+        }
+    }
+
+    public boolean hasChanged() {
+        if(isSimple()) {
+            return false;
+        } else {
+            Graph graph = model.getGraph();
+            int newVersion = isPartition() ? partition.getVersion(graph) : 0;
+            return version.getAndSet(newVersion) != newVersion;
         }
     }
 

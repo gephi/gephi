@@ -86,4 +86,6 @@ public abstract class PartitionImpl implements Partition {
     public abstract boolean isValid(Graph graph);
 
     public abstract Class getValueType();
+
+    public abstract int getVersion(Graph graph);
 }

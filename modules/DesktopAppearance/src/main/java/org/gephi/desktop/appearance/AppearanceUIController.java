@@ -50,21 +50,12 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.gephi.appearance.api.AppearanceController;
 import org.gephi.appearance.api.AppearanceModel;
-import org.gephi.appearance.api.AttributeFunction;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.ColumnObserver;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphObserver;
-import org.gephi.graph.api.TableObserver;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -269,8 +260,15 @@ public class AppearanceUIController {
     }
 
     public void refreshColumnsList() {
-        if(model != null) {
+        if (model != null) {
             firePropertyChangeEvent(AppearanceUIModelEvent.ATTRIBUTE_LIST, null, null);
+        }
+    }
+
+    public void refreshFunction() {
+        if (model != null) {
+            System.out.println("Refresh");
+            firePropertyChangeEvent(AppearanceUIModelEvent.REFRESH_FUNCTION, null, null);
         }
     }
 

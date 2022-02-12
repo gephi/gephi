@@ -74,6 +74,7 @@ public class AppearanceUIModel {
     protected final Map<String, Map<TransformerCategory, AutoAppyTransformer>> selectedAutoTransformer;
     protected final Map<Function, Map<String, Object>> savedProperties;
     protected final TableObserverExecutor tableObserverExecutor;
+    protected final FunctionObserverExecutor functionObserverExecutor;
     protected String selectedElementClass = AppearanceUIController.NODE_ELEMENT;
 
     public AppearanceUIModel(AppearanceModel model) {
@@ -91,8 +92,9 @@ public class AppearanceUIModel {
             initSelectedTransformerUIs(ec);
         }
 
-        //Init observer
+        //Init observers
         tableObserverExecutor = new TableObserverExecutor(this);
+        functionObserverExecutor = new FunctionObserverExecutor(this);
     }
 
     private void initSelectedTransformerUIs(String elementClass) {
@@ -108,7 +110,7 @@ public class AppearanceUIModel {
                 TransformerCategory cat = ui.getCategory();
                 selectedCategory.put(elementClass, cat);
 
-                if(func.isSimple()) {
+                if (func.isSimple()) {
                     selectedTransformerUI.get(elementClass).put(cat, ui);
                     selectedFunction.get(elementClass).put(ui, func);
                 }
@@ -124,10 +126,12 @@ public class AppearanceUIModel {
 
     public void select() {
         tableObserverExecutor.start();
+        functionObserverExecutor.start();
     }
 
     public void unselect() {
         tableObserverExecutor.stop();
+        functionObserverExecutor.stop();
     }
 
     public boolean isLocalScale() {
@@ -309,6 +313,8 @@ public class AppearanceUIModel {
         } else if (type.isArray()) {
             Class cmp = type.getComponentType();
             return cmp.isPrimitive() || cmp.equals(Color.class);
-        } else return type.equals(Color.class);
+        } else {
+            return type.equals(Color.class);
+        }
     }
 }

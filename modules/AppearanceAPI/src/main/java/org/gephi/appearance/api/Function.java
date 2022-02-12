@@ -142,4 +142,11 @@ public interface Function {
      * @return model
      */
     AppearanceModel getModel();
+
+    /**
+     * Returns true if the underlying partition or ranking changed its boundaries or values since last time checked.
+     *
+     * @return true if changed, false otherwise
+     */
+    boolean hasChanged();
 }

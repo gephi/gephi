@@ -88,7 +88,7 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
     @Override
     public float percentage(Object value, Graph graph) {
         int count = count(value, graph);
-        return (float) count / graph.getEdgeCount();
+        return ((float) count) / graph.getEdgeCount();
     }
 
     @Override
@@ -109,6 +109,12 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
 
     @Override
     public boolean isValid(Graph graph) {
-        return graph.getModel().getEdgeTypeCount() > 1;
+        return graph.getModel().isMultiGraph();
+    }
+
+    @Override
+    public int getVersion(Graph graph) {
+        // TODO
+        return 0;
     }
 }

@@ -152,6 +152,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             refreshControls();
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.ATTRIBUTE_LIST)) {
             refreshCombo();
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.REFRESH_FUNCTION)) {
+            refreshCenterPanel();
         }
         //        if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
         //            listButton.setSelected((Boolean) pce.getNewValue());
