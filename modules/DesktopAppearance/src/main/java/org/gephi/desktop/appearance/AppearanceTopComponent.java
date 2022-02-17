@@ -239,7 +239,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                             centerPanel.add(transformerPanel, BorderLayout.CENTER);
                         }
 
-                        centerPanel.repaint();
+                        centerPanel.revalidate();
 
                         //setCenterPanel
                         return;
