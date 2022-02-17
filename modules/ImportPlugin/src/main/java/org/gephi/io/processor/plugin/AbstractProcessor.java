@@ -126,7 +126,7 @@ public abstract class AbstractProcessor implements Processor {
                     }
 
                     table
-                        .addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, defaultValue, !col.isDynamic());
+                        .addColumn(col.getId(), col.getTitle(), typeClass, Origin.DATA, defaultValue, true);
                 } else {
                     String error = NbBundle.getMessage(
                         AbstractProcessor.class, "AbstractProcessor.error.unavailableColumnType",
