@@ -63,8 +63,8 @@ public class RankingElementColorTransformer implements RankingTransformer<Elemen
             new float[] {0f, 0.5f, 1f});
 
     @Override
-    public void transform(Element element, Ranking ranking, Interpolator interpolator, Number value) {
-        Color color = linearGradient.getValue(ranking.normalize(value, interpolator));
+    public void transform(Element element, Ranking ranking, Number value, float normalisedValue) {
+        Color color = linearGradient.getValue(normalisedValue);
         element.setColor(color);
     }
 

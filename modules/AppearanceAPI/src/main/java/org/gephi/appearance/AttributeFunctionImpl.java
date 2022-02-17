@@ -14,11 +14,7 @@ import org.gephi.appearance.api.Ranking;
 import org.gephi.appearance.api.RankingFunction;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerUI;
-import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.Node;
 
 /**
  * @author mbastian
@@ -26,26 +22,26 @@ import org.gephi.graph.api.Node;
 public class AttributeFunctionImpl extends FunctionImpl
     implements RankingFunction, PartitionFunction, AttributeFunction {
 
-    public AttributeFunctionImpl(String id, Graph graph, Column column, Transformer transformer,
-                                 TransformerUI transformerUI, RankingImpl ranking, Interpolator interpolator) {
-        super(id, null, AttributeUtils.isNodeColumn(column) ? Node.class : Edge.class, graph, column, transformer,
-            transformerUI, null, ranking, interpolator);
+    public AttributeFunctionImpl(AppearanceModelImpl model, String name, Column column, Transformer transformer,
+                                 TransformerUI transformerUI, RankingImpl ranking) {
+        super(model, name, column.getTable().getElementClass(), column, transformer,
+            transformerUI, null, ranking);
     }
 
-    public AttributeFunctionImpl(String id, Graph graph, Column column, Transformer transformer,
+    public AttributeFunctionImpl(AppearanceModelImpl model, String name, Column column, Transformer transformer,
                                  TransformerUI transformerUI, PartitionImpl partition) {
-        super(id, null, AttributeUtils.isNodeColumn(column) ? Node.class : Edge.class, graph, column, transformer,
-            transformerUI, partition, null, null);
+        super(model, name, column.getTable().getElementClass(), column, transformer,
+            transformerUI, partition, null);
     }
 
     @Override
     public Interpolator getInterpolator() {
-        return interpolator;
+        return ranking.getInterpolator();
     }
 
     @Override
     public void setInterpolator(Interpolator interpolator) {
-        this.interpolator = interpolator;
+        ranking.setInterpolator(interpolator);
     }
 
     @Override

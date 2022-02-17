@@ -387,6 +387,11 @@ public class QuadTree implements Node {
     }
 
     @Override
+    public Interval getTimeBounds() {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
     public void clearAttributes() {
         throw new UnsupportedOperationException("Not supported.");
     }

@@ -42,24 +42,93 @@
 
 package org.gephi.appearance;
 
-import junit.framework.TestCase;
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class AttributePartitionTest extends TestCase {
+public class AttributePartitionTest {
+
+    private static void clearNodeAttributes(Graph graph) {
+        for (Node n : graph.getNodes()) {
+            n.clearAttributes();
+        }
+    }
+
+    @Test
+    public void testEmpty() {
+        Graph graph = GraphGenerator.build().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+        AttributePartitionImpl attributePartition = new AttributePartitionImpl(column);
+
+        Assert.assertEquals(0, attributePartition.getElementCount(graph));
+        Assert.assertEquals(0, attributePartition.getValues(graph).size());
+        Assert.assertEquals(0, attributePartition.getSortedValues(graph).size());
+        Assert.assertEquals(0, attributePartition.size(graph));
+    }
 
     @Test
     public void testIntColumn() {
         Graph graph = GraphGenerator.build().generateTinyGraph().addIntNodeColumn().getGraph();
         Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
 
-        AttributePartitionImpl p = new AttributePartitionImpl(column, graph);
-        p.refresh();
-        Assert.assertEquals(graph.getNodeCount(), p.getElementCount());
-        Assert.assertEquals(graph.getNodeCount(), p.getValues().size());
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        Assert.assertEquals(graph.getNodeCount(), p.getElementCount(graph));
+        Assert.assertEquals(graph.getNodeCount(), p.getValues(graph).size());
         Assert.assertNotNull(p.getValue(graph.getNodes().toArray()[0], graph));
     }
+
+    @Test
+    public void testIsValidStringColumn() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addStringNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.STRING_COLUMN);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        Assert.assertTrue(p.isValid(graph));
+
+        clearNodeAttributes(graph);
+        Assert.assertTrue(p.isValid(graph));
+    }
+
+    @Test
+    public void testIsValidIntColumn() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        Assert.assertTrue(p.isValid(graph));
+
+        clearNodeAttributes(graph);
+        Assert.assertFalse(p.isValid(graph));
+    }
+
+    @Test
+    public void testVersion() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        int version = p.getVersion(graph);
+        n1.setAttribute(column, 99);
+        Assert.assertNotEquals(version, version = p.getVersion(graph));
+        Assert.assertEquals(version, p.getVersion(graph));
+
+        graph.removeNode(n1);
+        Assert.assertNotEquals(version, p.getVersion(graph));
+    }
+
+//    @Test
+//    public void testVersionDynamic() {
+//        Graph graph = GraphGenerator.build().generateTinyGraph().addTimestampDoubleColumn().getGraph();
+//        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.TIMESTAMP_DOUBLE_COLUMN);
+//        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+//
+//        AttributePartitionImpl p = new AttributePartitionImpl(column);
+//        int version = p.getVersion(graph);
+//        n1.setAttribute(column, 99.0, 2000);
+//        Assert.assertNotEquals(version, p.getVersion(graph));
+//    }
 }

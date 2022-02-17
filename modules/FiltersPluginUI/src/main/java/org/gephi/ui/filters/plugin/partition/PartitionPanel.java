@@ -177,16 +177,17 @@ public class PartitionPanel extends javax.swing.JPanel {
         this.filter = filter;
         final Partition partition = filter.getPartition();
         if (partition != null) {
-            refresh(partition, filter.getParts());
+            refresh(partition, filter);
         }
     }
 
-    private void refresh(Partition partition, Set<Object> currentParts) {
+    private void refresh(Partition partition, PartitionFilter filter) {
         final DefaultListModel model = new DefaultListModel();
+        Set<Object> currentParts = filter.getParts();
 
         int i = 0;
-        for (Object p : partition.getSortedValues()) {
-            PartWrapper pw = new PartWrapper(p, partition.percentage(p), partition.getColor(p));
+        for (Object p : partition.getSortedValues(filter.getGraph())) {
+            PartWrapper pw = new PartWrapper(p, partition.percentage(p, filter.getGraph()), partition.getColor(p));
             pw.setEnabled(currentParts.contains(p));
             model.add(i++, pw);
         }
@@ -212,7 +213,7 @@ public class PartitionPanel extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 filter.selectAll();
-                refresh(filter.getPartition(), new HashSet<>(filter.getParts()));
+                refresh(filter.getPartition(), filter);
             }
         });
         popupMenu.add(selectItem);
@@ -223,7 +224,7 @@ public class PartitionPanel extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 filter.unselectAll();
-                refresh(filter.getPartition(), new HashSet<>());
+                refresh(filter.getPartition(), filter);
             }
         });
         popupMenu.add(unselectItem);

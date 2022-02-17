@@ -51,7 +51,6 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
@@ -107,7 +106,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private javax.swing.JPanel controlPanel;
     private javax.swing.JToolBar controlToolbar;
     private javax.swing.JToggleButton enableAutoButton;
-    private javax.swing.JToggleButton localScaleButton;
+    private javax.swing.JToggleButton rankingLocalScaleButton;
+    private javax.swing.JToggleButton partitionLocalScaleButton;
     private javax.swing.JPanel mainPanel;
     private org.jdesktop.swingx.JXHyperlink splineButton;
     private javax.swing.JToggleButton stopAutoApplyButton;
@@ -127,9 +127,6 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
             centerPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
-
-        //Hide for now
-        localScaleButton.setVisible(false);
 
         refreshModel(model);
     }
@@ -152,6 +149,12 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             refreshControls();
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.START_STOP_AUTO_APPLY)) {
             refreshControls();
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SET_LOCAL_SCALE)) {
+            refreshControls();
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.ATTRIBUTE_LIST)) {
+            refreshCombo();
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.REFRESH_FUNCTION)) {
+            refreshCenterPanel();
         }
         //        if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
         //            listButton.setSelected((Boolean) pce.getNewValue());
@@ -236,7 +239,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                             centerPanel.add(transformerPanel, BorderLayout.CENTER);
                         }
 
-                        centerPanel.repaint();
+                        centerPanel.revalidate();
 
                         //setCenterPanel
                         return;
@@ -248,63 +251,62 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     }
 
     private void refreshCombo() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
+        if (model != null && model.getSelectedTransformerUI() != null &&
+            model.isAttributeTransformerUI(model.getSelectedTransformerUI())) {
+
+
+            final List<Function> rows = new ArrayList<>(model.getFunctions());
+
+            Collections.sort(rows, (o1, o2) -> {
+                if (o1.isAttribute() && !o2.isAttribute()) {
+                    return 1;
+                } else if (!o1.isAttribute() && o2.isAttribute()) {
+                    return -1;
+                }
+                return o1.toString().compareTo(o2.toString());
+            });
+
+            SwingUtilities.invokeLater(() -> {
                 final DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
-                if (model != null) {
-                    TransformerUI ui = model.getSelectedTransformerUI();
-                    if (ui != null && model.isAttributeTransformerUI(ui)) {
 
-                        //Ranking
-                        Function selectedColumn = model.getSelectedFunction();
-                        attibuteBox.removeItemListener(attributeListener);
+                //Ranking
+                Function selectedColumn = model.getSelectedFunction();
+                attibuteBox.removeItemListener(attributeListener);
 
-                        comboBoxModel.addElement(NO_SELECTION);
-                        comboBoxModel.setSelectedItem(NO_SELECTION);
+                comboBoxModel.addElement(NO_SELECTION);
+                comboBoxModel.setSelectedItem(NO_SELECTION);
 
-                        List<Function> rows = new ArrayList<>();
-                        rows.addAll(model.getFunctions());
-
-                        Collections.sort(rows, new Comparator<Function>() {
-                            @Override
-                            public int compare(Function o1, Function o2) {
-                                if (o1.isAttribute() && !o2.isAttribute()) {
-                                    return 1;
-                                } else if (!o1.isAttribute() && o2.isAttribute()) {
-                                    return -1;
-                                }
-                                return o1.toString().compareTo(o2.toString());
-                            }
-                        });
-                        for (Function r : rows) {
-                            comboBoxModel.addElement(r);
-                            if (selectedColumn != null && selectedColumn.equals(r)) {
-                                comboBoxModel.setSelectedItem(r);
-                            }
-                        }
-                        attributeListener = new ItemListener() {
-                            @Override
-                            public void itemStateChanged(ItemEvent e) {
-                                if (model != null) {
-                                    if (!attibuteBox.getSelectedItem().equals(NO_SELECTION)) {
-                                        Function selectedItem = (Function) attibuteBox.getSelectedItem();
-                                        Function selectedFunction = model.getSelectedFunction();
-                                        if (selectedFunction != selectedItem) {
-                                            controller.setSelectedFunction(selectedItem);
-                                        }
-                                    } else {
-                                        controller.setSelectedFunction(null);
-                                    }
-                                }
-                            }
-                        };
-                        attibuteBox.addItemListener(attributeListener);
+                for (Function r : rows) {
+                    comboBoxModel.addElement(r);
+                    if (selectedColumn != null && selectedColumn.equals(r)) {
+                        comboBoxModel.setSelectedItem(r);
                     }
                 }
+                attributeListener = new ItemListener() {
+                    @Override
+                    public void itemStateChanged(ItemEvent e) {
+                        if (model != null) {
+                            if (!attibuteBox.getSelectedItem().equals(NO_SELECTION)) {
+                                Function selectedItem = (Function) attibuteBox.getSelectedItem();
+                                Function selectedFunction = model.getSelectedFunction();
+                                if (selectedFunction != selectedItem) {
+                                    controller.setSelectedFunction(selectedItem);
+                                }
+                            } else {
+                                controller.setSelectedFunction(null);
+                            }
+                        }
+                    }
+                };
+                attibuteBox.addItemListener(attributeListener);
+
                 attibuteBox.setModel(comboBoxModel);
-            }
-        });
+            });
+        } else {
+            SwingUtilities.invokeLater(() -> {
+                attibuteBox.setModel(new DefaultComboBoxModel());
+            });
+        }
     }
 
     private void refreshControls() {
@@ -313,10 +315,10 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             public void run() {
                 if (model != null && model.getSelectedFunction() != null) {
                     enableAutoButton.setEnabled(true);
-                    if (model.getAutoAppyTransformer() != null) {
+                    if (model.getAutoApplyTransformer() != null) {
                         applyButton.setVisible(false);
                         enableAutoButton.setSelected(true);
-                        AutoAppyTransformer aat = model.getAutoAppyTransformer();
+                        AutoAppyTransformer aat = model.getAutoApplyTransformer();
                         if (aat.isRunning()) {
                             autoApplyButton.setVisible(false);
                             stopAutoApplyButton.setVisible(true);
@@ -333,7 +335,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                         applyButton.setVisible(true);
                         applyButton.setEnabled(true);
                     }
-                    localScaleButton.setSelected(model.isLocalScale());
+                    rankingLocalScaleButton.setSelected(model.isRankingLocalScale());
+                    partitionLocalScaleButton.setSelected(model.isPartitionLocalScale());
                     return;
                 }
                 //Disable
@@ -348,16 +351,23 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
     private void initControls() {
         //Add ranking controls
-//        toolbar.addRankingControl(localScaleButton);
+        toolbar.addRankingControl(rankingLocalScaleButton);
         toolbar.addRankingControl(splineButton);
 
         //Add partition controls
-//        toolbar.addPartitionControl(localScaleButton);
+        toolbar.addPartitionControl(partitionLocalScaleButton);
+
         //Actions
-        localScaleButton.addActionListener(new ActionListener() {
+        rankingLocalScaleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.getAppearanceController().setUseLocalScale(localScaleButton.isSelected());
+                controller.getAppearanceController().setUseRankingLocalScale(rankingLocalScaleButton.isSelected());
+            }
+        });
+        partitionLocalScaleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.getAppearanceController().setUsePartitionLocalScale(partitionLocalScaleButton.isSelected());
             }
         });
         splineButton.addActionListener(new ActionListener() {
@@ -409,7 +419,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.setAutoApply(model.getAutoAppyTransformer() == null);
+                controller.setAutoApply(model.getAutoApplyTransformer() == null);
             }
         });
         stopAutoApplyButton.setVisible(false);
@@ -495,7 +505,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         attibuteBox = new javax.swing.JComboBox();
         centerPanel = new javax.swing.JPanel();
         controlToolbar = toolbar.getControlToolbar();
-        localScaleButton = new javax.swing.JToggleButton();
+        rankingLocalScaleButton = new javax.swing.JToggleButton();
+        partitionLocalScaleButton = new javax.swing.JToggleButton();
         splineButton = new org.jdesktop.swingx.JXHyperlink();
         controlPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
@@ -566,14 +577,25 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         controlToolbar.setMargin(new java.awt.Insets(0, 4, 0, 0));
         controlToolbar.setOpaque(true);
 
-        localScaleButton.setIcon(new javax.swing.ImageIcon(
+        rankingLocalScaleButton.setIcon(new javax.swing.ImageIcon(
             getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png"))); // NOI18N
-        localScaleButton.setToolTipText(org.openide.util.NbBundle
+        rankingLocalScaleButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.localScaleButton.toolTipText")); // NOI18N
-        localScaleButton.setFocusable(false);
-        localScaleButton.setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((new javax.swing.ImageIcon(
-            getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png")).getImage())))); // NOI18N
-        controlToolbar.add(localScaleButton);
+        rankingLocalScaleButton.setFocusable(false);
+        rankingLocalScaleButton
+            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((new javax.swing.ImageIcon(
+                getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png")).getImage())))); // NOI18N
+        controlToolbar.add(rankingLocalScaleButton);
+
+        partitionLocalScaleButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png"))); // NOI18N
+        partitionLocalScaleButton.setToolTipText(org.openide.util.NbBundle
+            .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.partitionLocalScaleButton.toolTipText")); // NOI18N
+        partitionLocalScaleButton.setFocusable(false);
+        partitionLocalScaleButton
+            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((new javax.swing.ImageIcon(
+                getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png")).getImage())))); // NOI18N
+        controlToolbar.add(partitionLocalScaleButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.text")); // NOI18N

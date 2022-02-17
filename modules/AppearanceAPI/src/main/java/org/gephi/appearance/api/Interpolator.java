@@ -43,6 +43,7 @@
 package org.gephi.appearance.api;
 
 import java.awt.geom.Point2D;
+import java.util.Objects;
 
 /**
  * Abstract class that defines the single {@link #interpolate(float)} method.
@@ -317,6 +318,24 @@ public abstract class Interpolator {
             }
 
             return t;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof BezierInterpolator)) {
+                return false;
+            }
+            BezierInterpolator that = (BezierInterpolator) o;
+            return Float.compare(that.x1, x1) == 0 && Float.compare(that.y1, y1) == 0 &&
+                Float.compare(that.x2, x2) == 0 && Float.compare(that.y2, y2) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(x1, y1, x2, y2);
         }
     }
 }

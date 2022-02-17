@@ -48,6 +48,7 @@ import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.AppearanceController;
 import org.gephi.appearance.api.AppearanceModel;
+import org.gephi.appearance.api.Partition;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
 import org.gephi.filters.spi.Category;
@@ -85,16 +86,16 @@ public class InterEdgesBuilder implements CategoryBuilder {
     public FilterBuilder[] getBuilders(Workspace workspace) {
         List<FilterBuilder> builders = new ArrayList<>();
         GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        Graph graph = gm.getGraph();
         AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel(workspace);
 
         //Force refresh
-        am.getNodeFunctions(graph);
+        am.getNodeFunctions();
 
         for (Column nodeCol : gm.getNodeTable()) {
             if (!nodeCol.isProperty()) {
-                if (am.getNodePartition(graph, nodeCol) != null) {
-                    InterEdgesFilterBuilder builder = new InterEdgesFilterBuilder(nodeCol, am);
+                Partition partition = am.getNodePartition(nodeCol);
+                if (partition != null) {
+                    InterEdgesFilterBuilder builder = new InterEdgesFilterBuilder(partition);
                     builders.add(builder);
                 }
             }
@@ -105,12 +106,10 @@ public class InterEdgesBuilder implements CategoryBuilder {
 
     private static class InterEdgesFilterBuilder implements FilterBuilder {
 
-        private final Column column;
-        private final AppearanceModel model;
+        private final Partition partition;
 
-        public InterEdgesFilterBuilder(Column column, AppearanceModel model) {
-            this.column = column;
-            this.model = model;
+        public InterEdgesFilterBuilder(Partition partition) {
+            this.partition = partition;
         }
 
         @Override
@@ -120,7 +119,7 @@ public class InterEdgesBuilder implements CategoryBuilder {
 
         @Override
         public String getName() {
-            return column.getTitle();
+            return partition.getColumn().getTitle();
         }
 
         @Override
@@ -135,7 +134,7 @@ public class InterEdgesBuilder implements CategoryBuilder {
 
         @Override
         public InterEdgesFilter getFilter(Workspace workspace) {
-            return new InterEdgesFilter(column, model);
+            return new InterEdgesFilter(partition);
         }
 
         @Override
@@ -154,20 +153,20 @@ public class InterEdgesBuilder implements CategoryBuilder {
 
     public static class InterEdgesFilter extends PartitionFilter implements EdgeFilter {
 
-        public InterEdgesFilter(Column column, AppearanceModel model) {
-            super(column, model);
+        public InterEdgesFilter(Partition partition) {
+            super(partition);
         }
 
         @Override
         public String getName() {
-            return NbBundle.getMessage(IntraEdgesBuilder.class, "InterEdgesBuilder.name") + " (" + column.getTitle() +
+            return NbBundle.getMessage(IntraEdgesBuilder.class, "InterEdgesBuilder.name") + " (" + partition.getColumn().getTitle() +
                 ")";
         }
 
         @Override
         public boolean init(Graph graph) {
-            partition = appearanceModel.getNodePartition(graph.getModel().getGraph(), column);
-            return partition != null;
+            this.graph = graph;
+            return partition != null && partition.getColumn() != null;
         }
 
         @Override

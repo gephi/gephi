@@ -17,7 +17,7 @@ import org.junit.Assert;
 
 public class GephiFormat {
 
-    public static void testXMLPersistenceProvider(WorkspaceXMLPersistenceProvider provider,
+    public static Workspace testXMLPersistenceProvider(WorkspaceXMLPersistenceProvider provider,
                                                   Workspace workspace) throws Exception {
         Assert.assertNotNull(provider.getIdentifier());
 
@@ -26,6 +26,7 @@ public class GephiFormat {
         String xmlStringAgain = toString(provider, newWorkspace);
 
         Assert.assertEquals(xmlString, xmlStringAgain);
+        return workspace;
     }
 
     private static Workspace fromString(WorkspaceXMLPersistenceProvider provider, String xmlString)

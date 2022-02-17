@@ -50,43 +50,35 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.gephi.appearance.api.AppearanceModel;
-import org.gephi.appearance.api.AttributeFunction;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.spi.PartitionTransformer;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.ui.appearance.plugin.category.DefaultCategory;
-import org.openide.util.Lookup;
 
 /**
  * @author mbastian
  */
 public class AppearanceUIModel {
 
-    protected final AppearanceUIController controller;
     protected final AppearanceModel appearanceModel;
-    protected final GraphController graphController;
     protected final Map<String, Map<TransformerCategory, TransformerUI>> selectedTransformerUI;
     protected final Map<String, Map<TransformerUI, Function>> selectedFunction;
     protected final Map<String, TransformerCategory> selectedCategory;
     protected final Map<String, Map<TransformerCategory, AutoAppyTransformer>> selectedAutoTransformer;
     protected final Map<Function, Map<String, Object>> savedProperties;
+    protected final TableObserverExecutor tableObserverExecutor;
+    protected final FunctionObserverExecutor functionObserverExecutor;
     protected String selectedElementClass = AppearanceUIController.NODE_ELEMENT;
 
-    public AppearanceUIModel(AppearanceUIController controller, AppearanceModel model) {
-        this.controller = controller;
+    public AppearanceUIModel(AppearanceModel model) {
         this.appearanceModel = model;
-        this.graphController = Lookup.getDefault().lookup(GraphController.class);
 
         //Init maps
         selectedCategory = new HashMap<>();
@@ -98,100 +90,56 @@ public class AppearanceUIModel {
         //Init selected
         for (String ec : ELEMENT_CLASSES) {
             initSelectedTransformerUIs(ec);
-            refreshSelectedFunctions(ec);
         }
+
+        //Init observers
+        tableObserverExecutor = new TableObserverExecutor(this);
+        functionObserverExecutor = new FunctionObserverExecutor(this);
     }
 
     private void initSelectedTransformerUIs(String elementClass) {
-        Graph graph = graphController.getGraphModel(appearanceModel.getWorkspace()).getGraph();
+        selectedFunction.put(elementClass, new HashMap<>());
+        selectedAutoTransformer.put(elementClass, new HashMap<>());
+        selectedTransformerUI.put(elementClass, new HashMap<>());
+
         Map<TransformerCategory, TransformerUI> newMap = new HashMap<>();
         for (Function func : elementClass.equals(AppearanceUIController.NODE_ELEMENT) ?
-            appearanceModel.getNodeFunctions(graph) : appearanceModel.getEdgeFunctions(graph)) {
+            appearanceModel.getNodeFunctions() : appearanceModel.getEdgeFunctions()) {
             TransformerUI ui = func.getUI();
             if (ui != null) {
                 TransformerCategory cat = ui.getCategory();
-                if (!newMap.containsKey(cat)) {
-                    newMap.put(cat, ui);
-                }
+                selectedCategory.put(elementClass, cat);
 
-                if (!selectedCategory.containsKey(elementClass)) {
-                    selectedCategory.put(elementClass, cat);
+                if (func.isSimple()) {
+                    selectedTransformerUI.get(elementClass).put(cat, ui);
+                    selectedFunction.get(elementClass).put(ui, func);
                 }
             }
         }
 
         //Prefer color to start
-        if (newMap.containsKey(DefaultCategory.COLOR)) {
+        if (selectedTransformerUI.get(elementClass).containsKey(DefaultCategory.COLOR)) {
             selectedCategory.put(elementClass, DefaultCategory.COLOR);
         }
-
-        selectedTransformerUI.put(elementClass, newMap);
-        selectedFunction.put(elementClass, new HashMap<TransformerUI, Function>());
-        selectedAutoTransformer.put(elementClass, new HashMap<TransformerCategory, AutoAppyTransformer>());
     }
 
-    private void refreshSelectedFunctions(String elementClass) {
-        Set<Function> functionSet = new HashSet<>();
-        Graph graph = graphController.getGraphModel(appearanceModel.getWorkspace()).getGraph();
-        for (Function func : elementClass.equals(AppearanceUIController.NODE_ELEMENT) ?
-            appearanceModel.getNodeFunctions(graph) : appearanceModel.getEdgeFunctions(graph)) {
-            TransformerUI ui = func.getUI();
-            if (ui != null) {
-                functionSet.add(func);
-            }
-        }
-
-        for (Function func : functionSet) {
-            Function oldFunc = selectedFunction.get(elementClass).get(func.getUI());
-            if (oldFunc == null || !functionSet.contains(oldFunc)) {
-                if (func.isSimple()) {
-                    selectedFunction.get(elementClass).put(func.getUI(), func);
-                }
-            }
-        }
-    }
-
-    public synchronized Function replaceSelectedFunction() {
-        Graph graph = graphController.getGraphModel(appearanceModel.getWorkspace()).getGraph();
-        Function sFunction = getSelectedFunction();
-        if (sFunction instanceof AttributeFunction) {
-            AttributeFunction af = (AttributeFunction) sFunction;
-            for (Function func : getSelectedElementClass().equals(AppearanceUIController.NODE_ELEMENT) ?
-                appearanceModel.getNodeFunctions(graph) : appearanceModel.getEdgeFunctions(graph)) {
-                if (func instanceof AttributeFunction) {
-                    if (af.getColumn().equals(((AttributeFunction) func).getColumn())
-                        && sFunction.getUI().getCategory().equals(func.getUI().getCategory())) {
-                        return func;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public synchronized boolean refreshSelectedFunction() {
-        Graph graph = graphController.getGraphModel(appearanceModel.getWorkspace()).getGraph();
-        Function sFunction = getSelectedFunction();
-        if (sFunction != null && sFunction.isAttribute()) {
-            for (Function func : getSelectedElementClass().equals(AppearanceUIController.NODE_ELEMENT) ?
-                appearanceModel.getNodeFunctions(graph) : appearanceModel.getEdgeFunctions(graph)) {
-                if (func.equals(sFunction)) {
-                    return false;
-                }
-
-            }
-        }
-        return true;
-    }
 
     public void select() {
+        tableObserverExecutor.start();
+        functionObserverExecutor.start();
     }
 
     public void unselect() {
+        tableObserverExecutor.stop();
+        functionObserverExecutor.stop();
     }
 
-    public boolean isLocalScale() {
-        return appearanceModel.isLocalScale();
+    public boolean isRankingLocalScale() {
+        return appearanceModel.isRankingLocalScale();
+    }
+
+    public boolean isPartitionLocalScale() {
+        return appearanceModel.isPartitionLocalScale();
     }
 
     public void saveTransformerProperties() {
@@ -277,7 +225,7 @@ public class AppearanceUIModel {
         loadTransformerProperties();
     }
 
-    public AutoAppyTransformer getAutoAppyTransformer() {
+    public AutoAppyTransformer getAutoApplyTransformer() {
         String elm = getSelectedElementClass();
         TransformerCategory ct = getSelectedCategory();
         if (ct != null) {
@@ -287,10 +235,9 @@ public class AppearanceUIModel {
     }
 
     public Collection<Function> getFunctions() {
-        Graph graph = graphController.getGraphModel(appearanceModel.getWorkspace()).getGraph();
         List<Function> functions = new ArrayList<>();
         for (Function func : selectedElementClass.equalsIgnoreCase(AppearanceUIController.NODE_ELEMENT) ?
-            appearanceModel.getNodeFunctions(graph) : appearanceModel.getEdgeFunctions(graph)) {
+            appearanceModel.getNodeFunctions() : appearanceModel.getEdgeFunctions()) {
             TransformerUI ui = func.getUI();
             if (ui != null && ui.getDisplayName().equals(getSelectedTransformerUI().getDisplayName())) {
                 if (ui.getCategory().equals(selectedCategory.get(selectedElementClass))) {
@@ -303,7 +250,7 @@ public class AppearanceUIModel {
 
     protected void setAutoApply(boolean autoApply) {
         if (!autoApply) {
-            AutoAppyTransformer aat = getAutoAppyTransformer();
+            AutoAppyTransformer aat = getAutoApplyTransformer();
             if (aat != null) {
                 aat.stop();
             }
@@ -311,7 +258,7 @@ public class AppearanceUIModel {
         String elmt = getSelectedElementClass();
         TransformerCategory cat = getSelectedCategory();
         if (autoApply) {
-            selectedAutoTransformer.get(elmt).put(cat, new AutoAppyTransformer(controller, getSelectedFunction()));
+            selectedAutoTransformer.get(elmt).put(cat, new AutoAppyTransformer(getSelectedFunction()));
         } else {
             selectedAutoTransformer.get(elmt).put(cat, null);
         }
@@ -370,6 +317,8 @@ public class AppearanceUIModel {
         } else if (type.isArray()) {
             Class cmp = type.getComponentType();
             return cmp.isPrimitive() || cmp.equals(Color.class);
-        } else return type.equals(Color.class);
+        } else {
+            return type.equals(Color.class);
+        }
     }
 }
