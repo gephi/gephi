@@ -94,7 +94,8 @@ public class AppearanceModelImpl implements AppearanceModel {
     private final List<FunctionImpl> nodeStaticFunctions;
     private final List<FunctionImpl> edgeStaticFunctions;
     // LocalScale (if true, uses visible graph)
-    private boolean localScale = false;
+    private boolean rankingLocalScale = false;
+    private boolean partitionLocalScale = false;
 
     public AppearanceModelImpl(Workspace workspace) {
         this.workspace = workspace;
@@ -103,11 +104,12 @@ public class AppearanceModelImpl implements AppearanceModel {
         this.nodeTransformers = initNodeTransformers();
         this.edgeTransformers = initEdgeTransformers();
 
-        degreeRanking = new DegreeRankingImpl();
-        inDegreeRanking = new InDegreeRankingImpl();
-        outDegreeRanking = new OutDegreeRankingImpl();
+        degreeRanking = new DegreeRankingImpl(graphModel.defaultColumns().degree());
+        inDegreeRanking = new InDegreeRankingImpl(graphModel.defaultColumns().inDegree());
+        outDegreeRanking = new OutDegreeRankingImpl(graphModel.defaultColumns().outDegree());
         edgeWeightRanking = new EdgeWeightRankingImpl();
-        edgeTypePartition = new EdgeTypePartitionImpl(graphModel.getConfiguration().getEdgeLabelType());
+        edgeTypePartition = new EdgeTypePartitionImpl(graphModel.defaultColumns().edgeType(),
+            graphModel.getConfiguration().getEdgeLabelType());
         nodeAttributeRankings = new WeakHashMap<>();
         edgeAttributeRankings = new WeakHashMap<>();
         nodeAttributePartitions = new WeakHashMap<>();
@@ -123,8 +125,16 @@ public class AppearanceModelImpl implements AppearanceModel {
         initAttributeRankingsAndPartitions();
     }
 
-    protected Graph getGraph() {
-        if (localScale) {
+    protected Graph getRankingGraph() {
+        if (rankingLocalScale) {
+            return graphModel.getGraphVisible();
+        } else {
+            return graphModel.getGraph();
+        }
+    }
+
+    protected Graph getPartitionGraph() {
+        if (partitionLocalScale) {
             return graphModel.getGraphVisible();
         } else {
             return graphModel.getGraph();
@@ -223,12 +233,21 @@ public class AppearanceModelImpl implements AppearanceModel {
     }
 
     @Override
-    public boolean isLocalScale() {
-        return localScale;
+    public boolean isRankingLocalScale() {
+        return rankingLocalScale;
     }
 
-    public void setLocalScale(boolean localScale) {
-        this.localScale = localScale;
+    public void setRankingLocalScale(boolean localScale) {
+        this.rankingLocalScale = localScale;
+    }
+
+    @Override
+    public boolean isPartitionLocalScale() {
+        return partitionLocalScale;
+    }
+
+    public void setPartitionLocalScale(boolean localScale) {
+        this.partitionLocalScale = localScale;
     }
 
     private List<FunctionImpl> getNodeRankingFunctions() {

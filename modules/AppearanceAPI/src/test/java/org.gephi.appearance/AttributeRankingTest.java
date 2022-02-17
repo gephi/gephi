@@ -2,6 +2,7 @@ package org.gephi.appearance;
 
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Estimator;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.junit.Assert;
@@ -52,5 +53,31 @@ public class AttributeRankingTest {
 
         AttributeRankingImpl p = new AttributeRankingImpl(column);
         Assert.assertTrue(p.isValid(graph));
+    }
+
+    @Test
+    public void testArrayColumnNotValid() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addFloatArrayNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.FLOAT_ARRAY_COLUMN);
+
+        AttributeRankingImpl p = new AttributeRankingImpl(column);
+        Assert.assertFalse(p.isValid(graph));
+    }
+
+    @Test
+    public void testDynamicTimestampColumn() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addTimestampDoubleColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.TIMESTAMP_DOUBLE_COLUMN);
+
+        AttributeRankingImpl p = new AttributeRankingImpl(column);
+        Assert.assertTrue(p.isValid(graph));
+
+
+        Assert.assertEquals(GraphGenerator.TIMESTAMP_DOUBLE_COLUMN_VALUES[0][0], p.getMinValue(graph));
+        Assert.assertEquals(GraphGenerator.TIMESTAMP_DOUBLE_COLUMN_VALUES[1][0], p.getMaxValue(graph));
+
+        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+
+        Assert.assertEquals(GraphGenerator.TIMESTAMP_DOUBLE_COLUMN_VALUES[0][0], p.getValue(n1, graph));
     }
 }

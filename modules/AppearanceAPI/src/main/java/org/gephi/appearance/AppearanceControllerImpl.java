@@ -157,9 +157,16 @@ public class AppearanceControllerImpl implements AppearanceController {
     }
 
     @Override
-    public void setUseLocalScale(boolean useLocalScale) {
+    public void setUseRankingLocalScale(boolean useLocalScale) {
         if (model != null) {
-            model.setLocalScale(useLocalScale);
+            model.setRankingLocalScale(useLocalScale);
+        }
+    }
+
+    @Override
+    public void setUsePartitionLocalScale(boolean useLocalScale) {
+        if (model != null) {
+            model.setPartitionLocalScale(useLocalScale);
         }
     }
 }

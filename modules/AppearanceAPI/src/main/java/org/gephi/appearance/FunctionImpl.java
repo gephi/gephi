@@ -42,6 +42,7 @@
 
 package org.gephi.appearance;
 
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.appearance.api.Function;
@@ -67,8 +68,9 @@ public abstract class FunctionImpl implements Function {
     protected final TransformerUI transformerUI;
     protected final PartitionImpl partition;
     protected final RankingImpl ranking;
-    // Version
     protected final AtomicInteger version;
+    // Version
+    protected WeakReference<Graph> lastGraph;
 
     protected FunctionImpl(AppearanceModelImpl model, String name, Class<? extends Element> elementClass, Column column,
                            Transformer transformer, TransformerUI transformerUI, PartitionImpl partition,
@@ -88,7 +90,8 @@ public abstract class FunctionImpl implements Function {
         this.transformerUI = transformerUI;
         this.partition = partition;
         this.ranking = ranking;
-        this.version = new AtomicInteger(Integer.MIN_VALUE);
+        this.version = new AtomicInteger(partition != null ? partition.getVersion(model.getPartitionGraph()) : Integer.MIN_VALUE);
+        this.lastGraph = partition != null ? new WeakReference<>(model.getPartitionGraph()) : null;
     }
 
     @Override
@@ -128,13 +131,28 @@ public abstract class FunctionImpl implements Function {
     }
 
     public boolean hasChanged() {
-        if(isSimple()) {
-            return false;
-        } else {
-            Graph graph = model.getGraph();
-            int newVersion = isPartition() ? partition.getVersion(graph) : 0;
-            return version.getAndSet(newVersion) != newVersion;
+        if (isPartition()) {
+            Graph graph = model.getPartitionGraph();
+
+            // Check if view has changed
+            boolean viewChanged = false;
+            synchronized (this) {
+                if (lastGraph == null) {
+                    lastGraph = new WeakReference<>(graph);
+                } else {
+                    Graph lg = lastGraph.get();
+                    lastGraph = null;
+                    if (lg == null || lg != graph) {
+                        viewChanged = true;
+                        lastGraph = new WeakReference<>(graph);
+                    }
+                }
+            }
+
+            int newVersion = partition.getVersion(graph);
+            return version.getAndSet(newVersion) != newVersion || viewChanged;
         }
+        return false;
     }
 
     public boolean isValid() {
@@ -148,7 +166,12 @@ public abstract class FunctionImpl implements Function {
 
     @Override
     public Graph getGraph() {
-        return model.getGraph();
+        if (isRanking()) {
+            return model.getRankingGraph();
+        } else if (isPartition()) {
+            return model.getPartitionGraph();
+        }
+        return model.getGraphModel().getGraph();
     }
 
     @Override

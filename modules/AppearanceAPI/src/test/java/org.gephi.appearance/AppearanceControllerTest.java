@@ -30,7 +30,7 @@ public class AppearanceControllerTest {
         AppearanceControllerImpl controller = new AppearanceControllerImpl();
         controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
 
-        Assert.assertFalse(controller.getModel().isLocalScale());
+        Assert.assertFalse(controller.getModel().isRankingLocalScale());
 
         Node node = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
 
@@ -105,7 +105,7 @@ public class AppearanceControllerTest {
         controller.transform(rankingFunction);
         Assert.assertEquals(0, (int) node1.size());
 
-        controller.setUseLocalScale(true);
+        controller.setUseRankingLocalScale(true);
         controller.transform(rankingFunction);
         Assert.assertEquals(1, (int) node1.size());
     }

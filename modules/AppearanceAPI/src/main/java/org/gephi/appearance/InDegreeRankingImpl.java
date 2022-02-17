@@ -42,6 +42,7 @@
 
 package org.gephi.appearance;
 
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
@@ -50,41 +51,15 @@ import org.gephi.graph.api.Node;
 /**
  * @author mbastian
  */
-public class InDegreeRankingImpl extends RankingImpl {
+public class InDegreeRankingImpl extends DegreeRankingImpl {
 
-    public InDegreeRankingImpl() {
-        super();
+    public InDegreeRankingImpl(Column degreeColumn) {
+        super(degreeColumn);
     }
 
     @Override
     public Number getValue(Element element, Graph gr) {
         return ((DirectedGraph) gr).getInDegree((Node) element);
-    }
-
-    @Override
-    public Number getMinValue(Graph graph) {
-        if (graph.getNodeCount() > 0) {
-            int min = Integer.MAX_VALUE;
-            DirectedGraph directedGraph = (DirectedGraph) graph;
-            for (Node node : directedGraph.getNodes()) {
-                min = Math.min(directedGraph.getInDegree(node), min);
-            }
-            return min;
-        }
-        return 0;
-    }
-
-    @Override
-    public Number getMaxValue(Graph graph) {
-        if (graph.getNodeCount() > 0) {
-            int max = Integer.MIN_VALUE;
-            DirectedGraph directedGraph = (DirectedGraph) graph;
-            for (Node node : directedGraph.getNodes()) {
-                max = Math.max(directedGraph.getInDegree(node), max);
-            }
-            return max;
-        }
-        return 0;
     }
 
     @Override

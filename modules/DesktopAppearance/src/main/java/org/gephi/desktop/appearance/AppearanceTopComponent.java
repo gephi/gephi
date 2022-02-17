@@ -106,7 +106,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
     private javax.swing.JPanel controlPanel;
     private javax.swing.JToolBar controlToolbar;
     private javax.swing.JToggleButton enableAutoButton;
-    private javax.swing.JToggleButton localScaleButton;
+    private javax.swing.JToggleButton rankingLocalScaleButton;
+    private javax.swing.JToggleButton partitionLocalScaleButton;
     private javax.swing.JPanel mainPanel;
     private org.jdesktop.swingx.JXHyperlink splineButton;
     private javax.swing.JToggleButton stopAutoApplyButton;
@@ -334,7 +335,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                         applyButton.setVisible(true);
                         applyButton.setEnabled(true);
                     }
-                    localScaleButton.setSelected(model.isLocalScale());
+                    rankingLocalScaleButton.setSelected(model.isRankingLocalScale());
+                    partitionLocalScaleButton.setSelected(model.isPartitionLocalScale());
                     return;
                 }
                 //Disable
@@ -349,16 +351,23 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
     private void initControls() {
         //Add ranking controls
-        toolbar.addRankingControl(localScaleButton);
+        toolbar.addRankingControl(rankingLocalScaleButton);
         toolbar.addRankingControl(splineButton);
 
         //Add partition controls
-//        toolbar.addPartitionControl(localScaleButton);
+        toolbar.addPartitionControl(partitionLocalScaleButton);
+
         //Actions
-        localScaleButton.addActionListener(new ActionListener() {
+        rankingLocalScaleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.getAppearanceController().setUseLocalScale(localScaleButton.isSelected());
+                controller.getAppearanceController().setUseRankingLocalScale(rankingLocalScaleButton.isSelected());
+            }
+        });
+        partitionLocalScaleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.getAppearanceController().setUsePartitionLocalScale(partitionLocalScaleButton.isSelected());
             }
         });
         splineButton.addActionListener(new ActionListener() {
@@ -496,7 +505,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         attibuteBox = new javax.swing.JComboBox();
         centerPanel = new javax.swing.JPanel();
         controlToolbar = toolbar.getControlToolbar();
-        localScaleButton = new javax.swing.JToggleButton();
+        rankingLocalScaleButton = new javax.swing.JToggleButton();
+        partitionLocalScaleButton = new javax.swing.JToggleButton();
         splineButton = new org.jdesktop.swingx.JXHyperlink();
         controlPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
@@ -567,15 +577,25 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         controlToolbar.setMargin(new java.awt.Insets(0, 4, 0, 0));
         controlToolbar.setOpaque(true);
 
-        localScaleButton.setIcon(new javax.swing.ImageIcon(
+        rankingLocalScaleButton.setIcon(new javax.swing.ImageIcon(
             getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png"))); // NOI18N
-        localScaleButton.setToolTipText(org.openide.util.NbBundle
+        rankingLocalScaleButton.setToolTipText(org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.localScaleButton.toolTipText")); // NOI18N
-        localScaleButton.setFocusable(false);
-        localScaleButton
+        rankingLocalScaleButton.setFocusable(false);
+        rankingLocalScaleButton
             .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((new javax.swing.ImageIcon(
                 getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png")).getImage())))); // NOI18N
-        controlToolbar.add(localScaleButton);
+        controlToolbar.add(rankingLocalScaleButton);
+
+        partitionLocalScaleButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png"))); // NOI18N
+        partitionLocalScaleButton.setToolTipText(org.openide.util.NbBundle
+            .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.partitionLocalScaleButton.toolTipText")); // NOI18N
+        partitionLocalScaleButton.setFocusable(false);
+        partitionLocalScaleButton
+            .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((new javax.swing.ImageIcon(
+                getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png")).getImage())))); // NOI18N
+        controlToolbar.add(partitionLocalScaleButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle
             .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.splineButton.text")); // NOI18N

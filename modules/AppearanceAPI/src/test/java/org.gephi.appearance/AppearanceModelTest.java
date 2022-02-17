@@ -1,5 +1,7 @@
 package org.gephi.appearance;
 
+import java.util.Arrays;
+import org.gephi.appearance.api.Function;
 import org.gephi.appearance.api.Partition;
 import org.gephi.appearance.api.Ranking;
 import org.gephi.appearance.spi.PartitionTransformer;
@@ -9,6 +11,7 @@ import org.gephi.appearance.spi.Transformer;
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.GraphView;
 import org.junit.Assert;
 import org.junit.Test;
 import org.netbeans.junit.MockServices;
@@ -56,6 +59,24 @@ public class AppearanceModelTest {
         System.runFinalization();
 
         Assert.assertEquals(0, model.countNodeAttributeRanking());
+    }
+
+    @Test
+    public void testHasChanged() {
+        MockServices.setServices(DummyTransformer.class);
+        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
+        Function function =
+            Arrays.stream(model.getNodeFunctions()).filter(f -> f.isPartition() && f.isAttribute()).findFirst().get();
+
+        Assert.assertFalse(function.hasChanged());
+        GraphView view = generator.getGraphModel().createView();
+        generator.getGraphModel().setVisibleView(view);
+        Assert.assertFalse(function.hasChanged());
+
+        model.setPartitionLocalScale(true);
+        Assert.assertTrue(function.hasChanged());
+        Assert.assertFalse(function.hasChanged());
     }
 
     public static class DummyTransformer implements Transformer, RankingTransformer, PartitionTransformer,

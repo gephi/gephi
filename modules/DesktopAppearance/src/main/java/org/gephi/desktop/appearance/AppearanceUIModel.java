@@ -134,8 +134,12 @@ public class AppearanceUIModel {
         functionObserverExecutor.stop();
     }
 
-    public boolean isLocalScale() {
-        return appearanceModel.isLocalScale();
+    public boolean isRankingLocalScale() {
+        return appearanceModel.isRankingLocalScale();
+    }
+
+    public boolean isPartitionLocalScale() {
+        return appearanceModel.isPartitionLocalScale();
     }
 
     public void saveTransformerProperties() {

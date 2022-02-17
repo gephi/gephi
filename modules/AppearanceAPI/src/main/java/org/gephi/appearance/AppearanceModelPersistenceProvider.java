@@ -53,7 +53,8 @@ public class AppearanceModelPersistenceProvider implements WorkspaceXMLPersisten
     protected void writeXML(XMLStreamWriter writer, AppearanceModelImpl model)
         throws XMLStreamException {
         writer.writeStartElement("localscale");
-        writer.writeAttribute("value", String.valueOf(model.isLocalScale()));
+        writer.writeAttribute("ranking", String.valueOf(model.isRankingLocalScale()));
+        writer.writeAttribute("partition", String.valueOf(model.isPartitionLocalScale()));
         writer.writeEndElement();
 
         //Rankings
@@ -72,8 +73,10 @@ public class AppearanceModelPersistenceProvider implements WorkspaceXMLPersisten
             if (eventType.equals(XMLEvent.START_ELEMENT)) {
                 String name = reader.getLocalName();
                 if ("localscale".equalsIgnoreCase(name)) {
-                    String val = reader.getAttributeValue(null, "value");
-                    model.setLocalScale(Boolean.parseBoolean(val));
+                    String partition = reader.getAttributeValue(null, "partition");
+                    String ranking = reader.getAttributeValue(null, "ranking");
+                    model.setPartitionLocalScale(Boolean.parseBoolean(partition));
+                    model.setRankingLocalScale(Boolean.parseBoolean(ranking));
                 } else if ("rankings".equalsIgnoreCase(name)) {
                     String elementClass = reader.getAttributeValue(null, "for");
                     readRankings(reader,
@@ -170,19 +173,23 @@ public class AppearanceModelPersistenceProvider implements WorkspaceXMLPersisten
         }
     }
 
-    protected void readInterpolator(XMLStreamReader reader, RankingImpl ranking) throws XMLStreamException {
+    protected void readInterpolator(XMLStreamReader reader, RankingImpl ranking) {
         String type = reader.getAttributeValue(null, "type");
         Interpolator interpolator = null;
-        if (type.equals("log2")) {
-            interpolator = Interpolator.LOG2;
-        } else if (type.equals("linear")) {
-            interpolator = Interpolator.LINEAR;
-        } else if (type.equals("bezier")) {
-            float x1 = Float.parseFloat(reader.getAttributeValue(null, "x1"));
-            float y1 = Float.parseFloat(reader.getAttributeValue(null, "y1"));
-            float x2 = Float.parseFloat(reader.getAttributeValue(null, "x2"));
-            float y2 = Float.parseFloat(reader.getAttributeValue(null, "y2"));
-            interpolator = new Interpolator.BezierInterpolator(x1, y1, x2, y2);
+        switch (type) {
+            case "log2":
+                interpolator = Interpolator.LOG2;
+                break;
+            case "linear":
+                interpolator = Interpolator.LINEAR;
+                break;
+            case "bezier":
+                float x1 = Float.parseFloat(reader.getAttributeValue(null, "x1"));
+                float y1 = Float.parseFloat(reader.getAttributeValue(null, "y1"));
+                float x2 = Float.parseFloat(reader.getAttributeValue(null, "x2"));
+                float y2 = Float.parseFloat(reader.getAttributeValue(null, "y2"));
+                interpolator = new Interpolator.BezierInterpolator(x1, y1, x2, y2);
+                break;
         }
         if (interpolator != null) {
             ranking.setInterpolator(interpolator);

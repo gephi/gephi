@@ -119,7 +119,7 @@ public class AttributePartitionImpl extends PartitionImpl {
     @Override
     public int getVersion(Graph graph) {
         if (isValid(graph)) {
-            return getIndex(graph.getModel().getGraph()).getColumnIndex(column.get()).getVersion();
+            return getIndex(graph).getColumnIndex(column.get()).getVersion();
         }
         return 0;
     }

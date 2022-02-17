@@ -19,6 +19,7 @@ public class GraphGenerator {
 
     public static final String INT_COLUMN = "age";
     public static final String DOUBLE_COLUMN = "value";
+    public static final String FLOAT_ARRAY_COLUMN = "values";
     public static final String STRING_COLUMN = "country";
     public static final String TIMESTAMP_SET_COLUMN = "events";
     public static final String INTERVAL_SET_COLUMN = "events";
@@ -27,8 +28,11 @@ public class GraphGenerator {
     public static final String FIRST_NODE = "1";
     public static final String SECOND_NODE = "2";
     public static final String FIRST_EDGE = "1";
+    public static final String SECOND_EDGE = "2";
     public static final String[] STRING_COLUMN_VALUES = new String[] {"France", "Germany"};
+    public static final float[][] FLOAT_ARRAY_COLUMN_VALUES = new float[][] {{1f, 2f}, {4f, 3f}};
     public static final int INT_COLUMN_MIN_VALUE = 10;
+    public static final double[][] TIMESTAMP_DOUBLE_COLUMN_VALUES = new double[][] {{3.0}, {6.0}};
 
     private final GraphModel graphModel;
     private Workspace workspace;
@@ -73,12 +77,33 @@ public class GraphGenerator {
         return this;
     }
 
+    public GraphGenerator generateTinyMultiGraph() {
+        Node n1 = graphModel.factory().newNode(FIRST_NODE);
+        Node n2 = graphModel.factory().newNode(SECOND_NODE);
+        Edge e1 = graphModel.factory().newEdge(FIRST_EDGE, n1, n2, 0, 1.0, true);
+        Edge e2 = graphModel.factory().newEdge(SECOND_EDGE, n1, n2, 1, 1.0, true);
+        graphModel.getDirectedGraph().addNode(n1);
+        graphModel.getDirectedGraph().addNode(n2);
+        graphModel.getDirectedGraph().addEdge(e1);
+        graphModel.getDirectedGraph().addEdge(e2);
+        return this;
+    }
+
     public GraphGenerator addIntNodeColumn() {
         graphModel.getNodeTable().addColumn(INT_COLUMN, Integer.class);
         int age = INT_COLUMN_MIN_VALUE;
         for (Node node : graphModel.getGraph().getNodes()) {
             node.setAttribute(INT_COLUMN, age++);
         }
+        return this;
+    }
+
+    public GraphGenerator addFloatArrayNodeColumn() {
+        graphModel.getNodeTable().addColumn(FLOAT_ARRAY_COLUMN, float[].class);
+        Node n1 = graphModel.getGraph().getNode(FIRST_NODE);
+        Node n2 = graphModel.getGraph().getNode(SECOND_NODE);
+        n1.setAttribute(FLOAT_ARRAY_COLUMN, FLOAT_ARRAY_COLUMN_VALUES[0]);
+        n2.setAttribute(FLOAT_ARRAY_COLUMN, FLOAT_ARRAY_COLUMN_VALUES[1]);
         return this;
     }
 
@@ -109,9 +134,10 @@ public class GraphGenerator {
 
     public GraphGenerator addTimestampDoubleColumn() {
         graphModel.getNodeTable().addColumn(TIMESTAMP_DOUBLE_COLUMN, TimestampDoubleMap.class);
+        int index = 0;
         for (Node node : graphModel.getGraph().getNodes()) {
             node.setAttribute(TIMESTAMP_DOUBLE_COLUMN, new TimestampDoubleMap(new double[] {2000},
-                new double[] {Math.random() * 100.0}));
+                TIMESTAMP_DOUBLE_COLUMN_VALUES[index++]));
         }
         return this;
     }

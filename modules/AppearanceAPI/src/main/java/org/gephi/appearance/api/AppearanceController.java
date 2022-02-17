@@ -64,7 +64,17 @@ public interface AppearanceController {
      * @param useLocalScale <code>true</code> for local, <code>false</code> for
      *                      global
      */
-    void setUseLocalScale(boolean useLocalScale);
+    void setUseRankingLocalScale(boolean useLocalScale);
+
+    /**
+     * Sets whether partitions use a local or a global scale. When calculating the
+     * partitions it can use the complete graph or only the currently visible graph. When using the visible graph
+     * it is called the <b>local</b> scale.
+     *
+     * @param useLocalScale <code>true</code> for local, <code>false</code> for
+     *                      global
+     */
+    void setUsePartitionLocalScale(boolean useLocalScale);
 
     /**
      * Apply the function's transformer. If the function is for nodes all nodes

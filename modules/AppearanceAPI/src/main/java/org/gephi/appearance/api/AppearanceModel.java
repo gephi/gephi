@@ -63,12 +63,22 @@ public interface AppearanceModel {
     /**
      * Returns <code>true</code> if rankings are using the currently visible
      * graph as a scale. If <code>false</code> the complete graph is used to
-     * determine minimum and maximum values, the ranking scale.
+     * determine minimum and maximum values.
      *
      * @return <code>true</code> if using a local scale, <code>false</code> if
      * global scale
      */
-    boolean isLocalScale();
+    boolean isRankingLocalScale();
+
+    /**
+     * Returns <code>true</code> if partitions are using the currently visible
+     * graph as a source. If <code>false</code> the complete graph is used to
+     * determine partitions.
+     *
+     * @return <code>true</code> if using a local scale, <code>false</code> if
+     * global scale
+     */
+    boolean isPartitionLocalScale();
 
     /**
      * Returns the node partition for thid column.

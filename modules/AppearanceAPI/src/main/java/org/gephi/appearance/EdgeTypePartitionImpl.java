@@ -49,6 +49,7 @@ import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Index;
 
 /**
  * @author mbastian
@@ -56,10 +57,12 @@ import org.gephi.graph.api.Graph;
 public class EdgeTypePartitionImpl extends PartitionImpl {
 
     private final Class valueType;
+    private final Column column;
 
-    public EdgeTypePartitionImpl(Class valueType) {
+    public EdgeTypePartitionImpl(Column column, Class valueType) {
         super();
         this.valueType = valueType;
+        this.column = column;
     }
 
     @Override
@@ -82,24 +85,28 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
 
     @Override
     public int count(Object value, Graph graph) {
-        return graph.getEdgeCount(graph.getModel().getEdgeType(value));
+        return getIndex(graph).count(column, value);
     }
 
     @Override
     public float percentage(Object value, Graph graph) {
-        int count = count(value, graph);
-        return ((float) count) / graph.getEdgeCount();
+        Index<Edge> index = getIndex(graph);
+        int count = index.count(column, value);
+        return 100f * ((float) count / index.countElements(column));
     }
 
     @Override
     public int size(Graph graph) {
-        int size = graph.getModel().getEdgeTypeCount();
-        return graph.getEdgeCount(0) == 0 ? size - 1 : size;
+        return getIndex(graph).countValues(column);
+    }
+
+    private Index<Edge> getIndex(Graph graph) {
+        return graph.getModel().getEdgeIndex(graph.getView());
     }
 
     @Override
     public Column getColumn() {
-        return null;
+        return column;
     }
 
     @Override
@@ -114,7 +121,9 @@ public class EdgeTypePartitionImpl extends PartitionImpl {
 
     @Override
     public int getVersion(Graph graph) {
-        // TODO
+        if (isValid(graph)) {
+            return getIndex(graph).getColumnIndex(column).getVersion();
+        }
         return 0;
     }
 }

@@ -42,9 +42,12 @@
 
 package org.gephi.appearance;
 
+import java.lang.ref.WeakReference;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Index;
 import org.gephi.graph.api.Node;
 
 /**
@@ -52,8 +55,11 @@ import org.gephi.graph.api.Node;
  */
 public class DegreeRankingImpl extends RankingImpl {
 
-    public DegreeRankingImpl() {
+    protected final Column column;
+
+    public DegreeRankingImpl(Column degreeColumn) {
         super();
+        this.column = degreeColumn;
     }
 
     @Override
@@ -63,28 +69,16 @@ public class DegreeRankingImpl extends RankingImpl {
 
     @Override
     public Number getMinValue(Graph graph) {
-        if (graph.getNodeCount() > 0) {
-            int min = Integer.MAX_VALUE;
-            DirectedGraph directedGraph = (DirectedGraph) graph;
-            for (Node node : directedGraph.getNodes()) {
-                min = Math.min(directedGraph.getDegree(node), min);
-            }
-            return min;
-        }
-        return 0;
+        return getIndex(graph).getMinValue(column);
     }
 
     @Override
     public Number getMaxValue(Graph graph) {
-        if (graph.getNodeCount() > 0) {
-            int max = Integer.MIN_VALUE;
-            DirectedGraph directedGraph = (DirectedGraph) graph;
-            for (Node node : directedGraph.getNodes()) {
-                max = Math.max(directedGraph.getDegree(node), max);
-            }
-            return max;
-        }
-        return 0;
+        return getIndex(graph).getMaxValue(column);
+    }
+
+    private Index<Node> getIndex(Graph graph) {
+        return graph.getModel().getNodeIndex(graph.getView());
     }
 
     @Override

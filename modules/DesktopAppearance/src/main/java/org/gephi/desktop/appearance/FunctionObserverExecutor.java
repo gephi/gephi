@@ -10,7 +10,7 @@ import org.openide.util.Lookup;
 
 public class FunctionObserverExecutor implements Runnable {
 
-    private static final long DEFAULT_DELAY = 1000;  //ms
+    private static final long DEFAULT_DELAY = 1500;  //ms
     private final AppearanceUIModel model;
     private final AppearanceUIController controller;
     private ScheduledExecutorService executor;

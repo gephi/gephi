@@ -119,4 +119,16 @@ public class AttributePartitionTest {
         graph.removeNode(n1);
         Assert.assertNotEquals(version, p.getVersion(graph));
     }
+
+//    @Test
+//    public void testVersionDynamic() {
+//        Graph graph = GraphGenerator.build().generateTinyGraph().addTimestampDoubleColumn().getGraph();
+//        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.TIMESTAMP_DOUBLE_COLUMN);
+//        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+//
+//        AttributePartitionImpl p = new AttributePartitionImpl(column);
+//        int version = p.getVersion(graph);
+//        n1.setAttribute(column, 99.0, 2000);
+//        Assert.assertNotEquals(version, p.getVersion(graph));
+//    }
 }

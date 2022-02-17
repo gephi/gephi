@@ -2,6 +2,7 @@ package org.gephi.appearance;
 
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.graph.GraphGenerator;
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.junit.Assert;
@@ -12,15 +13,19 @@ public class DegreeRankingTest {
     @Test
     public void testEmpty() {
         Graph graph = GraphGenerator.build().getGraph();
-        DegreeRankingImpl degreeRanking = new DegreeRankingImpl();
+        Column col = graph.getModel().defaultColumns().degree();
+        DegreeRankingImpl degreeRanking = new DegreeRankingImpl(col);
 
-        Assert.assertEquals(0, degreeRanking.getMinValue(graph));
-        Assert.assertEquals(0, degreeRanking.getMaxValue(graph));
+        Assert.assertNull(degreeRanking.getMinValue(graph));
+        Assert.assertNull(degreeRanking.getMaxValue(graph));
     }
 
     @Test
     public void testInterpolator() {
-        DegreeRankingImpl degreeRanking = new DegreeRankingImpl();
+        Graph graph = GraphGenerator.build().getGraph();
+        Column col = graph.getModel().defaultColumns().degree();
+        DegreeRankingImpl degreeRanking = new DegreeRankingImpl(col);
+
         Assert.assertSame(Interpolator.LINEAR, degreeRanking.getInterpolator());
         degreeRanking.setInterpolator(Interpolator.LOG2);
         Assert.assertSame(Interpolator.LOG2, degreeRanking.getInterpolator());
@@ -29,7 +34,8 @@ public class DegreeRankingTest {
     @Test
     public void testOneEdge() {
         Graph graph = GraphGenerator.build().generateTinyGraph().getGraph();
-        DegreeRankingImpl degreeRanking = new DegreeRankingImpl();
+        Column col = graph.getModel().defaultColumns().degree();
+        DegreeRankingImpl degreeRanking = new DegreeRankingImpl(col);
 
         Assert.assertEquals(1, degreeRanking.getMinValue(graph));
         Assert.assertEquals(1, degreeRanking.getMaxValue(graph));
@@ -42,7 +48,8 @@ public class DegreeRankingTest {
     @Test
     public void testNormalization() {
         Graph graph = GraphGenerator.build().generateSmallRandomGraph().getGraph();
-        DegreeRankingImpl degreeRanking = new DegreeRankingImpl();
+        Column col = graph.getModel().defaultColumns().degree();
+        DegreeRankingImpl degreeRanking = new DegreeRankingImpl(col);
 
         int minDegree = degreeRanking.getMinValue(graph).intValue();
         int maxDegree = degreeRanking.getMaxValue(graph).intValue();
