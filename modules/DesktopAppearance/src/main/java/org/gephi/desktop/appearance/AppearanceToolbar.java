@@ -559,6 +559,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                         if (bb != null) {
                             for (AbstractButton b : bb) {
                                 add(b);
+                                b.setEnabled(true);
                                 controlButtons.add(b);
                             }
                         }

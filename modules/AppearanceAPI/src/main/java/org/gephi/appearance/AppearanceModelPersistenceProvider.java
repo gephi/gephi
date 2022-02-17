@@ -12,10 +12,11 @@ import org.gephi.appearance.api.Interpolator;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
 
-@ServiceProvider(service = WorkspaceXMLPersistenceProvider.class)
+@ServiceProvider(service = WorkspacePersistenceProvider.class)
 public class AppearanceModelPersistenceProvider implements WorkspaceXMLPersistenceProvider {
 
 
