@@ -149,4 +149,11 @@ public interface Function {
      * @return true if changed, false otherwise
      */
     boolean hasChanged();
+
+    /**
+     * Returns the function's unique identifier.
+     *
+     * @return function id
+     */
+    String getId();
 }

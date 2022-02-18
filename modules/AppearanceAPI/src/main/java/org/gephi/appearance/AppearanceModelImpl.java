@@ -341,14 +341,15 @@ public class AppearanceModelImpl implements AppearanceModel {
         TransformerUI transformerUI = getTransformerUI(transformer);
 
         res.add(
-            new GraphFunctionImpl(this, NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.Degree.name"),
+            new GraphFunctionImpl(this, getId("node", transformer, "degree"),
+                NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.Degree.name"),
                 Node.class, transformer, transformerUI, degreeRanking));
 
-        res.add(new GraphFunctionImpl(this,
+        res.add(new GraphFunctionImpl(this, getId("node", transformer, "indegree"),
             NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.InDegree.name"),
             Node.class, transformer, transformerUI, inDegreeRanking));
         res.add(
-            new GraphFunctionImpl(this,
+            new GraphFunctionImpl(this, getId("node", transformer, "outdegree"),
                 NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.OutDegree.name"),
                 Node.class, transformer, transformerUI, outDegreeRanking));
         return res;
@@ -360,14 +361,14 @@ public class AppearanceModelImpl implements AppearanceModel {
             TransformerUI transformerUI = getTransformerUI(t);
 
             if (t instanceof RankingTransformer) {
-                res.add(new GraphFunctionImpl(this,
+                res.add(new GraphFunctionImpl(this, getId("edge", t, "weight"),
                     NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Weight.name"), Edge.class, t,
                     transformerUI, edgeWeightRanking));
             }
 
             if (t instanceof PartitionTransformer) {
                 res.add(
-                    new GraphFunctionImpl(this,
+                    new GraphFunctionImpl(this, getId("edge", t, "type"),
                         NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Type.name"),
                         Edge.class, t, transformerUI, edgeTypePartition));
             }
@@ -409,10 +410,6 @@ public class AppearanceModelImpl implements AppearanceModel {
     private List<Transformer> initEdgeTransformers() {
         return Lookup.getDefault().lookupAll(Transformer.class).stream().filter(Transformer::isEdge).collect(
             Collectors.toList());
-    }
-
-    private String getId(Column column) {
-        return "column_" + column.getId();
     }
 
     private String getId(String prefix, Transformer transformer, Column column) {

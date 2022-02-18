@@ -220,6 +220,11 @@ public abstract class FunctionImpl implements Function {
     }
 
     @Override
+    public String getId() {
+        return name;
+    }
+
+    @Override
     public int hashCode() {
         int hash = 5;
         hash = 97 * hash + (this.name != null ? this.name.hashCode() : 0);

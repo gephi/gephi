@@ -36,10 +36,13 @@ public class AppearanceUIModelPersistenceProvider implements WorkspaceXMLPersist
     @Override
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         AppearanceUIModel model = workspace.getLookup().lookup(AppearanceUIModel.class);
-        AppearanceController appearanceController =
-            Lookup.getDefault().lookup(AppearanceController.class);
+        AppearanceModel appearanceModel = workspace.getLookup().lookup(AppearanceModel.class);
+        if (appearanceModel == null) {
+            AppearanceController appearanceController = Lookup.getDefault().lookup(AppearanceController.class);
+            appearanceModel = appearanceController.getModel(workspace);
+        }
         if (model == null) {
-            model = new AppearanceUIModel(appearanceController.getModel(workspace));
+            model = new AppearanceUIModel(appearanceModel);
             workspace.add(model);
         }
         try {
@@ -67,11 +70,14 @@ public class AppearanceUIModelPersistenceProvider implements WorkspaceXMLPersist
     private void writeSavedProperty(XMLStreamWriter writer, Map<String, Object> savedProperty)
         throws XMLStreamException {
         for (Map.Entry<String, Object> entry : savedProperty.entrySet()) {
-            writer.writeStartElement("property");
-            writer.writeAttribute("key", entry.getKey());
-            writer.writeAttribute("value", Serialization.getValueAsText(entry.getValue()));
-            writer.writeAttribute("type", entry.getValue().getClass().getName());
-            writer.writeEndElement();
+            String valueTxt = Serialization.getValueAsText(entry.getValue());
+            if (valueTxt != null) {
+                writer.writeStartElement("property");
+                writer.writeAttribute("key", entry.getKey());
+                writer.writeAttribute("value", Serialization.getValueAsText(entry.getValue()));
+                writer.writeAttribute("type", entry.getValue().getClass().getName());
+                writer.writeEndElement();
+            }
         }
     }
 
