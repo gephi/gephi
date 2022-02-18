@@ -45,7 +45,6 @@ package org.gephi.appearance.plugin;
 import java.awt.Color;
 import java.io.Serializable;
 import java.util.Arrays;
-import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.Transformer;
@@ -92,6 +91,14 @@ public class RankingElementColorTransformer implements RankingTransformer<Elemen
 
     public void setColors(Color[] colors) {
         linearGradient.setColors(colors);
+    }
+
+    public int[] getColorsAsRgba() {
+        return linearGradient.getColorsAsRgba();
+    }
+
+    public void setColorsAsRgba(int[] colors) {
+        linearGradient.setColorsAsRgba(colors);
     }
 
     public LinearGradient getLinearGradient() {
@@ -147,6 +154,14 @@ public class RankingElementColorTransformer implements RankingTransformer<Elemen
 
         public void setColors(Color[] colors) {
             this.colors = colors;
+        }
+
+        public int[] getColorsAsRgba() {
+            return Arrays.stream(colors).mapToInt(c -> (c.getAlpha() << 24) | c.getRGB()).toArray();
+        }
+
+        public void setColorsAsRgba(int[] colors) {
+            this.colors = Arrays.stream(colors).mapToObj(rgba -> new Color(rgba, true)).toArray(Color[]::new);
         }
 
         public float[] getPositions() {

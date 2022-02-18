@@ -46,6 +46,7 @@ import java.awt.Font;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.lang.reflect.Method;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.GraphModel;
 
 /**
@@ -177,6 +178,8 @@ public class Serialization {
         } else if (isPrimitiveOrPrimitiveWrapper(valueClass) ||
             (Number.class.isAssignableFrom(valueClass) && !Number.class.equals(valueClass))) {
             return String.valueOf(value);
+        } else if (valueClass.isArray()) {
+            return AttributeUtils.printArray(value);
         } else {
             PropertyEditor editor = PropertyEditorManager.findEditor(valueClass);
             if (editor != null) {
@@ -222,6 +225,8 @@ public class Serialization {
             return parsePrimitiveOrWrapper(valueClass, valueStr);
         } else if (Number.class.isAssignableFrom(valueClass) && !Number.class.equals(valueClass)) {
             return NumberUtils.parseNumber(valueStr, valueClass);
+        } else if (valueClass.isArray()) {
+            return AttributeUtils.parse(valueStr, valueClass);
         } else {
             PropertyEditor editor = PropertyEditorManager.findEditor(valueClass);
             if (editor != null) {

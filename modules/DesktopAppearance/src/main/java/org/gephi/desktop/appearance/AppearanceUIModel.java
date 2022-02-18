@@ -60,6 +60,7 @@ import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.project.api.Workspace;
 import org.gephi.ui.appearance.plugin.category.DefaultCategory;
 
 /**
@@ -102,7 +103,6 @@ public class AppearanceUIModel {
         selectedAutoTransformer.put(elementClass, new HashMap<>());
         selectedTransformerUI.put(elementClass, new HashMap<>());
 
-        Map<TransformerCategory, TransformerUI> newMap = new HashMap<>();
         for (Function func : elementClass.equals(AppearanceUIController.NODE_ELEMENT) ?
             appearanceModel.getNodeFunctions() : appearanceModel.getEdgeFunctions()) {
             TransformerUI ui = func.getUI();
@@ -146,11 +146,7 @@ public class AppearanceUIModel {
         Function func = getSelectedFunction();
         if (func != null) {
             Transformer transformer = func.getTransformer();
-            Map<String, Object> props = savedProperties.get(func);
-            if (props == null) {
-                props = new HashMap<>();
-                savedProperties.put(func, new HashMap<String, Object>());
-            }
+            Map<String, Object> props = savedProperties.computeIfAbsent(func, k -> new HashMap<>());
 
             for (Map.Entry<String, Method[]> entry : getProperties(transformer).entrySet()) {
                 String name = entry.getKey();
@@ -232,6 +228,14 @@ public class AppearanceUIModel {
             return selectedAutoTransformer.get(elm).get(ct);
         }
         return null;
+    }
+
+    public Workspace getWorkspace() {
+        return appearanceModel.getWorkspace();
+    }
+
+    public AppearanceModel getAppearanceModel() {
+        return appearanceModel;
     }
 
     public Collection<Function> getFunctions() {
@@ -316,7 +320,7 @@ public class AppearanceUIModel {
             return true;
         } else if (type.isArray()) {
             Class cmp = type.getComponentType();
-            return cmp.isPrimitive() || cmp.equals(Color.class);
+            return cmp.isPrimitive();
         } else {
             return type.equals(Color.class);
         }

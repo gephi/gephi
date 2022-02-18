@@ -16,7 +16,7 @@ import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
 
-@ServiceProvider(service = WorkspacePersistenceProvider.class)
+@ServiceProvider(service = WorkspacePersistenceProvider.class, position = 400)
 public class AppearanceModelPersistenceProvider implements WorkspaceXMLPersistenceProvider {
 
 

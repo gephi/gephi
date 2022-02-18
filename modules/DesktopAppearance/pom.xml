@@ -46,6 +46,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>core-library-wrapper</artifactId>
         </dependency>
         <dependency>
@@ -83,6 +87,12 @@
             <artifactId>graph-api</artifactId>
             <scope>test</scope>
             <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>project-api</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
