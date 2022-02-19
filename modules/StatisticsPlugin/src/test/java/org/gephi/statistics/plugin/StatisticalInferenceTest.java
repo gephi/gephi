@@ -42,13 +42,16 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.statistics.plugin;
 
-import junit.framework.TestCase;
-import org.gephi.graph.api.*;
-import org.gephi.io.importer.GraphImporter;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+import junit.framework.TestCase;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.UndirectedGraph;
+import org.gephi.io.importer.GraphImporter;
+import org.junit.Test;
 
 /**
  * @author Mathieu Jacomy
@@ -805,6 +808,5 @@ public class StatisticalInferenceTest extends TestCase {
 
         assertEquals(descriptionLength_before, descriptionLength_after, 0.00001);
     }
-
 }
 

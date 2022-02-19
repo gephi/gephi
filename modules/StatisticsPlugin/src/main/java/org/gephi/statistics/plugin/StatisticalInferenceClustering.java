@@ -1,7 +1,64 @@
+/*
+ Copyright 2008-2011 Gephi
+ Authors : Mathieu Jacomy, Tiago Peixoto
+ Website : http://www.gephi.org
+
+ This file is part of Gephi.
+
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+ Copyright 2011 Gephi Consortium. All rights reserved.
+
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
+
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
+
+ Contributor(s):
+
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.statistics.plugin;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import org.gephi.graph.api.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import org.apache.commons.math3.special.Gamma;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -11,11 +68,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.apache.commons.math3.special.Gamma;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.*;
 
 /**
  * @author Mathieu Jacomy & Tiago Peixoto
@@ -23,12 +75,16 @@ import java.util.*;
 
 public class StatisticalInferenceClustering implements Statistics, LongTask {
 
+    public static final String STAT_INF_CLASS = "stat_inf_class";
+    private final boolean useWeight = false;
     private boolean isCanceled;
     private StatisticalInferenceClustering.CommunityStructure structure;
-    public static final String STAT_INF_CLASS = "stat_inf_class";
     private ProgressTicket progress;
     private double descriptionLength;
-    private final boolean useWeight = false;
+
+    private static double lBinom(double n, double m) {
+        return Gamma.logGamma(n + 1) - Gamma.logGamma(n - m + 1) - Gamma.logGamma(m + 1);
+    }
 
     @Override
     public boolean cancel() {
@@ -46,7 +102,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         Graph graph = graphModel.getUndirectedGraphVisible();
         execute(graph);
     }
-
 
     public void execute(Graph graph) {
         isCanceled = false;
@@ -144,26 +199,26 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         //System.out.println("*** Compute delta for node "+node+" with respect to community "+community.id+" ***");
 
         // Node degree
-        Double k = theStructure.weights[node];
+        double k = theStructure.weights[node];
         // Node weight: how many real nodes (not meta-nodes) the group represents
-        Double nodeWeight = theStructure.graphNodeCount[node];
+        double nodeWeight = theStructure.graphNodeCount[node];
 
         // Number of edges of target community (with itself or another one)
-        Double e_r_target = community.weightSum;
+        double e_r_target = community.weightSum;
         // Number of edges within target community
         Double e_rr_target = community.internalWeightSum;
         // Number of real graph nodes of target community
         int n_r_target = community.graphNodeCount;
 
         // Number of edges of current (where the node belongs) community (with itself or another one)
-        Double e_r_current = theStructure.nodeCommunities[node].weightSum;
+        double e_r_current = theStructure.nodeCommunities[node].weightSum;
         // Number of edges within current community (where the node belongs)
         Double e_rr_current = theStructure.nodeCommunities[node].internalWeightSum;
         // Number of real graph nodes of current community
         int n_r_current = theStructure.nodeCommunities[node].graphNodeCount;
 
         // Description length: before
-        Double S_b = 0.;
+        double S_b = 0.;
         S_b -= Gamma.logGamma(e_out + 1);
         if (e_out > 0) {
             S_b += e_out * lBinom(B, 2);
@@ -184,12 +239,12 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
         // Count the gains and losses
         // -> loop over the neighbors
-        Double delta_e_out = 0.;
-        Double delta_e_in = 0.;
-        Double delta_e_r_current = -k;
-        Double delta_e_r_target = +k;
-        Double delta_e_rr_current = 0.;
-        Double delta_e_rr_target = 0.;
+        double delta_e_out = 0.;
+        double delta_e_in = 0.;
+        double delta_e_r_current = -k;
+        double delta_e_r_target = +k;
+        double delta_e_rr_current = 0.;
+        double delta_e_rr_target = 0.;
         for (ComputationEdge e : theStructure.topology[node]) {
             int nei = e.target;
             Float w = e.weight;
@@ -231,7 +286,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         // the target group is empty or not, and if so, add one to delta_B.
 
         // Description length: after
-        Double S_a = 0.;
+        double S_a = 0.;
         S_a -= Gamma.logGamma(e_out + delta_e_out + 1);
         if (e_out + delta_e_out > 0) {
             S_a += (e_out + delta_e_out) * lBinom(B + delta_B, 2);
@@ -270,9 +325,9 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         // Total number of edges from one community to another
         Double e_out = E - e_in;
         // Total number of communities
-        Double B = Double.valueOf(theStructure.communities.size());
+        Double B = (double) theStructure.communities.size();
         // Total number of nodes (not metanodes!!!)
-        Double N = Double.valueOf(theStructure.graph.getNodeCount());
+        Double N = (double) theStructure.graph.getNodeCount();
 
         //System.out.println("Test best community for node "+node_id+" (currently com "+theStructure.nodeCommunities[node_id].id+") Initialization: "+initialization);
 
@@ -307,15 +362,15 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
     double computeDescriptionLength(Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure) {
         // Total number of edges (graph size)
-        Double E = theStructure.graphWeightSum;
+        double E = theStructure.graphWeightSum;
         // Total number of edges from one community to the same one
-        Double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
+        double e_in = theStructure.communities.stream().mapToDouble(c -> c.internalWeightSum).sum();
         // Total number of edges from one community to another
-        Double e_out = E - e_in;
+        double e_out = E - e_in;
         // Total number of communities
-        Double B = Double.valueOf(theStructure.communities.size());
+        Double B = (double) theStructure.communities.size();
         // Total number of nodes (not metanodes!!!)
-        Double N = Double.valueOf(theStructure.graph.getNodeCount());
+        Double N = (double) theStructure.graph.getNodeCount();
 
         // Description length
         double S = 0.;
@@ -326,9 +381,9 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
         for (Community community : theStructure.communities) {
             // Number of edges of community (with itself or another one)
-            Double e_r = community.weightSum;
+            double e_r = community.weightSum;
             // Number of edges within community
-            Double e_rr = community.internalWeightSum;
+            double e_rr = community.internalWeightSum;
             // Number of nodes in the  community
             int n_r = community.graphNodeCount;
 
@@ -355,10 +410,6 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
 
         return S;
-    }
-
-    private static double lBinom(double n, double m) {
-        return Gamma.logGamma(n + 1) - Gamma.logGamma(n - m + 1) - Gamma.logGamma(m + 1);
     }
 
     private int[] fillComStructure(Graph graph, StatisticalInferenceClustering.CommunityStructure theStructure,
@@ -442,6 +493,81 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             + "</BODY> </HTML>";
 
         return report;
+    }
+
+    public double getDescriptionLength() {
+        return descriptionLength;
+    }
+
+    static class Community {
+        static int count = 0;
+        protected int id;
+        double weightSum; // e_r, i.e. sum of edge weights for the community, inside and outside altogether
+        // Note: here we count the internal edges twice
+        double internalWeightSum; // e_rr, i.e. sum of internal edge weights
+        int graphNodeCount; // How many real nodes (useful after zoomOut)
+        StatisticalInferenceClustering.CommunityStructure structure;
+        List<Integer> nodes;
+        HashMap<StatisticalInferenceClustering.Community, Float> connectionsWeight;
+        HashMap<StatisticalInferenceClustering.Community, Integer> connectionsCount;
+
+        public Community(StatisticalInferenceClustering.Community com) {
+            this.id = count++;
+            this.weightSum = 0;
+            structure = com.structure;
+            connectionsWeight = new HashMap<>();
+            connectionsCount = new HashMap<>();
+            nodes = new ArrayList<>();
+        }
+
+        public Community(StatisticalInferenceClustering.CommunityStructure structure) {
+            this.id = count++;
+            this.weightSum = 0;
+            this.structure = structure;
+            connectionsWeight = new HashMap<>();
+            connectionsCount = new HashMap<>();
+            nodes = new ArrayList<>();
+        }
+
+        public int size() {
+            return nodes.size();
+        }
+
+        public void seed(int node) {
+            nodes.add(node);
+            weightSum += structure.weights[node];
+            internalWeightSum += structure.internalWeights[node];
+            graphNodeCount += structure.graphNodeCount[node];
+        }
+
+        public boolean add(int node) {
+            nodes.add(node);
+            weightSum += structure.weights[node];
+            graphNodeCount += structure.graphNodeCount[node];
+            return true;
+        }
+
+        public boolean remove(int node) {
+            boolean result = nodes.remove((Integer) node);
+            weightSum -= structure.weights[node];
+            graphNodeCount -= structure.graphNodeCount[node];
+            if (nodes.isEmpty()) {
+                structure.communities.remove(this);
+            }
+            return result;
+        }
+
+        public String getMonitoring() {
+            String monitoring = "";
+            int count = 0;
+            for (int nodeIndex : nodes) {
+                if (count++ > 0) {
+                    monitoring += " ";
+                }
+                monitoring += nodeIndex;
+            }
+            return monitoring;
+        }
     }
 
     class CommunityStructure {
@@ -587,75 +713,33 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
 
                 ////////
                 //Add Node Connection to this community
-                Float neighEdgesTo = nodeConnectionsWeight[neighbor].get(to);
-                if (neighEdgesTo == null) {
-                    //System.out.println("Add links from node "+neighbor+" to community "+to.id);
-                    nodeConnectionsWeight[neighbor].put(to, e.weight);
-                } else {
-                    //System.out.println("Add links from node "+neighbor+" to community "+to.id);
-                    nodeConnectionsWeight[neighbor].put(to, neighEdgesTo + e.weight);
-                }
-                Integer neighCountEdgesTo = nodeConnectionsCount[neighbor].get(to);
-                if (neighCountEdgesTo == null) {
-                    nodeConnectionsCount[neighbor].put(to, 1);
-                } else {
-                    nodeConnectionsCount[neighbor].put(to, neighCountEdgesTo + 1);
-                }
+                //System.out.println("Add links from node "+neighbor+" to community "+to.id);
+                //System.out.println("Add links from node "+neighbor+" to community "+to.id);
+                nodeConnectionsWeight[neighbor].merge(to, e.weight, Float::sum);
+                nodeConnectionsCount[neighbor].merge(to, 1, Integer::sum);
 
                 ///////////////////
                 StatisticalInferenceClustering.Community adjCom = nodeCommunities[neighbor];
-                Float wEdgesto = adjCom.connectionsWeight.get(to);
-                if (wEdgesto == null) {
-                    //System.out.println("Add links from community "+adjCom.id+" to community "+to.id);
-                    adjCom.connectionsWeight.put(to, e.weight);
-                } else {
-                    //System.out.println("Add links from community "+adjCom.id+" to community "+to.id);
-                    adjCom.connectionsWeight.put(to, wEdgesto + e.weight);
-                }
-
-                Integer cEdgesto = adjCom.connectionsCount.get(to);
-                if (cEdgesto == null) {
-                    adjCom.connectionsCount.put(to, 1);
-                } else {
-                    adjCom.connectionsCount.put(to, cEdgesto + 1);
-                }
+                //System.out.println("Add links from community "+adjCom.id+" to community "+to.id);
+                //System.out.println("Add links from community "+adjCom.id+" to community "+to.id);
+                adjCom.connectionsWeight.merge(to, e.weight, Float::sum);
+                adjCom.connectionsCount.merge(to, 1, Integer::sum);
 
                 if (node == neighbor) {
                     continue;
                 }
 
-                Float nodeEdgesTo = nodeConnectionsWeight[node].get(adjCom);
-                if (nodeEdgesTo == null) {
-                    //System.out.println("Add links from node "+node+" to community "+adjCom.id);
-                    nodeConnectionsWeight[node].put(adjCom, e.weight);
-                } else {
-                    //System.out.println("Add links from node "+node+" to community "+adjCom.id);
-                    nodeConnectionsWeight[node].put(adjCom, nodeEdgesTo + e.weight);
-                }
-
-                Integer nodeCountEdgesTo = nodeConnectionsCount[node].get(adjCom);
-                if (nodeCountEdgesTo == null) {
-                    nodeConnectionsCount[node].put(adjCom, 1);
-                } else {
-                    nodeConnectionsCount[node].put(adjCom, nodeCountEdgesTo + 1);
-                }
+                //System.out.println("Add links from node "+node+" to community "+adjCom.id);
+                //System.out.println("Add links from node "+node+" to community "+adjCom.id);
+                nodeConnectionsWeight[node].merge(adjCom, e.weight, Float::sum);
+                nodeConnectionsCount[node].merge(adjCom, 1, Integer::sum);
 
                 if (to != adjCom) {
-                    Float comEdgesto = to.connectionsWeight.get(adjCom);
-                    if (comEdgesto == null) {
-                        //System.out.println("Add links from community "+to.id+" to community "+adjCom.id);
-                        to.connectionsWeight.put(adjCom, e.weight);
-                    } else {
-                        //System.out.println("Add links from community "+to.id+" to community "+adjCom.id);
-                        to.connectionsWeight.put(adjCom, comEdgesto + e.weight);
-                    }
+                    //System.out.println("Add links from community "+to.id+" to community "+adjCom.id);
+                    //System.out.println("Add links from community "+to.id+" to community "+adjCom.id);
+                    to.connectionsWeight.merge(adjCom, e.weight, Float::sum);
 
-                    Integer comCountEdgesto = to.connectionsCount.get(adjCom);
-                    if (comCountEdgesto == null) {
-                        to.connectionsCount.put(adjCom, 1);
-                    } else {
-                        to.connectionsCount.put(adjCom, comCountEdgesto + 1);
-                    }
+                    to.connectionsCount.merge(adjCom, 1, Integer::sum);
 
                 }
             }
@@ -869,78 +953,7 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
         }
     }
 
-    static class Community {
-        static int count = 0;
-        protected int id;
-        double weightSum; // e_r, i.e. sum of edge weights for the community, inside and outside altogether
-        // Note: here we count the internal edges twice
-        double internalWeightSum; // e_rr, i.e. sum of internal edge weights
-        int graphNodeCount; // How many real nodes (useful after zoomOut)
-        StatisticalInferenceClustering.CommunityStructure structure;
-        List<Integer> nodes;
-        HashMap<StatisticalInferenceClustering.Community, Float> connectionsWeight;
-        HashMap<StatisticalInferenceClustering.Community, Integer> connectionsCount;
-
-        public Community(StatisticalInferenceClustering.Community com) {
-            this.id = count++;
-            this.weightSum = 0;
-            structure = com.structure;
-            connectionsWeight = new HashMap<>();
-            connectionsCount = new HashMap<>();
-            nodes = new ArrayList<>();
-        }
-
-        public Community(StatisticalInferenceClustering.CommunityStructure structure) {
-            this.id = count++;
-            this.weightSum = 0;
-            this.structure = structure;
-            connectionsWeight = new HashMap<>();
-            connectionsCount = new HashMap<>();
-            nodes = new ArrayList<>();
-        }
-
-        public int size() {
-            return nodes.size();
-        }
-
-        public void seed(int node) {
-            nodes.add(node);
-            weightSum += structure.weights[node];
-            internalWeightSum += structure.internalWeights[node];
-            graphNodeCount += structure.graphNodeCount[node];
-        }
-
-        public boolean add(int node) {
-            nodes.add(node);
-            weightSum += structure.weights[node];
-            graphNodeCount += structure.graphNodeCount[node];
-            return true;
-        }
-
-        public boolean remove(int node) {
-            boolean result = nodes.remove((Integer) node);
-            weightSum -= structure.weights[node];
-            graphNodeCount -= structure.graphNodeCount[node];
-            if (nodes.isEmpty()) {
-                structure.communities.remove(this);
-            }
-            return result;
-        }
-
-        public String getMonitoring() {
-            String monitoring = "";
-            int count = 0;
-            for (int nodeIndex : nodes) {
-                if (count++ > 0) {
-                    monitoring += " ";
-                }
-                monitoring += nodeIndex;
-            }
-            return monitoring;
-        }
-    }
-
-    class ComputationEdge {
+    static class ComputationEdge {
 
         int source;
         int target;
@@ -952,10 +965,4 @@ public class StatisticalInferenceClustering implements Statistics, LongTask {
             weight = w;
         }
     }
-
-    public double getDescriptionLength() {
-        return descriptionLength;
-    }
-
-
 }

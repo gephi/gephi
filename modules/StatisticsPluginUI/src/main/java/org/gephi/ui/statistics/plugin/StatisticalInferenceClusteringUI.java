@@ -42,15 +42,13 @@ Portions Copyrighted 2011 Gephi Consortium.
 
 package org.gephi.ui.statistics.plugin;
 
-import org.gephi.statistics.plugin.Modularity;
+import java.text.DecimalFormat;
+import javax.swing.JPanel;
 import org.gephi.statistics.plugin.StatisticalInferenceClustering;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-
-import javax.swing.*;
-import java.text.DecimalFormat;
 
 @ServiceProvider(service = StatisticsUI.class)
 public class StatisticalInferenceClusteringUI implements StatisticsUI {
