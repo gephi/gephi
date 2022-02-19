@@ -110,26 +110,22 @@ public class AppearanceControllerImpl implements AppearanceController {
 
     @Override
     public void transform(Function function) {
-        if (model != null) {
-            GraphModel graphModel = model.getGraphModel();
-            Graph graph = graphModel.getGraphVisible();
-            ElementIterable<? extends Element> iterable;
-            if (function.getElementClass().equals(Node.class)) {
-                iterable = graph.getNodes();
+        GraphModel graphModel = function.getGraph().getModel();
+        Graph graph = graphModel.getGraphVisible();
+        ElementIterable<? extends Element> iterable;
+        if (function.getElementClass().equals(Node.class)) {
+            iterable = graph.getNodes();
+        } else {
+            iterable = graph.getEdges();
+        }
+        try {
+            function.transformAll(iterable);
+        } catch (Exception e) {
+            iterable.doBreak();
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
             } else {
-                iterable = graph.getEdges();
-            }
-            try {
-                for (Element element : iterable) {
-                    function.transform(element, graph);
-                }
-            } catch (Exception e) {
-                iterable.doBreak();
-                if (e instanceof RuntimeException) {
-                    throw (RuntimeException) e;
-                } else {
-                    throw new RuntimeException(e);
-                }
+                throw new RuntimeException(e);
             }
         }
     }
@@ -137,6 +133,10 @@ public class AppearanceControllerImpl implements AppearanceController {
     @Override
     public AppearanceModelImpl getModel() {
         return model;
+    }
+
+    protected void setModel(AppearanceModelImpl model) {
+        this.model = model;
     }
 
     @Override
@@ -157,9 +157,16 @@ public class AppearanceControllerImpl implements AppearanceController {
     }
 
     @Override
-    public void setUseLocalScale(boolean useLocalScale) {
+    public void setUseRankingLocalScale(boolean useLocalScale) {
         if (model != null) {
-            model.setLocalScale(useLocalScale);
+            model.setRankingLocalScale(useLocalScale);
+        }
+    }
+
+    @Override
+    public void setUsePartitionLocalScale(boolean useLocalScale) {
+        if (model != null) {
+            model.setPartitionLocalScale(useLocalScale);
         }
     }
 }

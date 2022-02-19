@@ -89,7 +89,7 @@ public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
             .getMessage(UniqueSizeTransformerPanel.class, "UniqueSizeTransformerPanel.jLabel1.text")); // NOI18N
 
         sizeSpinner.setModel(
-            new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(0.1f), null, Float.valueOf(0.5f)));
+            new javax.swing.SpinnerNumberModel(1.0f, 0.01f, null, 0.5f));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

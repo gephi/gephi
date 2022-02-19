@@ -43,6 +43,7 @@
 package org.gephi.ui.tools.plugin;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import javax.swing.DefaultComboBoxModel;
 import org.gephi.ui.components.JColorButton;
 import org.openide.util.NbBundle;
@@ -141,13 +142,16 @@ public class EdgePencilPanel extends javax.swing.JPanel {
         labelColor.setText(
             org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.labelColor.text")); // NOI18N
 
+        typeComboBox.setFont(typeComboBox.getFont().deriveFont((float) 10));
         typeComboBox.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 typeComboBoxActionPerformed(evt);
             }
         });
+        typeComboBox.setPreferredSize(new Dimension(170, 18));
 
+        labelType.setFont(labelType.getFont().deriveFont((float) 10));
         labelType.setText(
             org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.labelType.text")); // NOI18N
 

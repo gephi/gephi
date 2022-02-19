@@ -42,147 +42,86 @@
 
 package org.gephi.appearance;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
-import org.gephi.graph.api.ElementIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Index;
-import org.gephi.graph.api.types.TimeMap;
 
 /**
  * @author mbastian
  */
 public class AttributePartitionImpl extends PartitionImpl {
 
-    protected final Graph graph;
-    protected final Index index;
-    protected final Column column;
-    protected final Map<Object, Integer> parts;
-    protected int elements;
+    protected final WeakReference<Column> column;
 
-    public AttributePartitionImpl(Column column, Index index) {
+    public AttributePartitionImpl(Column column) {
         super();
-        this.column = column;
-        this.index = index;
-        this.graph = null;
-        this.parts = null;
-    }
-
-    public AttributePartitionImpl(Column column, Graph graph) {
-        super();
-        this.column = column;
-        this.index = null;
-        this.graph = graph;
-        this.parts = new HashMap<>();
+        this.column = new WeakReference<>(column);
     }
 
     @Override
-    protected void refresh() {
-        if (graph != null) {
-            parts.clear();
-            elements = 0;
-            ElementIterable<? extends Element> iterable =
-                AttributeUtils.isNodeColumn(column) ? graph.getNodes() : graph.getEdges();
-
-            if (column.isDynamic()) {
-                refreshDynamic(iterable);
-            } else {
-                refreshNotIndexed(iterable);
-            }
-        }
+    public Object getValue(Element element, Graph graph) {
+        return element.getAttribute(column.get(), graph.getView());
     }
 
-    private void refreshNotIndexed(ElementIterable<? extends Element> iterable) {
-        for (Element el : iterable) {
-            Object val = el.getAttribute(column);
-            Integer count = parts.get(val);
-            if (count == null) {
-                count = 0;
-            }
-            parts.put(val, ++count);
-            elements++;
-        }
-    }
-
-    private void refreshDynamic(ElementIterable<? extends Element> iterable) {
-        for (Element el : iterable) {
-            if (TimeMap.class.isAssignableFrom(column.getTypeClass())) {
-                TimeMap val = (TimeMap) el.getAttribute(column);
-                if (val != null) {
-                    Object[] va = val.toValuesArray();
-                    for (Object v : va) {
-                        Integer count = parts.get(v);
-                        if (count == null) {
-                            count = 0;
-                        }
-                        parts.put(v, ++count);
-                        elements++;
-                    }
-                }
-            }
-        }
+    private Index<Element> getIndex(Graph graph) {
+        return graph.getModel().getElementIndex(column.get().getTable(), graph.getView());
     }
 
     @Override
-    public Object getValue(Element element, Graph gr) {
-        return element.getAttribute(column, gr.getView());
+    public Collection getValues(Graph graph) {
+        return getIndex(graph).values(column.get());
     }
 
     @Override
-    public Collection getValues() {
-        if (index != null) {
-            return index.values(column);
-        } else {
-            return parts.keySet();
-        }
+    public int getElementCount(Graph graph) {
+        return getIndex(graph).countElements(column.get());
     }
 
     @Override
-    public int getElementCount() {
-        if (index != null) {
-            return index.countElements(column);
-        } else {
-            return elements;
-        }
+    public int count(Object value, Graph graph) {
+        return getIndex(graph).count(column.get(), value);
     }
 
     @Override
-    public int count(Object value) {
-        if (index != null) {
-            return index.count(column, value);
-        } else {
-            Integer c = parts.get(value);
-            return c != null ? c : 0;
-        }
+    public float percentage(Object value, Graph graph) {
+        Index<Element> index = getIndex(graph);
+        int count = index.count(column.get(), value);
+        return 100f * ((float) count / index.countElements(column.get()));
     }
 
     @Override
-    public float percentage(Object value) {
-        if (index != null) {
-            int count = index.count(column, value);
-            return 100f * ((float) count / index.countElements(column));
-        } else {
-            Integer c = parts.get(value);
-            return 100f * (c != null ? c.floatValue() / elements : 0f);
-        }
-    }
-
-    @Override
-    public int size() {
-        if (index != null) {
-            return index.countValues(column);
-        } else {
-            return parts.size();
-        }
+    public int size(Graph graph) {
+        return getIndex(graph).countValues(column.get());
     }
 
     @Override
     public Column getColumn() {
-        return column;
+        return column.get();
+    }
+
+    @Override
+    public Class getValueType() {
+        return getColumn().getTypeClass();
+    }
+
+    @Override
+    public boolean isValid(Graph graph) {
+        Column col = column.get();
+        if (col != null && col.getIndex() != -1) {
+            return !col.isNumber() || getIndex(graph.getModel().getGraph()).countValues(col) > 1;
+        }
+        return false;
+    }
+
+    @Override
+    public int getVersion(Graph graph) {
+        if (isValid(graph)) {
+            return getIndex(graph).getColumnIndex(column.get()).getVersion();
+        }
+        return 0;
     }
 
     @Override

@@ -766,6 +766,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 .getMessage(ImportContainerImpl.class, "ImportContainerLog.MultiGraphCount", edgeTypeMap.size() - 1));
         }
 
+        //Check that not all alpha are zeros
+        checkColorAlpha(nodeList, "Node");
+        checkColorAlpha(edgeList, "Edge");
+
         return true;
     }
 
@@ -1085,6 +1089,25 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return null;
     }
 
+    private void checkColorAlpha(ObjectList<? extends ElementDraft> objectList, String elementType) {
+        if (!objectList.isEmpty()) {
+            int validElement = 0;
+            int withAlphaZero = 0;
+            for (ElementDraft element : objectList) {
+                if (element != null && element.getColor() != null) {
+                    validElement++;
+                    withAlphaZero += element.getColor().getAlpha() == 0 ? 1 : 0;
+                }
+            }
+            if (validElement > 0 && validElement == withAlphaZero) {
+                report.logIssue(new Issue(
+                    NbBundle.getMessage(ImportContainerImpl.class,
+                        "ImportContainerException_" + elementType + "_Color_Alpha_AllZero"),
+                    Level.WARNING));
+            }
+        }
+    }
+
     private void checkElementDraftImpl(ElementDraft elmt) {
         if (elmt == null) {
             throw new NullPointerException();
@@ -1098,7 +1121,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (id == null) {
             throw new NullPointerException();
         }
-        if (id.trim().isEmpty()) {
+        if (id.isEmpty()) {
             throw new IllegalArgumentException("The id can't be empty");
         }
     }

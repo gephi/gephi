@@ -42,11 +42,8 @@
 
 package org.gephi.appearance.plugin;
 
-import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
-import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.Transformer;
-import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Node;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -54,16 +51,12 @@ import org.openide.util.lookup.ServiceProvider;
  * @author mbastian
  */
 @ServiceProvider(service = Transformer.class)
-public class RankingNodeSizeTransformer implements RankingTransformer<Element> {
-
-    protected float minSize = 1f;
-    protected float maxSize = 4f;
+public class RankingNodeSizeTransformer extends RankingSizeTransformer<Node> {
 
     @Override
-    public void transform(Element element, Ranking ranking, Interpolator interpolator, Number value) {
-        float rankingValue = ranking.normalize(value, interpolator);
-        float size = rankingValue * (maxSize - minSize) + minSize;
-        ((Node) element).setSize(size);
+    public void transform(Node node, Ranking ranking, Number value, float normalisedValue) {
+        float size = normalisedValue * (maxSize - minSize) + minSize;
+        node.setSize(size);
     }
 
     @Override
@@ -74,21 +67,5 @@ public class RankingNodeSizeTransformer implements RankingTransformer<Element> {
     @Override
     public boolean isEdge() {
         return false;
-    }
-
-    public float getMaxSize() {
-        return maxSize;
-    }
-
-    public void setMaxSize(float maxSize) {
-        this.maxSize = maxSize;
-    }
-
-    public float getMinSize() {
-        return minSize;
-    }
-
-    public void setMinSize(float minSize) {
-        this.minSize = minSize;
     }
 }

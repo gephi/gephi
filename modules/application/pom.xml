@@ -69,14 +69,6 @@
                     <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>org-netbeans-libs-osgi</artifactId>
-                    <groupId>org.netbeans.api</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-libs-felix</artifactId>
-                    <groupId>org.netbeans.modules</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>org-netbeans-libs-jsr223</artifactId>
                     <groupId>org.netbeans.api</groupId>
                 </exclusion>
@@ -87,10 +79,6 @@
                 <exclusion>
                     <artifactId>org-netbeans-libs-junit4</artifactId>
                     <groupId>org.netbeans.api</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-modules-core-kit</artifactId>
-                    <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
                     <artifactId>org-netbeans-modules-netbinox</artifactId>
@@ -113,19 +101,7 @@
                     <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>org-netbeans-modules-print</artifactId>
-                    <groupId>org.netbeans.api</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-modules-favorites</artifactId>
-                    <groupId>org.netbeans.modules</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>org-netbeans-modules-javahelp</artifactId>
-                    <groupId>org.netbeans.api</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org-netbeans-modules-sampler</artifactId>
                     <groupId>org.netbeans.api</groupId>
                 </exclusion>
                 <exclusion>
@@ -145,48 +121,40 @@
                     <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-boot</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.boot</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-boot-fx</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.boot.fx</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-boot-script</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.boot.script</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-geo</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.geo</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-json</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.json</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-sound</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.sound</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>org-netbeans-html-ko4j</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>ko4j</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.netbeans.api</groupId>
-                    <artifactId>org-netbeans-spi-quicksearch</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>org-netbeans-html-xhr4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.api</groupId>
-                    <artifactId>org-netbeans-modules-editor-mimelookup</artifactId>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>xhr4j</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

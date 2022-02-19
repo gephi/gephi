@@ -112,15 +112,13 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         formatter.setMaximumFractionDigits(2);
         Partition partition = function.getPartition();
 
-        values = partition.getSortedValues();
+        values = partition.getSortedValues(function.getGraph());
 
         List<Object> nullColors = new ArrayList<>();
-        Color defaultColor = Color.LIGHT_GRAY;
         for (Object val : values) {
             Color c = partition.getColor(val);
             if (c == null) {
                 nullColors.add(val);
-                partition.setColor(val, defaultColor);
             }
         }
 
@@ -167,8 +165,8 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         for (Object value : values) {
             String displayName = value == null ? "null" :
                 value.getClass().isArray() ? AttributeUtils.printArray(value) : value.toString();
-            int count = function.getPartition().count(value);
-            float percentage = function.getPartition().percentage(value) / 100f;
+            int count = function.getPartition().count(value, function.getGraph());
+            float percentage = function.getPartition().percentage(value, function.getGraph()) / 100f;
             model.setValueAt(value, j, 0);
             model.setValueAt(displayName, j, 1);
             String percCount = count + "_(" + formatter.format(percentage) + ")";
@@ -265,7 +263,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
                                                        int row, int column) {
             Color color = function.getPartition().getColor(value);
             if (color == null) {
-                color = Color.BLACK;
+                color = Partition.DEFAULT_COLOR;
             }
             setBackground(color);
             return this;
@@ -370,7 +368,7 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
             addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int size = function.getPartition().size();
+                    int size = function.getPartition().size(function.getGraph());
                     JPopupMenu menu = createPopup(size);
                     menu.show(PalettePopupButton.this, 0, getHeight());
                 }

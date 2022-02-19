@@ -1,0 +1,48 @@
+name: gephi
+title: Gephi
+base: core18
+version: 0.9.3-SNAPSHOT
+summary: The Open Graph Viz Platform
+description: |
+  **Gephi is the leading open-source platform for visualizing and manipulating large graphs.**
+  * **Fast** Powered by a built-in OpenGL engine, Gephi is able to push the envelope with very large networks. Visualize networks up to a million elements. All actions (e.g. layout, filter, drag) run in real-time.
+  * **Simple** Easy to install and get started. An UI that is centered around the visualization. Like Photoshop™ for graphs.
+  * **Extensible** Extend Gephi with plug-ins.
+
+  Example datasets can be found on our wiki: https://github.com/gephi/gephi/wiki/Datasets
+
+  Localization is available in English, French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese, Czech and German.
+
+license: GPL-3.0
+architectures: [ amd64 ]
+icon: snap/gui/gephi.png
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: strict
+
+parts:
+  gephi:
+    stage-packages:
+      - libglu1-mesa
+    after:
+      - desktop-glib-only
+    plugin: dump
+    source:
+      - on amd64: https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.3-SNAPSHOT&c=linux&p=tar.gz
+    source-type: tar
+  desktop-glib-only:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: glib-only
+    plugin: make
+    build-packages:
+      - libglib2.0-dev
+    stage-packages:
+      - libglib2.0-bin
+
+apps:
+  gephi:
+    extensions: [gnome-3-28]
+    plugs:
+      - home
+      - network
+      - opengl
+    command: bin/gephi

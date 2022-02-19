@@ -44,20 +44,21 @@ package org.gephi.appearance.plugin;
 
 import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
+import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.Transformer;
 import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Node;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  * @author mbastian
  */
 @ServiceProvider(service = Transformer.class)
-public class RankingLabelSizeTransformer extends RankingNodeSizeTransformer {
+public class RankingLabelSizeTransformer extends RankingSizeTransformer<Element> {
 
     @Override
-    public void transform(Element element, Ranking ranking, Interpolator interpolator, Number value) {
-        float rankingValue = ranking.normalize(value, interpolator);
-        float size = rankingValue * (maxSize - minSize) + minSize;
+    public void transform(Element element, Ranking ranking, Number value, float normalisedValue) {
+        float size = normalisedValue * (maxSize - minSize) + minSize;
         element.getTextProperties().setSize(size);
     }
 
