@@ -104,7 +104,7 @@ public class ModularityUI implements StatisticsUI {
 
     @Override
     public String getCategory() {
-        return StatisticsUI.CATEGORY_NETWORK_OVERVIEW;
+        return StatisticsUI.CATEGORY_COMMUNITY_DETECTION;
     }
 
     @Override
