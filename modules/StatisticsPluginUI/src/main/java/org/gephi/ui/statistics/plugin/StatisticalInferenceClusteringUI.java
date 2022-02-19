@@ -44,62 +44,46 @@ package org.gephi.ui.statistics.plugin;
 
 import java.text.DecimalFormat;
 import javax.swing.JPanel;
-import org.gephi.statistics.plugin.Modularity;
+import org.gephi.statistics.plugin.StatisticalInferenceClustering;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = StatisticsUI.class)
-public class ModularityUI implements StatisticsUI {
+public class StatisticalInferenceClusteringUI implements StatisticsUI {
 
-    private final StatSettings settings = new StatSettings();
-    private ModularityPanel panel;
-    private Modularity mod;
+    StatisticalInferenceClustering descriptionLength;
 
     @Override
     public JPanel getSettingsPanel() {
-        panel = new ModularityPanel();
-        return panel;
+        return null;
     }
 
     @Override
     public void setup(Statistics statistics) {
-        this.mod = (Modularity) statistics;
-        if (panel != null) {
-            settings.load(mod);
-            panel.setRandomize(mod.getRandom());
-            panel.setUseWeight(mod.getUseWeight());
-            panel.setResolution(mod.getResolution());
-        }
+        this.descriptionLength = (StatisticalInferenceClustering) statistics;
     }
 
     @Override
     public void unsetup() {
-        if (panel != null) {
-            mod.setRandom(panel.isRandomize());
-            mod.setUseWeight(panel.useWeight());
-            mod.setResolution(panel.resolution());
-            settings.save(mod);
-        }
-        mod = null;
-        panel = null;
+        descriptionLength = null;
     }
 
     @Override
     public Class<? extends Statistics> getStatisticsClass() {
-        return Modularity.class;
+        return StatisticalInferenceClustering.class;
     }
 
     @Override
     public String getValue() {
         DecimalFormat df = new DecimalFormat("###.###");
-        return "" + df.format(mod.getModularity());
+        return "" + df.format(descriptionLength.getDescriptionLength());
     }
 
     @Override
     public String getDisplayName() {
-        return NbBundle.getMessage(getClass(), "ModularityUI.name");
+        return NbBundle.getMessage(getClass(), "StatisticalInferenceClusteringUI.name");
     }
 
     @Override
@@ -114,22 +98,7 @@ public class ModularityUI implements StatisticsUI {
 
     @Override
     public String getShortDescription() {
-        return NbBundle.getMessage(getClass(), "ModularityUI.shortDescription");
+        return NbBundle.getMessage(getClass(), "StatisticalInferenceClusteringUI.shortDescription");
     }
 
-    private static class StatSettings {
-
-        private boolean randomize = true;
-        private boolean useWeight = true;
-
-        private void save(Modularity stat) {
-            this.randomize = stat.getRandom();
-            this.useWeight = stat.getUseWeight();
-        }
-
-        private void load(Modularity stat) {
-            stat.setRandom(randomize);
-            stat.setUseWeight(useWeight);
-        }
-    }
 }
