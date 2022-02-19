@@ -176,6 +176,8 @@ public class StatisticsPanel extends JPanel {
         Map<String, StatisticsCategory> cats = new LinkedHashMap<>();
         cats.put(StatisticsUI.CATEGORY_NETWORK_OVERVIEW,
             new StatisticsCategory(StatisticsUI.CATEGORY_NETWORK_OVERVIEW, 100));
+        cats.put(StatisticsUI.CATEGORY_COMMUNITY_DETECTION,
+            new StatisticsCategory(StatisticsUI.CATEGORY_COMMUNITY_DETECTION, 150));
         cats.put(StatisticsUI.CATEGORY_NODE_OVERVIEW, new StatisticsCategory(StatisticsUI.CATEGORY_NODE_OVERVIEW, 200));
         cats.put(StatisticsUI.CATEGORY_EDGE_OVERVIEW, new StatisticsCategory(StatisticsUI.CATEGORY_EDGE_OVERVIEW, 300));
         cats.put(StatisticsUI.CATEGORY_DYNAMIC, new StatisticsCategory(StatisticsUI.CATEGORY_DYNAMIC, 400));

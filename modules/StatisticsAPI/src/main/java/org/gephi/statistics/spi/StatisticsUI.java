@@ -64,6 +64,8 @@ public interface StatisticsUI {
 
     String CATEGORY_NETWORK_OVERVIEW =
         NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.networkOverview");
+    String CATEGORY_COMMUNITY_DETECTION =
+        NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.communityDetection");
     String CATEGORY_NODE_OVERVIEW =
         NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.nodeOverview");
     String CATEGORY_EDGE_OVERVIEW =
@@ -128,6 +130,7 @@ public interface StatisticsUI {
      * <li>{@link StatisticsUI#CATEGORY_NODE_OVERVIEW}</li>
      * <li>{@link StatisticsUI#CATEGORY_EDGE_OVERVIEW}</li>
      * <li>{@link StatisticsUI#CATEGORY_DYNAMIC}</li></ul>
+     * <li>{@link StatisticsUI#CATEGORY_COMMUNITY_DETECTION}</li></ul>
      * Returns a custom String for defining a new category.
      *
      * @return this statistics' category
