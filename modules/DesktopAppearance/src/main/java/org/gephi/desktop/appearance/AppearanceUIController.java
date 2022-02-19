@@ -161,6 +161,13 @@ public class AppearanceUIController {
         }
     }
 
+    public void transform(Function function) {
+        if (model != null && function != null) {
+            model.saveTransformerProperties();
+            appearanceController.transform(function);
+        }
+    }
+
     public Collection<TransformerCategory> getCategories(String elementClass) {
         return transformers.get(elementClass).keySet();
     }

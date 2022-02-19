@@ -61,7 +61,7 @@ public class AppearanceUIModelPersistenceProvider implements WorkspaceXMLPersist
         throws XMLStreamException {
         for (Map.Entry<Function, Map<String, Object>> savedProperty : model.savedProperties.entrySet()) {
             writer.writeStartElement("savedproperty");
-            writer.writeAttribute("function", savedProperty.getKey().toString());
+            writer.writeAttribute("function", savedProperty.getKey().getId());
             writeSavedProperty(writer, savedProperty.getValue());
             writer.writeEndElement();
         }
@@ -96,7 +96,7 @@ public class AppearanceUIModelPersistenceProvider implements WorkspaceXMLPersist
                 String name = reader.getLocalName();
                 if ("savedproperty".equalsIgnoreCase(name)) {
                     String functionName = reader.getAttributeValue(null, "function");
-                    function = Arrays.stream(functions).filter(f -> f.toString().equals(functionName)).findFirst()
+                    function = Arrays.stream(functions).filter(f -> f.getId().equals(functionName)).findFirst()
                         .orElse(null);
                     properties = new HashMap<>();
                 } else if ("property".equalsIgnoreCase(name) && function != null) {

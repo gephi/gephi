@@ -240,6 +240,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
                         }
 
                         centerPanel.revalidate();
+                        centerPanel.repaint();
 
                         //setCenterPanel
                         return;
@@ -397,7 +398,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         applyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.appearanceController.transform(model.getSelectedFunction());
+                controller.transform(model.getSelectedFunction());
             }
         });
         autoApplyButton.addActionListener(new ActionListener() {

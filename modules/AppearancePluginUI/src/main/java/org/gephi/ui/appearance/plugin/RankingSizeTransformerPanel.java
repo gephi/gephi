@@ -66,27 +66,13 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
     public void setup(RankingFunction function) {
         sizeTransformer = function.getTransformer();
 
-        final String MIN_SIZE = "RankingSizeTransformerPanel_" + sizeTransformer.getClass().getSimpleName() + "_min";
-        final String MAX_SIZE = "RankingSizeTransformerPanel_" + sizeTransformer.getClass().getSimpleName() + "_max";
-
-        float minSizeStart =
-            NbPreferences.forModule(RankingSizeTransformerPanel.class).getFloat(MIN_SIZE, sizeTransformer.getMinSize());
-        float maxSizeStart =
-            NbPreferences.forModule(RankingSizeTransformerPanel.class).getFloat(MAX_SIZE, sizeTransformer.getMaxSize());
-        sizeTransformer.setMinSize(minSizeStart);
-        sizeTransformer.setMaxSize(maxSizeStart);
-
-        minSize.setValue(minSizeStart);
-        maxSize.setValue(maxSizeStart);
+        minSize.setValue(sizeTransformer.getMinSize());
+        maxSize.setValue(sizeTransformer.getMaxSize());
         minSize.addChangeListener(e -> {
             sizeTransformer.setMinSize((Float) minSize.getValue());
-            NbPreferences.forModule(RankingSizeTransformerPanel.class)
-                .putFloat(MIN_SIZE, (Float) minSize.getValue());
         });
         maxSize.addChangeListener(e -> {
             sizeTransformer.setMaxSize((Float) maxSize.getValue());
-            NbPreferences.forModule(RankingSizeTransformerPanel.class)
-                .putFloat(MAX_SIZE, (Float) maxSize.getValue());
         });
     }
 

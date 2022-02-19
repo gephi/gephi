@@ -78,7 +78,7 @@ public class AutoAppyTransformer implements Runnable {
 
     @Override
     public void run() {
-        controller.appearanceController.transform(function);
+        controller.transform(function);
     }
 
     public boolean isRunning() {
