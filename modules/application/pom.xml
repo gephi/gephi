@@ -590,18 +590,28 @@
                                             <arg line="-C"/>
                                             <arg line="-"/>
                                             <arg line="-o"/>
-                                            <arg line="jre.zip"/>
-                                            <arg line="${gephi.bundle.jre.macos}"/>
+                                            <arg line="jre-x64.zip"/>
+                                            <arg line="${gephi.bundle.jre.macos.x64}"/>
                                         </exec>
 
-                                        <!-- Download JRE (Windows) -->
+                                        <!-- Download JRE (Windows x64) -->
                                         <exec dir="${project.build.directory}" osfamily="windows" executable="curl">
                                             <arg line="-L"/>
                                             <arg line="-C"/>
                                             <arg line="-"/>
                                             <arg line="-o"/>
-                                            <arg line="jre.zip"/>
-                                            <arg line="${gephi.bundle.jre.windows}"/>
+                                            <arg line="jre-x64.zip"/>
+                                            <arg line="${gephi.bundle.jre.windows.x64}"/>
+                                        </exec>
+
+                                        <!-- Download JRE (Windows x86) -->
+                                        <exec dir="${project.build.directory}" osfamily="windows" executable="curl">
+                                            <arg line="-L"/>
+                                            <arg line="-C"/>
+                                            <arg line="-"/>
+                                            <arg line="-o"/>
+                                            <arg line="jre-x86.zip"/>
+                                            <arg line="${gephi.bundle.jre.windows.x86}"/>
                                         </exec>
 
                                         <!-- Download JRE (Linux) -->
@@ -610,16 +620,24 @@
                                             <arg line="-C"/>
                                             <arg line="-"/>
                                             <arg line="-o"/>
-                                            <arg line="jre.zip"/>
-                                            <arg line="${gephi.bundle.jre.linux}"/>
+                                            <arg line="jre-x64.zip"/>
+                                            <arg line="${gephi.bundle.jre.linux.x64}"/>
                                         </exec>
 
-                                        <!-- Unzip archive -->
-                                        <mkdir dir="${project.build.directory}/${brandingToken}/jre"/>
+                                        <!-- Unzip archive (x64) -->
+                                        <mkdir dir="${project.build.directory}/${brandingToken}/jre-x64"/>
                                         <exec dir="${project.build.directory}" executable="tar">
                                             <arg line="-zxf"/>
-                                            <arg line="jre.zip"/>
-                                            <arg line="-C &quot;${brandingToken}/jre&quot;"/>
+                                            <arg line="jre-x64.zip"/>
+                                            <arg line="-C &quot;${brandingToken}/jre-x64&quot;"/>
+                                        </exec>
+
+                                        <!-- Unzip archive (x86) -->
+                                        <mkdir dir="${project.build.directory}/${brandingToken}/jre-x86"/>
+                                        <exec dir="${project.build.directory}" osfamily="windows" executable="tar">
+                                            <arg line="-zxf"/>
+                                            <arg line="jre-x86.zip"/>
+                                            <arg line="-C &quot;${brandingToken}/jre-x86&quot;"/>
                                         </exec>
                                     </target>
                                 </configuration>
@@ -636,27 +654,27 @@
                                     <skip>${skipCreateExe}</skip>
                                     <target name="createInstaller" description="Create Windows installer with InnoSetup">
                                         <echo message="Creating windows installer with InnoSetup"/>
-                                        <delete file="${project.artifactId}-${project.version}.setup.exe" failonerror="false"/>
+                                        <delete file="${project.artifactId}-${project.version}-x64.setup.exe" failonerror="false"/>
+                                        <delete file="${project.artifactId}-${project.version}-x86.setup.exe" failonerror="false"/>
 
                                         <!-- Get the JRE folder name -->
                                         <path id="jre_name">
-                                            <dirset dir="${project.build.directory}/${brandingToken}/jre" includes="jdk*" />
+                                            <dirset dir="${project.build.directory}/${brandingToken}/jre-x64" includes="jdk*" />
                                         </path>
                                         <property name="bundle.jre.path" refid="jre_name" />
                                         <basename property="bundle.jre.name" file="${bundle.jre.path}"/>
 
                                         <!-- Configure relative JRE path into gephi.conf -->
-                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre\${bundle.jre.name}&quot;"/>
-                                        <chmod file="${project.build.directory}/${brandingToken}/jre/**" perm="+x" type="both"/>
+                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-x64\${bundle.jre.name}&quot;"/>
+                                        <chmod file="${project.build.directory}/${brandingToken}/jre-x64/**" perm="+x" type="both"/>
+
+                                        <!-- Same but for x86 -->
+                                        <replace file="${project.build.directory}/${brandingToken}/etc/${brandingToken}.conf" token="#jdkhome=&quot;/path/to/jdk&quot;" value="jdkhome=&quot;jre-x86\${bundle.jre.name}&quot;"/>
+                                        <chmod file="${project.build.directory}/${brandingToken}/jre-x86/**" perm="+x" type="both"/>
 
                                         <!-- Windows -->
                                         <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe" osfamily="windows">
                                             <arg line="/cc &quot;${brandingToken}.iss&quot;" />
-                                        </exec>
-
-                                        <!-- Linux (assuming the right wine configuration) -->
-                                        <exec dir="${project.build.directory}" executable="iscc" os="Linux">
-                                            <arg line="${brandingToken}.iss" />
                                         </exec>
                                     </target>
                                 </configuration>

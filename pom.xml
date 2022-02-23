@@ -168,9 +168,10 @@
 
         <!-- JRE locations -->
         <!-- for more details about the parameters supported by this API, see https://api.adoptium.net/q/swagger-ui/#/Binary/getBinary -->
-        <gephi.bundle.jre.macos>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/mac/x64/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.macos>
-        <gephi.bundle.jre.windows>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/windows/x64/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.windows>
-        <gephi.bundle.jre.linux>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/linux/x64/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.linux>
+        <gephi.bundle.jre.macos.x64>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/mac/x64/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.macos.x64>
+        <gephi.bundle.jre.windows.x64>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/windows/x64/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.windows.x64>
+        <gephi.bundle.jre.windows.x86>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/windows/x86/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.windows.x86>
+        <gephi.bundle.jre.linux.x64>https://api.adoptium.net/v3/binary/latest/${gephi.javac.release}/ga/linux/x64/jre/hotspot/normal/eclipse?project=jdk</gephi.bundle.jre.linux.x64>
 
         <!-- Mac OS X bundle settings -->
         <gephi.appbundle.name>Gephi</gephi.appbundle.name>
