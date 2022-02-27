@@ -143,9 +143,6 @@ public class AttributePartitionTest {
 
         p.setColor(null, Color.BLUE);
         Assert.assertEquals(Color.BLUE, p.getColor(null));
-
-        Assert.assertTrue(p.getValues(graph).contains(null));
-        Assert.assertTrue(p.getSortedValues(graph).contains(null));
     }
 
     @Test
