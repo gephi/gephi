@@ -64,12 +64,12 @@ public abstract class PartitionImpl implements Partition {
 
     @Override
     public Color getColor(Object value) {
-        return colorMap.get(value);
+        return colorMap.getOrDefault(value, Partition.DEFAULT_COLOR);
     }
 
     @Override
     public void setColor(Object value, Color color) {
-        if(color.equals(Partition.DEFAULT_COLOR)) {
+        if (color.equals(Partition.DEFAULT_COLOR)) {
             colorMap.remove(value);
         } else {
             colorMap.put(value, color);

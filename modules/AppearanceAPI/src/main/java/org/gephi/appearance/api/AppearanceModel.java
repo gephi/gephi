@@ -81,6 +81,16 @@ public interface AppearanceModel {
     boolean isPartitionLocalScale();
 
     /**
+     * Returns <code>true</code> if null values are considered in functions. If <code>false</code> elements with null
+     * values will be transformed as well. Default value is <code>false</code>.
+     * <p>
+     * When using a ranking function, null values will receive the lowest normalised value.
+     *
+     * @return <code>true</code> if null values are transformed, <code>false</code> otherwise
+     */
+    boolean isTransformNullValues();
+
+    /**
      * Returns the node partition for thid column.
      *
      * @param column column

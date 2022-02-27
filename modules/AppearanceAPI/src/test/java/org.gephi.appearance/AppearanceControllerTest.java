@@ -13,13 +13,9 @@ import org.gephi.appearance.spi.Transformer;
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
-import org.gephi.project.api.ProjectController;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.netbeans.junit.MockServices;
-import org.openide.util.Lookup;
 
 public class AppearanceControllerTest {
 
@@ -108,6 +104,80 @@ public class AppearanceControllerTest {
         controller.setUseRankingLocalScale(true);
         controller.transform(rankingFunction);
         Assert.assertEquals(1, (int) node1.size());
+    }
+
+    @Test
+    public void testTransformNullValuesRanking() {
+        MockServices.setServices(FixedTransformer.class);
+        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        AppearanceControllerImpl controller = new AppearanceControllerImpl();
+        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+        controller.setTransformNullValues(true);
+
+        Node node = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
+        node.clearAttributes();
+        node.setSize(42f);
+
+        Function rankingFunction =
+            Arrays.stream(controller.getModel().getNodeFunctions()).filter(f -> f.isRanking() && f.isAttribute())
+                .findFirst().get();
+        controller.transform(rankingFunction);
+        Assert.assertEquals(0f, node.size(), 0);
+    }
+
+    @Test
+    public void testNotTransformNullValuesRanking() {
+        MockServices.setServices(FixedTransformer.class);
+        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
+        AppearanceControllerImpl controller = new AppearanceControllerImpl();
+        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+        controller.setTransformNullValues(false);
+
+        Node node = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
+        node.clearAttributes();
+        node.setSize(42f);
+
+        Function rankingFunction =
+            Arrays.stream(controller.getModel().getNodeFunctions()).filter(f -> f.isRanking() && f.isAttribute())
+                .findFirst().get();
+        controller.transform(rankingFunction);
+        Assert.assertEquals(42f, node.size(), 0);
+    }
+
+    @Test
+    public void testTransformNullValuesPartition() {
+        MockServices.setServices(FixedTransformer.class);
+        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateSmallRandomGraph().addIntNodeColumn();
+        AppearanceControllerImpl controller = new AppearanceControllerImpl();
+        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+        controller.setTransformNullValues(true);
+
+        Node node = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
+        node.clearAttributes();
+        node.setColor(Color.GREEN);
+
+        Optional<Function> partitionFunction = Arrays.stream(controller.getModel().getNodeFunctions()).filter(
+            Function::isPartition).findFirst();
+        controller.transform(partitionFunction.get());
+        Assert.assertEquals(Color.CYAN, node.getColor());
+    }
+
+    @Test
+    public void testNotTransformNullValuesPartition() {
+        MockServices.setServices(FixedTransformer.class);
+        GraphGenerator generator = GraphGenerator.build().withWorkspace().generateSmallRandomGraph().addIntNodeColumn();
+        AppearanceControllerImpl controller = new AppearanceControllerImpl();
+        controller.setModel(new AppearanceModelImpl(generator.getWorkspace()));
+        controller.setTransformNullValues(false);
+
+        Node node = generator.getGraph().getNode(GraphGenerator.FIRST_NODE);
+        node.clearAttributes();
+        node.setColor(Color.GREEN);
+
+        Optional<Function> partitionFunction = Arrays.stream(controller.getModel().getNodeFunctions()).filter(
+            Function::isPartition).findFirst();
+        controller.transform(partitionFunction.get());
+        Assert.assertEquals(Color.GREEN, node.getColor());
     }
 
     public static class FixedTransformer implements Transformer, RankingTransformer<Node>,

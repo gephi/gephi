@@ -42,6 +42,7 @@
 
 package org.gephi.appearance;
 
+import java.awt.Color;
 import org.gephi.graph.GraphGenerator;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Graph;
@@ -131,4 +132,32 @@ public class AttributePartitionTest {
 //        n1.setAttribute(column, 99.0, 2000);
 //        Assert.assertNotEquals(version, p.getVersion(graph));
 //    }
+
+    @Test
+    public void testNullValues() {
+        Graph graph = GraphGenerator.build().generateTinyGraph().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        Assert.assertEquals(AttributePartitionImpl.DEFAULT_COLOR, p.getColor(null));
+
+        p.setColor(null, Color.BLUE);
+        Assert.assertEquals(Color.BLUE, p.getColor(null));
+
+        Assert.assertTrue(p.getValues(graph).contains(null));
+        Assert.assertTrue(p.getSortedValues(graph).contains(null));
+    }
+
+    @Test
+    public void testNullValuesValues() {
+        Graph graph = GraphGenerator.build().generateSmallRandomGraph().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+
+        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+        n1.setAttribute(column, null);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        Assert.assertTrue(p.getValues(graph).contains(null));
+        Assert.assertTrue(p.getSortedValues(graph).contains(null));
+    }
 }

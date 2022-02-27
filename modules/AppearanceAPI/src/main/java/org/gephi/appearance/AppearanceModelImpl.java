@@ -96,6 +96,8 @@ public class AppearanceModelImpl implements AppearanceModel {
     // LocalScale (if true, uses visible graph)
     private boolean rankingLocalScale = false;
     private boolean partitionLocalScale = false;
+    // Null values settings
+    private boolean transformNullValues = false;
 
     public AppearanceModelImpl(Workspace workspace) {
         this.workspace = workspace;
@@ -248,6 +250,15 @@ public class AppearanceModelImpl implements AppearanceModel {
 
     public void setPartitionLocalScale(boolean localScale) {
         this.partitionLocalScale = localScale;
+    }
+
+    @Override
+    public boolean isTransformNullValues() {
+        return transformNullValues;
+    }
+
+    public void setTransformNullValues(boolean transformNullValues) {
+        this.transformNullValues = transformNullValues;
     }
 
     private List<FunctionImpl> getNodeRankingFunctions() {

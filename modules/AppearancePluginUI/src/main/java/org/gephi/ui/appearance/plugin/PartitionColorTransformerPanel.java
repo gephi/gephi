@@ -117,14 +117,14 @@ public class PartitionColorTransformerPanel extends javax.swing.JPanel {
         List<Object> nullColors = new ArrayList<>();
         for (Object val : values) {
             Color c = partition.getColor(val);
-            if (c == null) {
+            if (c.equals(Partition.DEFAULT_COLOR)) {
                 nullColors.add(val);
             }
         }
 
         int valuesWithColors = values.size() - nullColors.size();
         if (!nullColors.isEmpty() && valuesWithColors < 8) {
-            Color[] cls = PaletteGenerator.generatePalette(Math.min(8, values.size()), 5, new Random(42l));
+            Color[] cls = PaletteGenerator.generatePalette(Math.min(8, values.size()), 5, new Random(42L));
             int i = 0;
             for (Object val : nullColors) {
                 int index = valuesWithColors + i++;

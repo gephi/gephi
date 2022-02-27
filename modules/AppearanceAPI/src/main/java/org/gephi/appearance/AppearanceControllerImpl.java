@@ -169,4 +169,11 @@ public class AppearanceControllerImpl implements AppearanceController {
             model.setPartitionLocalScale(useLocalScale);
         }
     }
+
+    @Override
+    public void setTransformNullValues(boolean transformNullValues) {
+        if (model != null) {
+            model.setTransformNullValues(transformNullValues);
+        }
+    }
 }
