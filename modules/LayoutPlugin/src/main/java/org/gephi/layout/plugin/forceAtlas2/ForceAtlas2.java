@@ -83,6 +83,7 @@ public class ForceAtlas2 implements Layout {
     private boolean barnesHutOptimize;
     private double barnesHutTheta;
     private boolean linLogMode;
+    private boolean normalizeEdgeWeights;
     private boolean strongGravityMode;
     private int threadCount;
     private int currentThreadCount;
@@ -216,13 +217,56 @@ public class ForceAtlas2 implements Layout {
                     Attraction.apply(e.getSource(), e.getTarget(), 1);
                 }
             } else if (getEdgeWeightInfluence() == 1) {
-                for (Edge e : edges) {
-                    Attraction.apply(e.getSource(), e.getTarget(), getEdgeWeight(e, isDynamicWeight, interval));
+                if (isNormalizeEdgeWeights()) {
+                    Double w;
+                    Double edgeWeightMin = Double.MAX_VALUE;
+                    Double edgeWeightMax = Double.MIN_VALUE;
+                    for (Edge e : edges) {
+                        w = getEdgeWeight(e, isDynamicWeight, interval);
+                        edgeWeightMin = Math.min(w, edgeWeightMin);
+                        edgeWeightMax = Math.max(w, edgeWeightMax);
+                    }
+                    if (edgeWeightMin < edgeWeightMax) {
+                        for (Edge e : edges) {
+                            w = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) / (edgeWeightMax - edgeWeightMin);
+                            Attraction.apply(e.getSource(), e.getTarget(), w);
+                        }
+                    } else {
+                        for (Edge e : edges) {
+                            Attraction.apply(e.getSource(), e.getTarget(), 1.);
+                        }
+                    }
+                } else {
+                    for (Edge e : edges) {
+                        Attraction.apply(e.getSource(), e.getTarget(), getEdgeWeight(e, isDynamicWeight, interval));
+                    }
                 }
             } else {
-                for (Edge e : edges) {
-                    Attraction.apply(e.getSource(), e.getTarget(),
-                        Math.pow(getEdgeWeight(e, isDynamicWeight, interval), getEdgeWeightInfluence()));
+                if (isNormalizeEdgeWeights()) {
+                    Double w;
+                    Double edgeWeightMin = Double.MAX_VALUE;
+                    Double edgeWeightMax = Double.MIN_VALUE;
+                    for (Edge e : edges) {
+                        w = getEdgeWeight(e, isDynamicWeight, interval);
+                        edgeWeightMin = Math.min(w, edgeWeightMin);
+                        edgeWeightMax = Math.max(w, edgeWeightMax);
+                    }
+                    if (edgeWeightMin < edgeWeightMax) {
+                        for (Edge e : edges) {
+                            w = (getEdgeWeight(e, isDynamicWeight, interval) - edgeWeightMin) / (edgeWeightMax - edgeWeightMin);
+                            Attraction.apply(e.getSource(), e.getTarget(),
+                                Math.pow(w, getEdgeWeightInfluence()));
+                        }
+                    } else {
+                        for (Edge e : edges) {
+                            Attraction.apply(e.getSource(), e.getTarget(), 1.);
+                        }
+                    }
+                } else {
+                    for (Edge e : edges) {
+                        Attraction.apply(e.getSource(), e.getTarget(),
+                            Math.pow(getEdgeWeight(e, isDynamicWeight, interval), getEdgeWeightInfluence()));
+                    }
                 }
             }
 
@@ -410,6 +454,14 @@ public class ForceAtlas2 implements Layout {
                 "getEdgeWeightInfluence", "setEdgeWeightInfluence"));
 
             properties.add(LayoutProperty.createProperty(
+                this, Boolean.class,
+                NbBundle.getMessage(getClass(), "ForceAtlas2.normalizeEdgeWeights.name"),
+                FORCEATLAS2_BEHAVIOR,
+                "ForceAtlas2.normalizeEdgeWeights.name",
+                NbBundle.getMessage(getClass(), "ForceAtlas2.normalizeEdgeWeights.desc"),
+                "isNormalizeEdgeWeights", "setNormalizeEdgeWeights"));
+
+            properties.add(LayoutProperty.createProperty(
                 this, Double.class,
                 NbBundle.getMessage(getClass(), "ForceAtlas2.jitterTolerance.name"),
                 FORCEATLAS2_PERFORMANCE,
@@ -470,6 +522,7 @@ public class ForceAtlas2 implements Layout {
         setLinLogMode(false);
         setAdjustSizes(false);
         setEdgeWeightInfluence(1.);
+        setNormalizeEdgeWeights(true);
 
         // Performance
         setJitterTolerance(1d);
@@ -520,6 +573,14 @@ public class ForceAtlas2 implements Layout {
 
     public void setLinLogMode(Boolean linLogMode) {
         this.linLogMode = linLogMode;
+    }
+
+    public Boolean isNormalizeEdgeWeights() {
+        return normalizeEdgeWeights;
+    }
+
+    public void setNormalizeEdgeWeights(Boolean normalizeEdgeWeights) {
+        this.normalizeEdgeWeights = normalizeEdgeWeights;
     }
 
     public Double getScalingRatio() {
