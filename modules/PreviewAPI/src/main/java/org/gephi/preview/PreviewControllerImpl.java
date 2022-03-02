@@ -191,7 +191,7 @@ public class PreviewControllerImpl implements PreviewController {
             }
         }
 
-        //Destrow view
+        //Destroy view
         if (previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO) < 1f) {
             graphModel.destroyView(graph.getView());
         }
@@ -245,6 +245,7 @@ public class PreviewControllerImpl implements PreviewController {
                 int tasks = 0;
                 for (Renderer r : renderers) {
                     if (!mousePressed || r instanceof MouseResponsiveRenderer) {
+                        tasks++;
                         for (String type : previewModel.getItemTypes()) {
                             for (Item item : previewModel.getItems(type)) {
                                 if (r.isRendererForitem(item, properties)) {
@@ -269,14 +270,21 @@ public class PreviewControllerImpl implements PreviewController {
                                 Progress.progress(progressTicket);
                                 if (target instanceof AbstractRenderTarget) {
                                     if (((AbstractRenderTarget) target).isCancelled()) {
+                                        Progress.finish(progressTicket);
                                         return;
                                     }
                                 }
                             }
                         }
                     }
+
+                    // Call post-process
+                    r.postProcess(previewModel, target, properties);
+                    Progress.progress(progressTicket);
                 }
             }
+
+            Progress.finish(progressTicket);
         }
     }
 

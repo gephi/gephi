@@ -149,6 +149,17 @@ public interface Renderer {
     void render(Item item, RenderTarget target, PreviewProperties properties);
 
     /**
+     * This method is called after rendering all items to perform post-processing.
+     * <p>
+     * This method has access to the <code>model</code> but also to the <code>target</code> and <code>properties</code>.
+     *
+     * @param previewModel the model to get items from
+     * @param target     the target to render the item on
+     * @param properties the central properties
+     */
+    void postProcess(PreviewModel previewModel, RenderTarget target, PreviewProperties properties);
+
+    /**
      * Returns all associated properties for this renderer. Properties can be built
      * using static <code>PreviewProperty.createProperty()</code> methods.
      *

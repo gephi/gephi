@@ -16,7 +16,7 @@
         <hr>
         <h2>API Changes</h2>
         <h3>0.9.3</h3>
-        <h4>Graph API (stable)</h4>
+        <h4>Graph API</h4>
         <ul>
             <li>Add <code>getEdges(int type)</code> to <code>Graph</code> to allow retrieval of only edges of a specific type.</li>
             <li>Add <code>getEdgeTypeLabels(boolean)</code> to <code>GraphModel</code>.</li>
@@ -30,7 +30,7 @@
             <li>Add <code>getElementIndex()</code> methods to <code>GraphModel</code> when providing a <code>Table</code>.</li>
             <li>Add <code>isNodeTable()</code> and <code>isEdgeTable()</code> methods to <code>Table</code>.</li>
         </ul>
-        <h4>Appearance API (unstable)</h4>
+        <h4>Appearance API (under development)</h4>
         <ul>
             <li><code>Partition</code> and <code>Ranking</code> now always receive the <code>Graph</code> as parameter for all methods that do need access to the underlying index to facilitate local scale support.</li>
             <li>Add <code>getColumn()</code> to <code>Ranking</code> so it aligns with <code>Partition</code>.</li>
@@ -41,6 +41,10 @@
             <li>Split <code>isLocalScale()</code> into <code>isRankingLocalScale()</code> and <code>isPartitionLocalScale()</code> in <code>AppearanceModel</code>.</li>
             <li>Make <code>Function</code> getters in <code>AppearanceModel</code> independent from <code>Graph</code> as this should be handled automatically based on the local/global state.</li>
             <li>Only keep <code>getNodeFunctions()</code> and <code>getEdgeFunctions()</code> in <code>AppearanceModel</code> to keep it simple. Filtering can easily be achieved by the client instead.</li>
+        </ul>
+        <h4>Preview API</h4>
+        <ul>
+            <li>A <code>postProcess()</code> method has been added to the <code>Renderer</code> SPI to allow customization once all items have been rendered.</li>
         </ul>
         <h3>Archive</h3>
         <ul>

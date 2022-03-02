@@ -95,6 +95,10 @@ public class NodeRenderer implements Renderer {
     }
 
     @Override
+    public void postProcess(PreviewModel previewModel, RenderTarget renderTarget, PreviewProperties properties) {
+    }
+
+    @Override
     public CanvasSize getCanvasSize(
         final Item item,
         final PreviewProperties properties) {
