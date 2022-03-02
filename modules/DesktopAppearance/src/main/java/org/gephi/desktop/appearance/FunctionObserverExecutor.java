@@ -12,12 +12,10 @@ public class FunctionObserverExecutor implements Runnable {
 
     private static final long DEFAULT_DELAY = 1250;  //ms
     private final AppearanceUIModel model;
-    private final AppearanceUIController controller;
     private ScheduledExecutorService executor;
 
     public FunctionObserverExecutor(AppearanceUIModel model) {
         this.model = model;
-        this.controller = Lookup.getDefault().lookup(AppearanceUIController.class);
     }
 
     public void start() {
@@ -37,7 +35,7 @@ public class FunctionObserverExecutor implements Runnable {
         try {
             Function selectedFunction = model.getSelectedFunction();
             if (selectedFunction != null && selectedFunction.hasChanged()) {
-                controller.refreshFunction();
+                Lookup.getDefault().lookup(AppearanceUIController.class).refreshFunction();
             }
         } catch (Exception e) {
             Logger.getLogger(TableObserverExecutor.class.getName())
