@@ -250,11 +250,17 @@ public class VizController implements VisualizationController {
 
     @Override
     public Column[] getEdgeTextColumns() {
+        if(currentModel != null) {
+            return currentModel.textModel.getEdgeTextColumns();
+        }
         return new Column[0];
     }
 
     @Override
     public Column[] getNodeTextColumns() {
+        if(currentModel != null) {
+            return currentModel.textModel.getNodeTextColumns();
+        }
         return new Column[0];
     }
 
