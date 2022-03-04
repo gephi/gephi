@@ -156,6 +156,14 @@
                     <groupId>org.netbeans.html</groupId>
                     <artifactId>xhr4j</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.api</groupId>
+                    <artifactId>org-netbeans-libs-junit5</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.modules</groupId>
+                    <artifactId>org-netbeans-modules-htmlui</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
