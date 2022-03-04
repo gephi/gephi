@@ -237,7 +237,7 @@ public abstract class AbstractProcessor implements Processor {
                 Object existingValue = element.getAttribute(columnDraft.getId());
 
                 if (columnDraft.isDynamic() && existingValue != null) {
-                    if (TimeMap.class.isAssignableFrom(columnDraft.getTypeClass())) {
+                    if (TimeMap.class.isAssignableFrom(columnDraftTypeClass)) {
                         TimeMap existingMap = (TimeMap) existingValue;
                         if (!existingMap.isEmpty()) {
                             TimeMap valMap = (TimeMap) val;
@@ -255,7 +255,7 @@ public abstract class AbstractProcessor implements Processor {
 
                             processedNewValue = newMap;
                         }
-                    } else if (TimeSet.class.isAssignableFrom(columnDraft.getTypeClass())) {
+                    } else if (TimeSet.class.isAssignableFrom(columnDraftTypeClass)) {
                         TimeSet existingTimeSet = (TimeSet) existingValue;
 
                         processedNewValue = mergeTimeSets(existingTimeSet, (TimeSet) val);
