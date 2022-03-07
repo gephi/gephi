@@ -346,7 +346,7 @@ public abstract class AbstractProcessor implements Processor {
 
         if (weightColumn.isDynamic()) {
             Object val = edgeDraft.getValue("weight");
-            if (val != null && val instanceof TimeMap) {
+            if (val instanceof TimeMap) {
                 TimeMap valMap = (TimeMap) val;
                 if (Number.class.isAssignableFrom(valMap.getTypeClass())) {
                     final TimeMap newMap;
@@ -381,12 +381,6 @@ public abstract class AbstractProcessor implements Processor {
                 }
             }
         } else if (!newEdge) {
-            if (edgeDraft.getTimeSet() != null || edgeDraft.getValue("timeset") != null ||
-                edge.getAttribute("timeset") != null) {
-                //Don't merge double (non dynamic) weights when the edges have dynamic time intervals/timestamps, they are the same edge in different periods of time
-                return;
-            }
-
             //Merge the existing edge and the draft edge weights:
             double result = edge.getWeight();
 
