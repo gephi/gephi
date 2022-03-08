@@ -418,6 +418,10 @@ public class VizConfig {
         return octreeWidth;
     }
 
+    public void setOctreeWidth(int octreeWidth) {
+        this.octreeWidth = octreeWidth;
+    }
+
     public boolean isRectangleSelection() {
         return rectangleSelection;
     }

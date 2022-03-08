@@ -84,6 +84,14 @@ public class CompatibilityEngine extends AbstractEngine {
         scheduler = (CompatibilityScheduler) VizController.getInstance().getScheduler();
         vizEventManager = VizController.getInstance().getVizEventManager();
 
+        initOctree();
+    }
+
+    private synchronized void initOctree() {
+        if (octree != null) {
+            octree.clear();
+        }
+
         //Init
         octree = new Octree(vizConfig.getOctreeDepth(), vizConfig.getOctreeWidth());
         octree.initArchitecture();
@@ -133,6 +141,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (reinit) {
             VizController.getInstance().refreshWorkspace();
             dataBridge.reset();
+            initOctree();
             graphDrawable.initConfig(gl);
             graphDrawable.setCameraLocation(vizController.getVizModel().getCameraPosition());
             graphDrawable.setCameraTarget(vizController.getVizModel().getCameraTarget());

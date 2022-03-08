@@ -44,6 +44,10 @@ package org.gephi.visualization.options;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
+import javax.swing.text.NumberFormatter;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.GraphicalConfiguration;
@@ -60,9 +64,11 @@ final class OpenGLPanel extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXTitledSeparator jXTitledSeparator1;
     private javax.swing.JLabel labelAntialiasing;
     private javax.swing.JLabel labelShow;
+    private javax.swing.JLabel labelOctreeWidth;
     private javax.swing.JTextArea openInfoText;
     private javax.swing.JPanel openglInfoPanel;
     private javax.swing.JButton resetButton;
+    private javax.swing.JFormattedTextField octreeWidthTextField;
 
     OpenGLPanel(OpenGLOptionsPanelController controller) {
         this.controller = controller;
@@ -94,10 +100,20 @@ final class OpenGLPanel extends javax.swing.JPanel {
         labelAntialiasing = new javax.swing.JLabel();
         antialisaingCombobox = new javax.swing.JComboBox();
         labelShow = new javax.swing.JLabel();
+        labelOctreeWidth = new javax.swing.JLabel();
         fpsCheckbox = new javax.swing.JCheckBox();
         resetButton = new javax.swing.JButton();
         openglInfoPanel = new javax.swing.JPanel();
         openInfoText = new javax.swing.JTextArea();
+
+        NumberFormat format = NumberFormat.getInstance(Locale.ENGLISH);
+        NumberFormatter formatter = new NumberFormatter(format);
+        formatter.setValueClass(Integer.class);
+        formatter.setAllowsInvalid(false);
+        octreeWidthTextField = new javax.swing.JFormattedTextField(formatter);
+
+        org.openide.awt.Mnemonics.setLocalizedText(labelOctreeWidth,
+            org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.labelOctreeWidth.text")); // NOI18N
 
         jXTitledSeparator1.setTitle(
             org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jXTitledSeparator1.title")); // NOI18N
@@ -152,10 +168,15 @@ final class OpenGLPanel extends javax.swing.JPanel {
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                             .addGap(10, 10, 10)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(labelOctreeWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 52,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(labelShow, javax.swing.GroupLayout.PREFERRED_SIZE, 52,
                                     javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(labelAntialiasing))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(20, 20, 20)
+                                    .addComponent(octreeWidthTextField))
                                 .addGroup(layout.createSequentialGroup()
                                     .addGap(20, 20, 20)
                                     .addComponent(fpsCheckbox))
@@ -186,7 +207,12 @@ final class OpenGLPanel extends javax.swing.JPanel {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(labelShow, javax.swing.GroupLayout.DEFAULT_SIZE,
                                     javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(fpsCheckbox))))
+                                .addComponent(fpsCheckbox))
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(labelOctreeWidth, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(octreeWidthTextField))))
                     .addGap(18, 18, Short.MAX_VALUE)
                     .addComponent(resetButton)
                     .addContainerGap())
@@ -209,6 +235,8 @@ final class OpenGLPanel extends javax.swing.JPanel {
             .setSelectedIndex(antiAliasing == 0 ? 0 : Math.round((float) (Math.log(antiAliasing) / Math.log(2))));
         fpsCheckbox.setSelected(
             NbPreferences.forModule(VizConfig.class).getBoolean(VizConfig.SHOW_FPS, VizConfig.DEFAULT_SHOW_FPS));
+        octreeWidthTextField.setText(String.valueOf(
+            NbPreferences.forModule(VizConfig.class).getInt(VizConfig.OCTREE_WIDTH, VizConfig.DEFAULT_OCTREE_WIDTH)));
 
         //OpenGLInfo
         GraphicalConfiguration gc = VizController.getInstance().getDrawable().getGraphicalConfiguration();
@@ -220,6 +248,14 @@ final class OpenGLPanel extends javax.swing.JPanel {
     void store() {
         NbPreferences.forModule(VizConfig.class).putInt(VizConfig.ANTIALIASING, antiAliasing);
         NbPreferences.forModule(VizConfig.class).putBoolean(VizConfig.SHOW_FPS, fpsCheckbox.isSelected());
+        try {
+            int width = NumberFormat.getInstance(Locale.ENGLISH).parse(octreeWidthTextField.getText()).intValue();
+            NbPreferences.forModule(VizConfig.class)
+                .putInt(VizConfig.OCTREE_WIDTH, width);
+            VizController.getInstance().getVizConfig().setOctreeWidth(width);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         VizController.getInstance().getEngine().reinit();
     }
