@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://gexf.net/1.3" version="1.3">
+    <graph mode="dynamic" timerepresentation="timestamp" defaultedgetype="directed" timeformat="dateTime" timezone="America/Los_Angeles">
+        <nodes>
+            <node id="0" label="Hello" timestamp="2012-01-12T15:00:00"/>
+            <node id="1" label="Word" timestamp="2012-01-12T15:00:00+03:00"/>
+        </nodes>
+        <edges>
+            <edge id="0" source="0" target="1" />
+        </edges>
+    </graph>
+</gexf>

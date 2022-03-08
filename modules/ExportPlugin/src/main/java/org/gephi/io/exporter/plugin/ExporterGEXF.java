@@ -102,6 +102,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private static final String GRAPH_DEFAULT_EDGETYPE = "defaultedgetype";
     private static final String GRAPH_TIMEFORMAT = "timeformat";
     private static final String GRAPH_TIMEREPRESENTATION = "timerepresentation";
+    private static final String GRAPH_TIMEZONE = "timezone";
     private static final String GRAPH_IDTYPE = "idtype";
     private static final String TIMESTAMP = "timestamp";
     private static final String META = "meta";
@@ -237,6 +238,9 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             TimeRepresentation timeRepresentation = graphConfig.getTimeRepresentation();
             xmlWriter.writeAttribute(GRAPH_TIMEREPRESENTATION, timeRepresentation.toString().toLowerCase());
+
+            DateTimeZone timeZone = graph.getModel().getTimeZone();
+            xmlWriter.writeAttribute(GRAPH_TIMEZONE, timeZone.getID());
         }
         xmlWriter.writeAttribute(GRAPH_MODE, exportDynamic ? "dynamic" : "static");
 
@@ -254,7 +258,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.writeAttribute(META_LASTMODIFIEDDATE, getDateTime());
 
             xmlWriter.writeStartElement(META_CREATOR);
-            xmlWriter.writeCharacters("Gephi 0.9");
+            xmlWriter.writeCharacters("Gephi 0.9.3");
             xmlWriter.writeEndElement();
 
             xmlWriter.writeStartElement(META_DESCRIPTION);
