@@ -55,9 +55,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ExporterUI.class)
 public class UIExporterCSV implements ExporterUI {
 
+    private final ExporterCSVSettings settings = new ExporterCSVSettings();
     private UIExporterCSVPanel panel;
     private ExporterCSV exporterCSV;
-    private final ExporterCSVSettings settings = new ExporterCSVSettings();
 
     @Override
     public void setup(Exporter exporter) {
@@ -92,25 +92,28 @@ public class UIExporterCSV implements ExporterUI {
         return NbBundle.getMessage(UIExporterCSV.class, "UIExporterCSV.name");
     }
 
-    private static class ExporterCSVSettings {
+    private static class ExporterCSVSettings extends AbstractExporterSettings {
 
-        private boolean edgeWeight = true;
-        private boolean writeZero = true;
-        private boolean header = true;
-        private boolean list = false;
+        // Preference names
+        private final static String EDGE_WEIGHT = "CSV_edgeWeight";
+        private final static String WRITE_ZERO = "CSV_writeZero";
+        private final static String HEADER = "CSV_header";
+        private final static String LIST = "CSV_list";
+        // Default
+        private final static ExporterCSV DEFAULT = new ExporterCSV();
 
         private void save(ExporterCSV exporterCSV) {
-            this.edgeWeight = exporterCSV.isEdgeWeight();
-            this.writeZero = exporterCSV.isWriteZero();
-            this.header = exporterCSV.isHeader();
-            this.list = exporterCSV.isList();
+            put(EDGE_WEIGHT, exporterCSV.isEdgeWeight());
+            put(WRITE_ZERO, exporterCSV.isWriteZero());
+            put(HEADER, exporterCSV.isHeader());
+            put(LIST, exporterCSV.isList());
         }
 
         private void load(ExporterCSV exporterCSV) {
-            exporterCSV.setEdgeWeight(edgeWeight);
-            exporterCSV.setWriteZero(writeZero);
-            exporterCSV.setHeader(header);
-            exporterCSV.setList(list);
+            exporterCSV.setEdgeWeight(get(EDGE_WEIGHT, DEFAULT.isEdgeWeight()));
+            exporterCSV.setWriteZero(get(WRITE_ZERO, DEFAULT.isWriteZero()));
+            exporterCSV.setHeader(get(HEADER, DEFAULT.isHeader()));
+            exporterCSV.setList(get(LIST, DEFAULT.isList()));
         }
     }
 }
