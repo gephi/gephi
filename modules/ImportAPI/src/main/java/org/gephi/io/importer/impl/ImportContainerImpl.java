@@ -112,6 +112,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private int directedEdgesCount = 0;
     private int undirectedEdgesCount = 0;
     private int selfLoops = 0;
+    private int mutualEdgesCount = 0;
     //Dynamic
     private TimeFormat timeFormat = TimeFormat.DOUBLE;
     private TimeRepresentation timeRepresentation = TimeRepresentation.INTERVAL;
@@ -452,6 +453,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
+    public int getMutualEdgeCount() {
+        return mutualEdgesCount;
+    }
+
+    @Override
     public TimeFormat getTimeFormat() {
         return timeFormat;
     }
@@ -679,6 +685,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);
         } else if (directedEdgesCount > 0 && undirectedEdgesCount > 0) {
             setEdgeDefault(EdgeDirectionDefault.MIXED);
+        }
+
+        //Count mutual edges
+        if (directedEdgesCount > 0) {
+            for (EdgeDraftImpl edge : edgeList) {
+                if (edge.getDirection().equals(EdgeDirection.DIRECTED) && getOpposite(edge) != null) {
+                    mutualEdgesCount++;
+                }
+            }
+            mutualEdgesCount /= 2;
         }
 
         //IdType
