@@ -76,7 +76,7 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
     private SVGTarget target;
     //Settings
     private boolean scaleStrokes = false;
-    private final float margin = 4;
+    private float margin = 4;
 
     @Override
     public boolean execute() {
@@ -154,5 +154,13 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
 
     public void setScaleStrokes(boolean scaleStrokes) {
         this.scaleStrokes = scaleStrokes;
+    }
+
+    public float getMargin() {
+        return margin;
+    }
+
+    public void setMargin(float margin) {
+        this.margin = margin;
     }
 }
