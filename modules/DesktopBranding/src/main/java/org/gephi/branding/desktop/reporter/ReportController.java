@@ -71,6 +71,7 @@ import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.modules.ModuleInfo;
+import org.openide.modules.Places;
 import org.openide.modules.SpecificationVersion;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -258,13 +259,9 @@ public class ReportController {
 
     private void logMessageLog(Report report) {
         System.out.flush();
-        String ud = System.getProperty("netbeans.user"); // NOI18N
-        if (ud == null || "memory".equals(ud)) { // NOI18N
-            return;
-        }
         Handler[] handlers = Logger.getLogger("").getHandlers();
         handlers[0].flush();
-        File userDir = new File(ud); // NOI18N
+        File userDir = Places.getUserDirectory();
         File directory = new File(new File(userDir, "var"), "log");
         File messagesLog = new File(directory, "messages.log");
         String log = "";
