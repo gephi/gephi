@@ -690,7 +690,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         //Count mutual edges
         if (directedEdgesCount > 0) {
             for (EdgeDraftImpl edge : edgeList) {
-                if (edge.getDirection().equals(EdgeDirection.DIRECTED) && getOpposite(edge) != null) {
+                if (isEdgeDirected(edge) && getOpposite(edge) != null) {
                     mutualEdgesCount++;
                 }
             }
