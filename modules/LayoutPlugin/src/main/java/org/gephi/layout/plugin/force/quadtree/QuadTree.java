@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.force.quadtree;
 
 import java.awt.Color;
@@ -57,22 +58,37 @@ import org.gephi.graph.api.Table;
 import org.gephi.graph.api.TextProperties;
 import org.gephi.graph.spi.LayoutData;
 
+interface AddBehaviour {
+
+    boolean addNode(NodeProperties node);
+}
+
 /**
  * @author Helder Suzuki
  */
 public class QuadTree implements Node {
 
+    public static final float eps = (float) 1e-6;
     private final float posX;
     private final float posY;
     private final float size;
+    private final int maxLevel;
     private float centerMassX;  // X and Y position of the center of mass
     private float centerMassY;
     private int mass;  // Mass of this tree (the number of nodes it contains)
-    private final int maxLevel;
     private AddBehaviour add;
     private List<QuadTree> children;
     private boolean isLeaf;
-    public static final float eps = (float) 1e-6;
+
+    public QuadTree(float posX, float posY, float size, int maxLevel) {
+        this.posX = posX;
+        this.posY = posY;
+        this.size = size;
+        this.maxLevel = maxLevel;
+        this.isLeaf = true;
+        mass = 0;
+        add = new FirstAdd();
+    }
 
     public static QuadTree buildTree(Graph graph, int maxLevel) {
         float minX = Float.POSITIVE_INFINITY;
@@ -96,16 +112,6 @@ public class QuadTree implements Node {
         return tree;
     }
 
-    public QuadTree(float posX, float posY, float size, int maxLevel) {
-        this.posX = posX;
-        this.posY = posY;
-        this.size = size;
-        this.maxLevel = maxLevel;
-        this.isLeaf = true;
-        mass = 0;
-        add = new FirstAdd();
-    }
-
     @Override
     public float size() {
         return size;
@@ -116,12 +122,12 @@ public class QuadTree implements Node {
 
         children = new ArrayList<>();
         children.add(new QuadTree(posX + childSize, posY + childSize,
-                childSize, maxLevel - 1));
+            childSize, maxLevel - 1));
         children.add(new QuadTree(posX, posY + childSize,
-                childSize, maxLevel - 1));
+            childSize, maxLevel - 1));
         children.add(new QuadTree(posX, posY, childSize, maxLevel - 1));
         children.add(new QuadTree(posX + childSize, posY,
-                childSize, maxLevel - 1));
+            childSize, maxLevel - 1));
 
         isLeaf = false;
     }
@@ -166,7 +172,7 @@ public class QuadTree implements Node {
 
     public boolean addNode(NodeProperties node) {
         if (posX <= node.x() && node.x() <= posX + size
-                && posY <= node.y() && node.y() <= posY + size) {
+            && posY <= node.y() && node.y() <= posY + size) {
             return add.addNode(node);
         } else {
             return false;
@@ -206,6 +212,11 @@ public class QuadTree implements Node {
     }
 
     @Override
+    public void setColor(Color color) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
     public float alpha() {
         throw new UnsupportedOperationException("Not supported.");
     }
@@ -216,7 +227,17 @@ public class QuadTree implements Node {
     }
 
     @Override
+    public void setFixed(boolean fixed) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
     public <T extends LayoutData> T getLayoutData() {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public void setLayoutData(LayoutData layoutData) {
         throw new UnsupportedOperationException("Not supported.");
     }
 
@@ -276,22 +297,7 @@ public class QuadTree implements Node {
     }
 
     @Override
-    public void setColor(Color color) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
     public void setSize(float size) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
-    public void setFixed(boolean fixed) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
-    public void setLayoutData(LayoutData layoutData) {
         throw new UnsupportedOperationException("Not supported.");
     }
 
@@ -302,6 +308,11 @@ public class QuadTree implements Node {
 
     @Override
     public String getLabel() {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public void setLabel(String label) {
         throw new UnsupportedOperationException("Not supported.");
     }
 
@@ -341,11 +352,6 @@ public class QuadTree implements Node {
     }
 
     @Override
-    public void setLabel(String label) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
     public void setAttribute(String key, Object value) {
         throw new UnsupportedOperationException("Not supported.");
     }
@@ -377,6 +383,11 @@ public class QuadTree implements Node {
 
     @Override
     public double[] getTimestamps() {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public Interval getTimeBounds() {
         throw new UnsupportedOperationException("Not supported.");
     }
 
@@ -437,7 +448,8 @@ public class QuadTree implements Node {
 
     @Override
     public Object removeAttribute(String key, Interval interval) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException(
+            "Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -477,7 +489,8 @@ public class QuadTree implements Node {
 
     @Override
     public Table getTable() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException(
+            "Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     class FirstAdd implements AddBehaviour {
@@ -528,9 +541,4 @@ public class QuadTree implements Node {
             return addToChildren(node);
         }
     }
-}
-
-interface AddBehaviour {
-
-    public boolean addNode(NodeProperties node);
 }

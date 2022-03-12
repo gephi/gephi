@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.BorderLayout;
@@ -59,7 +60,6 @@ import javax.swing.JScrollPane;
 import org.gephi.ui.utils.UIUtils;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class JSqueezeBoxPanel extends JPanel {
@@ -87,7 +87,7 @@ public class JSqueezeBoxPanel extends JPanel {
         scrollPanel.add(padding, gbc);
 
         scrollPane = new JScrollPane(scrollPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.getViewport().setBackground(CP_BACKGROUND_COLOR);
         scrollPane.getVerticalScrollBar().setUnitIncrement(50);
@@ -98,8 +98,10 @@ public class JSqueezeBoxPanel extends JPanel {
 
             @Override
             public void componentResized(ComponentEvent e) {
-                scrollPane.getVerticalScrollBar().setBlockIncrement((int) (scrollPane.getVerticalScrollBar().getModel().getExtent() * 0.95f));
-                scrollPane.getHorizontalScrollBar().setBlockIncrement((int) (scrollPane.getHorizontalScrollBar().getModel().getExtent() * 0.95f));
+                scrollPane.getVerticalScrollBar()
+                    .setBlockIncrement((int) (scrollPane.getVerticalScrollBar().getModel().getExtent() * 0.95f));
+                scrollPane.getHorizontalScrollBar()
+                    .setBlockIncrement((int) (scrollPane.getHorizontalScrollBar().getModel().getExtent() * 0.95f));
             }
         });
 
@@ -179,7 +181,7 @@ public class JSqueezeBoxPanel extends JPanel {
         @Override
         public Dimension minimumLayoutSize(final Container parent) {
             final Dimension d = new Dimension(parent.getInsets().left + parent.getInsets().right,
-                    parent.getInsets().top + parent.getInsets().bottom);
+                parent.getInsets().top + parent.getInsets().bottom);
             int maxWidth = 0;
             int height = 0;
             final Component[] comps = parent.getComponents();
@@ -203,7 +205,7 @@ public class JSqueezeBoxPanel extends JPanel {
         @Override
         public Dimension preferredLayoutSize(final Container parent) {
             final Dimension d = new Dimension(parent.getInsets().left + parent.getInsets().right,
-                    parent.getInsets().top + parent.getInsets().bottom);
+                parent.getInsets().top + parent.getInsets().bottom);
             int maxWidth = 0;
             int height = 0;
             final Component[] comps = parent.getComponents();

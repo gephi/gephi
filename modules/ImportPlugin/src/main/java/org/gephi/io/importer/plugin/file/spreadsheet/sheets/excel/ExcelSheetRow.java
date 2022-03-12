@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.sheets.excel;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -47,7 +48,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetRow;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ExcelSheetRow implements SheetRow {
@@ -62,6 +62,14 @@ public class ExcelSheetRow implements SheetRow {
         this.row = row;
         this.firstIndex = firstIndex;
         this.lastIndex = lastIndex;
+    }
+
+    public static String getRowCellAsString(Cell cell, int index) {
+        if (cell == null) {
+            return null;
+        }
+
+        return FORMATTER.formatCellValue(cell);
     }
 
     @Override
@@ -90,13 +98,5 @@ public class ExcelSheetRow implements SheetRow {
     @Override
     public int size() {
         return lastIndex - firstIndex + 1;
-    }
-
-    public static String getRowCellAsString(Cell cell, int index) {
-        if (cell == null) {
-            return null;
-        }
-
-        return FORMATTER.formatCellValue(cell);
     }
 }

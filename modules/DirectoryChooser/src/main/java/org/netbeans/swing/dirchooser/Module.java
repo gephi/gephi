@@ -56,24 +56,14 @@ import org.openide.modules.ModuleInstall;
  * @author Soot Phengsy
  */
 public class Module extends ModuleInstall {
-    
+
     private static final String KEY = "FileChooserUI"; // NOI18N
+    private static final String QUICK_CHOOSER_NAME =
+        "org.netbeans.modules.quickfilechooser.ChooserComponentUI";
+    private static final String FORCE_STANDARD_CHOOSER = "standard-file-chooser"; // NOI18N
     private static Class<? extends FileChooserUI> originalImpl;
     private static PropertyChangeListener pcl;
-    
-    private static final String QUICK_CHOOSER_NAME = 
-            "org.netbeans.modules.quickfilechooser.ChooserComponentUI";
-    
-    private static final String FORCE_STANDARD_CHOOSER = "standard-file-chooser"; // NOI18N
 
-    @Override public void restored() {
-        install();
-    }
-
-    @Override public void uninstalled() {
-        uninstall();
-    }
-        
     public static void install() {
         // don't install directory chooser if standard chooser is desired
         if (isStandardChooserForced()) {
@@ -96,13 +86,13 @@ public class Module extends ModuleInstall {
                 String name = evt.getPropertyName();
                 Object className = uid.get(KEY);
                 if ((name.equals(KEY) || name.equals("UIDefaults")) && !val.equals(className)
-                        && !isQuickFileChooser(className)) {
+                    && !isQuickFileChooser(className)) {
                     uid.put(KEY, val);
                 }
             }
         });
     }
-    
+
     public static void uninstall() {
         if (isInstalled()) {
             assert pcl != null;
@@ -115,21 +105,31 @@ public class Module extends ModuleInstall {
             originalImpl = null;
         }
     }
-    
+
     public static boolean isInstalled() {
         return originalImpl != null;
     }
-    
-    static Class<? extends FileChooserUI> getOrigChooser () {
+
+    static Class<? extends FileChooserUI> getOrigChooser() {
         return originalImpl;
     }
-    
-    private static boolean isQuickFileChooser (Object className) {
+
+    private static boolean isQuickFileChooser(Object className) {
         return QUICK_CHOOSER_NAME.equals(className);
     }
-    
-    private static boolean isStandardChooserForced () {
+
+    private static boolean isStandardChooserForced() {
         return Boolean.getBoolean(FORCE_STANDARD_CHOOSER);
     }
-    
+
+    @Override
+    public void restored() {
+        install();
+    }
+
+    @Override
+    public void uninstalled() {
+        uninstall();
+    }
+
 }

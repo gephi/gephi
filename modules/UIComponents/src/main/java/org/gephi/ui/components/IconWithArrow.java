@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.Color;
@@ -52,14 +53,18 @@ import org.openide.util.ImageUtilities;
 public class IconWithArrow implements Icon {
 
     private static final String ARROW_IMAGE_NAME = "org/openide/awt/resources/arrow.png"; //NOI18N
+    private static final int GAP = 6;
     private final Icon orig;
     private final Icon arrow = ImageUtilities.image2Icon(ImageUtilities.loadImage(ARROW_IMAGE_NAME, false));
     private final boolean paintRollOver;
-    private static final int GAP = 6;
 
     public IconWithArrow(Icon orig, boolean paintRollOver) {
         this.orig = orig;
         this.paintRollOver = paintRollOver;
+    }
+
+    public static int getArrowAreaWidth() {
+        return GAP / 2 + 5;
     }
 
     @Override
@@ -79,10 +84,10 @@ public class IconWithArrow implements Icon {
             if (null != brighter && null != darker) {
                 g.setColor(brighter);
                 g.drawLine(x + orig.getIconWidth() + 1, y,
-                        x + orig.getIconWidth() + 1, y + getIconHeight());
+                    x + orig.getIconWidth() + 1, y + getIconHeight());
                 g.setColor(darker);
                 g.drawLine(x + orig.getIconWidth() + 2, y,
-                        x + orig.getIconWidth() + 2, y + getIconHeight());
+                    x + orig.getIconWidth() + 2, y + getIconHeight());
             }
         }
     }
@@ -95,9 +100,5 @@ public class IconWithArrow implements Icon {
     @Override
     public int getIconHeight() {
         return Math.max(orig.getIconHeight(), arrow.getIconHeight());
-    }
-
-    public static int getArrowAreaWidth() {
-        return GAP / 2 + 5;
     }
 }

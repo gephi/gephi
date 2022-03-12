@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components.splineeditor;
 
 import java.awt.BasicStroke;
@@ -72,13 +73,13 @@ public class SplineDisplay extends EquationDisplay {
     private Point2D selected = null;
     private Point dragStart = null;
     private boolean isSaving = false;
-    private PropertyChangeSupport support;
+    private final PropertyChangeSupport support;
 
     SplineDisplay() {
         super(0.0, 0.0,
-                -0.1, 1.1, -0.1, 1.1,
-                0.2, 6,
-                0.2, 6);
+            -0.1, 1.1, -0.1, 1.1,
+            0.2, 6,
+            0.2, 6);
 
         setEnabled(false);
 
@@ -102,22 +103,22 @@ public class SplineDisplay extends EquationDisplay {
         return (Point2D) control1.clone();
     }
 
-    public Point2D getControl2() {
-        return (Point2D) control2.clone();
-    }
-
     public void setControl1(Point2D control1) {
         support.firePropertyChange("control1",
-                this.control1.clone(),
-                control1.clone());
+            this.control1.clone(),
+            control1.clone());
         this.control1 = (Point2D) control1.clone();
         repaint();
     }
 
+    public Point2D getControl2() {
+        return (Point2D) control2.clone();
+    }
+
     public void setControl2(Point2D control2) {
         support.firePropertyChange("control2",
-                this.control2.clone(),
-                control2.clone());
+            this.control2.clone(),
+            control2.clone());
         this.control2 = (Point2D) control2.clone();
         repaint();
     }
@@ -133,9 +134,9 @@ public class SplineDisplay extends EquationDisplay {
         g.dispose();
 
         BufferedImage subImage = image.getSubimage((int) xPositionToPixel(0.0),
-                (int) yPositionToPixel(1.0),
-                (int) (xPositionToPixel(1.0) - xPositionToPixel(0.0)) + 1,
-                (int) (yPositionToPixel(0.0) - yPositionToPixel(1.0)) + 1);
+            (int) yPositionToPixel(1.0),
+            (int) (xPositionToPixel(1.0) - xPositionToPixel(0.0)) + 1,
+            (int) (yPositionToPixel(0.0) - yPositionToPixel(1.0)) + 1);
 
         try {
             ImageIO.write(subImage, "PNG", out);
@@ -167,15 +168,15 @@ public class SplineDisplay extends EquationDisplay {
 
         Ellipse2D outer = getDraggableArea(control);
         Ellipse2D inner = new Ellipse2D.Double(origin_x + 2.0 - CONTROL_POINT_SIZE / 2.0,
-                origin_y + 2.0 - CONTROL_POINT_SIZE / 2.0,
-                8.0, 8.0);
+            origin_y + 2.0 - CONTROL_POINT_SIZE / 2.0,
+            8.0, 8.0);
 
         Area circle = new Area(outer);
         circle.subtract(new Area(inner));
 
         Stroke stroke = g2.getStroke();
         g2.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
-                5, new float[]{5, 5}, 0));
+            5, new float[] {5, 5}, 0));
         g2.setColor(new Color(1.0f, 0.0f, 0.0f, 0.4f));
         g2.drawLine(0, (int) origin_y, (int) origin_x, (int) origin_y);
         g2.drawLine((int) origin_x, (int) origin_y, (int) origin_x, getHeight());
@@ -192,23 +193,23 @@ public class SplineDisplay extends EquationDisplay {
         g2.fill(circle);
 
         g2.drawLine((int) origin_x, (int) origin_y,
-                (int) xPositionToPixel(pos), (int) yPositionToPixel(pos));
+            (int) xPositionToPixel(pos), (int) yPositionToPixel(pos));
     }
 
     private Ellipse2D getDraggableArea(Point2D control) {
         Ellipse2D outer = new Ellipse2D.Double(xPositionToPixel(control.getX()) - CONTROL_POINT_SIZE / 2.0,
-                yPositionToPixel(control.getY()) - CONTROL_POINT_SIZE / 2.0,
-                CONTROL_POINT_SIZE, CONTROL_POINT_SIZE);
+            yPositionToPixel(control.getY()) - CONTROL_POINT_SIZE / 2.0,
+            CONTROL_POINT_SIZE, CONTROL_POINT_SIZE);
         return outer;
     }
 
     private void paintSpline(Graphics2D g2) {
         CubicCurve2D spline = new CubicCurve2D.Double(xPositionToPixel(0.0), yPositionToPixel(0.0),
-                xPositionToPixel(control1.getX()),
-                yPositionToPixel(control1.getY()),
-                xPositionToPixel(control2.getX()),
-                yPositionToPixel(control2.getY()),
-                xPositionToPixel(1.0), yPositionToPixel(1.0));
+            xPositionToPixel(control1.getX()),
+            yPositionToPixel(control1.getY()),
+            xPositionToPixel(control2.getX()),
+            yPositionToPixel(control2.getY()),
+            xPositionToPixel(1.0), yPositionToPixel(1.0));
         g2.setColor(new Color(0.0f, 0.3f, 0.0f, 1.0f));
         g2.draw(spline);
     }
@@ -246,7 +247,7 @@ public class SplineDisplay extends EquationDisplay {
             Point dragEnd = e.getPoint();
 
             double distance = xPixelToPosition(dragEnd.getX())
-                    - xPixelToPosition(dragStart.getX());
+                - xPixelToPosition(dragStart.getX());
             double x = selected.getX() + distance;
             if (x < 0.0) {
                 x = 0.0;
@@ -255,7 +256,7 @@ public class SplineDisplay extends EquationDisplay {
             }
 
             distance = yPixelToPosition(dragEnd.getY())
-                    - yPixelToPosition(dragStart.getY());
+                - yPixelToPosition(dragStart.getY());
             double y = selected.getY() + distance;
             if (y < 0.0) {
                 y = 0.0;
@@ -266,7 +267,7 @@ public class SplineDisplay extends EquationDisplay {
             Point2D selectedCopy = (Point2D) selected.clone();
             selected.setLocation(x, y);
             support.firePropertyChange("control" + (selected == control1 ? "1" : "2"),
-                    selectedCopy, selected.clone());
+                selectedCopy, selected.clone());
 
             repaint();
 

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.text;
 
 import com.jogamp.opengl.util.awt.TextRenderer;
@@ -63,17 +64,16 @@ import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.node.NodeModel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class TextManager implements VizArchitecture {
 
-    //Architecture
-    private VizConfig vizConfig;
-    private GraphDrawable drawable;
     //Configuration
     private final SizeMode[] sizeModes;
     private final ColorMode[] colorModes;
+    //Architecture
+    private VizConfig vizConfig;
+    private GraphDrawable drawable;
     //Processing
     private Renderer nodeRenderer;
     private Renderer edgeRenderer;
@@ -208,7 +208,7 @@ public class TextManager implements VizArchitecture {
             String txt = textData.getText();
             String newTxt = buildText(graph, node.getNode(), modelImpl.getNodeTextColumns());
             if ((txt == null && newTxt != null) || (txt != null && newTxt == null)
-                    || (txt != null && newTxt != null && !txt.equals(newTxt))) {
+                || (txt != null && newTxt != null && !txt.equals(newTxt))) {
                 node.setText(newTxt);
                 return true;
             }
@@ -223,7 +223,7 @@ public class TextManager implements VizArchitecture {
             String txt = textData.getText();
             String newTxt = buildText(graph, edge.getEdge(), modelImpl.getEdgeTextColumns());
             if ((txt == null && newTxt != null) || (txt != null && newTxt == null)
-                    || (txt != null && newTxt != null && !txt.equals(newTxt))) {
+                || (txt != null && newTxt != null && !txt.equals(newTxt))) {
                 edge.setText(newTxt);
                 return true;
             }
@@ -301,7 +301,8 @@ public class TextManager implements VizArchitecture {
 
         @Override
         public void reinitRenderer() {
-            renderer = new TextRenderer(renderer.getFont(), antialised, fractionalMetrics, null, shouldUseMipmapGeneration());
+            renderer =
+                new TextRenderer(renderer.getFont(), antialised, fractionalMetrics, null, shouldUseMipmapGeneration());
         }
 
         private boolean shouldUseMipmapGeneration() {
@@ -361,7 +362,8 @@ public class TextManager implements VizArchitecture {
                     return;
                 }
 
-                float sizeFactor = drawable.getGlobalScale() * textData.getSize() * model.sizeMode.getSizeFactor3d(model.nodeSizeFactor, objectModel);
+                float sizeFactor = drawable.getGlobalScale() * textData.getSize() *
+                    model.sizeMode.getSizeFactor3d(model.nodeSizeFactor, objectModel);
                 if (nodeRefresh || (objectModel.getTextWidth() == 0f && objectModel.getTextHeight() == 0f)) {
                     Rectangle2D r = renderer.getBounds(txt);
 
@@ -411,8 +413,10 @@ public class TextManager implements VizArchitecture {
 
                 float x, y;
                 if (edge.isDirected()) {
-                    x = (objectModel.getSourceModel().getNode().x() + 2 * objectModel.getTargetModel().getNode().x()) / 3f;
-                    y = (objectModel.getSourceModel().getNode().y() + 2 * objectModel.getTargetModel().getNode().y()) / 3f;
+                    x = (objectModel.getSourceModel().getNode().x() + 2 * objectModel.getTargetModel().getNode().x()) /
+                        3f;
+                    y = (objectModel.getSourceModel().getNode().y() + 2 * objectModel.getTargetModel().getNode().y()) /
+                        3f;
                 } else {
                     x = (objectModel.getSourceModel().getNode().x() + objectModel.getTargetModel().getNode().x()) / 2f;
                     y = (objectModel.getSourceModel().getNode().y() + objectModel.getTargetModel().getNode().y()) / 2f;

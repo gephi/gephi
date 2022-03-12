@@ -21,10 +21,6 @@ public class Octree {
 
     //Const
     protected static final int NULL_ID = -1;
-    //Architecture
-    protected GraphLimits limits;
-    private GraphDrawable drawable;
-    protected VizController vizController;
     //Params
     protected final int maxDepth;
     protected final int size;
@@ -32,16 +28,20 @@ public class Octree {
     protected final Octant root;
     //Leaves
     protected final IntSortedSet garbageQueue;
+    //Itr
+    protected final OctantIterator nodeIterator;
+    protected final SelectableIterator selectableIterator;
+    protected final EdgeIterator edgeIterator;
+    //Architecture
+    protected GraphLimits limits;
+    protected VizController vizController;
     protected Octant[] leaves;
     protected int leavesCount;
     protected int length;
     protected int visibleLeaves;
     //Selected
     protected List<Octant> selectedLeaves;
-    //Itr
-    protected final OctantIterator nodeIterator;
-    protected final SelectableIterator selectableIterator;
-    protected final EdgeIterator edgeIterator;
+    private GraphDrawable drawable;
 
     public Octree(int maxDepth, int size) {
         this.length = 0;
@@ -212,7 +212,7 @@ public class Octree {
         Octant o7 = new Octant(depth + 1, posX + quantum, posY - quantum, posZ + quantum, newSize);
         Octant o8 = new Octant(depth + 1, posX - quantum, posY - quantum, posZ + quantum, newSize);
 
-        octant.children = new Octant[]{o1, o2, o3, o4, o5, o6, o7, o8};
+        octant.children = new Octant[] {o1, o2, o3, o4, o5, o6, o7, o8};
     }
 
     private void clampPosition(NodeModel nodeModel) {
@@ -295,7 +295,7 @@ public class Octree {
             int depth = Integer.MAX_VALUE;
             int minDepth = -1;
             for (int i = 0; i < nbRecords; i++) {
-                int hit = hitsBuffer.get(i * 4 + 3); 		//-1 Because of the glPushName(0)
+                int hit = hitsBuffer.get(i * 4 + 3);        //-1 Because of the glPushName(0)
                 int minZ = hitsBuffer.get(i * 4 + 1);
                 if (minZ < depth) {
                     depth = minZ;
@@ -331,7 +331,8 @@ public class Octree {
             gl.glPushMatrix();
             gl.glLoadIdentity();
 
-            glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], drawable.getViewport());
+            glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1],
+                drawable.getViewport());
             gl.glMultMatrixf(drawable.getProjectionMatrix());
 
             gl.glMatrixMode(GL2.GL_MODELVIEW);
@@ -361,7 +362,7 @@ public class Octree {
 
             //Get the hits and put the node under selection in the selectionArray
             for (int i = 0; i < nbRecords; i++) {
-                int hit = hitsBuffer.get(i * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
+                int hit = hitsBuffer.get(i * 4 + 3) - 1;        //-1 Because of the glPushName(0)
 
                 Octant nodeHit = visibleLeavesList.get(hit);
                 selectedLeaves.add(nodeHit);

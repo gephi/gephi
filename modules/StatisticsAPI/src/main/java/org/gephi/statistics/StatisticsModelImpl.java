@@ -40,6 +40,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics;
 
 import java.awt.image.BufferedImage;
@@ -66,7 +67,6 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  * @author Patrick J. McSweeney
  */
@@ -162,7 +162,7 @@ public class StatisticsModelImpl implements StatisticsModel {
                     String path = "file:" + file.getAbsolutePath();
                     builder.append(path);
 
-                    builder.append(next.substring(endIndex, next.length()));
+                    builder.append(next.substring(endIndex));
                 } else {
                     builder.append(result[i]);
                 }
@@ -188,7 +188,7 @@ public class StatisticsModelImpl implements StatisticsModel {
                 File file = new File(filename);
                 try {
                     BufferedImage image = ImageIO.read(file);
-                    ImageIO.write((RenderedImage) image, "PNG", out);
+                    ImageIO.write(image, "PNG", out);
                 } catch (Exception e) {
                     Exceptions.printStackTrace(e);
                 }

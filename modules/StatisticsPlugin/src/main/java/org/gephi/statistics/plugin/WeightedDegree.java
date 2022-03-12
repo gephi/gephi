@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.text.DecimalFormat;
@@ -64,7 +65,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Sebastien Heymann
  */
 public class WeightedDegree implements Statistics, LongTask {
@@ -170,14 +170,18 @@ public class WeightedDegree implements Statistics, LongTask {
         Table nodeTable = graphModel.getNodeTable();
         if (isDirected) {
             if (!nodeTable.hasColumn(WINDEGREE)) {
-                nodeTable.addColumn(WINDEGREE, NbBundle.getMessage(WeightedDegree.class, "WeightedDegree.nodecolumn.InDegree"), Double.class, 0.0);
+                nodeTable.addColumn(WINDEGREE,
+                    NbBundle.getMessage(WeightedDegree.class, "WeightedDegree.nodecolumn.InDegree"), Double.class, 0.0);
             }
             if (!nodeTable.hasColumn(WOUTDEGREE)) {
-                nodeTable.addColumn(WOUTDEGREE, NbBundle.getMessage(WeightedDegree.class, "WeightedDegree.nodecolumn.OutDegree"), Double.class, 0.0);
+                nodeTable.addColumn(WOUTDEGREE,
+                    NbBundle.getMessage(WeightedDegree.class, "WeightedDegree.nodecolumn.OutDegree"), Double.class,
+                    0.0);
             }
         }
         if (!nodeTable.hasColumn(WDEGREE)) {
-            nodeTable.addColumn(WDEGREE, NbBundle.getMessage(WeightedDegree.class, "WeightedDegree.nodecolumn.Degree"), Double.class, 0.0);
+            nodeTable.addColumn(WDEGREE, NbBundle.getMessage(WeightedDegree.class, "WeightedDegree.nodecolumn.Degree"),
+                Double.class, 0.0);
         }
     }
 
@@ -217,14 +221,14 @@ public class WeightedDegree implements Statistics, LongTask {
             dataset1.addSeries(dSeries);
 
             JFreeChart chart1 = ChartFactory.createXYLineChart(
-                    "Degree Distribution",
-                    "Value",
-                    "Count",
-                    dataset1,
-                    PlotOrientation.VERTICAL,
-                    true,
-                    false,
-                    false);
+                "Degree Distribution",
+                "Value",
+                "Count",
+                dataset1,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
             chart1.removeLegend();
             ChartUtils.decorateChart(chart1);
             ChartUtils.scaleChart(chart1, dSeries, false);
@@ -233,11 +237,11 @@ public class WeightedDegree implements Statistics, LongTask {
             NumberFormat f = new DecimalFormat("#0.000");
 
             report = "<HTML> <BODY> <h1>Weighted Degree Report </h1> "
-                    + "<hr>"
-                    + "<br> <h2> Results: </h2>"
-                    + "Average Weighted Degree: " + f.format(avgWDegree)
-                    + "<br /><br />" + degreeImageFile
-                    + "</BODY></HTML>";
+                + "<hr>"
+                + "<br> <h2> Results: </h2>"
+                + "Average Weighted Degree: " + f.format(avgWDegree)
+                + "<br /><br />" + degreeImageFile
+                + "</BODY></HTML>";
         }
         return report;
     }
@@ -258,40 +262,40 @@ public class WeightedDegree implements Statistics, LongTask {
         dataset3.addSeries(odSeries);
 
         JFreeChart chart1 = ChartFactory.createXYLineChart(
-                "Degree Distribution",
-                "Value",
-                "Count",
-                dataset1,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "Degree Distribution",
+            "Value",
+            "Count",
+            dataset1,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         ChartUtils.decorateChart(chart1);
         ChartUtils.scaleChart(chart1, dSeries, false);
         String degreeImageFile = ChartUtils.renderChart(chart1, "w-degree-distribution.png");
 
         JFreeChart chart2 = ChartFactory.createXYLineChart(
-                "In-Degree Distribution",
-                "Value",
-                "Count",
-                dataset2,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "In-Degree Distribution",
+            "Value",
+            "Count",
+            dataset2,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         ChartUtils.decorateChart(chart2);
         ChartUtils.scaleChart(chart2, dSeries, false);
         String indegreeImageFile = ChartUtils.renderChart(chart2, "indegree-distribution.png");
 
         JFreeChart chart3 = ChartFactory.createXYLineChart(
-                "Out-Degree Distribution",
-                "Value",
-                "Count",
-                dataset3,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "Out-Degree Distribution",
+            "Value",
+            "Count",
+            dataset3,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         ChartUtils.decorateChart(chart3);
         ChartUtils.scaleChart(chart3, dSeries, false);
         String outdegreeImageFile = ChartUtils.renderChart(chart3, "outdegree-distribution.png");
@@ -299,13 +303,13 @@ public class WeightedDegree implements Statistics, LongTask {
         NumberFormat f = new DecimalFormat("#0.000");
 
         String report = "<HTML> <BODY> <h1>Weighted Degree Report </h1> "
-                + "<hr>"
-                + "<br> <h2> Results: </h2>"
-                + "Average Weighted Degree: " + f.format(avgWDegree)
-                + "<br /><br />" + degreeImageFile
-                + "<br /><br />" + indegreeImageFile
-                + "<br /><br />" + outdegreeImageFile
-                + "</BODY></HTML>";
+            + "<hr>"
+            + "<br> <h2> Results: </h2>"
+            + "Average Weighted Degree: " + f.format(avgWDegree)
+            + "<br /><br />" + degreeImageFile
+            + "<br /><br />" + indegreeImageFile
+            + "<br /><br />" + outdegreeImageFile
+            + "</BODY></HTML>";
 
         return report;
     }

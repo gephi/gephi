@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
@@ -64,7 +65,9 @@ public class DeleteColumn implements AttributeColumnsManipulator {
 
     @Override
     public void execute(Table table, Column column) {
-        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearColumnData.class, "DeleteColumn.confirmation.message", column.getTitle()), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(null,
+            NbBundle.getMessage(ClearColumnData.class, "DeleteColumn.confirmation.message", column.getTitle()),
+            getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             Lookup.getDefault().lookup(AttributeColumnsController.class).deleteAttributeColumn(table, column);
             Lookup.getDefault().lookup(DataTablesController.class).selectTable(table);
         }

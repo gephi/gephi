@@ -101,6 +101,20 @@ keystore.ks
 /modules/DesktopAppearance/target/
 /modules/branding/src/main/nbm-branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties
 /modules/branding/src/main/nbm-branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
+/modules/TestUtils/target
+.java-version
+nb-configuration.xml
+*.args
+*.gpg
+dev_id.cer
+*.p12
 
 *.iml
 .idea/
+*.project
+.settings/**
+**/.settings/**
+**/.classpath
+**/.factorypath
+modules/DesktopBranding/src/main/nbm-branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
+modules/DesktopBranding/src/main/nbm-branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/

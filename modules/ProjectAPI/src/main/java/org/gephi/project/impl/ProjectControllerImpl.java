@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.impl;
 
 import java.beans.PropertyEditorManager;
@@ -61,16 +62,10 @@ import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ProjectController.class)
 public class ProjectControllerImpl implements ProjectController {
-
-    private enum EventType {
-
-        INITIALIZE, SELECT, UNSELECT, CLOSE, DISABLE
-    }
 
     //Data
     private final ProjectsImpl projects = new ProjectsImpl();
@@ -102,8 +97,10 @@ public class ProjectControllerImpl implements ProjectController {
     public void startup() {
         final String OPEN_LAST_PROJECT_ON_STARTUP = "Open_Last_Project_On_Startup";
         final String NEW_PROJECT_ON_STARTUP = "New_Project_On_Startup";
-        boolean openLastProject = NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(OPEN_LAST_PROJECT_ON_STARTUP, false);
-        boolean newProjectStartup = NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(NEW_PROJECT_ON_STARTUP, false);
+        boolean openLastProject =
+            NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(OPEN_LAST_PROJECT_ON_STARTUP, false);
+        boolean newProjectStartup =
+            NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(NEW_PROJECT_ON_STARTUP, false);
 
         //Default project
         if (!openLastProject && newProjectStartup) {
@@ -147,7 +144,8 @@ public class ProjectControllerImpl implements ProjectController {
 
             //Event
             if (currentProject.getLookup().lookup(WorkspaceProvider.class).hasCurrentWorkspace()) {
-                fireWorkspaceEvent(EventType.UNSELECT, currentProject.getLookup().lookup(WorkspaceProvider.class).getCurrentWorkspace());
+                fireWorkspaceEvent(EventType.UNSELECT,
+                    currentProject.getLookup().lookup(WorkspaceProvider.class).getCurrentWorkspace());
             }
             for (Workspace ws : currentProject.getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces()) {
                 fireWorkspaceEvent(EventType.CLOSE, ws);
@@ -214,7 +212,8 @@ public class ProjectControllerImpl implements ProjectController {
 
     public void openProject(Project project) {
         final ProjectImpl projectImpl = (ProjectImpl) project;
-        final ProjectInformationImpl projectInformationImpl = projectImpl.getLookup().lookup(ProjectInformationImpl.class);
+        final ProjectInformationImpl projectInformationImpl =
+            projectImpl.getLookup().lookup(ProjectInformationImpl.class);
         final WorkspaceProviderImpl workspaceProviderImpl = project.getLookup().lookup(WorkspaceProviderImpl.class);
 
         if (projects.hasCurrentProject()) {
@@ -341,5 +340,10 @@ public class ProjectControllerImpl implements ProjectController {
                     break;
             }
         }
+    }
+
+    private enum EventType {
+
+        INITIALIZE, SELECT, UNSELECT, CLOSE, DISABLE
     }
 }

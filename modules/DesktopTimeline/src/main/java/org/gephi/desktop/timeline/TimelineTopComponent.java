@@ -39,13 +39,22 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.timeline;
 
 import java.awt.CardLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.timeline.api.TimelineController;
@@ -81,9 +90,25 @@ import org.openide.windows.TopComponent;
 //preferredID = "TimelineTopComponent")
 public final class TimelineTopComponent extends JPanel implements TimelineModelListener {
 
-    private transient TimelineDrawer drawer;
+    private final transient TimelineDrawer drawer;
     private transient TimelineModel model;
-    private transient TimelineController controller;
+    private final transient TimelineController controller;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton closeButton;
+    private javax.swing.JButton columnsButton;
+    private javax.swing.JPanel containerPanel;
+    private javax.swing.JPanel controlPanel;
+    private javax.swing.JButton disableButon;
+    private javax.swing.JPanel disabledTimeline;
+    private javax.swing.JLabel disabledTimelineLabel;
+    private javax.swing.JPanel enablePanel;
+    private javax.swing.JButton enableTimelineButton;
+    private javax.swing.JPanel innerPanel;
+    private javax.swing.JToolBar innerToolbar;
+    private javax.swing.JToggleButton playButton;
+    private javax.swing.JButton settingsButton;
+    private transient javax.swing.JPanel timelinePanel;
+    private javax.swing.JToolBar toolbarEnable;
 
     public TimelineTopComponent() {
         initComponents();
@@ -163,7 +188,9 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
                 //No columns message
                 if (columns.length == 0) {
-                    menu.add("<html><i>" + NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.charts.empty") + "</i></html>");
+                    menu.add("<html><i>" +
+                        NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.charts.empty") +
+                        "</i></html>");
                 }
 
                 //Separator
@@ -171,7 +198,8 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
                 //Disable
                 if (columns.length > 0) {
-                    JMenuItem disableItem = new JMenuItem(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.charts.disable"));
+                    JMenuItem disableItem = new JMenuItem(
+                        NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.charts.disable"));
                     disableItem.addActionListener(new ActionListener() {
 
                         @Override
@@ -198,9 +226,11 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 JPopupMenu menu = new JPopupMenu();
 
                 //Custom bounds
-                Image customBoundsIcon = ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/custom_bounds.png", false);
-                JMenuItem customBoundsItem = new JMenuItem(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setCustomBounds"),
-                        ImageUtilities.image2Icon(customBoundsIcon));
+                Image customBoundsIcon =
+                    ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/custom_bounds.png", false);
+                JMenuItem customBoundsItem = new JMenuItem(
+                    NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setCustomBounds"),
+                    ImageUtilities.image2Icon(customBoundsIcon));
                 customBoundsItem.addActionListener(new ActionListener() {
 
                     @Override
@@ -226,9 +256,11 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 menu.add(customBoundsItem);
 
                 //Animation
-                Image animationIcon = ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/animation_settings.png", false);
-                JMenuItem animationItem = new JMenuItem(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setPlaySettings"),
-                        ImageUtilities.image2Icon(animationIcon));
+                Image animationIcon =
+                    ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/animation_settings.png", false);
+                JMenuItem animationItem = new JMenuItem(
+                    NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setPlaySettings"),
+                    ImageUtilities.image2Icon(animationIcon));
                 animationItem.addActionListener(new ActionListener() {
 
                     @Override
@@ -246,9 +278,11 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 menu.add(animationItem);
 
                 //Date format
-                Image dateFormatIcon = ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/time_format_small.png", false);
-                JMenuItem dateFormatItem = new JMenuItem(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setTimeFormat"),
-                        ImageUtilities.image2Icon(dateFormatIcon));
+                Image dateFormatIcon =
+                    ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/time_format_small.png", false);
+                JMenuItem dateFormatItem = new JMenuItem(
+                    NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setTimeFormat"),
+                    ImageUtilities.image2Icon(dateFormatIcon));
                 dateFormatItem.addActionListener(new ActionListener() {
 
                     @Override
@@ -276,8 +310,9 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 if (model != null) {
                     //Bounds not set? Cannot play
                     if (model.getMin() == model.getIntervalStart()
-                            && model.getMax() == model.getIntervalEnd()) {
-                        String helpMessage = NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.playButton.intevalNotSet");
+                        && model.getMax() == model.getIntervalEnd()) {
+                        String helpMessage = NbBundle
+                            .getMessage(TimelineTopComponent.class, "TimelineTopComponent.playButton.intevalNotSet");
                         JOptionPane.showMessageDialog(null, helpMessage, helpMessage, JOptionPane.WARNING_MESSAGE);
                     }
 
@@ -409,9 +444,12 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         toolbarEnable.setRollover(true);
         toolbarEnable.setOpaque(false);
 
-        enableTimelineButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/activate.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(enableTimelineButton, NbBundle.getMessage (TimelineTopComponent.class, "TimelineTopComponent.enableTimelineButton.text")); // NOI18N
-        enableTimelineButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.enableTimelineButton.toolTipText")); // NOI18N
+        enableTimelineButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/timeline/resources/activate.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(enableTimelineButton, NbBundle
+            .getMessage(TimelineTopComponent.class, "TimelineTopComponent.enableTimelineButton.text")); // NOI18N
+        enableTimelineButton.setToolTipText(org.openide.util.NbBundle
+            .getMessage(TimelineTopComponent.class, "TimelineTopComponent.enableTimelineButton.toolTipText")); // NOI18N
         enableTimelineButton.setFocusable(false);
         enableTimelineButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         enableTimelineButton.setMargin(new java.awt.Insets(4, 6, 4, 6));
@@ -428,8 +466,10 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
         disabledTimeline.setLayout(new java.awt.GridBagLayout());
 
-        disabledTimelineLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/activate.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(disabledTimelineLabel, NbBundle.getMessage (TimelineTopComponent.class, "TimelineTopComponent.disabledTimelineLabel.text")); // NOI18N
+        disabledTimelineLabel.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/timeline/resources/activate.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(disabledTimelineLabel, NbBundle
+            .getMessage(TimelineTopComponent.class, "TimelineTopComponent.disabledTimelineLabel.text")); // NOI18N
         disabledTimelineLabel.setEnabled(false);
         disabledTimeline.add(disabledTimelineLabel, new java.awt.GridBagConstraints());
 
@@ -439,13 +479,17 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
         controlPanel.setLayout(new java.awt.GridBagLayout());
 
-        playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/disabled.png"))); // NOI18N
-        playButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.playButton.toolTipText")); // NOI18N
-        playButton.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/disabled.png"))); // NOI18N
+        playButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/timeline/resources/disabled.png"))); // NOI18N
+        playButton.setToolTipText(org.openide.util.NbBundle
+            .getMessage(TimelineTopComponent.class, "TimelineTopComponent.playButton.toolTipText")); // NOI18N
+        playButton.setDisabledIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/timeline/resources/disabled.png"))); // NOI18N
         playButton.setFocusable(false);
         playButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         playButton.setRequestFocusEnabled(false);
-        playButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/enabled.png"))); // NOI18N
+        playButton.setSelectedIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/timeline/resources/enabled.png"))); // NOI18N
         playButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -458,21 +502,25 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         innerToolbar.setRollover(true);
         innerToolbar.setOpaque(false);
 
-        disableButon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/cross.png"))); // NOI18N
-        disableButon.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.disableButon.toolTipText")); // NOI18N
+        disableButon.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/timeline/resources/cross.png"))); // NOI18N
+        disableButon.setToolTipText(org.openide.util.NbBundle
+            .getMessage(TimelineTopComponent.class, "TimelineTopComponent.disableButon.toolTipText")); // NOI18N
         disableButon.setFocusable(false);
         disableButon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         disableButon.setIconTextGap(0);
         disableButon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         innerToolbar.add(disableButon);
 
-        columnsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/chart.png"))); // NOI18N
+        columnsButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/timeline/resources/chart.png"))); // NOI18N
         columnsButton.setFocusable(false);
         columnsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         columnsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         innerToolbar.add(columnsButton);
 
-        settingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/settings.png"))); // NOI18N
+        settingsButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/timeline/resources/settings.png"))); // NOI18N
         settingsButton.setFocusable(false);
         settingsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         settingsButton.setIconTextGap(0);
@@ -512,7 +560,8 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         gridBagConstraints.weighty = 1.0;
         add(containerPanel, gridBagConstraints);
 
-        closeButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.closeButton.toolTipText")); // NOI18N
+        closeButton.setToolTipText(org.openide.util.NbBundle
+            .getMessage(TimelineTopComponent.class, "TimelineTopComponent.closeButton.toolTipText")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -520,22 +569,6 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         add(closeButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton closeButton;
-    private javax.swing.JButton columnsButton;
-    private javax.swing.JPanel containerPanel;
-    private javax.swing.JPanel controlPanel;
-    private javax.swing.JButton disableButon;
-    private javax.swing.JPanel disabledTimeline;
-    private javax.swing.JLabel disabledTimelineLabel;
-    private javax.swing.JPanel enablePanel;
-    private javax.swing.JButton enableTimelineButton;
-    private javax.swing.JPanel innerPanel;
-    private javax.swing.JToolBar innerToolbar;
-    private javax.swing.JToggleButton playButton;
-    private javax.swing.JButton settingsButton;
-    private transient javax.swing.JPanel timelinePanel;
-    private javax.swing.JToolBar toolbarEnable;
     // End of variables declaration//GEN-END:variables
 
     void writeProperties(java.util.Properties p) {

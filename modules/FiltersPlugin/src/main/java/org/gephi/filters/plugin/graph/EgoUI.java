@@ -39,15 +39,15 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.graph;
 
 import javax.swing.JPanel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface EgoUI {
 
-    public JPanel getPanel(EgoBuilder.EgoFilter egoFilter);
+    JPanel getPanel(EgoBuilder.EgoFilter egoFilter);
 }

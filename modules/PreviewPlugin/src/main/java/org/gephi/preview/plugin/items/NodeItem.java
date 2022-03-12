@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.plugin.items;
 
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.Item;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class NodeItem extends AbstractItem {
@@ -53,9 +53,9 @@ public class NodeItem extends AbstractItem {
     public static final String X = "x";
     public static final String Y = "y";
     public static final String Z = "z";
-    public static final String SIZE ="size";
+    public static final String SIZE = "size";
     public static final String COLOR = "color";
-    
+
     public NodeItem(Node source) {
         super(source, Item.NODE);
     }

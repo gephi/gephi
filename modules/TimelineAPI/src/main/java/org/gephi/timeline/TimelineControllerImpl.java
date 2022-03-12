@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.timeline;
 
 import java.util.ArrayList;
@@ -63,13 +64,16 @@ import org.gephi.graph.api.types.TimestampMap;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
-import org.gephi.timeline.api.*;
+import org.gephi.timeline.api.TimelineChart;
+import org.gephi.timeline.api.TimelineController;
+import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.api.TimelineModel.PlayMode;
+import org.gephi.timeline.api.TimelineModelEvent;
+import org.gephi.timeline.api.TimelineModelListener;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = TimelineController.class)
@@ -81,7 +85,7 @@ public class TimelineControllerImpl implements TimelineController {
     private GraphModel graphModel;
     private ScheduledExecutorService playExecutor;
     private FilterModel filterModel;
-    private FilterController filterController;
+    private final FilterController filterController;
 
     public TimelineControllerImpl() {
         listeners = new ArrayList<>();
@@ -168,7 +172,7 @@ public class TimelineControllerImpl implements TimelineController {
         graphModel.setTimeFormat(timeFormat);
     }
 
-//
+    //
 //    @Override
 //    public void dynamicModelChanged(DynamicModelEvent event) {
 //        if (event.getEventType().equals(DynamicModelEvent.EventType.MIN_CHANGED)
@@ -212,16 +216,20 @@ public class TimelineControllerImpl implements TimelineController {
             model.setPreviousMax(max);
 
             if (model.hasValidBounds()) {
-                fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MIN_MAX, model, new double[]{min, max}));
+                fireTimelineModelEvent(
+                    new TimelineModelEvent(TimelineModelEvent.EventType.MIN_MAX, model, new double[] {min, max}));
 
                 if (model.getCustomMax() != max || model.getCustomMin() != min) {
-                    fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, model, new double[]{min, max}));
+                    fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, model,
+                        new double[] {min, max}));
                 }
             }
 
-            if ((Double.isInfinite(previousBoundsMax) || Double.isInfinite(previousBoundsMin)) && model.hasValidBounds()) {
+            if ((Double.isInfinite(previousBoundsMax) || Double.isInfinite(previousBoundsMin)) &&
+                model.hasValidBounds()) {
                 fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, model, true));
-            } else if (!Double.isInfinite(previousBoundsMax) && !Double.isInfinite(previousBoundsMin) && !model.hasValidBounds()) {
+            } else if (!Double.isInfinite(previousBoundsMax) && !Double.isInfinite(previousBoundsMin) &&
+                !model.hasValidBounds()) {
                 fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, model, false));
             }
 
@@ -248,7 +256,7 @@ public class TimelineControllerImpl implements TimelineController {
                 }
 
                 //Custom bounds
-                double[] val = new double[]{min, max};
+                double[] val = new double[] {min, max};
                 model.setCustomMin(min);
                 model.setCustomMax(max);
                 fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, model, val));
@@ -313,7 +321,8 @@ public class TimelineControllerImpl implements TimelineController {
                 } else {
                     if (dynamicQuery == null) {
                         //Create dynamic filter
-                        DynamicRangeBuilder rangeBuilder = filterModel.getLibrary().getLookup().lookup(DynamicRangeBuilder.class);
+                        DynamicRangeBuilder rangeBuilder =
+                            filterModel.getLibrary().getLookup().lookup(DynamicRangeBuilder.class);
                         FilterBuilder[] fb = rangeBuilder.getBuilders(filterModel.getWorkspace());
                         if (fb.length > 0) {
                             dynamicQuery = filterController.createQuery(fb[0]);
@@ -327,7 +336,8 @@ public class TimelineControllerImpl implements TimelineController {
                         } else {
                             filterController.filterVisible(dynamicQuery);
                         }
-                        fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.INTERVAL, model, new double[]{from, to}));
+                        fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.INTERVAL, model,
+                            new double[] {from, to}));
                     }
                 }
             }
@@ -353,7 +363,7 @@ public class TimelineControllerImpl implements TimelineController {
     public void selectColumn(final String column) {
         if (model != null) {
             if (!(model.getChart() == null && column == null)
-                    || (model.getChart() != null && !model.getChart().getColumn().equals(column))) {
+                || (model.getChart() != null && !model.getChart().getColumn().equals(column))) {
                 if (column != null && graphModel.getGraph().getAttribute(column) == null) {
                     throw new IllegalArgumentException("Not a graph column");
                 }
@@ -361,11 +371,13 @@ public class TimelineControllerImpl implements TimelineController {
 
                     @Override
                     public void run() {
-                        Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraphVisible();
+                        Graph graph =
+                            Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraphVisible();
                         TimelineChart chart = TimelineChartImpl.of(graph, column);
                         model.setChart(chart);
 
-                        fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CHART, model, chart));
+                        fireTimelineModelEvent(
+                            new TimelineModelEvent(TimelineModelEvent.EventType.CHART, model, chart));
                     }
                 }, "Timeline Chart");
                 thread.start();

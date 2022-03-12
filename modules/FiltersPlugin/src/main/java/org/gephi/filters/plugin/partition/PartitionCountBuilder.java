@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.partition;
 
 import java.util.ArrayList;
@@ -53,7 +54,14 @@ import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.AbstractAttributeFilter;
 import org.gephi.filters.plugin.AbstractAttributeFilterBuilder;
 import org.gephi.filters.plugin.graph.RangeUI;
-import org.gephi.filters.spi.*;
+import org.gephi.filters.spi.Category;
+import org.gephi.filters.spi.CategoryBuilder;
+import org.gephi.filters.spi.EdgeFilter;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.filters.spi.RangeFilter;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
@@ -66,16 +74,15 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = CategoryBuilder.class)
 public class PartitionCountBuilder implements CategoryBuilder {
 
     private final static Category PARTITION_COUNT = new Category(
-            NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.name"),
-            null,
-            FilterLibrary.ATTRIBUTES);
+        NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.name"),
+        null,
+        FilterLibrary.ATTRIBUTES);
 
     @Override
     public Category getCategory() {
@@ -86,16 +93,17 @@ public class PartitionCountBuilder implements CategoryBuilder {
     public FilterBuilder[] getBuilders(Workspace workspace) {
         List<FilterBuilder> builders = new ArrayList<>();
         GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        Graph graph = gm.getGraph();
         AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel(workspace);
 
         //Force refresh
-        am.getNodeFunctions(graph);
+        am.getNodeFunctions();
+        am.getEdgeFunctions();
 
         for (Column nodeCol : gm.getNodeTable()) {
             if (!nodeCol.isProperty()) {
-                if (am.getNodePartition(graph, nodeCol) != null) {
-                    PartitionCountFilterBuilder builder = new PartitionCountFilterBuilder(nodeCol, am);
+                Partition partition = am.getNodePartition(nodeCol);
+                if (partition != null) {
+                    PartitionCountFilterBuilder builder = new PartitionCountFilterBuilder(partition);
                     builders.add(builder);
                 }
             }
@@ -103,8 +111,9 @@ public class PartitionCountBuilder implements CategoryBuilder {
 
         for (Column edgeCol : gm.getEdgeTable()) {
             if (!edgeCol.isProperty()) {
-                if (am.getEdgePartition(graph, edgeCol) != null) {
-                    PartitionCountFilterBuilder builder = new PartitionCountFilterBuilder(edgeCol, am);
+                Partition partition = am.getEdgePartition(edgeCol);
+                if (partition != null) {
+                    PartitionCountFilterBuilder builder = new PartitionCountFilterBuilder(partition);
                     builders.add(builder);
                 }
             }
@@ -115,22 +124,22 @@ public class PartitionCountBuilder implements CategoryBuilder {
 
     private static class PartitionCountFilterBuilder extends AbstractAttributeFilterBuilder {
 
-        private final AppearanceModel model;
+        private final Partition partition;
 
-        public PartitionCountFilterBuilder(Column column, AppearanceModel model) {
-            super(column,
-                    PARTITION_COUNT,
-                    NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.description"),
-                    null);
-            this.model = model;
+        public PartitionCountFilterBuilder(Partition partition) {
+            super(partition.getColumn(),
+                PARTITION_COUNT,
+                NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.description"),
+                null);
+            this.partition = partition;
         }
 
         @Override
         public PartitionCountFilter getFilter(Workspace workspace) {
             if (AttributeUtils.isNodeColumn(column)) {
-                return new PartitionCountFilter.Node(column, model);
+                return new PartitionCountFilter.Node(partition);
             } else {
-                return new PartitionCountFilter.Edge(column, model);
+                return new PartitionCountFilter.Edge(partition);
             }
         }
 
@@ -144,17 +153,15 @@ public class PartitionCountBuilder implements CategoryBuilder {
         }
     }
 
-    public static abstract class PartitionCountFilter<K extends Element> extends AbstractAttributeFilter<K> implements RangeFilter {
+    public static abstract class PartitionCountFilter<K extends Element> extends AbstractAttributeFilter<K>
+        implements RangeFilter {
 
-        protected AppearanceModel appearanceModel;
-        private Range range;
         protected Partition partition;
+        private Range range;
 
-        public PartitionCountFilter(Column column, AppearanceModel model) {
+        public PartitionCountFilter(Partition partition) {
             super(NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.name"),
-                    column);
-            this.column = column;
-            this.appearanceModel = model;
+                partition.getColumn());
 
             //Add property
             addProperty(Range.class, "range");
@@ -163,7 +170,7 @@ public class PartitionCountBuilder implements CategoryBuilder {
         @Override
         public boolean evaluate(Graph graph, Element element) {
             Object p = partition.getValue(element, graph);
-            int partCount = partition.count(p);
+            int partCount = partition.count(p, graph);
             return range.isInRange(partCount);
         }
 
@@ -174,11 +181,11 @@ public class PartitionCountBuilder implements CategoryBuilder {
         @Override
         public Number[] getValues(Graph graph) {
             if (init(graph)) {
-                Collection vals = partition.getValues();
+                Collection vals = partition.getValues(graph);
                 Integer[] values = new Integer[vals.size()];
                 int i = 0;
                 for (Object v : vals) {
-                    values[i++] = partition.count(v);
+                    values[i++] = partition.count(v, graph);
                 }
                 return values;
             } else {
@@ -201,27 +208,25 @@ public class PartitionCountBuilder implements CategoryBuilder {
 
         public static class Node extends PartitionCountFilter<org.gephi.graph.api.Node> implements NodeFilter {
 
-            public Node(Column column, AppearanceModel model) {
-                super(column, model);
+            public Node(Partition partition) {
+                super(partition);
             }
 
             @Override
             public boolean init(Graph graph) {
-                partition = appearanceModel.getNodePartition(graph.getModel().getGraph(), column);
-                return partition != null;
+                return partition != null && partition.getColumn() != null;
             }
         }
 
         public static class Edge extends PartitionCountFilter<org.gephi.graph.api.Edge> implements EdgeFilter {
 
-            public Edge(Column column, AppearanceModel model) {
-                super(column, model);
+            public Edge(Partition partition) {
+                super(partition);
             }
 
             @Override
             public boolean init(Graph graph) {
-                partition = appearanceModel.getEdgePartition(graph.getModel().getGraph(), column);
-                return partition != null;
+                return partition != null && partition.getColumn() != null;
             }
         }
     }

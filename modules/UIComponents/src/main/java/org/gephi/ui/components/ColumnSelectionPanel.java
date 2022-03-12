@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.Component;
@@ -58,49 +59,12 @@ import javax.swing.JPopupMenu;
 //Inspired by org.netbeans.swing.etable
 public class ColumnSelectionPanel extends JPanel {
 
-    private Map<ColumnSelectionModel, JCheckBox> checkBoxes;
+    private final Map<ColumnSelectionModel, JCheckBox> checkBoxes;
 
     public ColumnSelectionPanel(ColumnSelectionModel[] columns) {
         checkBoxes = new HashMap<>();
         setLayout(new GridBagLayout());
         init(columns);
-    }
-
-    public void init(ColumnSelectionModel[] columns) {
-        int i = 0;
-        int j = 0;
-        int width = 1;
-        int rows = columns.length / width;
-
-        for (int col = 0; col < columns.length; col++) {
-            if (i >= rows) {
-                i = 0;
-                j++;
-            }
-            ColumnSelectionModel column = columns[col];
-            JCheckBox checkBox = new JCheckBox();
-            checkBox.setText(column.getName());
-            checkBox.setSelected(column.isSelected());
-            checkBox.setEnabled(column.isEnabled());
-
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.gridx = j;
-            gridBagConstraints.gridy = i + i;
-            gridBagConstraints.insets = new java.awt.Insets(0, 12, 0, 12);
-            gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
-            gridBagConstraints.weightx = 1;
-            add(checkBox, gridBagConstraints);
-            checkBoxes.put(column, checkBox);
-            i++;
-        }
-    }
-
-    private void applyDialogChanges() {
-        for (Iterator<ColumnSelectionModel> it = checkBoxes.keySet().iterator(); it.hasNext();) {
-            ColumnSelectionModel columnModel = it.next();
-            JCheckBox checkBox = checkBoxes.get(columnModel);
-            columnModel.setSelected(checkBox.isSelected());
-        }
     }
 
     public static void showColumnSelectionPopup(ColumnSelectionModel[] columns, Component c) {
@@ -133,14 +97,51 @@ public class ColumnSelectionPanel extends JPanel {
         }
     }
 
-    public static interface ColumnSelectionModel {
+    public void init(ColumnSelectionModel[] columns) {
+        int i = 0;
+        int j = 0;
+        int width = 1;
+        int rows = columns.length / width;
 
-        public boolean isEnabled();
+        for (int col = 0; col < columns.length; col++) {
+            if (i >= rows) {
+                i = 0;
+                j++;
+            }
+            ColumnSelectionModel column = columns[col];
+            JCheckBox checkBox = new JCheckBox();
+            checkBox.setText(column.getName());
+            checkBox.setSelected(column.isSelected());
+            checkBox.setEnabled(column.isEnabled());
 
-        public boolean isSelected();
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.gridx = j;
+            gridBagConstraints.gridy = i + i;
+            gridBagConstraints.insets = new java.awt.Insets(0, 12, 0, 12);
+            gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
+            gridBagConstraints.weightx = 1;
+            add(checkBox, gridBagConstraints);
+            checkBoxes.put(column, checkBox);
+            i++;
+        }
+    }
 
-        public void setSelected(boolean selected);
+    private void applyDialogChanges() {
+        for (Iterator<ColumnSelectionModel> it = checkBoxes.keySet().iterator(); it.hasNext(); ) {
+            ColumnSelectionModel columnModel = it.next();
+            JCheckBox checkBox = checkBoxes.get(columnModel);
+            columnModel.setSelected(checkBox.isSelected());
+        }
+    }
 
-        public String getName();
+    public interface ColumnSelectionModel {
+
+        boolean isEnabled();
+
+        boolean isSelected();
+
+        void setSelected(boolean selected);
+
+        String getName();
     }
 }

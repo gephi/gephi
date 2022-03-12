@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.text;
 
 import java.awt.Color;
@@ -60,7 +61,6 @@ import org.gephi.visualization.apiimpl.VizConfig;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class TextModelImpl {
@@ -122,12 +122,12 @@ public class TextModelImpl {
         }
     }
 
-    public void setListeners(List<ChangeListener> listeners) {
-        this.listeners = listeners;
-    }
-
     public List<ChangeListener> getListeners() {
         return listeners;
+    }
+
+    public void setListeners(List<ChangeListener> listeners) {
+        this.listeners = listeners;
     }
 
     //Getter & Setters
@@ -135,13 +135,13 @@ public class TextModelImpl {
         return showEdgeLabels;
     }
 
-    public boolean isShowNodeLabels() {
-        return showNodeLabels;
-    }
-
     public void setShowEdgeLabels(boolean showEdgeLabels) {
         this.showEdgeLabels = showEdgeLabels;
         fireChangeEvent();
+    }
+
+    public boolean isShowNodeLabels() {
+        return showNodeLabels;
     }
 
     public void setShowNodeLabels(boolean showNodeLabels) {
@@ -149,9 +149,17 @@ public class TextModelImpl {
         fireChangeEvent();
     }
 
+    public Font getEdgeFont() {
+        return edgeFont;
+    }
+
     public void setEdgeFont(Font edgeFont) {
         this.edgeFont = edgeFont;
         fireChangeEvent();
+    }
+
+    public float getEdgeSizeFactor() {
+        return edgeSizeFactor;
     }
 
     public void setEdgeSizeFactor(float edgeSizeFactor) {
@@ -159,30 +167,22 @@ public class TextModelImpl {
         fireChangeEvent();
     }
 
+    public Font getNodeFont() {
+        return nodeFont;
+    }
+
     public void setNodeFont(Font nodeFont) {
         this.nodeFont = nodeFont;
         fireChangeEvent();
     }
 
+    public float getNodeSizeFactor() {
+        return nodeSizeFactor;
+    }
+
     public void setNodeSizeFactor(float nodeSizeFactor) {
         this.nodeSizeFactor = nodeSizeFactor;
         fireChangeEvent();
-    }
-
-    public Font getEdgeFont() {
-        return edgeFont;
-    }
-
-    public float getEdgeSizeFactor() {
-        return edgeSizeFactor;
-    }
-
-    public Font getNodeFont() {
-        return nodeFont;
-    }
-
-    public float getNodeSizeFactor() {
-        return nodeSizeFactor;
     }
 
     public ColorMode getColorMode() {

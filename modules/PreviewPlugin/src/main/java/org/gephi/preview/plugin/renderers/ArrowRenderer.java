@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.plugin.renderers;
 
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -48,7 +49,16 @@ import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 import java.util.Locale;
 import org.gephi.graph.api.Node;
-import org.gephi.preview.api.*;
+import org.gephi.preview.api.CanvasSize;
+import org.gephi.preview.api.G2DTarget;
+import org.gephi.preview.api.Item;
+import org.gephi.preview.api.PDFTarget;
+import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.api.RenderTarget;
+import org.gephi.preview.api.SVGTarget;
+import org.gephi.preview.api.Vector;
 import org.gephi.preview.plugin.builders.EdgeBuilder;
 import org.gephi.preview.plugin.builders.NodeBuilder;
 import org.gephi.preview.plugin.items.EdgeItem;
@@ -60,7 +70,6 @@ import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
 
 /**
- *
  * @author Yudi Xue, Mathieu Bastian
  */
 @ServiceProvider(service = Renderer.class, position = 200)
@@ -77,9 +86,9 @@ public class ArrowRenderer implements Renderer {
 
     @Override
     public void render(
-            final Item item,
-            final RenderTarget target,
-            final PreviewProperties properties) {
+        final Item item,
+        final RenderTarget target,
+        final PreviewProperties properties) {
         final Helper h = new Helper(item, properties);
         final Color color = EdgeRenderer.getColor(item, properties);
 
@@ -96,13 +105,13 @@ public class ArrowRenderer implements Renderer {
             final SVGTarget svgTarget = (SVGTarget) target;
             final Element arrowElem = svgTarget.createElement("polyline");
             arrowElem.setAttribute("points", String.format(
-                    Locale.ENGLISH,
-                    "%f,%f %f,%f %f,%f",
-                    h.p1.x, h.p1.y, h.p2.x, h.p2.y, h.p3.x, h.p3.y));
+                Locale.ENGLISH,
+                "%f,%f %f,%f %f,%f",
+                h.p1.x, h.p1.y, h.p2.x, h.p2.y, h.p3.x, h.p3.y));
             arrowElem.setAttribute("class", String.format(
-                    "%s %s",
-                    SVGUtils.idAsClassAttribute(((Node) h.sourceItem.getSource()).getId()),
-                    SVGUtils.idAsClassAttribute(((Node) h.targetItem.getSource()).getId())
+                "%s %s",
+                SVGUtils.idAsClassAttribute(((Node) h.sourceItem.getSource()).getId()),
+                SVGUtils.idAsClassAttribute(((Node) h.targetItem.getSource()).getId())
             ));
             arrowElem.setAttribute("fill", svgTarget.toHexString(color));
             arrowElem.setAttribute("fill-opacity", (color.getAlpha() / 255f) + "");
@@ -131,48 +140,52 @@ public class ArrowRenderer implements Renderer {
     }
 
     @Override
+    public void postProcess(PreviewModel previewModel, RenderTarget renderTarget, PreviewProperties properties) {
+    }
+
+    @Override
     public CanvasSize getCanvasSize(
-            final Item item,
-            final PreviewProperties properties) {
+        final Item item,
+        final PreviewProperties properties) {
         final Helper h = new Helper(item, properties);
         final float minX = Math.min(Math.min(h.p1.x, h.p2.x), h.p3.x);
         final float minY = Math.min(Math.min(h.p1.y, h.p2.y), h.p3.y);
         final float maxX = Math.max(Math.max(h.p1.x, h.p2.x), h.p3.x);
         final float maxY = Math.max(Math.max(h.p1.y, h.p2.y), h.p3.y);
         return properties.getBooleanValue(PreviewProperty.EDGE_CURVED)
-                ? new CanvasSize()
-                : new CanvasSize(minX, minY, maxX - minX, maxY - minY);
+            ? new CanvasSize()
+            : new CanvasSize(minX, minY, maxX - minX, maxY - minY);
     }
 
     @Override
     public PreviewProperty[] getProperties() {
-        return new PreviewProperty[]{
+        return new PreviewProperty[] {
             PreviewProperty.createProperty(this, PreviewProperty.ARROW_SIZE, Float.class,
-            NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.size.displayName"),
-            NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.size.description"),
-            PreviewProperty.CATEGORY_EDGE_ARROWS, PreviewProperty.SHOW_EDGES).setValue(defaultArrowSize)};
+                NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.size.displayName"),
+                NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.size.description"),
+                PreviewProperty.CATEGORY_EDGE_ARROWS, PreviewProperty.SHOW_EDGES).setValue(defaultArrowSize)};
     }
 
     private boolean showArrows(PreviewProperties properties) {
         return properties.getBooleanValue(PreviewProperty.SHOW_EDGES)
-                && properties.getBooleanValue(PreviewProperty.DIRECTED)
-                && !properties.getBooleanValue(PreviewProperty.EDGE_CURVED)
-                && !properties.getBooleanValue(PreviewProperty.MOVING);
+            && properties.getBooleanValue(PreviewProperty.DIRECTED)
+            && !properties.getBooleanValue(PreviewProperty.EDGE_CURVED)
+            && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 
     @Override
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
         return item instanceof EdgeItem
-                && showArrows(properties)
-                && (Boolean) item.getData(EdgeItem.DIRECTED)
-                && !(Boolean) item.getData(EdgeItem.SELF_LOOP);
+            && showArrows(properties)
+            && (Boolean) item.getData(EdgeItem.DIRECTED)
+            && !(Boolean) item.getData(EdgeItem.SELF_LOOP);
     }
 
     @Override
     public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
         return (itemBuilder instanceof EdgeBuilder
-                || itemBuilder instanceof NodeBuilder)
-                && showArrows(properties);//Needs some properties of nodes
+            || itemBuilder instanceof NodeBuilder)
+            && showArrows(properties);//Needs some properties of nodes
     }
 
     @Override
@@ -189,8 +202,8 @@ public class ArrowRenderer implements Renderer {
         public final Vector p3;
 
         public Helper(
-                final Item item,
-                final PreviewProperties properties) {
+            final Item item,
+            final PreviewProperties properties) {
             sourceItem = item.getData(EdgeRenderer.SOURCE);
             targetItem = item.getData(EdgeRenderer.TARGET);
 
@@ -201,11 +214,12 @@ public class ArrowRenderer implements Renderer {
 
             final Double weight = item.getData(EdgeItem.WEIGHT);
             final float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE)
-                    * weight.floatValue();
+                * weight.floatValue();
             float radius = -(properties.getFloatValue(PreviewProperty.EDGE_RADIUS)
-                    + (Float) targetItem.getData(NodeItem.SIZE) / 2f
-                    + Math.max(0, properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH)) / 2f //We have to divide by 2 because the border stroke is not only an outline but also draws the other half of the curve inside the node
-                    );
+                + (Float) targetItem.getData(NodeItem.SIZE) / 2f
+                + Math.max(0, properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH)) /
+                2f //We have to divide by 2 because the border stroke is not only an outline but also draws the other half of the curve inside the node
+            );
 
             //Avoid arrow from passing the node's center:
             if (radius > 0) {

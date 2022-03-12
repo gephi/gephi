@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.values;
 
 import org.gephi.datalab.spi.values.AttributeValueManipulator;
@@ -47,10 +48,11 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for NumberListStatisticsReport AttributeValueManipulatorBuilder.
+ *
  * @author Eduardo Ramos
  */
-@ServiceProvider(service=AttributeValueManipulatorBuilder.class)
-public class NumberListStatisticsReportBuilder implements AttributeValueManipulatorBuilder{
+@ServiceProvider(service = AttributeValueManipulatorBuilder.class)
+public class NumberListStatisticsReportBuilder implements AttributeValueManipulatorBuilder {
 
     @Override
     public AttributeValueManipulator getAttributeValueManipulator() {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.fruchterman;
 
 import javax.swing.Icon;
@@ -50,13 +51,12 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = LayoutBuilder.class)
 public class FruchtermanReingoldBuilder implements LayoutBuilder {
 
-    private FruchtermanReingoldLayoutUI ui = new FruchtermanReingoldLayoutUI();
+    private final FruchtermanReingoldLayoutUI ui = new FruchtermanReingoldLayoutUI();
 
     @Override
     public String getName() {

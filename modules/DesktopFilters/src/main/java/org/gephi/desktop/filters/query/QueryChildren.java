@@ -39,10 +39,10 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.filters.query;
 
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,7 +60,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.datatransfer.PasteType;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class QueryChildren extends Children.Array {
@@ -85,7 +84,7 @@ public class QueryChildren extends Children.Array {
             nodesChildren.add(new HelpNode());
         } else {
             Query[] children = topQuery != null ? topQuery : query.getChildren();
-            boolean hasParameters = query == null ? false : query.getPropertiesCount() > 0;
+            boolean hasParameters = query != null && query.getPropertiesCount() > 0;
             int slots = topQuery != null ? topQuery.length : query.getChildrenSlotsCount();
 
             if (slots == Integer.MAX_VALUE) {

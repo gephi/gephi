@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.branding.desktop.reporter;
 
 import java.awt.event.ActionEvent;
@@ -54,15 +55,34 @@ import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ReporterHandler extends java.util.logging.Handler implements Callable<JButton>, ActionListener {
 
     private Throwable throwable;
-    private String MEMORY_ERROR;
+    private final String MEMORY_ERROR;
+
     public ReporterHandler() {
         MEMORY_ERROR = NbBundle.getMessage(ReporterHandler.class, "OutOfMemoryError.message");
+    }
+
+    protected static String createMessage(Throwable thr) {
+        //ignore causes with empty stacktraces -> they are just annotations
+        while ((thr.getCause() != null) && (thr.getCause().getStackTrace().length != 0)) {
+            thr = thr.getCause();
+        }
+        String message = thr.toString();
+        if (message.startsWith("java.lang.")) {
+            message = message.substring(10);
+        }
+        int indexClassName = message.indexOf(':');
+        if (indexClassName == -1) { // there is no message after className
+            if (thr.getStackTrace().length != 0) {
+                StackTraceElement elem = thr.getStackTrace()[0];
+                return message + " at " + elem.getClassName() + "." + elem.getMethodName();
+            }
+        }
+        return message;
     }
 
     @Override
@@ -106,24 +126,5 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
         report.setSummary(createMessage(throwable));
         ReportPanel panel = new ReportPanel(report);
         panel.showDialog();
-    }
-
-    protected static String createMessage(Throwable thr) {
-        //ignore causes with empty stacktraces -> they are just annotations
-        while ((thr.getCause() != null) && (thr.getCause().getStackTrace().length != 0)) {
-            thr = thr.getCause();
-        }
-        String message = thr.toString();
-        if (message.startsWith("java.lang.")) {
-            message = message.substring(10);
-        }
-        int indexClassName = message.indexOf(':');
-        if (indexClassName == -1) { // there is no message after className
-            if (thr.getStackTrace().length != 0) {
-                StackTraceElement elem = thr.getStackTrace()[0];
-                return message + " at " + elem.getClassName() + "." + elem.getMethodName();
-            }
-        }
-        return message;
     }
 }

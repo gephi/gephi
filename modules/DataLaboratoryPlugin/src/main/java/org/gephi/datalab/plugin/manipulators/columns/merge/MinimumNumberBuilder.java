@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 
@@ -48,10 +49,11 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for MinimumNumber AttributeColumnsMergeStrategy.
+ *
  * @author Eduardo Ramos
  */
-@ServiceProvider(service=AttributeColumnsMergeStrategyBuilder.class)
-public class MinimumNumberBuilder implements AttributeColumnsMergeStrategyBuilder{
+@ServiceProvider(service = AttributeColumnsMergeStrategyBuilder.class)
+public class MinimumNumberBuilder implements AttributeColumnsMergeStrategyBuilder {
 
     @Override
     public AttributeColumnsMergeStrategy getAttributeColumnsMergeStrategy() {

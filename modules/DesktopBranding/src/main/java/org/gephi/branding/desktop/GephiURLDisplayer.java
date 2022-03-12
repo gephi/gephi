@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.branding.desktop;
 
 import java.awt.Desktop;
@@ -50,7 +51,6 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Eduardo Ramos
  */
 @ServiceProvider(service = URLDisplayer.class, position = 0)

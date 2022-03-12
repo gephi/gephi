@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.openord;
 
 import gnu.trove.iterator.TIntFloatIterator;
@@ -48,7 +49,6 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class Worker implements Runnable {
@@ -57,6 +57,7 @@ public class Worker implements Runnable {
     private final int id;
     private final int numThreads;
     private final CyclicBarrier barrier;
+    protected Random random;
     private boolean done = false;
     //Data
     private Node[] positions;
@@ -73,7 +74,6 @@ public class Worker implements Runnable {
     private float cutEnd;
     private float cutOffLength;
     private boolean fineDensity;
-    protected Random random;
 
     public Worker(int id, int numThreads, CyclicBarrier barrier) {
         this.barrier = barrier;
@@ -154,7 +154,7 @@ public class Worker implements Runnable {
 
     private float getNodeEnergy(int nodeIndex) {
         double attraction_factor = attraction * attraction
-                * attraction * attraction * 2e-2;
+            * attraction * attraction * 2e-2;
 
         float xDis, yDis;
         float energyDistance;
@@ -163,7 +163,7 @@ public class Worker implements Runnable {
         Node n = positions[nodeIndex];
 
         if (neighbors[nodeIndex] != null) {
-            for (TIntFloatIterator itr = neighbors[nodeIndex].iterator(); itr.hasNext();) {
+            for (TIntFloatIterator itr = neighbors[nodeIndex].iterator(); itr.hasNext(); ) {
                 itr.advance();
                 float weight = itr.value();
                 Node m = positions[itr.key()];
@@ -199,7 +199,7 @@ public class Worker implements Runnable {
         if (map != null) {
             Node n = positions[nodeIndex];
 
-            for (TIntFloatIterator itr = map.iterator(); itr.hasNext();) {
+            for (TIntFloatIterator itr = map.iterator(); itr.hasNext(); ) {
                 itr.advance();
                 float weight = itr.value();
                 Node m = positions[itr.key()];
@@ -230,7 +230,7 @@ public class Worker implements Runnable {
             int maxIndex = -1;
             int neighborsCount = map.size();
             if (neighborsCount >= minEdges) {
-                for (TIntFloatIterator itr = neighbors[nodeIndex].iterator(); itr.hasNext();) {
+                for (TIntFloatIterator itr = neighbors[nodeIndex].iterator(); itr.hasNext(); ) {
                     itr.advance();
                     Node m = positions[itr.key()];
 
@@ -279,20 +279,20 @@ public class Worker implements Runnable {
         this.done = done;
     }
 
-    public void setPositions(Node[] positions) {
-        this.positions = positions;
-    }
-
-    public void setNeighbors(TIntFloatHashMap[] neighbors) {
-        this.neighbors = neighbors;
-    }
-
     public Node[] getPositions() {
         return positions;
     }
 
+    public void setPositions(Node[] positions) {
+        this.positions = positions;
+    }
+
     public boolean isFineDensity() {
         return fineDensity;
+    }
+
+    public void setFineDensity(boolean fineDensity) {
+        this.fineDensity = fineDensity;
     }
 
     public boolean isFineFirstAdd() {
@@ -307,8 +307,16 @@ public class Worker implements Runnable {
         return densityGrid;
     }
 
+    public void setDensityGrid(DensityGrid densityGrid) {
+        this.densityGrid = densityGrid;
+    }
+
     public TIntFloatHashMap[] getNeighbors() {
         return neighbors;
+    }
+
+    public void setNeighbors(TIntFloatHashMap[] neighbors) {
+        this.neighbors = neighbors;
     }
 
     public void setSTAGE(int STAGE) {
@@ -337,14 +345,6 @@ public class Worker implements Runnable {
 
     public void setRandom(Random random) {
         this.random = random;
-    }
-
-    public void setFineDensity(boolean fineDensity) {
-        this.fineDensity = fineDensity;
-    }
-
-    public void setDensityGrid(DensityGrid densityGrid) {
-        this.densityGrid = densityGrid;
     }
 
     public int getId() {

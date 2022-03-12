@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.attribute;
 
 import java.util.ArrayList;
@@ -65,16 +66,15 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = CategoryBuilder.class)
 public class AttributeNonNullBuilder implements CategoryBuilder {
 
     private final static Category NONNULL = new Category(
-            NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeNonNullBuilder.name"),
-            null,
-            FilterLibrary.ATTRIBUTES);
+        NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeNonNullBuilder.name"),
+        null,
+        FilterLibrary.ATTRIBUTES);
 
     @Override
     public Category getCategory() {
@@ -104,14 +104,15 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
 
         public AttributeNonNullFilterBuilder(Column column) {
             super(column,
-                    NONNULL,
-                    NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeNonNullBuilder.description"),
-                    null);
+                NONNULL,
+                NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeNonNullBuilder.description"),
+                null);
         }
 
         @Override
         public AttributeNonNullFilter getFilter(Workspace workspace) {
-            return AttributeUtils.isNodeColumn(column) ? new AttributeNonNullFilter.Node(column) : new AttributeNonNullFilter.Edge(column);
+            return AttributeUtils.isNodeColumn(column) ? new AttributeNonNullFilter.Node(column) :
+                new AttributeNonNullFilter.Edge(column);
         }
 
         @Override
@@ -124,19 +125,15 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
 
         public AttributeNonNullFilter(Column column) {
             super(NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeNonNullBuilder.name"),
-                    column);
+                column);
         }
 
         @Override
         public boolean init(Graph graph) {
             if (AttributeUtils.isNodeColumn(column)) {
-                if (graph.getNodeCount() == 0) {
-                    return false;
-                }
+                return graph.getNodeCount() != 0;
             } else if (AttributeUtils.isEdgeColumn(column)) {
-                if (graph.getEdgeCount() == 0) {
-                    return false;
-                }
+                return graph.getEdgeCount() != 0;
             }
             return true;
         }

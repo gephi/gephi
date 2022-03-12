@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.edges;
 
 import javax.swing.Icon;
@@ -51,6 +52,7 @@ import org.openide.util.NbBundle;
 
 /**
  * Edges manipulator that shows the source node of an edge centered in graph view.
+ *
  * @author Eduardo Ramos
  */
 public class SelectSourceOnGraph extends BasicEdgesManipulator {
@@ -100,6 +102,7 @@ public class SelectSourceOnGraph extends BasicEdgesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/magnifier--arrow.png", true);
+        return ImageUtilities
+            .loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/magnifier--arrow.png", true);
     }
 }

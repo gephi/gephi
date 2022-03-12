@@ -39,16 +39,18 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.plugin.builders;
 
-import org.gephi.graph.api.*;
+import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.EdgeItem;
 import org.gephi.preview.spi.ItemBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ItemBuilder.class, position = 300)

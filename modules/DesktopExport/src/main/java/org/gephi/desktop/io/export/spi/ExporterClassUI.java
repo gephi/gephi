@@ -39,17 +39,17 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.io.export.spi;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface ExporterClassUI {
 
-    public String getName();
+    String getName();
 
-    public boolean isEnable();
+    boolean isEnable();
 
-    public void action();
+    void action();
 }

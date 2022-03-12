@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components;
 
 import java.awt.Component;
@@ -47,7 +48,7 @@ import javax.swing.Icon;
 
 /**
  * Decorated icon. A (smaller) decoration icon is placed at the top right.
- * 
+ *
  * @author Mathieu Bastian
  */
 public class DecoratedIcon implements Icon {
@@ -86,8 +87,8 @@ public class DecoratedIcon implements Icon {
         return orig.getIconHeight();
     }
 
-    public static interface DecorationController {
+    public interface DecorationController {
 
-        public boolean isDecorated();
+        boolean isDecorated();
     }
 }

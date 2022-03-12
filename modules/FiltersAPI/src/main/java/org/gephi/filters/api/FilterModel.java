@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.api;
 
 import javax.swing.event.ChangeListener;
@@ -62,14 +63,14 @@ public interface FilterModel {
      *
      * @return the filter library
      */
-    public FilterLibrary getLibrary();
+    FilterLibrary getLibrary();
 
     /**
      * Returns all queries in the model, represented by their root query.
      *
      * @return all root queries in the model
      */
-    public Query[] getQueries();
+    Query[] getQueries();
 
     /**
      * Returns the query currently active or <code>null</code> if none is
@@ -77,29 +78,29 @@ public interface FilterModel {
      *
      * @return the current query
      */
-    public Query getCurrentQuery();
+    Query getCurrentQuery();
 
     /**
      * Returns <code>true</code> if the system is currently in filtering mode.
      *
-     * @return          <code>true</code> if the result graph is filtered,
+     * @return <code>true</code> if the result graph is filtered,
      * <code>false</code> if it's in selection mode
      */
-    public boolean isFiltering();
+    boolean isFiltering();
 
     /**
      * Returns <code>true</code> if the system is currently in selection mode.
      *
-     * @return          <code>true</code> if the result is selected on the graph,
+     * @return <code>true</code> if the result is selected on the graph,
      * <code>false</code> if it's filtered
      */
-    public boolean isSelecting();
+    boolean isSelecting();
 
-    public boolean isAutoRefresh();
+    boolean isAutoRefresh();
 
-    public Workspace getWorkspace();
+    Workspace getWorkspace();
 
-    public void addChangeListener(ChangeListener listener);
+    void addChangeListener(ChangeListener listener);
 
-    public void removeChangeListener(ChangeListener listener);
+    void removeChangeListener(ChangeListener listener);
 }

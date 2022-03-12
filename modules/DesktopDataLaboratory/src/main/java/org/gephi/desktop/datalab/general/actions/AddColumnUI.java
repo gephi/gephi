@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.general.actions;
 
 import java.util.List;
@@ -58,7 +59,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class AddColumnUI extends javax.swing.JPanel {
@@ -66,11 +66,12 @@ public class AddColumnUI extends javax.swing.JPanel {
     private static final String COLUMN_TYPE_SAVED_PREFERENCES = "AddColumnUI_type";
     private Table table;
     private JButton okButton;
-
-    public enum Mode {
-
-        NODES_TABLE, EDGES_TABLE
-    }
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JLabel titleLabel;
+    private javax.swing.JTextField titleTextField;
+    private javax.swing.JComboBox typeComboBox;
+    private javax.swing.JLabel typeLabel;
 
     /**
      * Creates new form AddColumnUI
@@ -95,8 +96,23 @@ public class AddColumnUI extends javax.swing.JPanel {
         });
     }
 
+    public static ValidationPanel createValidationPanel(AddColumnUI innerPanel) {
+        ValidationPanel validationPanel = new ValidationPanel();
+        if (innerPanel == null) {
+            innerPanel = new AddColumnUI();
+        }
+        validationPanel.setInnerComponent(innerPanel);
+
+        ValidationGroup group = validationPanel.getValidationGroup();
+
+        group.add(innerPanel.titleTextField, new ColumnTitleValidator(innerPanel.table));
+
+        return validationPanel;
+    }
+
     public void unSetup() {
-        NbPreferences.forModule(AddColumnUI.class).putInt(COLUMN_TYPE_SAVED_PREFERENCES, typeComboBox.getSelectedIndex());
+        NbPreferences.forModule(AddColumnUI.class)
+            .putInt(COLUMN_TYPE_SAVED_PREFERENCES, typeComboBox.getSelectedIndex());
     }
 
     public String getDisplayName() {
@@ -113,17 +129,20 @@ public class AddColumnUI extends javax.swing.JPanel {
         //Set description text for the mode of column creation:
         switch (mode) {
             case NODES_TABLE:
-                descriptionLabel.setText(NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.descriptionLabel.text.nodes"));
+                descriptionLabel
+                    .setText(NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.descriptionLabel.text.nodes"));
                 table = graphModel.getNodeTable();
                 break;
             case EDGES_TABLE:
-                descriptionLabel.setText(NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.descriptionLabel.text.edges"));
+                descriptionLabel
+                    .setText(NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.descriptionLabel.text.edges"));
                 table = graphModel.getEdgeTable();
                 break;
         }
 
-        List<SupportedColumnTypeWrapper> supportedTypesWrappers = SupportedColumnTypeWrapper.buildOrderedSupportedTypesList(graphModel);
-        
+        List<SupportedColumnTypeWrapper> supportedTypesWrappers =
+            SupportedColumnTypeWrapper.buildOrderedSupportedTypesList(graphModel);
+
         for (SupportedColumnTypeWrapper supportedColumnTypeWrapper : supportedTypesWrappers) {
             typeComboBox.addItem(supportedColumnTypeWrapper);
         }
@@ -141,7 +160,8 @@ public class AddColumnUI extends javax.swing.JPanel {
      * Execute the creation of the column, with the given parameters in setup and with the interface itself.
      */
     public void execute() {
-        Lookup.getDefault().lookup(AttributeColumnsController.class).addAttributeColumn(table, titleTextField.getText(), ((SupportedColumnTypeWrapper) typeComboBox.getSelectedItem()).getType());
+        Lookup.getDefault().lookup(AttributeColumnsController.class).addAttributeColumn(table, titleTextField.getText(),
+            ((SupportedColumnTypeWrapper) typeComboBox.getSelectedItem()).getType());
     }
 
     public void setOkButton(JButton okButton) {
@@ -154,20 +174,6 @@ public class AddColumnUI extends javax.swing.JPanel {
         if (okButton != null) {
             okButton.setEnabled(title != null && !title.isEmpty() && !table.hasColumn(title));
         }
-    }
-
-    public static ValidationPanel createValidationPanel(AddColumnUI innerPanel) {
-        ValidationPanel validationPanel = new ValidationPanel();
-        if (innerPanel == null) {
-            innerPanel = new AddColumnUI();
-        }
-        validationPanel.setInnerComponent(innerPanel);
-
-        ValidationGroup group = validationPanel.getValidationGroup();
-
-        group.add(innerPanel.titleTextField, new ColumnTitleValidator(innerPanel.table));
-
-        return validationPanel;
     }
 
     /**
@@ -186,51 +192,56 @@ public class AddColumnUI extends javax.swing.JPanel {
         descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setText(null);
 
-        titleLabel.setText(org.openide.util.NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.titleLabel.text")); // NOI18N
+        titleLabel
+            .setText(org.openide.util.NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.titleLabel.text")); // NOI18N
 
-        titleTextField.setText(org.openide.util.NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.titleTextField.text")); // NOI18N
+        titleTextField.setText(
+            org.openide.util.NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.titleTextField.text")); // NOI18N
 
-        typeLabel.setText(org.openide.util.NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.typeLabel.text")); // NOI18N
+        typeLabel
+            .setText(org.openide.util.NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.typeLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(titleLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(typeLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(typeComboBox, 0, 199, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(titleLabel)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(typeLabel)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(typeComboBox, 0, 199, Short.MAX_VALUE)))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(titleLabel)
-                    .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(typeLabel)
-                    .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 21,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(titleLabel)
+                        .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(18, 18, 18)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(typeLabel)
+                        .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JLabel titleLabel;
-    private javax.swing.JTextField titleTextField;
-    private javax.swing.JComboBox typeComboBox;
-    private javax.swing.JLabel typeLabel;
+
+    public enum Mode {
+
+        NODES_TABLE, EDGES_TABLE
+    }
     // End of variables declaration//GEN-END:variables
 }

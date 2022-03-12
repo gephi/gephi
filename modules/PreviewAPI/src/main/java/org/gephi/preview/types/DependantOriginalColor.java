@@ -39,21 +39,17 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.types;
 
 import java.awt.Color;
 
 /**
  * A color that depends from another object, but can also have it's own color.
- * 
+ *
  * @author Mathieu Bastian
  */
 public final class DependantOriginalColor {
-
-    public enum Mode {
-
-        PARENT, CUSTOM, ORIGINAL
-    }
 
     private final Color customColor;
     private final Mode mode;
@@ -84,5 +80,10 @@ public final class DependantOriginalColor {
             return parentColor;
         }
         return customColor;
+    }
+
+    public enum Mode {
+
+        PARENT, CUSTOM, ORIGINAL
     }
 }

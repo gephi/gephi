@@ -39,24 +39,24 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.preview.api;
 
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface PreviewUIModel {
 
-    public PreviewModel getPreviewModel();
+    PreviewModel getPreviewModel();
 
-    public PreviewPreset getCurrentPreset();
+    PreviewPreset getCurrentPreset();
 
-    public float getVisibilityRatio();
+    float getVisibilityRatio();
 
-    public boolean isRefreshing();
+    boolean isRefreshing();
 
-    public boolean isWorkspaceBarVisible();
+    boolean isWorkspaceBarVisible();
 }

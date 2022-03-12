@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.filters.plugin.dynamic;
 
 import javax.swing.JPanel;
@@ -47,7 +48,6 @@ import org.gephi.filters.plugin.dynamic.DynamicRangeUI;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author mbastian
  */
 @ServiceProvider(service = DynamicRangeUI.class)

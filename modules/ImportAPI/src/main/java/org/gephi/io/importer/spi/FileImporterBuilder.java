@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.spi;
 
 import org.gephi.io.importer.api.FileType;
@@ -57,14 +58,14 @@ public interface FileImporterBuilder extends ImporterBuilder {
      * @return a new file importer
      */
     @Override
-    public FileImporter buildImporter();
+    FileImporter buildImporter();
 
     /**
      * Get default file types this importer can deal with.
      *
      * @return an array of file types this importer can read
      */
-    public FileType[] getFileTypes();
+    FileType[] getFileTypes();
 
     /**
      * Returns <code>true</code> if this importer can import
@@ -79,5 +80,5 @@ public interface FileImporterBuilder extends ImporterBuilder {
      * @return <code>true</code> if the importer is compatible with
      * <code>fileObject</code> or <code>false</code> otherwise
      */
-    public boolean isMatchingImporter(FileObject fileObject);
+    boolean isMatchingImporter(FileObject fileObject);
 }

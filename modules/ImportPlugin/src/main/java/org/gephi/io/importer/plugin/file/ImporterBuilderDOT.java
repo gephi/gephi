@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file;
 
 import org.gephi.io.importer.api.FileType;
@@ -49,7 +50,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = FileImporterBuilder.class)
@@ -69,8 +69,9 @@ public final class ImporterBuilderDOT implements FileImporterBuilder {
 
     @Override
     public FileType[] getFileTypes() {
-        FileType ft = new FileType(new String[]{".dot", ".gv"}, NbBundle.getMessage(getClass(), "fileType_GraphViz_Name"));
-        return new FileType[]{ft};
+        FileType ft =
+            new FileType(new String[] {".dot", ".gv"}, NbBundle.getMessage(getClass(), "fileType_GraphViz_Name"));
+        return new FileType[] {ft};
     }
 
     @Override

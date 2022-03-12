@@ -39,13 +39,13 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.plugin.palette;
 
 import java.awt.Color;
 import java.util.Arrays;
 
 /**
- *
  * @author mbastian
  */
 public class Palette {
@@ -97,10 +97,7 @@ public class Palette {
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
-        if (!Arrays.deepEquals(this.colors, other.colors)) {
-            return false;
-        }
-        return true;
+        return Arrays.deepEquals(this.colors, other.colors);
     }
 
 }

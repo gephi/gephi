@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.importer;
 
 import javax.swing.DefaultListModel;
@@ -53,6 +54,16 @@ import org.openide.util.NbBundle;
 public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
 
     private final DefaultListModel subTypeModel = new DefaultListModel();
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList categoryList;
+    private javax.swing.JTextArea descriptionArea;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel labelCategory;
+    private javax.swing.JLabel labelDescription;
+    private javax.swing.JLabel labelWizard;
+    private javax.swing.JList wizardList;
 
     public WizardVisualPanel1() {
         initComponents();
@@ -83,9 +94,11 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
         setMaximumSize(new java.awt.Dimension(500, 360));
         setPreferredSize(new java.awt.Dimension(500, 360));
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelCategory, org.openide.util.NbBundle.getMessage(WizardVisualPanel1.class, "WizardVisualPanel1.labelCategory.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelCategory, org.openide.util.NbBundle
+            .getMessage(WizardVisualPanel1.class, "WizardVisualPanel1.labelCategory.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelWizard, org.openide.util.NbBundle.getMessage(WizardVisualPanel1.class, "WizardVisualPanel1.labelWizard.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelWizard, org.openide.util.NbBundle
+            .getMessage(WizardVisualPanel1.class, "WizardVisualPanel1.labelWizard.text")); // NOI18N
 
         categoryList.setModel(getCategoryListModel());
         categoryList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -107,7 +120,8 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
         });
         jScrollPane2.setViewportView(wizardList);
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelDescription, org.openide.util.NbBundle.getMessage(WizardVisualPanel1.class, "WizardVisualPanel1.labelDescription.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelDescription, org.openide.util.NbBundle
+            .getMessage(WizardVisualPanel1.class, "WizardVisualPanel1.labelDescription.text")); // NOI18N
 
         descriptionArea.setColumns(20);
         descriptionArea.setRows(5);
@@ -117,43 +131,49 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labelCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(55, 55, 55)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(labelWizard)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                    .addComponent(labelDescription))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane3)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(labelCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 107,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 199,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(55, 55, 55)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(labelWizard)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0,
+                                    Short.MAX_VALUE)))
+                        .addComponent(labelDescription))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelCategory)
-                    .addComponent(labelWizard))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labelDescription)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelCategory)
+                        .addComponent(labelWizard))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(labelDescription)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void categoryListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_categoryListValueChanged
+    private void categoryListValueChanged(
+        javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_categoryListValueChanged
         reloadSubType();
         if (wizardList.getSelectedValue() == null) {
             descriptionArea.setText("");
@@ -161,19 +181,10 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
         wizardList.setSelectedIndex(0);
     }//GEN-LAST:event_categoryListValueChanged
 
-    private void wizardListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wizardListValueChanged
+    private void wizardListValueChanged(
+        javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wizardListValueChanged
         reloadDescription();
     }//GEN-LAST:event_wizardListValueChanged
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList categoryList;
-    private javax.swing.JTextArea descriptionArea;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JLabel labelCategory;
-    private javax.swing.JLabel labelDescription;
-    private javax.swing.JLabel labelWizard;
-    private javax.swing.JList wizardList;
     // End of variables declaration//GEN-END:variables
 
     public String getCurrentCategory() {
@@ -213,7 +224,8 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
     private void reloadDescription() {
         String description = "";
         if (emptyList()) {
-            description = NbBundle.getMessage(WizardPanel1.class, "ImportWizard.description_no_plugin_importers_installed");
+            description =
+                NbBundle.getMessage(WizardPanel1.class, "ImportWizard.description_no_plugin_importers_installed");
         } else {
             String category = categoryList.getSelectedValue().toString();
             String wizard = wizardList.getSelectedValue().toString();
@@ -231,7 +243,7 @@ public final class WizardVisualPanel1 extends JPanel implements ChangeListener {
 
     boolean emptyList() {
         return categoryList.getSelectedValue() == null
-                || wizardList.getSelectedValue() == null;
+            || wizardList.getSelectedValue() == null;
     }
 
     @Override

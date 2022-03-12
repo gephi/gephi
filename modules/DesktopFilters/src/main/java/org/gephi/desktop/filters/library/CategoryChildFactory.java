@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.filters.library;
 
 import java.util.Arrays;
@@ -51,13 +52,12 @@ import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class CategoryChildFactory extends ChildFactory<Object> {
 
-    private Category category;
-    private FiltersExplorer.Utils utils;
+    private final Category category;
+    private final FiltersExplorer.Utils utils;
 
     public CategoryChildFactory(FiltersExplorer.Utils utils, Category category) {
         this.utils = utils;
@@ -100,11 +100,11 @@ public class CategoryChildFactory extends ChildFactory<Object> {
     @Override
     protected Node[] createNodesForKey(Object key) {
         if (key instanceof Category) {
-            return new Node[]{new CategoryNode(utils, (Category) key)};
+            return new Node[] {new CategoryNode(utils, (Category) key)};
         } else if (key instanceof FilterBuilder) {
-            return new Node[]{new FilterBuilderNode((FilterBuilder) key)};
+            return new Node[] {new FilterBuilderNode((FilterBuilder) key)};
         } else {
-            return new Node[]{new SavedQueryNode((Query) key)};
+            return new Node[] {new SavedQueryNode((Query) key)};
         }
     }
 }

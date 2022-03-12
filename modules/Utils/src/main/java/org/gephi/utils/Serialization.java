@@ -39,17 +39,15 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.utils;
 
 import java.awt.Font;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.GraphModel;
-import org.openide.util.Exceptions;
-import org.openide.util.Lookup;
 
 /**
  * Class for serialization utils such as writing any object value to a String and retrieving it by String + class name.
@@ -58,6 +56,7 @@ import org.openide.util.Lookup;
  */
 public class Serialization {
 
+    private static final Serialization INSTANCE_WITHOUT_GRAPH_MODEL = new Serialization();
     private final GraphModel graphModel;
 
     public Serialization() {
@@ -68,7 +67,89 @@ public class Serialization {
         this.graphModel = graphModel;
     }
 
-    private static final Serialization INSTANCE_WITHOUT_GRAPH_MODEL = new Serialization();
+    /**
+     * Converts any value to a serialized String. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     *
+     * @param value Value to serialize as String
+     * @return Result String or null if the value can't be serialized with a <code>PropertyEditor</code>
+     */
+    public static String getValueAsText(Object value) {
+        return INSTANCE_WITHOUT_GRAPH_MODEL.toText(value);
+    }
+
+    /**
+     * Converts any value to a serialized String. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     *
+     * @param value      Value to serialize as String
+     * @param valueClass Class to use for the value
+     * @return Result String or null if the value can't be serialized with a <code>PropertyEditor</code>
+     */
+    public static String getValueAsText(Object value, Class valueClass) {
+        return INSTANCE_WITHOUT_GRAPH_MODEL.toText(value, valueClass);
+    }
+
+    /**
+     * Deserializes a serialized String of the given class. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     *
+     * @param valueStr   String to deserialize
+     * @param valueClass Class of the serialized value
+     * @return Deserialized value or null if it can't be deserialized with a <code>PropertyEditor</code>
+     */
+    public static Object readValueFromText(String valueStr, Class valueClass) {
+        return INSTANCE_WITHOUT_GRAPH_MODEL.fromText(valueStr, valueClass);
+    }
+
+    /**
+     * Deserializes a serialized String of the given class name. Returns null if the class can't be found. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code>
+     * class.
+     *
+     * @param valueStr      String to deserialize
+     * @param valueClassStr Class name of the serialized value
+     * @return Deserialized value or null if it can't be deserialized with a <code>PropertyEditor</code>
+     */
+    public static Object readValueFromText(String valueStr, String valueClassStr) {
+        try {
+            return readValueFromText(valueStr, Class.forName(valueClassStr));
+        } catch (ClassNotFoundException ex) {
+            return null;
+        }
+    }
+
+    public static boolean isPrimitiveOrPrimitiveWrapper(Class<?> type) {
+        return (type.isPrimitive() && !void.class.equals(type))
+            || Double.class.equals(type) || Float.class.equals(type) || Long.class.equals(type)
+            || Integer.class.equals(type) || Short.class.equals(type) || Character.class.equals(type)
+            || Byte.class.equals(type) || Boolean.class.equals(type);
+    }
+
+    public static Object parsePrimitiveOrWrapper(Class valueClass, String value) {
+        if (Boolean.class.equals(valueClass) || Boolean.TYPE == valueClass) {
+            return Boolean.parseBoolean(value);
+        }
+        if (Character.class.equals(valueClass) || Character.TYPE == valueClass) {
+            return value.charAt(0);
+        }
+        if (Byte.class.equals(valueClass) || Byte.TYPE == valueClass) {
+            return Byte.parseByte(value);
+        }
+        if (Short.class.equals(valueClass) || Short.TYPE == valueClass) {
+            return Short.parseShort(value);
+        }
+        if (Integer.class.equals(valueClass) || Integer.TYPE == valueClass) {
+            return Integer.parseInt(value);
+        }
+        if (Long.class.equals(valueClass) || Long.TYPE == valueClass) {
+            return Long.parseLong(value);
+        }
+        if (Float.class.equals(valueClass) || Float.TYPE == valueClass) {
+            return Float.parseFloat(value);
+        }
+        if (Double.class.equals(valueClass) || Double.TYPE == valueClass) {
+            return Double.parseDouble(value);
+        }
+
+        throw new IllegalArgumentException("Unknown class " + valueClass.getName());
+    }
 
     public String toText(Object value) {
         if (value == null) {
@@ -94,8 +175,11 @@ public class Serialization {
         if (valueClass.equals(Font.class)) {
             Font f = (Font) value;
             return String.format("%s-%d-%d", f.getName(), f.getStyle(), f.getSize()); //bug 551877
-        } else if (isPrimitiveOrPrimitiveWrapper(valueClass) || (Number.class.isAssignableFrom(valueClass) && !Number.class.equals(valueClass))) {
+        } else if (isPrimitiveOrPrimitiveWrapper(valueClass) ||
+            (Number.class.isAssignableFrom(valueClass) && !Number.class.equals(valueClass))) {
             return String.valueOf(value);
+        } else if (valueClass.isArray()) {
+            return AttributeUtils.printArray(value);
         } else {
             PropertyEditor editor = PropertyEditorManager.findEditor(valueClass);
             if (editor != null) {
@@ -132,7 +216,7 @@ public class Serialization {
             return valueStr;
         } else if (valueClass.equals(Font.class)) {
             try {
-                String parts[] = valueStr.split("-");
+                String[] parts = valueStr.split("-");
                 return new Font(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));//bug 551877
             } catch (Exception e) {
                 return null;
@@ -141,6 +225,8 @@ public class Serialization {
             return parsePrimitiveOrWrapper(valueClass, valueStr);
         } else if (Number.class.isAssignableFrom(valueClass) && !Number.class.equals(valueClass)) {
             return NumberUtils.parseNumber(valueStr, valueClass);
+        } else if (valueClass.isArray()) {
+            return AttributeUtils.parse(valueStr, valueClass);
         } else {
             PropertyEditor editor = PropertyEditorManager.findEditor(valueClass);
             if (editor != null) {
@@ -170,90 +256,5 @@ public class Serialization {
                 return null;
             }
         }
-    }
-
-    /**
-     * Converts any value to a serialized String. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
-     *
-     * @param value Value to serialize as String
-     * @return Result String or null if the value can't be serialized with a <code>PropertyEditor</code>
-     */
-    public static String getValueAsText(Object value) {
-        return INSTANCE_WITHOUT_GRAPH_MODEL.toText(value);
-    }
-    
-    /**
-     * Converts any value to a serialized String. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
-     *
-     * @param value Value to serialize as String
-     * @param valueClass Class to use for the value
-     * @return Result String or null if the value can't be serialized with a <code>PropertyEditor</code>
-     */
-    public static String getValueAsText(Object value, Class valueClass) {
-        return INSTANCE_WITHOUT_GRAPH_MODEL.toText(value, valueClass);
-    }
-        
-
-    /**
-     * Deserializes a serialized String of the given class. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
-     *
-     * @param valueStr String to deserialize
-     * @param valueClass Class of the serialized value
-     * @return Deserialized value or null if it can't be deserialized with a <code>PropertyEditor</code>
-     */
-    public static Object readValueFromText(String valueStr, Class valueClass) {
-        return INSTANCE_WITHOUT_GRAPH_MODEL.fromText(valueStr, valueClass);
-    }
-
-    /**
-     * Deserializes a serialized String of the given class name. Returns null if the class can't be found. Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code>
-     * class.
-     *
-     * @param valueStr String to deserialize
-     * @param valueClassStr Class name of the serialized value
-     * @return Deserialized value or null if it can't be deserialized with a <code>PropertyEditor</code>
-     */
-    public static Object readValueFromText(String valueStr, String valueClassStr) {
-        try {
-            return readValueFromText(valueStr, Class.forName(valueClassStr));
-        } catch (ClassNotFoundException ex) {
-            return null;
-        }
-    }
-
-    public static boolean isPrimitiveOrPrimitiveWrapper(Class<?> type) {
-        return (type.isPrimitive() && !void.class.equals(type))
-                || Double.class.equals(type) || Float.class.equals(type) || Long.class.equals(type)
-                || Integer.class.equals(type) || Short.class.equals(type) || Character.class.equals(type)
-                || Byte.class.equals(type) || Boolean.class.equals(type);
-    }
-
-    public static Object parsePrimitiveOrWrapper(Class valueClass, String value) {
-        if (Boolean.class.equals(valueClass) || Boolean.TYPE == valueClass) {
-            return Boolean.parseBoolean(value);
-        }
-        if (Character.class.equals(valueClass) || Character.TYPE == valueClass) {
-            return value.charAt(0);
-        }
-        if (Byte.class.equals(valueClass) || Byte.TYPE == valueClass) {
-            return Byte.parseByte(value);
-        }
-        if (Short.class.equals(valueClass) || Short.TYPE == valueClass) {
-            return Short.parseShort(value);
-        }
-        if (Integer.class.equals(valueClass) || Integer.TYPE == valueClass) {
-            return Integer.parseInt(value);
-        }
-        if (Long.class.equals(valueClass) || Long.TYPE == valueClass) {
-            return Long.parseLong(value);
-        }
-        if (Float.class.equals(valueClass) || Float.TYPE == valueClass) {
-            return Float.parseFloat(value);
-        }
-        if (Double.class.equals(valueClass) || Double.TYPE == valueClass) {
-            return Double.parseDouble(value);
-        }
-
-        throw new IllegalArgumentException("Unknown class " + valueClass.getName());
     }
 }

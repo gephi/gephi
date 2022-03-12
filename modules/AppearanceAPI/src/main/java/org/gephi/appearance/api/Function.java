@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
 import org.gephi.appearance.spi.Transformer;
@@ -60,9 +61,15 @@ public interface Function {
      * Transforms the given element.
      *
      * @param element element to transform
-     * @param graph the graph this element belongs to
      */
-    public void transform(Element element, Graph graph);
+    void transform(Element element);
+
+    /**
+     * Transforms all the given elements.
+     *
+     * @param elementIterable element iterable to tranform
+     */
+    void transformAll(Iterable<? extends Element> elementIterable);
 
     /**
      * Returns the transformer associated with this function.
@@ -70,14 +77,14 @@ public interface Function {
      * @param <T> transformer class
      * @return transformer
      */
-    public <T extends Transformer> T getTransformer();
+    <T extends Transformer> T getTransformer();
 
     /**
      * Returns the transformer user interface associated with this function.
      *
      * @return transformer UI or null if not found
      */
-    public TransformerUI getUI();
+    TransformerUI getUI();
 
     /**
      * Returns true if this function is a simple function.
@@ -86,7 +93,7 @@ public interface Function {
      *
      * @return true if partition, false otherwise
      */
-    public boolean isSimple();
+    boolean isSimple();
 
     /**
      * Returns true if this function is based on attribute column.
@@ -95,7 +102,7 @@ public interface Function {
      *
      * @return true if attribute, false otherwise
      */
-    public boolean isAttribute();
+    boolean isAttribute();
 
     /**
      * Returns true if this function is a ranking function.
@@ -104,7 +111,7 @@ public interface Function {
      *
      * @return true if ranking, false otherwise
      */
-    public boolean isRanking();
+    boolean isRanking();
 
     /**
      * Returns true if this function is a partition function.
@@ -113,19 +120,40 @@ public interface Function {
      *
      * @return true if partition, false otherwise
      */
-    public boolean isPartition();
-
-    /**
-     * Returns the graph this function is based on.
-     *
-     * @return graph
-     */
-    public Graph getGraph();
+    boolean isPartition();
 
     /**
      * Returns the element class this function will be applied to.
      *
      * @return element class
      */
-    public Class<? extends Element> getElementClass();
+    Class<? extends Element> getElementClass();
+
+    /**
+     * Returns the graph this function is being applied on.
+     *
+     * @return graph
+     */
+    Graph getGraph();
+
+    /**
+     * Returns the model this function belongs to.
+     *
+     * @return model
+     */
+    AppearanceModel getModel();
+
+    /**
+     * Returns true if the underlying partition or ranking changed its boundaries or values since last time checked.
+     *
+     * @return true if changed, false otherwise
+     */
+    boolean hasChanged();
+
+    /**
+     * Returns the function's unique identifier.
+     *
+     * @return function id
+     */
+    String getId();
 }

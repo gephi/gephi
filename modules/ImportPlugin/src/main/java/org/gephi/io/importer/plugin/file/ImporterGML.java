@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file;
 
 import java.awt.Color;
@@ -46,7 +47,14 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import org.gephi.io.importer.api.*;
+import org.gephi.io.importer.api.ContainerLoader;
+import org.gephi.io.importer.api.EdgeDirection;
+import org.gephi.io.importer.api.EdgeDirectionDefault;
+import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.ImportUtils;
+import org.gephi.io.importer.api.Issue;
+import org.gephi.io.importer.api.NodeDraft;
+import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -95,7 +103,8 @@ public class ImporterGML implements FileImporter, LongTask {
             }
         }
         if (!ret) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_badparsing"), Issue.Level.SEVERE));
+            report.logIssue(
+                new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_badparsing"), Issue.Level.SEVERE));
         }
 
         Progress.finish(progressTicket);
@@ -104,16 +113,16 @@ public class ImporterGML implements FileImporter, LongTask {
     private ArrayList<Object> parseList(LineNumberReader reader) throws IOException {
 
         ArrayList<Object> list = new ArrayList<>();
-        char t;
+        char t = ' ';
         boolean readString = false;
-        String stringBuffer = new String();
+        String stringBuffer = "";
 
-        while (reader.ready()) {
+        while (reader.ready() && (t != ((char) -1))) {
             t = (char) reader.read();
             if (readString) {
                 if (t == '"') {
                     list.add(stringBuffer);
-                    stringBuffer = new String();
+                    stringBuffer = "";
                     readString = false;
                 } else {
                     stringBuffer += t;
@@ -144,7 +153,7 @@ public class ImporterGML implements FileImporter, LongTask {
                                     list.add(stringBuffer);
                                 }
                             }
-                            stringBuffer = new String();
+                            stringBuffer = "";
                         }
                         break;
                     default:
@@ -172,10 +181,14 @@ public class ImporterGML implements FileImporter, LongTask {
                 ret = parseEdge((ArrayList) value);
             } else if ("directed".equals(key)) {
                 if (value instanceof Number) {
-                    EdgeDirectionDefault edgeDefault = ((Number) value).intValue() == 1 ? EdgeDirectionDefault.DIRECTED : EdgeDirectionDefault.UNDIRECTED;
+                    EdgeDirectionDefault edgeDefault =
+                        ((Number) value).intValue() == 1 ? EdgeDirectionDefault.DIRECTED :
+                            EdgeDirectionDefault.UNDIRECTED;
                     container.setEdgeDefault(edgeDefault);
                 } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_directedgraphparse"), Issue.Level.WARNING));
+                    report.logIssue(
+                        new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_directedgraphparse"),
+                            Issue.Level.WARNING));
                 }
             } else {
             }
@@ -212,7 +225,8 @@ public class ImporterGML implements FileImporter, LongTask {
             node.setLabel(label);
         }
         if (id == null) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_nodeidmissing"), Issue.Level.WARNING));
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_nodeidmissing"),
+                Issue.Level.WARNING));
         }
         boolean ret = addNodeAttributes(node, "", list);
         container.addNode(node);
@@ -299,7 +313,8 @@ public class ImporterGML implements FileImporter, LongTask {
         for (int i = 0; i < list.size(); i += 2) {
             String key = (String) list.get(i);
             Object value = list.get(i + 1);
-            if ("id".equalsIgnoreCase(key) || "source".equalsIgnoreCase(key) || "target".equalsIgnoreCase(key) || "value".equalsIgnoreCase(key) || "weight".equalsIgnoreCase(key) || "label".equalsIgnoreCase(key)) {
+            if ("id".equalsIgnoreCase(key) || "source".equalsIgnoreCase(key) || "target".equalsIgnoreCase(key) ||
+                "value".equalsIgnoreCase(key) || "weight".equalsIgnoreCase(key) || "label".equalsIgnoreCase(key)) {
                 continue; // already parsed
             }
             if (value instanceof ArrayList) {
@@ -310,10 +325,13 @@ public class ImporterGML implements FileImporter, LongTask {
                 }
             } else if ("directed".equalsIgnoreCase(key)) {
                 if (value instanceof Number) {
-                    EdgeDirection type = ((Number) value).intValue() == 1 ? EdgeDirection.DIRECTED : EdgeDirection.UNDIRECTED;
+                    EdgeDirection type =
+                        ((Number) value).intValue() == 1 ? EdgeDirection.DIRECTED : EdgeDirection.UNDIRECTED;
                     edge.setDirection(type);
                 } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_directedparse", edge.toString()), Issue.Level.WARNING));
+                    report.logIssue(new Issue(
+                        NbBundle.getMessage(ImporterGML.class, "importerGML_error_directedparse", edge.toString()),
+                        Issue.Level.WARNING));
                 }
             } else if ("fill".equalsIgnoreCase(key)) {
                 if (value instanceof String) {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.timeline.api;
 
 import org.gephi.graph.api.GraphModel;
@@ -62,21 +63,21 @@ public interface TimelineChart {
      *
      * @return the attribute column
      */
-    public String getColumn();
+    String getColumn();
 
     /**
      * Returns the X values of this chart.
      *
      * @return the X values
      */
-    public Number[] getX();
+    Number[] getX();
 
     /**
      * Returns the Y values of this chart.
      *
      * @return the Y values
      */
-    public Number[] getY();
+    Number[] getY();
 
     /**
      * Return the Y value for the given <code>x</code> position. It returns the
@@ -85,33 +86,33 @@ public interface TimelineChart {
      * @param x the point in time
      * @return the Y value
      */
-    public Number getY(Number x);
+    Number getY(Number x);
 
     /**
      * Returns the min Y value .This is the minimum value in the chart.
      *
      * @return the min Y value
      */
-    public Number getMinY();
+    Number getMinY();
 
     /**
      * Returns the max Y value. This is the maximum value in the chart.
      *
      * @return the max Y value
      */
-    public Number getMaxY();
+    Number getMaxY();
 
     /**
      * Returns the min X value .This is the minimum interval in the chart.
      *
      * @return the min X value
      */
-    public Number getMinX();
+    Number getMinX();
 
     /**
      * Returns the max X value. This is the maximum interval in the chart.
      *
      * @return the max X value
      */
-    public Number getMaxX();
+    Number getMaxX();
 }

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.filters.plugin.partition;
 
 import java.awt.Color;
@@ -50,7 +51,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.NumberFormat;
 import java.util.HashSet;
@@ -72,13 +72,15 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class PartitionPanel extends javax.swing.JPanel {
 
     private PartitionFilter filter;
     private JPopupMenu popupMenu;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList list;
 
     public PartitionPanel() {
         initComponents();
@@ -88,9 +90,11 @@ public class PartitionPanel extends javax.swing.JPanel {
         final ListCellRenderer renderer = new DefaultListCellRenderer() {
 
             @Override
-            public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+            public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+                                                          final boolean isSelected, final boolean cellHasFocus) {
 
-                final JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                final JLabel label =
+                    (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 PartWrapper pw = (PartWrapper) value;
                 if (pw.isEnabled()) {
                     label.setEnabled(true);
@@ -153,34 +157,111 @@ public class PartitionPanel extends javax.swing.JPanel {
         createPopup();
     }
 
+    public static void computeListSize(final JList list) {
+        if (list.getUI() instanceof BasicListUI) {
+            final BasicListUI ui = (BasicListUI) list.getUI();
+
+            try {
+                final Method method = BasicListUI.class.getDeclaredMethod("updateLayoutState");
+                method.setAccessible(true);
+                method.invoke(ui);
+                list.revalidate();
+                list.repaint();
+            } catch (Exception e) {
+                Exceptions.printStackTrace(e);
+            }
+        }
+    }
+
     public void setup(final PartitionFilter filter) {
         this.filter = filter;
         final Partition partition = filter.getPartition();
         if (partition != null) {
-            refresh(partition, filter.getParts());
+            refresh(partition, filter);
         }
     }
 
-    private void refresh(Partition partition, Set<Object> currentParts) {
+    private void refresh(Partition partition, PartitionFilter filter) {
         final DefaultListModel model = new DefaultListModel();
+        Set<Object> currentParts = filter.getParts();
 
         int i = 0;
-        for (Object p : partition.getSortedValues()) {
-            PartWrapper pw = new PartWrapper(p, partition.percentage(p), partition.getColor(p));
+        for (Object p : partition.getSortedValues(filter.getGraph())) {
+            PartWrapper pw = new PartWrapper(p, partition.percentage(p, filter.getGraph()), partition.getColor(p));
             pw.setEnabled(currentParts.contains(p));
             model.add(i++, pw);
         }
         list.setModel(model);
     }
 
+    private void createPopup() {
+        popupMenu = new JPopupMenu();
+        JMenuItem refreshItem =
+            new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.refresh"));
+        refreshItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setup(filter);
+            }
+        });
+        popupMenu.add(refreshItem);
+        JMenuItem selectItem =
+            new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.selectall"));
+        selectItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filter.selectAll();
+                refresh(filter.getPartition(), filter);
+            }
+        });
+        popupMenu.add(selectItem);
+        JMenuItem unselectItem =
+            new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.unselectall"));
+        unselectItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filter.unselectAll();
+                refresh(filter.getPartition(), filter);
+            }
+        });
+        popupMenu.add(unselectItem);
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jScrollPane1 = new javax.swing.JScrollPane();
+        list = new javax.swing.JList();
+
+        setLayout(new java.awt.BorderLayout());
+
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        list.setOpaque(false);
+        jScrollPane1.setViewportView(list);
+
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+    }// </editor-fold>//GEN-END:initComponents
+
     private static class PartWrapper {
 
+        private static final NumberFormat FORMATTER = NumberFormat.getPercentInstance();
         private final Object part;
         private final float percentage;
         private final PaletteIcon icon;
         private final PaletteIcon disabledIcon;
         private boolean enabled = false;
-        private static final NumberFormat FORMATTER = NumberFormat.getPercentInstance();
 
         public PartWrapper(Object part, float percentage, Color color) {
             this.part = part;
@@ -210,55 +291,6 @@ public class PartitionPanel extends javax.swing.JPanel {
 
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
-        }
-    }
-
-    private void createPopup() {
-        popupMenu = new JPopupMenu();
-        JMenuItem refreshItem = new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.refresh"));
-        refreshItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setup(filter);
-            }
-        });
-        popupMenu.add(refreshItem);
-        JMenuItem selectItem = new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.selectall"));
-        selectItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                filter.selectAll();
-                refresh(filter.getPartition(), new HashSet<>(filter.getParts()));
-            }
-        });
-        popupMenu.add(selectItem);
-        JMenuItem unselectItem = new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.unselectall"));
-        unselectItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                filter.unselectAll();
-                refresh(filter.getPartition(), new HashSet<>());
-            }
-        });
-        popupMenu.add(unselectItem);
-    }
-
-    public static void computeListSize(final JList list) {
-        if (list.getUI() instanceof BasicListUI) {
-            final BasicListUI ui = (BasicListUI) list.getUI();
-
-            try {
-                final Method method = BasicListUI.class.getDeclaredMethod("updateLayoutState");
-                method.setAccessible(true);
-                method.invoke(ui);
-                list.revalidate();
-                list.repaint();
-            } catch (Exception e) {
-                Exceptions.printStackTrace(e);
-            }
         }
     }
 
@@ -302,32 +334,5 @@ public class PartitionPanel extends javax.swing.JPanel {
 
         }
     }
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        jScrollPane1 = new javax.swing.JScrollPane();
-        list = new javax.swing.JList();
-
-        setLayout(new java.awt.BorderLayout());
-
-        jScrollPane1.setBorder(null);
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        list.setOpaque(false);
-        jScrollPane1.setViewportView(list);
-
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
-    }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JList list;
     // End of variables declaration//GEN-END:variables
 }

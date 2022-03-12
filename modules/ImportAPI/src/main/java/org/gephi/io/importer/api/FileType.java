@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 /**
@@ -55,7 +56,7 @@ public final class FileType {
     private final String name;
 
     public FileType(String extension, String name) {
-        this.extensions = new String[]{extension};
+        this.extensions = new String[] {extension};
         this.name = name;
     }
 

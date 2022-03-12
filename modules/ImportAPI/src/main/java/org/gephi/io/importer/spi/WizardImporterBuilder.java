@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.spi;
 
 /**
@@ -54,5 +55,5 @@ public interface WizardImporterBuilder extends ImporterBuilder {
      * @return a new wizard importer
      */
     @Override
-    public WizardImporter buildImporter();
+    WizardImporter buildImporter();
 }

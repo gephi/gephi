@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components.splineeditor.equation;
 
 import java.beans.PropertyChangeEvent;
@@ -67,12 +68,12 @@ public abstract class AbstractEquation implements Equation {
     }
 
     protected void firePropertyChange(String propertyName,
-            double oldValue,
-            double newValue) {
+                                      double oldValue,
+                                      double newValue) {
         PropertyChangeEvent changeEvent = new PropertyChangeEvent(this,
-                propertyName,
-                oldValue,
-                newValue);
+            propertyName,
+            oldValue,
+            newValue);
         for (PropertyChangeListener listener : listeners) {
             listener.propertyChange(changeEvent);
         }

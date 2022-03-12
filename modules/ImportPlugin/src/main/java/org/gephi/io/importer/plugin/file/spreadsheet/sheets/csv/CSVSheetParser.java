@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.sheets.csv;
 
 import java.io.IOException;
@@ -52,7 +53,6 @@ import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetParser;
 import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetRow;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class CSVSheetParser implements SheetParser {
@@ -69,9 +69,8 @@ public class CSVSheetParser implements SheetParser {
         if (map == null) {
             return Collections.emptyMap();
         } else {
-            if (map.containsKey(null)) {//Ignore columns without header
-                map.remove(null);
-            }
+            //Ignore columns without header
+            map.remove(null);
             return map;
         }
     }

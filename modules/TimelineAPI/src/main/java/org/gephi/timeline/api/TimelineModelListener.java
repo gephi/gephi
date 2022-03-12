@@ -39,15 +39,16 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.timeline.api;
 
 /**
  * Timeline model listener.
- * 
+ *
  * @author Julian Bilcke
  * @see TimelineModelEvent
  */
 public interface TimelineModelListener {
 
-    public void timelineModelChanged(TimelineModelEvent event);
+    void timelineModelChanged(TimelineModelEvent event);
 }

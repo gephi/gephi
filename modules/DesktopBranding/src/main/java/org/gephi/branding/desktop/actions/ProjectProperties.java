@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
@@ -59,6 +60,7 @@ public class ProjectProperties extends SystemAction {
     public HelpCtx getHelpCtx() {
         return null;
     }
+
     @Override
     public boolean isEnabled() {
         return Lookup.getDefault().lookup(ProjectControllerUI.class).canProjectProperties();

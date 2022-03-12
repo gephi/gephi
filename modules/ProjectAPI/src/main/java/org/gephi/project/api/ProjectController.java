@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.api;
 
 import java.io.File;
@@ -55,43 +56,43 @@ import java.io.File;
  */
 public interface ProjectController {
 
-    public void startup();
+    void startup();
 
-    public void newProject();
+    void newProject();
 
-    public Runnable openProject(File file);
+    Runnable openProject(File file);
 
-    public Runnable saveProject(Project project);
+    Runnable saveProject(Project project);
 
-    public Runnable saveProject(Project project, File file);
+    Runnable saveProject(Project project, File file);
 
-    public void closeCurrentProject();
+    void closeCurrentProject();
 
-    public void removeProject(Project project);
+    void removeProject(Project project);
 
-    public Projects getProjects();
+    Projects getProjects();
 
-    public Workspace newWorkspace(Project project);
+    Workspace newWorkspace(Project project);
 
-    public void deleteWorkspace(Workspace workspace);
+    void deleteWorkspace(Workspace workspace);
 
-    public void renameWorkspace(Workspace workspace, String name);
+    void renameWorkspace(Workspace workspace, String name);
 
-    public Project getCurrentProject();
+    Project getCurrentProject();
 
-    public void renameProject(Project project, String name);
+    void renameProject(Project project, String name);
 
-    public Workspace getCurrentWorkspace();
+    Workspace getCurrentWorkspace();
 
-    public void openWorkspace(Workspace workspace);
+    void openWorkspace(Workspace workspace);
 
-    public void closeCurrentWorkspace();
+    void closeCurrentWorkspace();
 
-    public Workspace duplicateWorkspace(Workspace workspace);
+    Workspace duplicateWorkspace(Workspace workspace);
 
-    public void setSource(Workspace workspace, String source);
+    void setSource(Workspace workspace, String source);
 
-    public void addWorkspaceListener(WorkspaceListener workspaceListener);
+    void addWorkspaceListener(WorkspaceListener workspaceListener);
 
-    public void removeWorkspaceListener(WorkspaceListener workspaceListener);
+    void removeWorkspaceListener(WorkspaceListener workspaceListener);
 }

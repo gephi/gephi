@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.api;
 
 public class Vector {
@@ -52,6 +53,22 @@ public class Vector {
     public Vector(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+    public static Vector div(Vector v, float n) {
+        return new Vector(v.x / n, v.y / n);
+    }
+
+    public static Vector mult(Vector v, float n) {
+        return new Vector(v.x * n, v.y * n);
+    }
+
+    public static Vector add(Vector v1, Vector v2) {
+        return new Vector(v1.x + v2.x, v1.y + v2.y);
+    }
+
+    public static Vector sub(Vector v1, Vector v2) {
+        return new Vector(v1.x - v2.x, v1.y - v2.y);
     }
 
     public void set(float x, float y) {
@@ -105,22 +122,6 @@ public class Vector {
         }
     }
 
-    public static Vector div(Vector v, float n) {
-        return new Vector(v.x / n, v.y / n);
-    }
-
-    public static Vector mult(Vector v, float n) {
-        return new Vector(v.x * n, v.y * n);
-    }
-
-    public static Vector add(Vector v1, Vector v2) {
-        return new Vector(v1.x + v2.x, v1.y + v2.y);
-    }
-
-    public static Vector sub(Vector v1, Vector v2) {
-        return new Vector(v1.x - v2.x, v1.y - v2.y);
-    }
-
     public float getX() {
         return x;
     }
@@ -149,10 +150,7 @@ public class Vector {
         if (Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x)) {
             return false;
         }
-        if (Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y)) {
-            return false;
-        }
-        return true;
+        return Float.floatToIntBits(this.y) == Float.floatToIntBits(other.y);
     }
 
     @Override

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.appearance.plugin;
 
 import java.awt.Color;
@@ -54,14 +55,13 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class RecentPalettes {
 
-    protected static String DEFAULT_NODE_NAME = "prefs";
     public static final String COLORS = "PaletteColors";
     public static final String POSITIONS = "PalettePositions";
+    protected static String DEFAULT_NODE_NAME = "prefs";
     private final LinkedList<LinearGradient> gradients;
     private final int maxSize;
     protected String nodeName = null;

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.utils.progress;
 
 /**
@@ -50,6 +51,7 @@ public class Progress {
 
     /**
      * Finish the progress task.
+     *
      * @param progressTicket the progress ticket of the task
      */
     public static void finish(ProgressTicket progressTicket) {
@@ -60,8 +62,9 @@ public class Progress {
 
     /**
      * Finish the progress task and display a wrap-up message
+     *
      * @param progressTicket the progress ticket of the task
-     * @param finishMessage a message about the finished task
+     * @param finishMessage  a message about the finished task
      */
     public static void finish(ProgressTicket progressTicket, String finishMessage) {
         if (progressTicket != null) {
@@ -71,6 +74,7 @@ public class Progress {
 
     /**
      * Notify the user about a new completed unit. Equivalent to incrementing workunits by one.
+     *
      * @param progressTicket the progress ticket of the task
      */
     public static void progress(ProgressTicket progressTicket) {
@@ -81,8 +85,9 @@ public class Progress {
 
     /**
      * Notify the user about completed workunits.
+     *
      * @param progressTicket the progress ticket of the task
-     * @param workunit a cumulative number of workunits completed so far
+     * @param workunit       a cumulative number of workunits completed so far
      */
     public static void progress(ProgressTicket progressTicket, int workunit) {
         if (progressTicket != null) {
@@ -92,8 +97,9 @@ public class Progress {
 
     /**
      * Notify the user about progress by showing message with details.
+     *
      * @param progressTicket the progress ticket of the task
-     * @param message details about the status of the task
+     * @param message        details about the status of the task
      */
     public static void progress(ProgressTicket progressTicket, String message) {
         if (progressTicket != null) {
@@ -103,9 +109,10 @@ public class Progress {
 
     /**
      * Notify the user about completed workunits and show additional detailed message.
+     *
      * @param progressTicket the progress ticket of the task
-     * @param message details about the status of the task
-     * @param workunit a cumulative number of workunits completed so far
+     * @param message        details about the status of the task
+     * @param workunit       a cumulative number of workunits completed so far
      */
     public static void progress(ProgressTicket progressTicket, String message, int workunit) {
         if (progressTicket != null) {
@@ -115,6 +122,7 @@ public class Progress {
 
     /**
      * Change the display name of the progress task. Use with care, please make sure the changed name is not completely different, or otherwise it might appear to the user as a different task.
+     *
      * @param progressTicket the progress ticket of the task
      * @param newDisplayName the new display name
      */
@@ -136,6 +144,7 @@ public class Progress {
 
     /**
      * Start the progress indication for indeterminate task.
+     *
      * @param progressTicket the progress ticket of the task
      */
     public static void start(ProgressTicket progressTicket) {
@@ -146,8 +155,9 @@ public class Progress {
 
     /**
      * Start the progress indication for a task with known number of steps.
+     *
      * @param progressTicket the progress ticket of the task
-     * @param workunits total number of workunits that will be processed
+     * @param workunits      total number of workunits that will be processed
      */
     public static void start(ProgressTicket progressTicket, int workunits) {
         if (progressTicket != null) {
@@ -157,8 +167,9 @@ public class Progress {
 
     /**
      * Currently indeterminate task can be switched to show percentage completed.
+     *
      * @param progressTicket the progress ticket of the task
-     * @param workunits workunits total number of workunits that will be processed
+     * @param workunits      workunits total number of workunits that will be processed
      */
     public static void switchToDeterminate(ProgressTicket progressTicket, int workunits) {
         if (progressTicket != null) {
@@ -168,6 +179,7 @@ public class Progress {
 
     /**
      * Currently determinate task can be switched to indeterminate mode.
+     *
      * @param progressTicket the progress ticket of the task
      */
     public static void switchToIndeterminate(ProgressTicket progressTicket) {

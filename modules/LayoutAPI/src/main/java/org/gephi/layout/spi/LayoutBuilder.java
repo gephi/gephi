@@ -39,19 +39,20 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.layout.spi;
 
 /**
  * A <code>LayoutBuilder</code> provides a specific {@link Layout} instance. The
  * Builder pattern is more suitable for the Layout instantiation to allow
  * simpler reusability of Layout's code.
- *<p>
+ * <p>
  * Only the LayoutBuilder of a given layout algorithm is exposed,
  * this way, one can devise different layout algorithms (represented by their
  * respective LayoutBuilder) that uses a same underlying Layout implementation,
  * but that differs only by an aggregation, composition or a property that is
  * set only during instantiation time.
- *<p>
+ * <p>
  * See <code>ClockwiseRotate</code> and <code>CounterClockwiseRotate</code> for
  * a simple example of this pattern. Both are LayoutBuilders that instanciate
  * Layouts with a different behaviour (the direction of rotation), but both uses
@@ -64,20 +65,23 @@ public interface LayoutBuilder {
 
     /**
      * The name of the behaviour of the Layout's provided by this Builder.
-     * @return  the display neame of the layout algorithm
+     *
+     * @return the display neame of the layout algorithm
      */
-    public String getName();
+    String getName();
 
     /**
      * User interface attributes (name, description, icon...) for all Layouts
      * built by this builder.
+     *
      * @return a <code>LayoutUI</code> instance
      */
-    public LayoutUI getUI();
+    LayoutUI getUI();
 
     /**
      * Builds an instance of the Layout.
-     * @return  a new <code>Layout</code> instance
+     *
+     * @return a new <code>Layout</code> instance
      */
-    public Layout buildLayout();
+    Layout buildLayout();
 }

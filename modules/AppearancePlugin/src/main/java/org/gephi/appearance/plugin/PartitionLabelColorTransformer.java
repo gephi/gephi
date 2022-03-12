@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.plugin;
 
 import java.awt.Color;
@@ -50,7 +51,6 @@ import org.gephi.graph.api.Element;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author mbastian
  */
 @ServiceProvider(service = Transformer.class)
@@ -60,7 +60,7 @@ public class PartitionLabelColorTransformer implements PartitionTransformer<Elem
     public void transform(Element element, Partition partition, Object value) {
         Color color = partition.getColor(value);
         if (color == null) {
-            color = Color.BLACK;
+            color = Partition.DEFAULT_COLOR;
         }
         element.getTextProperties().setColor(color);
     }

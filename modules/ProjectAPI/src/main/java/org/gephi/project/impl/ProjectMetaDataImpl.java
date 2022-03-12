@@ -39,13 +39,13 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.impl;
 
 import java.io.Serializable;
 import org.gephi.project.api.ProjectMetaData;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ProjectMetaDataImpl implements ProjectMetaData, Serializable {
@@ -68,23 +68,13 @@ public class ProjectMetaDataImpl implements ProjectMetaData, Serializable {
     }
 
     @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public String getKeywords() {
-        return keywords;
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
     }
 
     @Override
@@ -93,8 +83,18 @@ public class ProjectMetaDataImpl implements ProjectMetaData, Serializable {
     }
 
     @Override
+    public String getKeywords() {
+        return keywords;
+    }
+
+    @Override
     public void setKeywords(String keywords) {
         this.keywords = keywords;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
     }
 
     @Override

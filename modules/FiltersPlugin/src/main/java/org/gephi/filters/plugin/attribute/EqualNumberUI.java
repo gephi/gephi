@@ -39,15 +39,15 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.attribute;
 
 import javax.swing.JPanel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface EqualNumberUI {
 
-    public JPanel getPanel(AttributeEqualBuilder.EqualNumberFilter filter);
+    JPanel getPanel(AttributeEqualBuilder.EqualNumberFilter filter);
 }

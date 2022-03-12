@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin.dynamic.builder;
 
 import org.gephi.statistics.plugin.dynamic.DynamicNbNodes;
@@ -48,7 +49,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Sébastien Heymann
  */
 @ServiceProvider(service = StatisticsBuilder.class)
@@ -68,5 +68,5 @@ public class DynamicNbNodesBuilder implements StatisticsBuilder {
     public Class<? extends Statistics> getStatisticsClass() {
         return DynamicNbNodes.class;
     }
-    
+
 }

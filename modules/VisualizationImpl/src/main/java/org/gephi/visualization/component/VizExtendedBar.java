@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.component;
 
 import javax.swing.JComponent;
@@ -46,27 +47,24 @@ import javax.swing.UIManager;
 import org.gephi.ui.utils.UIUtils;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class VizExtendedBar extends javax.swing.JPanel {
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSeparator separator;
+    private javax.swing.JTabbedPane tabbedPane;
 
     /**
      * Creates new form VizExtendedBar
      */
     public VizExtendedBar(VizToolbarGroup[] groups) {
         initComponents();
-        if (UIUtils.isAquaLookAndFeel()) {
-            setBackground(UIManager.getColor("NbExplorerView.background"));
-        }
 
         for (VizToolbarGroup g : groups) {
             if (g.hasExtended()) {
                 JComponent c = g.getExtendedComponent();
                 if (c != null) {
-                    if (UIUtils.isAquaLookAndFeel()) {
-                        c.setBackground(UIManager.getColor("NbExplorerView.background"));
-                    }
                     tabbedPane.addTab(g.getName(), c);
                 }
             }
@@ -84,24 +82,23 @@ public class VizExtendedBar extends javax.swing.JPanel {
 
         separator = new javax.swing.JSeparator();
         tabbedPane = new javax.swing.JTabbedPane();
+        setOpaque(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(separator, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+                .addComponent(separator, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSeparator separator;
-    private javax.swing.JTabbedPane tabbedPane;
     // End of variables declaration//GEN-END:variables
 }

@@ -39,10 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.utils;
 
 /**
  * Class for escaping html of a String to show it in a hrml report without problems
+ *
  * @author Eduardo Ramos
  */
 public class HTMLEscape {
@@ -51,6 +53,7 @@ public class HTMLEscape {
 
     /**
      * Escape html from a string to make it safe to show.
+     *
      * @param string String to escape html
      * @return Result string
      */
@@ -99,7 +102,7 @@ public class HTMLEscape {
                     } else {
                         // Not 7 Bit use the unicode system
                         sb.append("&#");
-                        sb.append(new Integer(ci).toString());
+                        sb.append(new Integer(ci));
                         sb.append(';');
                     }
                 }

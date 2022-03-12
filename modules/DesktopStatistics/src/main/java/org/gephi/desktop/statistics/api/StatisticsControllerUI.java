@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.statistics.api;
 
 import org.gephi.statistics.spi.Statistics;
@@ -51,7 +52,7 @@ import org.gephi.utils.longtask.spi.LongTask;
  * <p>
  * This controller is a service and can therefore be found in Lookup:
  * <pre>StatisticsControllerUI sc = Lookup.getDefault().lookup(StatisticsControllerUI.class);</pre>
- * 
+ *
  * @author Mathieu Bastian
  */
 public interface StatisticsControllerUI {
@@ -59,22 +60,25 @@ public interface StatisticsControllerUI {
     /**
      * Execute the statistics in a background thread.
      * The <code>statistics</code> should implement {@link LongTask}.
-     * @param statistics    the statistics algorithm instance
+     *
+     * @param statistics the statistics algorithm instance
      */
-    public void execute(Statistics statistics);
-    
+    void execute(Statistics statistics);
+
     /**
      * Execute the statistics in a background thread an call the listener when finished.
      * The <code>statistics</code> should implement {@link LongTask}.
-     * @param statistics    the statistics algorithm instance
-     * @param listener      a listener that is notified when execution finished
+     *
+     * @param statistics the statistics algorithm instance
+     * @param listener   a listener that is notified when execution finished
      */
-    public void execute(Statistics statistics, LongTaskListener listener);
+    void execute(Statistics statistics, LongTaskListener listener);
 
     /**
      * Sets the visible state for a given <code>StatisticsUI</code>.
-     * @param ui            the UI instance
-     * @param visible       <code>true</code> to display the front-end
+     *
+     * @param ui      the UI instance
+     * @param visible <code>true</code> to display the front-end
      */
-    public void setStatisticsUIVisible(StatisticsUI ui, boolean visible);
+    void setStatisticsUIVisible(StatisticsUI ui, boolean visible);
 }

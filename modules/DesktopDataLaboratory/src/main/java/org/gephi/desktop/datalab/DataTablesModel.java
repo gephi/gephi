@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab;
 
 import org.gephi.graph.api.GraphController;
@@ -48,10 +49,9 @@ import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
-public class DataTablesModel  {
+public class DataTablesModel {
 
     private final AvailableColumnsModel nodeAvailableColumnsModel;
     private final AvailableColumnsModel edgeAvailableColumnsModel;
@@ -59,7 +59,7 @@ public class DataTablesModel  {
 
     public DataTablesModel(Workspace workspace) {
         graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(workspace);
-        
+
         nodeAvailableColumnsModel = new AvailableColumnsModel(graphModel.getNodeTable());
         edgeAvailableColumnsModel = new AvailableColumnsModel(graphModel.getEdgeTable());
 
@@ -76,7 +76,7 @@ public class DataTablesModel  {
     public AvailableColumnsModel getNodeAvailableColumnsModel() {
         return nodeAvailableColumnsModel;
     }
-    
+
     private AvailableColumnsModel getTableAvailableColumnsModel(Table table) {
         if (graphModel.getNodeTable() == table) {
             return nodeAvailableColumnsModel;

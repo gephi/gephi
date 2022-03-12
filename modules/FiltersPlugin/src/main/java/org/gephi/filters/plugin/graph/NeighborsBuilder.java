@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.graph;
 
 import java.util.Collection;
@@ -54,7 +55,6 @@ import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Exceptions;
@@ -63,7 +63,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Sebastien Heymann
  */
 @ServiceProvider(service = FilterBuilder.class)
@@ -114,29 +113,26 @@ public class NeighborsBuilder implements FilterBuilder {
 
         @Override
         public Graph filter(Graph graph) {
-
-            GraphView graphView = graph.getView();
+            Set<Node> result = new HashSet<>();
 
             Collection<Node> nodes = graph.getNodes().toCollection();
 
-            Set<Node> result = new HashSet<>();
-
-            Set<Node> neighbours = new HashSet<>();
-            neighbours.addAll(nodes);
+            Set<Node> neighbours = new HashSet<>(nodes);
 
             //Put all neighbors into result
             Graph mainGraph = graph.getModel().getGraph();
             for (int i = 0; i < depth; i++) {
+                boolean newNodes = false;
                 Node[] nei = neighbours.toArray(new Node[0]);
                 neighbours.clear();
                 for (Node n : nei) {
                     //Extract all neighbors of n
                     for (Node neighbor : mainGraph.getNeighbors(n)) {
                         neighbours.add(neighbor);
-                        result.add(neighbor);
+                        newNodes = result.add(neighbor) || newNodes;
                     }
                 }
-                if (neighbours.isEmpty()) {
+                if (!newNodes || neighbours.isEmpty()) {
                     break;
                 }
             }
@@ -174,7 +170,7 @@ public class NeighborsBuilder implements FilterBuilder {
         @Override
         public FilterProperty[] getProperties() {
             try {
-                return new FilterProperty[]{
+                return new FilterProperty[] {
                     FilterProperty.createProperty(this, Integer.class, "depth"),
                     FilterProperty.createProperty(this, Boolean.class, "self")};
             } catch (NoSuchMethodException ex) {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components;
 
 import java.awt.BasicStroke;
@@ -49,14 +50,13 @@ import java.awt.Graphics2D;
 import javax.swing.Icon;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class PaletteIcon implements Icon {
 
-    private static int COLOR_WIDTH = 13;
-    private static int COLOR_HEIGHT = 13;
-    private static Color BORDER_COLOR = new Color(0x444444);
+    private static final int COLOR_WIDTH = 13;
+    private static final int COLOR_HEIGHT = 13;
+    private static final Color BORDER_COLOR = new Color(0x444444);
     private final Color[] colors;
     private final int maxColors;
 

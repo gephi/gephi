@@ -39,25 +39,29 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi;
 
 /**
  * <p>An instance of this interface is passed to any type of manipulator UI, allowing the
  * UIs to enable/disable the dialog controls</p>
  * <p>For now allows to enable/disable the Ok button of the dialog</p>
+ *
  * @author Eduardo Ramos
  */
 public interface DialogControls {
 
     /**
-     * Enable or disable the Ok button of the dialog for the UI.
-     * @param enabled
-     */
-    void setOkButtonEnabled(boolean enabled);
-
-    /**
      * Indicates if ok button is enabled for this dialog at the moment
+     *
      * @return <code>true</code> if ok button is enabled
      */
     boolean isOkButtonEnabled();
+
+    /**
+     * Enable or disable the Ok button of the dialog for the UI.
+     *
+     * @param enabled
+     */
+    void setOkButtonEnabled(boolean enabled);
 }

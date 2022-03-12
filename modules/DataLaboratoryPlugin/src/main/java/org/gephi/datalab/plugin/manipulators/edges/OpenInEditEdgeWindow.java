@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.edges;
 
 import javax.swing.Icon;
@@ -51,14 +52,15 @@ import org.openide.util.NbBundle;
 
 /**
  * Opens the selected edge(s) one or various in Edit window.
+ *
  * @author Eduardo Ramos
  */
-public class OpenInEditEdgeWindow extends BasicEdgesManipulator  {
+public class OpenInEditEdgeWindow extends BasicEdgesManipulator {
     Edge[] edges;
 
     @Override
     public void setup(Edge[] edges, Edge clickedEdge) {
-        this.edges=edges;
+        this.edges = edges;
     }
 
     @Override

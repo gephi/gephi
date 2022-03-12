@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.attribute;
 
 import java.util.ArrayList;
@@ -49,7 +50,14 @@ import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.AbstractAttributeFilter;
 import org.gephi.filters.plugin.AbstractAttributeFilterBuilder;
-import org.gephi.filters.spi.*;
+import org.gephi.filters.spi.Category;
+import org.gephi.filters.spi.CategoryBuilder;
+import org.gephi.filters.spi.EdgeFilter;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.filters.spi.RangeFilter;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
@@ -66,16 +74,15 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = CategoryBuilder.class)
 public class AttributeEqualBuilder implements CategoryBuilder {
 
     private final static Category EQUAL = new Category(
-            NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name"),
-            null,
-            FilterLibrary.ATTRIBUTES);
+        NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name"),
+        null,
+        FilterLibrary.ATTRIBUTES);
 
     @Override
     public Category getCategory() {
@@ -91,13 +98,16 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         columns.addAll(am.getEdgeTable().toList());
         for (Column c : columns) {
             if (!c.isProperty()) {
-                if (c.getTypeClass().equals(String.class) || c.getTypeClass().equals(TimestampStringMap.class) || c.getTypeClass().equals(IntervalStringMap.class) || c.isArray()) {
+                if (c.getTypeClass().equals(String.class) || c.getTypeClass().equals(TimestampStringMap.class) ||
+                    c.getTypeClass().equals(IntervalStringMap.class) || c.isArray()) {
                     EqualStringFilterBuilder b = new EqualStringFilterBuilder(c);
                     builders.add(b);
                 } else if (AttributeUtils.isNumberType(c.getTypeClass())) {
                     EqualNumberFilterBuilder b = new EqualNumberFilterBuilder(c);
                     builders.add(b);
-                } else if (c.getTypeClass().equals(Boolean.class) || c.getTypeClass().equals(TimestampBooleanMap.class) || c.getTypeClass().equals(IntervalBooleanMap.class)) {
+                } else if (c.getTypeClass().equals(Boolean.class) ||
+                    c.getTypeClass().equals(TimestampBooleanMap.class) ||
+                    c.getTypeClass().equals(IntervalBooleanMap.class)) {
                     EqualBooleanFilterBuilder b = new EqualBooleanFilterBuilder(c);
                     builders.add(b);
                 }
@@ -110,14 +120,15 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
         public EqualStringFilterBuilder(Column column) {
             super(column,
-                    EQUAL,
-                    NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.description"),
-                    null);
+                EQUAL,
+                NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.description"),
+                null);
         }
 
         @Override
         public EqualStringFilter getFilter(Workspace workspace) {
-            return AttributeUtils.isNodeColumn(column) ? new EqualStringFilter.Node(column) : new EqualStringFilter.Edge(column);
+            return AttributeUtils.isNodeColumn(column) ? new EqualStringFilter.Node(column) :
+                new EqualStringFilter.Edge(column);
         }
 
         @Override
@@ -138,7 +149,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
         public EqualStringFilter(Column column) {
             super(NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name"),
-                    column);
+                column);
 
             //Add ptoperties
             addProperty(String.class, "pattern");
@@ -207,14 +218,15 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
         public EqualNumberFilterBuilder(Column column) {
             super(column,
-                    EQUAL,
-                    NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.description"),
-                    null);
+                EQUAL,
+                NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.description"),
+                null);
         }
 
         @Override
         public EqualNumberFilter getFilter(Workspace workspace) {
-            return AttributeUtils.isNodeColumn(column) ? new EqualNumberFilter.Node(column) : new EqualNumberFilter.Edge(column);
+            return AttributeUtils.isNodeColumn(column) ? new EqualNumberFilter.Node(column) :
+                new EqualNumberFilter.Edge(column);
         }
 
         @Override
@@ -227,7 +239,8 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
     }
 
-    public static abstract class EqualNumberFilter<K extends Element> extends AbstractAttributeFilter<K> implements RangeFilter {
+    public static abstract class EqualNumberFilter<K extends Element> extends AbstractAttributeFilter<K>
+        implements RangeFilter {
 
         private Number match;
         private Range range;
@@ -243,13 +256,9 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         @Override
         public boolean init(Graph graph) {
             if (AttributeUtils.isNodeColumn(column)) {
-                if (graph.getNodeCount() == 0) {
-                    return false;
-                }
+                return graph.getNodeCount() != 0;
             } else if (AttributeUtils.isEdgeColumn(column)) {
-                if (graph.getEdgeCount() == 0) {
-                    return false;
-                }
+                return graph.getEdgeCount() != 0;
             }
             return true;
         }
@@ -333,13 +342,14 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
         public EqualBooleanFilterBuilder(Column column) {
             super(column,
-                    EQUAL,
-                    NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.description"), null);
+                EQUAL,
+                NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.description"), null);
         }
 
         @Override
         public EqualBooleanFilter getFilter(Workspace workspace) {
-            return AttributeUtils.isNodeColumn(column) ? new EqualBooleanFilter.Node(column) : new EqualBooleanFilter.Edge(column);
+            return AttributeUtils.isNodeColumn(column) ? new EqualBooleanFilter.Node(column) :
+                new EqualBooleanFilter.Edge(column);
         }
 
         @Override
@@ -358,7 +368,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
         public EqualBooleanFilter(Column column) {
             super(NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name"),
-                    column);
+                column);
 
             //Add property
             addProperty(Boolean.class, "match");

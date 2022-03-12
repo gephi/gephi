@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.util.HashMap;
@@ -64,7 +65,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author pjmcswee
  */
 public class EigenvectorCentrality implements Statistics, LongTask {
@@ -87,20 +87,18 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         }
     }
 
-    public void setNumRuns(int numRuns) {
-        this.numRuns = numRuns;
-    }
-
     /**
-     *
      * @return
      */
     public int getNumRuns() {
         return numRuns;
     }
 
+    public void setNumRuns(int numRuns) {
+        this.numRuns = numRuns;
+    }
+
     /**
-     *
      * @return
      */
     public boolean isDirected() {
@@ -108,7 +106,6 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     }
 
     /**
-     *
      * @param isDirected
      */
     public void setDirected(boolean isDirected) {
@@ -116,7 +113,6 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     }
 
     /**
-     *
      * @param graphModel
      */
     @Override
@@ -138,7 +134,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
 
         int N = graph.getNodeCount();
         graph.readLock();
-        
+
         try {
             centralities = new double[N];
 
@@ -168,7 +164,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     }
 
     private void saveCalculatedValues(Graph graph, Column attributeColumn, HashMap<Integer, Node> indicies,
-            double[] eigCenrtalities) {
+                                      double[] eigCenrtalities) {
 
         int N = graph.getNodeCount();
 
@@ -179,7 +175,8 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         }
     }
 
-    public void fillIndiciesMaps(Graph graph, double[] eigCentralities, HashMap<Integer, Node> indicies, HashMap<Node, Integer> invIndicies) {
+    public void fillIndiciesMaps(Graph graph, double[] eigCentralities, HashMap<Integer, Node> indicies,
+                                 HashMap<Node, Integer> invIndicies) {
         if (indicies == null || invIndicies == null) {
             return;
         }
@@ -193,8 +190,9 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         }
     }
 
-    private double computeMaxValueAndTempValues(Graph graph, HashMap<Integer, Node> indicies, HashMap<Node, Integer> invIndicies,
-            double[] tempValues, double[] centralityValues, boolean directed) {
+    private double computeMaxValueAndTempValues(Graph graph, HashMap<Integer, Node> indicies,
+                                                HashMap<Node, Integer> invIndicies,
+                                                double[] tempValues, double[] centralityValues, boolean directed) {
 
         double max = 0.;
         int N = graph.getNodeCount();
@@ -242,8 +240,8 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     }
 
     public double calculateEigenvectorCentrality(Graph graph, double[] eigCentralities,
-            HashMap<Integer, Node> indicies, HashMap<Node, Integer> invIndicies,
-            boolean directed, int numIterations) {
+                                                 HashMap<Integer, Node> indicies, HashMap<Node, Integer> invIndicies,
+                                                 boolean directed, int numIterations) {
 
         int N = graph.getNodeCount();
         double sumChanged = 0.;
@@ -263,7 +261,6 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -287,28 +284,28 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         dataset.addSeries(dSeries);
 
         JFreeChart chart = ChartFactory.createScatterPlot(
-                "Eigenvector Centrality Distribution",
-                "Score",
-                "Count",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "Eigenvector Centrality Distribution",
+            "Score",
+            "Count",
+            dataset,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dSeries, true);
         String imageFile = ChartUtils.renderChart(chart, "eigenvector-centralities.png");
 
         String report = "<HTML> <BODY> <h1>Eigenvector Centrality Report</h1> "
-                + "<hr>"
-                + "<h2> Parameters: </h2>"
-                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
-                + "Number of iterations: " + numRuns + "<br>"
-                + "Sum change: " + sumChange
-                + "<br> <h2> Results: </h2>"
-                + imageFile
-                + "</BODY></HTML>";
+            + "<hr>"
+            + "<h2> Parameters: </h2>"
+            + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
+            + "Number of iterations: " + numRuns + "<br>"
+            + "Sum change: " + sumChange
+            + "<br> <h2> Results: </h2>"
+            + imageFile
+            + "</BODY></HTML>";
 
         return report;
 

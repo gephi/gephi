@@ -39,8 +39,11 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.force.yifanHu;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
@@ -54,11 +57,8 @@ import org.gephi.layout.plugin.force.quadtree.QuadTree;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
-import org.openide.util.NbBundle;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 
 /**
  * Hu's basic algorithm
@@ -77,7 +77,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     private float barnesHutTheta;
     private float convergenceThreshold;
     private boolean adaptiveCooling;
-    private Displacement displacement;
+    private final Displacement displacement;
     private double energy0;
     private double energy;
     private Graph graph;
@@ -147,7 +147,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         int count = 1;
         for (Edge e : graph.getEdges()) {
             edgeLength += ForceVectorUtils.distance(
-                    e.getSource(), e.getTarget());
+                e.getSource(), e.getTarget());
             count++;
         }
 
@@ -162,62 +162,62 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class,
-                    NbBundle.getMessage(getClass(), "YifanHu.optimalDistance.name"),
-                    YIFANHU_CATEGORY,
-                    "YifanHu.optimalDistance.name",
-                    NbBundle.getMessage(getClass(), "YifanHu.optimalDistance.desc"),
-                    "getOptimalDistance", "setOptimalDistance"));
+                this, Float.class,
+                NbBundle.getMessage(getClass(), "YifanHu.optimalDistance.name"),
+                YIFANHU_CATEGORY,
+                "YifanHu.optimalDistance.name",
+                NbBundle.getMessage(getClass(), "YifanHu.optimalDistance.desc"),
+                "getOptimalDistance", "setOptimalDistance"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class,
-                    NbBundle.getMessage(getClass(), "YifanHu.relativeStrength.name"),
-                    YIFANHU_CATEGORY,
-                    "YifanHu.relativeStrength.name",
-                    NbBundle.getMessage(getClass(), "YifanHu.relativeStrength.desc"),
-                    "getRelativeStrength", "setRelativeStrength"));
+                this, Float.class,
+                NbBundle.getMessage(getClass(), "YifanHu.relativeStrength.name"),
+                YIFANHU_CATEGORY,
+                "YifanHu.relativeStrength.name",
+                NbBundle.getMessage(getClass(), "YifanHu.relativeStrength.desc"),
+                "getRelativeStrength", "setRelativeStrength"));
 
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class,
-                    NbBundle.getMessage(getClass(), "YifanHu.initialStepSize.name"),
-                    YIFANHU_CATEGORY,
-                    "YifanHu.initialStepSize.name",
-                    NbBundle.getMessage(getClass(), "YifanHu.initialStepSize.desc"),
-                    "getInitialStep", "setInitialStep"));
+                this, Float.class,
+                NbBundle.getMessage(getClass(), "YifanHu.initialStepSize.name"),
+                YIFANHU_CATEGORY,
+                "YifanHu.initialStepSize.name",
+                NbBundle.getMessage(getClass(), "YifanHu.initialStepSize.desc"),
+                "getInitialStep", "setInitialStep"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class,
-                    NbBundle.getMessage(getClass(), "YifanHu.stepRatio.name"),
-                    YIFANHU_CATEGORY,
-                    "YifanHu.stepRatio.name",
-                    NbBundle.getMessage(getClass(), "YifanHu.stepRatio.desc"),
-                    "getStepRatio", "setStepRatio"));
+                this, Float.class,
+                NbBundle.getMessage(getClass(), "YifanHu.stepRatio.name"),
+                YIFANHU_CATEGORY,
+                "YifanHu.stepRatio.name",
+                NbBundle.getMessage(getClass(), "YifanHu.stepRatio.desc"),
+                "getStepRatio", "setStepRatio"));
             properties.add(LayoutProperty.createProperty(
-                    this, Boolean.class,
-                    NbBundle.getMessage(getClass(), "YifanHu.adaptativeCooling.name"),
-                    YIFANHU_CATEGORY,
-                    "YifanHu.adaptativeCooling.name",
-                    NbBundle.getMessage(getClass(), "YifanHu.adaptativeCooling.desc"),
-                    "isAdaptiveCooling", "setAdaptiveCooling"));
+                this, Boolean.class,
+                NbBundle.getMessage(getClass(), "YifanHu.adaptativeCooling.name"),
+                YIFANHU_CATEGORY,
+                "YifanHu.adaptativeCooling.name",
+                NbBundle.getMessage(getClass(), "YifanHu.adaptativeCooling.desc"),
+                "isAdaptiveCooling", "setAdaptiveCooling"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class,
-                    NbBundle.getMessage(getClass(), "YifanHu.convergenceThreshold.name"),
-                    YIFANHU_CATEGORY,
-                    "YifanHu.convergenceThreshold.name",
-                    NbBundle.getMessage(getClass(), "YifanHu.convergenceThreshold.desc"),
-                    "getConvergenceThreshold", "setConvergenceThreshold"));
+                this, Float.class,
+                NbBundle.getMessage(getClass(), "YifanHu.convergenceThreshold.name"),
+                YIFANHU_CATEGORY,
+                "YifanHu.convergenceThreshold.name",
+                NbBundle.getMessage(getClass(), "YifanHu.convergenceThreshold.desc"),
+                "getConvergenceThreshold", "setConvergenceThreshold"));
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class,
-                    NbBundle.getMessage(getClass(), "YifanHu.quadTreeMaxLevel.name"),
-                    BARNESHUT_CATEGORY,
-                    "YifanHu.quadTreeMaxLevel.name",
-                    NbBundle.getMessage(getClass(), "YifanHu.quadTreeMaxLevel.desc"),
-                    "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
+                this, Integer.class,
+                NbBundle.getMessage(getClass(), "YifanHu.quadTreeMaxLevel.name"),
+                BARNESHUT_CATEGORY,
+                "YifanHu.quadTreeMaxLevel.name",
+                NbBundle.getMessage(getClass(), "YifanHu.quadTreeMaxLevel.desc"),
+                "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class,
-                    NbBundle.getMessage(getClass(), "YifanHu.theta.name"),
-                    BARNESHUT_CATEGORY,
-                    "YifanHu.theta.name",
-                    NbBundle.getMessage(getClass(), "YifanHu.theta.desc"),
-                    "getBarnesHutTheta", "setBarnesHutTheta"));
+                this, Float.class,
+                NbBundle.getMessage(getClass(), "YifanHu.theta.name"),
+                BARNESHUT_CATEGORY,
+                "YifanHu.theta.name",
+                NbBundle.getMessage(getClass(), "YifanHu.theta.desc"),
+                "getBarnesHutTheta", "setBarnesHutTheta"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
@@ -449,19 +449,19 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
         @Override
         public ForceVector calculateForce(Node node1, Node node2,
-                float distance) {
+                                          float distance) {
             ForceVector f = new ForceVector(node2.x() - node1.x(),
-                    node2.y() - node1.y());
+                node2.y() - node1.y());
             f.multiply(distance / optimalDistance);
             return f;
         }
 
-        public void setOptimalDistance(Float optimalDistance) {
-            this.optimalDistance = optimalDistance;
-        }
-
         public Float getOptimalDistance() {
             return optimalDistance;
+        }
+
+        public void setOptimalDistance(Float optimalDistance) {
+            this.optimalDistance = optimalDistance;
         }
     }
 
@@ -472,8 +472,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
      */
     public class ElectricalForce extends AbstractForce {
 
-        private float relativeStrength;
-        private float optimalDistance;
+        private final float relativeStrength;
+        private final float optimalDistance;
 
         public ElectricalForce(float relativeStrength, float optimalDistance) {
             this.relativeStrength = relativeStrength;
@@ -482,9 +482,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
         @Override
         public ForceVector calculateForce(Node node1, Node node2,
-                float distance) {
+                                          float distance) {
             ForceVector f = new ForceVector(node2.x() - node1.x(),
-                    node2.y() - node1.y());
+                node2.y() - node1.y());
             float scale = -relativeStrength * optimalDistance * optimalDistance / (distance * distance);
             if (Float.isNaN(scale) || Float.isInfinite(scale)) {
                 scale = -1;

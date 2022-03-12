@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.general.ui;
 
 import java.awt.event.ActionEvent;
@@ -71,12 +72,15 @@ import org.openide.util.NbBundle;
 
 /**
  * UI for MergeNodeDuplicates PluginGeneralActionsManipulator
+ *
  * @author Eduardo Ramos
  */
 public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI {
 
-    private static final ImageIcon CONFIG_BUTTONS_ICON = ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/gear.png", true);
-    private static final ImageIcon INFO_LABELS_ICON = ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/information.png", true);
+    private static final ImageIcon CONFIG_BUTTONS_ICON =
+        ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/gear.png", true);
+    private static final ImageIcon INFO_LABELS_ICON =
+        ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/information.png", true);
     private MergeNodeDuplicates manipulator;
     private DialogControls dialogControls;
     private Column[] columns;
@@ -87,8 +91,13 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
     private Element[] rows;
     private StrategyComboBox[] strategiesComboBoxes;
     private StrategyConfigurationButton[] strategiesConfigurationButtons;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane scroll;
+    private javax.swing.JScrollPane scrollStrategies;
 
-    /** Creates new form MergeNodeDuplicatesUI */
+    /**
+     * Creates new form MergeNodeDuplicatesUI
+     */
     public MergeNodeDuplicatesUI() {
         initComponents();
     }
@@ -108,7 +117,8 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
         if (duplicateGroups != null && duplicateGroups.size() > 0) {
             AttributeRowsMergeStrategy[] chosenStrategies = new AttributeRowsMergeStrategy[strategiesComboBoxes.length];
             for (int i = 0; i < strategiesComboBoxes.length; i++) {
-                chosenStrategies[i] = strategiesComboBoxes[i].getSelectedItem() != null ? ((StrategyWrapper) strategiesComboBoxes[i].getSelectedItem()).getStrategy() : null;
+                chosenStrategies[i] = strategiesComboBoxes[i].getSelectedItem() != null ?
+                    ((StrategyWrapper) strategiesComboBoxes[i].getSelectedItem()).getStrategy() : null;
             }
             manipulator.setMergeStrategies(chosenStrategies);
             manipulator.setDuplicateGroups(duplicateGroups);
@@ -132,7 +142,9 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
 
     private void calculateDuplicates() {
         if (baseColumnComboBox.getSelectedIndex() != -1) {
-            duplicateGroups = Lookup.getDefault().lookup(AttributeColumnsController.class).detectNodeDuplicatesByColumn(columns[baseColumnComboBox.getSelectedIndex()], caseSensitiveCheckBox.isSelected());
+            duplicateGroups = Lookup.getDefault().lookup(AttributeColumnsController.class)
+                .detectNodeDuplicatesByColumn(columns[baseColumnComboBox.getSelectedIndex()],
+                    caseSensitiveCheckBox.isSelected());
         }
     }
 
@@ -156,9 +168,12 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
         JPanel strategiesPanel = new JPanel();
         strategiesPanel.setLayout(new MigLayout("fillx"));
         if (duplicateGroups != null && duplicateGroups.size() > 0) {
-            strategiesPanel.add(new JLabel(NbBundle.getMessage(MergeNodeDuplicatesUI.class, "MergeNodeDuplicatesUI.duplicateGroupsNumber",duplicateGroups.size())),"wrap 15px");
-            
-            List<Node> nodes = duplicateGroups.get(0);//Use first group of duplicated nodes to set strategies for all of them
+            strategiesPanel.add(new JLabel(NbBundle
+                .getMessage(MergeNodeDuplicatesUI.class, "MergeNodeDuplicatesUI.duplicateGroupsNumber",
+                    duplicateGroups.size())), "wrap 15px");
+
+            List<Node> nodes =
+                duplicateGroups.get(0);//Use first group of duplicated nodes to set strategies for all of them
             //Prepare node rows:
             rows = new Element[nodes.size()];
             for (int i = 0; i < nodes.size(); i++) {
@@ -198,7 +213,8 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
 
     private List<AttributeRowsMergeStrategy> getColumnAvailableStrategies(Column column) {
         ArrayList<AttributeRowsMergeStrategy> availableStrategies = new ArrayList<>();
-        for (AttributeRowsMergeStrategy strategy : DataLaboratoryHelper.getDefault().getAttributeRowsMergeStrategies()) {
+        for (AttributeRowsMergeStrategy strategy : DataLaboratoryHelper.getDefault()
+            .getAttributeRowsMergeStrategies()) {
             strategy.setup(rows, rows[0], column);
             if (strategy.canExecute()) {
                 availableStrategies.add(strategy);
@@ -220,7 +236,8 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
         }
         settingsPanel.add(new JLabel(getMessage("MergeNodeDuplicatesUI.baseColumnText")), "split 2");
         settingsPanel.add(baseColumnComboBox, "growx, wrap");
-        caseSensitiveCheckBox = new JCheckBox(getMessage("MergeNodeDuplicatesUI.caseSensitiveText"), manipulator.isCaseSensitive());
+        caseSensitiveCheckBox =
+            new JCheckBox(getMessage("MergeNodeDuplicatesUI.caseSensitiveText"), manipulator.isCaseSensitive());
         settingsPanel.add(caseSensitiveCheckBox, "wrap");
 
         //Reload duplicates on parameteres of detection change:
@@ -236,7 +253,8 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
     }
 
     private void loadDeleteMergedNodesCheckBox(JPanel settingsPanel) {
-        deleteMergedNodesCheckBox = new JCheckBox(getMessage("MergeNodeDuplicatesUI.deleteMergedNodesText"), manipulator.isDeleteMergedNodes());
+        deleteMergedNodesCheckBox =
+            new JCheckBox(getMessage("MergeNodeDuplicatesUI.deleteMergedNodesText"), manipulator.isDeleteMergedNodes());
         settingsPanel.add(deleteMergedNodesCheckBox, "wrap");
     }
 
@@ -253,6 +271,35 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
         }
         return null;
     }
+
+    /**
+     * This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        scrollStrategies = new javax.swing.JScrollPane();
+        scroll = new javax.swing.JScrollPane();
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(scrollStrategies, javax.swing.GroupLayout.DEFAULT_SIZE, 782, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 782, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 192,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(scrollStrategies, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE))
+        );
+    }// </editor-fold>//GEN-END:initComponents
 
     class StrategyConfigurationButton extends JButton implements ActionListener {
 
@@ -369,35 +416,5 @@ public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI
             return strategy;
         }
     }
-
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        scrollStrategies = new javax.swing.JScrollPane();
-        scroll = new javax.swing.JScrollPane();
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollStrategies, javax.swing.GroupLayout.DEFAULT_SIZE, 782, Short.MAX_VALUE)
-            .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 782, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollStrategies, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE))
-        );
-    }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane scroll;
-    private javax.swing.JScrollPane scrollStrategies;
     // End of variables declaration//GEN-END:variables
 }

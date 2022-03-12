@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.spi;
 
 import org.gephi.graph.api.Element;
@@ -55,5 +56,5 @@ public interface SimpleTransformer<E extends Element> extends Transformer {
      *
      * @param element element to transform
      */
-    public void transform(E element);
+    void transform(E element);
 }

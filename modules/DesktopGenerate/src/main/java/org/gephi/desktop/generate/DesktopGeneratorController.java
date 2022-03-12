@@ -39,10 +39,9 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.generate;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -68,7 +67,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = GeneratorController.class)
@@ -114,7 +112,8 @@ public class DesktopGeneratorController implements GeneratorController {
         final Container container = Lookup.getDefault().lookup(Container.Factory.class).newContainer();
         container.setSource("" + generator.getName());
         container.setReport(new Report());
-        String taskname = NbBundle.getMessage(DesktopGeneratorController.class, "DesktopGeneratorController.taskname", generator.getName());
+        String taskname = NbBundle
+            .getMessage(DesktopGeneratorController.class, "DesktopGeneratorController.taskname", generator.getName());
 
         //Error handler
         LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
@@ -155,7 +154,7 @@ public class DesktopGeneratorController implements GeneratorController {
         container.closeLoader();
 
         DefaultProcessor defaultProcessor = new DefaultProcessor();
-        defaultProcessor.setContainers(new ContainerUnloader[]{container.getUnloader()});
+        defaultProcessor.setContainers(new ContainerUnloader[] {container.getUnloader()});
         defaultProcessor.setWorkspace(workspace);
         defaultProcessor.process();
     }

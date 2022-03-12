@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
 import org.gephi.appearance.spi.Transformer;
@@ -61,9 +62,26 @@ public interface AppearanceController {
      * it is called the <b>local</b> scale.
      *
      * @param useLocalScale <code>true</code> for local, <code>false</code> for
-     * global
+     *                      global
      */
-    public void setUseLocalScale(boolean useLocalScale);
+    void setUseRankingLocalScale(boolean useLocalScale);
+
+    /**
+     * Sets whether partitions use a local or a global scale. When calculating the
+     * partitions it can use the complete graph or only the currently visible graph. When using the visible graph
+     * it is called the <b>local</b> scale.
+     *
+     * @param useLocalScale <code>true</code> for local, <code>false</code> for
+     *                      global
+     */
+    void setUsePartitionLocalScale(boolean useLocalScale);
+
+    /**
+     * Sets whether elements with <code>null</code> values are also transformed. Default value is <code>false</code>/
+     *
+     * @param transformNullValues <code>true</code> to transform also null values, <code>false</code> to ignore
+     */
+    void setTransformNullValues(boolean transformNullValues);
 
     /**
      * Apply the function's transformer. If the function is for nodes all nodes
@@ -71,14 +89,14 @@ public interface AppearanceController {
      *
      * @param function function to transform
      */
-    public void transform(Function function);
+    void transform(Function function);
 
     /**
      * Returns the appearance model for the current workspace.
      *
      * @return appearance model
      */
-    public AppearanceModel getModel();
+    AppearanceModel getModel();
 
     /**
      * Returns the appearance model for the given workspace.
@@ -86,7 +104,7 @@ public interface AppearanceController {
      * @param workspace workspace
      * @return appearance model
      */
-    public AppearanceModel getModel(Workspace workspace);
+    AppearanceModel getModel(Workspace workspace);
 
     /**
      * Returns the transformer associated with the given transformer UI.
@@ -94,5 +112,5 @@ public interface AppearanceController {
      * @param ui user interface instance
      * @return transformer instance or null if not found
      */
-    public Transformer getTransformer(TransformerUI ui);
+    Transformer getTransformer(TransformerUI ui);
 }

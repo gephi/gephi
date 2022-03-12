@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.importer;
 
 import java.awt.event.ActionEvent;
@@ -54,7 +55,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.actions.CallableSystemAction;
 
 /**
- *
  * @author Mathieu
  */
 public class ImportDB extends CallableSystemAction {

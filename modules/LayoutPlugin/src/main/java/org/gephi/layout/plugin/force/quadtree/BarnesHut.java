@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.force.quadtree;
 
 import org.gephi.graph.api.Node;
@@ -56,7 +57,7 @@ public class BarnesHut {
     /* theta is the parameter for Barnes-Hut opening criteria
      */
     private float theta = (float) 1.2;
-    private AbstractForce force;
+    private final AbstractForce force;
 
     public BarnesHut(AbstractForce force) {
         this.force = force;
@@ -93,11 +94,11 @@ public class BarnesHut {
         return f;
     }
 
-    public void setTheta(float theta) {
-        this.theta = theta;
-    }
-
     public float getTheta() {
         return theta;
+    }
+
+    public void setTheta(float theta) {
+        this.theta = theta;
     }
 }

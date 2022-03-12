@@ -40,6 +40,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.statistics.spi;
 
 import javax.swing.JPanel;
@@ -55,59 +56,72 @@ import org.openide.util.NbBundle;
  * Statistics instance.
  * <p>
  * Implementors must add <b>@ServiceProvider</b> annotation to be found by the system.
+ *
  * @author Patrick J. McSweeney
  * @see StatisticsBuilder
  */
 public interface StatisticsUI {
 
-    public static final String CATEGORY_NETWORK_OVERVIEW = NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.networkOverview");
-    public static final String CATEGORY_NODE_OVERVIEW = NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.nodeOverview");
-    public static final String CATEGORY_EDGE_OVERVIEW = NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.edgeOverview");
-    public static final String CATEGORY_DYNAMIC = NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.dynamic");
+    String CATEGORY_NETWORK_OVERVIEW =
+        NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.networkOverview");
+    String CATEGORY_COMMUNITY_DETECTION =
+        NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.communityDetection");
+    String CATEGORY_NODE_OVERVIEW =
+        NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.nodeOverview");
+    String CATEGORY_EDGE_OVERVIEW =
+        NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.edgeOverview");
+    String CATEGORY_DYNAMIC =
+        NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.dynamic");
 
     /**
      * Returns a settings panel instance.
-     * @return              a settings panel instance
+     *
+     * @return a settings panel instance
      */
-    public JPanel getSettingsPanel();
+    JPanel getSettingsPanel();
 
     /**
      * Push a statistics instance to the UI to load its settings. Note that this
      * method is always called after <code>getSettingsPanel</code> and before the
      * panel is displayed.
-     * @param statistics    the statistics instance that is linked to the UI
+     *
+     * @param statistics the statistics instance that is linked to the UI
      */
-    public void setup(Statistics statistics);
+    void setup(Statistics statistics);
 
     /**
      * Notify the settings panel has been closed and that the settings values
      * can be saved to the statistics instance.
      */
-    public void unsetup();
+    void unsetup();
 
     /**
      * Returns the statistics' class this UI belongs to.
-     * @return              the statistics' class this UI belongs to
+     *
+     * @return the statistics' class this UI belongs to
      */
-    public Class<? extends Statistics> getStatisticsClass();
+    Class<? extends Statistics> getStatisticsClass();
 
     /**
      * Returns this statistics result as a String, if exists
-     * @return              this statistics' result string
+     *
+     * @return this statistics' result string
      */
-    public String getValue();
+    String getValue();
 
     /**
      * Returns this statistics display name
-     * @return              this statistics' display name.
+     *
+     * @return this statistics' display name.
      */
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * Returns this statistics short description
-     * @return              this statistics' short description.
+     *
+     * @return this statistics' short description.
      */
-    public String getShortDescription();
+    String getShortDescription();
 
     /**
      * Returns the category of this metric. Default category can be used, see
@@ -116,16 +130,19 @@ public interface StatisticsUI {
      * <li>{@link StatisticsUI#CATEGORY_NODE_OVERVIEW}</li>
      * <li>{@link StatisticsUI#CATEGORY_EDGE_OVERVIEW}</li>
      * <li>{@link StatisticsUI#CATEGORY_DYNAMIC}</li></ul>
+     * <li>{@link StatisticsUI#CATEGORY_COMMUNITY_DETECTION}</li></ul>
      * Returns a custom String for defining a new category.
-     * @return              this statistics' category
+     *
+     * @return this statistics' category
      */
-    public String getCategory();
+    String getCategory();
 
     /**
      * Returns a position value, around 1 and 1000, that indicates the position
      * of the Statistics in the UI. Less means upper.
-     * @return              this statistics' position value
+     *
+     * @return this statistics' position value
      */
-    public int getPosition();
+    int getPosition();
 }
 

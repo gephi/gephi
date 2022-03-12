@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.text;
 
 import javax.swing.ImageIcon;
@@ -47,7 +48,6 @@ import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.text.TextManager.Renderer;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface ColorMode {

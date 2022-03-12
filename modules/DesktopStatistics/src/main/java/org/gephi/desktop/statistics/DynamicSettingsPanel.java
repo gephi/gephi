@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.statistics;
 
 import java.awt.Image;
@@ -70,14 +71,32 @@ import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class DynamicSettingsPanel extends javax.swing.JPanel {
 
+    private final String DAYS = NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.TimeUnit.DAYS");
+    private final String HOURS = NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.TimeUnit.HOURS");
+    private final String MILLISECONDS =
+        NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.TimeUnit.MILLISECONDS");
+    private final String MINUTES =
+        NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.TimeUnit.MINUTES");
+    private final String SECONDS =
+        NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.TimeUnit.SECONDS");
     private TimeUnit windowTimeUnit = TimeUnit.DAYS;
     private TimeUnit tickTimeUnit = TimeUnit.DAYS;
     private Interval bounds = null;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel currentIntervalLabel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel labelCurrentTimeline;
+    private javax.swing.JTextField tickTextField;
+    private javax.swing.JComboBox tickTimeUnitCombo;
+    private javax.swing.JLabel windowInfoLabel;
+    private javax.swing.JTextField windowTextField;
+    private javax.swing.JComboBox windowTimeUnitCombo;
 
     public DynamicSettingsPanel() {
         initComponents();
@@ -95,7 +114,8 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
             public void mouseEntered(MouseEvent e) {
                 if (windowInfoLabel.isEnabled()) {
                     richTooltip = buildTooltip();
-                    Point screenLocation = new Point(e.getLocationOnScreen().x, e.getLocationOnScreen().y + windowInfoLabel.getHeight());
+                    Point screenLocation =
+                        new Point(e.getLocationOnScreen().x, e.getLocationOnScreen().y + windowInfoLabel.getHeight());
                     richTooltip.showTooltip(windowInfoLabel, screenLocation);
                 }
 
@@ -109,6 +129,39 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
                 }
             }
         });
+    }
+
+    public static JPanel createCounpoundPanel(DynamicSettingsPanel dynamicPanel, JPanel innerPanel) {
+        JPanel result = new JPanel();
+
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        result.setLayout(new java.awt.GridBagLayout());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        result.add(dynamicPanel, gridBagConstraints);
+
+        if (innerPanel != null) {
+            gridBagConstraints = new java.awt.GridBagConstraints();
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 0;
+            gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+            gridBagConstraints.weightx = 1.0;
+            gridBagConstraints.weighty = 1.0;
+            result.add(innerPanel, gridBagConstraints);
+        }
+
+        //Validation
+        ValidationPanel validationPanel = new ValidationPanel();
+        validationPanel.setInnerComponent(result);
+        ValidationGroup group = validationPanel.getValidationGroup();
+        dynamicPanel.createValidation(group);
+
+        return validationPanel;
     }
 
     public void setup(DynamicStatistics dynamicStatistics) {
@@ -213,28 +266,23 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
         if (timeFormat == TimeFormat.DOUBLE) {
             group.add(windowTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                    Validators.numberRange(Double.MIN_VALUE, (bounds.getHigh() - bounds.getLow())));
+                Validators.numberRange(Double.MIN_VALUE, (bounds.getHigh() - bounds.getLow())));
             group.add(tickTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                    Validators.numberRange(Double.MIN_VALUE, (bounds.getHigh() - bounds.getLow())));
+                Validators.numberRange(Double.MIN_VALUE, (bounds.getHigh() - bounds.getLow())));
         } else {
             //TODO validation with dates
             group.add(windowTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                    new PositiveNumberValidator(),
-                    new DateRangeValidator(windowTimeUnitCombo.getModel()));
+                new PositiveNumberValidator(),
+                new DateRangeValidator(windowTimeUnitCombo.getModel()));
             group.add(tickTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                    new PositiveNumberValidator(),
-                    new DateRangeValidator(tickTimeUnitCombo.getModel()),
-                    new TickUnderWindowValidator(timeFormat != TimeFormat.DOUBLE));
+                new PositiveNumberValidator(),
+                new DateRangeValidator(tickTimeUnitCombo.getModel()),
+                new TickUnderWindowValidator(timeFormat != TimeFormat.DOUBLE));
         }
     }
-    private final String DAYS = NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.TimeUnit.DAYS");
-    private final String HOURS = NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.TimeUnit.HOURS");
-    private final String MILLISECONDS = NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.TimeUnit.MILLISECONDS");
-    private final String MINUTES = NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.TimeUnit.MINUTES");
-    private final String SECONDS = NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.TimeUnit.SECONDS");
 
     private ComboBoxModel getTimeUnitModel() {
-        return new DefaultComboBoxModel(new String[]{DAYS, HOURS, MILLISECONDS, MINUTES, SECONDS});
+        return new DefaultComboBoxModel(new String[] {DAYS, HOURS, MILLISECONDS, MINUTES, SECONDS});
     }
 
     private TimeUnit getSelectedTimeUnit(ComboBoxModel comboBoxModel) {
@@ -280,17 +328,21 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
     }
 
     private void loadDefaultTimeUnits() {
-        String windowDuration = NbPreferences.forModule(DynamicSettingsPanel.class).get("DynamicSettingsPanel_window_timeunit", windowTimeUnit.name());
+        String windowDuration = NbPreferences.forModule(DynamicSettingsPanel.class)
+            .get("DynamicSettingsPanel_window_timeunit", windowTimeUnit.name());
         windowTimeUnit = TimeUnit.valueOf(windowDuration);
-        String tickDuration = NbPreferences.forModule(DynamicSettingsPanel.class).get("DynamicSettingsPanel_tick_timeunit", tickTimeUnit.name());
+        String tickDuration = NbPreferences.forModule(DynamicSettingsPanel.class)
+            .get("DynamicSettingsPanel_tick_timeunit", tickTimeUnit.name());
         tickTimeUnit = TimeUnit.valueOf(tickDuration);
         windowTimeUnitCombo.setSelectedItem(getTimeUnit(windowTimeUnit));
         tickTimeUnitCombo.setSelectedItem(getTimeUnit(tickTimeUnit));
     }
 
     private void saveDefaultTimeUnits() {
-        NbPreferences.forModule(DynamicSettingsPanel.class).put("DynamicSettingsPanel_window_timeunit", windowTimeUnit.name());
-        NbPreferences.forModule(DynamicSettingsPanel.class).put("DynamicSettingsPanel_tick_timeunit", tickTimeUnit.name());
+        NbPreferences.forModule(DynamicSettingsPanel.class)
+            .put("DynamicSettingsPanel_window_timeunit", windowTimeUnit.name());
+        NbPreferences.forModule(DynamicSettingsPanel.class)
+            .put("DynamicSettingsPanel_tick_timeunit", tickTimeUnit.name());
     }
 
     private String getTimeUnit(TimeUnit timeUnit) {
@@ -310,13 +362,15 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
     private RichTooltip buildTooltip() {
         String name = NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.infoLabel.name");
-        String description = NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.infoLabel.description");
+        String description =
+            NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.infoLabel.description");
         RichTooltip richTooltip = new RichTooltip(name, description);
         Image image = ImageUtilities.loadImage("org/gephi/desktop/statistics/resources/infolabel_details.png");
 
         richTooltip.setMainImage(image);
         return richTooltip;
     }
+    // End of variables declaration//GEN-END:variables
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -341,68 +395,84 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.jPanel1.border.title"))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle
+            .getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.jPanel1.border.title"))); // NOI18N
 
-        labelCurrentTimeline.setText(org.openide.util.NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.labelCurrentTimeline.text")); // NOI18N
+        labelCurrentTimeline.setText(org.openide.util.NbBundle
+            .getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.labelCurrentTimeline.text")); // NOI18N
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.jLabel1.text")); // NOI18N
+        jLabel1.setText(org.openide.util.NbBundle
+            .getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.jLabel1.text")); // NOI18N
 
-        jLabel2.setText(org.openide.util.NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.jLabel2.text")); // NOI18N
+        jLabel2.setText(org.openide.util.NbBundle
+            .getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.jLabel2.text")); // NOI18N
 
         tickTextField.setName("tick"); // NOI18N
 
         windowTextField.setName("window"); // NOI18N
 
-        windowInfoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/statistics/resources/info.png"))); // NOI18N
+        windowInfoLabel.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/statistics/resources/info.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tickTextField)
-                            .addComponent(windowTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tickTimeUnitCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(windowTimeUnitCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(labelCurrentTimeline)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(currentIntervalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
-                        .addComponent(windowInfoLabel)))
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel1)
+                                .addComponent(jLabel2))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(
+                                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(tickTextField)
+                                    .addComponent(windowTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 89,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(
+                                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(tickTimeUnitCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        Short.MAX_VALUE)
+                                    .addComponent(windowTimeUnitCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 109,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(labelCurrentTimeline)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(currentIntervalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 199,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+                            .addComponent(windowInfoLabel)))
+                    .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(labelCurrentTimeline)
-                            .addComponent(currentIntervalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(windowTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(windowTimeUnitCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(tickTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tickTimeUnitCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(windowInfoLabel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(6, 6, 6)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(labelCurrentTimeline)
+                                .addComponent(currentIntervalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 16,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel1)
+                                .addComponent(windowTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(windowTimeUnitCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel2)
+                                .addComponent(tickTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(tickTimeUnitCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(windowInfoLabel))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -414,22 +484,10 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
         add(jPanel1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel currentIntervalLabel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JLabel labelCurrentTimeline;
-    private javax.swing.JTextField tickTextField;
-    private javax.swing.JComboBox tickTimeUnitCombo;
-    private javax.swing.JLabel windowInfoLabel;
-    private javax.swing.JTextField windowTextField;
-    private javax.swing.JComboBox windowTimeUnitCombo;
-    // End of variables declaration//GEN-END:variables
 
     private class DateRangeValidator implements Validator<String> {
 
-        private ComboBoxModel combo;
+        private final ComboBoxModel combo;
 
         public DateRangeValidator(ComboBoxModel comboBoxModel) {
             this.combo = comboBoxModel;
@@ -448,7 +506,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
             long limit = (long) (bounds.getHigh() - bounds.getLow());
             if (i < 1 || timeInMilli > limit) {
                 String message = NbBundle.getMessage(DynamicSettingsPanel.class,
-                        "DateRangeValidator.NotInRange", i, 1, tu.convert(limit, TimeUnit.MILLISECONDS));
+                    "DateRangeValidator.NotInRange", i, 1, tu.convert(limit, TimeUnit.MILLISECONDS));
                 prblms.add(message);
                 return false;
             }
@@ -458,7 +516,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
     private class TickUnderWindowValidator implements Validator<String> {
 
-        private boolean dates;
+        private final boolean dates;
 
         public TickUnderWindowValidator(boolean dates) {
             this.dates = dates;
@@ -481,7 +539,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
                 long windowInMilli = (long) getTimeInMilliseconds(windowTextField.getText(), tu);
                 if (tickInMilli > windowInMilli) {
                     String message = NbBundle.getMessage(DynamicSettingsPanel.class,
-                            "TickUnderWindowValidator.OverWindow");
+                        "TickUnderWindowValidator.OverWindow");
                     prblms.add(message);
                     return false;
                 }
@@ -496,45 +554,12 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
                 }
                 if (tick > window) {
                     String message = NbBundle.getMessage(DynamicSettingsPanel.class,
-                            "TickUnderWindowValidator.OverWindow");
+                        "TickUnderWindowValidator.OverWindow");
                     prblms.add(message);
                     return false;
                 }
             }
             return true;
         }
-    }
-
-    public static JPanel createCounpoundPanel(DynamicSettingsPanel dynamicPanel, JPanel innerPanel) {
-        JPanel result = new JPanel();
-
-        java.awt.GridBagConstraints gridBagConstraints;
-
-        result.setLayout(new java.awt.GridBagLayout());
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        result.add(dynamicPanel, gridBagConstraints);
-
-        if (innerPanel != null) {
-            gridBagConstraints = new java.awt.GridBagConstraints();
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 0;
-            gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-            gridBagConstraints.weightx = 1.0;
-            gridBagConstraints.weighty = 1.0;
-            result.add(innerPanel, gridBagConstraints);
-        }
-
-        //Validation
-        ValidationPanel validationPanel = new ValidationPanel();
-        validationPanel.setInnerComponent(result);
-        ValidationGroup group = validationPanel.getValidationGroup();
-        dynamicPanel.createValidation(group);
-
-        return validationPanel;
     }
 }

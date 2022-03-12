@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.model.edge;
 
 import com.jogamp.opengl.GL2;
@@ -51,7 +52,6 @@ import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.opengl.CompatibilityEngine;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class EdgeModeler extends Modeler {

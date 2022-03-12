@@ -39,8 +39,10 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 
@@ -55,25 +57,36 @@ public interface Ranking {
     /**
      * Returns the minimum value in this ranking.
      *
+     * @param graph graph to query
      * @return minimum value
      */
-    public Number getMinValue();
+    Number getMinValue(Graph graph);
 
     /**
      * Returns the maximum value in this ranking.
      *
+     * @param graph graph to query
      * @return maximum value
      */
-    public Number getMaxValue();
+    Number getMaxValue(Graph graph);
 
     /**
      * Returns the element's value for this ranking.
      *
      * @param element element to get the value for
-     * @param graph graph this element belongs to
+     * @param graph   graph this element belongs to
      * @return the value for this ranking
      */
-    public Number getValue(Element element, Graph graph);
+    Number getValue(Element element, Graph graph);
+
+    /**
+     * Returns the element's normalized value for this ranking.
+     *
+     * @param element element to get the value for
+     * @param graph   graph this element belongs to
+     * @return the normalized value for this ranking
+     */
+    float getNormalizedValue(Element element, Graph graph);
 
     /**
      * Normalizes the given value with the interpolator.
@@ -81,9 +94,16 @@ public interface Ranking {
      * The value is first put between zero and one by doing <code>(value - min) / (max
      * - min)</code> and then passed to the given interpolator.
      *
-     * @param value value to normalize
+     * @param value        value to normalize
      * @param interpolator interpolator
      * @return normalized value
      */
-    public float normalize(Number value, Interpolator interpolator);
+    float normalize(Number value, Interpolator interpolator, Number minValue, Number maxValue);
+
+    /**
+     * Returns the column associated with this partition.
+     *
+     * @return column or null if partition not based on a column
+     */
+    Column getColumn();
 }

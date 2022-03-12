@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.tools.plugin.edit;
 
 import org.gephi.graph.api.AttributeUtils;
@@ -49,18 +50,18 @@ import org.gephi.ui.tools.plugin.edit.EditWindowUtils.AttributeValueWrapper;
 import org.joda.time.DateTimeZone;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class MultipleRowsAttributeValueWrapper implements AttributeValueWrapper {
 
     private final Element[] rows;
     private final Column column;
-    private Object value;
     private final TimeFormat currentTimeFormat;
     private final DateTimeZone dateTimeZone;
+    private Object value;
 
-    public MultipleRowsAttributeValueWrapper(Element[] rows, Column column, TimeFormat currentTimeFormat, DateTimeZone dateTimeZone) {
+    public MultipleRowsAttributeValueWrapper(Element[] rows, Column column, TimeFormat currentTimeFormat,
+                                             DateTimeZone dateTimeZone) {
         this.rows = rows;
         this.column = column;
         this.currentTimeFormat = currentTimeFormat;

@@ -39,23 +39,27 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
+import java.lang.ref.WeakReference;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Index;
 import org.gephi.graph.api.Node;
 
 /**
- *
  * @author mbastian
  */
 public class DegreeRankingImpl extends RankingImpl {
 
-    private final Graph graph;
+    protected final Column column;
 
-    public DegreeRankingImpl(Graph graph) {
+    public DegreeRankingImpl(Column degreeColumn) {
         super();
-        this.graph = graph;
+        this.column = degreeColumn;
     }
 
     @Override
@@ -64,17 +68,21 @@ public class DegreeRankingImpl extends RankingImpl {
     }
 
     @Override
-    protected void refresh() {
-        if (graph.getNodeCount() > 0) {
-            int minV = Integer.MAX_VALUE;
-            int maxV = Integer.MIN_VALUE;
-            for (Node n : graph.getNodes()) {
-                int degree = graph.getDegree(n);
-                minV = Math.min(degree, minV);
-                maxV = Math.max(degree, maxV);
-            }
-            min = minV;
-            max = maxV;
-        }
+    public Number getMinValue(Graph graph) {
+        return getIndex(graph).getMinValue(column);
+    }
+
+    @Override
+    public Number getMaxValue(Graph graph) {
+        return getIndex(graph).getMaxValue(column);
+    }
+
+    private Index<Node> getIndex(Graph graph) {
+        return graph.getModel().getNodeIndex(graph.getView());
+    }
+
+    @Override
+    public boolean isValid(Graph graph) {
+        return true;
     }
 }

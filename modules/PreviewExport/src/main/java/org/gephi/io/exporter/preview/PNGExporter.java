@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.preview;
 
 import java.awt.Color;
@@ -61,7 +62,6 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
@@ -82,15 +82,15 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
         Progress.start(progress);
 
         PreviewController ctrl
-                = Lookup.getDefault().lookup(PreviewController.class);
+            = Lookup.getDefault().lookup(PreviewController.class);
         PreviewModel m = ctrl.getModel(workspace);
 
         setExportProperties(m);
         ctrl.refreshPreview(workspace);
 
         target = (G2DTarget) ctrl.getRenderTarget(
-                RenderTarget.G2D_TARGET,
-                workspace);
+            RenderTarget.G2D_TARGET,
+            workspace);
         if (target instanceof LongTask) {
             ((LongTask) target).setProgressTicket(progress);
         }
@@ -149,13 +149,13 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
     }
 
     @Override
-    public void setWorkspace(Workspace workspace) {
-        this.workspace = workspace;
+    public Workspace getWorkspace() {
+        return workspace;
     }
 
     @Override
-    public Workspace getWorkspace() {
-        return workspace;
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 
     @Override
@@ -185,8 +185,8 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
         oldColor = props.getColorValue(PreviewProperty.BACKGROUND_COLOR);
         if (transparentBackground) {
             props.putValue(
-                    PreviewProperty.BACKGROUND_COLOR,
-                    null); //Transparent
+                PreviewProperty.BACKGROUND_COLOR,
+                null); //Transparent
         }
         props.putValue(PreviewProperty.MARGIN, new Float(margin));
     }

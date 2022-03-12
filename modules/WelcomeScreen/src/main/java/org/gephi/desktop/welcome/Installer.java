@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.welcome;
 
 import javax.swing.JDialog;
@@ -54,14 +55,15 @@ public class Installer extends ModuleInstall {
 
     @Override
     public void restored() {
-        if (NbPreferences.forModule(WelcomeTopComponent.class).getBoolean(WelcomeTopComponent.STARTUP_PREF, Boolean.TRUE)) {
+        if (NbPreferences.forModule(WelcomeTopComponent.class)
+            .getBoolean(WelcomeTopComponent.STARTUP_PREF, Boolean.TRUE)) {
             WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
 
                 @Override
                 public void run() {
                     WelcomeTopComponent component = WelcomeTopComponent.getInstance();
                     JDialog dialog = new JDialog(WindowManager.getDefault().getMainWindow(),
-                            component.getName(), false);
+                        component.getName(), false);
                     dialog.getContentPane().add(component);
                     dialog.setBounds(212, 237, 679, 378);
                     dialog.setVisible(true);

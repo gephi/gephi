@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.timeline;
 
 import java.awt.event.ActionEvent;
@@ -59,15 +60,26 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author mbastian
  */
 public class CustomBoundsDialog extends javax.swing.JPanel {
 
+    private static final String DATE_TIME_FORMAT_HELP_TEXT = "ISO 8601";
     private TimelineModel model;
     private TimelineController controller;
-    
-    private static final String DATE_TIME_FORMAT_HELP_TEXT = "ISO 8601";
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField endTextField;
+    private javax.swing.JLabel labelBounds;
+    private javax.swing.JLabel labelEndDate;
+    private javax.swing.JLabel labelIntervalDate;
+    private javax.swing.JLabel labelMaxDate;
+    private javax.swing.JLabel labelMinDate;
+    private javax.swing.JLabel labelStartDate;
+    private javax.swing.JTextField maxTextField;
+    private javax.swing.JTextField minTextField;
+    private javax.swing.JButton resetDefaultsDate;
+    private javax.swing.JTextField startTextField;
+    private org.jdesktop.swingx.JXHeader titleHeader;
 
     public CustomBoundsDialog() {
         initComponents();
@@ -79,6 +91,14 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                 setDefaults();
             }
         });
+    }
+
+    public static ValidationPanel createValidationPanel(CustomBoundsDialog panel) {
+        ValidationPanel validationPanel = new ValidationPanel();
+        validationPanel.setInnerComponent(panel);
+        ValidationGroup group = validationPanel.getValidationGroup();
+        panel.createValidation(group, validationPanel);
+        return validationPanel;
     }
 
     public void setDefaults() {
@@ -163,115 +183,13 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
 
     public void createValidation(ValidationGroup group, ValidationPanel panel) {
         group.add(minTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                new FormatValidator(), new TimeValidator(maxTextField, false));
+            new FormatValidator(), new TimeValidator(maxTextField, false));
         group.add(maxTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                new FormatValidator(), new TimeValidator(minTextField, true));
+            new FormatValidator(), new TimeValidator(minTextField, true));
         group.add(startTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                new FormatValidator(), new TimeValidator(endTextField, false));
+            new FormatValidator(), new TimeValidator(endTextField, false));
         group.add(endTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                new FormatValidator(), new TimeValidator(startTextField, true));
-    }
-
-    public static ValidationPanel createValidationPanel(CustomBoundsDialog panel) {
-        ValidationPanel validationPanel = new ValidationPanel();
-        validationPanel.setInnerComponent(panel);
-        ValidationGroup group = validationPanel.getValidationGroup();
-        panel.createValidation(group, validationPanel);
-        return validationPanel;
-    }
-
-    private class TimeValidator implements Validator<String> {
-
-        private final JTextField other;
-        private boolean max;
-
-        public TimeValidator(JTextField other, boolean max) {
-            this.other = other;
-            this.max = max;
-        }
-
-        @Override
-        public boolean validate(Problems prblms, String string, String t) {
-            double thisDate;
-            double otherDate;
-            if (model.getTimeFormat().equals(TimeFormat.DATE) || model.getTimeFormat().equals(TimeFormat.DATETIME)) {
-                try {
-                    thisDate = AttributeUtils.parseDateTime(t);
-                    otherDate = AttributeUtils.parseDateTime(other.getText());
-                    double minDate = max ? otherDate : thisDate;
-                    double maxDate = max ? thisDate : otherDate;
-                    if (minDate < model.getMin()) {
-                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.min"));
-                        return false;
-                    }
-                    if (maxDate > model.getMax()) {
-                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.max"));
-                        return false;
-                    }
-                    if (minDate >= maxDate) {
-                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
-                        return false;
-                    }
-                } catch (Exception ex) {
-                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", DATE_TIME_FORMAT_HELP_TEXT));
-                    return false;
-                }
-
-            } else {
-                try {
-                    thisDate = Double.parseDouble(t);
-                    otherDate = Double.parseDouble(other.getText());
-                    double minDate = max ? otherDate : thisDate;
-                    double maxDate = max ? thisDate : otherDate;
-                    if (minDate < model.getMin()) {
-                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.min"));
-                        return false;
-                    }
-                    if (maxDate > model.getMax()) {
-                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.max"));
-                        return false;
-                    }
-                    if (minDate >= maxDate) {
-                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
-                        return false;
-                    }
-                } catch (Exception e) {
-                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.double"));
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    private class FormatValidator implements Validator<String> {
-
-        @Override
-        public boolean validate(Problems prblms, String string, String t) {
-            if (model.getTimeFormat().equals(TimeFormat.DATE)) {
-                try {
-                    AttributeUtils.parseDateTime(t);
-                } catch (Exception ex) {
-                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", DATE_TIME_FORMAT_HELP_TEXT));
-                    return false;
-                }
-            } else if (model.getTimeFormat().equals(TimeFormat.DATETIME)) {
-                try {
-                    AttributeUtils.parseDateTime(t);
-                } catch (Exception ex) {
-                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date", DATE_TIME_FORMAT_HELP_TEXT));
-                    return false;
-                }
-            } else {
-                try {
-                    Double.parseDouble(t);
-                } catch (Exception e) {
-                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.double"));
-                    return false;
-                }
-            }
-            return true;
-        }
+            new FormatValidator(), new TimeValidator(startTextField, true));
     }
 
     /**
@@ -296,99 +214,211 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
         startTextField = new javax.swing.JTextField();
         endTextField = new javax.swing.JTextField();
 
-        titleHeader.setDescription(NbBundle.getMessage (TimelineTopComponent.class, "CustomBoundsDialog.titleHeader.description")); // NOI18N
-        titleHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/custom_bounds.png"))); // NOI18N
-        titleHeader.setTitle(NbBundle.getMessage (TimelineTopComponent.class, "CustomBoundsDialog.titleHeader.title")); // NOI18N
+        titleHeader.setDescription(
+            NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.titleHeader.description")); // NOI18N
+        titleHeader.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/timeline/resources/custom_bounds.png"))); // NOI18N
+        titleHeader.setTitle(
+            NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.titleHeader.title")); // NOI18N
 
         labelBounds.setFont(labelBounds.getFont().deriveFont(labelBounds.getFont().getStyle() | java.awt.Font.BOLD));
-        labelBounds.setText(NbBundle.getMessage (TimelineTopComponent.class, "CustomBoundsDialog.labelBounds.text")); // NOI18N
+        labelBounds
+            .setText(NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.labelBounds.text")); // NOI18N
 
-        labelMinDate.setText(NbBundle.getMessage (TimelineTopComponent.class, "CustomBoundsDialog.labelMinDate.text")); // NOI18N
+        labelMinDate
+            .setText(NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.labelMinDate.text")); // NOI18N
 
-        labelMaxDate.setText(NbBundle.getMessage (TimelineTopComponent.class, "CustomBoundsDialog.labelMaxDate.text")); // NOI18N
+        labelMaxDate
+            .setText(NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.labelMaxDate.text")); // NOI18N
 
-        labelIntervalDate.setFont(labelIntervalDate.getFont().deriveFont(labelIntervalDate.getFont().getStyle() | java.awt.Font.BOLD));
-        labelIntervalDate.setText(NbBundle.getMessage (TimelineTopComponent.class, "CustomBoundsDialog.labelIntervalDate.text")); // NOI18N
+        labelIntervalDate.setFont(
+            labelIntervalDate.getFont().deriveFont(labelIntervalDate.getFont().getStyle() | java.awt.Font.BOLD));
+        labelIntervalDate.setText(
+            NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.labelIntervalDate.text")); // NOI18N
 
-        labelStartDate.setText(NbBundle.getMessage (TimelineTopComponent.class, "CustomBoundsDialog.labelStartDate.text")); // NOI18N
+        labelStartDate.setText(
+            NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.labelStartDate.text")); // NOI18N
 
-        labelEndDate.setText(NbBundle.getMessage (TimelineTopComponent.class, "CustomBoundsDialog.labelEndDate.text")); // NOI18N
+        labelEndDate
+            .setText(NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.labelEndDate.text")); // NOI18N
 
-        resetDefaultsDate.setText(NbBundle.getMessage (TimelineTopComponent.class, "CustomBoundsDialog.resetDefaultsDate.text")); // NOI18N
+        resetDefaultsDate.setText(
+            NbBundle.getMessage(TimelineTopComponent.class, "CustomBoundsDialog.resetDefaultsDate.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(titleHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(resetDefaultsDate))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(labelMinDate)
-                                    .addComponent(labelStartDate))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(minTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(47, 47, 47)
-                                        .addComponent(labelMaxDate))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(startTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(labelEndDate)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(maxTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(endTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(labelIntervalDate)
-                            .addComponent(labelBounds))))
-                .addContainerGap())
+                .addComponent(titleHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
+                .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(resetDefaultsDate))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(25, 25, 25)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(6, 6, 6)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(labelMinDate)
+                                        .addComponent(labelStartDate))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(
+                                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(minTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 162,
+                                                    javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(47, 47, 47)
+                                                .addComponent(labelMaxDate))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(startTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                    162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(labelEndDate)))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(maxTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 162,
+                                            javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(endTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 162,
+                                            javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(labelIntervalDate)
+                                .addComponent(labelBounds))))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(titleHeader, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(labelBounds)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelMinDate)
-                    .addComponent(minTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelMaxDate)
-                    .addComponent(maxTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(labelIntervalDate)
-                .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelStartDate)
-                    .addComponent(labelEndDate)
-                    .addComponent(endTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(resetDefaultsDate)
-                .addContainerGap(43, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(titleHeader, javax.swing.GroupLayout.PREFERRED_SIZE, 83,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(labelBounds)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(labelMinDate)
+                        .addComponent(minTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelMaxDate)
+                        .addComponent(maxTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(18, 18, 18)
+                    .addComponent(labelIntervalDate)
+                    .addGap(10, 10, 10)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(startTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelStartDate)
+                        .addComponent(labelEndDate)
+                        .addComponent(endTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(18, 18, 18)
+                    .addComponent(resetDefaultsDate)
+                    .addContainerGap(43, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField endTextField;
-    private javax.swing.JLabel labelBounds;
-    private javax.swing.JLabel labelEndDate;
-    private javax.swing.JLabel labelIntervalDate;
-    private javax.swing.JLabel labelMaxDate;
-    private javax.swing.JLabel labelMinDate;
-    private javax.swing.JLabel labelStartDate;
-    private javax.swing.JTextField maxTextField;
-    private javax.swing.JTextField minTextField;
-    private javax.swing.JButton resetDefaultsDate;
-    private javax.swing.JTextField startTextField;
-    private org.jdesktop.swingx.JXHeader titleHeader;
+
+    private class TimeValidator implements Validator<String> {
+
+        private final JTextField other;
+        private final boolean max;
+
+        public TimeValidator(JTextField other, boolean max) {
+            this.other = other;
+            this.max = max;
+        }
+
+        @Override
+        public boolean validate(Problems prblms, String string, String t) {
+            double thisDate;
+            double otherDate;
+            if (model.getTimeFormat().equals(TimeFormat.DATE) || model.getTimeFormat().equals(TimeFormat.DATETIME)) {
+                try {
+                    thisDate = AttributeUtils.parseDateTime(t);
+                    otherDate = AttributeUtils.parseDateTime(other.getText());
+                    double minDate = max ? otherDate : thisDate;
+                    double maxDate = max ? thisDate : otherDate;
+                    if (minDate < model.getMin()) {
+                        prblms
+                            .add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.min"));
+                        return false;
+                    }
+                    if (maxDate > model.getMax()) {
+                        prblms
+                            .add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.max"));
+                        return false;
+                    }
+                    if (minDate >= maxDate) {
+                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
+                        return false;
+                    }
+                } catch (Exception ex) {
+                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date",
+                        DATE_TIME_FORMAT_HELP_TEXT));
+                    return false;
+                }
+
+            } else {
+                try {
+                    thisDate = Double.parseDouble(t);
+                    otherDate = Double.parseDouble(other.getText());
+                    double minDate = max ? otherDate : thisDate;
+                    double maxDate = max ? thisDate : otherDate;
+                    if (minDate < model.getMin()) {
+                        prblms
+                            .add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.min"));
+                        return false;
+                    }
+                    if (maxDate > model.getMax()) {
+                        prblms
+                            .add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator.max"));
+                        return false;
+                    }
+                    if (minDate >= maxDate) {
+                        prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.TimeValidator"));
+                        return false;
+                    }
+                } catch (Exception e) {
+                    prblms.add(
+                        NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.double"));
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    private class FormatValidator implements Validator<String> {
+
+        @Override
+        public boolean validate(Problems prblms, String string, String t) {
+            if (model.getTimeFormat().equals(TimeFormat.DATE)) {
+                try {
+                    AttributeUtils.parseDateTime(t);
+                } catch (Exception ex) {
+                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date",
+                        DATE_TIME_FORMAT_HELP_TEXT));
+                    return false;
+                }
+            } else if (model.getTimeFormat().equals(TimeFormat.DATETIME)) {
+                try {
+                    AttributeUtils.parseDateTime(t);
+                } catch (Exception ex) {
+                    prblms.add(NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.date",
+                        DATE_TIME_FORMAT_HELP_TEXT));
+                    return false;
+                }
+            } else {
+                try {
+                    Double.parseDouble(t);
+                } catch (Exception e) {
+                    prblms.add(
+                        NbBundle.getMessage(CustomBoundsDialog.class, "CustomBoundsDialog.FormatValidator.double"));
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
     // End of variables declaration//GEN-END:variables
 }

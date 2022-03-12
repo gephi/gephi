@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.exporter.plugin;
 
 import javax.swing.JPanel;
@@ -49,15 +50,14 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ExporterUI.class)
 public class UIExporterGDF implements ExporterUI {
 
+    private final ExporterGDFSettings settings = new ExporterGDFSettings();
     private UIExporterGDFPanel panel;
     private ExporterGDF exporterGDF;
-    private ExporterGDFSettings settings = new ExporterGDFSettings();
 
     @Override
     public void setup(Exporter exporter) {
@@ -92,34 +92,37 @@ public class UIExporterGDF implements ExporterUI {
         return NbBundle.getMessage(UIExporterGDF.class, "UIExporterGDF.name");
     }
 
-    private static class ExporterGDFSettings {
+    private static class ExporterGDFSettings extends AbstractExporterSettings {
 
-        private boolean normalize = false;
-        private boolean simpleQuotes = false;
-        private boolean useQuotes = true;
-        private boolean exportColors = true;
-        private boolean exportPosition = true;
-        private boolean exportAttributes = true;
-        private boolean exportVisibility = false;
+        // Preference names
+        private final static String NORMALIZE = "GDF_normalize";
+        private final static String SIMPLE_QUOTES = "GDF_simpleQuotes";
+        private final static String USE_QUOTES = "GDF_useQuotes";
+        private final static String EXPORT_COLORS = "GDF_exportColors";
+        private final static String EXPORT_POSITION = "GDF_exportPosition";
+        private final static String EXPORT_ATTRIBUTES = "GDF_exportAttributes";
+        private final static String EXPORT_VISIBILITY = "GDF_exportVisibility";
+        // Default
+        private final static ExporterGDF DEFAULT = new ExporterGDF();
 
         private void save(ExporterGDF exporterGDF) {
-            this.normalize = exporterGDF.isNormalize();
-            this.simpleQuotes = exporterGDF.isSimpleQuotes();
-            this.useQuotes = exporterGDF.isUseQuotes();
-            this.exportColors = exporterGDF.isExportColors();
-            this.exportPosition = exporterGDF.isExportPosition();
-            this.exportAttributes = exporterGDF.isExportAttributes();
-            this.exportVisibility = exporterGDF.isExportVisibility();
+            put(NORMALIZE, exporterGDF.isNormalize());
+            put(SIMPLE_QUOTES, exporterGDF.isSimpleQuotes());
+            put(USE_QUOTES, exporterGDF.isUseQuotes());
+            put(EXPORT_COLORS, exporterGDF.isExportColors());
+            put(EXPORT_POSITION, exporterGDF.isExportPosition());
+            put(EXPORT_ATTRIBUTES, exporterGDF.isExportAttributes());
+            put(EXPORT_VISIBILITY, exporterGDF.isExportVisibility());
         }
 
         private void load(ExporterGDF exporterGDF) {
-            exporterGDF.setNormalize(normalize);
-            exporterGDF.setSimpleQuotes(simpleQuotes);
-            exporterGDF.setUseQuotes(useQuotes);
-            exporterGDF.setExportColors(exportColors);
-            exporterGDF.setExportAttributes(exportAttributes);
-            exporterGDF.setExportPosition(exportPosition);
-            exporterGDF.setExportVisibility(exportVisibility);
+            exporterGDF.setNormalize(get(NORMALIZE, DEFAULT.isNormalize()));
+            exporterGDF.setSimpleQuotes(get(SIMPLE_QUOTES, DEFAULT.isSimpleQuotes()));
+            exporterGDF.setUseQuotes(get(USE_QUOTES, DEFAULT.isUseQuotes()));
+            exporterGDF.setExportColors(get(EXPORT_COLORS, DEFAULT.isExportColors()));
+            exporterGDF.setExportAttributes(get(EXPORT_ATTRIBUTES, DEFAULT.isExportAttributes()));
+            exporterGDF.setExportPosition(get(EXPORT_POSITION, DEFAULT.isExportPosition()));
+            exporterGDF.setExportVisibility(get(EXPORT_VISIBILITY, DEFAULT.isExportVisibility()));
         }
     }
 }

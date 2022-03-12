@@ -16,7 +16,7 @@
     <name>VisualizationImpl</name>
 
     <properties>
-        <jogl.version>2.3.2</jogl.version>
+        <jogl.version>2.4.0-rc-20210111</jogl.version>
     </properties>
 
     <dependencies>
@@ -162,14 +162,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>gleem</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>lib.validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>desktop-project</artifactId>
         </dependency>
         <dependency>
@@ -181,18 +173,6 @@
             <artifactId>org-openide-modules</artifactId>
         </dependency>
     </dependencies>
-    
-    <repositories>
-        <repository>
-            <id>jogamp-remote</id>
-            <name>jogamp test mirror</name>
-            <url>https://www.jogamp.org/deployment/maven/</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
@@ -205,7 +185,7 @@
       </plugin>-->
             
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
                     <publicPackages>
@@ -217,6 +197,7 @@
                         <publicPackage>org.gephi.visualization.apiimpl</publicPackage>
                         <publicPackage>org.gephi.visualization.events</publicPackage>
                         <publicPackage>org.gephi.visualization.opengl.text</publicPackage>
+                        <publicPackage>org.gephi.lib.gleem.linalg</publicPackage>
                     </publicPackages>
                     <nbmResources> 
                         <nbmResource> 

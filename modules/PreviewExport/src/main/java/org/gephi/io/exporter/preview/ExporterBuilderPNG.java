@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.preview;
 
 import org.gephi.io.exporter.api.FileType;
@@ -57,7 +58,8 @@ public class ExporterBuilderPNG implements VectorFileExporterBuilder {
 
     @Override
     public FileType[] getFileTypes() {
-        return new FileType[]{new FileType(".png", NbBundle.getMessage(ExporterBuilderPNG.class, "fileType_PNG_Name"))};
+        return new FileType[] {
+            new FileType(".png", NbBundle.getMessage(ExporterBuilderPNG.class, "fileType_PNG_Name"))};
     }
 
     @Override

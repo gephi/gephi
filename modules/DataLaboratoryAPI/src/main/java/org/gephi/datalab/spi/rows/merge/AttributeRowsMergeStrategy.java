@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi.rows.merge;
 
 import org.gephi.datalab.spi.Manipulator;
@@ -49,22 +50,25 @@ import org.gephi.graph.api.Element;
  * <p>Service for defining strategies for merging a column of rows of a table.</p>
  * <p>Has the same interface as a manipulator.</p>
  * <p>When a <code>RowsMergeStrategy</code> is executed it must reduce all values to one that should be returned later when <code>getReducedValue</code> is called</p>
- * @see Manipulator
+ *
  * @author Eduardo Ramos
+ * @see Manipulator
  */
-public interface AttributeRowsMergeStrategy extends Manipulator{
+public interface AttributeRowsMergeStrategy extends Manipulator {
 
     /**
      * Prepare column and rows for this merge strategy.
      * At least <b>1</b> row will be set up to merge always.
-     * @param rows Rows to merge
+     *
+     * @param rows        Rows to merge
      * @param selectedRow Main row of the row group to merge
-     * @param column Column to merge
+     * @param column      Column to merge
      */
     void setup(Element[] rows, Element selectedRow, Column column);
-    
+
     /**
      * This method is always called after the strategy is set up and executed.
+     *
      * @return Reduced value from all rows and the column
      */
     Object getReducedValue();

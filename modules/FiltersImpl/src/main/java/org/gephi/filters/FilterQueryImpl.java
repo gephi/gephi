@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters;
 
 import org.gephi.filters.spi.Filter;
@@ -46,14 +47,13 @@ import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class FilterQueryImpl extends AbstractQueryImpl {
 
-    private Parameters[] parameters;
     private final FilterBuilder builder;
     private final Filter filter;
+    private Parameters[] parameters;
     private String name;
 
     public FilterQueryImpl(FilterBuilder filterBuilder, Filter filter) {

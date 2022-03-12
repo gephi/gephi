@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.plugin.items;
 
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.Item;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class NodeLabelItem extends AbstractItem {

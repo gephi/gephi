@@ -39,15 +39,15 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.operator;
 
 import javax.swing.JPanel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface MASKEdgeUI {
 
-    public JPanel getPanel(MASKBuilderEdge.MaskEdgeOperator edgesOperator);
+    JPanel getPanel(MASKBuilderEdge.MaskEdgeOperator edgesOperator);
 }

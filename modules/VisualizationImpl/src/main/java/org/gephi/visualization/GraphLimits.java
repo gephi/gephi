@@ -39,12 +39,12 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization;
 
 import org.gephi.lib.gleem.linalg.Vec3f;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class GraphLimits {
@@ -109,7 +109,9 @@ public class GraphLimits {
 
     public synchronized float getDistanceFromPoint(float x, float y, float z) {
 
-        float dis = (float) Math.sqrt((closestPoint.x() - x) * (closestPoint.x() - x) + (closestPoint.y() - y) * (closestPoint.y() - y) + (closestPoint.z() - z) * (closestPoint.z() - z));
+        float dis = (float) Math.sqrt(
+            (closestPoint.x() - x) * (closestPoint.x() - x) + (closestPoint.y() - y) * (closestPoint.y() - y) +
+                (closestPoint.z() - z) * (closestPoint.z() - z));
         return dis;
 
         //Minimum distance with the 8 points of the cube, poor method

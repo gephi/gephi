@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.plugin.renderers;
 
 import com.itextpdf.text.pdf.BaseFont;
@@ -53,25 +54,31 @@ import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import org.gephi.graph.api.Edge;
-import org.gephi.preview.api.*;
+import org.gephi.preview.api.CanvasSize;
+import org.gephi.preview.api.G2DTarget;
+import org.gephi.preview.api.Item;
+import org.gephi.preview.api.PDFTarget;
+import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.api.RenderTarget;
+import org.gephi.preview.api.SVGTarget;
+import org.gephi.preview.api.Vector;
 import org.gephi.preview.plugin.builders.EdgeBuilder;
 import org.gephi.preview.plugin.builders.EdgeLabelBuilder;
 import org.gephi.preview.plugin.builders.NodeBuilder;
-import org.gephi.preview.plugin.items.EdgeItem;
 import org.gephi.preview.plugin.items.EdgeLabelItem;
 import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
-import org.gephi.preview.types.EdgeColor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 /**
- *
  * @author Yudi Xue, Mathieu Bastian
  */
 @ServiceProvider(service = Renderer.class, position = 500)
@@ -85,7 +92,8 @@ public class EdgeLabelRenderer implements Renderer {
     protected final boolean defaultShowLabels = true;
     protected final Font defaultFont = new Font("Arial", Font.PLAIN, 10);
     protected final boolean defaultShorten = false;
-    protected final DependantOriginalColor defaultColor = new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL);
+    protected final DependantOriginalColor defaultColor =
+        new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL);
     protected final int defaultMaxChar = 30;
     protected final float defaultOutlineSize = 2;
     protected final DependantColor defaultOutlineColor = new DependantColor(Color.WHITE);
@@ -110,18 +118,18 @@ public class EdgeLabelRenderer implements Renderer {
             }
         }
 
+        //Put nodes in edge item (in case it was not done yet by EdgeRenderer)
+        EdgeRenderer.putNodesInEdgeItems(previewModel, previewModel.getItems(Item.EDGE));
+
         //Put parent color, and calculate position
         for (Item item : previewModel.getItems(Item.EDGE_LABEL)) {
             Edge edge = (Edge) item.getSource();
             Item edgeItem = previewModel.getItem(Item.EDGE, edge);
 
-            EdgeColor edgeColor = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
-            NodeItem sourceItem = (NodeItem) edgeItem.getData(EdgeRenderer.SOURCE);
-            NodeItem targetItem = (NodeItem) edgeItem.getData(EdgeRenderer.TARGET);
-            Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
-                    (Color) sourceItem.getData(NodeItem.COLOR),
-                    (Color) targetItem.getData(NodeItem.COLOR));
-            item.setData(EDGE_COLOR, color);
+            NodeItem sourceItem = edgeItem.getData(EdgeRenderer.SOURCE);
+            NodeItem targetItem = edgeItem.getData(EdgeRenderer.TARGET);
+
+            item.setData(EDGE_COLOR, EdgeRenderer.getColor(edgeItem, properties));
             if (edge.isSelfLoop()) {
                 //Middle
                 Float x = sourceItem.getData(NodeItem.X);
@@ -145,7 +153,7 @@ public class EdgeLabelRenderer implements Renderer {
                 Float y1 = sourceItem.getData(NodeItem.Y);
                 Float y2 = targetItem.getData(NodeItem.Y);
 
-                //Curved edgs
+                //Curved edges
                 Vector direction = new Vector(x2, y2);
                 direction.sub(new Vector(x1, y1));
                 float length = direction.mag();
@@ -225,14 +233,19 @@ public class EdgeLabelRenderer implements Renderer {
     }
 
     @Override
+    public void postProcess(PreviewModel previewModel, RenderTarget renderTarget, PreviewProperties properties) {
+    }
+
+    @Override
     public CanvasSize getCanvasSize(
-            final Item item,
-            final PreviewProperties properties) {
+        final Item item,
+        final PreviewProperties properties) {
         //FIXME Compute the label canvas
         return new CanvasSize();
     }
 
-    public void renderG2D(G2DTarget target, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
+    public void renderG2D(G2DTarget target, String label, float x, float y, Color color, float outlineSize,
+                          Color outlineColor) {
         Graphics2D graphics = target.getGraphics();
 
         graphics.setFont(font);
@@ -260,7 +273,8 @@ public class EdgeLabelRenderer implements Renderer {
         }
     }
 
-    public void renderSVG(SVGTarget target, Edge edge, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
+    public void renderSVG(SVGTarget target, Edge edge, String label, float x, float y, Color color, float outlineSize,
+                          Color outlineColor) {
         Text labelText = target.createTextNode(label);
 
         if (outlineSize > 0) {
@@ -294,7 +308,8 @@ public class EdgeLabelRenderer implements Renderer {
         target.getTopElement(SVGTarget.TOP_EDGE_LABELS).appendChild(labelElem);
     }
 
-    public void renderPDF(PDFTarget target, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
+    public void renderPDF(PDFTarget target, String label, float x, float y, Color color, float outlineSize,
+                          Color outlineColor) {
         PdfContentByte cb = target.getContentByte();
         cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
         BaseFont bf = target.getBaseFont(font);
@@ -335,44 +350,45 @@ public class EdgeLabelRenderer implements Renderer {
 
     @Override
     public PreviewProperty[] getProperties() {
-        return new PreviewProperty[]{
+        return new PreviewProperty[] {
             PreviewProperty.createProperty(this, PreviewProperty.SHOW_EDGE_LABELS, Boolean.class,
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.display.displayName"),
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.display.description"),
-            PreviewProperty.CATEGORY_EDGE_LABELS).setValue(defaultShowLabels),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.display.displayName"),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.display.description"),
+                PreviewProperty.CATEGORY_EDGE_LABELS).setValue(defaultShowLabels),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_FONT, Font.class,
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.font.displayName"),
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.font.description"),
-            PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultFont),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.font.displayName"),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.font.description"),
+                PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultFont),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_COLOR, DependantOriginalColor.class,
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.color.displayName"),
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.color.description"),
-            PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultColor),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.color.displayName"),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.color.description"),
+                PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultColor),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_SHORTEN, Boolean.class,
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.shorten.displayName"),
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.shorten.description"),
-            PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultShorten),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.shorten.displayName"),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.shorten.description"),
+                PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultShorten),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_MAX_CHAR, Integer.class,
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.maxchar.displayName"),
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.maxchar.description"),
-            PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultMaxChar),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.maxchar.displayName"),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.maxchar.description"),
+                PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultMaxChar),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_OUTLINE_SIZE, Float.class,
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineSize.displayName"),
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineSize.description"),
-            PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultOutlineSize),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineSize.displayName"),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineSize.description"),
+                PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultOutlineSize),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_OUTLINE_COLOR, DependantColor.class,
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineColor.displayName"),
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineColor.description"),
-            PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultOutlineColor),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineColor.displayName"),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineColor.description"),
+                PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultOutlineColor),
             PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_OUTLINE_OPACITY, Float.class,
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineOpacity.displayName"),
-            NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineOpacity.description"),
-            PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultOutlineOpacity),};
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineOpacity.displayName"),
+                NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineOpacity.description"),
+                PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(
+                defaultOutlineOpacity),};
     }
 
     private boolean showEdgeLabels(PreviewProperties properties) {
         return properties.getBooleanValue(PreviewProperty.SHOW_EDGE_LABELS)
-                && !properties.getBooleanValue(PreviewProperty.MOVING);
+            && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 
     @Override
@@ -382,10 +398,12 @@ public class EdgeLabelRenderer implements Renderer {
 
     @Override
     public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
-        return (itemBuilder instanceof EdgeLabelBuilder || itemBuilder instanceof NodeBuilder || itemBuilder instanceof EdgeBuilder) && showEdgeLabels(properties);//Needs some properties of nodes and edges
+        return (itemBuilder instanceof EdgeLabelBuilder || itemBuilder instanceof NodeBuilder ||
+            itemBuilder instanceof EdgeBuilder) && showEdgeLabels(properties);//Needs some properties of nodes and edges
     }
 
-    protected Vector bezierPoint(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float c) {
+    protected Vector bezierPoint(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
+                                 float c) {
         Vector ab = linearInterpolation(x1, y1, x2, y2, c);
         Vector bc = linearInterpolation(x2, y2, x3, y3, c);
         Vector cd = linearInterpolation(x3, y3, x4, y4, c);

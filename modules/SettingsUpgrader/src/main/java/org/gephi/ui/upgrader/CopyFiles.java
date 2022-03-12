@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.upgrader;
 
 import java.io.BufferedReader;
@@ -50,22 +51,22 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.EditableProperties;
 
 /**
- *
  * @author mbastian
  */
 public class CopyFiles {
 
-    private File sourceRoot;
-    private File targetRoot;
+    private final File sourceRoot;
+    private final File targetRoot;
     private EditableProperties currentProperties;
-    private Set<String> includePatterns = new HashSet<>();
-    private Set<String> excludePatterns = new HashSet<>();
+    private final Set<String> includePatterns = new HashSet<>();
+    private final Set<String> excludePatterns = new HashSet<>();
 
     private CopyFiles(File source, File target) {
         this.sourceRoot = source;
@@ -73,7 +74,7 @@ public class CopyFiles {
         //Pattern files
         try {
             InputStream is = CopyFiles.class.getResourceAsStream("/org/gephi/ui/upgrader/gephi.import");
-            Reader reader = new InputStreamReader(is, "utf-8"); // NOI18N
+            Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8); // NOI18N
             readPatterns(reader);
             reader.close();
         } catch (IOException ex) {
@@ -83,6 +84,120 @@ public class CopyFiles {
     public static void copyDeep(File source, File target) throws IOException {
         CopyFiles copyFiles = new CopyFiles(source, target);
         copyFiles.copyFolder(copyFiles.sourceRoot);
+    }
+
+    /**
+     * Returns slash separated path relative to given root.
+     */
+    private static String getRelativePath(File root, File file) {
+        String result = file.getAbsolutePath().substring(root.getAbsolutePath().length());
+        result = result.replace('\\', '/');  //NOI18N
+        if (result.startsWith("/") && !result.startsWith("//")) {  //NOI18N
+            result = result.substring(1);
+        }
+        return result;
+    }
+
+    /**
+     * Copy source file to target file. It creates necessary sub folders.
+     *
+     * @param sourceFile source file
+     * @param targetFile target file
+     * @throws java.io.IOException if copying fails
+     */
+    private static void copyFile(File sourceFile, File targetFile) throws IOException {
+        ensureParent(targetFile);
+        InputStream ins = null;
+        OutputStream out = null;
+        try {
+            ins = new FileInputStream(sourceFile);
+            out = new FileOutputStream(targetFile);
+            FileUtil.copy(ins, out);
+        } finally {
+            if (ins != null) {
+                ins.close();
+            }
+            if (out != null) {
+                out.close();
+            }
+        }
+    }
+
+    /**
+     * Creates parent of given file, if doesn't exist.
+     */
+    private static void ensureParent(File file) throws IOException {
+        final File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            if (!parent.mkdirs()) {
+                throw new IOException("Cannot create folder: " + parent.getAbsolutePath());  //NOI18N
+            }
+        }
+    }
+
+    /**
+     * Parses given compound string pattern into set of single patterns.
+     *
+     * @param pattern compound pattern in form filePattern1#keyPattern1#|filePattern2#keyPattern2#|filePattern3
+     * @return set of single patterns containing just one # (e.g. [filePattern1#keyPattern1, filePattern2#keyPattern2, filePattern3])
+     */
+    private static Set<String> parsePattern(String pattern) {
+        Set<String> patterns = new HashSet<>();
+        if (pattern.contains("#")) {  //NOI18N
+            StringBuilder partPattern = new StringBuilder();
+            ParserState state = ParserState.START;
+            int blockLevel = 0;
+            for (int i = 0; i < pattern.length(); i++) {
+                char c = pattern.charAt(i);
+                switch (state) {
+                    case START:
+                        if (c == '#') {
+                            state = ParserState.IN_KEY_PATTERN;
+                            partPattern.append(c);
+                        } else if (c == '(') {
+                            state = ParserState.IN_BLOCK;
+                            blockLevel++;
+                            partPattern.append(c);
+                        } else if (c == '|') {
+                            patterns.add(partPattern.toString());
+                            partPattern = new StringBuilder();
+                        } else {
+                            partPattern.append(c);
+                        }
+                        break;
+                    case IN_KEY_PATTERN:
+                        if (c == '#') {
+                            state = ParserState.AFTER_KEY_PATTERN;
+                        } else {
+                            partPattern.append(c);
+                        }
+                        break;
+                    case AFTER_KEY_PATTERN:
+                        if (c == '|') {
+                            state = ParserState.START;
+                            patterns.add(partPattern.toString());
+                            partPattern = new StringBuilder();
+                        } else {
+                            assert false : "Wrong OptionsExport pattern " + pattern +
+                                ". Only format like filePattern1#keyPattern#|filePattern2 is supported.";  //NOI18N
+                        }
+                        break;
+                    case IN_BLOCK:
+                        partPattern.append(c);
+                        if (c == ')') {
+                            blockLevel--;
+                            if (blockLevel == 0) {
+                                state = ParserState.START;
+                            }
+                        }
+                        break;
+                }
+            }
+            patterns.add(partPattern.toString());
+        } else {
+            patterns.add(pattern);
+        }
+        return patterns;
     }
 
     private void copyFolder(File sourceFolder) throws IOException {
@@ -99,8 +214,10 @@ public class CopyFiles {
         }
     }
 
-    /** Copy given file to target root dir if matches include/exclude patterns.
+    /**
+     * Copy given file to target root dir if matches include/exclude patterns.
      * If properties pattern is applicable, it copies only matching keys.
+     *
      * @param sourceFile source file
      * @throws java.io.IOException if copying fails
      */
@@ -165,51 +282,10 @@ public class CopyFiles {
         }
     }
 
-    /** Returns slash separated path relative to given root. */
-    private static String getRelativePath(File root, File file) {
-        String result = file.getAbsolutePath().substring(root.getAbsolutePath().length());
-        result = result.replace('\\', '/');  //NOI18N
-        if (result.startsWith("/") && !result.startsWith("//")) {  //NOI18N
-            result = result.substring(1);
-        }
-        return result;
-    }
-
-    /** Copy source file to target file. It creates necessary sub folders.
-     * @param sourceFile source file
-     * @param targetFile target file
-     * @throws java.io.IOException if copying fails
-     */
-    private static void copyFile(File sourceFile, File targetFile) throws IOException {
-        ensureParent(targetFile);
-        InputStream ins = null;
-        OutputStream out = null;
-        try {
-            ins = new FileInputStream(sourceFile);
-            out = new FileOutputStream(targetFile);
-            FileUtil.copy(ins, out);
-        } finally {
-            if (ins != null) {
-                ins.close();
-            }
-            if (out != null) {
-                out.close();
-            }
-        }
-    }
-
-    /** Creates parent of given file, if doesn't exist. */
-    private static void ensureParent(File file) throws IOException {
-        final File parent = file.getParentFile();
-        if (parent != null && !parent.exists()) {
-            if (!parent.mkdirs()) {
-                throw new IOException("Cannot create folder: " + parent.getAbsolutePath());  //NOI18N
-            }
-        }
-    }
-
-    /** Returns set of keys matching given pattern.
-     * @param relativePath path relative to sourceRoot
+    /**
+     * Returns set of keys matching given pattern.
+     *
+     * @param relativePath      path relative to sourceRoot
      * @param propertiesPattern pattern like file.properties#keyPattern
      * @return set of matching keys, never null
      * @throws IOException if properties cannot be loaded
@@ -232,7 +308,9 @@ public class CopyFiles {
         return matchingKeys;
     }
 
-    /** Returns properties from relative path.
+    /**
+     * Returns properties from relative path.
+     *
      * @param relativePath relative path
      * @return properties from relative path.
      * @throws IOException if cannot open stream
@@ -251,12 +329,14 @@ public class CopyFiles {
         return properties;
     }
 
-    /** Reads the include/exclude set from a given reader.
+    /**
+     * Reads the include/exclude set from a given reader.
+     *
      * @param r reader
      */
     private void readPatterns(Reader r) throws IOException {
         BufferedReader buf = new BufferedReader(r);
-        for (;;) {
+        for (; ; ) {
             String line = buf.readLine();
             if (line == null) {
                 break;
@@ -287,67 +367,5 @@ public class CopyFiles {
         IN_KEY_PATTERN,
         AFTER_KEY_PATTERN,
         IN_BLOCK
-    }
-
-    /** Parses given compound string pattern into set of single patterns.
-     * @param pattern compound pattern in form filePattern1#keyPattern1#|filePattern2#keyPattern2#|filePattern3
-     * @return set of single patterns containing just one # (e.g. [filePattern1#keyPattern1, filePattern2#keyPattern2, filePattern3])
-     */
-    private static Set<String> parsePattern(String pattern) {
-        Set<String> patterns = new HashSet<>();
-        if (pattern.contains("#")) {  //NOI18N
-            StringBuilder partPattern = new StringBuilder();
-            ParserState state = ParserState.START;
-            int blockLevel = 0;
-            for (int i = 0; i < pattern.length(); i++) {
-                char c = pattern.charAt(i);
-                switch (state) {
-                    case START:
-                        if (c == '#') {
-                            state = ParserState.IN_KEY_PATTERN;
-                            partPattern.append(c);
-                        } else if (c == '(') {
-                            state = ParserState.IN_BLOCK;
-                            blockLevel++;
-                            partPattern.append(c);
-                        } else if (c == '|') {
-                            patterns.add(partPattern.toString());
-                            partPattern = new StringBuilder();
-                        } else {
-                            partPattern.append(c);
-                        }
-                        break;
-                    case IN_KEY_PATTERN:
-                        if (c == '#') {
-                            state = ParserState.AFTER_KEY_PATTERN;
-                        } else {
-                            partPattern.append(c);
-                        }
-                        break;
-                    case AFTER_KEY_PATTERN:
-                        if (c == '|') {
-                            state = ParserState.START;
-                            patterns.add(partPattern.toString());
-                            partPattern = new StringBuilder();
-                        } else {
-                            assert false : "Wrong OptionsExport pattern " + pattern + ". Only format like filePattern1#keyPattern#|filePattern2 is supported.";  //NOI18N
-                        }
-                        break;
-                    case IN_BLOCK:
-                        partPattern.append(c);
-                        if (c == ')') {
-                            blockLevel--;
-                            if (blockLevel == 0) {
-                                state = ParserState.START;
-                            }
-                        }
-                        break;
-                }
-            }
-            patterns.add(partPattern.toString());
-        } else {
-            patterns.add(pattern);
-        }
-        return patterns;
     }
 }

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.ui.appearance.plugin;
 
 import javax.swing.event.ChangeEvent;
@@ -47,12 +48,14 @@ import org.gephi.appearance.api.SimpleFunction;
 import org.gephi.appearance.plugin.AbstractUniqueSizeTransformer;
 
 /**
- *
  * @author mbastian
  */
 public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
 
     private AbstractUniqueSizeTransformer transformer;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JSpinner sizeSpinner;
 
     public UniqueSizeTransformerPanel() {
         initComponents();
@@ -66,7 +69,7 @@ public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
     }
 
     public void setup(SimpleFunction function) {
-        transformer = (AbstractUniqueSizeTransformer) function.getTransformer();
+        transformer = function.getTransformer();
         sizeSpinner.setValue(transformer.getSize());
     }
 
@@ -82,33 +85,34 @@ public class UniqueSizeTransformerPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         sizeSpinner = new javax.swing.JSpinner();
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(UniqueSizeTransformerPanel.class, "UniqueSizeTransformerPanel.jLabel1.text")); // NOI18N
+        jLabel1.setText(org.openide.util.NbBundle
+            .getMessage(UniqueSizeTransformerPanel.class, "UniqueSizeTransformerPanel.jLabel1.text")); // NOI18N
 
-        sizeSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(0.1f), null, Float.valueOf(0.5f)));
+        sizeSpinner.setModel(
+            new javax.swing.SpinnerNumberModel(1.0f, 0.01f, null, 0.5f));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(294, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jLabel1)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(sizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(294, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(sizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(266, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(sizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(266, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JSpinner sizeSpinner;
     // End of variables declaration//GEN-END:variables
 }

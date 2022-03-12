@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.branding.desktop.reporter;
 
 import java.awt.event.ActionEvent;
@@ -49,7 +50,6 @@ import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ReportPanel extends javax.swing.JPanel {
@@ -57,6 +57,18 @@ public class ReportPanel extends javax.swing.JPanel {
     private final Report report;
     private final ReportController reportController;
     private final Document document;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField emailTextField;
+    private javax.swing.JCheckBox followCheckBox;
+    private javax.swing.JLabel helpLabel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel labelEmail;
+    private javax.swing.JTextArea problemArea;
+    private javax.swing.JTextField summaryTextField;
+    private javax.swing.JButton viewDataButton;
 
     public ReportPanel(Report report) {
         this.reportController = new ReportController();
@@ -84,7 +96,9 @@ public class ReportPanel extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent e) {
                 ReportPanel.this.report.setUserDescription(problemArea.getText());
                 ReportPanel.this.report.setUserEmail(emailTextField.getText());
-                DialogDescriptor dd = new DialogDescriptor(new ViewDataPanel(document), NbBundle.getMessage(ReportPanel.class, "ReportPanel.viewData.title"), true, DialogDescriptor.DEFAULT_OPTION, null, null);
+                DialogDescriptor dd = new DialogDescriptor(new ViewDataPanel(document),
+                    NbBundle.getMessage(ReportPanel.class, "ReportPanel.viewData.title"), true,
+                    DialogDescriptor.DEFAULT_OPTION, null, null);
                 DialogDisplayer.getDefault().notify(dd);
             }
         });
@@ -104,7 +118,8 @@ public class ReportPanel extends javax.swing.JPanel {
         options[1] = DialogDescriptor.CANCEL_OPTION;
         String title = NbBundle.getMessage(ReportPanel.class, "ReportPanel.dialog.title");
 
-        DialogDescriptor dd = new DialogDescriptor(this, title, true, options, options[0], DialogDescriptor.DEFAULT_ALIGN, null, null);
+        DialogDescriptor dd =
+            new DialogDescriptor(this, title, true, options, options[0], DialogDescriptor.DEFAULT_ALIGN, null, null);
         if (DialogDisplayer.getDefault().notify(dd) == options[0]) {
             //Set
             report.setUserDescription(problemArea.getText());
@@ -135,7 +150,8 @@ public class ReportPanel extends javax.swing.JPanel {
         jLabel1.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.jLabel1.text")); // NOI18N
 
         summaryTextField.setEditable(false);
-        summaryTextField.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.summaryTextField.text")); // NOI18N
+        summaryTextField.setText(
+            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.summaryTextField.text")); // NOI18N
 
         problemArea.setColumns(20);
         problemArea.setRows(5);
@@ -145,87 +161,85 @@ public class ReportPanel extends javax.swing.JPanel {
         jLabel2.setForeground(new java.awt.Color(0, 73, 204));
         jLabel2.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.jLabel2.text")); // NOI18N
 
-        followCheckBox.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.followCheckBox.text")); // NOI18N
+        followCheckBox.setText(
+            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.followCheckBox.text")); // NOI18N
 
-        labelEmail.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelEmail.text")); // NOI18N
+        labelEmail
+            .setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelEmail.text")); // NOI18N
 
-        emailTextField.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.emailTextField.text")); // NOI18N
+        emailTextField.setText(
+            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.emailTextField.text")); // NOI18N
 
         helpLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
         helpLabel.setForeground(new java.awt.Color(102, 102, 102));
-        helpLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.helpLabel.text")); // NOI18N
+        helpLabel
+            .setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.helpLabel.text")); // NOI18N
 
         jLabel3.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.jLabel3.text")); // NOI18N
 
-        viewDataButton.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.viewDataButton.text")); // NOI18N
+        viewDataButton.setText(
+            org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.viewDataButton.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
-                        .addComponent(viewDataButton))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(summaryTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE))
-                    .addComponent(followCheckBox)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(labelEmail)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(helpLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
-                            .addComponent(emailTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE))))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
+                            .addComponent(viewDataButton))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(summaryTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE))
+                        .addComponent(followCheckBox)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(21, 21, 21)
+                            .addComponent(labelEmail)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(helpLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
+                                .addComponent(emailTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 517,
+                                    Short.MAX_VALUE))))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(viewDataButton))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(summaryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(218, 218, 218)
-                        .addComponent(followCheckBox)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(emailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelEmail))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(helpLabel)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 14,
+                            javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(viewDataButton))
+                    .addGap(18, 18, 18)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel1)
+                                .addComponent(summaryTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jLabel2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 149,
+                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(218, 218, 218)
+                            .addComponent(followCheckBox)))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(emailTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelEmail))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(helpLabel)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField emailTextField;
-    private javax.swing.JCheckBox followCheckBox;
-    private javax.swing.JLabel helpLabel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel labelEmail;
-    private javax.swing.JTextArea problemArea;
-    private javax.swing.JTextField summaryTextField;
-    private javax.swing.JButton viewDataButton;
     // End of variables declaration//GEN-END:variables
 }

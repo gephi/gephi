@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.filters.library;
 
 import java.awt.Image;
@@ -60,15 +61,15 @@ import org.openide.util.NbBundle;
 import org.openide.util.datatransfer.PasteType;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class CategoryNode extends AbstractNode {
 
-    private Category category;
+    private final Category category;
 
     public CategoryNode(FiltersExplorer.Utils utils, Category category) {
-        super(utils.isLeaf(category) ? Children.LEAF : Children.create(new CategoryChildFactory(utils, category), true));
+        super(
+            utils.isLeaf(category) ? Children.LEAF : Children.create(new CategoryChildFactory(utils, category), true));
         this.category = category;
         if (category != null) {
             setName(category.getName());

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.branding.desktop;
 
 import java.awt.datatransfer.DataFlavor;
@@ -74,12 +75,9 @@ public class DragNDropFrameAdapter {
 
             @Override
             public boolean canImport(TransferHandler.TransferSupport support) {
-                if (!support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-                    return false;
-                }
+                return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
                 //Due to bug 6759788 - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6759788
                 //Impossible to get data here and look if compatible format
-                return true;
             }
 
             @Override
@@ -91,7 +89,7 @@ public class DragNDropFrameAdapter {
                     List data = (List) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
                     File file = (File) data.get(0);
                     FileObject fileObject = FileUtil.toFileObject(file);
-                    if(!file.exists()) {
+                    if (!file.exists()) {
                         return false;
                     }
                     if (fileObject.hasExt(GEPHI_EXTENSION)) {
@@ -101,7 +99,9 @@ public class DragNDropFrameAdapter {
                             pc.openProject(file);
                         } catch (Exception ew) {
                             Exceptions.printStackTrace(ew);
-                            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(DragNDropFrameAdapter.class, "DragNDropFrameAdapter.openGephiError"), NotifyDescriptor.WARNING_MESSAGE);
+                            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle
+                                .getMessage(DragNDropFrameAdapter.class, "DragNDropFrameAdapter.openGephiError"),
+                                NotifyDescriptor.WARNING_MESSAGE);
                             DialogDisplayer.getDefault().notify(msg);
                         }
                     } else {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.context;
 
 import java.awt.BorderLayout;
@@ -60,17 +61,19 @@ import org.openide.windows.TopComponent;
  * Top component which displays something.
  */
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.context//Context//EN",
-        autostore = false)
+    autostore = false)
 @TopComponent.Description(preferredID = "ContextTopComponent",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "contextmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.clustering.ContextTopComponent")
 @ActionReference(path = "Menu/Window", position = 200)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_ContextTopComponent",
-        preferredID = "ContextTopComponent")
+    preferredID = "ContextTopComponent")
 public final class ContextTopComponent extends TopComponent {
 
     private final transient ContextPanel contextPanel = new ContextPanel();
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel mainPanel;
 
     public ContextTopComponent() {
         initComponents();
@@ -129,8 +132,6 @@ public final class ContextTopComponent extends TopComponent {
         mainPanel.setLayout(new java.awt.BorderLayout());
         add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
 
     void writeProperties(java.util.Properties p) {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.tools.plugin;
 
 import java.awt.Color;
@@ -65,7 +66,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Tool.class)
@@ -144,7 +144,8 @@ public class ShortestPath implements Tool {
                         VizController.getInstance().selectEdge(predecessorEdge);
                         sourceNode.setColor(color);
                         VizController.getInstance().selectNode(sourceNode);
-                        shortestPathPanel.setResult(NbBundle.getMessage(ShortestPath.class, "ShortestPath.result", distance));
+                        shortestPathPanel
+                            .setResult(NbBundle.getMessage(ShortestPath.class, "ShortestPath.result", distance));
                     } else {
                         //No path
                         shortestPathPanel.setResult(NbBundle.getMessage(ShortestPath.class, "ShortestPath.noresult"));

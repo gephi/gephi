@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2012 Gephi Consortium.
  */
+
 package org.gephi.preview.api;
 
 import java.awt.event.KeyEvent;
@@ -47,33 +48,20 @@ import java.awt.event.KeyEvent;
  * <p>Mouse event for preview. Contains the event type and graph coordinates for the event.
  * If you attend a <code>PreviewMouseEvent</code>, it should be marked as consumed.</p>
  * <p>The public keyEvent field contains the keyboard state for the given mouse event. Can be null.</p>
+ *
  * @author Eduardo Ramos
  */
 public class PreviewMouseEvent {
 
-    public enum Type {
-        CLICKED,
-        PRESSED,
-        RELEASED,
-        DRAGGED
-    }
-    
-    public enum Button{
-        LEFT,
-        RIGHT,
-        MIDDLE
-    }
-    
     public final Type type;
     public final Button button;
     public final int x;
     public final int y;
-    private boolean consumed;
-    
     /**
      * Contains the keyboard state for the given mouse event. Can be null.
      */
     public final KeyEvent keyEvent;
+    private boolean consumed;
 
     public PreviewMouseEvent(int x, int y, Type type, Button button, KeyEvent keyEvent) {
         this.x = x;
@@ -90,5 +78,18 @@ public class PreviewMouseEvent {
 
     public void setConsumed(boolean consumed) {
         this.consumed = consumed;
+    }
+
+    public enum Type {
+        CLICKED,
+        PRESSED,
+        RELEASED,
+        DRAGGED
+    }
+
+    public enum Button {
+        LEFT,
+        RIGHT,
+        MIDDLE
     }
 }

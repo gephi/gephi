@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.layout.spi;
 
 import javax.swing.Icon;
@@ -53,38 +54,43 @@ public interface LayoutUI {
 
     /**
      * The description of the layout algorithm purpose.
-     * @return  a description snippet for the algorithm
+     *
+     * @return a description snippet for the algorithm
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * The icon that represents the layout action.
-     * @return  a icon for this particular layout
+     *
+     * @return a icon for this particular layout
      */
-    public Icon getIcon();
+    Icon getIcon();
 
     /**
      * A <code>LayoutUI</code> can have a optional settings panel, that will be
      * displayed instead of the property sheet.
+     *
      * @param layout the layout that require a simple panel
      * @return A simple settings panel for <code>layout</code> or
      * <code>null</code>
      */
-    public JPanel getSimplePanel(Layout layout);
+    JPanel getSimplePanel(Layout layout);
 
     /**
      * An appraisal of quality for this algorithm. The rank must be between 1 and
      * 5. The rank will be displayed tousers to help them to choose a suitable
      * algorithm. Return -1 if you don't want to display a rank.
+     *
      * @return an integer between 1 and 5 or -1 if you don't want to show a rank
      */
-    public int getQualityRank();
+    int getQualityRank();
 
     /**
      * An appraisal of speed for this algorithm. The rank must be between 1 and
      * 5. The rank will be displayed tousers to help them to choose a suitable
      * algorithm. Return -1 if you don't want to display a rank.
+     *
      * @return an integer between 1 and 5 or -1 if you don't want to show a rank
      */
-    public int getSpeedRank();
+    int getSpeedRank();
 }

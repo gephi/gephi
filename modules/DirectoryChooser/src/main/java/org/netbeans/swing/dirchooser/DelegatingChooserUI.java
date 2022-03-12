@@ -38,6 +38,7 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
+
 package org.netbeans.swing.dirchooser;
 
 import java.beans.PropertyChangeEvent;
@@ -52,21 +53,22 @@ import javax.swing.plaf.FileChooserUI;
 import javax.swing.plaf.metal.MetalFileChooserUI;
 import org.openide.util.Utilities;
 
-/** Placeholder ComponentUI that just delegates to other FileChooserUIs
+/**
+ * Placeholder ComponentUI that just delegates to other FileChooserUIs
  * based on what selection mode is set in JFileChooser.
  *
  * @author Dafe Simonek
  */
 public class DelegatingChooserUI extends ComponentUI {
-    
+
     static final String USE_SHELL_FOLDER = "FileChooser.useShellFolder";
     static final String NB_USE_SHELL_FOLDER = "nb.FileChooser.useShellFolder";
     static final String START_TIME = "start.time";
-    
-    private static boolean firstTime = true;
+
+    private static final boolean firstTime = true;
 
     public static ComponentUI createUI(JComponent c) {
-        JFileChooser fc = (JFileChooser)c;
+        JFileChooser fc = (JFileChooser) c;
 
         // #109703 - don't use shell folder on JDK versions interval <1.6.0_02, 1.6.0_10>,
         // it's terribly slow on Windows due to JDK bug
@@ -77,7 +79,7 @@ public class DelegatingChooserUI extends ComponentUI {
                 String jv = System.getProperty("java.version");
                 jv = jv.split("-", 2)[0];
                 if ("1.6.0_02".compareToIgnoreCase(jv) <= 0 &&
-                        "1.6.0_10".compareToIgnoreCase(jv) >= 0) {
+                    "1.6.0_10".compareToIgnoreCase(jv) >= 0) {
                     if (!Boolean.TRUE.equals(fc.getClientProperty(USE_SHELL_FOLDER))) {
                         fc.putClientProperty(USE_SHELL_FOLDER, Boolean.FALSE);
                     }
@@ -90,7 +92,7 @@ public class DelegatingChooserUI extends ComponentUI {
         if (fc.getClientProperty(START_TIME) == null) {
             fc.putClientProperty(START_TIME, Long.valueOf(System.currentTimeMillis()));
         }
-        
+
         Class<? extends FileChooserUI> chooser = getCurChooser(fc);
         ComponentUI compUI;
         try {
@@ -98,32 +100,33 @@ public class DelegatingChooserUI extends ComponentUI {
             compUI = (ComponentUI) createUIMethod.invoke(null, fc);
         } catch (Exception exc) {
             Logger.getLogger(DelegatingChooserUI.class.getName()).log(Level.FINE,
-                    "Could not instantiate custom chooser, fallbacking to Metal", exc);
+                "Could not instantiate custom chooser, fallbacking to Metal", exc);
             compUI = MetalFileChooserUI.createUI(c);
         }
-        
+
         // listen to sel mode changes and select correct chooser by invoking
         // filechooser.updateUI() which triggers this createUI again 
         if (firstTime) {
             fc.addPropertyChangeListener(
-                    JFileChooser.FILE_SELECTION_MODE_CHANGED_PROPERTY,
-                    new PropertyChangeListener () {
-                        @Override
-                        public void propertyChange(PropertyChangeEvent evt) {
-                            JFileChooser fileChooser = (JFileChooser)evt.getSource();
-                            fileChooser.updateUI();
-                        }
+                JFileChooser.FILE_SELECTION_MODE_CHANGED_PROPERTY,
+                new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        JFileChooser fileChooser = (JFileChooser) evt.getSource();
+                        fileChooser.updateUI();
                     }
+                }
             );
         }
-        
+
         return compUI;
     }
 
-    /** Returns dirchooser for DIRECTORIES_ONLY, default filechooser for other
+    /**
+     * Returns dirchooser for DIRECTORIES_ONLY, default filechooser for other
      * selection modes.
      */
-    private static Class<? extends FileChooserUI> getCurChooser (JFileChooser fc) {
+    private static Class<? extends FileChooserUI> getCurChooser(JFileChooser fc) {
         if (fc.getFileSelectionMode() == JFileChooser.DIRECTORIES_ONLY) {
             return DirectoryChooserUI.class;
         }

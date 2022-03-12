@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 import java.io.Serializable;
@@ -46,14 +47,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class PropertiesAssociations implements Serializable {
-
-    public enum NodeProperties {
-        X, Y, Z, R, G, B, COLOR, SIZE, ID, LABEL, FIXED, START, END, START_OPEN, END_OPEN;
-    }
-
-    public enum EdgeProperties {
-        R, G, B, COLOR, WEIGHT, ID, LABEL, ALPHA, SOURCE, TARGET, START, END, START_OPEN, END_OPEN;
-    }
 
     private final Map<String, NodeProperties> titleToNodeProperty = new HashMap<>();
     private final Map<String, EdgeProperties> titleToEdgeProperty = new HashMap<>();
@@ -86,21 +79,29 @@ public final class PropertiesAssociations implements Serializable {
         StringBuilder builder = new StringBuilder("***Node Properties Associations***\n");
         for (Map.Entry<String, NodeProperties> entry : titleToNodeProperty.entrySet()) {
             builder.append("Property ")
-                    .append(entry.getValue().name())
-                    .append(" = ")
-                    .append(entry.getKey())
-                    .append(" Column\n");
+                .append(entry.getValue().name())
+                .append(" = ")
+                .append(entry.getKey())
+                .append(" Column\n");
         }
         builder.append("*********************************\n");
         builder.append("***Edge Properties Associations***\n");
         for (Map.Entry<String, EdgeProperties> entry : titleToEdgeProperty.entrySet()) {
             builder.append("Property ")
-                    .append(entry.getValue().name())
-                    .append(" = ")
-                    .append(entry.getKey())
-                    .append(" Column\n");
+                .append(entry.getValue().name())
+                .append(" = ")
+                .append(entry.getKey())
+                .append(" Column\n");
         }
         builder.append("*********************************\n");
         return builder.toString();
+    }
+
+    public enum NodeProperties {
+        X, Y, Z, R, G, B, COLOR, SIZE, ID, LABEL, FIXED, START, END, START_OPEN, END_OPEN
+    }
+
+    public enum EdgeProperties {
+        R, G, B, COLOR, WEIGHT, ID, LABEL, ALPHA, SOURCE, TARGET, START, END, START_OPEN, END_OPEN
     }
 }

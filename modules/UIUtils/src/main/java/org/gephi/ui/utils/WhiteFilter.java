@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.utils;
 
 import java.awt.Color;
@@ -57,6 +58,7 @@ public final class WhiteFilter extends RGBImageFilter {
     private final float[] hsv = new float[3];
 
     //~ Constructors ---------------------------------------------------------------------------------------------------------
+
     /**
      * Constructs a GrayFilter object that filters a color image to a
      * grayscale image. Used by buttons to create disabled ("grayed out")
@@ -71,6 +73,7 @@ public final class WhiteFilter extends RGBImageFilter {
     }
 
     //~ Methods --------------------------------------------------------------------------------------------------------------
+
     /**
      * Creates a disabled image
      */

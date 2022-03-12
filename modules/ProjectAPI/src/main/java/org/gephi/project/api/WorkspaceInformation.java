@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.api;
 
 import java.beans.PropertyChangeListener;
@@ -46,7 +47,7 @@ import java.beans.PropertyChangeListener;
 /**
  * Hosts various information about a workspace.
  * <p>
- * Clients can subscribe to changes by using the 
+ * Clients can subscribe to changes by using the
  * {@link #addChangeListener(java.beans.PropertyChangeListener) } method. It
  * triggers the following events:
  * <ul>
@@ -61,31 +62,31 @@ import java.beans.PropertyChangeListener;
  */
 public interface WorkspaceInformation {
 
-    public static final String EVENT_OPEN = "open";
-    public static final String EVENT_CLOSE = "close";
-    public static final String EVENT_RENAME = "rename";
-    public static final String EVENT_SET_SOURCE = "setSource";
+    String EVENT_OPEN = "open";
+    String EVENT_CLOSE = "close";
+    String EVENT_RENAME = "rename";
+    String EVENT_SET_SOURCE = "setSource";
 
     /**
      * Returns true if the workspace is open.
      *
      * @return true if open, false otherwise
      */
-    public boolean isOpen();
+    boolean isOpen();
 
     /**
      * Returns true if the workspace is closed.
      *
      * @return true if closed, false otherwise
      */
-    public boolean isClosed();
+    boolean isClosed();
 
     /**
      * Returns true if the workspace is invalid.
      *
      * @return true if invalid, false otherwise
      */
-    public boolean isInvalid();
+    boolean isInvalid();
 
     /**
      * Returns the name of the workspace.
@@ -94,33 +95,33 @@ public interface WorkspaceInformation {
      *
      * @return the workspace's name
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns true if the workspace has a source.
      *
      * @return true if has a source, false otherwise
      */
-    public boolean hasSource();
+    boolean hasSource();
 
     /**
      * Returns the workspace's source or null if missing.
      *
      * @return workspace's source or null if missing
      */
-    public String getSource();
+    String getSource();
 
     /**
      * Add change listener.
      *
      * @param listener change listener
      */
-    public void addChangeListener(PropertyChangeListener listener);
+    void addChangeListener(PropertyChangeListener listener);
 
     /**
      * Remove change listener.
      *
      * @param listener change listener
      */
-    public void removeChangeListener(PropertyChangeListener listener);
+    void removeChangeListener(PropertyChangeListener listener);
 }

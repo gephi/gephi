@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import java.util.ArrayList;
@@ -57,9 +58,10 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that clears the given columns data of one or more nodes except the id and computed attributes.
+ *
  * @author Eduardo Ramos
  */
-public class ClearNodesData extends BasicNodesManipulator implements  GeneralColumnsChooser {
+public class ClearNodesData extends BasicNodesManipulator implements GeneralColumnsChooser {
 
     private Node[] nodes;
     private Column[] columnsToClearData;

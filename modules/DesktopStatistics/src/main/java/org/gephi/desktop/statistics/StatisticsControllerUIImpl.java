@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.statistics;
 
 import java.util.ArrayList;
@@ -52,13 +53,12 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = StatisticsControllerUI.class)
 public class StatisticsControllerUIImpl implements StatisticsControllerUI {
 
-//    private final DynamicModelListener dynamicModelListener;
+    //    private final DynamicModelListener dynamicModelListener;
     private StatisticsModelUIImpl model;
 
     public StatisticsControllerUIImpl() {
@@ -78,7 +78,7 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
     }
 
     public void setup(StatisticsModelUIImpl model) {
-        if(this.model == model) {
+        if (this.model == model) {
             return;
         }
         this.model = model;

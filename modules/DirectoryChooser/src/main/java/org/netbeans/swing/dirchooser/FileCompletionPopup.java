@@ -75,37 +75,37 @@ import javax.swing.text.JTextComponent;
  * @author Soot Phengsy
  */
 public class FileCompletionPopup extends JPopupMenu implements KeyListener {
-    
-    private JList list;
-    private JTextField textField;
-    private JFileChooser chooser;
-    
+
+    private final JList list;
+    private final JTextField textField;
+    private final JFileChooser chooser;
+
     public FileCompletionPopup(JFileChooser chooser, JTextField textField, Vector<File> files) {
         this.list = new JList(files);
         this.textField = textField;
         this.chooser = chooser;
         list.setVisibleRowCount(4);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         JScrollPane jsp = new JScrollPane(list);
         add(jsp);
-        
+
         list.setFocusable(false);
         jsp.setFocusable(false);
         setFocusable(false);
-        
+
         list.addFocusListener(new FocusHandler());
         list.addMouseListener(new MouseHandler());
         list.addMouseMotionListener(new MouseHandler());
-        
+
         textField.addKeyListener(this);
     }
-     
+
     public void setDataList(Vector files) {
         list.setListData(files);
         ensureSelection();
     }
-    
+
     private void setSelectNext() {
         if (list.getModel().getSize() > 0) {
             int cur = (list.getSelectedIndex() + 1) % list.getModel().getSize();
@@ -113,136 +113,62 @@ public class FileCompletionPopup extends JPopupMenu implements KeyListener {
             list.ensureIndexIsVisible(cur);
         }
     }
-    
+
     private void setSelectPrevious() {
         if (list.getModel().getSize() > 0) {
             int cur = (list.getSelectedIndex() == -1) ? 0
-                    : list.getSelectedIndex();
+                : list.getSelectedIndex();
             cur = (cur == 0) ? list.getModel().getSize() - 1 : cur - 1;
             list.setSelectedIndex(cur);
             list.ensureIndexIsVisible(cur);
         }
     }
-    
+
     public void showPopup(JTextComponent source, int x, int y) {
-        if(list.getModel().getSize() == 0) {
+        if (list.getModel().getSize() == 0) {
             return;
         }
         setPreferredSize(new Dimension(source.getWidth(), source.getHeight() * 4));
-        show(source,  x, y);
+        show(source, x, y);
         ensureSelection();
     }
-    
+
     // #106268: always have some item selected for better usability
-    private void ensureSelection () {
+    private void ensureSelection() {
         if (list.getSelectedIndex() == -1 && (list.getModel().getSize() > 0)) {
             list.setSelectedIndex(0);
         }
     }
-    
-    private class FocusHandler extends FocusAdapter {
-        @Override
-        public void focusLost(FocusEvent e) {
-            if (!e.isTemporary()) {
-                setVisible(false);
-                textField.requestFocus();
-            }
-        }
-    }
-    
-    private class MouseHandler extends MouseAdapter implements MouseMotionListener{
-        @Override
-        public void mouseMoved(MouseEvent e) {
-            if (e.getSource() == list) {
-                Point location = e.getPoint();
-                int index = list.locationToIndex(location);
-                Rectangle r = new Rectangle();
-                list.computeVisibleRect( r );
-                if ( r.contains( location ) ) {
-                    list.setSelectedIndex(index);
-                }
-            }
-        }
-        
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            if (e.getSource() == list) {
-                return;
-            }
-            if ( isVisible() ) {
-                MouseEvent newEvent = convertMouseEvent( e );
-                Rectangle r = new Rectangle();
-                list.computeVisibleRect( r );
-                Point location =  newEvent.getPoint();
-                int index = list.locationToIndex(location);
-                if ( r.contains( location ) ) {
-                    list.setSelectedIndex(index);
-                }
-            }
-        }
-        
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            Point p = e.getPoint();
-            int index = list.locationToIndex(p);
-            list.setSelectedIndex(index);
-            setVisible(false);
-            File file = (File)list.getSelectedValue();
-            if (file == null) {
-                return;
-            }
-            if(file.equals(chooser.getCurrentDirectory())) {
-                chooser.firePropertyChange(JFileChooser.DIRECTORY_CHANGED_PROPERTY, false, true);
-            } else {
-                chooser.setCurrentDirectory(file);
-            }
-            textField.requestFocus();
-        }
-        
-        private MouseEvent convertMouseEvent( MouseEvent e ) {
-            Point convertedPoint = SwingUtilities.convertPoint( (Component)e.getSource(),
-                    e.getPoint(), list );
-            MouseEvent newEvent = new MouseEvent( (Component)e.getSource(),
-                    e.getID(),
-                    e.getWhen(),
-                    e.getModifiers(),
-                    convertedPoint.x,
-                    convertedPoint.y,
-                    e.getClickCount(),
-                    e.isPopupTrigger() );
-            return newEvent;
-        }
-    }
 
     /****** implementation of KeyListener of fileNameTextField ******/
-    
+
     @Override
     public void keyPressed(KeyEvent e) {
         if (!isVisible()) {
             return;
         }
-        
+
         int code = e.getKeyCode();
         switch (code) {
-        case KeyEvent.VK_DOWN:
-            setSelectNext();
-            e.consume();
-            break;
-        case KeyEvent.VK_UP:
-            setSelectPrevious();
-            e.consume();
-            break;
-        case KeyEvent.VK_ESCAPE:
-            setVisible(false);
-            textField.requestFocus();
-            e.consume();
-            break;
+            case KeyEvent.VK_DOWN:
+                setSelectNext();
+                e.consume();
+                break;
+            case KeyEvent.VK_UP:
+                setSelectPrevious();
+                e.consume();
+                break;
+            case KeyEvent.VK_ESCAPE:
+                setVisible(false);
+                textField.requestFocus();
+                e.consume();
+                break;
         }
-        
+
         if (isCompletionKey(code, textField)) {
-            File file = (File)list.getSelectedValue();
-            if(file != null) { 
-                if(file.equals(chooser.getCurrentDirectory())) {
+            File file = (File) list.getSelectedValue();
+            if (file != null) {
+                if (file.equals(chooser.getCurrentDirectory())) {
                     chooser.firePropertyChange(JFileChooser.DIRECTORY_CHANGED_PROPERTY, false, true);
                 } else {
                     chooser.setSelectedFiles(new File[] {file});
@@ -254,7 +180,7 @@ public class FileCompletionPopup extends JPopupMenu implements KeyListener {
                         doc.insertString(doc.getLength(), File.separator, null);
                     } catch (BadLocationException ex) {
                         Logger.getLogger(getClass().getName()).log(
-                                Level.FINE, "Cannot append directory separator.", ex);
+                            Level.FINE, "Cannot append directory separator.", ex);
                     }
                 }
             }
@@ -268,22 +194,92 @@ public class FileCompletionPopup extends JPopupMenu implements KeyListener {
     public void keyReleased(KeyEvent e) {
         // no operation
     }
-    
+
     @Override
     public void keyTyped(KeyEvent e) {
         // no operation
     }
-    
-    private boolean isCompletionKey (int keyCode, JTextField textField) {
+
+    private boolean isCompletionKey(int keyCode, JTextField textField) {
         if (keyCode == KeyEvent.VK_ENTER || keyCode == KeyEvent.VK_TAB) {
             return true;
         }
-        if (keyCode == KeyEvent.VK_RIGHT && 
-                (textField.getCaretPosition() >= (textField.getDocument().getLength() - 1))) {
-            return true;
-        }
-        
-        return false;
+        return keyCode == KeyEvent.VK_RIGHT &&
+            (textField.getCaretPosition() >= (textField.getDocument().getLength() - 1));
     }
-    
+
+    private class FocusHandler extends FocusAdapter {
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (!e.isTemporary()) {
+                setVisible(false);
+                textField.requestFocus();
+            }
+        }
+    }
+
+    private class MouseHandler extends MouseAdapter implements MouseMotionListener {
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            if (e.getSource() == list) {
+                Point location = e.getPoint();
+                int index = list.locationToIndex(location);
+                Rectangle r = new Rectangle();
+                list.computeVisibleRect(r);
+                if (r.contains(location)) {
+                    list.setSelectedIndex(index);
+                }
+            }
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            if (e.getSource() == list) {
+                return;
+            }
+            if (isVisible()) {
+                MouseEvent newEvent = convertMouseEvent(e);
+                Rectangle r = new Rectangle();
+                list.computeVisibleRect(r);
+                Point location = newEvent.getPoint();
+                int index = list.locationToIndex(location);
+                if (r.contains(location)) {
+                    list.setSelectedIndex(index);
+                }
+            }
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            Point p = e.getPoint();
+            int index = list.locationToIndex(p);
+            list.setSelectedIndex(index);
+            setVisible(false);
+            File file = (File) list.getSelectedValue();
+            if (file == null) {
+                return;
+            }
+            if (file.equals(chooser.getCurrentDirectory())) {
+                chooser.firePropertyChange(JFileChooser.DIRECTORY_CHANGED_PROPERTY, false, true);
+            } else {
+                chooser.setCurrentDirectory(file);
+            }
+            textField.requestFocus();
+        }
+
+        private MouseEvent convertMouseEvent(MouseEvent e) {
+            Point convertedPoint = SwingUtilities.convertPoint((Component) e.getSource(),
+                e.getPoint(), list);
+            MouseEvent newEvent = new MouseEvent((Component) e.getSource(),
+                e.getID(),
+                e.getWhen(),
+                e.getModifiers(),
+                convertedPoint.x,
+                convertedPoint.y,
+                e.getClickCount(),
+                e.isPopupTrigger());
+            return newEvent;
+        }
+    }
+
 }

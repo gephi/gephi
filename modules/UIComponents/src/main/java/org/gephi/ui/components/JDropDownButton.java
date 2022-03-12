@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.Point;
@@ -61,10 +62,12 @@ import org.openide.util.ImageUtilities;
 //author S. Aubrecht from org.openide.awt
 public class JDropDownButton extends JButton {
 
-    private boolean mouseInButton = false;
-    private boolean mouseInArrowArea = false;
-    private Map<String, Icon> regIcons = new HashMap<>(5);
-    private Map<String, Icon> arrowIcons = new HashMap<>(5);
+    /**
+     * Use this property name to assign or remove popup menu to/from buttons created by this factory,
+     * e.g. <code>dropDownButton.putClientProperty( PROP_DROP_DOWN_MENU, new JPopupMenu() )</code>
+     * The property value must be <code>JPopupMenu</code>, removing this property removes the arrow from the button.
+     */
+    public static final String PROP_DROP_DOWN_MENU = "dropDownMenu";
     private static final String ICON_NORMAL = "normal"; //NOI18N
     private static final String ICON_PRESSED = "pressed"; //NOI18N
     private static final String ICON_ROLLOVER = "rollover"; //NOI18N
@@ -74,12 +77,10 @@ public class JDropDownButton extends JButton {
     private static final String ICON_DISABLED_SELECTED = "disabledSelected"; //NOI18N
     private static final String ICON_ROLLOVER_LINE = "rolloverLine"; //NOI18N
     private static final String ICON_ROLLOVER_SELECTED_LINE = "rolloverSelectedLine"; //NOI18N
-    /**
-     * Use this property name to assign or remove popup menu to/from buttons created by this factory,
-     * e.g. <code>dropDownButton.putClientProperty( PROP_DROP_DOWN_MENU, new JPopupMenu() )</code>
-     * The property value must be <code>JPopupMenu</code>, removing this property removes the arrow from the button.
-     */
-    public static final String PROP_DROP_DOWN_MENU = "dropDownMenu";
+    private boolean mouseInButton = false;
+    private boolean mouseInArrowArea = false;
+    private final Map<String, Icon> regIcons = new HashMap<>(5);
+    private final Map<String, Icon> arrowIcons = new HashMap<>(5);
     private PopupMenuListener menuListener;
 
     public JDropDownButton(Icon icon, JPopupMenu popup) {
@@ -116,7 +117,7 @@ public class JDropDownButton extends JButton {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if(!isEnabled()) {
+                if (!isEnabled()) {
                     return;
                 }
                 popupMenuOperation = false;
@@ -168,6 +169,19 @@ public class JDropDownButton extends JButton {
         });
 
         setModel(new Model());
+    }
+
+    /**
+     * Creates JButton with a small arrow that shows the provided popup menu when clicked.
+     *
+     * @param icon         The default icon, cannot be null
+     * @param dropDownMenu Popup menu to display when the arrow is clicked. If this parameter is null
+     *                     then the button doesn't show any arrow and behaves like a regular JButton. It is possible to add
+     *                     the popup menu later using PROP_DROP_DOWN_MENU client property.
+     * @return A button that is capable of displaying an 'arrow' in its icon to open a popup menu.
+     */
+    public static JButton createDropDownButton(Icon icon, JPopupMenu dropDownMenu) {
+        return new JDropDownButton(icon, dropDownMenu);
     }
 
     private PopupMenuListener getMenuListener() {
@@ -429,18 +443,5 @@ public class JDropDownButton extends JButton {
             }
             super.setRollover(b);
         }
-    }
-
-    /**
-     * Creates JButton with a small arrow that shows the provided popup menu when clicked.
-     *
-     * @param icon The default icon, cannot be null
-     * @param dropDownMenu Popup menu to display when the arrow is clicked. If this parameter is null
-     * then the button doesn't show any arrow and behaves like a regular JButton. It is possible to add
-     * the popup menu later using PROP_DROP_DOWN_MENU client property.
-     * @return A button that is capable of displaying an 'arrow' in its icon to open a popup menu.
-     */
-    public static JButton createDropDownButton(Icon icon, JPopupMenu dropDownMenu) {
-        return new JDropDownButton(icon, dropDownMenu);
     }
 }

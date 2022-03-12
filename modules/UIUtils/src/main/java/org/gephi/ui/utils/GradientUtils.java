@@ -39,12 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.utils;
 
 import java.awt.Color;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class GradientUtils {
@@ -54,7 +54,7 @@ public class GradientUtils {
         private Color[] colors;
         private float[] positions;
 
-        public LinearGradient(Color colors[], float[] positions) {
+        public LinearGradient(Color[] colors, float[] positions) {
             if (colors == null || positions == null) {
                 throw new NullPointerException();
             }
@@ -67,7 +67,7 @@ public class GradientUtils {
 
         public Color getValue(float pos) {
             for (int a = 0; a < positions.length - 1; a++) {
-                if(positions[a]==pos) {
+                if (positions[a] == pos) {
                     return colors[a];
                 }
                 if (positions[a] < pos && pos < positions[a + 1]) {
@@ -86,22 +86,22 @@ public class GradientUtils {
 
         private Color tween(Color c1, Color c2, float p) {
             return new Color(
-                    (int) (c1.getRed() * (1 - p) + c2.getRed() * (p)),
-                    (int) (c1.getGreen() * (1 - p) + c2.getGreen() * (p)),
-                    (int) (c1.getBlue() * (1 - p) + c2.getBlue() * (p)),
-                    (int) (c1.getAlpha() * (1 - p) + c2.getAlpha() * (p)));
+                (int) (c1.getRed() * (1 - p) + c2.getRed() * (p)),
+                (int) (c1.getGreen() * (1 - p) + c2.getGreen() * (p)),
+                (int) (c1.getBlue() * (1 - p) + c2.getBlue() * (p)),
+                (int) (c1.getAlpha() * (1 - p) + c2.getAlpha() * (p)));
         }
 
         public Color[] getColors() {
             return colors;
         }
 
-        public float[] getPositions() {
-            return positions;
-        }
-
         public void setColors(Color[] colors) {
             this.colors = colors;
+        }
+
+        public float[] getPositions() {
+            return positions;
         }
 
         public void setPositions(float[] positions) {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.process;
 
 import java.io.IOException;
@@ -54,7 +55,6 @@ import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ImportEdgesProcess extends AbstractImportProcess {
@@ -67,7 +67,8 @@ public class ImportEdgesProcess extends AbstractImportProcess {
     public static final String EDGE_ID = "id";
     public static final String EDGE_LABEL = "label";
 
-    public ImportEdgesProcess(SpreadsheetGeneralConfiguration generalConfig, SheetParser parser, ContainerLoader container, ProgressTicket progressTicket) throws IOException {
+    public ImportEdgesProcess(SpreadsheetGeneralConfiguration generalConfig, SheetParser parser,
+                              ContainerLoader container, ProgressTicket progressTicket) throws IOException {
         super(generalConfig, container, progressTicket, parser);
         init();
     }
@@ -82,7 +83,9 @@ public class ImportEdgesProcess extends AbstractImportProcess {
 
     @Override
     public boolean execute() {
-        setupColumnsIndexesAndFindSpecialColumns(Arrays.asList(EDGE_SOURCE, EDGE_TARGET, EDGE_TYPE, EDGE_KIND, EDGE_ID, EDGE_LABEL), generalConfig.getColumnsClasses());
+        setupColumnsIndexesAndFindSpecialColumns(
+            Arrays.asList(EDGE_SOURCE, EDGE_TARGET, EDGE_TYPE, EDGE_KIND, EDGE_ID, EDGE_LABEL),
+            generalConfig.getColumnsClasses());
 
         Integer sourceColumnIndex = specialColumnsIndexMap.get(EDGE_SOURCE);
         Integer targetColumnIndex = specialColumnsIndexMap.get(EDGE_TARGET);

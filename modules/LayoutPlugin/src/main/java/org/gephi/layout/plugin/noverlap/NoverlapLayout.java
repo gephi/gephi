@@ -39,26 +39,25 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.noverlap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.gephi.graph.api.NodeIterable;
 import org.openide.util.Exceptions;
 
 /**
- *
  * @author Mathieu Jacomy
  */
 public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
@@ -155,7 +154,8 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                         // For node n in the box "box"...
                         // We search nodes that are in the boxes that are adjacent or the same.
                         for (int row2 = Math.max(0, row - 1); row2 <= Math.min(row + 1, grid.countRows() - 1); row2++) {
-                            for (int col2 = Math.max(0, col - 1); col2 <= Math.min(col + 1, grid.countColumns() - 1); col2++) {
+                            for (int col2 = Math.max(0, col - 1); col2 <= Math.min(col + 1, grid.countColumns() - 1);
+                                 col2++) {
                                 for (Node n2 : grid.getContent(row2, col2)) {
                                     if (n2 != n && !lald.neighbours.contains(n2)) {
                                         lald.neighbours.add(n2);
@@ -245,19 +245,19 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
         final String NOVERLAP_CATEGORY = "Noverlap";
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class, "speed", NOVERLAP_CATEGORY, "speed", "getSpeed", "setSpeed"));
+                this, Double.class, "speed", NOVERLAP_CATEGORY, "speed", "getSpeed", "setSpeed"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class, "ratio", NOVERLAP_CATEGORY, "ratio", "getRatio", "setRatio"));
+                this, Double.class, "ratio", NOVERLAP_CATEGORY, "ratio", "getRatio", "setRatio"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class, "margin", NOVERLAP_CATEGORY, "margin", "getMargin", "setMargin"));
+                this, Double.class, "margin", NOVERLAP_CATEGORY, "margin", "getMargin", "setMargin"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
@@ -303,6 +303,40 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
 
     @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
+    }
+
+    private static class Cell {
+
+        private final int row;
+        private final int col;
+
+        public Cell(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Cell other = (Cell) obj;
+            if (this.row != other.row) {
+                return false;
+            }
+            return this.col == other.col;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 11 * hash + this.row;
+            hash = 11 * hash + this.col;
+            return hash;
+        }
     }
 
     private class SpatialGrid {
@@ -362,43 +396,6 @@ public class NoverlapLayout extends AbstractLayout implements Layout, LongTask {
                     }
                 }
             }
-        }
-    }
-
-    private static class Cell {
-
-        private final int row;
-        private final int col;
-
-        public Cell(int row, int col) {
-            this.row = row;
-            this.col = col;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final Cell other = (Cell) obj;
-            if (this.row != other.row) {
-                return false;
-            }
-            if (this.col != other.col) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 11 * hash + this.row;
-            hash = 11 * hash + this.col;
-            return hash;
         }
     }
 }

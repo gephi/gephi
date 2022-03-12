@@ -8,7 +8,6 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.gephi</groupId>
     <artifactId>io-importer-plugin</artifactId>
     <version>0.9.3-SNAPSHOT</version>
     <packaging>nbm</packaging>
@@ -16,10 +15,15 @@
     <name>ImportPlugin</name>
 
     <properties>
-        <gephi.apache-poi.version>4.1.1</gephi.apache-poi.version>
+        <gephi.apache-poi.version>5.2.1</gephi.apache-poi.version>
+        <gephi.woodstox.version>6.2.8</gephi.woodstox.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>project-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>graph-api</artifactId>
@@ -61,12 +65,13 @@
             <artifactId>poi-ooxml</artifactId>
             <version>${gephi.apache-poi.version}</version>
         </dependency>
-        
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>io-processor-plugin</artifactId>
-            <scope>test</scope>
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId><!-- Needed by apache poi -->
+            <version>${gephi.woodstox.version}</version>
         </dependency>
+
+        <!-- Test only -->
         <dependency>
             <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-modules-masterfs</artifactId>
@@ -82,11 +87,12 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.gephi.io.importer.plugin.*</publicPackage>
+                        <publicPackage>org.gephi.io.processor.plugin</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

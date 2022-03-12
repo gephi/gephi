@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.utils;
 
 import javax.swing.text.JTextComponent;
@@ -75,7 +76,8 @@ public class IntervalBoundValidator implements Validator<String> {
                 try {
                     double startTime = AttributeUtils.parseDateTimeOrTimestamp(intervalStartTextField.getText());
                     if (time < startTime) {
-                        prblms.add(NbBundle.getMessage(IntervalBoundValidator.class, "IntervalBoundValidator.invalid.interval.message"));
+                        prblms.add(NbBundle.getMessage(IntervalBoundValidator.class,
+                            "IntervalBoundValidator.invalid.interval.message"));
                         return false;
                     } else {
                         return true;
@@ -87,7 +89,8 @@ public class IntervalBoundValidator implements Validator<String> {
                 return true;
             }
         } catch (Exception ex) {
-            prblms.add(NbBundle.getMessage(IntervalBoundValidator.class, "IntervalBoundValidator.invalid.bound.message"));
+            prblms
+                .add(NbBundle.getMessage(IntervalBoundValidator.class, "IntervalBoundValidator.invalid.bound.message"));
             return false;
         }
     }

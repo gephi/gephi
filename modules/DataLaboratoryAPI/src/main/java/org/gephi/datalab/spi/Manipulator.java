@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi;
 
 import javax.swing.Icon;
@@ -58,8 +59,9 @@ import org.gephi.datalab.spi.nodes.NodesManipulator;
  * <p>Used for different manipulators such as NodesManipulator, EdgesManipulator and GeneralActionsManipulator.</p>
  * <p>The only methods that are called before setting up a manipulator (subtypes have special setup methods) with the data are getType and getPosition.
  * This way, the other methods behaviour can depend on the data that has been setup before</p>
- * @see NodesManipulator
+ *
  * @author Eduardo Ramos
+ * @see NodesManipulator
  */
 public interface Manipulator {
 
@@ -73,12 +75,14 @@ public interface Manipulator {
      * <p>Return name to show for this Manipulator on the ui.</p>
      * <p>Implementations can provide different names depending on the data this
      * Manipulator has (for example depending on the number of nodes in a NodesManipulator).</p>
+     *
      * @return Name to show at current time and conditions
      */
     String getName();
 
     /**
      * Description of the Manipulator.
+     *
      * @return Description
      */
     String getDescription();
@@ -86,12 +90,14 @@ public interface Manipulator {
     /**
      * Indicates if this Manipulator has to be executable.
      * Implementations should evaluate the current data and conditions.
+     *
      * @return True if it has to be executable, false otherwise
      */
     boolean canExecute();
 
     /**
      * Returns a ManipulatorUI for this Manipulator if it needs one.
+     *
      * @return ManipulatorUI for this Manipulator or null
      */
     ManipulatorUI getUI();
@@ -99,6 +105,7 @@ public interface Manipulator {
     /**
      * Type of manipulator. This is used for separating the manipulators
      * in groups when shown, using popup separators. First types to show will be the lesser.
+     *
      * @return Type of this manipulator
      */
     int getType();
@@ -106,12 +113,14 @@ public interface Manipulator {
     /**
      * Returns a position value that indicates the position
      * of this Manipulator in its type group. Less means upper.
+     *
      * @return This Manipulator position
      */
     int getPosition();
 
     /**
      * Returns an icon for this manipulator if necessary.
+     *
      * @return Icon for the manipulator or null
      */
     Icon getIcon();

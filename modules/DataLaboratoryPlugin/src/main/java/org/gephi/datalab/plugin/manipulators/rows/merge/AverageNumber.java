@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import java.math.BigDecimal;
@@ -57,6 +58,7 @@ import org.openide.util.NbBundle;
 /**
  * AttributeRowsMergeStrategy for any number or number list column that
  * calculates the average of all the values.
+ *
  * @author Eduardo Ramos
  */
 public class AverageNumber implements AttributeRowsMergeStrategy {
@@ -78,7 +80,8 @@ public class AverageNumber implements AttributeRowsMergeStrategy {
 
     @Override
     public void execute() {
-        result = StatisticsUtils.average(Lookup.getDefault().lookup(AttributeColumnsController.class).getRowsColumnNumbers(rows, column));
+        result = StatisticsUtils
+            .average(Lookup.getDefault().lookup(AttributeColumnsController.class).getRowsColumnNumbers(rows, column));
     }
 
     @Override

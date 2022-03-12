@@ -39,13 +39,13 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.apiimpl;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface Scheduler {
@@ -72,10 +72,10 @@ public interface Scheduler {
 
     public void requireStopDrag();
 
-//    public void requireUpdatePosition();
+    //    public void requireUpdatePosition();
     public void requireMouseClick();
 
-    public void setFps(float maxFps);
-
     public float getFps();
+
+    public void setFps(float maxFps);
 }

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.tools.plugin.edit;
 
 import javax.swing.SwingUtilities;
@@ -94,17 +95,6 @@ public class EditWindowControllerImpl implements EditWindowController {
                 topComponent.close();
             }
         });
-    }
-
-    class IsOpenRunnable implements Runnable {
-
-        boolean open = false;
-
-        @Override
-        public void run() {
-            EditToolTopComponent topComponent = findInstance();
-            open = topComponent != null && topComponent.isOpened();
-        }
     }
 
     @Override
@@ -180,5 +170,16 @@ public class EditWindowControllerImpl implements EditWindowController {
                 topComponent.disableEdit();
             }
         });
+    }
+
+    class IsOpenRunnable implements Runnable {
+
+        boolean open = false;
+
+        @Override
+        public void run() {
+            EditToolTopComponent topComponent = findInstance();
+            open = topComponent != null && topComponent.isOpened();
+        }
     }
 }

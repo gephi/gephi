@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.plugin.builders;
 
 import org.gephi.graph.api.Graph;
@@ -49,7 +50,6 @@ import org.gephi.preview.spi.ItemBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ItemBuilder.class, position = 100)

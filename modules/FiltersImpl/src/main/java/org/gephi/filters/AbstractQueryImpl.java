@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters;
 
 import java.util.ArrayDeque;
@@ -54,7 +55,6 @@ import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Graph;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public abstract class AbstractQueryImpl implements Query {
@@ -115,12 +115,12 @@ public abstract class AbstractQueryImpl implements Query {
         this.parent = parent;
     }
 
-    public void setResult(Graph result) {
-        this.result = result;
-    }
-
     public Graph getResult() {
         return result;
+    }
+
+    public void setResult(Graph result) {
+        this.result = result;
     }
 
     public AbstractQueryImpl getRoot() {
@@ -156,7 +156,7 @@ public abstract class AbstractQueryImpl implements Query {
         }
 
         for (int i = 0; i < children.size(); i++) {
-            AbstractQueryImpl child = (AbstractQueryImpl) children.get(i);
+            AbstractQueryImpl child = children.get(i);
             AbstractQueryImpl childCopy = child.copy();
             childCopy.parent = copy;
             copy.children.add(childCopy);
@@ -175,7 +175,7 @@ public abstract class AbstractQueryImpl implements Query {
             r.add(q);
             stack.addAll(Arrays.asList(q.getChildren()));
         }
-        for (Iterator<Query> itr = r.iterator(); itr.hasNext();) {
+        for (Iterator<Query> itr = r.iterator(); itr.hasNext(); ) {
             Query q = itr.next();
             if (!q.getFilter().getClass().equals(filterClass)) {
                 itr.remove();

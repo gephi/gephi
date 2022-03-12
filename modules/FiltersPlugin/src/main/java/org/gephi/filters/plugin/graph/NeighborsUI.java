@@ -39,15 +39,15 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.graph;
 
 import javax.swing.JPanel;
 
 /**
- *
  * @author Sebastien Heymann
  */
 public interface NeighborsUI {
 
-    public JPanel getPanel(NeighborsBuilder.NeighborsFilter neighborsFilter);
+    JPanel getPanel(NeighborsBuilder.NeighborsFilter neighborsFilter);
 }

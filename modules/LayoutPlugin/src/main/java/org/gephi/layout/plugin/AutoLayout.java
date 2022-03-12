@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.layout.plugin;
 
 import java.util.ArrayList;
@@ -96,6 +97,19 @@ public class AutoLayout {
         this.layouts = new ArrayList<>();
     }
 
+    public static DynamicProperty createDynamicProperty(String propertyName, Object value, float ratio) {
+        return new SingleDynamicProperty(propertyName, value, ratio);
+    }
+
+    public static DynamicProperty createDynamicProperty(String propertyName, Object[] value, float[] ratio) {
+        return new MultiDynamicProperty(propertyName, value, ratio);
+    }
+
+    public static DynamicProperty createDynamicProperty(String propertyName, Number[] value, float[] ratio,
+                                                        Interpolation interpolation) {
+        return new InterpolateDynamicProperty(propertyName, value, ratio, interpolation);
+    }
+
     public void addLayout(Layout layout, float ratio) {
         layouts.add(new LayoutScenario(layout, ratio));
     }
@@ -104,7 +118,7 @@ public class AutoLayout {
         for (int i = 0; i < properties.length; i++) {
             AbstractDynamicProperty property = (AbstractDynamicProperty) properties[i];
             for (LayoutProperty lp : layout.getProperties()) {
-                if (lp.getCanonicalName().equalsIgnoreCase(property.getCanonicalName()) ) {
+                if (lp.getCanonicalName().equalsIgnoreCase(property.getCanonicalName())) {
                     property.setProperty(lp.getProperty());
                     break;
                 }
@@ -215,30 +229,18 @@ public class AutoLayout {
         }
     }
 
-    public static DynamicProperty createDynamicProperty(String propertyName, Object value, float ratio) {
-        return new SingleDynamicProperty(propertyName, value, ratio);
-    }
-
-    public static DynamicProperty createDynamicProperty(String propertyName, Object[] value, float[] ratio) {
-        return new MultiDynamicProperty(propertyName, value, ratio);
-    }
-
-    public static DynamicProperty createDynamicProperty(String propertyName, Number[] value, float[] ratio, Interpolation interpolation) {
-        return new InterpolateDynamicProperty(propertyName, value, ratio, interpolation);
-    }
-
-    public static interface DynamicProperty {
-
-        public Object getValue(float ratio);
-
-        public Property getProperty();
-
-        public String getCanonicalName();
-    }
-
     public enum Interpolation {
 
         LINEAR, LOG
+    }
+
+    public interface DynamicProperty {
+
+        Object getValue(float ratio);
+
+        Property getProperty();
+
+        String getCanonicalName();
     }
 
     private static abstract class AbstractDynamicProperty implements DynamicProperty {
@@ -339,7 +341,8 @@ public class AutoLayout {
             if (currentIndex > 0) {
                 float r = 1 / (thresholds[currentIndex] - thresholds[currentIndex - 1]);
                 ratio = ((ratio - thresholds[currentIndex - 1]) * r);
-                return value[currentIndex - 1].doubleValue() + (value[currentIndex].doubleValue() - value[currentIndex - 1].doubleValue()) * ratio;
+                return value[currentIndex - 1].doubleValue() +
+                    (value[currentIndex].doubleValue() - value[currentIndex - 1].doubleValue()) * ratio;
             }
             return value[currentIndex];
         }

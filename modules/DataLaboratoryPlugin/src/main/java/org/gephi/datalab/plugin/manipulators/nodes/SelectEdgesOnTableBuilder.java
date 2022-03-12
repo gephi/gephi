@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 
@@ -48,10 +49,11 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for SelectEdgesOnTable nodes manipulator.
+ *
  * @author Eduardo Ramos
  */
-@ServiceProvider(service=NodesManipulatorBuilder.class)
-public class SelectEdgesOnTableBuilder implements NodesManipulatorBuilder{
+@ServiceProvider(service = NodesManipulatorBuilder.class)
+public class SelectEdgesOnTableBuilder implements NodesManipulatorBuilder {
 
     @Override
     public NodesManipulator getNodesManipulator() {

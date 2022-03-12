@@ -39,10 +39,10 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.api.selection;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface SelectionType {

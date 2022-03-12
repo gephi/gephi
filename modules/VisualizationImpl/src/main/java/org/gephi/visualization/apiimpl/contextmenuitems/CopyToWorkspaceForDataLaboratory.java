@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import org.gephi.datalab.spi.nodes.NodesManipulator;

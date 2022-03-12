@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file;
 
 import java.io.IOException;
@@ -69,6 +70,7 @@ import org.gephi.utils.progress.ProgressTicket;
  */
 public class ImporterVNA implements FileImporter, LongTask {
 
+    Pattern pattern;
     //Architecture
     private Reader reader;
     private ContainerLoader container;
@@ -76,27 +78,6 @@ public class ImporterVNA implements FileImporter, LongTask {
     private ProgressTicket progressTicket;
     private boolean cancel = false;
     private EdgeWidthFunction edgeWidthFunction;
-    Pattern pattern;
-
-    /**
-     * States for the state machine.
-     */
-    private enum State {
-
-        DEFAULT, NODE_DATA, NODE_PROPERTIES, TIE_DATA,
-        NODE_DATA_DEF, NODE_PROPERTIES_DEF, TIE_DATA_DEF
-    }
-
-    /**
-     * Attributes defined by the VNA file: VNA files allow some or no properties
-     * to be defined for nodes and edges.
-     */
-    private enum Attributes {
-
-        OTHER, NODE_X, NODE_Y, NODE_COLOR, NODE_SIZE,
-        NODE_SHAPE, NODE_SHORT_LABEL, EDGE_STRENGTH
-    }
-
     /**
      * Declared column labels for all sections.
      */
@@ -194,11 +175,12 @@ public class ImporterVNA implements FileImporter, LongTask {
                     state = State.NODE_PROPERTIES;
                     break;
                 case TIE_DATA_DEF:
-                    String tieDataLabels[] = line.split("[\\s,]+");
+                    String[] tieDataLabels = line.split("[\\s,]+");
                     tieDataColumns = new ColumnDraft[tieDataLabels.length];
                     tieAttributes = new Attributes[tieDataColumns.length];
                     if (tieDataColumns.length < 2) {
-                        throw new RuntimeException("Edge data labels definition does not contain two necessary variables ('from' and 'to').");
+                        throw new RuntimeException(
+                            "Edge data labels definition does not contain two necessary variables ('from' and 'to').");
                     }
                     // Initialize edge labels and fill edgeAttributes if some
                     // attributes can be used for EdgeDraft
@@ -216,7 +198,8 @@ public class ImporterVNA implements FileImporter, LongTask {
                     // new node
                     split = split(line);
                     if (split.length != nodeDataColumns.length) {
-                        report.logIssue(new Issue("Number of labels and number of data mismatch in: '" + line + "'", Issue.Level.WARNING));
+                        report.logIssue(new Issue("Number of labels and number of data mismatch in: '" + line + "'",
+                            Issue.Level.WARNING));
                         break;
                     }
                     addNode(split);
@@ -225,7 +208,8 @@ public class ImporterVNA implements FileImporter, LongTask {
                 case NODE_PROPERTIES:
                     split = split(line);
                     if (split.length != nodePropertiesLabels.length) {
-                        report.logIssue(new Issue("Number of labels and number of data mismatch in: '" + line + "'", Issue.Level.WARNING));
+                        report.logIssue(new Issue("Number of labels and number of data mismatch in: '" + line + "'",
+                            Issue.Level.WARNING));
                         break;
                     }
                     addNodeProperties(split);
@@ -234,7 +218,8 @@ public class ImporterVNA implements FileImporter, LongTask {
                 case TIE_DATA:
                     split = split(line);
                     if (split.length != tieDataColumns.length) {
-                        report.logIssue(new Issue("Number of labels and number of data mismatch in: '" + line + "'", Issue.Level.WARNING));
+                        report.logIssue(new Issue("Number of labels and number of data mismatch in: '" + line + "'",
+                            Issue.Level.WARNING));
                         break;
                     }
                     addEdge(split);
@@ -262,7 +247,7 @@ public class ImporterVNA implements FileImporter, LongTask {
                 tokens.add(patternMatcher.group());
             }
         }
-        return tokens.toArray(new String[]{});
+        return tokens.toArray(new String[] {});
     }
 
     private void addNode(String[] nodeData) {
@@ -310,7 +295,8 @@ public class ImporterVNA implements FileImporter, LongTask {
                 }
             }
         } catch (NumberFormatException e) {
-            report.logIssue(new Issue("Error parsing numerical value at '" + nodeProperties[i] + "'.", Issue.Level.WARNING));
+            report.logIssue(
+                new Issue("Error parsing numerical value at '" + nodeProperties[i] + "'.", Issue.Level.WARNING));
         }
     }
 
@@ -386,12 +372,26 @@ public class ImporterVNA implements FileImporter, LongTask {
         this.progressTicket = progressTicket;
     }
 
+    /**
+     * States for the state machine.
+     */
+    private enum State {
+
+        DEFAULT, NODE_DATA, NODE_PROPERTIES, TIE_DATA,
+        NODE_DATA_DEF, NODE_PROPERTIES_DEF, TIE_DATA_DEF
+    }
+
+    /**
+     * Attributes defined by the VNA file: VNA files allow some or no properties
+     * to be defined for nodes and edges.
+     */
+    private enum Attributes {
+
+        OTHER, NODE_X, NODE_Y, NODE_COLOR, NODE_SIZE,
+        NODE_SHAPE, NODE_SHORT_LABEL, EDGE_STRENGTH
+    }
+
     public static class EdgeWidthFunction {
-
-        public enum Function {
-
-            LINEAR, SQUARE_ROOT, LOGARITHMIC
-        }
 
         public final Function function;
         public final float coefficient;
@@ -424,6 +424,11 @@ public class ImporterVNA implements FileImporter, LongTask {
                     return "Square root";
             }
             return null;
+        }
+
+        public enum Function {
+
+            LINEAR, SQUARE_ROOT, LOGARITHMIC
         }
     }
 }

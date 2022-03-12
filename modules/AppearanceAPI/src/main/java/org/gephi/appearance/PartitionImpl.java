@@ -39,20 +39,19 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.gephi.appearance.api.Partition;
+import org.gephi.graph.api.Graph;
 
 /**
- *
  * @author mbastian
  */
 public abstract class PartitionImpl implements Partition {
@@ -65,39 +64,32 @@ public abstract class PartitionImpl implements Partition {
 
     @Override
     public Color getColor(Object value) {
-        return colorMap.get(value);
+        return colorMap.getOrDefault(value, Partition.DEFAULT_COLOR);
     }
 
     @Override
     public void setColor(Object value, Color color) {
-        colorMap.put(value, color);
-    }
-
-    @Override
-    public void setColors(Color[] colors) {
-        Collection c = getSortedValues();
-        if (c.size() != colors.length) {
-            throw new IllegalArgumentException("The colors size must match the partition size");
-        }
-        int i = 0;
-        for (Object o : c) {
-            setColor(o, colors[i++]);
+        if (color.equals(Partition.DEFAULT_COLOR)) {
+            colorMap.remove(value);
+        } else {
+            colorMap.put(value, color);
         }
     }
 
-    protected abstract void refresh();
-
     @Override
-    public Collection getSortedValues() {
-        List values = new ArrayList(getValues());
-        Collections.sort(values, new Comparator() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                float p1 = percentage(o1);
-                float p2 = percentage(o2);
-                return p1 > p2 ? -1 : p1 < p2 ? 1 : 0;
-            }
+    public Collection getSortedValues(Graph graph) {
+        List values = new ArrayList(getValues(graph));
+        values.sort((o1, o2) -> {
+            int c1 = count(o1, graph);
+            int c2 = count(o2, graph);
+            return Integer.compare(c2, c1);
         });
         return values;
     }
+
+    public abstract boolean isValid(Graph graph);
+
+    public abstract Class getValueType();
+
+    public abstract int getVersion(Graph graph);
 }

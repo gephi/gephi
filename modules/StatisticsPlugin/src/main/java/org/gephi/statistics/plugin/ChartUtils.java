@@ -59,7 +59,6 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 
 /**
- *
  * @author sebastien
  */
 public abstract class ChartUtils {
@@ -97,7 +96,8 @@ public abstract class ChartUtils {
             final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
             TempDir tempDir = TempDirUtils.createTempDir();
             File file1 = tempDir.createFile(fileName);
-            imageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
+            imageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " +
+                "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
             ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
         } catch (IOException e) {
         }
@@ -106,7 +106,7 @@ public abstract class ChartUtils {
 
     public static XYSeries createXYSeries(Map data, String name) {
         XYSeries series = new XYSeries(name);
-        for (Iterator it = data.entrySet().iterator(); it.hasNext();) {
+        for (Iterator it = data.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry d = (Map.Entry) it.next();
             Number x = (Number) d.getKey();
             Number y = (Number) d.getValue();

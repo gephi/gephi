@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.tools.plugin.edit;
 
 import java.awt.Color;
@@ -50,7 +51,6 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.TextProperties;
 import org.gephi.graph.api.TimeFormat;
-import org.gephi.ui.tools.plugin.edit.EditWindowUtils.*;
 import org.gephi.ui.tools.plugin.edit.EditWindowUtils.AttributeValueWrapper;
 import org.joda.time.DateTimeZone;
 import org.openide.nodes.AbstractNode;
@@ -70,11 +70,11 @@ import org.openide.util.NbBundle;
  */
 public class EditEdges extends AbstractNode {
 
-    private PropertySet[] propertySets;
     private final Edge[] edges;
     private final boolean multipleEdges;
     private final TimeFormat currentTimeFormat;
     private final DateTimeZone dateTimeZone;
+    private PropertySet[] propertySets;
 
     /**
      * Single edge edition mode will always be enabled with this single node
@@ -84,7 +84,7 @@ public class EditEdges extends AbstractNode {
      */
     public EditEdges(Edge edge) {
         super(Children.LEAF);
-        this.edges = new Edge[]{edge};
+        this.edges = new Edge[] {edge};
         setName(edge.getLabel());
         multipleEdges = false;
 
@@ -116,7 +116,7 @@ public class EditEdges extends AbstractNode {
 
     @Override
     public PropertySet[] getPropertySets() {
-        propertySets = new PropertySet[]{prepareEdgesProperties(), prepareEdgesAttributes()};
+        propertySets = new PropertySet[] {prepareEdgesProperties(), prepareEdgesAttributes()};
         return propertySets;
     }
 
@@ -137,7 +137,8 @@ public class EditEdges extends AbstractNode {
             if (edges.length > 1) {
                 set.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.attributes.text.multiple"));
             } else {
-                set.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.attributes.text", edges[0].getLabel()));
+                set.setDisplayName(
+                    NbBundle.getMessage(EditEdges.class, "EditEdges.attributes.text", edges[0].getLabel()));
             }
 
             Edge row = edges[0];
@@ -154,7 +155,8 @@ public class EditEdges extends AbstractNode {
                 if (ac.canChangeColumnData(column)) {
                     //Editable column, provide "set" method:
                     if (propEditor != null && !type.isArray()) {//The type can be edited by default:
-                        p = new PropertySupport.Reflection(wrap, type, "getValue" + type.getSimpleName(), "setValue" + type.getSimpleName());
+                        p = new PropertySupport.Reflection(wrap, type, "getValue" + type.getSimpleName(),
+                            "setValue" + type.getSimpleName());
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", "setValueAsString");
                     }
@@ -305,15 +307,15 @@ public class EditEdges extends AbstractNode {
     public class MultipleEdgesPropertiesWrapper {
 
         Edge[] edges;
-
-        public MultipleEdgesPropertiesWrapper(Edge[] Edges) {
-            this.edges = Edges;
-        }
         //Methods and fields for multiple edges editing:
         private Color edgesColor = null;
         private Color labelsColor = null;
         private Float labelsSize = null;
         private Boolean labelsVisible = null;
+
+        public MultipleEdgesPropertiesWrapper(Edge[] Edges) {
+            this.edges = Edges;
+        }
 
         public Color getEdgesColor() {
             return edgesColor;

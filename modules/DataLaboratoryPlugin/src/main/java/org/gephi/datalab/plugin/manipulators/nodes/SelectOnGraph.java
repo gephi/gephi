@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
@@ -102,6 +103,7 @@ public class SelectOnGraph extends BasicNodesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/magnifier--arrow.png", true);
+        return ImageUtilities
+            .loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/magnifier--arrow.png", true);
     }
 }

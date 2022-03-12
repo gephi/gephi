@@ -39,16 +39,22 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.gephi.graph.api.*;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
@@ -59,11 +65,11 @@ import org.openide.util.Lookup;
 
 public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
 
+    ProgressTicket progressTicket;
     private boolean exportVisible = false;
     private Workspace workspace;
     private Writer writer;
     private boolean cancel = false;
-    ProgressTicket progressTicket;
     private boolean useMatrixFormat = false;
     private boolean useListFormat = true;
     private boolean makeSymmetricMatrix = false;
@@ -93,13 +99,13 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
     }
 
     @Override
-    public void setExportVisible(boolean exportVisible) {
-        this.exportVisible = exportVisible;
+    public boolean isExportVisible() {
+        return exportVisible;
     }
 
     @Override
-    public boolean isExportVisible() {
-        return exportVisible;
+    public void setExportVisible(boolean exportVisible) {
+        this.exportVisible = exportVisible;
     }
 
     @Override
@@ -142,13 +148,13 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
     }
 
     @Override
-    public void setWorkspace(Workspace workspace) {
-        this.workspace = workspace;
+    public Workspace getWorkspace() {
+        return workspace;
     }
 
     @Override
-    public Workspace getWorkspace() {
-        return workspace;
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 
     @Override
@@ -162,12 +168,14 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
         HashSet<String> labelUsed = new HashSet<>();
         //edgelist format forbids equal nodes
         if (useLabels) {
-            for (Node node : graph.getNodes()) {
+            NodeIterable nodeIterable = graph.getNodes();
+            for (Node node : nodeIterable) {
                 if (labelUsed.contains(node.getLabel())) {
-                    for (int i = 0;; i++) {
+                    for (int i = 0; ; i++) {
                         if (!labelUsed.contains(node.getLabel() + "_" + i)) {
                             idToLabel.put(node.getId(), node.getLabel() + "_" + i);
                             labelUsed.add(node.getLabel() + "_" + i);
+                            nodeIterable.doBreak();
                             break;
                         }
                     }
@@ -183,32 +191,32 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
         writer.write("n = " + graph.getNodeCount() + "\n");
         writer.write("labels embedded:\n");
         writer.write("data:\n");
-        
+
         EdgeIterable edgesIterable = graph.getEdges();
         for (Edge edge : edgesIterable) {
             if (cancel) {
                 edgesIterable.doBreak();
                 break;
             }
-            
+
             double weight = edge.getWeight(graph.getView());
 
             if (useLabels) {
                 writer.write(formatLabel(idToLabel.get(edge.getSource().getId()), false) + " "
-                        + formatLabel(idToLabel.get(edge.getTarget().getId()), false) + " " + weight + "\n");
+                    + formatLabel(idToLabel.get(edge.getTarget().getId()), false) + " " + weight + "\n");
             } else {
                 writer.write(formatLabel(edge.getSource().getId().toString(), false) + " "
-                        + formatLabel(edge.getTarget().getId().toString(), false) + " " + weight + "\n");
+                    + formatLabel(edge.getTarget().getId().toString(), false) + " " + weight + "\n");
             }
 
             if (!edge.isDirected()) {
 
                 if (useLabels) {
                     writer.write(formatLabel(idToLabel.get(edge.getTarget().getId()), false) + " "
-                            + formatLabel(idToLabel.get(edge.getSource().getId()), false) + " " + weight + "\n");
+                        + formatLabel(idToLabel.get(edge.getSource().getId()), false) + " " + weight + "\n");
                 } else {
                     writer.write(formatLabel(edge.getTarget().getId().toString(), false) + " "
-                            + formatLabel(edge.getSource().getId().toString(), false) + " " + weight + "\n");
+                        + formatLabel(edge.getSource().getId().toString(), false) + " " + weight + "\n");
                 }
             }
         }
@@ -270,9 +278,10 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
                 if (edge != null) {
                     weight = edge.getWeight(graph.getView());
                 }
-                writer.write(Double.toString(weight) + " ");
+                writer.write(weight + " ");
                 if (makeSymmetricMatrix) {
-                    for (int repeatSpace = Double.toString(weight).length(); repeatSpace < maxLengthOfEdgeWeight; repeatSpace++) {
+                    for (int repeatSpace = Double.toString(weight).length(); repeatSpace < maxLengthOfEdgeWeight;
+                         repeatSpace++) {
                         writer.write(" ");
                     }
                 }

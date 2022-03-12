@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.processor.spi;
 
 import org.gephi.io.importer.api.Container;
@@ -55,7 +56,8 @@ public interface Scaler {
     /**
      * Scale <code>container</code> content to the system scale. Adapt and recenter
      * the scale of nodes positions and sizes.
+     *
      * @param container the container that is to be scaled to the right scale
      */
-    public void doScale(Container container);
+    void doScale(Container container);
 }

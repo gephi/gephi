@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.impl;
 
 import org.gephi.datalab.api.AttributeColumnsController;
@@ -63,13 +64,13 @@ public class DataTablesControllerImpl implements DataTablesController {
     private DataTablesEventListener listener;
 
     @Override
-    public void setDataTablesEventListener(DataTablesEventListener listener) {
-        this.listener = listener;
+    public DataTablesEventListener getDataTablesEventListener() {
+        return listener;
     }
 
     @Override
-    public DataTablesEventListener getDataTablesEventListener() {
-        return listener;
+    public void setDataTablesEventListener(DataTablesEventListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -110,20 +111,6 @@ public class DataTablesControllerImpl implements DataTablesController {
     }
 
     @Override
-    public void setNodeTableSelection(Node[] nodes) {
-        if (listener != null) {
-            listener.setNodeTableSelection(nodes);
-        }
-    }
-
-    @Override
-    public void setEdgeTableSelection(Edge[] edges) {
-        if (listener != null) {
-            listener.setEdgeTableSelection(edges);
-        }
-    }
-
-    @Override
     public Node[] getNodeTableSelection() {
         if (listener != null) {
             return listener.getNodeTableSelection();
@@ -133,11 +120,25 @@ public class DataTablesControllerImpl implements DataTablesController {
     }
 
     @Override
+    public void setNodeTableSelection(Node[] nodes) {
+        if (listener != null) {
+            listener.setNodeTableSelection(nodes);
+        }
+    }
+
+    @Override
     public Edge[] getEdgeTableSelection() {
         if (listener != null) {
             return listener.getEdgeTableSelection();
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void setEdgeTableSelection(Edge[] edges) {
+        if (listener != null) {
+            listener.setEdgeTableSelection(edges);
         }
     }
 
@@ -240,18 +241,18 @@ public class DataTablesControllerImpl implements DataTablesController {
     }
 
     @Override
-    public void setAutoRefreshEnabled(boolean enabled) {
-        if(listener != null){
-            listener.setAutoRefreshEnabled(enabled);
+    public boolean isAutoRefreshEnabled() {
+        if (listener != null) {
+            return listener.isAutoRefreshEnabled();
+        } else {
+            return false;
         }
     }
 
     @Override
-    public boolean isAutoRefreshEnabled() {
-        if(listener != null){
-            return listener.isAutoRefreshEnabled();
-        } else {
-            return false;
+    public void setAutoRefreshEnabled(boolean enabled) {
+        if (listener != null) {
+            listener.setAutoRefreshEnabled(enabled);
         }
     }
 }

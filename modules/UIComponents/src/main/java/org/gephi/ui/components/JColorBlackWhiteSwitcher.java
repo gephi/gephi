@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components;
 
 import com.bric.swing.ColorPicker;
@@ -60,13 +61,13 @@ import org.openide.windows.WindowManager;
  */
 public class JColorBlackWhiteSwitcher extends JButton {
 
-    public static String EVENT_COLOR = "color";
-    private Color color;
-    private boolean includeOpacity;
     private final static int ICON_WIDTH = 16;
     private final static int ICON_HEIGHT = 16;
     private final static Color DISABLED_BORDER = new Color(200, 200, 200);
     private final static Color DISABLED_FILL = new Color(220, 220, 220);
+    public static String EVENT_COLOR = "color";
+    private Color color;
+    private boolean includeOpacity;
 
     public JColorBlackWhiteSwitcher(Color color) {
         this(color, false);
@@ -84,7 +85,8 @@ public class JColorBlackWhiteSwitcher extends JButton {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
-                    Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color, JColorBlackWhiteSwitcher.this.includeOpacity);
+                    Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color,
+                        JColorBlackWhiteSwitcher.this.includeOpacity);
                     if (newColor != null) {
                         setColor(newColor);
                     }
@@ -108,6 +110,20 @@ public class JColorBlackWhiteSwitcher extends JButton {
         });
     }
 
+    private void refreshIcon() {
+        if (color.equals(Color.WHITE)) {//White color, show a lightbulb on:
+            setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/light-bulb.png", false));
+        } else if (color.equals(Color.BLACK)) {//Black color, show a lightbulb off:
+            setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/light-bulb-off.png", false));
+        } else {
+            setIcon(new ColorIcon());//Other color, show the color in a square as the icon
+        }
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
     public void setColor(Color color) {
         if (color != this.color || (color != null && !color.equals(this.color))) {
             Color oldColor = this.color;
@@ -116,6 +132,15 @@ public class JColorBlackWhiteSwitcher extends JButton {
             refreshIcon();
             repaint();
         }
+    }
+
+    public float[] getColorArray() {
+        return new float[] {color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f,
+            color.getAlpha() / 255f};
+    }
+
+    public void setIncludeOpacity(boolean includeOpacity) {
+        this.includeOpacity = includeOpacity;
     }
 
     class ColorIcon implements Icon {
@@ -146,27 +171,5 @@ public class JColorBlackWhiteSwitcher extends JButton {
                 g.fillRect(x + 3, y + 3, ICON_WIDTH - 6, ICON_HEIGHT - 6);
             }
         }
-    }
-
-    private void refreshIcon() {
-        if (color.equals(Color.WHITE)) {//White color, show a lightbulb on:
-            setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/light-bulb.png", false));
-        } else if (color.equals(Color.BLACK)) {//Black color, show a lightbulb off:
-            setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/light-bulb-off.png", false));
-        } else {
-            setIcon(new ColorIcon());//Other color, show the color in a square as the icon
-        }
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public float[] getColorArray() {
-        return new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f};
-    }
-
-    public void setIncludeOpacity(boolean includeOpacity) {
-        this.includeOpacity = includeOpacity;
     }
 }

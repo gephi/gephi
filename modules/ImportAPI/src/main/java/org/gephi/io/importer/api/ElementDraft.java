@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 import java.awt.Color;
@@ -57,51 +58,13 @@ import org.gephi.graph.api.types.TimeSet;
 public interface ElementDraft {
 
     /**
-     * Node and edge draft factory. Creates node and edge to push in the
-     * container.
-     */
-    public interface Factory {
-
-        /**
-         * Returns an empty node draft instance.
-         *
-         * @return an instance of <code>NodeDraft</code>
-         */
-        public NodeDraft newNodeDraft();
-
-        /**
-         * Returns an empty node draft instance.
-         *
-         * @param id node id
-         * @return an instance of <code>NodeDraft</code>
-         */
-        public NodeDraft newNodeDraft(String id);
-
-        /**
-         * Returns an empty edge draft instance. Note that <b>source</b> and
-         * <b>target</b> have to be set.
-         *
-         * @return an instance of <code>EdgeDraft</code>
-         */
-        public EdgeDraft newEdgeDraft();
-
-        /**
-         * Returns an empty edge draft instance.
-         *
-         * @param id edge id
-         * @return an instance of <code>EdgeDraft</code>
-         */
-        public EdgeDraft newEdgeDraft(String id);
-    }
-
-    /**
      * Returns the element's id.
      * <p>
      * The element id is unique.
      *
      * @return element's id
      */
-    public String getId();
+    String getId();
 
     /**
      * Returns the element's value for <code>key</code>.
@@ -109,21 +72,45 @@ public interface ElementDraft {
      * @param key key
      * @return value or null if not found
      */
-    public Object getValue(String key);
+    Object getValue(String key);
 
     /**
      * Returns the element's label.
      *
      * @return label or null if unset
      */
-    public String getLabel();
+    String getLabel();
+
+    /**
+     * Sets this element's label.
+     *
+     * @param label label
+     */
+    void setLabel(String label);
 
     /**
      * Returns the element's color.
      *
      * @return color or null if unset
      */
-    public Color getColor();
+    Color getColor();
+
+    /**
+     * Sets this element's color.
+     *
+     * @param color color
+     */
+    void setColor(Color color);
+
+    /**
+     * Parse and sets this element's color.
+     * <p>
+     * Color can be an existing Java color (e.g. yellow, blue, cyan) or an octal
+     * or hexadecimal color representation (e.g. 0xFF0096, #FF0096).
+     *
+     * @param color color to be parsed and set
+     */
+    void setColor(String color);
 
     /**
      * Returns true if the label is visible.
@@ -132,7 +119,14 @@ public interface ElementDraft {
      *
      * @return true if label is visible, false otherwise
      */
-    public boolean isLabelVisible();
+    boolean isLabelVisible();
+
+    /**
+     * Sets whether the label is visible.
+     *
+     * @param labelVisible label visible flag
+     */
+    void setLabelVisible(boolean labelVisible);
 
     /**
      * Returns the label's size.
@@ -141,128 +135,138 @@ public interface ElementDraft {
      *
      * @return label size
      */
-    public float getLabelSize();
+    float getLabelSize();
+
+    /**
+     * Sets the label's size.
+     *
+     * @param size label size
+     */
+    void setLabelSize(float size);
 
     /**
      * Returns the label's color.
      *
      * @return label's color
      */
-    public Color getLabelColor();
+    Color getLabelColor();
+
+    /**
+     * Sets the label's color.
+     *
+     * @param color label color
+     */
+    void setLabelColor(Color color);
+
+    /**
+     * Parses and sets the label's color.
+     * <p>
+     * Color can be an existing Java color (e.g. yellow, blue, cyan) or an octal
+     * or hexadecimal color representation (e.g. 0xFF0096, #FF0096).
+     *
+     * @param color color to be parsed and set
+     */
+    void setLabelColor(String color);
 
     /**
      * Sets the <code>value</code> for <code>key</code>.
      *
-     * @param key key
+     * @param key   key
      * @param value value
      */
-    public void setValue(String key, Object value);
+    void setValue(String key, Object value);
 
     /**
      * Sets the <code>value</code> for <code>key</code> at the given
      * <code>timestamp</code>.
      *
-     * @param key key
-     * @param value value
+     * @param key       key
+     * @param value     value
      * @param timestamp timestamp
      */
-    public void setValue(String key, Object value, double timestamp);
+    void setValue(String key, Object value, double timestamp);
 
     /**
      * Sets the <code>value</code> for <code>key</code> at the given interval
      * <code>[start,end]</code>.
      *
-     * @param key key
+     * @param key   key
      * @param value value
      * @param start interval start
-     * @param end interval end
+     * @param end   interval end
      */
-    public void setValue(String key, Object value, double start, double end);
+    void setValue(String key, Object value, double start, double end);
 
     /**
      * Sets the <code>value</code> for <code>key</code> at the given
      * <code>dateTime</code>.
      *
-     * @param key key
-     * @param value value
+     * @param key      key
+     * @param value    value
      * @param dateTime dateTime
      */
-    public void setValue(String key, Object value, String dateTime);
+    void setValue(String key, Object value, String dateTime);
 
     /**
      * Sets the <code>value</code> for <code>key</code> at the given interval
      * <code>[startDateTime,endDateTime]</code>.
      *
-     * @param key key
-     * @param value value
+     * @param key           key
+     * @param value         value
      * @param startDateTime interval start datetime
-     * @param endDateTime interval end datetime
+     * @param endDateTime   interval end datetime
      */
-    public void setValue(String key, Object value, String startDateTime, String endDateTime);
+    void setValue(String key, Object value, String startDateTime, String endDateTime);
 
     /**
      * Parses and sets the <code>value</code> for <code>key</code>.
      *
-     * @param key key
+     * @param key   key
      * @param value value
      */
-    public void parseAndSetValue(String key, String value);
+    void parseAndSetValue(String key, String value);
 
     /**
      * Parses and sets the <code>value</code> for <code>key</code> at the given
      * <code>timestamp</code>.
      *
-     * @param key key
-     * @param value value
+     * @param key       key
+     * @param value     value
      * @param timestamp timestamp
      */
-    public void parseAndSetValue(String key, String value, double timestamp);
+    void parseAndSetValue(String key, String value, double timestamp);
 
     /**
      * Parses and sets the <code>value</code> for <code>key</code> at the given
      * interval <code>[start,end]</code>.
      *
-     * @param key key
+     * @param key   key
      * @param value value
      * @param start interval start
-     * @param end interval end
+     * @param end   interval end
      */
-    public void parseAndSetValue(String key, String value, double start, double end);
+    void parseAndSetValue(String key, String value, double start, double end);
 
     /**
      * Parses and sets the <code>value</code> for <code>key</code> at the given
      * <code>dateTime</code>.
      *
-     * @param key key
-     * @param value value
+     * @param key      key
+     * @param value    value
      * @param dateTime dateTime
      */
-    public void parseAndSetValue(String key, String value, String dateTime);
+    void parseAndSetValue(String key, String value, String dateTime);
 
     /**
      * Parses and sets the <code>value</code> for <code>key</code> at the given
      * <code>dateTime</code>.
      *
-     * @param key key
-     * @param value value
+     * @param key           key
+     * @param value         value
      * @param startDateTime interval start datetime
-     * @param endDateTime interval end datetime
+     * @param endDateTime   interval end datetime
      */
-    public void parseAndSetValue(String key, String value, String startDateTime, String endDateTime);
-
-    /**
-     * Sets this element's label.
-     *
-     * @param label label
-     */
-    public void setLabel(String label);
-
-    /**
-     * Sets this element's color.
-     *
-     * @param color color
-     */
-    public void setColor(Color color);
+    void parseAndSetValue(String key, String value, String startDateTime, String endDateTime);
 
     /**
      * Parses and sets this element's color using string components.
@@ -273,7 +277,7 @@ public interface ElementDraft {
      * @param g green component as string
      * @param b blue component as string
      */
-    public void setColor(String r, String g, String b);
+    void setColor(String r, String g, String b);
 
     /**
      * Sets this element's color using real color numbers (i.e numbers between 0
@@ -283,7 +287,7 @@ public interface ElementDraft {
      * @param g green component as float
      * @param b blue component as float
      */
-    public void setColor(float r, float g, float b);
+    void setColor(float r, float g, float b);
 
     /**
      * Sets this element's color using int color numbers (i.e numbers between 0
@@ -293,38 +297,7 @@ public interface ElementDraft {
      * @param g green component as int
      * @param b blue component as int
      */
-    public void setColor(int r, int g, int b);
-
-    /**
-     * Parse and sets this element's color.
-     * <p>
-     * Color can be an existing Java color (e.g. yellow, blue, cyan) or an octal
-     * or hexadecimal color representation (e.g. 0xFF0096, #FF0096).
-     *
-     * @param color color to be parsed and set
-     */
-    public void setColor(String color);
-
-    /**
-     * Sets whether the label is visible.
-     *
-     * @param labelVisible label visible flag
-     */
-    public void setLabelVisible(boolean labelVisible);
-
-    /**
-     * Sets the label's size.
-     *
-     * @param size label size
-     */
-    public void setLabelSize(float size);
-
-    /**
-     * Sets the label's color.
-     *
-     * @param color label color
-     */
-    public void setLabelColor(Color color);
+    void setColor(int r, int g, int b);
 
     /**
      * Parses and sets the label's color using string components.
@@ -335,7 +308,7 @@ public interface ElementDraft {
      * @param g green component as string
      * @param b blue component as string
      */
-    public void setLabelColor(String r, String g, String b);
+    void setLabelColor(String r, String g, String b);
 
     /**
      * Sets the label's color using real color numbers (i.e numbers between 0
@@ -345,7 +318,7 @@ public interface ElementDraft {
      * @param g green component as float
      * @param b blue component as float
      */
-    public void setLabelColor(float r, float g, float b);
+    void setLabelColor(float r, float g, float b);
 
     /**
      * Sets the label's color using int color numbers (i.e numbers between 0 and
@@ -355,35 +328,63 @@ public interface ElementDraft {
      * @param g green component as int
      * @param b blue component as int
      */
-    public void setLabelColor(int r, int g, int b);
+    void setLabelColor(int r, int g, int b);
+
+    void addTimestamp(double timestamp);
+
+    void addTimestamp(String dateTime);
+
+    void addTimestamps(String timestamps);
+
+    void addInterval(double start, double end);
+
+    void addInterval(String startDateTime, String endDateTime);
+
+    void addIntervals(String intervals);
+
+    TimeSet getTimeSet();
+
+    Iterable<ColumnDraft> getColumns();
+
+    Double getGraphTimestamp();
+
+    Interval getGraphInterval();
 
     /**
-     * Parses and sets the label's color.
-     * <p>
-     * Color can be an existing Java color (e.g. yellow, blue, cyan) or an octal
-     * or hexadecimal color representation (e.g. 0xFF0096, #FF0096).
-     *
-     * @param color color to be parsed and set
+     * Node and edge draft factory. Creates node and edge to push in the
+     * container.
      */
-    public void setLabelColor(String color);
+    interface Factory {
 
-    public void addTimestamp(double timestamp);
+        /**
+         * Returns an empty node draft instance.
+         *
+         * @return an instance of <code>NodeDraft</code>
+         */
+        NodeDraft newNodeDraft();
 
-    public void addTimestamp(String dateTime);
+        /**
+         * Returns an empty node draft instance.
+         *
+         * @param id node id
+         * @return an instance of <code>NodeDraft</code>
+         */
+        NodeDraft newNodeDraft(String id);
 
-    public void addTimestamps(String timestamps);
+        /**
+         * Returns an empty edge draft instance. Note that <b>source</b> and
+         * <b>target</b> have to be set.
+         *
+         * @return an instance of <code>EdgeDraft</code>
+         */
+        EdgeDraft newEdgeDraft();
 
-    public void addInterval(double start, double end);
-
-    public void addInterval(String startDateTime, String endDateTime);
-
-    public void addIntervals(String intervals);
-
-    public TimeSet getTimeSet();
-
-    public Iterable<ColumnDraft> getColumns();
-
-    public Double getGraphTimestamp();
-
-    public Interval getGraphInterval();
+        /**
+         * Returns an empty edge draft instance.
+         *
+         * @param id edge id
+         * @return an instance of <code>EdgeDraft</code>
+         */
+        EdgeDraft newEdgeDraft(String id);
+    }
 }

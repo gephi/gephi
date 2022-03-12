@@ -16,10 +16,10 @@
     <name>DBDrivers</name>
 
     <properties>
-        <gephi.sqlite.version>3.30.1</gephi.sqlite.version>
-        <gephi.mysql.version>8.0.19</gephi.mysql.version>
-        <gephi.postgresql.version>42.2.9</gephi.postgresql.version>
-        <gephi.sqlserver.version>6.2.2.jre8</gephi.sqlserver.version>
+        <gephi.sqlite.version>3.36.0.3</gephi.sqlite.version>
+        <gephi.mysql.version>8.0.28</gephi.mysql.version>
+        <gephi.postgresql.version>42.3.3</gephi.postgresql.version>
+        <gephi.sqlserver.version>10.2.0.jre11</gephi.sqlserver.version>
     </properties>
 
     <dependencies>
@@ -42,12 +42,6 @@
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <version>${gephi.sqlserver.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.microsoft.azure</groupId>
-                    <artifactId>azure-keyvault</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -58,9 +52,11 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
+                    <moduleType>autoload</moduleType>
+                    <verifyRuntime>warn</verifyRuntime><!-- Avoid problem with postgresql driver using checkerframework -->
                     <publicPackages>
                         <publicPackage>org.gephi.io.database.drivers</publicPackage>
                     </publicPackages>

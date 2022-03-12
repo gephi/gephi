@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.api;
 
 import org.gephi.filters.spi.FilterProperty;
@@ -60,18 +61,18 @@ public interface PropertyExecutor {
      * <code>callback</code>.
      *
      * @param property the filter property that value is to be set
-     * @param value the value that is to be set
+     * @param value    the value that is to be set
      * @param callback the callback function to be notified when setting has to
-     * be done
+     *                 be done
      */
-    public void setValue(FilterProperty property, Object value, Callback callback);
+    void setValue(FilterProperty property, Object value, Callback callback);
 
     /**
      * Callback interface for setting value. When called, setting value is done
      * in a safe window between filter execution.
      */
-    public interface Callback {
+    interface Callback {
 
-        public void setValue(Object value);
+        void setValue(Object value);
     }
 }

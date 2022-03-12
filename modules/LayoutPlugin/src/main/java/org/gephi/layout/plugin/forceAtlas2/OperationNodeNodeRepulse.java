@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.forceAtlas2;
 
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.forceAtlas2.ForceFactory.RepulsionForce;
 
 /**
- *
  * @author Mathieu Jacomy
  */
 public class OperationNodeNodeRepulse extends Operation {

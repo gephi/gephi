@@ -1,8 +1,9 @@
 # Gephi - The Open Graph Viz Platform
 
-[![Build Status](https://travis-ci.org/gephi/gephi.svg?branch=master)](https://travis-ci.org/gephi/gephi)
+[![build](https://github.com/gephi/gephi/actions/workflows/build.yml/badge.svg)](https://github.com/gephi/gephi/actions/workflows/build.yml)
 [![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.9.2/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.9.2)
 [![Downloads](https://img.shields.io/github/downloads/gephi/gephi/v0.9.1/total.svg)](https://github.com/gephi/gephi/releases/tag/v0.9.1)
+[![Translation progress](https://hosted.weblate.org/widgets/gephi/-/svg-badge.svg)](https://hosted.weblate.org/engage/gephi/?utm_source=widget)
 
 [Gephi](http://gephi.org) is an award-winning open-source platform for visualizing and manipulating large graphs. It runs on Windows, Mac OS X and Linux. Localization is available in English, French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese, Czech and German.
 
@@ -10,7 +11,7 @@
 
 - **Simple** Easy to install and [get started](https://gephi.github.io/users/quick-start). An UI that is centered around the visualization. Like Photoshop™ for graphs.
 
-- **Modular** Extend Gephi with [plug-ins](https://gephi.org/plugins). The architecture is built on top of Netbeans Platform and can be extended or reused easily through well-written APIs.
+- **Modular** Extend Gephi with [plug-ins](https://gephi.org/plugins). The architecture is built on top of [Apache Netbeans Platform](https://netbeans.apache.org/tutorials/nbm-quick-start.html) and can be extended or reused easily through well-written APIs.
 
 [Download Gephi](https://gephi.github.io/users/download) for Windows, Mac OS X and Linux and consult the [release notes](https://github.com/gephi/gephi/wiki/Releases). Example datasets can be found on our [wiki](https://github.com/gephi/gephi/wiki/Datasets).
 
@@ -34,9 +35,9 @@ If you run into any trouble or have questions consult our [forum](http://forum-g
 
 Current version is 0.9.3-SNAPSHOT
 
-- [gephi-0.9.3-SNAPSHOT-windows.exe](http://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.3-SNAPSHOT&c=windows&p=exe) (Windows)
+- [gephi-0.9.3-SNAPSHOT-windows.exe](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.3-SNAPSHOT&c=windows&p=exe) (Windows)
 
-- [gephi-0.9.3-SNAPSHOT-macos.dmg](http://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.3-SNAPSHOT&c=macos&p=dmg) (Mac OS X)
+- [gephi-0.9.3-SNAPSHOT-macos.dmg](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.3-SNAPSHOT&c=macos&p=dmg) (Mac OS X)
 
 - [gephi-0.9.3-SNAPSHOT-linux.tar.gz](https://oss.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9.3-SNAPSHOT&c=linux&p=tar.gz) (Linux)
 
@@ -50,9 +51,9 @@ Consult the [**Javadoc**](http://gephi.github.io/gephi/0.9.2/apidocs/index.html)
 
 ### Requirements
 
-- Java JDK 8. Note: Gephi does not currently work with JDK newer than 8. Work needs to be done yet in order to support newer java versions.
+- Java JDK 11 (or later)
 
-- [Apache Maven](http://maven.apache.org/) version 3.2.2 or later
+- [Apache Maven](http://maven.apache.org/) version 3.6.3 or later
 
 ### Checkout and Build the sources
 
@@ -60,9 +61,9 @@ Consult the [**Javadoc**](http://gephi.github.io/gephi/0.9.2/apidocs/index.html)
 
         git clone git@github.com:username/gephi.git
 
-- Run the following command or [open the project in Netbeans](https://github.com/gephi/gephi/wiki/How-to-build-Gephi)
+- Run the following command or [open the project in an IDE](https://github.com/gephi/gephi/wiki/How-to-build-Gephi)
 
-        mvn clean install
+        mvn -T 4 clean install
 
 - Once built, one can test running Gephi
 
@@ -90,6 +91,10 @@ The Gephi Toolkit project packages essential Gephi modules (Graph, Layout, Filte
 - [GitHub Project](https://github.com/gephi/gephi-toolkit)
 
 - [Toolkit Portal](https://github.com/gephi/gephi/wiki/Toolkit)
+
+## Localization
+
+We use [Weblate](https://hosted.weblate.org/projects/gephi/) for localization. Follow the guidelines on the [wiki](https://github.com/gephi/gephi/wiki/Localization) for more details how to contribute.
 
 ## License
 

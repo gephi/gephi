@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.tools;
 
 import java.awt.Component;
@@ -51,7 +52,6 @@ import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.UIUtils;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class Toolbar extends JToolBar {
@@ -68,7 +68,7 @@ public class Toolbar extends JToolBar {
         setOrientation(JToolBar.VERTICAL);
         putClientProperty("JToolBar.isRollover", Boolean.TRUE); //NOI18N
         setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-        setOpaque(false);
+        setOpaque(true);
     }
 
     @Override

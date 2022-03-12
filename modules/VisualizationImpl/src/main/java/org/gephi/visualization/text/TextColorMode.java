@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.text;
 
 import javax.swing.ImageIcon;
@@ -51,7 +52,6 @@ import org.gephi.visualization.text.TextManager.Renderer;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class TextColorMode implements ColorMode {

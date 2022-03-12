@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.spi;
 
 import javax.swing.Icon;
@@ -59,12 +60,12 @@ public interface TransformerCategory {
      *
      * @return display name
      */
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * Returns the transformer category icon.
      *
      * @return icon or null if missing
      */
-    public Icon getIcon();
+    Icon getIcon();
 }

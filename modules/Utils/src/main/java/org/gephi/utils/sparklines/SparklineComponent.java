@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.utils.sparklines;
 
 import java.awt.Graphics;
@@ -52,27 +53,33 @@ import javax.swing.JComponent;
  * <p>Simple component that holds a <code>SparklineGraph</code> and auto-repaints it when mouse interaction happens if desired
  * (indicate it with <code>updateMouseXPosition</code> parameter in constructors).</p>
  * <p>It also takes care to update sparkline width and height to the component width and height when resized</p>
+ *
  * @author Eduardo Ramos
  */
 public class SparklineComponent extends JComponent {
 
-    private Number[] xValues, yValues;
-    private Number yMinValue, yMaxValue;
-    private SparklineParameters sparklineParameters;
+    private final Number[] xValues;
+    private final Number[] yValues;
+    private final Number yMinValue;
+    private final Number yMaxValue;
+    private final SparklineParameters sparklineParameters;
 
     public SparklineComponent(Number[] yValues, SparklineParameters sparklineParameters, boolean updateMouseXPosition) {
         this(null, yValues, null, null, sparklineParameters, updateMouseXPosition);
     }
 
-    public SparklineComponent(Number[] yValues, Number yMinValue, Number yMaxValue, SparklineParameters sparklineParameters, boolean updateMouseXPosition) {
+    public SparklineComponent(Number[] yValues, Number yMinValue, Number yMaxValue,
+                              SparklineParameters sparklineParameters, boolean updateMouseXPosition) {
         this(null, yValues, yMinValue, yMaxValue, sparklineParameters, updateMouseXPosition);
     }
 
-    public SparklineComponent(Number[] xValues, Number[] yValues, SparklineParameters sparklineParameters, boolean updateMouseXPosition) {
+    public SparklineComponent(Number[] xValues, Number[] yValues, SparklineParameters sparklineParameters,
+                              boolean updateMouseXPosition) {
         this(xValues, yValues, null, null, sparklineParameters, updateMouseXPosition);
     }
 
-    public SparklineComponent(Number[] xValues, Number[] yValues, Number yMinValue, Number yMaxValue, SparklineParameters sparklineParameters, boolean updateMouseXPosition) {
+    public SparklineComponent(Number[] xValues, Number[] yValues, Number yMinValue, Number yMaxValue,
+                              SparklineParameters sparklineParameters, boolean updateMouseXPosition) {
         this.xValues = xValues;
         this.yValues = yValues;
         this.yMinValue = yMinValue;

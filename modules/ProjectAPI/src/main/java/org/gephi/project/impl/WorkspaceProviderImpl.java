@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.impl;
 
 import java.util.ArrayList;
@@ -48,14 +49,13 @@ import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.workspace.impl.WorkspaceImpl;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class WorkspaceProviderImpl implements WorkspaceProvider {
 
-    private transient WorkspaceImpl currentWorkspace;
     private final transient ProjectImpl project;
     private final transient List<Workspace> workspaces;
+    private transient WorkspaceImpl currentWorkspace;
 
     public WorkspaceProviderImpl(ProjectImpl project) {
         this.project = project;
@@ -105,6 +105,10 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
         return currentWorkspace;
     }
 
+    public synchronized void setCurrentWorkspace(Workspace currentWorkspace) {
+        this.currentWorkspace = (WorkspaceImpl) currentWorkspace;
+    }
+
     @Override
     public synchronized Workspace[] getWorkspaces() {
         return workspaces.toArray(new Workspace[0]);
@@ -118,10 +122,6 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
             }
         }
         return null;
-    }
-
-    public synchronized void setCurrentWorkspace(Workspace currentWorkspace) {
-        this.currentWorkspace = (WorkspaceImpl) currentWorkspace;
     }
 
     @Override

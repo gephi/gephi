@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.text.DecimalFormat;
@@ -86,7 +87,6 @@ public class Degree implements Statistics, LongTask {
     private Map<Integer, Integer> degreeDist;
 
     /**
-     *
      * @return
      */
     public double getAverageDegree() {
@@ -94,7 +94,6 @@ public class Degree implements Statistics, LongTask {
     }
 
     /**
-     *
      * @param graphModel
      */
     @Override
@@ -185,14 +184,18 @@ public class Degree implements Statistics, LongTask {
         Table nodeTable = graphModel.getNodeTable();
         if (isDirected) {
             if (!nodeTable.hasColumn(INDEGREE)) {
-                nodeTable.addColumn(INDEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.InDegree"), Integer.class, 0);
+                nodeTable
+                    .addColumn(INDEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.InDegree"), Integer.class,
+                        0);
             }
             if (!nodeTable.hasColumn(OUTDEGREE)) {
-                nodeTable.addColumn(OUTDEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.OutDegree"), Integer.class, 0);
+                nodeTable.addColumn(OUTDEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.OutDegree"),
+                    Integer.class, 0);
             }
         }
         if (!nodeTable.hasColumn(DEGREE)) {
-            nodeTable.addColumn(DEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.Degree"), Integer.class, 0);
+            nodeTable
+                .addColumn(DEGREE, NbBundle.getMessage(Degree.class, "Degree.nodecolumn.Degree"), Integer.class, 0);
         }
     }
 
@@ -225,7 +228,6 @@ public class Degree implements Statistics, LongTask {
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -241,14 +243,14 @@ public class Degree implements Statistics, LongTask {
             dataset1.addSeries(dSeries);
 
             JFreeChart chart1 = ChartFactory.createXYLineChart(
-                    "Degree Distribution",
-                    "Value",
-                    "Count",
-                    dataset1,
-                    PlotOrientation.VERTICAL,
-                    true,
-                    false,
-                    false);
+                "Degree Distribution",
+                "Value",
+                "Count",
+                dataset1,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
             chart1.removeLegend();
             ChartUtils.decorateChart(chart1);
             ChartUtils.scaleChart(chart1, dSeries, false);
@@ -257,11 +259,11 @@ public class Degree implements Statistics, LongTask {
             NumberFormat f = new DecimalFormat("#0.000");
 
             report = "<HTML> <BODY> <h1>Degree Report </h1> "
-                    + "<hr>"
-                    + "<br> <h2> Results: </h2>"
-                    + "Average Degree: " + f.format(avgDegree)
-                    + "<br /><br />" + degreeImageFile
-                    + "</BODY></HTML>";
+                + "<hr>"
+                + "<br> <h2> Results: </h2>"
+                + "Average Degree: " + f.format(avgDegree)
+                + "<br /><br />" + degreeImageFile
+                + "</BODY></HTML>";
         }
         return report;
     }
@@ -282,42 +284,42 @@ public class Degree implements Statistics, LongTask {
         dataset3.addSeries(odSeries);
 
         JFreeChart chart1 = ChartFactory.createXYLineChart(
-                "Degree Distribution",
-                "Value",
-                "Count",
-                dataset1,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "Degree Distribution",
+            "Value",
+            "Count",
+            dataset1,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         chart1.removeLegend();
         ChartUtils.decorateChart(chart1);
         ChartUtils.scaleChart(chart1, dSeries, false);
         String degreeImageFile = ChartUtils.renderChart(chart1, "degree-distribution.png");
 
         JFreeChart chart2 = ChartFactory.createXYLineChart(
-                "In-Degree Distribution",
-                "Value",
-                "Count",
-                dataset2,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "In-Degree Distribution",
+            "Value",
+            "Count",
+            dataset2,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         chart2.removeLegend();
         ChartUtils.decorateChart(chart2);
         ChartUtils.scaleChart(chart2, dSeries, false);
         String indegreeImageFile = ChartUtils.renderChart(chart2, "indegree-distribution.png");
 
         JFreeChart chart3 = ChartFactory.createXYLineChart(
-                "Out-Degree Distribution",
-                "Value",
-                "Count",
-                dataset3,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "Out-Degree Distribution",
+            "Value",
+            "Count",
+            dataset3,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         chart3.removeLegend();
         ChartUtils.decorateChart(chart3);
         ChartUtils.scaleChart(chart3, dSeries, false);
@@ -326,19 +328,18 @@ public class Degree implements Statistics, LongTask {
         NumberFormat f = new DecimalFormat("#0.000");
 
         String report = "<HTML> <BODY> <h1>Degree Report </h1> "
-                + "<hr>"
-                + "<br> <h2> Results: </h2>"
-                + "Average Degree: " + f.format(avgDegree)
-                + "<br /><br />" + degreeImageFile
-                + "<br /><br />" + indegreeImageFile
-                + "<br /><br />" + outdegreeImageFile
-                + "</BODY></HTML>";
+            + "<hr>"
+            + "<br> <h2> Results: </h2>"
+            + "Average Degree: " + f.format(avgDegree)
+            + "<br /><br />" + degreeImageFile
+            + "<br /><br />" + indegreeImageFile
+            + "<br /><br />" + outdegreeImageFile
+            + "</BODY></HTML>";
 
         return report;
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -348,7 +349,6 @@ public class Degree implements Statistics, LongTask {
     }
 
     /**
-     *
      * @param progressTicket
      */
     @Override

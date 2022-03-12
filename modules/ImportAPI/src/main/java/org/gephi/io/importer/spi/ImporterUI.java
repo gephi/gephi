@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.spi;
 
 import javax.swing.JPanel;
@@ -59,17 +60,6 @@ import org.openide.WizardDescriptor;
  * @see Importer
  */
 public interface ImporterUI {
-    
-    /**
-     * Optional interface to implement for {@link ImporterUI} classes that need a Wizard
-     */
-    public interface WithWizard {
-        /**
-         * Used to retreive the wizard descriptor for the Importer UI.
-         * @return Wizard descriptor for the UI
-         */
-        public WizardDescriptor getWizardDescriptor();
-    }
 
     /**
      * Link the UI to the importers and therefore to settings values. This
@@ -77,37 +67,49 @@ public interface ImporterUI {
      *
      * @param importers the importers that settings is to be set
      */
-    public void setup(Importer[] importers);
+    void setup(Importer[] importers);
 
     /**
      * Returns the importer settings panel.
      *
      * @return a settings panel, or <code>null</code>
      */
-    public JPanel getPanel();
+    JPanel getPanel();
 
     /**
      * Notify UI the settings panel has been closed and that new values can be
      * written.
      *
-     * @param update    <code>true</code> if user clicked OK or <code>false</code>
-     * if CANCEL.
+     * @param update <code>true</code> if user clicked OK or <code>false</code>
+     *               if CANCEL.
      */
-    public void unsetup(boolean update);
+    void unsetup(boolean update);
 
     /**
      * Returns the importer display name
      *
      * @return the importer display name
      */
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * Returns <code>true</code> if this UI belongs to the given importer.
      *
      * @param importer the importer that has to be tested
-     * @return          <code>true</code> if the UI is matching with
+     * @return <code>true</code> if the UI is matching with
      * <code>importer</code>, <code>false</code> otherwise.
      */
-    public boolean isUIForImporter(Importer importer);
+    boolean isUIForImporter(Importer importer);
+
+    /**
+     * Optional interface to implement for {@link ImporterUI} classes that need a Wizard
+     */
+    interface WithWizard {
+        /**
+         * Used to retreive the wizard descriptor for the Importer UI.
+         *
+         * @return Wizard descriptor for the UI
+         */
+        WizardDescriptor getWizardDescriptor();
+    }
 }

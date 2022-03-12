@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.filters.library;
 
 import java.awt.Image;
@@ -53,13 +54,13 @@ import org.openide.nodes.Children;
 import org.openide.util.ImageUtilities;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class FilterBuilderNode extends AbstractNode {
 
-    private FilterBuilder filterBuilder;
-    private FilterTransferable transferable;
+    public static final DataFlavor DATA_FLAVOR = new DataFlavor(FilterBuilder.class, "filterbuilder");
+    private final FilterBuilder filterBuilder;
+    private final FilterTransferable transferable;
 
     public FilterBuilderNode(FilterBuilder filterBuilder) {
         super(Children.LEAF);
@@ -105,13 +106,17 @@ public class FilterBuilderNode extends AbstractNode {
     public Transferable drag() throws IOException {
         return transferable;
     }
-    public static final DataFlavor DATA_FLAVOR = new DataFlavor(FilterBuilder.class, "filterbuilder");
+
+    @Override
+    public Action[] getActions(boolean context) {
+        return new Action[0];
+    }
 
     private class FilterTransferable implements Transferable {
 
         @Override
         public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{DATA_FLAVOR};
+            return new DataFlavor[] {DATA_FLAVOR};
         }
 
         @Override
@@ -128,10 +133,5 @@ public class FilterBuilderNode extends AbstractNode {
                 throw new UnsupportedFlavorException(flavor);
             }
         }
-    }
-
-    @Override
-    public Action[] getActions(boolean context) {
-        return new Action[0];
     }
 }

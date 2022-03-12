@@ -40,6 +40,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.preview;
 
 import com.itextpdf.text.BaseColor;
@@ -118,10 +119,10 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
 
         props.putValue(PDFTarget.LANDSCAPE, landscape);
         props.putValue(PDFTarget.PAGESIZE, size);
-        props.putValue(PDFTarget.MARGIN_TOP, new Float((float) marginTop));
-        props.putValue(PDFTarget.MARGIN_LEFT, new Float((float) marginLeft));
-        props.putValue(PDFTarget.MARGIN_BOTTOM, new Float((float) marginBottom));
-        props.putValue(PDFTarget.MARGIN_RIGHT, new Float((float) marginRight));
+        props.putValue(PDFTarget.MARGIN_TOP, new Float(marginTop));
+        props.putValue(PDFTarget.MARGIN_LEFT, new Float(marginLeft));
+        props.putValue(PDFTarget.MARGIN_BOTTOM, new Float(marginBottom));
+        props.putValue(PDFTarget.MARGIN_RIGHT, new Float(marginRight));
         props.putValue(PDFTarget.PDF_CONTENT_BYTE, cb);
         target = (PDFTarget) controller.getRenderTarget(RenderTarget.PDF_TARGET, workspace);
         if (target instanceof LongTask) {
@@ -149,40 +150,44 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         return landscape;
     }
 
+    public void setLandscape(boolean landscape) {
+        this.landscape = landscape;
+    }
+
     public float getMarginBottom() {
         return marginBottom;
-    }
-
-    public float getMarginLeft() {
-        return marginLeft;
-    }
-
-    public float getMarginRight() {
-        return marginRight;
-    }
-
-    public float getMarginTop() {
-        return marginTop;
-    }
-
-    public Rectangle getPageSize() {
-        return pageSize;
     }
 
     public void setMarginBottom(float marginBottom) {
         this.marginBottom = marginBottom;
     }
 
+    public float getMarginLeft() {
+        return marginLeft;
+    }
+
     public void setMarginLeft(float marginLeft) {
         this.marginLeft = marginLeft;
+    }
+
+    public float getMarginRight() {
+        return marginRight;
     }
 
     public void setMarginRight(float marginRight) {
         this.marginRight = marginRight;
     }
 
+    public float getMarginTop() {
+        return marginTop;
+    }
+
     public void setMarginTop(float marginTop) {
         this.marginTop = marginTop;
+    }
+
+    public Rectangle getPageSize() {
+        return pageSize;
     }
 
     public void setPageSize(Rectangle pageSize) {
@@ -195,17 +200,13 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
     }
 
     @Override
-    public void setWorkspace(Workspace workspace) {
-        this.workspace = workspace;
-    }
-
-    public void setLandscape(boolean landscape) {
-        this.landscape = landscape;
+    public Workspace getWorkspace() {
+        return workspace;
     }
 
     @Override
-    public Workspace getWorkspace() {
-        return workspace;
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 
     @Override

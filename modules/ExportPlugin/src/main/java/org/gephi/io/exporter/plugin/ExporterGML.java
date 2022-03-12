@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import java.awt.Color;
@@ -63,11 +64,14 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author megaterik
  */
 public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
 
+    double minX, maxX;
+    double minY, maxY;
+    double minZ, maxZ;
+    double minSize, maxSize;
     private boolean exportVisible = false;
     private Workspace workspace;
     private GraphModel graphModel;
@@ -81,15 +85,11 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportCoordinates = true;
     private boolean exportNodeSize = true;
     private boolean exportEdgeSize = true;
-    private boolean exportDynamicWeight = true;
+    private final boolean exportDynamicWeight = true;
     private boolean exportColor = true;
     private boolean exportNotRecognizedElements = true;
     //data to normalize
     private boolean normalize = false;
-    double minX, maxX;
-    double minY, maxY;
-    double minZ, maxZ;
-    double minSize, maxSize;
 
     public boolean isNormalize() {
         return normalize;
@@ -100,13 +100,13 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     }
 
     @Override
-    public void setExportVisible(boolean exportVisible) {
-        this.exportVisible = exportVisible;
+    public boolean isExportVisible() {
+        return exportVisible;
     }
 
     @Override
-    public boolean isExportVisible() {
-        return exportVisible;
+    public void setExportVisible(boolean exportVisible) {
+        this.exportVisible = exportVisible;
     }
 
     @Override
@@ -215,7 +215,8 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         }
         if (exportColor && edge.alpha() != 0f) {
             Color color = edge.getColor();
-            printTag("fill \"" + String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()) + "\"");
+            printTag(
+                "fill \"" + String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()) + "\"");
         }
 
         if (exportNotRecognizedElements) {
@@ -265,7 +266,8 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
             }
             if (exportColor) {
                 Color color = node.getColor();
-                printTag("fill \"" + String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()) + "\"");
+                printTag("fill \"" + String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()) +
+                    "\"");
             }
             printClose();
         }
@@ -284,13 +286,13 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     }
 
     @Override
-    public void setWorkspace(Workspace workspace) {
-        this.workspace = workspace;
+    public Workspace getWorkspace() {
+        return workspace;
     }
 
     @Override
-    public Workspace getWorkspace() {
-        return workspace;
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 
     @Override
@@ -404,7 +406,8 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
      * @return formated title
      */
     private String formatTitle(String s) {
-        String res = s.replace("\"", "").replace("\'", "").replace("[", "").replace("]", "").replace(" ", "").replace("#", "");
+        String res =
+            s.replace("\"", "").replace("'", "").replace("[", "").replace("]", "").replace(" ", "").replace("#", "");
         if (s.charAt(0) >= '0' && s.charAt(0) <= '9') {
             return ("column" + res);
         } else {

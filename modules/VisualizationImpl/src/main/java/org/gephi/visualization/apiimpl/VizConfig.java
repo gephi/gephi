@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.apiimpl;
 
 import java.awt.Color;
@@ -48,7 +49,6 @@ import org.gephi.ui.utils.FontUtils;
 import org.openide.util.NbPreferences;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class VizConfig {
@@ -159,64 +159,106 @@ public class VizConfig {
     public static final boolean DEFAULT_SHOW_HULLS = true;
     public static final float DEFAULT_EDGE_SCALE = 2f;
     //Default config - loaded in the VizModel
-    protected Color defaultBackgroundColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(BACKGROUND_COLOR, ColorUtils.encode(DEFAULT_BACKGROUND_COLOR)));
+    protected Color defaultBackgroundColor = ColorUtils.decode(
+        NbPreferences.forModule(VizConfig.class).get(BACKGROUND_COLOR, ColorUtils.encode(DEFAULT_BACKGROUND_COLOR)));
     protected float[] defaultCameraTarget = {0f, 0f, 0f};
     protected float[] defaultCameraPosition = {0f, 0f, 5000f};
-    protected boolean defaultShowNodeLabels = NbPreferences.forModule(VizConfig.class).getBoolean(NODE_LABELS, DEFAULT_NODE_LABELS);
-    protected boolean defaultShowEdgeLabels = NbPreferences.forModule(VizConfig.class).getBoolean(EDGE_LABELS, DEFAULT_EDGE_LABELS);
-    protected boolean defaultShowEdges = NbPreferences.forModule(VizConfig.class).getBoolean(SHOW_EDGES, DEFAULT_SHOW_EDGES);
-    protected boolean defaultLightenNonSelectedAuto = NbPreferences.forModule(VizConfig.class).getBoolean(HIGHLIGHT, DEFAULT_HIGHLIGHT);
-    protected boolean defaultAutoSelectNeighbor = NbPreferences.forModule(VizConfig.class).getBoolean(NEIGHBOUR_SELECT, DEFAULT_NEIGHBOUR_SELECT);
-    protected boolean defaultHideNonSelectedEdges = NbPreferences.forModule(VizConfig.class).getBoolean(HIDE_NONSELECTED_EDGES, DEFAULT_HIDE_NONSELECTED_EDGES);
-    protected boolean defaultUniColorSelected = NbPreferences.forModule(VizConfig.class).getBoolean(SELECTEDNODE_UNIQUE_COLOR, DEFAULT_SELECTEDNODE_UNIQUE_COLOR);
-    protected boolean defaultEdgeHasUniColor = NbPreferences.forModule(VizConfig.class).getBoolean(EDGE_HAS_UNIQUE_COLOR, DEFAULT_EDGE_HAS_UNIQUE_COLOR);
-    protected Color defaultEdgeUniColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(EDGE_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_EDGE_UNIQUE_COLOR)));
-    protected Color defaultNodeLabelColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR, ColorUtils.encode(DEFAULT_NODE_LABEL_COLOR)));
-    protected Color defaultEdgeLabelColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_COLOR, ColorUtils.encode(DEFAULT_EDGE_LABEL_COLOR)));
-    protected Font defaultNodeLabelFont = Font.decode(NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_FONT, FontUtils.encode(DEFAULT_NODE_LABEL_FONT)));
-    protected Font defaultEdgeLabelFont = Font.decode(NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_FONT, FontUtils.encode(DEFAULT_EDGE_LABEL_FONT)));
+    protected boolean defaultShowNodeLabels =
+        NbPreferences.forModule(VizConfig.class).getBoolean(NODE_LABELS, DEFAULT_NODE_LABELS);
+    protected boolean defaultShowEdgeLabels =
+        NbPreferences.forModule(VizConfig.class).getBoolean(EDGE_LABELS, DEFAULT_EDGE_LABELS);
+    protected boolean defaultShowEdges =
+        NbPreferences.forModule(VizConfig.class).getBoolean(SHOW_EDGES, DEFAULT_SHOW_EDGES);
+    protected boolean defaultLightenNonSelectedAuto =
+        NbPreferences.forModule(VizConfig.class).getBoolean(HIGHLIGHT, DEFAULT_HIGHLIGHT);
+    protected boolean defaultAutoSelectNeighbor =
+        NbPreferences.forModule(VizConfig.class).getBoolean(NEIGHBOUR_SELECT, DEFAULT_NEIGHBOUR_SELECT);
+    protected boolean defaultHideNonSelectedEdges =
+        NbPreferences.forModule(VizConfig.class).getBoolean(HIDE_NONSELECTED_EDGES, DEFAULT_HIDE_NONSELECTED_EDGES);
+    protected boolean defaultUniColorSelected = NbPreferences.forModule(VizConfig.class)
+        .getBoolean(SELECTEDNODE_UNIQUE_COLOR, DEFAULT_SELECTEDNODE_UNIQUE_COLOR);
+    protected boolean defaultEdgeHasUniColor =
+        NbPreferences.forModule(VizConfig.class).getBoolean(EDGE_HAS_UNIQUE_COLOR, DEFAULT_EDGE_HAS_UNIQUE_COLOR);
+    protected Color defaultEdgeUniColor = ColorUtils.decode(
+        NbPreferences.forModule(VizConfig.class).get(EDGE_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_EDGE_UNIQUE_COLOR)));
+    protected Color defaultNodeLabelColor = ColorUtils.decode(
+        NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR, ColorUtils.encode(DEFAULT_NODE_LABEL_COLOR)));
+    protected Color defaultEdgeLabelColor = ColorUtils.decode(
+        NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_COLOR, ColorUtils.encode(DEFAULT_EDGE_LABEL_COLOR)));
+    protected Font defaultNodeLabelFont = Font.decode(
+        NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_FONT, FontUtils.encode(DEFAULT_NODE_LABEL_FONT)));
+    protected Font defaultEdgeLabelFont = Font.decode(
+        NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_FONT, FontUtils.encode(DEFAULT_EDGE_LABEL_FONT)));
     protected boolean defaultAdjustByText = false;    //Overriden in Engine
-    protected boolean defaultShowLabelOnSelectedOnly = NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_SELECTION_ONLY, DEFAULT_LABEL_SELECTION_ONLY);
-    protected boolean defaultEdgeSelectionColor = NbPreferences.forModule(VizConfig.class).getBoolean(SELECTEDEDGE_HAS_COLOR, DEFAULT_SELECTEDEDGE_HAS_COLOR);
-    protected Color defaultEdgeInSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_IN_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_IN_COLOR)));
-    protected Color defaultEdgeOutSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_OUT_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_OUT_COLOR)));
-    protected Color defaultEdgeBothSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_BOTH_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_BOTH_COLOR)));
-    protected float defaultEdgeScale = NbPreferences.forModule(VizConfig.class).getFloat(EDGE_SCALE, DEFAULT_EDGE_SCALE);
+    protected boolean defaultShowLabelOnSelectedOnly =
+        NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_SELECTION_ONLY, DEFAULT_LABEL_SELECTION_ONLY);
+    protected boolean defaultEdgeSelectionColor =
+        NbPreferences.forModule(VizConfig.class).getBoolean(SELECTEDEDGE_HAS_COLOR, DEFAULT_SELECTEDEDGE_HAS_COLOR);
+    protected Color defaultEdgeInSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
+        .get(SELECTEDEDGE_IN_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_IN_COLOR)));
+    protected Color defaultEdgeOutSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
+        .get(SELECTEDEDGE_OUT_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_OUT_COLOR)));
+    protected Color defaultEdgeBothSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
+        .get(SELECTEDEDGE_BOTH_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_BOTH_COLOR)));
+    protected float defaultEdgeScale =
+        NbPreferences.forModule(VizConfig.class).getFloat(EDGE_SCALE, DEFAULT_EDGE_SCALE);
     //Preferences
     protected int antialiasing = NbPreferences.forModule(VizConfig.class).getInt(ANTIALIASING, DEFAULT_ANTIALIASING);
     protected boolean blending = NbPreferences.forModule(VizConfig.class).getBoolean(BLENDING, DEFAULT_BLENDING);
     protected boolean wireFrame = NbPreferences.forModule(VizConfig.class).getBoolean(WIREFRAME, DEFAULT_WIREFRAME);
     protected boolean useGLJPanel = NbPreferences.forModule(VizConfig.class).getBoolean(GLJPANEL, DEFAULT_GLJPANEL);
-    protected boolean selectionEnable = NbPreferences.forModule(VizConfig.class).getBoolean(SELECTION, DEFAULT_SELECTION);
-    protected boolean rectangleSelection = NbPreferences.forModule(VizConfig.class).getBoolean(RECTANGLE_SELECTION, DEFAULT_RECTANGLE_SELECTION);
-    protected Color rectangleSelectionColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(RECTANGLE_SELECTION_COLOR, ColorUtils.encode(DEFAULT_RECTANGLE_SELECTION_COLOR)));
+    protected boolean selectionEnable =
+        NbPreferences.forModule(VizConfig.class).getBoolean(SELECTION, DEFAULT_SELECTION);
+    protected boolean rectangleSelection =
+        NbPreferences.forModule(VizConfig.class).getBoolean(RECTANGLE_SELECTION, DEFAULT_RECTANGLE_SELECTION);
+    protected Color rectangleSelectionColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
+        .get(RECTANGLE_SELECTION_COLOR, ColorUtils.encode(DEFAULT_RECTANGLE_SELECTION_COLOR)));
     protected boolean customSelection = false;      //Overriden in Engine
     protected boolean draggingEnable = NbPreferences.forModule(VizConfig.class).getBoolean(DRAGGING, DEFAULT_DRAGGING);
-    protected boolean cameraControlEnable = NbPreferences.forModule(VizConfig.class).getBoolean(CAMERA_CONTROL, DEFAULT_CAMERA_CONTROL);
+    protected boolean cameraControlEnable =
+        NbPreferences.forModule(VizConfig.class).getBoolean(CAMERA_CONTROL, DEFAULT_CAMERA_CONTROL);
     protected boolean showFPS = NbPreferences.forModule(VizConfig.class).getBoolean(SHOW_FPS, DEFAULT_SHOW_FPS);
-    protected boolean reduceFpsWhenMouseOut = NbPreferences.forModule(VizConfig.class).getBoolean(REDUCE_FPS_MOUSE_OUT, DEFAULT_REDUCE_FPS_MOUSE_OUT);
-    protected int reduceFpsWhenMouseOutValue = NbPreferences.forModule(VizConfig.class).getInt(REDUCE_FPS_MOUSE_OUT_VALUE, DEFAULT_REDUCE_FPS_MOUSE_OUT_VALUE);
-    protected boolean pauseLoopWhenMouseOut = NbPreferences.forModule(VizConfig.class).getBoolean(PAUSE_LOOP_MOUSE_OUT, DEFAULT_PAUSE_LOOP_MOUSE_OUT);
+    protected boolean reduceFpsWhenMouseOut =
+        NbPreferences.forModule(VizConfig.class).getBoolean(REDUCE_FPS_MOUSE_OUT, DEFAULT_REDUCE_FPS_MOUSE_OUT);
+    protected int reduceFpsWhenMouseOutValue =
+        NbPreferences.forModule(VizConfig.class).getInt(REDUCE_FPS_MOUSE_OUT_VALUE, DEFAULT_REDUCE_FPS_MOUSE_OUT_VALUE);
+    protected boolean pauseLoopWhenMouseOut =
+        NbPreferences.forModule(VizConfig.class).getBoolean(PAUSE_LOOP_MOUSE_OUT, DEFAULT_PAUSE_LOOP_MOUSE_OUT);
     protected boolean showArrows = true;        //Overriden in Engine
     protected boolean lightenNonSelected = false;        //Overriden in Engine
-    protected boolean lightenNonSelectedAnimation = NbPreferences.forModule(VizConfig.class).getBoolean(HIGHTLIGHT_ANIMATION, DEFAULT_HIGHTLIGHT_ANIMATION);
+    protected boolean lightenNonSelectedAnimation =
+        NbPreferences.forModule(VizConfig.class).getBoolean(HIGHTLIGHT_ANIMATION, DEFAULT_HIGHTLIGHT_ANIMATION);
     protected float lightenNonSelectedFactor = 0.5f;        //Overriden in Engine
-    protected float[] uniColorSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(NODE_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_SELECTED_UNIQUE_COLOR))).getRGBColorComponents(null);
-    protected float[] uniColorSelectedNeigborColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR))).getRGBColorComponents(null);
+    protected float[] uniColorSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
+        .get(NODE_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_SELECTED_UNIQUE_COLOR)))
+        .getRGBColorComponents(null);
+    protected float[] uniColorSelectedNeigborColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class)
+        .get(NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR)))
+        .getRGBColorComponents(null);
     protected int octreeDepth = NbPreferences.forModule(VizConfig.class).getInt(OCTREE_DEPTH, DEFAULT_OCTREE_DEPTH);
     protected int octreeWidth = NbPreferences.forModule(VizConfig.class).getInt(OCTREE_WIDTH, DEFAULT_OCTREE_WIDTH);
-    protected boolean cleanDeletedModels = NbPreferences.forModule(VizConfig.class).getBoolean(CLEAN_DELETED_MODELS, DEFAULT_CLEAN_DELETED_MODELS);
-    protected boolean labelMipMap = NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_MIPMAP, DEFAULT_LABEL_MIPMAP);
-    protected boolean labelAntialiased = NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_ANTIALIASED, DEFAULT_LABEL_ANTIALIASED);
-    protected boolean labelFractionalMetrics = NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_FRACTIONAL_METRICS, DEFAULT_LABEL_FRACTIONAL_METRICS);
+    protected boolean cleanDeletedModels =
+        NbPreferences.forModule(VizConfig.class).getBoolean(CLEAN_DELETED_MODELS, DEFAULT_CLEAN_DELETED_MODELS);
+    protected boolean labelMipMap =
+        NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_MIPMAP, DEFAULT_LABEL_MIPMAP);
+    protected boolean labelAntialiased =
+        NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_ANTIALIASED, DEFAULT_LABEL_ANTIALIASED);
+    protected boolean labelFractionalMetrics =
+        NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_FRACTIONAL_METRICS, DEFAULT_LABEL_FRACTIONAL_METRICS);
     protected boolean showVizVar = NbPreferences.forModule(VizConfig.class).getBoolean(VIZBAR, DEFAULT_VIZBAR);
-    protected boolean contextMenu = NbPreferences.forModule(VizConfig.class).getBoolean(CONTEXT_MENU, DEFAULT_CONTEXT_MENU);
+    protected boolean contextMenu =
+        NbPreferences.forModule(VizConfig.class).getBoolean(CONTEXT_MENU, DEFAULT_CONTEXT_MENU);
     protected boolean toolbar = NbPreferences.forModule(VizConfig.class).getBoolean(TOOLBAR, DEFAULT_TOOLBAR);
-    protected boolean propertiesbar = NbPreferences.forModule(VizConfig.class).getBoolean(PROPERTIESBAR, DEFAULT_PROPERTIESBAR);
-    protected int mouseSelectionDiameter = NbPreferences.forModule(VizConfig.class).getInt(MOUSE_SELECTION_DIAMETER, DEFAULT_MOUSE_SELECTION_DIAMETER);
-    protected boolean mouseSelectionZoomProportionnal = NbPreferences.forModule(VizConfig.class).getBoolean(MOUSE_SELECTION_ZOOM_PROPORTIONAL, DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL);
-    protected boolean mouseSelectionUpdateWhileDragging = NbPreferences.forModule(VizConfig.class).getBoolean(MOUSE_SELECTION_WHILE_DRAGGING, DEFAULT_MOUSE_SELECTION_WHILE_DRAGGING);
-    protected boolean disableLOD = NbPreferences.forModule(VizConfig.class).getBoolean(DISABLE_LOD, DEFAULT_DISABLE_LOD);
+    protected boolean propertiesbar =
+        NbPreferences.forModule(VizConfig.class).getBoolean(PROPERTIESBAR, DEFAULT_PROPERTIESBAR);
+    protected int mouseSelectionDiameter =
+        NbPreferences.forModule(VizConfig.class).getInt(MOUSE_SELECTION_DIAMETER, DEFAULT_MOUSE_SELECTION_DIAMETER);
+    protected boolean mouseSelectionZoomProportionnal = NbPreferences.forModule(VizConfig.class)
+        .getBoolean(MOUSE_SELECTION_ZOOM_PROPORTIONAL, DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL);
+    protected boolean mouseSelectionUpdateWhileDragging = NbPreferences.forModule(VizConfig.class)
+        .getBoolean(MOUSE_SELECTION_WHILE_DRAGGING, DEFAULT_MOUSE_SELECTION_WHILE_DRAGGING);
+    protected boolean disableLOD =
+        NbPreferences.forModule(VizConfig.class).getBoolean(DISABLE_LOD, DEFAULT_DISABLE_LOD);
     protected boolean enableAutoSelect = true;      //Overriden in Engine - Temporary used by tools like ShortestPath
 
     public int getAntialiasing() {
@@ -315,6 +357,10 @@ public class VizConfig {
         return draggingEnable;
     }
 
+    public void setDraggingEnable(boolean draggingEnable) {
+        this.draggingEnable = draggingEnable;
+    }
+
     public boolean isDefaultEdgeSelectionColor() {
         return defaultEdgeSelectionColor;
     }
@@ -347,12 +393,21 @@ public class VizConfig {
         return lightenNonSelected;
     }
 
+    public void setLightenNonSelected(boolean lightenNonSelected) {
+        this.lightenNonSelected = lightenNonSelected;
+    }
+
     public boolean isLightenNonSelectedAnimation() {
         return lightenNonSelectedAnimation;
     }
 
     public float getLightenNonSelectedFactor() {
         return lightenNonSelectedFactor;
+    }
+
+    //Setters
+    public void setLightenNonSelectedFactor(float lightenNonSelectedFactor) {
+        this.lightenNonSelectedFactor = lightenNonSelectedFactor;
     }
 
     public int getOctreeDepth() {
@@ -363,8 +418,16 @@ public class VizConfig {
         return octreeWidth;
     }
 
+    public void setOctreeWidth(int octreeWidth) {
+        this.octreeWidth = octreeWidth;
+    }
+
     public boolean isRectangleSelection() {
         return rectangleSelection;
+    }
+
+    public void setRectangleSelection(boolean rectangleSelection) {
+        this.rectangleSelection = rectangleSelection;
     }
 
     public Color getRectangleSelectionColor() {
@@ -373,6 +436,10 @@ public class VizConfig {
 
     public boolean isSelectionEnable() {
         return selectionEnable;
+    }
+
+    public void setSelectionEnable(boolean selectionEnable) {
+        this.selectionEnable = selectionEnable;
     }
 
     public boolean isShowArrows() {
@@ -423,8 +490,16 @@ public class VizConfig {
         return mouseSelectionUpdateWhileDragging;
     }
 
+    public void setMouseSelectionUpdateWhileDragging(boolean mouseSelectionUpdateWhileDragging) {
+        this.mouseSelectionUpdateWhileDragging = mouseSelectionUpdateWhileDragging;
+    }
+
     public boolean isCustomSelection() {
         return customSelection;
+    }
+
+    public void setCustomSelection(boolean customSelection) {
+        this.customSelection = customSelection;
     }
 
     public boolean isReduceFpsWhenMouseOut() {
@@ -433,35 +508,6 @@ public class VizConfig {
 
     public int getReduceFpsWhenMouseOutValue() {
         return reduceFpsWhenMouseOutValue;
-    }
-
-    //Setters
-    public void setLightenNonSelectedFactor(float lightenNonSelectedFactor) {
-        this.lightenNonSelectedFactor = lightenNonSelectedFactor;
-    }
-
-    public void setLightenNonSelected(boolean lightenNonSelected) {
-        this.lightenNonSelected = lightenNonSelected;
-    }
-
-    public void setRectangleSelection(boolean rectangleSelection) {
-        this.rectangleSelection = rectangleSelection;
-    }
-
-    public void setDraggingEnable(boolean draggingEnable) {
-        this.draggingEnable = draggingEnable;
-    }
-
-    public void setSelectionEnable(boolean selectionEnable) {
-        this.selectionEnable = selectionEnable;
-    }
-
-    public void setCustomSelection(boolean customSelection) {
-        this.customSelection = customSelection;
-    }
-
-    public void setMouseSelectionUpdateWhileDragging(boolean mouseSelectionUpdateWhileDragging) {
-        this.mouseSelectionUpdateWhileDragging = mouseSelectionUpdateWhileDragging;
     }
 
     public boolean isDisableLOD() {

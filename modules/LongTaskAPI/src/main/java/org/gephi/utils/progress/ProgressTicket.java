@@ -39,11 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.utils.progress;
 
 /**
  * Progress task following, must be used from {@link Progress} class.
- * 
+ *
  * @author Mathieu Bastian
  */
 public interface ProgressTicket {
@@ -52,9 +53,10 @@ public interface ProgressTicket {
      * Finish the progress task.
      */
     void finish();
-    
+
     /**
      * Finish the progress task and show and wrap-up message
+     *
      * @param finishMessage a message about the finished task
      */
     void finish(String finishMessage);
@@ -66,34 +68,39 @@ public interface ProgressTicket {
 
     /**
      * Notify the user about completed workunits.
-     * @param workunit  a cumulative number of workunits completed so far
+     *
+     * @param workunit a cumulative number of workunits completed so far
      */
     void progress(int workunit);
 
     /**
      * Notify the user about progress by showing message with details.
+     *
      * @param message about the status of the task
      */
     void progress(String message);
 
     /**
      * Notify the user about completed workunits and show additional detailed message.
-     * @param message details about the status of the task
+     *
+     * @param message  details about the status of the task
      * @param workunit a cumulative number of workunits completed so far
      */
     void progress(String message, int workunit);
 
     /**
-     * Change the display name of the progress task. Use with care, please make sure the changed name is not completely different, or otherwise it might appear to the user as a different task.
-     * @param newDisplayName the new display name
-     */
-    void setDisplayName(String newDisplayName);
-    
-    /**
      * Returns the current display name
+     *
      * @return the current display name
      */
     String getDisplayName();
+
+    /**
+     * Change the display name of the progress task. Use with care, please make sure the changed name is not completely different, or otherwise it might appear to the user as a different task.
+     *
+     * @param newDisplayName the new display name
+     */
+    void setDisplayName(String newDisplayName);
 
     /**
      * Start the progress indication for indeterminate task.
@@ -102,12 +109,14 @@ public interface ProgressTicket {
 
     /**
      * Start the progress indication for a task with known number of steps.
+     *
      * @param workunits total number of workunits that will be processed
      */
     void start(int workunits);
 
     /**
      * Currently indeterminate task can be switched to show percentage completed.
+     *
      * @param workunits workunits total number of workunits that will be processed
      */
     void switchToDeterminate(int workunits);

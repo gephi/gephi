@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.edges;
 
 import javax.swing.Icon;
@@ -52,6 +53,7 @@ import org.openide.util.NbBundle;
 
 /**
  * Edges manipulator that deletes one or more edges.
+ *
  * @author Eduardo Ramos
  */
 public class DeleteEdges extends BasicEdgesManipulator {
@@ -65,7 +67,9 @@ public class DeleteEdges extends BasicEdgesManipulator {
 
     @Override
     public void execute() {
-        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(DeleteEdges.class, "DeleteEdges.confirmation.message"), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane
+            .showConfirmDialog(null, NbBundle.getMessage(DeleteEdges.class, "DeleteEdges.confirmation.message"),
+                getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
             gec.deleteEdges(edges);
         }

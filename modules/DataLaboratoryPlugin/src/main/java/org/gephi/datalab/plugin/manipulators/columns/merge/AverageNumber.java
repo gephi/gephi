@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 import javax.swing.Icon;
@@ -56,22 +57,24 @@ import org.openide.util.NbBundle;
 /**
  * AttributeColumnsMergeStrategy for any combination of number or number list columns that
  * calculates the average of all the values and creates a new BigDecimal column with the result of each row.
+ *
  * @author Eduardo Ramos
  */
-public class AverageNumber implements AttributeColumnsMergeStrategy, GeneralColumnTitleChooser{
+public class AverageNumber implements AttributeColumnsMergeStrategy, GeneralColumnTitleChooser {
     private Table table;
     private Column[] columns;
     private String columnTitle;
 
     @Override
     public void setup(Table table, Column[] columns) {
-        this.table=table;
-        this.columns=columns;
+        this.table = table;
+        this.columns = columns;
     }
 
     @Override
     public void execute() {
-        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).averageNumberMerge(table, columns, columnTitle);
+        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class)
+            .averageNumberMerge(table, columns, columnTitle);
     }
 
     @Override
@@ -87,11 +90,11 @@ public class AverageNumber implements AttributeColumnsMergeStrategy, GeneralColu
     @Override
     public boolean canExecute() {
         for (Column column : columns) {
-            if(!AttributeUtils.isNumberType(column.getTypeClass())){
+            if (!AttributeUtils.isNumberType(column.getTypeClass())) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -112,7 +115,7 @@ public class AverageNumber implements AttributeColumnsMergeStrategy, GeneralColu
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/balance.png",true);
+        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/balance.png", true);
     }
 
     @Override
@@ -127,6 +130,6 @@ public class AverageNumber implements AttributeColumnsMergeStrategy, GeneralColu
 
     @Override
     public void setColumnTitle(String columnTitle) {
-        this.columnTitle=columnTitle;
+        this.columnTitle = columnTitle;
     }
 }

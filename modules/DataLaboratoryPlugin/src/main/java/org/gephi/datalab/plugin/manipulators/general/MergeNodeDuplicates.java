@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.general;
 
 import java.util.ArrayList;
@@ -62,6 +63,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * PluginGeneralActionsManipulator that automatically detects and merges node duplicates based on a column
+ *
  * @author Eduardo Ramos
  */
 @ServiceProvider(service = PluginGeneralActionsManipulator.class)
@@ -83,9 +85,11 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         for (List<Node> nodes : duplicateGroups) {
-            gec.mergeNodes(graph, nodes.toArray(new Node[0]), nodes.get(0), columns, mergeStrategies, deleteMergedNodes);
+            gec.mergeNodes(graph, nodes.toArray(new Node[0]), nodes.get(0), columns, mergeStrategies,
+                deleteMergedNodes);
         }
-        NbPreferences.forModule(MergeNodeDuplicates.class).putBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, deleteMergedNodes);
+        NbPreferences.forModule(MergeNodeDuplicates.class)
+            .putBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, deleteMergedNodes);
         NbPreferences.forModule(MergeNodeDuplicates.class).putBoolean(CASE_SENSITIVE_SAVED_PREFERENCES, caseSensitive);
     }
 
@@ -109,15 +113,17 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
         Table nodeTable = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getNodeTable();
         List<Column> columnsList = new ArrayList<>();
         for (Column column : nodeTable) {
-            if(!column.isReadOnly()){
+            if (!column.isReadOnly()) {
                 columnsList.add(column);
             }
         }
-        
+
         columns = columnsList.toArray(new Column[0]);
         mergeStrategies = new AttributeRowsMergeStrategy[columns.length];
-        deleteMergedNodes = NbPreferences.forModule(MergeNodeDuplicates.class).getBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, true);
-        caseSensitive = NbPreferences.forModule(MergeNodeDuplicates.class).getBoolean(CASE_SENSITIVE_SAVED_PREFERENCES, true);
+        deleteMergedNodes =
+            NbPreferences.forModule(MergeNodeDuplicates.class).getBoolean(DELETE_MERGED_NODES_SAVED_PREFERENCES, true);
+        caseSensitive =
+            NbPreferences.forModule(MergeNodeDuplicates.class).getBoolean(CASE_SENSITIVE_SAVED_PREFERENCES, true);
         return new MergeNodeDuplicatesUI();
     }
 
@@ -148,16 +154,16 @@ public class MergeNodeDuplicates implements PluginGeneralActionsManipulator {
         return deleteMergedNodes;
     }
 
+    public void setDeleteMergedNodes(boolean deleteMergedNodes) {
+        this.deleteMergedNodes = deleteMergedNodes;
+    }
+
     public boolean isCaseSensitive() {
         return caseSensitive;
     }
 
     public void setCaseSensitive(boolean caseSensitive) {
         this.caseSensitive = caseSensitive;
-    }
-
-    public void setDeleteMergedNodes(boolean deleteMergedNodes) {
-        this.deleteMergedNodes = deleteMergedNodes;
     }
 
     public List<List<Node>> getDuplicateGroups() {

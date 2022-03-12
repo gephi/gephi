@@ -39,13 +39,19 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.desktop.appearance;
 
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.font.TextAttribute;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -66,20 +72,20 @@ import javax.swing.border.Border;
 import org.gephi.appearance.api.Function;
 import org.gephi.appearance.spi.TransformerCategory;
 import org.gephi.appearance.spi.TransformerUI;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author mbastian
  */
 public class AppearanceToolbar implements AppearanceUIModelListener {
 
     protected final AppearanceUIController controller;
-    protected AppearanceUIModel model;
     //Toolbars
     private final CategoryToolbar categoryToolbar;
     private final TransformerToolbar transformerToolbar;
     private final ControlToolbar controlToolbar;
+    protected AppearanceUIModel model;
 
     public AppearanceToolbar(AppearanceUIController controller) {
         this.controller = controller;
@@ -210,6 +216,28 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         });
     }
 
+    // Workaround for JDK bug - JDK-8250953
+    private void fixAquaSelectedState(JToggleButton btn) {
+        if (UIUtils.isAquaLookAndFeel()) {
+            btn.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        Font font = btn.getFont().deriveFont(
+                            Collections.singletonMap(
+                                TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD));
+                        btn.setFont(font);
+                    } else {
+                        Font font = btn.getFont().deriveFont(
+                            Collections.singletonMap(
+                                TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR));
+                        btn.setFont(font);
+                    }
+                }
+            });
+        }
+    }
+
     private class AbstractToolbar extends JToolBar {
 
         public AbstractToolbar() {
@@ -217,6 +245,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
             setRollover(true);
             Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
             setBorder(b);
+            setOpaque(true);
         }
 
         @Override
@@ -235,8 +264,12 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
     private class CategoryToolbar extends AbstractToolbar {
 
         private final List<ButtonGroup> buttonGroups = new ArrayList<>();
+        private final javax.swing.JLabel box;
+        private final javax.swing.ButtonGroup elementGroup;
 
         public CategoryToolbar() {
+            super();
+
             //Init components
             elementGroup = new javax.swing.ButtonGroup();
             for (final String elmtType : AppearanceUIController.ELEMENT_CLASSES) {
@@ -250,12 +283,14 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                 }
                 btn.setText(btnLabel);
                 btn.setEnabled(false);
+
                 btn.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         controller.setSelectedElementClass(elmtType);
                     }
                 });
+                fixAquaSelectedState(btn);
                 elementGroup.add(btn);
                 add(btn);
             }
@@ -270,7 +305,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         private void clear() {
             //Clear precent buttons
             for (ButtonGroup bg : buttonGroups) {
-                for (Enumeration<AbstractButton> btns = bg.getElements(); btns.hasMoreElements();) {
+                for (Enumeration<AbstractButton> btns = bg.getElements(); btns.hasMoreElements(); ) {
                     AbstractButton btn = btns.nextElement();
                     remove(btn);
                 }
@@ -321,7 +356,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                     g.clearSelection();
                     TransformerCategory c = model.getSelectedCategory();
                     String selected = c.getDisplayName();
-                    for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
+                    for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements(); ) {
                         AbstractButton btn = btns.nextElement();
                         btn.setVisible(active);
                         if (active && btn.getName().equals(selected)) {
@@ -346,8 +381,6 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
             }
             elementGroup.setSelected(buttonModel, true);
         }
-        private javax.swing.JLabel box;
-        private javax.swing.ButtonGroup elementGroup;
     }
 
     private class TransformerToolbar extends AbstractToolbar {
@@ -355,12 +388,13 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         private final List<ButtonGroup> buttonGroups = new ArrayList<>();
 
         public TransformerToolbar() {
+            super();
         }
 
         private void clear() {
             //Clear precent buttons
             for (ButtonGroup bg : buttonGroups) {
-                for (Enumeration<AbstractButton> btns = bg.getElements(); btns.hasMoreElements();) {
+                for (Enumeration<AbstractButton> btns = bg.getElements(); btns.hasMoreElements(); ) {
                     AbstractButton btn = btns.nextElement();
                     remove(btn);
                 }
@@ -395,6 +429,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                                     controller.setSelectedTransformerUI(value);
                                 }
                             });
+                            fixAquaSelectedState(btn);
                             btn.setName(entry.getKey());
                             btn.setText(entry.getKey());
                             btn.setFocusPainted(false);
@@ -415,11 +450,12 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                     for (TransformerCategory c : controller.getCategories(elmtType)) {
                         ButtonGroup g = buttonGroups.get(index);
 
-                        boolean active = model.getSelectedElementClass().equals(elmtType) && model.getSelectedCategory().equals(c);
+                        boolean active =
+                            model.getSelectedElementClass().equals(elmtType) && model.getSelectedCategory().equals(c);
                         g.clearSelection();
                         TransformerUI t = model.getSelectedTransformerUI();
 
-                        for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
+                        for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements(); ) {
                             AbstractButton btn = btns.nextElement();
                             btn.setVisible(active);
                             if (t != null && active && btn.getName().equals(t.getDisplayName())) {
@@ -523,6 +559,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                         if (bb != null) {
                             for (AbstractButton b : bb) {
                                 add(b);
+                                b.setEnabled(true);
                                 controlButtons.add(b);
                             }
                         }
@@ -530,6 +567,7 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
                 }
             }
         }
+
 //    private void refreshDecoratedIcons() {
 //        SwingUtilities.invokeLater(new Runnable() {
 //            @Override

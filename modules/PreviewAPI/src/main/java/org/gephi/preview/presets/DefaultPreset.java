@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.presets;
 
 import java.awt.Color;
@@ -51,7 +52,6 @@ import org.gephi.preview.types.EdgeColor;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class DefaultPreset extends PreviewPreset {
@@ -69,7 +69,8 @@ public class DefaultPreset extends PreviewPreset {
         properties.put(PreviewProperty.EDGE_RADIUS, 0f);
         properties.put(PreviewProperty.EDGE_THICKNESS, 1f);
 
-        properties.put(PreviewProperty.EDGE_LABEL_COLOR, new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL));
+        properties
+            .put(PreviewProperty.EDGE_LABEL_COLOR, new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL));
         properties.put(PreviewProperty.EDGE_LABEL_FONT, new Font("Arial", Font.PLAIN, 10));
         properties.put(PreviewProperty.EDGE_LABEL_MAX_CHAR, 30);
         properties.put(PreviewProperty.EDGE_LABEL_OUTLINE_COLOR, new DependantColor(Color.WHITE));

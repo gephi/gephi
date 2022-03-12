@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
@@ -52,6 +53,7 @@ import org.openide.util.NbBundle;
 
 /**
  * Nodes manipulator that deletes one or more nodes.
+ *
  * @author Eduardo Ramos
  */
 public class DeleteNodes extends BasicNodesManipulator {
@@ -65,7 +67,9 @@ public class DeleteNodes extends BasicNodesManipulator {
 
     @Override
     public void execute() {
-        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.confirmation.message"), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane
+            .showConfirmDialog(null, NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.confirmation.message"),
+                getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
             gec.deleteNodes(nodes);
         }

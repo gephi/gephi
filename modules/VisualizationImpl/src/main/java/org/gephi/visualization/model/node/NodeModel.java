@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.model.node;
 
 import org.gephi.graph.api.ElementProperties;
@@ -50,12 +51,14 @@ import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.octree.Octant;
 
 /**
- *
  * @author mbastian
  */
 public abstract class NodeModel implements Model, TextModel {
 
+    protected static final long ONEOVERPHI = 106039;
     protected final Node node;
+    public int markTime;
+    public boolean mark;
     protected float cameraDistance;
     protected float[] dragDistance;
     //Octant
@@ -64,8 +67,6 @@ public abstract class NodeModel implements Model, TextModel {
     //Flags
     protected boolean selected;
     protected boolean highlight;
-    public int markTime;
-    public boolean mark;
     //Edges
     protected EdgeModel[] edges;
     protected int edgeLength;
@@ -103,8 +104,8 @@ public abstract class NodeModel implements Model, TextModel {
     public boolean isInOctreeLeaf(Octant leaf) {
 //        float radius = node.size() / 2f;
         if (Math.abs(node.x() - leaf.getPosX()) > (leaf.getSize() / 2)
-                || Math.abs(node.y() - leaf.getPosY()) > (leaf.getSize() / 2)
-                || Math.abs(node.z() - leaf.getPosZ()) > (leaf.getSize() / 2)) {
+            || Math.abs(node.y() - leaf.getPosY()) > (leaf.getSize() / 2)
+            || Math.abs(node.z() - leaf.getPosZ()) > (leaf.getSize() / 2)) {
             return false;
         }
         return true;
@@ -118,12 +119,12 @@ public abstract class NodeModel implements Model, TextModel {
         return node;
     }
 
-    public void setCameraDistance(float cameraDistance) {
-        this.cameraDistance = cameraDistance;
-    }
-
     public float getCameraDistance() {
         return cameraDistance;
+    }
+
+    public void setCameraDistance(float cameraDistance) {
+        this.cameraDistance = cameraDistance;
     }
 
     public float getX() {
@@ -135,13 +136,13 @@ public abstract class NodeModel implements Model, TextModel {
     }
 
     @Override
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+    public boolean isSelected() {
+        return selected;
     }
 
     @Override
-    public boolean isSelected() {
-        return selected;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public boolean isHighlight() {
@@ -156,22 +157,17 @@ public abstract class NodeModel implements Model, TextModel {
         this.octant = octant;
     }
 
-    public void setOctantId(int octantId) {
-        this.octantId = octantId;
-    }
-
     public int getOctantId() {
         return octantId;
+    }
+
+    public void setOctantId(int octantId) {
+        this.octantId = octantId;
     }
 
     @Override
     public boolean hasCustomTextColor() {
         return node.getTextProperties().getAlpha() > 0;
-    }
-
-    @Override
-    public void setText(String text) {
-        node.getTextProperties().setText(text);
     }
 
     @Override
@@ -187,6 +183,11 @@ public abstract class NodeModel implements Model, TextModel {
     @Override
     public String getText() {
         return node.getTextProperties().getText();
+    }
+
+    @Override
+    public void setText(String text) {
+        node.getTextProperties().setText(text);
     }
 
     @Override
@@ -252,11 +253,11 @@ public abstract class NodeModel implements Model, TextModel {
     public EdgeModel[] getEdges() {
         return edges;
     }
-    protected static final long ONEOVERPHI = 106039;
 
     private void growEdges(final int index) {
         if (index >= edges.length) {
-            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * edges.length) >>> 16, index + 1), Integer.MAX_VALUE);
+            final int newLength =
+                (int) Math.min(Math.max((ONEOVERPHI * edges.length) >>> 16, index + 1), Integer.MAX_VALUE);
             final EdgeModel t[] = new EdgeModel[newLength];
             System.arraycopy(edges, 0, t, 0, edges.length);
             edges = t;

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.Color;
@@ -56,7 +57,7 @@ import javax.swing.SwingConstants;
 public class JImagePanel extends JPanel {
     //~ Static fields/initializers -----------------------------------------------------------------------------------------------
 
-    private static MediaTracker mTracker = new MediaTracker(new JPanel());
+    private static final MediaTracker mTracker = new MediaTracker(new JPanel());
 
     //~ Instance fields ----------------------------------------------------------------------------------------------------------
     private Image image;
@@ -70,6 +71,20 @@ public class JImagePanel extends JPanel {
     public JImagePanel(Image image, int imageAlign) {
         setImage(image);
         setImageAlign(imageAlign);
+    }
+
+    protected static Image loadImage(Image image) {
+        mTracker.addImage(image, 0);
+
+        try {
+            mTracker.waitForID(0);
+        } catch (InterruptedException e) {
+            return null;
+        }
+
+        mTracker.removeImage(image, 0);
+
+        return image;
     }
 
     //~ Methods ------------------------------------------------------------------------------------------------------------------
@@ -92,20 +107,6 @@ public class JImagePanel extends JPanel {
         setPreferredBackground();
 
         refresh();
-    }
-
-    protected static Image loadImage(Image image) {
-        mTracker.addImage(image, 0);
-
-        try {
-            mTracker.waitForID(0);
-        } catch (InterruptedException e) {
-            return null;
-        }
-
-        mTracker.removeImage(image, 0);
-
-        return image;
     }
 
     protected void setPreferredBackground() {
@@ -145,7 +146,8 @@ public class JImagePanel extends JPanel {
 
                 break;
             case (SwingConstants.BOTTOM):
-                graphics.drawImage(image, (getWidth() - image.getWidth(null)) / 2, getHeight() - image.getHeight(null), this);
+                graphics.drawImage(image, (getWidth() - image.getWidth(null)) / 2, getHeight() - image.getHeight(null),
+                    this);
 
                 break;
             default:

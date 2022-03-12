@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.edges;
 
 import javax.swing.Icon;
@@ -52,12 +53,13 @@ import org.openide.util.NbBundle;
 
 /**
  * Edges manipulator that deletes one or more edges and allows the user to choose what of their nodes to delete at the same time.
+ *
  * @author Eduardo Ramos
  */
-public class DeleteEdgesWithNodes extends BasicEdgesManipulator  {
+public class DeleteEdgesWithNodes extends BasicEdgesManipulator {
 
     private Edge[] edges;
-    private boolean deleteSource,deleteTarget;
+    private boolean deleteSource, deleteTarget;
 
     @Override
     public void setup(Edge[] edges, Edge clickedEdge) {
@@ -67,7 +69,7 @@ public class DeleteEdgesWithNodes extends BasicEdgesManipulator  {
     @Override
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        gec.deleteEdgesWithNodes(edges,deleteSource,deleteTarget);
+        gec.deleteEdgesWithNodes(edges, deleteSource, deleteTarget);
     }
 
     @Override

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.tables.celleditors;
 
 import java.awt.Color;
@@ -58,7 +59,6 @@ import org.gephi.graph.api.types.TimestampSet;
 import org.joda.time.DateTimeZone;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
@@ -66,7 +66,7 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
     private static final Border RED_BORDER = new LineBorder(Color.red);
 
     private final GraphModelProvider graphModelProvider;
-    
+
     private final JTextField textField;
     private final Border originalBorder;
     private final Class<?> typeClass;
@@ -91,9 +91,9 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
         isIntervalMapType = IntervalMap.class.isAssignableFrom(typeClass);
         isArrayType = typeClass.isArray();
         isDecimalType = typeClass.equals(Double.class)
-                || typeClass.equals(double.class)
-                || typeClass.equals(Float.class)
-                || typeClass.equals(float.class);
+            || typeClass.equals(double.class)
+            || typeClass.equals(Float.class)
+            || typeClass.equals(float.class);
     }
 
     @Override
@@ -118,11 +118,11 @@ public class AttributeTypesSupportCellEditor extends DefaultCellEditor {
 
     @Override
     public Component getTableCellEditorComponent(JTable table,
-            Object value, boolean isSelected, int row, int column) {
+                                                 Object value, boolean isSelected, int row, int column) {
 
         TimeFormat timeFormat = graphModelProvider.getGraphModel().getTimeFormat();
         DateTimeZone timeZone = graphModelProvider.getGraphModel().getTimeZone();
-        
+
         String valueStr;
         if (value == null) {
             valueStr = "";

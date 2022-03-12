@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.impl;
 
 import java.io.File;
@@ -75,7 +76,6 @@ import org.openide.util.io.ReaderInputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  * @author Sebastien Heymann
  */
@@ -90,13 +90,16 @@ public class ImportControllerImpl implements ImportController {
 
     public ImportControllerImpl() {
         //Get FileFormatImporters
-        fileImporterBuilders = Lookup.getDefault().lookupAll(FileImporterBuilder.class).toArray(new FileImporterBuilder[0]);
+        fileImporterBuilders =
+            Lookup.getDefault().lookupAll(FileImporterBuilder.class).toArray(new FileImporterBuilder[0]);
 
         //Get DatabaseImporters
-        databaseImporterBuilders = Lookup.getDefault().lookupAll(DatabaseImporterBuilder.class).toArray(new DatabaseImporterBuilder[0]);
+        databaseImporterBuilders =
+            Lookup.getDefault().lookupAll(DatabaseImporterBuilder.class).toArray(new DatabaseImporterBuilder[0]);
 
         //Get Wizards
-        wizardImporterBuilders = Lookup.getDefault().lookupAll(WizardImporterBuilder.class).toArray(new WizardImporterBuilder[0]);
+        wizardImporterBuilders =
+            Lookup.getDefault().lookupAll(WizardImporterBuilder.class).toArray(new WizardImporterBuilder[0]);
 
         //Get UIS
         uis = Lookup.getDefault().lookupAll(ImporterUI.class).toArray(new ImporterUI[0]);
@@ -122,7 +125,7 @@ public class ImportControllerImpl implements ImportController {
                 return fi;
             }
         }
-        
+
         return null;
     }
 
@@ -189,7 +192,7 @@ public class ImportControllerImpl implements ImportController {
                     throw new RuntimeException(ex);
                 }
             }
-            
+
             ((FileImporter.FileAware) importer).setFile(file);
         } else {
             importer.setReader(reader);
@@ -307,7 +310,7 @@ public class ImportControllerImpl implements ImportController {
                 scaler.doScale(container);
             }
         }
-        processor.setContainers(new ContainerUnloader[]{container.getUnloader()});
+        processor.setContainers(new ContainerUnloader[] {container.getUnloader()});
         processor.setWorkspace(workspace);
         processor.process();
     }
@@ -381,12 +384,9 @@ public class ImportControllerImpl implements ImportController {
                 return true;
             }
         }
-        if (fileObject.getExt().equalsIgnoreCase("zip")
-                || fileObject.getExt().equalsIgnoreCase("gz")
-                || fileObject.getExt().equalsIgnoreCase("bz2")) {
-            return true;
-        }
-        return false;
+        return fileObject.getExt().equalsIgnoreCase("zip")
+            || fileObject.getExt().equalsIgnoreCase("gz")
+            || fileObject.getExt().equalsIgnoreCase("bz2");
     }
 
     @Override

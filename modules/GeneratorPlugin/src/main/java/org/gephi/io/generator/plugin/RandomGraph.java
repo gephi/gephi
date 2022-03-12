@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.generator.plugin;
 
 import java.util.Random;
@@ -54,7 +55,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Generator.class)
@@ -114,6 +114,10 @@ public class RandomGraph implements Generator {
         return Lookup.getDefault().lookup(RandomGraphUI.class);
     }
 
+    public int getNumberOfNodes() {
+        return numberOfNodes;
+    }
+
     public void setNumberOfNodes(int numberOfNodes) {
         if (numberOfNodes < 0) {
             throw new IllegalArgumentException("# of nodes must be greater than 0");
@@ -121,19 +125,15 @@ public class RandomGraph implements Generator {
         this.numberOfNodes = numberOfNodes;
     }
 
+    public double getWiringProbability() {
+        return wiringProbability;
+    }
+
     public void setWiringProbability(double wiringProbability) {
         if (wiringProbability < 0 || wiringProbability > 1) {
             throw new IllegalArgumentException("Wiring probability must be between 0 and 1");
         }
         this.wiringProbability = wiringProbability;
-    }
-
-    public int getNumberOfNodes() {
-        return numberOfNodes;
-    }
-
-    public double getWiringProbability() {
-        return wiringProbability;
     }
 
     @Override

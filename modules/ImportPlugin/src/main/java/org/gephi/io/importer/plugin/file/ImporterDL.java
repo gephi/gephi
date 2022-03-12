@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file;
 
 import java.io.IOException;
@@ -62,16 +63,9 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ImporterDL implements FileImporter, LongTask {
-
-    //enum
-    private enum Format {
-
-        FULLMATRIX, EDGELIST1
-    }
 
     //Architecture
     private Reader reader;
@@ -108,7 +102,7 @@ public class ImporterDL implements FileImporter, LongTask {
         Progress.start(progressTicket);        //Progress
 
         List<String> lines = new ArrayList<>();
-        for (; reader.ready();) {
+        for (; reader.ready(); ) {
             String line = reader.readLine();
             if (line != null && !line.isEmpty()) {
                 lines.add(line);
@@ -116,7 +110,8 @@ public class ImporterDL implements FileImporter, LongTask {
         }
 
         if (lines.isEmpty() || (!lines.get(0).startsWith("DL") && !lines.get(0).startsWith("dl"))) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_firstline"), Issue.Level.CRITICAL));
+            report.logIssue(
+                new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_firstline"), Issue.Level.CRITICAL));
         }
 
         headerMap = new HashMap<>();
@@ -147,7 +142,8 @@ public class ImporterDL implements FileImporter, LongTask {
             }
         }
         if (dataLineStart == -1) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_nodata"), Issue.Level.SEVERE));
+            report.logIssue(
+                new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_nodata"), Issue.Level.SEVERE));
         } else if (lines.size() > dataLineStart) {
             dataLineStartDelta = dataLineStart + 1;
             lines = lines.subList(dataLineStart, lines.size());
@@ -175,11 +171,13 @@ public class ImporterDL implements FileImporter, LongTask {
 
     private void computeHeaders() {
         //read format
-        String form = (String) headerMap.get("format");
+        String form = headerMap.get("format");
         if (form == null) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_formatmissing"), Issue.Level.INFO));
+            report.logIssue(
+                new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_formatmissing"), Issue.Level.INFO));
         } else if (!form.equals("edgelist1") && !form.equals("fullmatrix")) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_badformat", form), Issue.Level.SEVERE));
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_badformat", form),
+                Issue.Level.SEVERE));
         } else if (form.equals("edgelist1")) {
             format = Format.EDGELIST1;
         } else if (form.equals("fullmatrix")) {
@@ -188,19 +186,21 @@ public class ImporterDL implements FileImporter, LongTask {
 
         // read number of nodes
         try {
-            String nArg = (String) headerMap.get("n");
+            String nArg = headerMap.get("n");
             numNodes = Integer.parseInt(nArg);
         } catch (Exception e) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_nmissing"), Issue.Level.SEVERE));
+            report.logIssue(
+                new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_nmissing"), Issue.Level.SEVERE));
         }
 
         // read number matricies
-        String mats = (String) headerMap.get("nm");
+        String mats = headerMap.get("nm");
         if (mats != null) {
             try {
                 numMatricies = Integer.parseInt(mats);
             } catch (Exception e) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_mmissing"), Issue.Level.SEVERE));
+                report.logIssue(
+                    new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_mmissing"), Issue.Level.SEVERE));
             }
         } else {
             numMatricies = 1;
@@ -211,7 +211,9 @@ public class ImporterDL implements FileImporter, LongTask {
         StringTokenizer labelkonizer = new StringTokenizer(labels, ",");
         // check that there are the right number of labels
         if (labelkonizer.countTokens() != numNodes) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_labelscount", labelkonizer.countTokens(), numNodes), Issue.Level.SEVERE));
+            report.logIssue(new Issue(NbBundle
+                .getMessage(ImporterDL.class, "importerDL_error_labelscount", labelkonizer.countTokens(), numNodes),
+                Issue.Level.SEVERE));
         }
         int nodeCount = 0;
         while (labelkonizer.hasMoreTokens()) {
@@ -232,17 +234,23 @@ public class ImporterDL implements FileImporter, LongTask {
                     readMatrixRow(data.get(i), i, rowNum, startTime, startTime + 1);
                     rowNum++;
                 } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_matrixrowscount", rowNum, numNodes), Issue.Level.SEVERE));
+                    report.logIssue(new Issue(
+                        NbBundle.getMessage(ImporterDL.class, "importerDL_error_matrixrowscount", rowNum, numNodes),
+                        Issue.Level.SEVERE));
                     break;
                 }
             }
             if (rowNum < numNodes) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_matrixrowscount2", rowNum, numNodes), Issue.Level.SEVERE));
+                report.logIssue(new Issue(
+                    NbBundle.getMessage(ImporterDL.class, "importerDL_error_matrixrowscount2", rowNum, numNodes),
+                    Issue.Level.SEVERE));
             }
             startTime++;
         }
         if (startTime != numMatricies) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_matriciescount", startTime, numMatricies), Issue.Level.SEVERE));
+            report.logIssue(new Issue(
+                NbBundle.getMessage(ImporterDL.class, "importerDL_error_matriciescount", startTime, numMatricies),
+                Issue.Level.SEVERE));
         }
     }
 
@@ -252,14 +260,18 @@ public class ImporterDL implements FileImporter, LongTask {
         int to = 1;
         double weight = 0;
         while (rowkonizer.hasMoreTokens()) {
-            String toParse = (String) rowkonizer.nextToken();
+            String toParse = rowkonizer.nextToken();
             if (to > numNodes) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_matrixentriescount", row, startTime, getLineNumber(pointer)), Issue.Level.SEVERE));
+                report.logIssue(new Issue(NbBundle
+                    .getMessage(ImporterDL.class, "importerDL_error_matrixentriescount", row, startTime,
+                        getLineNumber(pointer)), Issue.Level.SEVERE));
             }
             try {
                 weight = Double.parseDouble(toParse);
             } catch (Exception e) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_weightparseerror", toParse, startTime, getLineNumber(pointer)), Issue.Level.SEVERE));
+                report.logIssue(new Issue(NbBundle
+                    .getMessage(ImporterDL.class, "importerDL_error_weightparseerror", toParse, startTime,
+                        getLineNumber(pointer)), Issue.Level.SEVERE));
             }
 
             if (weight != 0) {
@@ -285,7 +297,9 @@ public class ImporterDL implements FileImporter, LongTask {
             startTime++;
         }
         if (startTime != numMatricies) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_edgelistssetscount", startTime, numMatricies), Issue.Level.SEVERE));
+            report.logIssue(new Issue(
+                NbBundle.getMessage(ImporterDL.class, "importerDL_error_edgelistssetscount", startTime, numMatricies),
+                Issue.Level.SEVERE));
         }
     }
 
@@ -307,7 +321,9 @@ public class ImporterDL implements FileImporter, LongTask {
             try {
                 weight = Double.parseDouble(weightParse);
             } catch (Exception e) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_edgeparseweight", weightParse, getLineNumber(pointer)), Issue.Level.WARNING));
+                report.logIssue(new Issue(NbBundle
+                    .getMessage(ImporterDL.class, "importerDL_error_edgeparseweight", weightParse,
+                        getLineNumber(pointer)), Issue.Level.WARNING));
             }
         }
 
@@ -348,5 +364,11 @@ public class ImporterDL implements FileImporter, LongTask {
     @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
+    }
+
+    //enum
+    private enum Format {
+
+        FULLMATRIX, EDGELIST1
     }
 }

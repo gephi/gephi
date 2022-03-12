@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 import java.io.BufferedReader;
@@ -62,10 +63,9 @@ import org.openide.util.Exceptions;
  */
 public final class Report {
 
-    private Issue.Level exceptionLevel = Issue.Level.CRITICAL;
-
     //File
     private final File file;
+    private Issue.Level exceptionLevel = Issue.Level.CRITICAL;
     private Writer writer;
     private boolean empty = true;
 
@@ -141,7 +141,7 @@ public final class Report {
                 writer = new Writer(file);
             }
             r = new Reader(report.file);
-            for (; r.hasNext();) {
+            for (; r.hasNext(); ) {
                 ReportEntry re = r.next();
                 writer.append(re);
                 empty = false;
@@ -221,7 +221,7 @@ public final class Report {
         Reader r = null;
         try {
             r = new Reader(file);
-            for (; r.hasNext();) {
+            for (; r.hasNext(); ) {
                 ReportEntry re = r.next();
                 if (re.level == null) {
                     builder.append(re.message);
@@ -253,7 +253,7 @@ public final class Report {
      * thrown. Default is <code>Level.CRITICAL</code>
      *
      * @param exceptionLevel the exception level where exceptions are to be
-     * thrown
+     *                       thrown
      */
     public void setExceptionLevel(Level exceptionLevel) {
         this.exceptionLevel = exceptionLevel;
@@ -345,7 +345,7 @@ public final class Report {
         @Override
         public ReportEntry next() {
             if (pointer.startsWith(";")) {
-                return new ReportEntry(pointer.substring(1, pointer.length()));
+                return new ReportEntry(pointer.substring(1));
             } else {
                 int index = pointer.indexOf(";");
                 if (index == -1) {
@@ -377,8 +377,8 @@ public final class Report {
     private static class IssueIterator implements Iterator<Issue> {
 
         private final Reader itr;
-        private ReportEntry next;
         private final int limit;
+        private ReportEntry next;
         private int count;
 
         public IssueIterator(Reader itr, int limit) {

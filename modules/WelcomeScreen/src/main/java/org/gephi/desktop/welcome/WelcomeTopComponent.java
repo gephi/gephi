@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.welcome;
 
 import java.awt.Container;
@@ -61,7 +62,11 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.*;
+import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
 
 /**
@@ -69,18 +74,23 @@ import org.openide.windows.TopComponent;
  */
 public final class WelcomeTopComponent extends JPanel {
 
-    private static WelcomeTopComponent instance;
     public static final String STARTUP_PREF = "WelcomeScreen_Open_Startup";
     private static final String GEPHI_EXTENSION = "gephi";
     private static final Object LINK_PATH = new Object();
+    private static WelcomeTopComponent instance;
     private Action openAction;
-
-    public static synchronized WelcomeTopComponent getInstance() {
-        if (instance == null) {
-            instance = new WelcomeTopComponent();
-        }
-        return instance;
-    }
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.swingx.JXHeader header;
+    private javax.swing.JLabel labelNew;
+    private javax.swing.JLabel labelRecent;
+    private javax.swing.JLabel labelSamples;
+    private javax.swing.JPanel mainPanel;
+    private org.jdesktop.swingx.JXHyperlink newProjectLink;
+    private org.jdesktop.swingx.JXHyperlink openFileLink;
+    private javax.swing.JCheckBox openOnStartupCheckbox;
+    private javax.swing.JPanel recentPanel;
+    private javax.swing.JPanel samplesPanel;
+    private javax.swing.JPanel southPanel;
 
     private WelcomeTopComponent() {
         initComponents();
@@ -95,12 +105,19 @@ public final class WelcomeTopComponent extends JPanel {
         loadPrefs();
     }
 
+    public static synchronized WelcomeTopComponent getInstance() {
+        if (instance == null) {
+            instance = new WelcomeTopComponent();
+        }
+        return instance;
+    }
+
     private void closeDialog() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 Container container = WelcomeTopComponent.this;
-                for (; !(container instanceof JDialog);) {
+                for (; !(container instanceof JDialog); ) {
                     container = container.getParent();
                 }
                 container.setVisible(false);
@@ -109,7 +126,8 @@ public final class WelcomeTopComponent extends JPanel {
     }
 
     private void initAction() {
-        openAction = new AbstractAction("", ImageUtilities.loadImageIcon("org/gephi/desktop/welcome/resources/gephifile20.png", false)) {
+        openAction = new AbstractAction("",
+            ImageUtilities.loadImageIcon("org/gephi/desktop/welcome/resources/gephifile20.png", false)) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -122,7 +140,9 @@ public final class WelcomeTopComponent extends JPanel {
                         pc.openProject(file);
                     } catch (Exception ex) {
                         Exceptions.printStackTrace(ex);
-                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.openGephiError"), NotifyDescriptor.WARNING_MESSAGE);
+                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
+                            NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.openGephiError"),
+                            NotifyDescriptor.WARNING_MESSAGE);
                         DialogDisplayer.getDefault().notify(msg);
                     }
                 } else {
@@ -191,8 +211,8 @@ public final class WelcomeTopComponent extends JPanel {
                 final String s = samplePath[i];
                 String tooltip = sampleTooltip[i];
 
-                String fileName = s.substring(s.lastIndexOf('/') + 1, s.length());
-                final String importer = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
+                String fileName = s.substring(s.lastIndexOf('/') + 1);
+                final String importer = fileName.substring(fileName.lastIndexOf('.'));
                 JXHyperlink fileLink = new JXHyperlink(new AbstractAction() {
 
                     @Override
@@ -220,7 +240,8 @@ public final class WelcomeTopComponent extends JPanel {
 
             @Override
             public void itemStateChanged(ItemEvent e) {
-                NbPreferences.forModule(WelcomeTopComponent.class).putBoolean(STARTUP_PREF, openOnStartupCheckbox.isSelected());
+                NbPreferences.forModule(WelcomeTopComponent.class)
+                    .putBoolean(STARTUP_PREF, openOnStartupCheckbox.isSelected());
             }
         });
     }
@@ -249,76 +270,95 @@ public final class WelcomeTopComponent extends JPanel {
         setPreferredSize(new java.awt.Dimension(679, 379));
         setLayout(new java.awt.BorderLayout());
 
-        header.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/welcome/resources/logo_transparent_small.png"))); // NOI18N
-        header.setTitle(org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.header.title")); // NOI18N
-        header.setTitleFont(header.getTitleFont().deriveFont(header.getTitleFont().getSize()+4f));
+        header.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/welcome/resources/logo_transparent_small.png"))); // NOI18N
+        header.setTitle(org.openide.util.NbBundle
+            .getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.header.title")); // NOI18N
+        header.setTitleFont(header.getTitleFont().deriveFont(header.getTitleFont().getSize() + 4f));
         header.setTitleForeground(new java.awt.Color(39, 119, 198));
         header.setBorder(new org.jdesktop.swingx.border.DropShadowBorder());
         add(header, java.awt.BorderLayout.PAGE_START);
 
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        labelRecent.setFont(labelRecent.getFont().deriveFont(labelRecent.getFont().getStyle() | java.awt.Font.BOLD, labelRecent.getFont().getSize()+2));
-        org.openide.awt.Mnemonics.setLocalizedText(labelRecent, org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.labelRecent.text")); // NOI18N
+        labelRecent.setFont(labelRecent.getFont()
+            .deriveFont(labelRecent.getFont().getStyle() | java.awt.Font.BOLD, labelRecent.getFont().getSize() + 2));
+        org.openide.awt.Mnemonics.setLocalizedText(labelRecent, org.openide.util.NbBundle
+            .getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.labelRecent.text")); // NOI18N
 
         recentPanel.setOpaque(false);
 
-        labelNew.setFont(labelNew.getFont().deriveFont(labelNew.getFont().getStyle() | java.awt.Font.BOLD, labelNew.getFont().getSize()+2));
-        org.openide.awt.Mnemonics.setLocalizedText(labelNew, org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.labelNew.text")); // NOI18N
+        labelNew.setFont(labelNew.getFont()
+            .deriveFont(labelNew.getFont().getStyle() | java.awt.Font.BOLD, labelNew.getFont().getSize() + 2));
+        org.openide.awt.Mnemonics.setLocalizedText(labelNew, org.openide.util.NbBundle
+            .getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.labelNew.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(newProjectLink, org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.newProjectLink.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(newProjectLink, org.openide.util.NbBundle
+            .getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.newProjectLink.text")); // NOI18N
 
-        labelSamples.setFont(labelSamples.getFont().deriveFont(labelSamples.getFont().getStyle() | java.awt.Font.BOLD, labelSamples.getFont().getSize()+2));
-        org.openide.awt.Mnemonics.setLocalizedText(labelSamples, org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.labelSamples.text")); // NOI18N
+        labelSamples.setFont(labelSamples.getFont()
+            .deriveFont(labelSamples.getFont().getStyle() | java.awt.Font.BOLD, labelSamples.getFont().getSize() + 2));
+        org.openide.awt.Mnemonics.setLocalizedText(labelSamples, org.openide.util.NbBundle
+            .getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.labelSamples.text")); // NOI18N
 
         samplesPanel.setOpaque(false);
 
-        org.openide.awt.Mnemonics.setLocalizedText(openFileLink, org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.openFileLink.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(openFileLink, org.openide.util.NbBundle
+            .getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.openFileLink.text")); // NOI18N
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(recentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelRecent))
-                .addGap(18, 18, 18)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labelNew)
-                            .addComponent(labelSamples)
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(openFileLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(newProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(62, 62, 62)))
-                .addContainerGap())
+                .addGroup(mainPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(recentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 232,
+                            javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelRecent))
+                    .addGap(18, 18, 18)
+                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(mainPanelLayout.createSequentialGroup()
+                            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(labelNew)
+                                .addComponent(labelSamples)
+                                .addGroup(mainPanelLayout.createSequentialGroup()
+                                    .addGap(10, 10, 10)
+                                    .addGroup(
+                                        mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(openFileLink, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(newProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGap(62, 62, 62)))
+                    .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(labelNew)
-                    .addComponent(labelRecent))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(newProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(openFileLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(labelSamples)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
-                    .addComponent(recentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(mainPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(labelNew)
+                        .addComponent(labelRecent))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(mainPanelLayout.createSequentialGroup()
+                            .addGap(5, 5, 5)
+                            .addComponent(newProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(openFileLink, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(labelSamples)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
+                        .addComponent(recentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))
+                    .addContainerGap())
         );
 
         add(mainPanel, java.awt.BorderLayout.CENTER);
@@ -326,22 +366,11 @@ public final class WelcomeTopComponent extends JPanel {
         southPanel.setBackground(new java.awt.Color(255, 255, 255));
         southPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        org.openide.awt.Mnemonics.setLocalizedText(openOnStartupCheckbox, org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.openOnStartupCheckbox.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(openOnStartupCheckbox, org.openide.util.NbBundle
+            .getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.openOnStartupCheckbox.text")); // NOI18N
         southPanel.add(openOnStartupCheckbox);
 
         add(southPanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.jdesktop.swingx.JXHeader header;
-    private javax.swing.JLabel labelNew;
-    private javax.swing.JLabel labelRecent;
-    private javax.swing.JLabel labelSamples;
-    private javax.swing.JPanel mainPanel;
-    private org.jdesktop.swingx.JXHyperlink newProjectLink;
-    private org.jdesktop.swingx.JXHyperlink openFileLink;
-    private javax.swing.JCheckBox openOnStartupCheckbox;
-    private javax.swing.JPanel recentPanel;
-    private javax.swing.JPanel samplesPanel;
-    private javax.swing.JPanel southPanel;
     // End of variables declaration//GEN-END:variables
 }

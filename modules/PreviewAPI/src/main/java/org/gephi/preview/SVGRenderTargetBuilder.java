@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview;
 
 import java.awt.Color;
@@ -64,7 +65,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = RenderTargetBuilder.class)
@@ -74,10 +74,10 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
     public RenderTarget buildRenderTarget(PreviewModel previewModel) {
         CanvasSize cs = previewModel.getGraphicsCanvasSize();
         boolean scaleStrokes = previewModel.getProperties()
-                .getBooleanValue(SVGTarget.SCALE_STROKES);
+            .getBooleanValue(SVGTarget.SCALE_STROKES);
 
         SVGRenderTargetImpl renderTarget
-                = new SVGRenderTargetImpl(cs, scaleStrokes);
+            = new SVGRenderTargetImpl(cs, scaleStrokes);
         return renderTarget;
     }
 
@@ -86,19 +86,50 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
         return RenderTarget.SVG_TARGET;
     }
 
+    /**
+     * Enum representing a set of lenght units.
+     *
+     * @author Jérémy Subtil
+     */
+    public enum LengthUnit {
+
+        CENTIMETER,
+        MILLIMETER,
+        INCH,
+        PIXELS,
+        PERCENTAGE;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case CENTIMETER:
+                    return "cm";
+                case MILLIMETER:
+                    return "mm";
+                case INCH:
+                    return "in";
+                case PIXELS:
+                    return "px";
+                default:
+                case PERCENTAGE:
+                    return "%";
+            }
+        }
+    }
+
     public static class SVGRenderTargetImpl
-            extends AbstractRenderTarget implements SVGTarget {
+        extends AbstractRenderTarget implements SVGTarget {
 
         private final Document document;
-        private float scaleRatio = 1f;
         private final Map<String, Element> topElements = new HashMap<>();
+        private float scaleRatio = 1f;
 
         public SVGRenderTargetImpl(CanvasSize cs, boolean scaleStrokes) {
             DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
             DocumentType doctype = impl.createDocumentType(
-                    "svg",
-                    "-//W3C//DTD SVG 1.1//EN",
-                    "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd");
+                "svg",
+                "-//W3C//DTD SVG 1.1//EN",
+                "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd");
             document = impl.createDocument(SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", doctype);
 
             // initializes CSS and SVG specific DOM interfaces
@@ -113,14 +144,14 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
             SupportSize ss = new SupportSize(595F, 841F, LengthUnit.PIXELS);
             if (cs.getWidth() > cs.getHeight()) {
                 ss = new SupportSize(
-                        cs.getWidth() * ss.getHeightFloat() / cs.getHeight(),
-                        ss.getHeightFloat(),
-                        LengthUnit.PIXELS);
+                    cs.getWidth() * ss.getHeightFloat() / cs.getHeight(),
+                    ss.getHeightFloat(),
+                    LengthUnit.PIXELS);
             } else if (cs.getHeight() > cs.getWidth()) {
                 ss = new SupportSize(
-                        ss.getWidthFloat(),
-                        cs.getHeight() * ss.getWidthFloat() / cs.getWidth(),
-                        LengthUnit.PIXELS);
+                    ss.getWidthFloat(),
+                    cs.getHeight() * ss.getWidthFloat() / cs.getWidth(),
+                    LengthUnit.PIXELS);
             }
 
             // root element
@@ -129,13 +160,13 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
             svgRoot.setAttributeNS(null, "height", cs.getHeight() + "");
             svgRoot.setAttributeNS(null, "version", "1.1");
             svgRoot.setAttributeNS(
-                    null,
-                    "viewBox",
-                    String.format(Locale.ENGLISH, "%f %f %f %f",
-                            cs.getX(),
-                            cs.getY(),
-                            cs.getWidth(),
-                            cs.getHeight()));
+                null,
+                "viewBox",
+                String.format(Locale.ENGLISH, "%f %f %f %f",
+                    cs.getX(),
+                    cs.getY(),
+                    cs.getWidth(),
+                    cs.getHeight()));
 
             //Scale & ratio
             if (scaleStrokes) {
@@ -205,15 +236,15 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
         /**
          * Constructor.
          *
-         * @param width       the support's width
-         * @param height      the support's height
-         * @param lengthUnit  the lenght unit
+         * @param width      the support's width
+         * @param height     the support's height
+         * @param lengthUnit the lenght unit
          */
         public SupportSize(float width, float height, LengthUnit lengthUnit) {
             this.width = width;
             this.height = height;
             this.lengthUnit = lengthUnit;
-}
+        }
 
         public float getWidthFloat() {
             return width;
@@ -239,37 +270,6 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
          */
         public String getHeight() {
             return height + lengthUnit.toString();
-        }
-    }
-
-    /**
-     * Enum representing a set of lenght units.
-     *
-     * @author Jérémy Subtil
-     */
-    public enum LengthUnit {
-
-        CENTIMETER,
-        MILLIMETER,
-        INCH,
-        PIXELS,
-        PERCENTAGE;
-
-        @Override
-        public String toString() {
-            switch (this) {
-                case CENTIMETER:
-                    return "cm";
-                case MILLIMETER:
-                    return "mm";
-                case INCH:
-                    return "in";
-                case PIXELS:
-                    return "px";
-                default:
-                case PERCENTAGE:
-                    return "%";
-            }
         }
     }
 }

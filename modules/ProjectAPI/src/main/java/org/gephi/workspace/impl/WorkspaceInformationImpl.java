@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.workspace.impl;
 
 import java.beans.PropertyChangeEvent;
@@ -48,21 +49,15 @@ import java.util.List;
 import org.gephi.project.api.WorkspaceInformation;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class WorkspaceInformationImpl implements WorkspaceInformation {
 
-    public enum Status {
-
-        OPEN, CLOSED, INVALID
-    }
-
+    //Lookup
+    private final transient List<PropertyChangeListener> listeners = new ArrayList<>();
     private String name;
     private Status status = Status.CLOSED;
     private String source;
-    //Lookup
-    private final transient List<PropertyChangeListener> listeners = new ArrayList<>();
 
     public WorkspaceInformationImpl(String name) {
         this.name = name;
@@ -78,25 +73,25 @@ public class WorkspaceInformationImpl implements WorkspaceInformation {
         return name;
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
     public void setName(String name) {
         String oldValue = this.name;
         this.name = name;
         fireChangeEvent(WorkspaceInformation.EVENT_RENAME, oldValue, name);
     }
 
-    public void setSource(String source) {
-        String oldValue = this.source;
-        this.source = source;
-        fireChangeEvent(WorkspaceInformation.EVENT_SET_SOURCE, oldValue, source);
+    public Status getStatus() {
+        return status;
     }
 
     @Override
     public String getSource() {
         return source;
+    }
+
+    public void setSource(String source) {
+        String oldValue = this.source;
+        this.source = source;
+        fireChangeEvent(WorkspaceInformation.EVENT_SET_SOURCE, oldValue, source);
     }
 
     @Override
@@ -147,11 +142,16 @@ public class WorkspaceInformationImpl implements WorkspaceInformation {
 
     public void fireChangeEvent(String eventName, Object oldValue, Object newValue) {
         if ((oldValue == null && newValue != null) || (oldValue != null && newValue == null)
-                || (oldValue != null && !oldValue.equals(newValue))) {
+            || (oldValue != null && !oldValue.equals(newValue))) {
             PropertyChangeEvent event = new PropertyChangeEvent(this, eventName, oldValue, newValue);
             for (PropertyChangeListener listener : listeners) {
                 listener.propertyChange(event);
             }
         }
+    }
+
+    public enum Status {
+
+        OPEN, CLOSED, INVALID
     }
 }

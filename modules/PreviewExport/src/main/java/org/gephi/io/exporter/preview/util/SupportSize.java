@@ -56,9 +56,9 @@ public class SupportSize {
     /**
      * Constructor.
      *
-     * @param width       the support's width
-     * @param height      the support's height
-     * @param lengthUnit  the lenght unit
+     * @param width      the support's width
+     * @param height     the support's height
+     * @param lengthUnit the lenght unit
      */
     public SupportSize(int width, int height, LengthUnit lengthUnit) {
         this.width = width;
@@ -80,7 +80,7 @@ public class SupportSize {
      * @return the support's width
      */
     public String getWidth() {
-        return width.toString() + lengthUnit.toString();
+        return width + lengthUnit.toString();
     }
 
     /**
@@ -89,6 +89,6 @@ public class SupportSize {
      * @return the support's height
      */
     public String getHeight() {
-        return height.toString() + lengthUnit.toString();
+        return height + lengthUnit.toString();
     }
 }

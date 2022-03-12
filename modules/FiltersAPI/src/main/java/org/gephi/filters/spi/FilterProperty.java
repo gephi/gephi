@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.spi;
 
 import java.beans.PropertyEditor;
@@ -68,6 +69,55 @@ public final class FilterProperty {
     FilterProperty(Filter filter) {
         this.filter = filter;
         propertyExecutor = Lookup.getDefault().lookup(PropertyExecutor.class);
+    }
+
+    /**
+     * Creates a property.
+     *
+     * @param filter       The filter instance
+     * @param valueType    The type of the property value, ex:
+     *                     <code>Double.class</code>
+     * @param propertyName The display name of the property
+     * @param getMethod    The name of the get method for this property, must exist
+     *                     to make Java reflexion working.
+     * @param setMethod    The name of the set method for this property, must exist
+     *                     to make Java reflexion working.
+     * @return the created property
+     * @throws NoSuchMethodException if the getter or setter methods cannot be
+     *                               found
+     */
+    public static FilterProperty createProperty(Filter filter, Class valueType, String propertyName, String getMethod,
+                                                String setMethod) throws NoSuchMethodException {
+        final FilterProperty filterProperty = new FilterProperty(filter);
+        PropertySupport.Reflection property = new PropertySupport.Reflection(filter, valueType, getMethod, setMethod);
+        property.setName(propertyName);
+        filterProperty.property = property;
+
+        return filterProperty;
+    }
+
+    /**
+     * Creates a property.
+     *
+     * @param filter    filter instance
+     * @param valueType type of the property value, ex:
+     *                  <code>Double.class</code>
+     * @param fieldName java field name of the property
+     * @return the created property
+     * @throws NoSuchMethodException if the getter or setter methods cannot be
+     *                               found
+     */
+    public static FilterProperty createProperty(Filter filter, Class valueType, String fieldName)
+        throws NoSuchMethodException {
+        if (valueType == Boolean.class) {
+            valueType = boolean.class;
+        }
+        final FilterProperty filterProperty = new FilterProperty(filter);
+        PropertySupport.Reflection property = new PropertySupport.Reflection(filter, valueType, fieldName);
+        property.setName(fieldName);
+        filterProperty.property = property;
+
+        return filterProperty;
     }
 
     /**
@@ -108,7 +158,8 @@ public final class FilterProperty {
                     try {
                         property.setValue(value);
                     } catch (Exception e) {
-                        Logger.getLogger("").log(Level.SEVERE, "Error while setting value for property '" + getName() + "'", e);
+                        Logger.getLogger("")
+                            .log(Level.SEVERE, "Error while setting value for property '" + getName() + "'", e);
                     }
                 }
             });
@@ -156,52 +207,5 @@ public final class FilterProperty {
      */
     public Filter getFilter() {
         return filter;
-    }
-
-    /**
-     * Creates a property.
-     *
-     * @param filter The filter instance
-     * @param valueType The type of the property value, ex:
-     * <code>Double.class</code>
-     * @param propertyName The display name of the property
-     * @param getMethod The name of the get method for this property, must exist
-     * to make Java reflexion working.
-     * @param setMethod The name of the set method for this property, must exist
-     * to make Java reflexion working.
-     * @return the created property
-     * @throws NoSuchMethodException if the getter or setter methods cannot be
-     * found
-     */
-    public static FilterProperty createProperty(Filter filter, Class valueType, String propertyName, String getMethod, String setMethod) throws NoSuchMethodException {
-        final FilterProperty filterProperty = new FilterProperty(filter);
-        PropertySupport.Reflection property = new PropertySupport.Reflection(filter, valueType, getMethod, setMethod);
-        property.setName(propertyName);
-        filterProperty.property = property;
-
-        return filterProperty;
-    }
-
-    /**
-     * Creates a property.
-     *
-     * @param filter filter instance
-     * @param valueType type of the property value, ex:
-     * <code>Double.class</code>
-     * @param fieldName java field name of the property
-     * @return the created property
-     * @throws NoSuchMethodException if the getter or setter methods cannot be
-     * found
-     */
-    public static FilterProperty createProperty(Filter filter, Class valueType, String fieldName) throws NoSuchMethodException {
-        if (valueType == Boolean.class) {
-            valueType = boolean.class;
-        }
-        final FilterProperty filterProperty = new FilterProperty(filter);
-        PropertySupport.Reflection property = new PropertySupport.Reflection(filter, valueType, fieldName);
-        property.setName(fieldName);
-        filterProperty.property = property;
-
-        return filterProperty;
     }
 }

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.api;
 
 import java.util.HashSet;
@@ -55,6 +56,7 @@ import org.openide.util.Lookup;
 /**
  * <p>Independent controller for search/replace feature.</p>
  * <p>Operates with <code>SearchOptions</code> and <code>SearchResult</code> objects.</p>
+ *
  * @author Eduardo Ramos
  */
 public interface SearchReplaceController {
@@ -63,6 +65,7 @@ public interface SearchReplaceController {
      * <p>Finds next (or first) ocurrence for the given search options.</p>
      * <p>Returns a <code>SearchResult</code> instance with the details or null if the search was not successful.</p>
      * <p>Modifies the given search options in order to match the next result the next time <code>findNext</code> is called</p>
+     *
      * @param searchOptions Options of the search
      * @return SearchResult with details of the match or null
      */
@@ -72,14 +75,16 @@ public interface SearchReplaceController {
      * <p>Finds next ocurrence for the given search options contained in a SearchResult.</p>
      * <p>Returns a <code>SearchResult</code> instance with the details or null if the search was not successful.</p>
      * <p>Modifies the given search options in order to match the next result the next time <code>findNext</code> is called</p>
+     *
      * @param result Last result of the search
-     * @return SearchResult with details of the match or null 
+     * @return SearchResult with details of the match or null
      */
     SearchResult findNext(SearchResult result);
 
     /**
      * <p>Indicates if a <code>SearchResult</code> can be replaced or not.</p>
      * <p>Computed columns and id columns cannot be replaced.</p>
+     *
      * @param result SearchResult to check before replacing
      * @return True if it can be replaced, false otherwise
      */
@@ -90,7 +95,8 @@ public interface SearchReplaceController {
      * <p>Also tries to find next search result and returns it.</p>
      * <p>If the data has changed and the replacement can't be done it will just return next <code>SearchResult</code> calling <code>findNext</code>.</p>
      * <p>If useRegexReplaceMode is enabled, IndexOutOfBoundsException can be thrown when the replacement is not correct for the regular expression.</p>
-     * @param result SearchResult to replace
+     *
+     * @param result      SearchResult to replace
      * @param replacement Replacement String
      * @return Next SearchResult or null if not successful
      */
@@ -99,8 +105,9 @@ public interface SearchReplaceController {
     /**
      * <p>Replaces all SearchResults that can be replaced with the given search options from the beginning to the end of the data.</p>
      * <p>If useRegexReplaceMode is enabled, IndexOutOfBoundsException can be thrown when the replacement is not correct for the regular expression.</p>
+     *
      * @param searchOptions Search options for the searches
-     * @param replacement Replacement String
+     * @param replacement   Replacement String
      * @return Count of made replacements
      */
     int replaceAll(SearchOptions searchOptions, String replacement);
@@ -110,16 +117,74 @@ public interface SearchReplaceController {
      */
     class SearchOptions {
 
-        private boolean searchNodes;
+        private final boolean searchNodes;
         private Node[] nodesToSearch;
         private Edge[] edgesToSearch;
         private Integer startingRow = null, startingColumn = null;
-        private HashSet<Integer> columnsToSearch = new HashSet<>();
+        private final HashSet<Integer> columnsToSearch = new HashSet<>();
         private boolean loopToBeginning = true;
         private Pattern regexPattern;
         private boolean useRegexReplaceMode = false;
         private int regionStart = 0;
         private boolean onlyMatchWholeAttributeValue;
+
+        /**
+         * Setup options to search on nodes with the given pattern.
+         * If nodesToSearch is null, all nodes of the graph will be used.
+         *
+         * @param nodesToSearch
+         * @param regexPattern
+         */
+        public SearchOptions(Node[] nodesToSearch, Pattern regexPattern) {
+            this.nodesToSearch = nodesToSearch;
+            this.regexPattern = regexPattern;
+            searchNodes = true;
+            checkNodesToSearch();
+        }
+
+        /**
+         * Setup options to search on edges with the given pattern.
+         * If edgesToSearch is null, all edges of the graph will be used.
+         *
+         * @param edgesToSearch
+         * @param regexPattern
+         */
+        public SearchOptions(Edge[] edgesToSearch, Pattern regexPattern) {
+            this.edgesToSearch = edgesToSearch;
+            this.regexPattern = regexPattern;
+            searchNodes = false;
+            checkEdgesToSearch();
+        }
+
+        /**
+         * Setup options to search on nodes with the given pattern.
+         * If nodesToSearch is null, all nodes of the graph will be used.
+         *
+         * @param nodesToSearch
+         * @param regexPattern
+         * @param onlyMatchWholeAttributeValue
+         */
+        public SearchOptions(Node[] nodesToSearch, Pattern regexPattern, boolean onlyMatchWholeAttributeValue) {
+            this.nodesToSearch = nodesToSearch;
+            this.regexPattern = regexPattern;
+            this.onlyMatchWholeAttributeValue = onlyMatchWholeAttributeValue;
+            searchNodes = true;
+        }
+
+        /**
+         * Setup options to search on edges with the given pattern.
+         * If edgesToSearch is null, all edges of the graph will be used.
+         *
+         * @param edgesToSearch
+         * @param regexPattern
+         * @param onlyMatchWholeAttributeValue
+         */
+        public SearchOptions(Edge[] edgesToSearch, Pattern regexPattern, boolean onlyMatchWholeAttributeValue) {
+            this.edgesToSearch = edgesToSearch;
+            this.regexPattern = regexPattern;
+            this.onlyMatchWholeAttributeValue = onlyMatchWholeAttributeValue;
+            searchNodes = false;
+        }
 
         public void resetStatus() {
             regionStart = 0;
@@ -157,60 +222,6 @@ public interface SearchReplaceController {
                 }
                 edgesToSearch = hg.getEdges().toArray();
             }
-        }
-
-        /**
-         * Setup options to search on nodes with the given pattern.
-         * If nodesToSearch is null, all nodes of the graph will be used.
-         * @param nodesToSearch
-         * @param regexPattern
-         */
-        public SearchOptions(Node[] nodesToSearch, Pattern regexPattern) {
-            this.nodesToSearch = nodesToSearch;
-            this.regexPattern = regexPattern;
-            searchNodes = true;
-            checkNodesToSearch();
-        }
-
-        /**
-         * Setup options to search on edges with the given pattern.
-         * If edgesToSearch is null, all edges of the graph will be used.
-         * @param edgesToSearch
-         * @param regexPattern
-         */
-        public SearchOptions(Edge[] edgesToSearch, Pattern regexPattern) {
-            this.edgesToSearch = edgesToSearch;
-            this.regexPattern = regexPattern;
-            searchNodes = false;
-            checkEdgesToSearch();
-        }
-
-        /**
-         * Setup options to search on nodes with the given pattern.
-         * If nodesToSearch is null, all nodes of the graph will be used.
-         * @param nodesToSearch
-         * @param regexPattern
-         * @param onlyMatchWholeAttributeValue 
-         */
-        public SearchOptions(Node[] nodesToSearch, Pattern regexPattern, boolean onlyMatchWholeAttributeValue) {
-            this.nodesToSearch = nodesToSearch;
-            this.regexPattern = regexPattern;
-            this.onlyMatchWholeAttributeValue = onlyMatchWholeAttributeValue;
-            searchNodes = true;
-        }
-
-        /**
-         * Setup options to search on edges with the given pattern.
-         * If edgesToSearch is null, all edges of the graph will be used.
-         * @param edgesToSearch
-         * @param regexPattern
-         * @param onlyMatchWholeAttributeValue
-         */
-        public SearchOptions(Edge[] edgesToSearch, Pattern regexPattern, boolean onlyMatchWholeAttributeValue) {
-            this.edgesToSearch = edgesToSearch;
-            this.regexPattern = regexPattern;
-            this.onlyMatchWholeAttributeValue = onlyMatchWholeAttributeValue;
-            searchNodes = false;
         }
 
         /************Getters and setters***********/
@@ -255,8 +266,18 @@ public interface SearchReplaceController {
         }
 
         /**
+         * Returns columns indexes to search
+         *
+         * @return Set with columns indexes to search
+         */
+        public Set<Integer> getColumnsToSearch() {
+            return columnsToSearch;
+        }
+
+        /**
          * Set column indexes that should be used to search with the current options.
          * If columnsToSearch is empty, all columns will be used to search.
+         *
          * @param columnsToSearch It is safe to specify invalid columns indexes, they will be ignored
          */
         public void setColumnsToSearch(int[] columnsToSearch) {
@@ -271,6 +292,7 @@ public interface SearchReplaceController {
         /**
          * Set column that should be used to search with the current options.
          * If columnsToSearch is empty, all columns will be used to search.
+         *
          * @param columnsToSearch It is safe to specify invalid columns, they will be ignored
          */
         public void setColumnsToSearch(Column[] columnsToSearch) {
@@ -280,14 +302,6 @@ public interface SearchReplaceController {
                     this.columnsToSearch.add(c.getIndex());
                 }
             }
-        }
-
-        /**
-         * Returns columns indexes to search
-         * @return Set with columns indexes to search
-         */
-        public Set<Integer> getColumnsToSearch() {
-            return columnsToSearch;
         }
 
         public boolean isSearchNodes() {
@@ -334,7 +348,8 @@ public interface SearchReplaceController {
         private int foundRowIndex, foundColumnIndex;
         private int start, end;
 
-        public SearchResult(SearchOptions searchOptions, Node foundNode, Edge foundEdge, int foundRowIndex, int foundColumnIndex, int start, int end) {
+        public SearchResult(SearchOptions searchOptions, Node foundNode, Edge foundEdge, int foundRowIndex,
+                            int foundColumnIndex, int start, int end) {
             this.searchOptions = searchOptions;
             this.foundNode = foundNode;
             this.foundEdge = foundEdge;

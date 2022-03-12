@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.impl;
 
 import java.util.Set;
@@ -46,7 +47,6 @@ import java.util.regex.Matcher;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.api.SearchReplaceController;
-import org.gephi.datalab.api.SearchReplaceController.SearchResult;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
@@ -63,8 +63,8 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Implementation of the SearchReplaceController interface declared in the Data Laboratory API.
  *
- * @see SearchReplaceController
  * @author Eduardo Ramos
+ * @see SearchReplaceController
  */
 @ServiceProvider(service = SearchReplaceController.class)
 public class SearchReplaceControllerImpl implements SearchReplaceController {
@@ -84,7 +84,8 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
             result = findOnNodes(searchOptions, row, column);
             if (result == null && searchOptions.isLoopToBeginning()) {
                 searchOptions.resetStatus();
-                return findOnNodes(searchOptions, 0, 0);//If the end of data is reached with no success, try to search again from the beginning as a loop
+                return findOnNodes(searchOptions, 0,
+                    0);//If the end of data is reached with no success, try to search again from the beginning as a loop
             } else {
                 return result;
             }
@@ -92,7 +93,8 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
             result = findOnEdges(searchOptions, row, column);
             if (result == null && searchOptions.isLoopToBeginning()) {
                 searchOptions.resetStatus();
-                return findOnEdges(searchOptions, 0, 0);//If the end of data is reached with no success, try to search again from the beginning as a loop
+                return findOnEdges(searchOptions, 0,
+                    0);//If the end of data is reached with no success, try to search again from the beginning as a loop
             } else {
                 return result;
             }
@@ -135,7 +137,8 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         Column column;
 
         if (!result.getSearchOptions().isUseRegexReplaceMode()) {
-            replacement = Matcher.quoteReplacement(replacement);//Avoid using groups and other regex aspects in the replacement
+            replacement =
+                Matcher.quoteReplacement(replacement);//Avoid using groups and other regex aspects in the replacement
         }
 
         try {
@@ -163,7 +166,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
                 matcher.appendReplacement(sb, replacement);
                 int replaceLong = sb.length();
                 matcher.appendTail(sb);
-                str = str.substring(0, result.getStart()) + sb.toString();
+                str = str.substring(0, result.getStart()) + sb;
 
                 result.getSearchOptions().setRegionStart(result.getStart() + replaceLong);
                 Lookup.getDefault().lookup(AttributeColumnsController.class).setAttributeValue(str, attributes, column);
@@ -185,7 +188,8 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
     public int replaceAll(SearchOptions searchOptions, String replacement) {
         int replacementsCount = 0;
         searchOptions.resetStatus();
-        searchOptions.setLoopToBeginning(false);//To avoid infinite loop when the replacement parse makes it to match again.
+        searchOptions
+            .setLoopToBeginning(false);//To avoid infinite loop when the replacement parse makes it to match again.
         SearchResult result;
         result = findNext(searchOptions);
         while (result != null) {
@@ -274,7 +278,8 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         return result;
     }
 
-    private SearchResult matchRegex(Object value, SearchOptions searchOptions, int rowIndex, int columnIndex, TimeFormat timeFormat, DateTimeZone timeZone) {
+    private SearchResult matchRegex(Object value, SearchOptions searchOptions, int rowIndex, int columnIndex,
+                                    TimeFormat timeFormat, DateTimeZone timeZone) {
         boolean found;
 
         String str = value != null ? AttributeUtils.print(value, timeFormat, timeZone) : "";
@@ -291,7 +296,8 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         if (searchOptions.isOnlyMatchWholeAttributeValue()) {
             found = matcher.matches();//Try to match the whole value
         } else {
-            matcher.region(searchOptions.getRegionStart(), str.length());//Try to match a group in the remaining part of the value
+            matcher.region(searchOptions.getRegionStart(),
+                str.length());//Try to match a group in the remaining part of the value
             found = matcher.find();
         }
 
@@ -305,8 +311,10 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
             if (str.isEmpty()) {
                 end++;//To be able to search on next values when the value matched is empty
             }
-            searchOptions.setRegionStart(end);//Start next search after this match in this value. (If it is greater than the length of the value, it will be discarded at the beginning of this method next time)
-            return new SearchResult(searchOptions, null, null, rowIndex, columnIndex, matcher.start(), matcher.end());//Set node or edge values later
+            searchOptions.setRegionStart(
+                end);//Start next search after this match in this value. (If it is greater than the length of the value, it will be discarded at the beginning of this method next time)
+            return new SearchResult(searchOptions, null, null, rowIndex, columnIndex, matcher.start(),
+                matcher.end());//Set node or edge values later
         } else {
             return null;
         }

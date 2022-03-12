@@ -39,12 +39,12 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.desktop.appearance;
 
 import java.beans.PropertyChangeEvent;
 
 /**
- *
  * @author mbastian
  */
 public class AppearanceUIModelEvent extends PropertyChangeEvent {
@@ -55,11 +55,14 @@ public class AppearanceUIModelEvent extends PropertyChangeEvent {
     public static String SELECTED_TRANSFORMER_UI = "selectedTransformerUI";
     public static String SELECTED_FUNCTION = "selectedFunction";
     public static String ATTRIBUTE_LIST = "attributeList";
+    public static String REFRESH_FUNCTION = "refreshFunction";
     public static String START_STOP_AUTO_APPLY = "startStopAutoApply";
     public static String SET_AUTO_APPLY = "setStopAutoApply";
-    
+    public static String SET_LOCAL_SCALE = "setLocalScale";
+    public static String SET_TRANSFORM_NULL_VALUES = "transformNullValues";
+
     public AppearanceUIModelEvent(Object source, String propertyName,
-            Object oldValue, Object newValue) {
+                                  Object oldValue, Object newValue) {
         super(source, propertyName, oldValue, newValue);
     }
 }

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.openord;
 
 import gnu.trove.iterator.TIntFloatIterator;
@@ -51,7 +52,6 @@ import java.util.concurrent.CyclicBarrier;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Interval;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
@@ -62,7 +62,6 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class OpenOrdLayout implements Layout, LongTask {
@@ -182,12 +181,13 @@ public class OpenOrdLayout implements Layout, LongTask {
                 }
                 float shiftX = minX + (maxX - minX) / 2f;
                 float shiftY = minY + (maxY - minY) / 2f;
-                float ratio = Math.min(DensityGrid.getViewSize() / (maxX - minX), DensityGrid.getViewSize() / (maxY - minY));
+                float ratio =
+                    Math.min(DensityGrid.getViewSize() / (maxX - minX), DensityGrid.getViewSize() / (maxY - minY));
                 ratio = Math.min(1f, ratio);
                 for (Node n : nodes) {
                     if (n.fixed) {
-                        n.x = (float) (n.x - shiftX) * ratio;
-                        n.y = (float) (n.y - shiftY) * ratio;
+                        n.x = (n.x - shiftX) * ratio;
+                        n.y = (n.y - shiftY) * ratio;
                     }
                 }
             }
@@ -223,7 +223,7 @@ public class OpenOrdLayout implements Layout, LongTask {
                     if (i % numThreads == w.getId() && neighbors[i] != null) {
                         int neighborsCount = neighbors[i].size();
                         neighborsCopy[i] = new TIntFloatHashMap(neighborsCount, 1f);
-                        for (TIntFloatIterator itr = neighbors[i].iterator(); itr.hasNext();) {
+                        for (TIntFloatIterator itr = neighbors[i].iterator(); itr.hasNext(); ) {
                             itr.advance();
                             float weight = normalizeWeight(itr.value(), highestSimilarity);
                             neighborsCopy[i].put(itr.key(), weight);
@@ -294,65 +294,65 @@ public class OpenOrdLayout implements Layout, LongTask {
 
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.edgecut.name"),
-                    OPENORD,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.edgecut.description"),
-                    "getEdgeCut", "setEdgeCut"));
+                this, Float.class,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.edgecut.name"),
+                OPENORD,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.edgecut.description"),
+                "getEdgeCut", "setEdgeCut"));
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.numthreads.name"),
-                    OPENORD,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.numthreads.description"),
-                    "getNumThreads", "setNumThreads"));
+                this, Integer.class,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.numthreads.name"),
+                OPENORD,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.numthreads.description"),
+                "getNumThreads", "setNumThreads"));
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.numiterations.name"),
-                    OPENORD,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.numiterations.description"),
-                    "getNumIterations", "setNumIterations"));
+                this, Integer.class,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.numiterations.name"),
+                OPENORD,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.numiterations.description"),
+                "getNumIterations", "setNumIterations"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.realtime.name"),
-                    OPENORD,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.realtime.description"),
-                    "getRealTime", "setRealTime"));
+                this, Float.class,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.realtime.name"),
+                OPENORD,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.realtime.description"),
+                "getRealTime", "setRealTime"));
             properties.add(LayoutProperty.createProperty(
-                    this, Long.class,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.seed.name"),
-                    OPENORD,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.seed.description"),
-                    "getRandSeed", "setRandSeed"));
+                this, Long.class,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.seed.name"),
+                OPENORD,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.seed.description"),
+                "getRandSeed", "setRandSeed"));
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.liquid.name"),
-                    STAGE,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.liquid.description"),
-                    "getLiquidStage", "setLiquidStage"));
+                this, Integer.class,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.liquid.name"),
+                STAGE,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.liquid.description"),
+                "getLiquidStage", "setLiquidStage"));
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.expansion.name"),
-                    STAGE,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.expansion.description"),
-                    "getExpansionStage", "setExpansionStage"));
+                this, Integer.class,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.expansion.name"),
+                STAGE,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.expansion.description"),
+                "getExpansionStage", "setExpansionStage"));
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.cooldown.name"),
-                    STAGE,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.cooldown.description"),
-                    "getCooldownStage", "setCooldownStage"));
+                this, Integer.class,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.cooldown.name"),
+                STAGE,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.cooldown.description"),
+                "getCooldownStage", "setCooldownStage"));
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.crunch.name"),
-                    STAGE,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.crunch.description"),
-                    "getCrunchStage", "setCrunchStage"));
+                this, Integer.class,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.crunch.name"),
+                STAGE,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.crunch.description"),
+                "getCrunchStage", "setCrunchStage"));
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.simmer.name"),
-                    STAGE,
-                    NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.simmer.description"),
-                    "getSimmerStage", "setSimmerStage"));
+                this, Integer.class,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.simmer.name"),
+                STAGE,
+                NbBundle.getMessage(OpenOrdLayout.class, "OpenOrd.properties.stage.simmer.description"),
+                "getSimmerStage", "setSimmerStage"));
 
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
@@ -415,26 +415,14 @@ public class OpenOrdLayout implements Layout, LongTask {
         return param.getLiquid().getIterationsPercentage();
     }
 
-    public Integer getExpansionStage() {
-        return param.getExpansion().getIterationsPercentage();
-    }
-
-    public Integer getCooldownStage() {
-        return param.getCooldown().getIterationsPercentage();
-    }
-
-    public Integer getCrunchStage() {
-        return param.getCrunch().getIterationsPercentage();
-    }
-
-    public Integer getSimmerStage() {
-        return param.getSimmer().getIterationsPercentage();
-    }
-
     public void setLiquidStage(Integer value) {
         int v = Math.min(100, value);
         v = Math.max(0, v);
         param.getLiquid().setIterations(v / 100f);
+    }
+
+    public Integer getExpansionStage() {
+        return param.getExpansion().getIterationsPercentage();
     }
 
     public void setExpansionStage(Integer value) {
@@ -443,16 +431,28 @@ public class OpenOrdLayout implements Layout, LongTask {
         param.getExpansion().setIterations(v / 100f);
     }
 
+    public Integer getCooldownStage() {
+        return param.getCooldown().getIterationsPercentage();
+    }
+
     public void setCooldownStage(Integer value) {
         int v = Math.min(100, value);
         v = Math.max(0, v);
         param.getCooldown().setIterations(v / 100f);
     }
 
+    public Integer getCrunchStage() {
+        return param.getCrunch().getIterationsPercentage();
+    }
+
     public void setCrunchStage(Integer value) {
         int v = Math.min(100, value);
         v = Math.max(0, v);
         param.getCrunch().setIterations(v / 100f);
+    }
+
+    public Integer getSimmerStage() {
+        return param.getSimmer().getIterationsPercentage();
     }
 
     public void setSimmerStage(Integer value) {

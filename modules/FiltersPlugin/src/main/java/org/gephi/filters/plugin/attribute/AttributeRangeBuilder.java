@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.attribute;
 
 import java.util.ArrayList;
@@ -49,24 +50,35 @@ import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.AbstractAttributeFilter;
 import org.gephi.filters.plugin.AbstractAttributeFilterBuilder;
 import org.gephi.filters.plugin.graph.RangeUI;
-import org.gephi.filters.spi.*;
-import org.gephi.graph.api.*;
+import org.gephi.filters.spi.Category;
+import org.gephi.filters.spi.CategoryBuilder;
+import org.gephi.filters.spi.EdgeFilter;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.filters.spi.RangeFilter;
+import org.gephi.graph.api.AttributeUtils;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = CategoryBuilder.class)
 public class AttributeRangeBuilder implements CategoryBuilder {
 
     private final static Category RANGE = new Category(
-            NbBundle.getMessage(AttributeRangeBuilder.class, "AttributeRangeBuilder.name"),
-            null,
-            FilterLibrary.ATTRIBUTES);
+        NbBundle.getMessage(AttributeRangeBuilder.class, "AttributeRangeBuilder.name"),
+        null,
+        FilterLibrary.ATTRIBUTES);
 
     @Override
     public Category getCategory() {
@@ -95,14 +107,15 @@ public class AttributeRangeBuilder implements CategoryBuilder {
 
         public AttributeRangeFilterBuilder(Column column) {
             super(column,
-                    RANGE,
-                    NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeRangeBuilder.description"),
-                    null);
+                RANGE,
+                NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeRangeBuilder.description"),
+                null);
         }
 
         @Override
         public AttributeRangeFilter getFilter(Workspace workspace) {
-            return AttributeUtils.isNodeColumn(column) ? new AttributeRangeFilter.Node(column) : new AttributeRangeFilter.Edge(column);
+            return AttributeUtils.isNodeColumn(column) ? new AttributeRangeFilter.Node(column) :
+                new AttributeRangeFilter.Edge(column);
         }
 
         @Override
@@ -115,13 +128,14 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
     }
 
-    public static abstract class AttributeRangeFilter<K extends Element> extends AbstractAttributeFilter<K> implements RangeFilter {
+    public static abstract class AttributeRangeFilter<K extends Element> extends AbstractAttributeFilter<K>
+        implements RangeFilter {
 
         private Range range;
 
         public AttributeRangeFilter(Column column) {
             super(NbBundle.getMessage(AttributeRangeBuilder.class, "AttributeRangeBuilder.name"),
-                    column);
+                column);
 
             //Add property
             addProperty(Range.class, "range");
@@ -130,13 +144,9 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         @Override
         public boolean init(Graph graph) {
             if (AttributeUtils.isNodeColumn(column)) {
-                if (graph.getNodeCount() == 0) {
-                    return false;
-                }
+                return graph.getNodeCount() != 0;
             } else if (AttributeUtils.isEdgeColumn(column)) {
-                if (graph.getEdgeCount() == 0) {
-                    return false;
-                }
+                return graph.getEdgeCount() != 0;
             }
             return true;
         }

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.general;
 
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * PluginGeneralActionsManipulator that clears directed and/or undirected edges of the graph.
+ *
  * @author Eduardo Ramos
  */
 @ServiceProvider(service = PluginGeneralActionsManipulator.class)
@@ -70,25 +72,26 @@ public class ClearEdges implements PluginGeneralActionsManipulator {
 
     public ClearEdges() {
         deleteDirected = NbPreferences.forModule(ClearEdges.class).getBoolean(DELETE_DIRECTED_SAVED_PREFERENCES, true);
-        deleteUndirected = NbPreferences.forModule(ClearEdges.class).getBoolean(DELETE_UNDIRECTED_SAVED_PREFERENCES, true);
+        deleteUndirected =
+            NbPreferences.forModule(ClearEdges.class).getBoolean(DELETE_UNDIRECTED_SAVED_PREFERENCES, true);
     }
 
     @Override
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getGraph();
-        
+
         List<Edge> edges = new ArrayList<>();
         for (Edge edge : graph.getEdges().toArray()) {
             if (edge.isDirected()) {
-                if(deleteDirected){
+                if (deleteDirected) {
                     edges.add(edge);
                 }
-            }else if (deleteUndirected) {
+            } else if (deleteUndirected) {
                 edges.add(edge);
             }
         }
-        
+
         gec.deleteEdges(edges.toArray(new Edge[0]));
     }
 

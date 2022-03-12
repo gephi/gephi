@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.tables;
 
 import java.awt.event.KeyAdapter;
@@ -60,10 +61,75 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
+
+    private final PropertyDataColumn<Edge> TYPE_COLUMN =
+        new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.text")) {
+
+            @Override
+            public Class getColumnClass() {
+                return String.class;
+            }
+
+            @Override
+            public Object getValueFor(Edge edge) {
+                if (edge.isDirected()) {
+                    return NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.directed");
+                } else {
+                    return NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.undirected");
+                }
+            }
+        };
+    private final PropertyDataColumn<Edge> KIND_COLUMN =
+        new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.kind.column.text")) {
+
+            @Override
+            public Class getColumnClass() {
+                return String.class;
+            }
+
+            @Override
+            public Object getValueFor(Edge edge) {
+                return edge.getTypeLabel() != null ? edge.getTypeLabel().toString() : null;
+            }
+        };
+    private boolean showEdgesNodesLabels = false;
+    private final PropertyDataColumn<Edge> SOURCE_COLUMN =
+        new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.source.column.text")) {
+
+            @Override
+            public Class getColumnClass() {
+                return String.class;
+            }
+
+            @Override
+            public Object getValueFor(Edge edge) {
+                if (showEdgesNodesLabels) {
+                    return edge.getSource().getId() + " - " + edge.getSource().getLabel();
+                } else {
+                    return edge.getSource().getId();
+                }
+            }
+        };
+    private final PropertyDataColumn<Edge> TARGET_COLUMN =
+        new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.target.column.text")) {
+
+            @Override
+            public Class getColumnClass() {
+                return String.class;
+            }
+
+            @Override
+            public Object getValueFor(Edge edge) {
+                if (showEdgesNodesLabels) {
+                    return edge.getTarget().getId() + " - " + edge.getTarget().getLabel();
+                } else {
+                    return edge.getTarget().getId();
+                }
+            }
+        };
 
     public EdgesDataTable() {
         super();
@@ -108,74 +174,9 @@ public final class EdgesDataTable extends AbstractElementsDataTable<Edge> {
         });
     }
 
-    private boolean showEdgesNodesLabels = false;
-
-    private final PropertyDataColumn<Edge> SOURCE_COLUMN = new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.source.column.text")) {
-
-        @Override
-        public Class getColumnClass() {
-            return String.class;
-        }
-
-        @Override
-        public Object getValueFor(Edge edge) {
-            if (showEdgesNodesLabels) {
-                return edge.getSource().getId() + " - " + edge.getSource().getLabel();
-            } else {
-                return edge.getSource().getId();
-            }
-        }
-    };
-
-    private final PropertyDataColumn<Edge> TARGET_COLUMN = new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.target.column.text")) {
-
-        @Override
-        public Class getColumnClass() {
-            return String.class;
-        }
-
-        @Override
-        public Object getValueFor(Edge edge) {
-            if (showEdgesNodesLabels) {
-                return edge.getTarget().getId() + " - " + edge.getTarget().getLabel();
-            } else {
-                return edge.getTarget().getId();
-            }
-        }
-    };
-
-    private final PropertyDataColumn<Edge> TYPE_COLUMN = new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.text")) {
-
-        @Override
-        public Class getColumnClass() {
-            return String.class;
-        }
-
-        @Override
-        public Object getValueFor(Edge edge) {
-            if (edge.isDirected()) {
-                return NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.directed");
-            } else {
-                return NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.type.column.undirected");
-            }
-        }
-    };
-
-    private final PropertyDataColumn<Edge> KIND_COLUMN = new PropertyDataColumn<Edge>(NbBundle.getMessage(EdgesDataTable.class, "EdgeDataTable.kind.column.text")) {
-
-        @Override
-        public Class getColumnClass() {
-            return String.class;
-        }
-
-        @Override
-        public Object getValueFor(Edge edge) {
-            return edge.getTypeLabel() != null ? edge.getTypeLabel().toString() : null;
-        }
-    };
-
     @Override
-    public List<? extends ElementDataColumn<Edge>> getFakeDataColumns(GraphModel graphModel, DataTablesModel dataTablesModel) {
+    public List<? extends ElementDataColumn<Edge>> getFakeDataColumns(GraphModel graphModel,
+                                                                      DataTablesModel dataTablesModel) {
         ArrayList<PropertyDataColumn<Edge>> propertiesColumns = new ArrayList<>();
 
         propertiesColumns.add(SOURCE_COLUMN);

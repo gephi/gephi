@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.statistics.plugin;
 
 import java.text.DecimalFormat;
@@ -50,7 +51,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Sebastien Heymann
  */
 @ServiceProvider(service = StatisticsUI.class)

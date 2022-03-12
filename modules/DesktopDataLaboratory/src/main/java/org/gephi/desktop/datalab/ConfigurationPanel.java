@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab;
 
 import java.awt.event.ActionEvent;
@@ -64,6 +65,17 @@ public class ConfigurationPanel extends javax.swing.JPanel {
 
     private final DataTableTopComponent dataTableTopComponent;
     private final GraphModel graphModel;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox onlyVisibleCheckBox;
+    private javax.swing.JCheckBox showEdgesNodesLabelsCheckBox;
+    private javax.swing.JComboBox timeFormatComboBox;
+    private javax.swing.JLabel timeFormatLabel;
+    private javax.swing.JCheckBox timeIntervalsGraphicsCheckBox;
+    private javax.swing.JComboBox timeRepresentationComboBox;
+    private javax.swing.JLabel timeRepresentationLabel;
+    private javax.swing.JComboBox timeZoneComboBox;
+    private javax.swing.JLabel timeZoneLabel;
+    private javax.swing.JCheckBox useSparklinesCheckBox;
 
     /**
      * Creates new form ConfigurationPanel
@@ -113,7 +125,8 @@ public class ConfigurationPanel extends javax.swing.JPanel {
         for (TimeRepresentation tr : TimeRepresentation.values()) {
             timeRepresentationComboBox.addItem(new TimeRepresentationWrapper(tr));
         }
-        timeRepresentationComboBox.setSelectedItem(new TimeRepresentationWrapper(graphModel.getConfiguration().getTimeRepresentation()));
+        timeRepresentationComboBox
+            .setSelectedItem(new TimeRepresentationWrapper(graphModel.getConfiguration().getTimeRepresentation()));
 
         if (canChangeTimeRepresentation(graphModel)) {
             timeRepresentationComboBox.addActionListener(new ActionListener() {
@@ -121,13 +134,15 @@ public class ConfigurationPanel extends javax.swing.JPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Configuration c = graphModel.getConfiguration();
-                    c.setTimeRepresentation(((TimeRepresentationWrapper) timeRepresentationComboBox.getSelectedItem()).getTimeRepresentation());
+                    c.setTimeRepresentation(((TimeRepresentationWrapper) timeRepresentationComboBox.getSelectedItem())
+                        .getTimeRepresentation());
                     graphModel.setConfiguration(c);
                 }
             });
         } else {
             timeRepresentationComboBox.setEnabled(false);
-            timeRepresentationComboBox.setToolTipText(NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeRepresentation.disabled.tooltip"));
+            timeRepresentationComboBox.setToolTipText(NbBundle
+                .getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeRepresentation.disabled.tooltip"));
         }
     }
 
@@ -146,7 +161,8 @@ public class ConfigurationPanel extends javax.swing.JPanel {
 
         for (Column column : graphModel.getEdgeTable()) {
             String id = column.getId();
-            if (!id.equalsIgnoreCase("Id") && !id.equalsIgnoreCase("Label") && !id.equalsIgnoreCase("timeset") && !id.equalsIgnoreCase("Weight")) {
+            if (!id.equalsIgnoreCase("Id") && !id.equalsIgnoreCase("Label") && !id.equalsIgnoreCase("timeset") &&
+                !id.equalsIgnoreCase("Weight")) {
                 return false;
             }
         }
@@ -179,116 +195,127 @@ public class ConfigurationPanel extends javax.swing.JPanel {
         timeRepresentationLabel = new javax.swing.JLabel();
         timeRepresentationComboBox = new javax.swing.JComboBox();
 
-        onlyVisibleCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.onlyVisibleCheckBox.text")); // NOI18N
+        onlyVisibleCheckBox.setText(org.openide.util.NbBundle
+            .getMessage(ConfigurationPanel.class, "ConfigurationPanel.onlyVisibleCheckBox.text")); // NOI18N
         onlyVisibleCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 onlyVisibleCheckBoxActionPerformed(evt);
             }
         });
 
-        useSparklinesCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.useSparklinesCheckBox.text")); // NOI18N
+        useSparklinesCheckBox.setText(org.openide.util.NbBundle
+            .getMessage(ConfigurationPanel.class, "ConfigurationPanel.useSparklinesCheckBox.text")); // NOI18N
         useSparklinesCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 useSparklinesCheckBoxActionPerformed(evt);
             }
         });
 
-        showEdgesNodesLabelsCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.showEdgesNodesLabelsCheckBox.text")); // NOI18N
+        showEdgesNodesLabelsCheckBox.setText(org.openide.util.NbBundle
+            .getMessage(ConfigurationPanel.class, "ConfigurationPanel.showEdgesNodesLabelsCheckBox.text")); // NOI18N
         showEdgesNodesLabelsCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showEdgesNodesLabelsCheckBoxActionPerformed(evt);
             }
         });
 
-        timeIntervalsGraphicsCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeIntervalsGraphicsCheckBox.text")); // NOI18N
+        timeIntervalsGraphicsCheckBox.setText(org.openide.util.NbBundle
+            .getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeIntervalsGraphicsCheckBox.text")); // NOI18N
         timeIntervalsGraphicsCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 timeIntervalsGraphicsCheckBoxActionPerformed(evt);
             }
         });
 
-        timeFormatLabel.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeFormatLabel.text")); // NOI18N
+        timeFormatLabel.setText(org.openide.util.NbBundle
+            .getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeFormatLabel.text")); // NOI18N
 
-        timeZoneLabel.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeZoneLabel.text")); // NOI18N
+        timeZoneLabel.setText(org.openide.util.NbBundle
+            .getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeZoneLabel.text")); // NOI18N
 
-        timeRepresentationLabel.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeRepresentationLabel.text")); // NOI18N
+        timeRepresentationLabel.setText(org.openide.util.NbBundle
+            .getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeRepresentationLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(showEdgesNodesLabelsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(timeIntervalsGraphicsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(useSparklinesCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
-                    .addComponent(onlyVisibleCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(timeFormatLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(timeZoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(timeRepresentationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(timeRepresentationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(timeFormatComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(timeZoneComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(showEdgesNodesLabelsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(timeIntervalsGraphicsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(useSparklinesCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+                        .addComponent(onlyVisibleCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(timeFormatLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 96,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(timeZoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 106,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(timeRepresentationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 132,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(timeRepresentationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    Short.MAX_VALUE)
+                                .addComponent(timeFormatComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    Short.MAX_VALUE)
+                                .addComponent(timeZoneComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    Short.MAX_VALUE))))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(onlyVisibleCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(useSparklinesCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(timeIntervalsGraphicsCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(showEdgesNodesLabelsCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(timeFormatLabel)
-                    .addComponent(timeFormatComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(timeZoneLabel)
-                    .addComponent(timeZoneComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(timeRepresentationLabel)
-                    .addComponent(timeRepresentationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(onlyVisibleCheckBox)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(useSparklinesCheckBox)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(timeIntervalsGraphicsCheckBox)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(showEdgesNodesLabelsCheckBox)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(timeFormatLabel)
+                        .addComponent(timeFormatComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(timeZoneLabel)
+                        .addComponent(timeZoneComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(timeRepresentationLabel)
+                        .addComponent(timeRepresentationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void onlyVisibleCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onlyVisibleCheckBoxActionPerformed
+    private void onlyVisibleCheckBoxActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onlyVisibleCheckBoxActionPerformed
         dataTableTopComponent.setShowOnlyVisible(onlyVisibleCheckBox.isSelected());
     }//GEN-LAST:event_onlyVisibleCheckBoxActionPerformed
 
-    private void useSparklinesCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useSparklinesCheckBoxActionPerformed
+    private void useSparklinesCheckBoxActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useSparklinesCheckBoxActionPerformed
         dataTableTopComponent.setUseSparklines(useSparklinesCheckBox.isSelected());
     }//GEN-LAST:event_useSparklinesCheckBoxActionPerformed
 
-    private void timeIntervalsGraphicsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeIntervalsGraphicsCheckBoxActionPerformed
+    private void timeIntervalsGraphicsCheckBoxActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeIntervalsGraphicsCheckBoxActionPerformed
         dataTableTopComponent.setTimeIntervalGraphics(timeIntervalsGraphicsCheckBox.isSelected());
     }//GEN-LAST:event_timeIntervalsGraphicsCheckBoxActionPerformed
 
-    private void showEdgesNodesLabelsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showEdgesNodesLabelsCheckBoxActionPerformed
+    private void showEdgesNodesLabelsCheckBoxActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showEdgesNodesLabelsCheckBoxActionPerformed
         dataTableTopComponent.setShowEdgesNodesLabels(showEdgesNodesLabelsCheckBox.isSelected());
     }//GEN-LAST:event_showEdgesNodesLabelsCheckBoxActionPerformed
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox onlyVisibleCheckBox;
-    private javax.swing.JCheckBox showEdgesNodesLabelsCheckBox;
-    private javax.swing.JComboBox timeFormatComboBox;
-    private javax.swing.JLabel timeFormatLabel;
-    private javax.swing.JCheckBox timeIntervalsGraphicsCheckBox;
-    private javax.swing.JComboBox timeRepresentationComboBox;
-    private javax.swing.JLabel timeRepresentationLabel;
-    private javax.swing.JComboBox timeZoneComboBox;
-    private javax.swing.JLabel timeZoneLabel;
-    private javax.swing.JCheckBox useSparklinesCheckBox;
     // End of variables declaration//GEN-END:variables
 }

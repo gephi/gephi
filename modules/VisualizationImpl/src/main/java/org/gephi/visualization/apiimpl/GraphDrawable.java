@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.apiimpl;
 
 import com.jogamp.opengl.GL2;
@@ -51,7 +52,6 @@ import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.opengl.GraphicalConfiguration;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface GraphDrawable {
@@ -66,11 +66,11 @@ public interface GraphDrawable {
 
     public float[] getCameraTarget();
 
+    public void setCameraTarget(float[] cameraTarget);
+
     public float[] getCameraLocation();
 
     public void setCameraLocation(float[] cameraLocation);
-
-    public void setCameraTarget(float[] cameraTarget);
 
     public Vec3f getCameraVector();
 

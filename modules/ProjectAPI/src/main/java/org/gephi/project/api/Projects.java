@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.api;
 
 /**
@@ -53,19 +54,19 @@ public interface Projects {
      *
      * @return true if current project, false otherwise
      */
-    public boolean hasCurrentProject();
+    boolean hasCurrentProject();
 
     /**
      * Returns the current project or null if missing.
      *
      * @return current project or null if missing
      */
-    public Project getCurrentProject();
+    Project getCurrentProject();
 
     /**
      * Returns an array of all projects.
      *
      * @return project array
      */
-    public Project[] getProjects();
+    Project[] getProjects();
 }

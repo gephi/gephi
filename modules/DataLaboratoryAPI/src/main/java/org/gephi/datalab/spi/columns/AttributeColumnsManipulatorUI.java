@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -40,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi.columns;
 
 import javax.swing.JPanel;
@@ -53,19 +53,22 @@ import org.gephi.graph.api.Table;
  * <p>Must provide a JPanel, a window name/title and indictate if it is modal.</p>
  * <p>The panel will be shown in a dialog with Ok/Cancel options only.</p>
  * <p>The ok button can be enabled/disabled with the DialogControls instance passed at setup</p>
+ *
  * @author Eduardo Ramos
  */
 public interface AttributeColumnsManipulatorUI {
 
     /**
      * Prepare this UI to be able to interact with its AttributeColumnsManipulator.
-     * @param m Manipulator for the UI
-     * @param graphModel Graph model of the table
-     * @param table Table of the column to manipulate
-     * @param column Column to manipulate
+     *
+     * @param m              Manipulator for the UI
+     * @param graphModel     Graph model of the table
+     * @param table          Table of the column to manipulate
+     * @param column         Column to manipulate
      * @param dialogControls Used to enable/disable the dialog controls
      */
-    void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column, DialogControls dialogControls);
+    void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column,
+               DialogControls dialogControls);
 
     /**
      * Called when the window is closed or accepted.
@@ -74,19 +77,22 @@ public interface AttributeColumnsManipulatorUI {
 
     /**
      * Returns name/title for the window
+     *
      * @return Name/title for the window
      */
     String getDisplayName();
 
     /**
      * Returns a settings panel instance for this AttributeColumnsManipulator.
+     *
      * @return Settings panel instance
      */
-    public JPanel getSettingsPanel();
+    JPanel getSettingsPanel();
 
     /**
      * Indicates if the created dialog has to be modal
+     *
      * @return True if modal, false otherwise
      */
-    public boolean isModal();
+    boolean isModal();
 }

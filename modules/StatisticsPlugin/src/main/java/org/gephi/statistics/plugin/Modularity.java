@@ -39,11 +39,18 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -62,7 +69,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 /**
- *
  * @author pjmcswee
  */
 public class Modularity implements Statistics, LongTask {
@@ -77,28 +83,28 @@ public class Modularity implements Statistics, LongTask {
     private boolean useWeight = true;
     private double resolution = 1.;
 
-    public void setRandom(boolean isRandomized) {
-        this.isRandomized = isRandomized;
-    }
-
     public boolean getRandom() {
         return isRandomized;
     }
 
-    public void setUseWeight(boolean useWeight) {
-        this.useWeight = useWeight;
+    public void setRandom(boolean isRandomized) {
+        this.isRandomized = isRandomized;
     }
 
     public boolean getUseWeight() {
         return useWeight;
     }
 
-    public void setResolution(double resolution) {
-        this.resolution = resolution;
+    public void setUseWeight(boolean useWeight) {
+        this.useWeight = useWeight;
     }
 
     public double getResolution() {
         return resolution;
+    }
+
+    public void setResolution(double resolution) {
+        this.resolution = resolution;
     }
 
     @Override
@@ -110,6 +116,263 @@ public class Modularity implements Statistics, LongTask {
     @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progress = progressTicket;
+    }
+
+    @Override
+    public void execute(GraphModel graphModel) {
+        Graph graph = graphModel.getUndirectedGraphVisible();
+        execute(graph);
+    }
+
+    public void execute(Graph graph) {
+        isCanceled = false;
+
+        graph.readLock();
+        try {
+            structure = new Modularity.CommunityStructure(graph);
+            int[] comStructure = new int[graph.getNodeCount()];
+
+            if (graph.getNodeCount() > 0) {//Fixes issue #713 Modularity Calculation Throws Exception On Empty Graph
+                HashMap<String, Double> computedModularityMetrics =
+                    computeModularity(graph, structure, comStructure, resolution, isRandomized, useWeight);
+                modularity = computedModularityMetrics.get("modularity");
+                modularityResolution = computedModularityMetrics.get("modularityResolution");
+            } else {
+                modularity = 0;
+                modularityResolution = 0;
+            }
+
+            saveValues(comStructure, graph, structure);
+        } finally {
+            graph.readUnlock();
+        }
+    }
+
+    protected HashMap<String, Double> computeModularity(Graph graph, CommunityStructure theStructure,
+                                                        int[] comStructure,
+                                                        double currentResolution, boolean randomized,
+                                                        boolean weighted) {
+        isCanceled = false;
+        Progress.start(progress);
+        Random rand = new Random();
+
+        double totalWeight = theStructure.graphWeightSum;
+        double[] nodeDegrees = theStructure.weights.clone();
+
+        HashMap<String, Double> results = new HashMap<>();
+
+        if (isCanceled) {
+            return results;
+        }
+        boolean someChange = true;
+        while (someChange) {
+            someChange = false;
+            boolean localChange = true;
+            while (localChange) {
+                localChange = false;
+                int start = 0;
+                if (randomized) {
+                    start = Math.abs(rand.nextInt()) % theStructure.N;
+                }
+                int step = 0;
+                for (int i = start; step < theStructure.N; i = (i + 1) % theStructure.N) {
+                    step++;
+                    Community bestCommunity = updateBestCommunity(theStructure, i, currentResolution);
+                    if ((theStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
+                        theStructure.moveNodeTo(i, bestCommunity);
+                        localChange = true;
+                    }
+                    if (isCanceled) {
+                        return results;
+                    }
+                }
+                someChange = localChange || someChange;
+                if (isCanceled) {
+                    return results;
+                }
+            }
+
+            if (someChange) {
+                theStructure.zoomOut();
+            }
+        }
+
+        fillComStructure(graph, theStructure, comStructure);
+        double[] degreeCount = fillDegreeCount(graph, theStructure, comStructure, nodeDegrees, weighted);
+
+        double computedModularity = finalQ(comStructure, degreeCount, graph, theStructure, totalWeight, 1., weighted);
+        double computedModularityResolution =
+            finalQ(comStructure, degreeCount, graph, theStructure, totalWeight, currentResolution, weighted);
+
+        results.put("modularity", computedModularity);
+        results.put("modularityResolution", computedModularityResolution);
+
+        return results;
+    }
+
+    private Community updateBestCommunity(CommunityStructure theStructure, int node_id, double currentResolution) {
+        double best = 0.;
+        Community bestCommunity = null;
+        Set<Community> iter = theStructure.nodeConnectionsWeight[node_id].keySet();
+        for (Community com : iter) {
+            double qValue = q(node_id, com, theStructure, currentResolution);
+            if (qValue > best) {
+                best = qValue;
+                bestCommunity = com;
+            }
+        }
+        return bestCommunity;
+    }
+
+    private int[] fillComStructure(Graph graph, CommunityStructure theStructure, int[] comStructure) {
+        int count = 0;
+
+        for (Community com : theStructure.communities) {
+            for (Integer node : com.nodes) {
+                Community hidden = theStructure.invMap.get(node);
+                for (Integer nodeInt : hidden.nodes) {
+                    comStructure[nodeInt] = count;
+                }
+            }
+            count++;
+        }
+        return comStructure;
+    }
+
+    private double[] fillDegreeCount(Graph graph, CommunityStructure theStructure, int[] comStructure,
+                                     double[] nodeDegrees, boolean weighted) {
+        double[] degreeCount = new double[theStructure.communities.size()];
+
+        for (Node node : graph.getNodes()) {
+            int index = theStructure.map.get(node);
+            if (weighted) {
+                degreeCount[comStructure[index]] += nodeDegrees[index];
+            } else {
+                degreeCount[comStructure[index]] += graph.getDegree(node);
+            }
+
+        }
+        return degreeCount;
+    }
+
+    private double finalQ(int[] struct, double[] degrees, Graph graph,
+                          CommunityStructure theStructure, double totalWeight, double usedResolution,
+                          boolean weighted) {
+
+        double res = 0;
+        double[] internal = new double[degrees.length];
+        for (Node n : graph.getNodes()) {
+            int n_index = theStructure.map.get(n);
+            for (Edge edge : graph.getEdges(n)) {
+                Node neighbor = graph.getOpposite(n, edge);
+                if (n == neighbor) {
+                    continue;
+                }
+                int neigh_index = theStructure.map.get(neighbor);
+                if (struct[neigh_index] == struct[n_index]) {
+                    if (weighted) {
+                        internal[struct[neigh_index]] += edge.getWeight(graph.getView());
+                    } else {
+                        internal[struct[neigh_index]]++;
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < degrees.length; i++) {
+            internal[i] /= 2.0;
+            res += usedResolution * (internal[i] / totalWeight) - Math.pow(degrees[i] / (2 * totalWeight), 2);//HERE
+        }
+        return res;
+    }
+
+    private void saveValues(int[] struct, Graph graph, CommunityStructure theStructure) {
+        Table nodeTable = graph.getModel().getNodeTable();
+        Column modCol = nodeTable.getColumn(MODULARITY_CLASS);
+        if (modCol == null) {
+            modCol = nodeTable.addColumn(MODULARITY_CLASS, "Modularity Class", Integer.class, 0);
+        }
+        for (Node n : graph.getNodes()) {
+            int n_index = theStructure.map.get(n);
+            n.setAttribute(modCol, struct[n_index]);
+        }
+    }
+
+    public double getModularity() {
+        return modularity;
+    }
+
+    @Override
+    public String getReport() {
+        //Distribution series
+        Map<Integer, Integer> sizeDist = new HashMap<>();
+        for (Node n : structure.graph.getNodes()) {
+            Integer v = (Integer) n.getAttribute(MODULARITY_CLASS);
+            if (!sizeDist.containsKey(v)) {
+                sizeDist.put(v, 0);
+            }
+            sizeDist.put(v, sizeDist.get(v) + 1);
+        }
+
+        XYSeries dSeries = ChartUtils.createXYSeries(sizeDist, "Size Distribution");
+
+        XYSeriesCollection dataset1 = new XYSeriesCollection();
+        dataset1.addSeries(dSeries);
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+            "Size Distribution",
+            "Modularity Class",
+            "Size (number of nodes)",
+            dataset1,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
+        chart.removeLegend();
+        ChartUtils.decorateChart(chart);
+        ChartUtils.scaleChart(chart, dSeries, false);
+        String imageFile = ChartUtils.renderChart(chart, "communities-size-distribution.png");
+
+        NumberFormat f = new DecimalFormat("#0.000");
+
+        String report = "<HTML> <BODY> <h1>Modularity Report </h1> "
+            + "<hr>"
+            + "<h2> Parameters: </h2>"
+            + "Randomize:  " + (isRandomized ? "On" : "Off") + "<br>"
+            + "Use edge weights:  " + (useWeight ? "On" : "Off") + "<br>"
+            + "Resolution:  " + (resolution) + "<br>"
+            + "<br> <h2> Results: </h2>"
+            + "Modularity: " + f.format(modularity) + "<br>"
+            + "Modularity with resolution: " + f.format(modularityResolution) + "<br>"
+            + "Number of Communities: " + structure.communities.size()
+            + "<br /><br />" + imageFile
+            + "<br /><br />" + "<h2> Algorithm: </h2>"
+            +
+            "Vincent D Blondel, Jean-Loup Guillaume, Renaud Lambiotte, Etienne Lefebvre, <i>Fast unfolding of communities in large networks</i>, in Journal of Statistical Mechanics: Theory and Experiment 2008 (10), P1000<br />"
+            + "<br /><br />" + "<h2> Resolution: </h2>"
+            +
+            "R. Lambiotte, J.-C. Delvenne, M. Barahona <i>Laplacian Dynamics and Multiscale Modular Structure in Networks 2009<br />"
+            + "</BODY> </HTML>";
+
+        return report;
+    }
+
+    private double q(int node, Community community, CommunityStructure theStructure, double currentResolution) {
+        Float edgesToFloat = theStructure.nodeConnectionsWeight[node].get(community);
+        double edgesTo = 0;
+        if (edgesToFloat != null) {
+            edgesTo = edgesToFloat.doubleValue();
+        }
+        double weightSum = community.weightSum;
+        double nodeWeight = theStructure.weights[node];
+        double qValue = currentResolution * edgesTo - (nodeWeight * weightSum) / (2.0 * theStructure.graphWeightSum);
+        if ((theStructure.nodeCommunities[node] == community) && (theStructure.nodeCommunities[node].size() > 1)) {
+            qValue = currentResolution * edgesTo -
+                (nodeWeight * (weightSum - nodeWeight)) / (2.0 * theStructure.graphWeightSum);
+        }
+        if ((theStructure.nodeCommunities[node] == community) && (theStructure.nodeCommunities[node].size() == 1)) {
+            qValue = 0.;
+        }
+        return qValue;
     }
 
     class ModEdge {
@@ -151,7 +414,7 @@ public class Modularity implements Statistics, LongTask {
             communities = new ArrayList<>();
             int index = 0;
             weights = new double[N];
-            
+
             NodeIterable nodesIterable = graph.getNodes();
             for (Node node : nodesIterable) {
                 map.put(node, index);
@@ -171,9 +434,9 @@ public class Modularity implements Statistics, LongTask {
                     return;
                 }
             }
-            
+
             int[] edgeTypes = graph.getModel().getEdgeTypes();
-            
+
             nodesIterable = graph.getNodes();
             for (Node node : nodesIterable) {
                 int node_index = map.get(node);
@@ -433,10 +696,6 @@ public class Modularity implements Statistics, LongTask {
         HashMap<Modularity.Community, Float> connectionsWeight;
         HashMap<Modularity.Community, Integer> connectionsCount;
 
-        public int size() {
-            return nodes.size();
-        }
-
         public Community(Modularity.Community com) {
             structure = com.structure;
             connectionsWeight = new HashMap<>();
@@ -450,6 +709,10 @@ public class Modularity implements Statistics, LongTask {
             connectionsWeight = new HashMap<>();
             connectionsCount = new HashMap<>();
             nodes = new ArrayList<>();
+        }
+
+        public int size() {
+            return nodes.size();
         }
 
         public void seed(int node) {
@@ -471,253 +734,5 @@ public class Modularity implements Statistics, LongTask {
             }
             return result;
         }
-    }
-
-    @Override
-    public void execute(GraphModel graphModel) {
-        Graph graph = graphModel.getUndirectedGraphVisible();
-        execute(graph);
-    }
-
-    public void execute(Graph graph) {
-        isCanceled = false;
-
-        graph.readLock();
-        try {
-            structure = new Modularity.CommunityStructure(graph);
-            int[] comStructure = new int[graph.getNodeCount()];
-
-            if (graph.getNodeCount() > 0) {//Fixes issue #713 Modularity Calculation Throws Exception On Empty Graph
-                HashMap<String, Double> computedModularityMetrics = computeModularity(graph, structure, comStructure, resolution, isRandomized, useWeight);
-                modularity = computedModularityMetrics.get("modularity");
-                modularityResolution = computedModularityMetrics.get("modularityResolution");
-            } else {
-                modularity = 0;
-                modularityResolution = 0;
-            }
-
-            saveValues(comStructure, graph, structure);
-        } finally {
-            graph.readUnlock();
-        }
-    }
-
-    protected HashMap<String, Double> computeModularity(Graph graph, CommunityStructure theStructure, int[] comStructure,
-            double currentResolution, boolean randomized, boolean weighted) {
-        isCanceled = false;
-        Progress.start(progress);
-        Random rand = new Random();
-
-        double totalWeight = theStructure.graphWeightSum;
-        double[] nodeDegrees = theStructure.weights.clone();
-
-        HashMap<String, Double> results = new HashMap<>();
-
-        if (isCanceled) {
-            return results;
-        }
-        boolean someChange = true;
-        while (someChange) {
-            someChange = false;
-            boolean localChange = true;
-            while (localChange) {
-                localChange = false;
-                int start = 0;
-                if (randomized) {
-                    start = Math.abs(rand.nextInt()) % theStructure.N;
-                }
-                int step = 0;
-                for (int i = start; step < theStructure.N; i = (i + 1) % theStructure.N) {
-                    step++;
-                    Community bestCommunity = updateBestCommunity(theStructure, i, currentResolution);
-                    if ((theStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
-                        theStructure.moveNodeTo(i, bestCommunity);
-                        localChange = true;
-                    }
-                    if (isCanceled) {
-                        return results;
-                    }
-                }
-                someChange = localChange || someChange;
-                if (isCanceled) {
-                    return results;
-                }
-            }
-
-            if (someChange) {
-                theStructure.zoomOut();
-            }
-        }
-
-        fillComStructure(graph, theStructure, comStructure);
-        double[] degreeCount = fillDegreeCount(graph, theStructure, comStructure, nodeDegrees, weighted);
-
-        double computedModularity = finalQ(comStructure, degreeCount, graph, theStructure, totalWeight, 1., weighted);
-        double computedModularityResolution = finalQ(comStructure, degreeCount, graph, theStructure, totalWeight, currentResolution, weighted);
-
-        results.put("modularity", computedModularity);
-        results.put("modularityResolution", computedModularityResolution);
-
-        return results;
-    }
-
-    private Community updateBestCommunity(CommunityStructure theStructure, int node_id, double currentResolution) {
-        double best = 0.;
-        Community bestCommunity = null;
-        Set<Community> iter = theStructure.nodeConnectionsWeight[node_id].keySet();
-        for (Community com : iter) {
-            double qValue = q(node_id, com, theStructure, currentResolution);
-            if (qValue > best) {
-                best = qValue;
-                bestCommunity = com;
-            }
-        }
-        return bestCommunity;
-    }
-
-    private int[] fillComStructure(Graph graph, CommunityStructure theStructure, int[] comStructure) {
-        int count = 0;
-
-        for (Community com : theStructure.communities) {
-            for (Integer node : com.nodes) {
-                Community hidden = theStructure.invMap.get(node);
-                for (Integer nodeInt : hidden.nodes) {
-                    comStructure[nodeInt] = count;
-                }
-            }
-            count++;
-        }
-        return comStructure;
-    }
-
-    private double[] fillDegreeCount(Graph graph, CommunityStructure theStructure, int[] comStructure, double[] nodeDegrees, boolean weighted) {
-        double[] degreeCount = new double[theStructure.communities.size()];
-
-        for (Node node : graph.getNodes()) {
-            int index = theStructure.map.get(node);
-            if (weighted) {
-                degreeCount[comStructure[index]] += nodeDegrees[index];
-            } else {
-                degreeCount[comStructure[index]] += graph.getDegree(node);
-            }
-
-        }
-        return degreeCount;
-    }
-
-    private double finalQ(int[] struct, double[] degrees, Graph graph,
-            CommunityStructure theStructure, double totalWeight, double usedResolution, boolean weighted) {
-
-        double res = 0;
-        double[] internal = new double[degrees.length];
-        for (Node n : graph.getNodes()) {
-            int n_index = theStructure.map.get(n);
-            for (Edge edge : graph.getEdges(n)) {
-                Node neighbor = graph.getOpposite(n, edge);
-                if (n == neighbor) {
-                    continue;
-                }
-                int neigh_index = theStructure.map.get(neighbor);
-                if (struct[neigh_index] == struct[n_index]) {
-                    if (weighted) {
-                        internal[struct[neigh_index]] += edge.getWeight(graph.getView());
-                    } else {
-                        internal[struct[neigh_index]]++;
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < degrees.length; i++) {
-            internal[i] /= 2.0;
-            res += usedResolution * (internal[i] / totalWeight) - Math.pow(degrees[i] / (2 * totalWeight), 2);//HERE
-        }
-        return res;
-    }
-
-    private void saveValues(int[] struct, Graph graph, CommunityStructure theStructure) {
-        Table nodeTable = graph.getModel().getNodeTable();
-        Column modCol = nodeTable.getColumn(MODULARITY_CLASS);
-        if (modCol == null) {
-            modCol = nodeTable.addColumn(MODULARITY_CLASS, "Modularity Class", Integer.class, 0);
-        }
-        for (Node n : graph.getNodes()) {
-            int n_index = theStructure.map.get(n);
-            n.setAttribute(modCol, struct[n_index]);
-        }
-    }
-
-    public double getModularity() {
-        return modularity;
-    }
-
-    @Override
-    public String getReport() {
-        //Distribution series
-        Map<Integer, Integer> sizeDist = new HashMap<>();
-        for (Node n : structure.graph.getNodes()) {
-            Integer v = (Integer) n.getAttribute(MODULARITY_CLASS);
-            if (!sizeDist.containsKey(v)) {
-                sizeDist.put(v, 0);
-            }
-            sizeDist.put(v, sizeDist.get(v) + 1);
-        }
-
-        XYSeries dSeries = ChartUtils.createXYSeries(sizeDist, "Size Distribution");
-
-        XYSeriesCollection dataset1 = new XYSeriesCollection();
-        dataset1.addSeries(dSeries);
-
-        JFreeChart chart = ChartFactory.createXYLineChart(
-                "Size Distribution",
-                "Modularity Class",
-                "Size (number of nodes)",
-                dataset1,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
-        chart.removeLegend();
-        ChartUtils.decorateChart(chart);
-        ChartUtils.scaleChart(chart, dSeries, false);
-        String imageFile = ChartUtils.renderChart(chart, "communities-size-distribution.png");
-
-        NumberFormat f = new DecimalFormat("#0.000");
-
-        String report = "<HTML> <BODY> <h1>Modularity Report </h1> "
-                + "<hr>"
-                + "<h2> Parameters: </h2>"
-                + "Randomize:  " + (isRandomized ? "On" : "Off") + "<br>"
-                + "Use edge weights:  " + (useWeight ? "On" : "Off") + "<br>"
-                + "Resolution:  " + (resolution) + "<br>"
-                + "<br> <h2> Results: </h2>"
-                + "Modularity: " + f.format(modularity) + "<br>"
-                + "Modularity with resolution: " + f.format(modularityResolution) + "<br>"
-                + "Number of Communities: " + structure.communities.size()
-                + "<br /><br />" + imageFile
-                + "<br /><br />" + "<h2> Algorithm: </h2>"
-                + "Vincent D Blondel, Jean-Loup Guillaume, Renaud Lambiotte, Etienne Lefebvre, <i>Fast unfolding of communities in large networks</i>, in Journal of Statistical Mechanics: Theory and Experiment 2008 (10), P1000<br />"
-                + "<br /><br />" + "<h2> Resolution: </h2>"
-                + "R. Lambiotte, J.-C. Delvenne, M. Barahona <i>Laplacian Dynamics and Multiscale Modular Structure in Networks 2009<br />"
-                + "</BODY> </HTML>";
-
-        return report;
-    }
-
-    private double q(int node, Community community, CommunityStructure theStructure, double currentResolution) {
-        Float edgesToFloat = theStructure.nodeConnectionsWeight[node].get(community);
-        double edgesTo = 0;
-        if (edgesToFloat != null) {
-            edgesTo = edgesToFloat.doubleValue();
-        }
-        double weightSum = community.weightSum;
-        double nodeWeight = theStructure.weights[node];
-        double qValue = currentResolution * edgesTo - (nodeWeight * weightSum) / (2.0 * theStructure.graphWeightSum);
-        if ((theStructure.nodeCommunities[node] == community) && (theStructure.nodeCommunities[node].size() > 1)) {
-            qValue = currentResolution * edgesTo - (nodeWeight * (weightSum - nodeWeight)) / (2.0 * theStructure.graphWeightSum);
-        }
-        if ((theStructure.nodeCommunities[node] == community) && (theStructure.nodeCommunities[node].size() == 1)) {
-            qValue = 0.;
-        }
-        return qValue;
     }
 }

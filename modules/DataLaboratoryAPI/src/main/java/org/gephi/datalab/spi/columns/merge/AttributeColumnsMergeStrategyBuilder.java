@@ -39,12 +39,14 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi.columns.merge;
 
 /**
  * <p>This interface is used for providing AttributeColumnsMergeStrategy instances
  * using the Netbeans Lookup but avoiding the singleton it causes.</p>
  * <p>Each AttributeColumnsMergeStrategy should have a AttributeColumnsMergeStrategyBuilder and publish it with <code>@ServiceProvider(service=AttributeColumnsMergeStrategyBuilder.class)</code> annotation.</p>
+ *
  * @author Eduardo Ramos
  */
 public interface AttributeColumnsMergeStrategyBuilder {

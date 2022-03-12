@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.spi;
 
 import org.gephi.project.api.Workspace;
@@ -80,5 +81,5 @@ public interface WorkspacePersistenceProvider {
      *
      * @return Unique identifier describing your data
      */
-    public String getIdentifier();
+    String getIdentifier();
 }

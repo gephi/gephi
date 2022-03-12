@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.exporter.impl;
 
 import java.io.BufferedOutputStream;
@@ -48,6 +49,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.ByteExporter;
@@ -64,7 +66,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ExportController.class)
@@ -76,7 +77,8 @@ public class ExportControllerImpl implements ExportController {
     public ExportControllerImpl() {
         Lookup.getDefault().lookupAll(GraphFileExporterBuilder.class);
         Lookup.getDefault().lookupAll(VectorFileExporterBuilder.class);
-        fileExporterBuilders = Lookup.getDefault().lookupAll(FileExporterBuilder.class).toArray(new FileExporterBuilder[0]);
+        fileExporterBuilders =
+            Lookup.getDefault().lookupAll(FileExporterBuilder.class).toArray(new FileExporterBuilder[0]);
         uis = Lookup.getDefault().lookupAll(ExporterUI.class).toArray(new ExporterUI[0]);
     }
 
@@ -84,7 +86,8 @@ public class ExportControllerImpl implements ExportController {
     public void exportFile(File file) throws IOException {
         Exporter fileExporter = getFileExporter(file);
         if (fileExporter == null) {
-            throw new RuntimeException(NbBundle.getMessage(ExportControllerImpl.class, "ExportControllerImpl.error.nomatchingexporter"));
+            throw new RuntimeException(
+                NbBundle.getMessage(ExportControllerImpl.class, "ExportControllerImpl.error.nomatchingexporter"));
         }
         exportFile(file, fileExporter);
     }
@@ -93,7 +96,8 @@ public class ExportControllerImpl implements ExportController {
     public void exportFile(File file, Workspace workspace) throws IOException {
         Exporter fileExporter = getFileExporter(file);
         if (fileExporter == null) {
-            throw new RuntimeException(NbBundle.getMessage(ExportControllerImpl.class, "ExportControllerImpl.error.nomatchingexporter"));
+            throw new RuntimeException(
+                NbBundle.getMessage(ExportControllerImpl.class, "ExportControllerImpl.error.nomatchingexporter"));
         }
         fileExporter.setWorkspace(workspace);
         exportFile(file, fileExporter);
@@ -128,7 +132,7 @@ public class ExportControllerImpl implements ExportController {
             } catch (IOException ex) {
             }
         } else if (fileExporter instanceof CharacterExporter) {
-            Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+            Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
             ((CharacterExporter) fileExporter).setWriter(writer);
             try {
                 fileExporter.execute();
@@ -262,10 +266,6 @@ public class ExportControllerImpl implements ExportController {
 
         boolean ret = file.getName().endsWith(ext);
 
-        if (!ret) {
-            return false;
-        }
-
-        return true;
+        return ret;
     }
 }

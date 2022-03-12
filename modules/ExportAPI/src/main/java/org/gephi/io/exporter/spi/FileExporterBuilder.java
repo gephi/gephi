@@ -39,20 +39,22 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.exporter.spi;
 
 import org.gephi.io.exporter.api.FileType;
 
 /**
  * Exporter builder for a particular file format support.
- * 
+ *
  * @author Mathieu Bastian
  */
 public interface FileExporterBuilder extends ExporterBuilder {
 
     /**
      * Get default file types this exporter can deal with.
-     * @return  an array of file types this exporter can read
+     *
+     * @return an array of file types this exporter can read
      */
-    public FileType[] getFileTypes();
+    FileType[] getFileTypes();
 }

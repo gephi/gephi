@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 import java.awt.Color;
@@ -74,371 +75,9 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public final class ImportUtils {
-
-    /**
-     * Returns a <code>LineNumberReader</code> for <code>fileObject</code>. The
-     * file must be a text file. The charset is detected automatically.
-     *
-     * @param fileObject the file object that is to be read
-     * @return a reader for the text file
-     * @throws IOException if the file can't be found or read
-     */
-    public static LineNumberReader getTextReader(FileObject fileObject) throws IOException {
-        try {
-            return getTextReader(fileObject.getInputStream());
-        } catch (IOException ex) {
-            throw new IOException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
-        }
-    }
-
-    public static Color parseColor(String colorString) {
-        colorString = colorString.toLowerCase().replace(" ", "");
-
-        Color cl;
-        try {
-            Field field = Color.class.getField(colorString);
-            cl = (Color) field.get(null);
-        } catch (NoSuchFieldException e) {
-            cl = null; // Not defined
-        } catch (SecurityException e) {
-            cl = null; // Not defined
-        } catch (IllegalArgumentException e) {
-            cl = null; // Not defined
-        } catch (IllegalAccessException e) {
-            cl = null; // Not defined
-        }
-        if (cl == null) {
-            Integer colorInt = COLORS.get(colorString);
-            if (colorInt != null) {
-                cl = new Color(colorInt);
-            }
-        }
-        if (cl == null) {
-            try {
-                cl = Color.decode(colorString);
-            } catch (NumberFormatException e) {
-                cl = null;
-            }
-        }
-        return cl;
-    }
-
-    /**
-     * Returns a <code>LineNumberReader</code> for <code>inputStream</code>. The
-     * stream must be a character stream. The charset is detected automatically.
-     *
-     * @param stream the stream that is to be read
-     * @return a reader for the character stream
-     * @throws IOException if the stream can't be read
-     */
-    public static LineNumberReader getTextReader(InputStream stream) throws IOException {
-        LineNumberReader reader;
-        CharsetToolkit charsetToolkit = new CharsetToolkit(stream);
-        reader = (LineNumberReader) charsetToolkit.getReader();
-        return reader;
-    }
-
-    public static LineNumberReader getTextReader(Reader reader) {
-        LineNumberReader lineNumberReader = new LineNumberReader(reader);
-        return lineNumberReader;
-    }
-
-    public static Document getXMLDocument(InputStream stream) throws RuntimeException {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(stream);
-            return document;
-        } catch (ParserConfigurationException ex) {
-            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_missing_document_instance_factory"));
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
-        } catch (SAXException ex) {
-            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_sax"));
-        } catch (IOException ex) {
-            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_io"));
-        }
-    }
-
-    public static Document getXMLDocument(Reader reader) throws RuntimeException {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(new InputSource(reader));
-            return document;
-        } catch (ParserConfigurationException ex) {
-            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_missing_document_instance_factory"));
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
-        } catch (SAXException ex) {
-            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_sax"));
-        } catch (IOException ex) {
-            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_io"));
-        }
-    }
-
-    public static Document getXMLDocument(FileObject fileObject) throws RuntimeException {
-        try {
-            InputStream stream = fileObject.getInputStream();
-            return getXMLDocument(stream);
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
-        }
-    }
-
-    public static XMLStreamReader getXMLReader(Reader reader) {
-        try {
-            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
-                inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
-            }
-            inputFactory.setXMLReporter(new XMLReporter() {
-
-                @Override
-                public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
-                    throw new RuntimeException("Error:" + errorType + ", message : " + message);
-                    //System.out.println("Error:" + errorType + ", message : " + message);
-                }
-            });
-            return inputFactory.createXMLStreamReader(reader);
-        } catch (XMLStreamException ex) {
-            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_io"));
-        }
-    }
-
-    public static boolean isArchiveFile(FileObject fileObject) {
-        if (fileObject == null) {
-            return false;
-        }
-
-        if (fileObject.getExt().toLowerCase().startsWith("xls")) {//Seems to break it otherwise!
-            return false;
-        }
-
-        boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
-        boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
-
-        if (isGz || isBzip) {
-            return true;
-        }
-
-        return FileUtil.isArchiveFile(fileObject);
-    }
-
-    public static FileObject getArchivedFile(final FileObject fileObject) {
-        if (!isArchiveFile(fileObject)) {
-            return fileObject;
-        }
-
-        FileObject result = fileObject;
-
-        // ZIP and JAR archives
-        if (FileUtil.isArchiveFile(fileObject)) {
-            FileObject[] children = FileUtil.getArchiveRoot(fileObject).getChildren();
-            if (children.length > 0) {
-                result = children[0];
-            }
-        } else { // GZ or BZIP2 archives
-            boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
-            boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
-            if (isGz || isBzip) {
-                try {
-                    String[] splittedFileName = fileObject.getName().split("\\.");
-                    if (splittedFileName.length < 2) {
-                        return fileObject;
-                    }
-
-                    String fileExt1 = splittedFileName[splittedFileName.length - 1];
-                    String fileExt2 = splittedFileName[splittedFileName.length - 2];
-
-                    File tempFile;
-                    if (fileExt1.equalsIgnoreCase("tar")) {
-                        String fname = fileObject.getName().replaceAll("\\.tar$", "");
-                        fname = fname.replace(fileExt2, "");
-                        tempFile = File.createTempFile(fname, "." + fileExt2);
-                        // Untar & unzip
-                        if (isGz) {
-                            tempFile = getGzFile(fileObject, tempFile, true);
-                        } else {
-                            tempFile = getBzipFile(fileObject, tempFile, true);
-                        }
-                    } else {
-                        String fname = fileObject.getName();
-                        fname = fname.replace(fileExt1, "");
-                        tempFile = File.createTempFile(fname, "." + fileExt1);
-                        // Unzip
-                        if (isGz) {
-                            tempFile = getGzFile(fileObject, tempFile, false);
-                        } else {
-                            tempFile = getBzipFile(fileObject, tempFile, false);
-                        }
-                    }
-                    tempFile.deleteOnExit();
-                    tempFile = FileUtil.normalizeFile(tempFile);
-                    result = FileUtil.toFileObject(tempFile);
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
-        }
-
-        if (result == null) {
-            result = fileObject;//Never return null if the archive is empty, broken or anything
-        }
-
-        return result;
-    }
-
-    public static File getBzipFile(FileObject in, File out, boolean isTar) throws IOException {
-
-        // Stream buffer
-        final int BUFF_SIZE = 8192;
-        final byte[] buffer = new byte[BUFF_SIZE];
-
-        BZip2CompressorInputStream inputStream = null;
-        FileOutputStream outStream = null;
-
-        try {
-            FileInputStream is = new FileInputStream(in.getPath());
-            inputStream = new BZip2CompressorInputStream(is);
-            outStream = new FileOutputStream(out.getAbsolutePath());
-
-            if (isTar) {
-                // Read Tar header
-                int remainingBytes = readTarHeader(inputStream);
-
-                // Read content
-                ByteBuffer bb = ByteBuffer.allocateDirect(4 * BUFF_SIZE);
-                byte[] tmpCache = new byte[BUFF_SIZE];
-                int nRead, nGet;
-                while ((nRead = inputStream.read(tmpCache)) != -1) {
-                    if (nRead == 0) {
-                        continue;
-                    }
-                    bb.put(tmpCache);
-                    bb.position(0);
-                    bb.limit(nRead);
-                    while (bb.hasRemaining() && remainingBytes > 0) {
-                        nGet = Math.min(bb.remaining(), BUFF_SIZE);
-                        nGet = Math.min(nGet, remainingBytes);
-                        bb.get(buffer, 0, nGet);
-                        outStream.write(buffer, 0, nGet);
-                        remainingBytes -= nGet;
-                    }
-                    bb.clear();
-                }
-            } else {
-                int len;
-                while ((len = inputStream.read(buffer)) > 0) {
-                    outStream.write(buffer, 0, len);
-                }
-            }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-            if (outStream != null) {
-                outStream.close();
-            }
-        }
-
-        return out;
-    }
-
-    public static File getGzFile(FileObject in, File out, boolean isTar) throws IOException {
-
-        // Stream buffer
-        final int BUFF_SIZE = 8192;
-        final byte[] buffer = new byte[BUFF_SIZE];
-
-        GZIPInputStream inputStream = null;
-        FileOutputStream outStream = null;
-
-        try {
-            inputStream = new GZIPInputStream(new FileInputStream(in.getPath()));
-            outStream = new FileOutputStream(out);
-
-            if (isTar) {
-                // Read Tar header
-                int remainingBytes = readTarHeader(inputStream);
-
-                // Read content
-                ByteBuffer bb = ByteBuffer.allocateDirect(4 * BUFF_SIZE);
-                byte[] tmpCache = new byte[BUFF_SIZE];
-                int nRead, nGet;
-                while ((nRead = inputStream.read(tmpCache)) != -1) {
-                    if (nRead == 0) {
-                        continue;
-                    }
-                    bb.put(tmpCache);
-                    bb.position(0);
-                    bb.limit(nRead);
-                    while (bb.hasRemaining() && remainingBytes > 0) {
-                        nGet = Math.min(bb.remaining(), BUFF_SIZE);
-                        nGet = Math.min(nGet, remainingBytes);
-                        bb.get(buffer, 0, nGet);
-                        outStream.write(buffer, 0, nGet);
-                        remainingBytes -= nGet;
-                    }
-                    bb.clear();
-                }
-            } else {
-                int len;
-                while ((len = inputStream.read(buffer)) > 0) {
-                    outStream.write(buffer, 0, len);
-                }
-            }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-            if (outStream != null) {
-                outStream.close();
-            }
-        }
-
-        return out;
-    }
-
-    private static int readTarHeader(InputStream inputStream) throws IOException {
-        // Tar bytes
-        final int FILE_SIZE_OFFSET = 124;
-        final int FILE_SIZE_LENGTH = 12;
-        final int HEADER_LENGTH = 512;
-
-        ignoreBytes(inputStream, FILE_SIZE_OFFSET);
-        String fileSizeLengthOctalString = readString(inputStream, FILE_SIZE_LENGTH).trim();
-        final int fileSize = Integer.parseInt(fileSizeLengthOctalString, 8);
-
-        ignoreBytes(inputStream, HEADER_LENGTH - (FILE_SIZE_OFFSET + FILE_SIZE_LENGTH));
-
-        return fileSize;
-    }
-
-    private static void ignoreBytes(InputStream inputStream, int numberOfBytes) throws IOException {
-        for (int counter = 0; counter < numberOfBytes; counter++) {
-            inputStream.read();
-        }
-    }
-
-    private static String readString(InputStream inputStream, int numberOfBytes) throws IOException {
-        return new String(readBytes(inputStream, numberOfBytes));
-    }
-
-    private static byte[] readBytes(InputStream inputStream, int numberOfBytes) throws IOException {
-        byte[] readBytes = new byte[numberOfBytes];
-        inputStream.read(readBytes);
-
-        return readBytes;
-    }
 
     //COLORS
     private static final Map<String, Integer> COLORS = new HashMap<>();
@@ -1129,5 +768,369 @@ public final class ImportUtils {
         COLORS.put("deepskyblue4", 0x00688B);
         COLORS.put("deepskyblue1", 0x00BFFF);
         COLORS.put("deepskyblue2", 0x00B2EE);
+    }
+
+    /**
+     * Returns a <code>LineNumberReader</code> for <code>fileObject</code>. The
+     * file must be a text file. The charset is detected automatically.
+     *
+     * @param fileObject the file object that is to be read
+     * @return a reader for the text file
+     * @throws IOException if the file can't be found or read
+     */
+    public static LineNumberReader getTextReader(FileObject fileObject) throws IOException {
+        try {
+            return getTextReader(fileObject.getInputStream());
+        } catch (IOException ex) {
+            throw new IOException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
+        }
+    }
+
+    public static Color parseColor(String colorString) {
+        colorString = colorString.toLowerCase().replace(" ", "");
+
+        Color cl;
+        try {
+            Field field = Color.class.getField(colorString);
+            cl = (Color) field.get(null);
+        } catch (NoSuchFieldException e) {
+            cl = null; // Not defined
+        } catch (SecurityException e) {
+            cl = null; // Not defined
+        } catch (IllegalArgumentException e) {
+            cl = null; // Not defined
+        } catch (IllegalAccessException e) {
+            cl = null; // Not defined
+        }
+        if (cl == null) {
+            Integer colorInt = COLORS.get(colorString);
+            if (colorInt != null) {
+                cl = new Color(colorInt);
+            }
+        }
+        if (cl == null) {
+            try {
+                cl = Color.decode(colorString);
+            } catch (NumberFormatException e) {
+                cl = null;
+            }
+        }
+        return cl;
+    }
+
+    /**
+     * Returns a <code>LineNumberReader</code> for <code>inputStream</code>. The
+     * stream must be a character stream. The charset is detected automatically.
+     *
+     * @param stream the stream that is to be read
+     * @return a reader for the character stream
+     * @throws IOException if the stream can't be read
+     */
+    public static LineNumberReader getTextReader(InputStream stream) throws IOException {
+        LineNumberReader reader;
+        CharsetToolkit charsetToolkit = new CharsetToolkit(stream);
+        reader = (LineNumberReader) charsetToolkit.getReader();
+        return reader;
+    }
+
+    public static LineNumberReader getTextReader(Reader reader) {
+        LineNumberReader lineNumberReader = new LineNumberReader(reader);
+        return lineNumberReader;
+    }
+
+    public static Document getXMLDocument(InputStream stream) throws RuntimeException {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(stream);
+            return document;
+        } catch (ParserConfigurationException ex) {
+            throw new RuntimeException(
+                NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_missing_document_instance_factory"));
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
+        } catch (SAXException ex) {
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_sax"));
+        } catch (IOException ex) {
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_io"));
+        }
+    }
+
+    public static Document getXMLDocument(Reader reader) throws RuntimeException {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new InputSource(reader));
+            return document;
+        } catch (ParserConfigurationException ex) {
+            throw new RuntimeException(
+                NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_missing_document_instance_factory"));
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
+        } catch (SAXException ex) {
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_sax"));
+        } catch (IOException ex) {
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_io"));
+        }
+    }
+
+    public static Document getXMLDocument(FileObject fileObject) throws RuntimeException {
+        try {
+            InputStream stream = fileObject.getInputStream();
+            return getXMLDocument(stream);
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
+        }
+    }
+
+    public static XMLStreamReader getXMLReader(Reader reader) {
+        try {
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+                inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+            }
+            inputFactory.setXMLReporter(new XMLReporter() {
+
+                @Override
+                public void report(String message, String errorType, Object relatedInformation, Location location)
+                    throws XMLStreamException {
+                    throw new RuntimeException("Error:" + errorType + ", message : " + message);
+                    //System.out.println("Error:" + errorType + ", message : " + message);
+                }
+            });
+            return inputFactory.createXMLStreamReader(reader);
+        } catch (XMLStreamException ex) {
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_io"));
+        }
+    }
+
+    public static boolean isArchiveFile(FileObject fileObject) {
+        if (fileObject == null) {
+            return false;
+        }
+
+        if (fileObject.getExt().toLowerCase().startsWith("xls")) {//Seems to break it otherwise!
+            return false;
+        }
+
+        boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
+        boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
+
+        if (isGz || isBzip) {
+            return true;
+        }
+
+        return FileUtil.isArchiveFile(fileObject);
+    }
+
+    public static FileObject getArchivedFile(final FileObject fileObject) {
+        if (!isArchiveFile(fileObject)) {
+            return fileObject;
+        }
+
+        FileObject result = fileObject;
+
+        // ZIP and JAR archives
+        if (FileUtil.isArchiveFile(fileObject)) {
+            FileObject[] children = FileUtil.getArchiveRoot(fileObject).getChildren();
+            if (children.length > 0) {
+                result = children[0];
+            }
+        } else { // GZ or BZIP2 archives
+            boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
+            boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
+            if (isGz || isBzip) {
+                try {
+                    String[] splittedFileName = fileObject.getName().split("\\.");
+                    if (splittedFileName.length < 2) {
+                        return fileObject;
+                    }
+
+                    String fileExt1 = splittedFileName[splittedFileName.length - 1];
+                    String fileExt2 = splittedFileName[splittedFileName.length - 2];
+
+                    File tempFile;
+                    if (fileExt1.equalsIgnoreCase("tar")) {
+                        String fname = fileObject.getName().replaceAll("\\.tar$", "");
+                        fname = fname.replace(fileExt2, "");
+                        tempFile = File.createTempFile(fname, "." + fileExt2);
+                        // Untar & unzip
+                        if (isGz) {
+                            tempFile = getGzFile(fileObject, tempFile, true);
+                        } else {
+                            tempFile = getBzipFile(fileObject, tempFile, true);
+                        }
+                    } else {
+                        String fname = fileObject.getName();
+                        fname = fname.replace(fileExt1, "");
+                        tempFile = File.createTempFile(fname, "." + fileExt1);
+                        // Unzip
+                        if (isGz) {
+                            tempFile = getGzFile(fileObject, tempFile, false);
+                        } else {
+                            tempFile = getBzipFile(fileObject, tempFile, false);
+                        }
+                    }
+                    tempFile.deleteOnExit();
+                    tempFile = FileUtil.normalizeFile(tempFile);
+                    result = FileUtil.toFileObject(tempFile);
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        }
+
+        if (result == null) {
+            result = fileObject;//Never return null if the archive is empty, broken or anything
+        }
+
+        return result;
+    }
+
+    public static File getBzipFile(FileObject in, File out, boolean isTar) throws IOException {
+
+        // Stream buffer
+        final int BUFF_SIZE = 8192;
+        final byte[] buffer = new byte[BUFF_SIZE];
+
+        BZip2CompressorInputStream inputStream = null;
+        FileOutputStream outStream = null;
+
+        try {
+            FileInputStream is = new FileInputStream(in.getPath());
+            inputStream = new BZip2CompressorInputStream(is);
+            outStream = new FileOutputStream(out.getAbsolutePath());
+
+            if (isTar) {
+                // Read Tar header
+                int remainingBytes = readTarHeader(inputStream);
+
+                // Read content
+                ByteBuffer bb = ByteBuffer.allocateDirect(4 * BUFF_SIZE);
+                byte[] tmpCache = new byte[BUFF_SIZE];
+                int nRead, nGet;
+                while ((nRead = inputStream.read(tmpCache)) != -1) {
+                    if (nRead == 0) {
+                        continue;
+                    }
+                    bb.put(tmpCache);
+                    bb.position(0);
+                    bb.limit(nRead);
+                    while (bb.hasRemaining() && remainingBytes > 0) {
+                        nGet = Math.min(bb.remaining(), BUFF_SIZE);
+                        nGet = Math.min(nGet, remainingBytes);
+                        bb.get(buffer, 0, nGet);
+                        outStream.write(buffer, 0, nGet);
+                        remainingBytes -= nGet;
+                    }
+                    bb.clear();
+                }
+            } else {
+                int len;
+                while ((len = inputStream.read(buffer)) > 0) {
+                    outStream.write(buffer, 0, len);
+                }
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            if (outStream != null) {
+                outStream.close();
+            }
+        }
+
+        return out;
+    }
+
+    public static File getGzFile(FileObject in, File out, boolean isTar) throws IOException {
+
+        // Stream buffer
+        final int BUFF_SIZE = 8192;
+        final byte[] buffer = new byte[BUFF_SIZE];
+
+        GZIPInputStream inputStream = null;
+        FileOutputStream outStream = null;
+
+        try {
+            inputStream = new GZIPInputStream(new FileInputStream(in.getPath()));
+            outStream = new FileOutputStream(out);
+
+            if (isTar) {
+                // Read Tar header
+                int remainingBytes = readTarHeader(inputStream);
+
+                // Read content
+                ByteBuffer bb = ByteBuffer.allocateDirect(4 * BUFF_SIZE);
+                byte[] tmpCache = new byte[BUFF_SIZE];
+                int nRead, nGet;
+                while ((nRead = inputStream.read(tmpCache)) != -1) {
+                    if (nRead == 0) {
+                        continue;
+                    }
+                    bb.put(tmpCache);
+                    bb.position(0);
+                    bb.limit(nRead);
+                    while (bb.hasRemaining() && remainingBytes > 0) {
+                        nGet = Math.min(bb.remaining(), BUFF_SIZE);
+                        nGet = Math.min(nGet, remainingBytes);
+                        bb.get(buffer, 0, nGet);
+                        outStream.write(buffer, 0, nGet);
+                        remainingBytes -= nGet;
+                    }
+                    bb.clear();
+                }
+            } else {
+                int len;
+                while ((len = inputStream.read(buffer)) > 0) {
+                    outStream.write(buffer, 0, len);
+                }
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            if (outStream != null) {
+                outStream.close();
+            }
+        }
+
+        return out;
+    }
+
+    private static int readTarHeader(InputStream inputStream) throws IOException {
+        // Tar bytes
+        final int FILE_SIZE_OFFSET = 124;
+        final int FILE_SIZE_LENGTH = 12;
+        final int HEADER_LENGTH = 512;
+
+        ignoreBytes(inputStream, FILE_SIZE_OFFSET);
+        String fileSizeLengthOctalString = readString(inputStream, FILE_SIZE_LENGTH).trim();
+        final int fileSize = Integer.parseInt(fileSizeLengthOctalString, 8);
+
+        ignoreBytes(inputStream, HEADER_LENGTH - (FILE_SIZE_OFFSET + FILE_SIZE_LENGTH));
+
+        return fileSize;
+    }
+
+    private static void ignoreBytes(InputStream inputStream, int numberOfBytes) throws IOException {
+        for (int counter = 0; counter < numberOfBytes; counter++) {
+            inputStream.read();
+        }
+    }
+
+    private static String readString(InputStream inputStream, int numberOfBytes) throws IOException {
+        return new String(readBytes(inputStream, numberOfBytes));
+    }
+
+    private static byte[] readBytes(InputStream inputStream, int numberOfBytes) throws IOException {
+        byte[] readBytes = new byte[numberOfBytes];
+        inputStream.read(readBytes);
+
+        return readBytes;
     }
 }

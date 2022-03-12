@@ -39,13 +39,9 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.branding.desktop.reporter;
 
-import com.getsentry.raven.Raven;
-import com.getsentry.raven.RavenFactory;
-import com.getsentry.raven.event.Event;
-import com.getsentry.raven.event.EventBuilder;
-import com.getsentry.raven.event.interfaces.ExceptionInterface;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
@@ -58,16 +54,24 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.MissingResourceException;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import io.sentry.Sentry;
+import io.sentry.SentryEvent;
+import io.sentry.SentryLevel;
+import io.sentry.protocol.SentryException;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.modules.ModuleInfo;
+import org.openide.modules.Places;
 import org.openide.modules.SpecificationVersion;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -75,17 +79,17 @@ import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ReportController {
 
-    private static final String POST_URL = "https://d007fbbdeb6241b5b2c542a6bc548cf3:4a1af110df484e838da9243c1496ebe9@app.getsentry.com/85815";
+    private static final String POST_URL =
+        "https://d007fbbdeb6241b5b2c542a6bc548cf3@o43889.ingest.sentry.io/85815";
     
-    private final Raven raven;
-
     public ReportController() {
-        raven = RavenFactory.ravenInstance(POST_URL);
+        Sentry.init(options -> {
+            options.setDsn(POST_URL);
+        });
     }
 
     public void sendReport(final Report report) {
@@ -93,15 +97,17 @@ public class ReportController {
 
             @Override
             public void run() {
-                ProgressHandle handle = ProgressHandleFactory.createHandle(NbBundle.getMessage(ReportController.class, "ReportController.status.sending"));
+                ProgressHandle handle = ProgressHandleFactory
+                    .createHandle(NbBundle.getMessage(ReportController.class, "ReportController.status.sending"));
                 try {
                     handle.start();
-                    
+
                     sendSentryReport(report);
-                    
+
                     handle.finish();
                     DialogDisplayer.getDefault().notify(
-                            new NotifyDescriptor.Message(NbBundle.getMessage(ReportController.class, "ReportController.status.sent"),
+                        new NotifyDescriptor.Message(
+                            NbBundle.getMessage(ReportController.class, "ReportController.status.sent"),
                             NotifyDescriptor.INFORMATION_MESSAGE));
                     return;
                 } catch (Exception e) {
@@ -109,35 +115,36 @@ public class ReportController {
                 }
                 handle.finish();
                 DialogDisplayer.getDefault().notify(
-                        new NotifyDescriptor.Message(NbBundle.getMessage(ReportController.class, "ReportController.status.failed"),
+                    new NotifyDescriptor.Message(
+                        NbBundle.getMessage(ReportController.class, "ReportController.status.failed"),
                         NotifyDescriptor.WARNING_MESSAGE));
             }
 
         }, "Exception Reporter");
         thread.start();
     }
-    
+
     private void sendSentryReport(Report report) {
-        EventBuilder eventBuilder = new EventBuilder().withMessage(report.getThrowable().getMessage())
-                .withLevel(Event.Level.ERROR)
-                .withSentryInterface(new ExceptionInterface(report.getThrowable()))
-                .withRelease(report.getVersion())
-                .withServerName("Gephi Desktop")//Avoid raven looking up 'localhost' as hostname
-                .withExtra("OS", report.getOs())
-                .withExtra("Heap memory usage", report.getHeapMemoryUsage())
-                .withExtra("Non heap memory usage", report.getNonHeapMemoryUsage())
-                .withExtra("Processors", report.getNumberOfProcessors())
-                .withExtra("Screen devices", report.getScreenDevices())
-                .withExtra("Screen size", report.getScreenSize())
-                .withExtra("User description", report.getUserDescription())
-                .withExtra("User email", report.getUserEmail())
-                .withExtra("VM", report.getVm())
-                .withExtra("OpenGL Vendor", report.getGlVendor())
-                .withExtra("OpenGL Renderer", report.getGlRenderer())
-                .withExtra("OpenGL Version", report.getGlVersion())
-                .withExtra("Log", report.getLog());
-        
-        raven.sendEvent(eventBuilder);
+        SentryEvent event = new SentryEvent();
+        event.setLevel(SentryLevel.ERROR);
+        event.setRelease(report.getVersion());
+        event.setServerName("Gephi Desktop");
+        event.setExtra("OS", report.getOs());
+        event.setExtra("Heap memory usage", report.getHeapMemoryUsage());
+        event.setExtra("Non heap memory usage", report.getNonHeapMemoryUsage());
+        event.setExtra("Processors", report.getNumberOfProcessors());
+        event.setExtra("Screen devices", report.getScreenDevices());
+        event.setExtra("Screen size", report.getScreenSize());
+        event.setExtra("VM", report.getVm());
+        event.setExtra("OpenGL Vendor", report.getGlVendor());
+        event.setExtra("OpenGL Renderer", report.getGlRenderer());
+        event.setExtra("OpenGL Version", report.getGlVersion());
+        // The user email is okay to store privacy-wise, because it is provided by the user voluntarily
+        event.setExtra("User email", report.getUserEmail());
+        event.setExtra("Log", anonymizeLog(report.getLog()));
+        event.setThrowable(report.getThrowable());
+
+        Sentry.captureEvent(event);
     }
 
     public Document buildReportDocument(Report report) {
@@ -151,7 +158,7 @@ public class ReportController {
         //logModules(report);
         return buildXMLDocument(report);
     }
-    
+
     private Document buildXMLDocument(Report report) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -181,8 +188,8 @@ public class ReportController {
         report.setNumberOfProcessors(bean.getAvailableProcessors());
         String unknown = "unknown";                                   // NOI18N
         String str = System.getProperty("os.name", unknown) + ", " + // NOI18N
-                System.getProperty("os.version", unknown) + ", " + // NOI18N
-                System.getProperty("os.arch", unknown);               // NOI18N
+            System.getProperty("os.version", unknown) + ", " + // NOI18N
+            System.getProperty("os.arch", unknown);               // NOI18N
 
         report.setOs(str);
     }
@@ -195,9 +202,9 @@ public class ReportController {
 
     private void logJavaInfo(Report report) {
         String str = System.getProperty("java.vm.name", "unknown") + ", " // NOI18N
-                + System.getProperty("java.vm.version", "") + ", " // NOI18N
-                + System.getProperty("java.runtime.name", "unknown") + ", " // NOI18N
-                + System.getProperty("java.runtime.version", ""); // NOI18N
+            + System.getProperty("java.vm.version", "") + ", " // NOI18N
+            + System.getProperty("java.runtime.name", "unknown") + ", " // NOI18N
+            + System.getProperty("java.runtime.version", ""); // NOI18N
         report.setVm(str);
     }
 
@@ -205,9 +212,9 @@ public class ReportController {
         String str = ""; // NOI18N
         try {
             str = MessageFormat.format(
-                    NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion"), // NOI18N
-                    new Object[]{System.getProperty("netbeans.buildnumber")} // NOI18N
-                    );
+                NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion"), // NOI18N
+                // NOI18N
+                System.getProperty("netbeans.buildnumber"));
             report.setVersion(str);
         } catch (MissingResourceException ex) {
         }
@@ -238,7 +245,7 @@ public class ReportController {
             String moduleStr = "";
             SpecificationVersion specVersion = m.getSpecificationVersion();
             if (specVersion != null) {
-                moduleStr = m.getCodeName() + " [" + specVersion.toString() + "]";
+                moduleStr = m.getCodeName() + " [" + specVersion + "]";
             } else {
                 moduleStr = m.getCodeName();
             }
@@ -252,13 +259,9 @@ public class ReportController {
 
     private void logMessageLog(Report report) {
         System.out.flush();
-        String ud = System.getProperty("netbeans.user"); // NOI18N
-        if (ud == null || "memory".equals(ud)) { // NOI18N
-            return;
-        }
         Handler[] handlers = Logger.getLogger("").getHandlers();
         handlers[0].flush();
-        File userDir = new File(ud); // NOI18N
+        File userDir = Places.getUserDirectory();
         File directory = new File(new File(userDir, "var"), "log");
         File messagesLog = new File(directory, "messages.log");
         String log = "";
@@ -270,5 +273,14 @@ public class ReportController {
         } catch (Exception e) {
         }
         report.setLog(log);
+    }
+
+    /**
+     * Removes usernames from log files
+     */
+    protected static String anonymizeLog(String log) {
+        return log.replaceAll(
+                "(/((home)|(Users))/[^/\n]*)|(\\\\Users\\\\[^\\\\\n]*)",
+                "/ANONYMIZED_HOME_DIR"); // NOI18N
     }
 }

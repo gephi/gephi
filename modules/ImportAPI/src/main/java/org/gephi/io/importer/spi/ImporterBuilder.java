@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.spi;
 
 import org.gephi.io.importer.api.ImportController;
@@ -62,12 +63,12 @@ public interface ImporterBuilder {
      *
      * @return a new importer
      */
-    public Importer buildImporter();
+    Importer buildImporter();
 
     /**
      * Returns the name of this builder
      *
      * @return the name of this importer
      */
-    public String getName();
+    String getName();
 }

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.generator.spi;
 
 import javax.swing.JPanel;
@@ -50,25 +51,28 @@ import javax.swing.JPanel;
  * Note that panels are compatible with <code>ValidationAPI</code>. If the
  * <code>JPanel</code> returned from {@link #getPanel()} is a <code>ValidationPanel</code>
  * instance, the dialog OK button will be linked to the <code>ValidationGroup</code>.
+ *
  * @author Mathieu Bastian
  */
 public interface GeneratorUI {
 
     /**
      * Returns the panel settings.
-     * @return          the panel settings
+     *
+     * @return the panel settings
      */
-    public JPanel getPanel();
+    JPanel getPanel();
 
     /**
      * Push the generator instance to get settings values.
+     *
      * @param generator the generator instance that is to be configured
      */
-    public void setup(Generator generator);
+    void setup(Generator generator);
 
     /**
      * Notify UI that generator settings panel has been closed and that
      * settings values can be written into current generator instance.
      */
-    public void unsetup();
+    void unsetup();
 }

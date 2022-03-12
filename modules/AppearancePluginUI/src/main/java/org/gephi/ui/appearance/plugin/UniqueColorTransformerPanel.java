@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.ui.appearance.plugin;
 
 import java.awt.Color;
@@ -49,12 +50,14 @@ import org.gephi.appearance.api.SimpleFunction;
 import org.gephi.appearance.plugin.AbstractUniqueColorTransformer;
 
 /**
- *
  * @author mbastian
  */
 public class UniqueColorTransformerPanel extends javax.swing.JPanel {
 
     private AbstractUniqueColorTransformer transformer;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private net.java.dev.colorchooser.ColorChooser colorChooser;
+    private javax.swing.JLabel colorLabel;
 
     public UniqueColorTransformerPanel() {
         initComponents();
@@ -73,7 +76,7 @@ public class UniqueColorTransformerPanel extends javax.swing.JPanel {
     }
 
     public void setup(SimpleFunction function) {
-        transformer = (AbstractUniqueColorTransformer) function.getTransformer();
+        transformer = function.getTransformer();
         colorChooser.setColor(transformer.getColor());
         colorLabel.setText(getHex(transformer.getColor()));
     }
@@ -96,42 +99,43 @@ public class UniqueColorTransformerPanel extends javax.swing.JPanel {
 
         colorChooser.setMinimumSize(new java.awt.Dimension(14, 14));
         colorChooser.setPreferredSize(new java.awt.Dimension(14, 14));
-        colorChooser.setToolTipText(org.openide.util.NbBundle.getMessage(UniqueColorTransformerPanel.class, "UniqueColorTransformerPanel.colorChooser.toolTipText")); // NOI18N
+        colorChooser.setToolTipText(org.openide.util.NbBundle.getMessage(UniqueColorTransformerPanel.class,
+            "UniqueColorTransformerPanel.colorChooser.toolTipText")); // NOI18N
 
         javax.swing.GroupLayout colorChooserLayout = new javax.swing.GroupLayout(colorChooser);
         colorChooser.setLayout(colorChooserLayout);
         colorChooserLayout.setHorizontalGroup(
             colorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 12, Short.MAX_VALUE)
+                .addGap(0, 12, Short.MAX_VALUE)
         );
         colorChooserLayout.setVerticalGroup(
             colorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 12, Short.MAX_VALUE)
+                .addGap(0, 12, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(colorChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(colorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(colorChooser, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(colorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 380,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(colorLabel)
-                    .addComponent(colorChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(278, 278, 278))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(colorLabel)
+                        .addComponent(colorChooser, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(278, 278, 278))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private net.java.dev.colorchooser.ColorChooser colorChooser;
-    private javax.swing.JLabel colorLabel;
     // End of variables declaration//GEN-END:variables
 }

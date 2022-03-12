@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.preview;
 
 import java.io.InputStream;
@@ -70,7 +71,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class PresetUtils {
@@ -100,7 +100,7 @@ public class PresetUtils {
             }
 
             String filename = DigestUtils.sha1Hex(preset.getName());//Safe filename
-            
+
             FileObject presetFile = folder.getFileObject(filename, "xml");
             if (presetFile == null) {
                 presetFile = folder.createData(filename, "xml");
@@ -184,7 +184,8 @@ public class PresetUtils {
     }
 
     private PreviewPreset readXML(Document document) {
-        DefaultPreset defaultPreset = new DefaultPreset();//For retrieving property class if it is not in the xml (old serialization)
+        DefaultPreset defaultPreset =
+            new DefaultPreset();//For retrieving property class if it is not in the xml (old serialization)
 
         Element presetE = document.getDocumentElement();
         Map<String, Object> propertiesMap = new HashMap<>();

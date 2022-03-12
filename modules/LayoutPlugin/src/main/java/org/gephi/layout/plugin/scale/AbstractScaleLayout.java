@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.scale;
 
 import java.util.ArrayList;
@@ -86,11 +87,13 @@ public abstract class AbstractScaleLayout extends AbstractLayout implements Layo
             yMean /= graph.getNodeCount();
 
             for (Node n : graph.getNodes()) {
-                double dx = (n.x() - xMean) * getScale();
-                double dy = (n.y() - yMean) * getScale();
+                if (!n.isFixed()) {
+                    double dx = (n.x() - xMean) * getScale();
+                    double dy = (n.y() - yMean) * getScale();
 
-                n.setX((float) (xMean + dx));
-                n.setY((float) (yMean + dy));
+                    n.setX((float) (xMean + dx));
+                    n.setY((float) (yMean + dy));
+                }
             }
             setConverged(true);
         } finally {
@@ -107,12 +110,12 @@ public abstract class AbstractScaleLayout extends AbstractLayout implements Layo
         List<LayoutProperty> properties = new ArrayList<>();
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
-                    NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.name"),
-                    null,
-                    "ScaleLayout.scaleFactor.name",
-                    NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.desc"),
-                    "getScale", "setScale"));
+                this, Double.class,
+                NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.name"),
+                null,
+                "ScaleLayout.scaleFactor.name",
+                NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.desc"),
+                "getScale", "setScale"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }

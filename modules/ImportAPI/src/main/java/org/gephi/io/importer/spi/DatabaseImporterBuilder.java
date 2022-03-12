@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.spi;
 
 /**
@@ -54,5 +55,5 @@ public interface DatabaseImporterBuilder extends ImporterBuilder {
      * @return a new database importer
      */
     @Override
-    public DatabaseImporter buildImporter();
+    DatabaseImporter buildImporter();
 }

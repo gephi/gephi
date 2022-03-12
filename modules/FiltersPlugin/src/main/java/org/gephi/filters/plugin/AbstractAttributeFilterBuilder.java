@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin;
 
 import javax.swing.Icon;
@@ -48,7 +49,6 @@ import org.gephi.graph.api.Column;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author mbastian
  */
 public abstract class AbstractAttributeFilterBuilder extends AbstractFilterBuilder {
@@ -59,10 +59,12 @@ public abstract class AbstractAttributeFilterBuilder extends AbstractFilterBuild
         super(category, "<font color='#000000'>" + column.getTitle() + "</font> "
                 + "<font color='#999999'><i>" + column.getTypeClass().getSimpleName() + " "
                 + (AttributeUtils.isNodeColumn(column)
-                ? "(" + NbBundle.getMessage(AbstractAttributeFilterBuilder.class, "AbstractAttributeFilterBuilder.Node") + ")"
-                : "(" + NbBundle.getMessage(AbstractAttributeFilterBuilder.class, "AbstractAttributeFilterBuilder.Edge") + ")")
+                ?
+                "(" + NbBundle.getMessage(AbstractAttributeFilterBuilder.class, "AbstractAttributeFilterBuilder.Node") + ")"
+                : "(" + NbBundle.getMessage(AbstractAttributeFilterBuilder.class, "AbstractAttributeFilterBuilder.Edge") +
+                ")")
                 + "</i></font>",
-                description, icon);
+            description, icon);
         this.column = column;
     }
 }

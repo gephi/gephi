@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.importer.spi;
 
 import org.gephi.io.importer.api.Database;
@@ -53,14 +54,16 @@ import org.gephi.io.importer.api.ImportController;
 public interface DatabaseImporter extends Importer {
 
     /**
-     * Sets the database description, connection details and queries
-     * @param database  the database that is to be used to import
+     * Returns the current database description, connection details and queries
+     *
+     * @return the database that is to be used to import
      */
-    public void setDatabase(Database database);
+    Database getDatabase();
 
     /**
-     * Returns the current database description, connection details and queries
-     * @return         the database that is to be used to import
+     * Sets the database description, connection details and queries
+     *
+     * @param database the database that is to be used to import
      */
-    public Database getDatabase();
+    void setDatabase(Database database);
 }

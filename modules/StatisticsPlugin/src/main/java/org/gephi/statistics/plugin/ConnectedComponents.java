@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.text.DecimalFormat;
@@ -69,20 +70,19 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author pjmcswee
  */
 public class ConnectedComponents implements Statistics, LongTask {
 
     public static final String WEAKLY = "componentnumber";
     public static final String STRONG = "strongcompnum";
+    int count;
     private boolean isDirected;
     private ProgressTicket progress;
     private boolean isCanceled;
     private int componentCount;
     private int stronglyCount;
     private int[] componentsSize;
-    int count;
 
     public ConnectedComponents() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
@@ -154,14 +154,14 @@ public class ConnectedComponents implements Statistics, LongTask {
 
             //While there are more nodes to search
             while (!Q.isEmpty()) {
-                
+
                 if (isCanceled) {
                     return new LinkedList<>();
                 }
                 //Get the next Node and add it to the component list
                 Node u = Q.removeFirst();
                 component.add(u);
-                
+
                 color[indices.get(u)] = 2;
 
                 //Iterate over all of u's neighbors
@@ -179,14 +179,14 @@ public class ConnectedComponents implements Statistics, LongTask {
                         Q.addLast(reachable);
                     }
                 }
-                
+
                 seenCount++;
                 Progress.progress(progress, seenCount);
             }
-            
+
             components.add(component);
         }
-        
+
         return components;
     }
 
@@ -288,7 +288,9 @@ public class ConnectedComponents implements Statistics, LongTask {
         }
     }
 
-    private LinkedList<LinkedList<Node>> tarjans(LinkedList<LinkedList<Node>> components, LinkedList<Node> S, DirectedGraph graph, Node f, int[] index, int[] low_index, HashMap<Node, Integer> indices) {
+    private LinkedList<LinkedList<Node>> tarjans(LinkedList<LinkedList<Node>> components, LinkedList<Node> S,
+                                                 DirectedGraph graph, Node f, int[] index, int[] low_index,
+                                                 HashMap<Node, Integer> indices) {
         int id = indices.get(f);
         index[id] = count;
         low_index[id] = count;
@@ -321,12 +323,12 @@ public class ConnectedComponents implements Statistics, LongTask {
         return componentCount;
     }
 
-    public void setDirected(boolean isDirected) {
-        this.isDirected = isDirected;
-    }
-
     public boolean isDirected() {
         return isDirected;
+    }
+
+    public void setDirected(boolean isDirected) {
+        this.isDirected = isDirected;
     }
 
     /**
@@ -382,14 +384,14 @@ public class ConnectedComponents implements Statistics, LongTask {
         dataset1.addSeries(dSeries);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Size Distribution",
-                "Size (number of nodes)",
-                "Count",
-                dataset1,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "Size Distribution",
+            "Size (number of nodes)",
+            "Count",
+            dataset1,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dSeries, false);
@@ -398,17 +400,18 @@ public class ConnectedComponents implements Statistics, LongTask {
         NumberFormat f = new DecimalFormat("#0.000");
 
         String report = "<HTML> <BODY> <h1>Connected Components Report </h1> "
-                + "<hr>"
-                + "<br>"
-                + "<h2> Parameters: </h2>"
-                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
-                + "<br> <h2> Results: </h2>"
-                + "Number of Weakly Connected Components: " + componentCount + "<br>"
-                + (isDirected ? "Number of Strongly Connected Components: " + stronglyCount + "<br>" : "")
-                + "<br /><br />" + imageFile
-                + "<br />" + "<h2> Algorithm: </h2>"
-                + "Robert Tarjan, <i>Depth-First Search and Linear Graph Algorithms</i>, in SIAM Journal on Computing 1 (2): 146–160 (1972)<br />"
-                + "</BODY> </HTML>";
+            + "<hr>"
+            + "<br>"
+            + "<h2> Parameters: </h2>"
+            + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
+            + "<br> <h2> Results: </h2>"
+            + "Number of Weakly Connected Components: " + componentCount + "<br>"
+            + (isDirected ? "Number of Strongly Connected Components: " + stronglyCount + "<br>" : "")
+            + "<br /><br />" + imageFile
+            + "<br />" + "<h2> Algorithm: </h2>"
+            +
+            "Robert Tarjan, <i>Depth-First Search and Linear Graph Algorithms</i>, in SIAM Journal on Computing 1 (2): 146–160 (1972)<br />"
+            + "</BODY> </HTML>";
 
         return report;
     }

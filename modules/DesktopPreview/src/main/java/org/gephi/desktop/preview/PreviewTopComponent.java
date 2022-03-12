@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.preview;
 
 import java.awt.BorderLayout;
@@ -73,25 +74,38 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
 /**
- *
  * @author Jérémy Subtil, Mathieu Bastian
  */
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.preview//Preview//EN",
-        autostore = false)
+    autostore = false)
 @TopComponent.Description(preferredID = "PreviewTopComponent",
-        iconBase = "org/gephi/desktop/preview/resources/preview.png",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+    iconBase = "org/gephi/desktop/preview/resources/preview.png",
+    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"preview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.preview.PreviewTopComponent")
 @ActionReference(path = "Menu/Window", position = 900)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_PreviewTopComponent",
-        preferredID = "PreviewTopComponent")
+    preferredID = "PreviewTopComponent")
 public final class PreviewTopComponent extends TopComponent implements PropertyChangeListener {
 
     //Data
     private transient PreviewUIModel model;
     private transient G2DTarget target;
     private transient PreviewSketch sketch;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backgroundButton;
+    private javax.swing.JLabel bannerLabel;
+    private javax.swing.JPanel bannerPanel;
+    private javax.swing.JLabel busyLabel;
+    private javax.swing.JButton minusButton;
+    private javax.swing.JButton plusButton;
+    private javax.swing.JPanel previewPanel;
+    private javax.swing.JButton refreshButton;
+    private javax.swing.JPanel refreshPanel;
+    private javax.swing.JButton resetZoomButton;
+    private javax.swing.JPanel sketchPanel;
+    private javax.swing.JLabel southBusyLabel;
+    private javax.swing.JToolBar southToolbar;
 
     public PreviewTopComponent() {
         initComponents();
@@ -107,15 +121,17 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         bannerPanel.setVisible(false);
 
         //background color
-        ((JColorButton) backgroundButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-                previewController.getModel().getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, (Color) evt.getNewValue());
-                PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
-                previewUIController.refreshPreview();
-            }
-        });
+        backgroundButton
+            .addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+                    previewController.getModel().getProperties()
+                        .putValue(PreviewProperty.BACKGROUND_COLOR, evt.getNewValue());
+                    PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
+                    previewUIController.refreshPreview();
+                }
+            });
         southBusyLabel.setVisible(false);
         resetZoomButton.addActionListener(new ActionListener() {
             @Override
@@ -144,6 +160,30 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
             this.model = m;
             initTarget(model);
         }
+    }
+
+    /**
+     * Returns true if the default screen is in retina display (high dpi).
+     *
+     * @return true if retina, false otherwise
+     */
+    protected static boolean isRetina() {
+
+        boolean isRetina = false;
+        try {
+            GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+            Field field = graphicsDevice.getClass().getDeclaredField("scale");
+            if (field != null) {
+                field.setAccessible(true);
+                Object scale = field.get(graphicsDevice);
+                if (scale instanceof Integer && ((Integer) scale).intValue() == 2) {
+                    isRetina = true;
+                }
+            }
+        } catch (Exception e) {
+            //Ignore
+        }
+        return isRetina;
     }
 
     @Override
@@ -256,14 +296,14 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        southBusyLabel = new JXBusyLabel(new Dimension(14,14));
+        southBusyLabel = new JXBusyLabel(new Dimension(14, 14));
         bannerPanel = new javax.swing.JPanel();
         bannerLabel = new javax.swing.JLabel();
         refreshButton = new javax.swing.JButton();
         previewPanel = new javax.swing.JPanel();
         sketchPanel = new javax.swing.JPanel();
         refreshPanel = new javax.swing.JPanel();
-        busyLabel = new JXBusyLabel(new Dimension(20,20));
+        busyLabel = new JXBusyLabel(new Dimension(20, 20));
         southToolbar = new javax.swing.JToolBar();
         backgroundButton = new JColorButton(Color.WHITE);
         resetZoomButton = new javax.swing.JButton();
@@ -282,8 +322,10 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         bannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         bannerPanel.setLayout(new java.awt.GridBagLayout());
 
-        bannerLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/preview/resources/info.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(bannerLabel, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.bannerLabel.text")); // NOI18N
+        bannerLabel.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/preview/resources/info.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(bannerLabel, org.openide.util.NbBundle
+            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.bannerLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -292,7 +334,8 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 5);
         bannerPanel.add(bannerLabel, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.refreshButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle
+            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.refreshButton.text")); // NOI18N
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -325,7 +368,8 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         refreshPanel.setLayout(new java.awt.GridBagLayout());
 
         busyLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        org.openide.awt.Mnemonics.setLocalizedText(busyLabel, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.busyLabel.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(busyLabel, org.openide.util.NbBundle
+            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.busyLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
@@ -345,25 +389,29 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         southToolbar.setFloatable(false);
         southToolbar.setRollover(true);
 
-        org.openide.awt.Mnemonics.setLocalizedText(backgroundButton, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.backgroundButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(backgroundButton, org.openide.util.NbBundle
+            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.backgroundButton.text")); // NOI18N
         backgroundButton.setFocusable(false);
         southToolbar.add(backgroundButton);
 
-        org.openide.awt.Mnemonics.setLocalizedText(resetZoomButton, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.resetZoomButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(resetZoomButton, org.openide.util.NbBundle
+            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.resetZoomButton.text")); // NOI18N
         resetZoomButton.setFocusable(false);
         resetZoomButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         resetZoomButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         southToolbar.add(resetZoomButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(minusButton, "-"); // NOI18N
-        minusButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.minusButton.toolTipText")); // NOI18N
+        minusButton.setToolTipText(org.openide.util.NbBundle
+            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.minusButton.toolTipText")); // NOI18N
         minusButton.setFocusable(false);
         minusButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         minusButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         southToolbar.add(minusButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(plusButton, "+"); // NOI18N
-        plusButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.plusButton.toolTipText")); // NOI18N
+        plusButton.setToolTipText(org.openide.util.NbBundle
+            .getMessage(PreviewTopComponent.class, "PreviewTopComponent.plusButton.toolTipText")); // NOI18N
         plusButton.setFocusable(false);
         plusButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         plusButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -376,25 +424,12 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         gridBagConstraints.weightx = 1.0;
         add(southToolbar, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
+    // End of variables declaration//GEN-END:variables
 
-    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+    private void refreshButtonActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         Lookup.getDefault().lookup(PreviewUIController.class).refreshPreview();
     }//GEN-LAST:event_refreshButtonActionPerformed
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton backgroundButton;
-    private javax.swing.JLabel bannerLabel;
-    private javax.swing.JPanel bannerPanel;
-    private javax.swing.JLabel busyLabel;
-    private javax.swing.JButton minusButton;
-    private javax.swing.JButton plusButton;
-    private javax.swing.JPanel previewPanel;
-    private javax.swing.JButton refreshButton;
-    private javax.swing.JPanel refreshPanel;
-    private javax.swing.JButton resetZoomButton;
-    private javax.swing.JPanel sketchPanel;
-    private javax.swing.JLabel southBusyLabel;
-    private javax.swing.JToolBar southToolbar;
-    // End of variables declaration//GEN-END:variables
 
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
@@ -406,29 +441,5 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
-    }
-
-    /**
-     * Returns true if the default screen is in retina display (high dpi).
-     *
-     * @return true if retina, false otherwise
-     */
-    protected static boolean isRetina() {
-
-        boolean isRetina = false;
-        try {
-            GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-            Field field = graphicsDevice.getClass().getDeclaredField("scale");
-            if (field != null) {
-                field.setAccessible(true);
-                Object scale = field.get(graphicsDevice);
-                if (scale instanceof Integer && ((Integer) scale).intValue() == 2) {
-                    isRetina = true;
-                }
-            }
-        } catch (Exception e) {
-            //Ignore
-        }
-        return isRetina;
     }
 }

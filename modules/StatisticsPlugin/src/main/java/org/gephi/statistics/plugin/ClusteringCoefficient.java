@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.text.DecimalFormat;
@@ -89,7 +90,6 @@ class Renumbering implements Comparator<EdgeWrapper> {
 }
 
 /**
- *
  * @author pjmcswee
  */
 class EdgeWrapper {
@@ -104,14 +104,13 @@ class EdgeWrapper {
 }
 
 /**
- *
  * @author pjmcswee
  */
 class ArrayWrapper implements Comparable {
 
+    public Node node;
     private EdgeWrapper[] array;
     private int ID;
-    public Node node;
 
     /**
      * Empty Constructor/
@@ -120,15 +119,25 @@ class ArrayWrapper implements Comparable {
     }
 
     /**
-     *
+     * @param array
+     */
+    ArrayWrapper(int ID, EdgeWrapper[] array) {
+        this.array = array;
+        this.ID = ID;
+    }
+
+    /**
      * @return The ID of this array wrapper
      */
     public int getID() {
         return ID;
     }
 
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
     /**
-     *
      * @return The adjacency array
      */
     public EdgeWrapper[] getArray() {
@@ -140,20 +149,6 @@ class ArrayWrapper implements Comparable {
     }
 
     /**
-     *
-     * @param array
-     */
-    ArrayWrapper(int ID, EdgeWrapper[] array) {
-        this.array = array;
-        this.ID = ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
-    }
-
-    /**
-     *
      * @param index
      * @return
      */
@@ -172,7 +167,6 @@ class ArrayWrapper implements Comparable {
     }
 
     /**
-     *
      * @return
      */
     public int length() {
@@ -180,7 +174,6 @@ class ArrayWrapper implements Comparable {
     }
 
     /**
-     *
      * @param o
      * @return
      */
@@ -198,7 +191,6 @@ class ArrayWrapper implements Comparable {
 }
 
 /**
- *
  * @author Patrick J. McSweeney
  */
 public class ClusteringCoefficient implements Statistics, LongTask {
@@ -293,13 +285,14 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     public void triangles(Graph graph) {
         initStartValues(graph);
         HashMap<String, Double> resultValues = computeTriangles(graph, network, triangles,
-                nodeClustering, isDirected);
+            nodeClustering, isDirected);
         totalTriangles = resultValues.get("triangles").intValue();
         avgClusteringCoeff = resultValues.get("clusteringCoefficient");
     }
 
     public HashMap<String, Double> computeClusteringCoefficient(Graph graph, ArrayWrapper[] currentNetwork,
-            int[] currentTriangles, double[] currentNodeClustering, boolean directed) {
+                                                                int[] currentTriangles, double[] currentNodeClustering,
+                                                                boolean directed) {
         HashMap<String, Double> resultValues = new HashMap<>();
 
         if (directed) {
@@ -322,7 +315,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         triangles = new int[N];
     }
 
-    public int createIndiciesMapAndInitNetwork(Graph graph, HashMap<Node, Integer> indicies, ArrayWrapper[] networks, int currentProgress) {
+    public int createIndiciesMapAndInitNetwork(Graph graph, HashMap<Node, Integer> indicies, ArrayWrapper[] networks,
+                                               int currentProgress) {
         int index = 0;
         for (Node s : graph.getNodes()) {
             indicies.put(s, index);
@@ -371,7 +365,6 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     }
 
     /**
-     *
      * @param v - The specific node to count the triangles on.
      */
     private void newVertex(ArrayWrapper[] currentNetwork, int[] currentTrianlgles, int v, int n) {
@@ -414,7 +407,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     }
 
     private HashMap<Node, EdgeWrapper> createNeighbourTable(Graph graph, Node node, HashMap<Node, Integer> indicies,
-            ArrayWrapper[] networks, boolean directed) {
+                                                            ArrayWrapper[] networks, boolean directed) {
 
         HashMap<Node, EdgeWrapper> neighborTable = new HashMap<>();
 
@@ -466,7 +459,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         return currentProgress;
     }
 
-    private int computeRemainingTrianles(Graph graph, ArrayWrapper[] currentNetwork, int[] currentTriangles, int currentProgress) {
+    private int computeRemainingTrianles(Graph graph, ArrayWrapper[] currentNetwork, int[] currentTriangles,
+                                         int currentProgress) {
         int n = graph.getNodeCount();
         int k = (int) Math.sqrt(n);
         for (int v = n - 1; (v >= 0) && (v >= k); v--) {
@@ -486,7 +480,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     }
 
     private HashMap<String, Double> computeResultValues(Graph graph, ArrayWrapper[] currentNetwork,
-            int[] currentTriangles, double[] currentNodeClusterig, boolean directed, int currentProgress) {
+                                                        int[] currentTriangles, double[] currentNodeClusterig,
+                                                        boolean directed, int currentProgress) {
         int n = graph.getNodeCount();
         HashMap<String, Double> totalValues = new HashMap<>();
         int numNodesDegreeGreaterThanOne = 0;
@@ -519,7 +514,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     }
 
     private HashMap<String, Double> computeTriangles(Graph graph, ArrayWrapper[] currentNetwork, int[] currentTriangles,
-            double[] nodeClustering, boolean directed) {
+                                                     double[] nodeClustering, boolean directed) {
 
         HashMap<String, Double> resultValues = new HashMap<>();
         int ProgressCount = 0;
@@ -541,7 +536,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             int index = 0;
             NodeIterable nodesIterable = graph.getNodes();
             for (Node node : nodesIterable) {
-                HashMap<Node, EdgeWrapper> neighborTable = createNeighbourTable(graph, node, indicies, currentNetwork, directed);
+                HashMap<Node, EdgeWrapper> neighborTable =
+                    createNeighbourTable(graph, node, indicies, currentNetwork, directed);
 
                 EdgeWrapper[] edges = getEdges(neighborTable);
                 currentNetwork[index].node = node;
@@ -567,7 +563,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             /* remaining links */
             ProgressCount = computeRemainingTrianles(graph, currentNetwork, currentTriangles, ProgressCount);
 
-            resultValues = computeResultValues(graph, currentNetwork, currentTriangles, nodeClustering, directed, ProgressCount);
+            resultValues =
+                computeResultValues(graph, currentNetwork, currentTriangles, nodeClustering, directed, ProgressCount);
         } finally {
             graph.readUnlock();
         }
@@ -582,7 +579,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         float totalCC = 0;
 
         graph.readLock();
-        
+
         try {
             Progress.start(progress, graph.getNodeCount());
             int node_count = 0;
@@ -607,7 +604,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
             }
             double clusteringCoeff = totalCC / graph.getNodeCount();
-            
+
             return clusteringCoeff;
         } finally {
             graph.readUnlockAll();
@@ -675,7 +672,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     }
 
     private void saveCalculatedValue(Node node, Column clusteringColumn,
-            double nodeClusteringCoefficient) {
+                                     double nodeClusteringCoefficient) {
 
         if (clusteringColumn == null) {
             return;
@@ -703,14 +700,14 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         dataset.addSeries(dSeries);
 
         JFreeChart chart = ChartFactory.createScatterPlot(
-                "Clustering Coefficient Distribution",
-                "Value",
-                "Count",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "Clustering Coefficient Distribution",
+            "Value",
+            "Count",
+            dataset,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dSeries, false);
@@ -720,39 +717,40 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         if (isDirected) {
             return "<HTML> <BODY> <h1> Clustering Coefficient Metric Report </h1> "
-                    + "<hr>"
-                    + "<br />" + "<h2> Parameters: </h2>"
-                    + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br />"
-                    + "<br>" + "<h2> Results: </h2>"
-                    + "Average Clustering Coefficient: " + f.format(avgClusteringCoeff) + "<br />"
-                    + "The Average Clustering Coefficient is the mean value of individual coefficients.<br /><br />"
-                    + imageFile
-                    + "<br /><br />" + "<h2> Algorithm: </h2>"
-                    + "Simple and slow brute force.<br />"
-                    + "</BODY> </HTML>";
+                + "<hr>"
+                + "<br />" + "<h2> Parameters: </h2>"
+                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br />"
+                + "<br>" + "<h2> Results: </h2>"
+                + "Average Clustering Coefficient: " + f.format(avgClusteringCoeff) + "<br />"
+                + "The Average Clustering Coefficient is the mean value of individual coefficients.<br /><br />"
+                + imageFile
+                + "<br /><br />" + "<h2> Algorithm: </h2>"
+                + "Simple and slow brute force.<br />"
+                + "</BODY> </HTML>";
         } else {
 
             return "<HTML> <BODY> <h1> Clustering Coefficient Metric Report </h1> "
-                    + "<hr>"
-                    + "<br />" + "<h2> Parameters: </h2>"
-                    + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br />"
-                    + "<br>" + "<h2> Results: </h2>"
-                    + "Average Clustering Coefficient: " + f.format(avgClusteringCoeff) + "<br />"
-                    + "Total triangles: " + totalTriangles + "<br />"
-                    + "The Average Clustering Coefficient is the mean value of individual coefficients.<br /><br />"
-                    + imageFile
-                    + "<br /><br />" + "<h2> Algorithm: </h2>"
-                    + "Matthieu Latapy, <i>Main-memory Triangle Computations for Very Large (Sparse (Power-Law)) Graphs</i>, in Theoretical Computer Science (TCS) 407 (1-3), pages 458-473, 2008<br />"
-                    + "</BODY> </HTML>";
+                + "<hr>"
+                + "<br />" + "<h2> Parameters: </h2>"
+                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br />"
+                + "<br>" + "<h2> Results: </h2>"
+                + "Average Clustering Coefficient: " + f.format(avgClusteringCoeff) + "<br />"
+                + "Total triangles: " + totalTriangles + "<br />"
+                + "The Average Clustering Coefficient is the mean value of individual coefficients.<br /><br />"
+                + imageFile
+                + "<br /><br />" + "<h2> Algorithm: </h2>"
+                +
+                "Matthieu Latapy, <i>Main-memory Triangle Computations for Very Large (Sparse (Power-Law)) Graphs</i>, in Theoretical Computer Science (TCS) 407 (1-3), pages 458-473, 2008<br />"
+                + "</BODY> </HTML>";
         }
-    }
-
-    public void setDirected(boolean isDirected) {
-        this.isDirected = isDirected;
     }
 
     public boolean isDirected() {
         return isDirected;
+    }
+
+    public void setDirected(boolean isDirected) {
+        this.isDirected = isDirected;
     }
 
     @Override

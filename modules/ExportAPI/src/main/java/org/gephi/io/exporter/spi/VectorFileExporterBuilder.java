@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.exporter.spi;
 
 /**
@@ -50,8 +51,9 @@ public interface VectorFileExporterBuilder extends FileExporterBuilder {
 
     /**
      * Builds a new vector exporter instance, ready to be used.
-     * @return  a new vector exporter
+     *
+     * @return a new vector exporter
      */
     @Override
-    public VectorExporter buildExporter();
+    VectorExporter buildExporter();
 }

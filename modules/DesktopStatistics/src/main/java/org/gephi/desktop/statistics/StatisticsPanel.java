@@ -40,6 +40,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.statistics;
 
 import java.awt.BorderLayout;
@@ -57,7 +58,6 @@ import org.gephi.ui.components.JSqueezeBoxPanel;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  * @author Patick J. McSweeney
  */
@@ -174,11 +174,14 @@ public class StatisticsPanel extends JPanel {
 
     private void initCategories() {
         Map<String, StatisticsCategory> cats = new LinkedHashMap<>();
-        cats.put(StatisticsUI.CATEGORY_NETWORK_OVERVIEW, new StatisticsCategory(StatisticsUI.CATEGORY_NETWORK_OVERVIEW, 100));
+        cats.put(StatisticsUI.CATEGORY_NETWORK_OVERVIEW,
+            new StatisticsCategory(StatisticsUI.CATEGORY_NETWORK_OVERVIEW, 100));
+        cats.put(StatisticsUI.CATEGORY_COMMUNITY_DETECTION,
+            new StatisticsCategory(StatisticsUI.CATEGORY_COMMUNITY_DETECTION, 150));
         cats.put(StatisticsUI.CATEGORY_NODE_OVERVIEW, new StatisticsCategory(StatisticsUI.CATEGORY_NODE_OVERVIEW, 200));
         cats.put(StatisticsUI.CATEGORY_EDGE_OVERVIEW, new StatisticsCategory(StatisticsUI.CATEGORY_EDGE_OVERVIEW, 300));
         cats.put(StatisticsUI.CATEGORY_DYNAMIC, new StatisticsCategory(StatisticsUI.CATEGORY_DYNAMIC, 400));
-        
+
         int position = 500;
         for (StatisticsUI uis : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
             String category = uis.getCategory();
@@ -203,9 +206,9 @@ public class StatisticsPanel extends JPanel {
 
     private static class UIFrontEnd {
 
-        private StatisticsUI statisticsUI;
-        private StatisticsFrontEnd frontEnd;
-        private StatisticsCategory category;
+        private final StatisticsUI statisticsUI;
+        private final StatisticsFrontEnd frontEnd;
+        private final StatisticsCategory category;
         private boolean visible;
 
         public UIFrontEnd(StatisticsUI statisticsUI, StatisticsFrontEnd frontEnd, StatisticsCategory category) {

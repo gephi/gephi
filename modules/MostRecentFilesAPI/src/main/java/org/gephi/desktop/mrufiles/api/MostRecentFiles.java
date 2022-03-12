@@ -39,17 +39,17 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.mrufiles.api;
 
 import java.util.List;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface MostRecentFiles {
 
-    public void addFile(String absolutePath);
+    void addFile(String absolutePath);
 
-    public List<String> getMRUFileList();
+    List<String> getMRUFileList();
 }

@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.ui.utils;
 
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class TimeZoneWrapper {
@@ -62,7 +62,7 @@ public class TimeZoneWrapper {
         int offset = timeZone.getOffset(currentTimestamp);
         long hours = TimeUnit.MILLISECONDS.toHours(offset);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(offset)
-                - TimeUnit.HOURS.toMinutes(hours);
+            - TimeUnit.HOURS.toMinutes(hours);
         minutes = Math.abs(minutes);
 
         if (hours >= 0) {
@@ -91,10 +91,7 @@ public class TimeZoneWrapper {
             return false;
         }
         final TimeZoneWrapper other = (TimeZoneWrapper) obj;
-        if (this.timeZone != other.timeZone && (this.timeZone == null || !this.timeZone.equals(other.timeZone))) {
-            return false;
-        }
-        return true;
+        return this.timeZone == other.timeZone || (this.timeZone != null && this.timeZone.equals(other.timeZone));
     }
 
     @Override

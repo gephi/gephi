@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.ui.utils;
 
 import org.gephi.graph.api.TimeRepresentation;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class TimeRepresentationWrapper {
@@ -75,19 +75,17 @@ public class TimeRepresentationWrapper {
             return false;
         }
         final TimeRepresentationWrapper other = (TimeRepresentationWrapper) obj;
-        if (this.timeRepresentation != other.timeRepresentation) {
-            return false;
-        }
-        return true;
+        return this.timeRepresentation == other.timeRepresentation;
     }
 
     @Override
     public String toString() {
-        return NbBundle.getMessage(TimeRepresentationWrapper.class, "TimeRepresentationWrapper.timeRepresentation." + timeRepresentation.name());
+        return NbBundle.getMessage(TimeRepresentationWrapper.class,
+            "TimeRepresentationWrapper.timeRepresentation." + timeRepresentation.name());
     }
 
     public TimeRepresentation getTimeRepresentation() {
         return timeRepresentation;
     }
-    
+
 }

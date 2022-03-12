@@ -39,43 +39,31 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance;
 
+import org.gephi.graph.api.Column;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Element;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 
 /**
- *
  * @author mbastian
  */
-public class InDegreeRankingImpl extends RankingImpl {
+public class InDegreeRankingImpl extends DegreeRankingImpl {
 
-    private final DirectedGraph graph;
-
-    public InDegreeRankingImpl(DirectedGraph graph) {
-        super();
-        this.graph = graph;
+    public InDegreeRankingImpl(Column degreeColumn) {
+        super(degreeColumn);
     }
 
     @Override
     public Number getValue(Element element, Graph gr) {
-        return ((DirectedGraph)gr).getInDegree((Node) element);
+        return ((DirectedGraph) gr).getInDegree((Node) element);
     }
 
     @Override
-    protected void refresh() {
-        if (graph.getNodeCount() > 0) {
-            int minV = Integer.MAX_VALUE;
-            int maxV = Integer.MIN_VALUE;
-            for (Node n : graph.getNodes()) {
-                int degree = graph.getInDegree(n);
-                minV = Math.min(degree, minV);
-                maxV = Math.max(degree, maxV);
-            }
-            min = minV;
-            max = maxV;
-        }
+    public boolean isValid(Graph graph) {
+        return graph.isDirected();
     }
 }

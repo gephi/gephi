@@ -39,12 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.layout.plugin.labelAdjust;
 
 import org.gephi.layout.plugin.ForceVectorNodeLayoutData;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class LabelAdjustLayoutData extends ForceVectorNodeLayoutData {

@@ -39,12 +39,13 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.utils.sparklines;
 
 import java.awt.Color;
 
 /**
- * Sparkline rendering settings: 
+ * Sparkline rendering settings:
  * <ul>
  * <li>Width and height of the graphic in pixels</li>
  * <li>Line color. Blue by default if null</li>
@@ -56,22 +57,15 @@ import java.awt.Color;
  * <li>Highlighted value text box color, used if <code>highlightedValueXPosition</code> and <code>highlightTextColor</code> are provided</li>
  * </ul>
  * Several constructors are provided for various use cases.
- * @see SparklineGraph
+ *
  * @author Eduardo Ramos
+ * @see SparklineGraph
  */
 public class SparklineParameters {
 
-    /**
-     * Defines what text is shown when highlightTextColor is not null.
-     */
-    public enum HighlightTextMode {
-
-        X_VALUES,
-        Y_VALUES,
-        X_AND_Y_VALUES
-    }
     public static final Color DEFAULT_LINE_COLOR = Color.BLUE;
-    public static final Color DEFAULT_AREA_COLOR = new Color(DEFAULT_LINE_COLOR.getRed(), DEFAULT_LINE_COLOR.getRed(), DEFAULT_LINE_COLOR.getBlue(), 50);
+    public static final Color DEFAULT_AREA_COLOR =
+        new Color(DEFAULT_LINE_COLOR.getRed(), DEFAULT_LINE_COLOR.getRed(), DEFAULT_LINE_COLOR.getBlue(), 50);
     public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
     public static final Color DEFAULT_HIGHLIGHT_VALUE_COLOR = Color.MAGENTA;
     public static final Color DEFAULT_TEXT_COLOR = Color.BLACK;
@@ -93,7 +87,7 @@ public class SparklineParameters {
     /**
      * Create a simple sparkline parameters with only lines
      *
-     * @param width Width in pixels
+     * @param width  Width in pixels
      * @param height Height in pixels
      */
     public SparklineParameters(int width, int height) {
@@ -103,8 +97,8 @@ public class SparklineParameters {
     /**
      * Create a simple sparkline parameters with only lines and a specific line color
      *
-     * @param width Width in pixels
-     * @param height Height in pixels
+     * @param width     Width in pixels
+     * @param height    Height in pixels
      * @param lineColor Lines color
      */
     public SparklineParameters(int width, int height, Color lineColor) {
@@ -114,9 +108,9 @@ public class SparklineParameters {
     /**
      * Create a simple sparkline parameters with only lines and a specific line color and background color
      *
-     * @param width Width in pixels
-     * @param height Height in pixels
-     * @param lineColor Lines color
+     * @param width           Width in pixels
+     * @param height          Height in pixels
+     * @param lineColor       Lines color
      * @param backgroundColor Background color
      */
     public SparklineParameters(int width, int height, Color lineColor, Color backgroundColor) {
@@ -126,15 +120,17 @@ public class SparklineParameters {
     /**
      * Create a sparkline parameters specifying colors for line, background, and max/min highlight colors (no highlight if null)
      *
-     * @param width Width in pixels
-     * @param height Height in pixels
-     * @param lineColor Lines color
-     * @param backgroundColor Background color
+     * @param width             Width in pixels
+     * @param height            Height in pixels
+     * @param lineColor         Lines color
+     * @param backgroundColor   Background color
      * @param highlightMinColor Min value highlight color or null
      * @param highlightMaxColor Max value highlight color or null
      */
-    public SparklineParameters(int width, int height, Color lineColor, Color backgroundColor, Color highlightMinColor, Color highlightMaxColor) {
-        this(width, height, lineColor, backgroundColor, highlightMinColor, highlightMaxColor, null, null, null, null, null);
+    public SparklineParameters(int width, int height, Color lineColor, Color backgroundColor, Color highlightMinColor,
+                               Color highlightMaxColor) {
+        this(width, height, lineColor, backgroundColor, highlightMinColor, highlightMaxColor, null, null, null, null,
+            null);
     }
 
     /**
@@ -142,16 +138,18 @@ public class SparklineParameters {
      * highlight text and text box colors and default
      * <code>HighlightTextMode</code>.
      *
-     * @param width Width in pixels
-     * @param height Height in pixels
-     * @param lineColor Lines color
-     * @param backgroundColor Background color
-     * @param highlightMinColor Min value highlight color or null
-     * @param highlightMaxColor Max value highlight color or null
+     * @param width                     Width in pixels
+     * @param height                    Height in pixels
+     * @param lineColor                 Lines color
+     * @param backgroundColor           Background color
+     * @param highlightMinColor         Min value highlight color or null
+     * @param highlightMaxColor         Max value highlight color or null
      * @param highlightedValueXPosition X position in pixels to find closest value in the sparkline
      */
-    public SparklineParameters(int width, int height, Color lineColor, Color backgroundColor, Color highlightMinColor, Color highlightMaxColor, Integer highlightedValueXPosition) {
-        this(width, height, lineColor, backgroundColor, highlightMinColor, highlightMaxColor, highlightedValueXPosition, null, DEFAULT_TEXT_COLOR, DEFAULT_TEXT_BOX_COLOR, DEFAULT_HIGHLIGHT_TEXT_MODE);
+    public SparklineParameters(int width, int height, Color lineColor, Color backgroundColor, Color highlightMinColor,
+                               Color highlightMaxColor, Integer highlightedValueXPosition) {
+        this(width, height, lineColor, backgroundColor, highlightMinColor, highlightMaxColor, highlightedValueXPosition,
+            null, DEFAULT_TEXT_COLOR, DEFAULT_TEXT_BOX_COLOR, DEFAULT_HIGHLIGHT_TEXT_MODE);
     }
 
     /**
@@ -159,19 +157,22 @@ public class SparklineParameters {
      * highlight text and text box colors and
      * <code>HighlightTextMode</code>.
      *
-     * @param width Width in pixels
-     * @param height Height in pixels
-     * @param lineColor Lines color
-     * @param backgroundColor Background color
-     * @param highlightMinColor Min value highlight color or null
-     * @param highlightMaxColor Max value highlight color or null
+     * @param width                     Width in pixels
+     * @param height                    Height in pixels
+     * @param lineColor                 Lines color
+     * @param backgroundColor           Background color
+     * @param highlightMinColor         Min value highlight color or null
+     * @param highlightMaxColor         Max value highlight color or null
      * @param highlightedValueXPosition X position in pixels to find closest value in the sparkline
-     * @param highligtValueColor Highlighted value color (Magenta if null)
-     * @param highlightTextColor Highlighted value text color or null
-     * @param highlightTextBoxColor Highlighted value text box color or null
-     * @param highlightTextMode What to show on the highlight text (x and/or y values)
+     * @param highligtValueColor        Highlighted value color (Magenta if null)
+     * @param highlightTextColor        Highlighted value text color or null
+     * @param highlightTextBoxColor     Highlighted value text box color or null
+     * @param highlightTextMode         What to show on the highlight text (x and/or y values)
      */
-    public SparklineParameters(int width, int height, Color lineColor, Color backgroundColor, Color highlightMinColor, Color highlightMaxColor, Integer highlightedValueXPosition, Color highligtValueColor, Color highlightTextColor, Color highlightTextBoxColor, HighlightTextMode highlightTextMode) {
+    public SparklineParameters(int width, int height, Color lineColor, Color backgroundColor, Color highlightMinColor,
+                               Color highlightMaxColor, Integer highlightedValueXPosition, Color highligtValueColor,
+                               Color highlightTextColor, Color highlightTextBoxColor,
+                               HighlightTextMode highlightTextMode) {
         this.width = width;
         this.height = height;
         this.lineColor = lineColor;
@@ -332,8 +333,8 @@ public class SparklineParameters {
     /**
      * Return current HighlightTextMode
      *
-     * @see HighlightTextMode
      * @return Current HighlightTextMode
+     * @see HighlightTextMode
      */
     public HighlightTextMode getHighlightTextMode() {
         return highlightTextMode;
@@ -342,8 +343,8 @@ public class SparklineParameters {
     /**
      * Set HighlightTextMode
      *
-     * @see HighlightTextMode
      * @param highlightTextMode New HighlightTextMode
+     * @see HighlightTextMode
      */
     public void setHighlightTextMode(HighlightTextMode highlightTextMode) {
         this.highlightTextMode = highlightTextMode;
@@ -404,6 +405,15 @@ public class SparklineParameters {
     }
 
     /**
+     * Returns current areaColor.
+     *
+     * @return Current areaColor
+     */
+    public Color getAreaColor() {
+        return areaColor;
+    }
+
+    /**
      * Set color to fill the area under the line. If null, semi-transparent default line color will be used. Used only if draw area is enabled.
      *
      * @param areaColor New areaColor
@@ -413,12 +423,12 @@ public class SparklineParameters {
     }
 
     /**
-     * Returns current areaColor.
+     * Checks if the area under the line is enabled.
      *
-     * @return Current areaColor
+     * @return draw area enabled
      */
-    public Color getAreaColor() {
-        return areaColor;
+    public boolean isDrawArea() {
+        return drawArea;
     }
 
     /**
@@ -431,11 +441,12 @@ public class SparklineParameters {
     }
 
     /**
-     * Checks if the area under the line is enabled.
-     *
-     * @return draw area enabled
+     * Defines what text is shown when highlightTextColor is not null.
      */
-    public boolean isDrawArea() {
-        return drawArea;
+    public enum HighlightTextMode {
+
+        X_VALUES,
+        Y_VALUES,
+        X_AND_Y_VALUES
     }
 }

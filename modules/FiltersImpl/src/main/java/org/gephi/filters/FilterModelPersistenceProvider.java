@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters;
 
 import java.util.HashMap;
@@ -48,7 +49,14 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
 import org.gephi.filters.api.Query;
-import org.gephi.filters.spi.*;
+import org.gephi.filters.spi.CategoryBuilder;
+import org.gephi.filters.spi.EdgeFilter;
+import org.gephi.filters.spi.ElementFilter;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Graph;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
@@ -59,11 +67,13 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = WorkspacePersistenceProvider.class)
 public class FilterModelPersistenceProvider implements WorkspaceXMLPersistenceProvider {
+
+    //PERSISTENCE
+    private int queryId = 0;
 
     @Override
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {
@@ -95,8 +105,6 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
     public String getIdentifier() {
         return "filtermodel";
     }
-    //PERSISTENCE
-    private int queryId = 0;
 
     public void writeXML(XMLStreamWriter writer, FilterModelImpl model) throws XMLStreamException {
         writer.writeStartElement("autorefresh");
@@ -119,7 +127,8 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
         writer.writeEndElement();
     }
 
-    private void writeQuery(String code, XMLStreamWriter writer, FilterModelImpl model, Query query, int parentId) throws XMLStreamException {
+    private void writeQuery(String code, XMLStreamWriter writer, FilterModelImpl model, Query query, int parentId)
+        throws XMLStreamException {
         Serialization serialization = new Serialization(model.getGraphModel());
 
         writer.writeStartElement(code);
@@ -149,7 +158,8 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
         }
     }
 
-    private void writeParameter(XMLStreamWriter writer, int index, FilterProperty property, Serialization serialization) {
+    private void writeParameter(XMLStreamWriter writer, int index, FilterProperty property,
+                                Serialization serialization) {
         try {
             writer.writeStartElement("parameter");
             writer.writeAttribute("index", String.valueOf(index));
@@ -233,7 +243,8 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
         }
     }
 
-    private Query readQuery(XMLStreamReader reader, FilterModelImpl model, Serialization serialization) throws XMLStreamException {
+    private Query readQuery(XMLStreamReader reader, FilterModelImpl model, Serialization serialization)
+        throws XMLStreamException {
         String builderClassName = reader.getAttributeValue(null, "builder");
         String filterClassName = reader.getAttributeValue(null, "filter");
         String queryName = reader.getAttributeValue(null, "name");
@@ -280,7 +291,7 @@ public class FilterModelPersistenceProvider implements WorkspaceXMLPersistencePr
                 query = new FilterQueryImpl(builder, filter);
             }
 
-            if(queryName != null) {
+            if (queryName != null) {
                 query.setName(queryName);
             }
 

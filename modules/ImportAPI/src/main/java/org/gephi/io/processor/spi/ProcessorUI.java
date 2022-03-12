@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.processor.spi;
 
 import javax.swing.JPanel;
@@ -67,20 +68,20 @@ public interface ProcessorUI {
      *
      * @param processor the processor that settings is to be set
      */
-    public void setup(Processor processor);
+    void setup(Processor processor);
 
     /**
      * Returns the processor settings panel.
      *
      * @return a settings panel, or <code>null</code>
      */
-    public JPanel getPanel();
+    JPanel getPanel();
 
     /**
      * Notify UI the settings panel has been closed and that new values can be
      * written.
      */
-    public void unsetup();
+    void unsetup();
 
     /**
      * Returns <code>true</code> if this UI belongs to the given processor.
@@ -89,7 +90,7 @@ public interface ProcessorUI {
      * @return <code>true</code> if the UI is matching with
      * <code>processor</code>, <code>false</code> otherwise.
      */
-    public boolean isUIFoProcessor(Processor processor);
+    boolean isUIFoProcessor(Processor processor);
 
     /**
      * Returns <code>true</code> if the processor this UI represents is valid
@@ -100,5 +101,5 @@ public interface ProcessorUI {
      * @return <code>true</code> if the processor this UI represents is valid
      * for <code>containers</code>.
      */
-    public boolean isValid(Container[] containers);
+    boolean isValid(Container[] containers);
 }

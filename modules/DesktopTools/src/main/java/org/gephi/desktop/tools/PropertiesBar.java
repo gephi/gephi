@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.tools;
 
 import java.awt.BorderLayout;
@@ -62,31 +63,31 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class PropertiesBar extends JPanel {
 
-    private JPanel propertiesBar;
     private final SelectionBar selectionBar;
+    private JPanel propertiesBar;
 
     public PropertiesBar() {
         super(new BorderLayout());
         JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.setOpaque(true);
         leftPanel.add(getFullScreenIcon(), BorderLayout.WEST);
         leftPanel.add(selectionBar = new SelectionBar(), BorderLayout.CENTER);
         add(leftPanel, BorderLayout.WEST);
-        setOpaque(false);
+        setOpaque(true);
     }
 
     public void select(JPanel propertiesBar) {
         this.propertiesBar = propertiesBar;
         propertiesBar.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
         add(propertiesBar, BorderLayout.CENTER);
-        propertiesBar.setOpaque(false);
+        propertiesBar.setOpaque(true);
         for (Component c : propertiesBar.getComponents()) {
             if (c instanceof JPanel || c instanceof JToolBar) {
-                ((JComponent) c).setOpaque(false);
+                ((JComponent) c).setOpaque(true);
             }
         }
         revalidate();
@@ -110,27 +111,33 @@ public class PropertiesBar extends JPanel {
         }
         JPanel c = new JPanel(new BorderLayout());
         c.setBackground(Color.WHITE);
-        JButton fullScreenButton = new JButton();
-        fullScreenButton.setIcon(new ImageIcon(getClass().getResource("/org/gephi/desktop/tools/gephilogo_std.png")));
-        fullScreenButton.setRolloverEnabled(true);
-        fullScreenButton.setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/desktop/tools/gephilogo_glow.png")));
-        fullScreenButton.setToolTipText(NbBundle.getMessage(PropertiesBar.class, "PropertiesBar.fullScreenButton.tooltip"));
-        fullScreenButton.setBorderPainted(false);
-        fullScreenButton.setContentAreaFilled(false);
-        fullScreenButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        fullScreenButton.setBorder(BorderFactory.createEmptyBorder());
-        fullScreenButton.setPreferredSize(new Dimension(logoWidth, logoHeight));
-        fullScreenButton.addActionListener(new ActionListener() {
+        if (!UIUtils.isAquaLookAndFeel()) {
+            JButton fullScreenButton = new JButton();
+            fullScreenButton
+                .setIcon(new ImageIcon(getClass().getResource("/org/gephi/desktop/tools/gephilogo_std.png")));
+            fullScreenButton.setRolloverEnabled(true);
+            fullScreenButton
+                .setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/desktop/tools/gephilogo_glow.png")));
+            fullScreenButton
+                .setToolTipText(NbBundle.getMessage(PropertiesBar.class, "PropertiesBar.fullScreenButton.tooltip"));
+            fullScreenButton.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Lookup lookup = Lookups.forPath("org-gephi-desktop-tools/Actions/ToggleFullScreenAction");
-                for (Action a : lookup.lookupAll(Action.class)) {
-                    a.actionPerformed(null);
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Lookup lookup = Lookups.forPath("org-gephi-desktop-tools/Actions/ToggleFullScreenAction");
+                    for (Action a : lookup.lookupAll(Action.class)) {
+                        a.actionPerformed(null);
+                    }
                 }
-            }
-        });
-        c.add(fullScreenButton, BorderLayout.CENTER);
+            });
+            fullScreenButton.setBorderPainted(false);
+            fullScreenButton.setContentAreaFilled(false);
+            fullScreenButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            fullScreenButton.setBorder(BorderFactory.createEmptyBorder());
+            fullScreenButton.setPreferredSize(new Dimension(logoWidth, logoHeight));
+            c.add(fullScreenButton, BorderLayout.CENTER);
+        }
+
         return c;
     }
 

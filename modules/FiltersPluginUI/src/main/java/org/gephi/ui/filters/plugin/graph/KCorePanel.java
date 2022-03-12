@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.filters.plugin.graph;
 
 import javax.swing.event.ChangeEvent;
@@ -49,12 +50,13 @@ import org.openide.util.Exceptions;
 import org.openide.util.WeakListeners;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class KCorePanel extends javax.swing.JPanel implements ChangeListener {
 
     private KCoreFilter filter;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSpinner degreeSpinner;
 
     public KCorePanel() {
         initComponents();
@@ -64,7 +66,7 @@ public class KCorePanel extends javax.swing.JPanel implements ChangeListener {
     public void stateChanged(ChangeEvent evt) {
         FilterProperty k = filter.getProperties()[0];
         try {
-            k.setValue((Integer) degreeSpinner.getValue());
+            k.setValue(degreeSpinner.getValue());
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
@@ -89,11 +91,10 @@ public class KCorePanel extends javax.swing.JPanel implements ChangeListener {
 
         setLayout(new java.awt.GridBagLayout());
 
-        degreeSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        degreeSpinner.setModel(
+            new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         degreeSpinner.setPreferredSize(new java.awt.Dimension(65, 28));
         add(degreeSpinner, new java.awt.GridBagConstraints());
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSpinner degreeSpinner;
     // End of variables declaration//GEN-END:variables
 }

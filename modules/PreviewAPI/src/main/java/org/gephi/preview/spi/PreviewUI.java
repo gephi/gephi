@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.spi;
 
 import javax.swing.Icon;
@@ -59,7 +60,7 @@ import org.gephi.preview.api.PreviewProperties;
  * following annotation to be recognized by the system:
  * <p>
  * <code>@ServiceProvider(service=PreviewUI.class)</code>
- * 
+ *
  * @author Mathieu Bastian
  */
 public interface PreviewUI {
@@ -68,38 +69,42 @@ public interface PreviewUI {
      * Initialization method called when a workspace is selected and a panel is
      * about to be requested. The system first calls this method and then
      * <code>getPanel()</code>.
+     *
      * @param previewModel the model associated to the current workspace
      */
-    public void setup(PreviewModel previewModel);
+    void setup(PreviewModel previewModel);
 
     /**
-     * Returns the <code>JPanel</code> component to be displayed. 
+     * Returns the <code>JPanel</code> component to be displayed.
      * <p>
      * This method
      * is always called <b>after</b> <code>setup()</code> so the implementation
      * can initialize the panel with the model. Note that the panel is destroyed
      * after <code>unsetup()</code> is called. In other words, a new panel is
      * requested at each workspace selection.
+     *
      * @return the panel to be displayed
      */
-    public JPanel getPanel();
+    JPanel getPanel();
 
     /**
      * Method called when the UI is unloaded and the panel to be destroyed. This
      * happens when the workspace changes and before a new <code>PreviewModel</code>
      * is passed through <code>setup()</code>.
      */
-    public void unsetup();
+    void unsetup();
 
     /**
      * Returns the icon of the tab or <code>null</code> if none
+     *
      * @return the tab's icon or <code>null</code>
      */
-    public Icon getIcon();
+    Icon getIcon();
 
     /**
      * Returns the title of the tab
+     *
      * @return the tab's title
      */
-    public String getPanelTitle();
+    String getPanelTitle();
 }

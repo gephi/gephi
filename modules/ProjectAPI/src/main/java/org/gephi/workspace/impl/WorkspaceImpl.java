@@ -39,9 +39,9 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.workspace.impl;
 
-import org.gephi.project.api.Project;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectImpl;
 import org.openide.util.Lookup;
@@ -50,7 +50,6 @@ import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class WorkspaceImpl implements Workspace {
@@ -91,13 +90,17 @@ public class WorkspaceImpl implements Workspace {
     }
 
     @Override
-    public Project getProject() {
+    public ProjectImpl getProject() {
         return project;
     }
 
     @Override
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return lookup.lookup(WorkspaceInformationImpl.class).getName();
     }
 
     @Override

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.ui.appearance.plugin.palette;
 
 import java.awt.Color;
@@ -59,13 +60,23 @@ import org.gephi.appearance.plugin.palette.PaletteManager;
 import org.gephi.appearance.plugin.palette.Preset;
 
 /**
- *
  * @author mbastian
  */
 public class PaletteGeneratorPanel extends javax.swing.JPanel {
 
     private Preset selectedPreset;
     private Palette selectedPalette;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel centerPanel;
+    private javax.swing.JScrollPane centerScrollPanel;
+    private javax.swing.JLabel colorCountLabel;
+    private javax.swing.JTable colorTable;
+    private javax.swing.JButton generateButton;
+    private javax.swing.JLabel labelColorCount;
+    private javax.swing.JLabel labelPreset;
+    private javax.swing.JSpinner limitColorSpinner;
+    private javax.swing.JCheckBox limitColorsCheckbox;
+    private javax.swing.JComboBox presetCombo;
 
     public PaletteGeneratorPanel() {
         initComponents();
@@ -81,11 +92,7 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
         limitColorsCheckbox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    limitColorSpinner.setEnabled(true);
-                } else {
-                    limitColorSpinner.setEnabled(false);
-                }
+                limitColorSpinner.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
             }
         });
 
@@ -122,7 +129,7 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
             selectedPalette = new Palette(cols);
         }
 
-        String[] columnNames = new String[]{"Color"};
+        String[] columnNames = new String[] {"Color"};
         DefaultTableModel model = new DefaultTableModel(columnNames, colorCount) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -149,20 +156,6 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
         return selectedPalette;
     }
 
-    class ColorCellRenderer extends JLabel implements TableCellRenderer {
-
-        public ColorCellRenderer() {
-            setOpaque(true);
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Color c = (Color) value;
-            setBackground(c);
-            return this;
-        }
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -184,11 +177,14 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
         limitColorsCheckbox = new javax.swing.JCheckBox();
         limitColorSpinner = new javax.swing.JSpinner();
 
-        labelColorCount.setText(org.openide.util.NbBundle.getMessage(PaletteGeneratorPanel.class, "PaletteGeneratorPanel.labelColorCount.text")); // NOI18N
+        labelColorCount.setText(org.openide.util.NbBundle
+            .getMessage(PaletteGeneratorPanel.class, "PaletteGeneratorPanel.labelColorCount.text")); // NOI18N
 
-        labelPreset.setText(org.openide.util.NbBundle.getMessage(PaletteGeneratorPanel.class, "PaletteGeneratorPanel.labelPreset.text")); // NOI18N
+        labelPreset.setText(org.openide.util.NbBundle
+            .getMessage(PaletteGeneratorPanel.class, "PaletteGeneratorPanel.labelPreset.text")); // NOI18N
 
-        generateButton.setText(org.openide.util.NbBundle.getMessage(PaletteGeneratorPanel.class, "PaletteGeneratorPanel.generateButton.text")); // NOI18N
+        generateButton.setText(org.openide.util.NbBundle
+            .getMessage(PaletteGeneratorPanel.class, "PaletteGeneratorPanel.generateButton.text")); // NOI18N
 
         centerScrollPanel.setBorder(null);
         centerScrollPanel.setOpaque(false);
@@ -196,10 +192,10 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
         centerPanel.setLayout(new java.awt.GridBagLayout());
 
         colorTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+            new Object[][] {
 
             },
-            new String [] {
+            new String[] {
 
             }
         ));
@@ -220,7 +216,8 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
         centerScrollPanel.setViewportView(centerPanel);
 
         limitColorsCheckbox.setSelected(true);
-        limitColorsCheckbox.setText(org.openide.util.NbBundle.getMessage(PaletteGeneratorPanel.class, "PaletteGeneratorPanel.limitColorsCheckbox.text")); // NOI18N
+        limitColorsCheckbox.setText(org.openide.util.NbBundle
+            .getMessage(PaletteGeneratorPanel.class, "PaletteGeneratorPanel.limitColorsCheckbox.text")); // NOI18N
         limitColorsCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
         limitColorSpinner.setModel(new javax.swing.SpinnerNumberModel(8, 1, null, 1));
@@ -229,61 +226,71 @@ public class PaletteGeneratorPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(centerScrollPanel)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(presetCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
-                        .addComponent(generateButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelPreset)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(limitColorSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelColorCount)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(colorCountLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(limitColorsCheckbox)))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(centerScrollPanel)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(presetCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 216,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                            .addComponent(generateButton))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(labelPreset)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(limitColorSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 60,
+                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(labelColorCount)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(colorCountLabel)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(limitColorsCheckbox)))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelColorCount)
+                            .addComponent(colorCountLabel))
+                        .addComponent(limitColorsCheckbox))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(28, 28, 28)
+                            .addComponent(labelPreset))
+                        .addGroup(layout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(limitColorSpinner, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelColorCount)
-                        .addComponent(colorCountLabel))
-                    .addComponent(limitColorsCheckbox))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(labelPreset))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(limitColorSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(presetCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(generateButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(centerScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
-                .addContainerGap())
+                        .addComponent(presetCombo, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(generateButton))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(centerScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel centerPanel;
-    private javax.swing.JScrollPane centerScrollPanel;
-    private javax.swing.JLabel colorCountLabel;
-    private javax.swing.JTable colorTable;
-    private javax.swing.JButton generateButton;
-    private javax.swing.JLabel labelColorCount;
-    private javax.swing.JLabel labelPreset;
-    private javax.swing.JSpinner limitColorSpinner;
-    private javax.swing.JCheckBox limitColorsCheckbox;
-    private javax.swing.JComboBox presetCombo;
+
+    class ColorCellRenderer extends JLabel implements TableCellRenderer {
+
+        public ColorCellRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                       int row, int column) {
+            Color c = (Color) value;
+            setBackground(c);
+            return this;
+        }
+    }
     // End of variables declaration//GEN-END:variables
 }

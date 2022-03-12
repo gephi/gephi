@@ -39,9 +39,10 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components.splineeditor.equation;
 
 public interface Equation {
 
-    public double compute(double variable);
+    double compute(double variable);
 }

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.filters.plugin.graph;
 
 import java.beans.PropertyChangeEvent;
@@ -55,7 +56,6 @@ import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.gephi.ui.filters.plugin.JQuickHistogram;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class RangePanel extends javax.swing.JPanel {
@@ -64,6 +64,9 @@ public class RangePanel extends javax.swing.JPanel {
     //Info
     private Object[] values;
     private RangeFilter filter;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel histogramPanel;
+    private javax.swing.JPanel rangeSliderPanel;
 
     public RangePanel() {
         initComponents();
@@ -92,7 +95,9 @@ public class RangePanel extends javax.swing.JPanel {
                             try {
                                 if (evt.getPropertyName().equals(JRangeSliderPanel.LOWER_BOUND)) {
                                     Range oldRange = (Range) filter.getRangeProperty().getValue();
-                                    final Range newRange = new Range((Number) rangeSlider.getRange().getLowerBound(), (Number) rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(), oldRange.getMaximum(), oldRange.getValues());
+                                    final Range newRange = new Range(rangeSlider.getRange().getLowerBound(),
+                                        rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(),
+                                        oldRange.getMaximum(), oldRange.getValues());
                                     if (!oldRange.equals(newRange)) {
                                         filter.getRangeProperty().setValue(newRange);
                                         new Thread(new Runnable() {
@@ -105,7 +110,9 @@ public class RangePanel extends javax.swing.JPanel {
                                     }
                                 } else if (evt.getPropertyName().equals(JRangeSliderPanel.UPPER_BOUND)) {
                                     final Range oldRange = (Range) filter.getRangeProperty().getValue();
-                                    final Range newRange = new Range((Number) rangeSlider.getRange().getLowerBound(), (Number) rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(), oldRange.getMaximum(), oldRange.getValues());
+                                    final Range newRange = new Range(rangeSlider.getRange().getLowerBound(),
+                                        rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(),
+                                        oldRange.getMaximum(), oldRange.getValues());
                                     if (!oldRange.equals(newRange)) {
                                         filter.getRangeProperty().setValue(newRange);
                                         new Thread(new Runnable() {
@@ -128,9 +135,10 @@ public class RangePanel extends javax.swing.JPanel {
                         @Override
                         public void run() {
                             rangeSlider.setRange(
-                                    JRangeSliderPanel.Range.build(
-                                            rangeSlider, range.getMinimum(), range.getMaximum(), range.getLowerBound(), range.getUpperBound()
-                                    )
+                                JRangeSliderPanel.Range.build(
+                                    rangeSlider, range.getMinimum(), range.getMaximum(), range.getLowerBound(),
+                                    range.getUpperBound()
+                                )
                             );
                         }
                     });
@@ -171,17 +179,17 @@ public class RangePanel extends javax.swing.JPanel {
         double rangeLowerBound = 0.0;
         double rangeUpperBound = 0.0;
         if (range.getRangeType().equals(Integer.class)) {
-            rangeLowerBound = ((Integer) range.getLowerBound()).doubleValue();
-            rangeUpperBound = ((Integer) range.getUpperBound()).doubleValue();
+            rangeLowerBound = range.getLowerBound().doubleValue();
+            rangeUpperBound = range.getUpperBound().doubleValue();
         } else if (range.getRangeType().equals(Float.class)) {
-            rangeLowerBound = ((Float) range.getLowerBound()).doubleValue();
-            rangeUpperBound = ((Float) range.getUpperBound()).doubleValue();
+            rangeLowerBound = range.getLowerBound().doubleValue();
+            rangeUpperBound = range.getUpperBound().doubleValue();
         } else if (range.getRangeType().equals(Double.class)) {
             rangeLowerBound = ((Double) range.getLowerBound());
             rangeUpperBound = ((Double) range.getUpperBound());
         } else if (range.getRangeType().equals(Long.class)) {
-            rangeLowerBound = ((Long) range.getLowerBound()).doubleValue();
-            rangeUpperBound = ((Long) range.getUpperBound()).doubleValue();
+            rangeLowerBound = range.getLowerBound().doubleValue();
+            rangeUpperBound = range.getUpperBound().doubleValue();
         }
         histogram.setLowerBound(rangeLowerBound);
         histogram.setUpperBound(rangeUpperBound);
@@ -206,9 +214,11 @@ public class RangePanel extends javax.swing.JPanel {
         String averageInRange = formatter.format(histogram.getAverageInRange());
         RichTooltip richTooltip = new RichTooltip();
         richTooltip.setTitle("Statistics (In-Range)");
-        richTooltip.addDescriptionSection("<html><b># of Values:</b> " + histogram.countValues() + " (" + histogram.countInRange() + ")");
+        richTooltip.addDescriptionSection(
+            "<html><b># of Values:</b> " + histogram.countValues() + " (" + histogram.countInRange() + ")");
         richTooltip.addDescriptionSection("<html><b>Average:</b> " + average + " (" + averageInRange + ")");
-        richTooltip.addDescriptionSection("<html><b>Median:</b> " + histogram.getMedian() + " (" + histogram.getMedianInRange() + ")");
+        richTooltip.addDescriptionSection(
+            "<html><b>Median:</b> " + histogram.getMedian() + " (" + histogram.getMedianInRange() + ")");
         return richTooltip;
     }
 
@@ -234,8 +244,5 @@ public class RangePanel extends javax.swing.JPanel {
         histogramPanel.setLayout(new java.awt.BorderLayout());
         add(histogramPanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel histogramPanel;
-    private javax.swing.JPanel rangeSliderPanel;
     // End of variables declaration//GEN-END:variables
 }

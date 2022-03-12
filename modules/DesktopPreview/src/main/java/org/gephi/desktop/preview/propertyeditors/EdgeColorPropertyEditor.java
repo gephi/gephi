@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.preview.propertyeditors;
 
 import java.awt.Component;
 import org.gephi.preview.types.editors.BasicEdgeColorPropertyEditor;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class EdgeColorPropertyEditor extends BasicEdgeColorPropertyEditor {

@@ -39,8 +39,18 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.database;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.sql.Types;
 import org.gephi.graph.api.TimeFormat;
 import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.importer.api.ColumnDraft;
@@ -56,16 +66,6 @@ import org.gephi.io.importer.api.PropertiesAssociations.NodeProperties;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.DatabaseImporter;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.sql.Types;
-
 /**
  * @author Mathieu Bastian
  */
@@ -79,8 +79,8 @@ public class ImporterEdgeList implements DatabaseImporter {
     private String timeIntervalStart;
     private String timeIntervalEnd;
 
-    private NodeColumns nodeColumns = new NodeColumns();
-    private EdgeColumns edgeColumns = new EdgeColumns();
+    private final NodeColumns nodeColumns = new NodeColumns();
+    private final EdgeColumns edgeColumns = new EdgeColumns();
 
     @Override
     public boolean execute(ContainerLoader container) {
@@ -108,7 +108,8 @@ public class ImporterEdgeList implements DatabaseImporter {
 
     private void importData() throws Exception {
         //Connect database
-        String url = SQLUtils.getUrl(database.getSQLDriver(), database.getHost(), database.getPort(), database.getDBName());
+        String url =
+            SQLUtils.getUrl(database.getSQLDriver(), database.getHost(), database.getPort(), database.getDBName());
         try {
             report.log("Try to connect at " + url);
             connection = database.getSQLDriver().getConnection(url, database.getUsername(), database.getPasswd());
@@ -226,7 +227,8 @@ public class ImporterEdgeList implements DatabaseImporter {
     private void getEdgesAttributes(Connection connection) throws SQLException {
     }
 
-    private void injectNodeProperty(NodeProperties p, ResultSet rs, int column, NodeDraft nodeDraft) throws SQLException {
+    private void injectNodeProperty(NodeProperties p, ResultSet rs, int column, NodeDraft nodeDraft)
+        throws SQLException {
         switch (p) {
             case LABEL:
                 String label = rs.getString(column);
@@ -353,7 +355,8 @@ public class ImporterEdgeList implements DatabaseImporter {
         timeIntervalEnd = null;
     }
 
-    private void injectEdgeProperty(EdgeProperties p, ResultSet rs, int column, EdgeDraft edgeDraft) throws SQLException {
+    private void injectEdgeProperty(EdgeProperties p, ResultSet rs, int column, EdgeDraft edgeDraft)
+        throws SQLException {
         switch (p) {
             case LABEL:
                 String label = rs.getString(column);
@@ -446,49 +449,63 @@ public class ImporterEdgeList implements DatabaseImporter {
                 boolean val = rs.getBoolean(columnIndex);
                 draft.setValue(column.getId(), val);
             } catch (SQLException ex) {
-                report.logIssue(new Issue("Failed to get a BOOLEAN value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+                report.logIssue(new Issue(
+                    "Failed to get a BOOLEAN value for " + elementName + " attribute '" + column.getId() + "'",
+                    Issue.Level.SEVERE, ex));
             }
         } else if (typeClass.equals(Double.class)) {
             try {
                 double val = rs.getDouble(columnIndex);
                 draft.setValue(column.getId(), val);
             } catch (SQLException ex) {
-                report.logIssue(new Issue("Failed to get a DOUBLE value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+                report.logIssue(
+                    new Issue("Failed to get a DOUBLE value for " + elementName + " attribute '" + column.getId() + "'",
+                        Issue.Level.SEVERE, ex));
             }
         } else if (typeClass.equals(Float.class)) {
             try {
                 float val = rs.getFloat(columnIndex);
                 draft.setValue(column.getId(), val);
             } catch (SQLException ex) {
-                report.logIssue(new Issue("Failed to get a FLOAT value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+                report.logIssue(
+                    new Issue("Failed to get a FLOAT value for " + elementName + " attribute '" + column.getId() + "'",
+                        Issue.Level.SEVERE, ex));
             }
         } else if (typeClass.equals(Integer.class)) {
             try {
                 int val = rs.getInt(columnIndex);
                 draft.setValue(column.getId(), val);
             } catch (SQLException ex) {
-                report.logIssue(new Issue("Failed to get a INT value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+                report.logIssue(
+                    new Issue("Failed to get a INT value for " + elementName + " attribute '" + column.getId() + "'",
+                        Issue.Level.SEVERE, ex));
             }
         } else if (typeClass.equals(Long.class)) {
             try {
                 long val = rs.getLong(columnIndex);
                 draft.setValue(column.getId(), val);
             } catch (SQLException ex) {
-                report.logIssue(new Issue("Failed to get a LONG value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+                report.logIssue(
+                    new Issue("Failed to get a LONG value for " + elementName + " attribute '" + column.getId() + "'",
+                        Issue.Level.SEVERE, ex));
             }
         } else if (typeClass.equals(Short.class)) {
             try {
                 short val = rs.getShort(columnIndex);
                 draft.setValue(column.getId(), val);
             } catch (SQLException ex) {
-                report.logIssue(new Issue("Failed to get a SHORT value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+                report.logIssue(
+                    new Issue("Failed to get a SHORT value for " + elementName + " attribute '" + column.getId() + "'",
+                        Issue.Level.SEVERE, ex));
             }
         } else if (typeClass.equals(Byte.class)) {
             try {
                 byte val = rs.getByte(columnIndex);
                 draft.setValue(column.getId(), val);
             } catch (SQLException ex) {
-                report.logIssue(new Issue("Failed to get a BYTE value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+                report.logIssue(
+                    new Issue("Failed to get a BYTE value for " + elementName + " attribute '" + column.getId() + "'",
+                        Issue.Level.SEVERE, ex));
             }
         } else {
             try {
@@ -496,10 +513,14 @@ public class ImporterEdgeList implements DatabaseImporter {
                 if (val != null) {
                     draft.setValue(column.getId(), val);
                 } else {
-                    report.logIssue(new Issue("Failed to get a STRING value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.WARNING));
+                    report.logIssue(new Issue(
+                        "Failed to get a STRING value for " + elementName + " attribute '" + column.getId() + "'",
+                        Issue.Level.WARNING));
                 }
             } catch (SQLException ex) {
-                report.logIssue(new Issue("Failed to get a STRING value for " + elementName + " attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
+                report.logIssue(
+                    new Issue("Failed to get a STRING value for " + elementName + " attribute '" + column.getId() + "'",
+                        Issue.Level.SEVERE, ex));
             }
         }
     }
@@ -566,20 +587,22 @@ public class ImporterEdgeList implements DatabaseImporter {
                 type = Float.class;
                 break;
             default:
-                report.logIssue(new Issue("Unknown SQL Type " + metaData.getColumnType(columnIndex + 1) + ", STRING used.", Issue.Level.WARNING));
+                report.logIssue(
+                    new Issue("Unknown SQL Type " + metaData.getColumnType(columnIndex + 1) + ", STRING used.",
+                        Issue.Level.WARNING));
                 break;
         }
         return type;
     }
 
     @Override
-    public void setDatabase(Database database) {
-        this.database = (EdgeListDatabaseImpl) database;
+    public Database getDatabase() {
+        return database;
     }
 
     @Override
-    public Database getDatabase() {
-        return database;
+    public void setDatabase(Database database) {
+        this.database = (EdgeListDatabaseImpl) database;
     }
 
     @Override

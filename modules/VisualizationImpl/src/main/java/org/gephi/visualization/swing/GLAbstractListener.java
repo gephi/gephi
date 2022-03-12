@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.swing;
 
 import com.jogamp.common.nio.Buffers;
@@ -70,36 +71,32 @@ import org.gephi.visualization.opengl.GraphicalConfiguration;
 import org.openide.util.Exceptions;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public abstract class GLAbstractListener implements GLEventListener, VizArchitecture, GraphDrawable {
 
     //GLU
     protected static final GLU GLU = new GLU();
+    // TEST CUBE CODE BEGIN
+    private static float rotateFactor = 15f;
+    public final float viewField = 30.0f;
+    public final float nearDistance = 1.0f;
+    public final float farDistance = 150000f;
+    public Component graphComponent;
     //Architecture
     protected GLAutoDrawable drawable;
     protected VizController vizController;
     protected VizModel vizModel;
     protected GraphIO graphIO;
-
-    private long startTime = 0;
     protected float fps;
     protected float fpsAvg = 0;
     protected float fpsCount = 0;
-    private boolean showGLLog = true;
-    private volatile boolean resizing = false;
-    public final float viewField = 30.0f;
-    public final float nearDistance = 1.0f;
-    public final float farDistance = 150000f;
-    private double aspectRatio = 0;
     protected float globalScale = 1f;
     protected FloatBuffer projMatrix = Buffers.newDirectFloatBuffer(16);
     protected FloatBuffer modelMatrix = Buffers.newDirectFloatBuffer(16);
     protected IntBuffer viewport = Buffers.newDirectIntBuffer(4);
     protected GraphicalConfiguration graphicalConfiguration;
     protected GLWindow window;
-    public Component graphComponent;
     protected AbstractEngine engine;
     protected Scheduler scheduler;
     protected float[] cameraLocation;
@@ -109,6 +106,10 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     protected MouseAdapter graphMouseAdapterNewt;
     protected java.awt.event.MouseAdapter graphMouseAdapterCanvas;
     protected GraphMouseAdapter graphMouseAdapter;
+    private long startTime = 0;
+    private boolean showGLLog = true;
+    private volatile boolean resizing = false;
+    private double aspectRatio = 0;
 
     public GLAbstractListener() {
         this.vizController = VizController.getInstance();
@@ -129,7 +130,8 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         cameraTarget = vizController.getVizConfig().getDefaultCameraTarget();
 
         //Mouse events
-        if (vizController.getVizConfig().isReduceFpsWhenMouseOut() || vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
+        if (vizController.getVizConfig().isReduceFpsWhenMouseOut() ||
+            vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
             graphMouseAdapter = new GraphMouseAdapter();
             if (window != null) {
                 graphMouseAdapterNewt = new MouseAdapter() {
@@ -174,7 +176,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         GLCapabilities caps = new GLCapabilities(profile);
 
         try {
-            caps.setAlphaBits(8);		//if NOT opaque
+            caps.setAlphaBits(8);        //if NOT opaque
             caps.setDoubleBuffered(true);
             caps.setHardwareAccelerated(true);
 
@@ -252,7 +254,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         graphicalConfiguration.checkGeneralCompatibility(gl);
 
         vizController.getTextManager().reinitRenderers();
-        
+
         //Reinit viewport, to ensure reshape to perform
         viewport = Buffers.newDirectIntBuffer(4);
 
@@ -288,10 +290,12 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
     public void setCameraPosition(GL2 gl, GLU glu) {
         //Refresh rotation angle
         gl.glLoadIdentity();
-        glu.gluLookAt(cameraLocation[0], cameraLocation[1], cameraLocation[2], cameraTarget[0], cameraTarget[1], cameraTarget[2], 0, 1, 0);
+        glu.gluLookAt(cameraLocation[0], cameraLocation[1], cameraLocation[2], cameraTarget[0], cameraTarget[1],
+            cameraTarget[2], 0, 1, 0);
         gl.glScalef(globalScale, globalScale, 1f);
         gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelMatrix);
-        cameraVector.set(cameraTarget[0] - cameraLocation[0], cameraTarget[1] - cameraLocation[1], cameraTarget[2] - cameraLocation[2]);
+        cameraVector.set(cameraTarget[0] - cameraLocation[0], cameraTarget[1] - cameraLocation[1],
+            cameraTarget[2] - cameraLocation[2]);
         refreshDraggingMarker();
     }
 
@@ -376,7 +380,7 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
             }
 
             resizing = false;
-            
+
         }
     }
 
@@ -391,54 +395,52 @@ public abstract class GLAbstractListener implements GLEventListener, VizArchitec
         drawable.destroy();
     }
 
-    // TEST CUBE CODE BEGIN
-    private static float rotateFactor = 15f;
-
     public void renderTestCube(GL2 gl) {
         float cubeSize = 1f;
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
-        GLU.gluLookAt(cameraLocation[0], cameraLocation[1], cameraLocation[2], cameraTarget[0], cameraTarget[1], cameraTarget[2], 0, 1, 0);
+        GLU.gluLookAt(cameraLocation[0], cameraLocation[1], cameraLocation[2], cameraTarget[0], cameraTarget[1],
+            cameraTarget[2], 0, 1, 0);
 
         gl.glColor3f(0f, 0f, 0f);
 
-        gl.glRotatef(rotateFactor++ % 360f, 0.0f, 1.0f, 0.0f);	// Rotate The cube around the Y axis
+        gl.glRotatef(rotateFactor++ % 360f, 0.0f, 1.0f, 0.0f);    // Rotate The cube around the Y axis
         gl.glRotatef(15.0f, 1.0f, 1.0f, 1.0f);
 
-        gl.glBegin(GL2.GL_QUADS);		// Draw The Cube Using quads
-        gl.glColor3f(0.0f, 1.0f, 0.0f);	// Color Green
-        gl.glVertex3f(cubeSize, cubeSize, -cubeSize);	// Top Right Of The Quad (Top)
-        gl.glVertex3f(-cubeSize, cubeSize, -cubeSize);	// Top Left Of The Quad (Top)
-        gl.glVertex3f(-cubeSize, cubeSize, cubeSize);	// Bottom Left Of The Quad (Top)
-        gl.glVertex3f(cubeSize, cubeSize, cubeSize);	// Bottom Right Of The Quad (Top)
-        gl.glColor3f(1.0f, 0.5f, 0.0f);	// Color Orange
-        gl.glVertex3f(cubeSize, -cubeSize, cubeSize);	// Top Right Of The Quad (Bottom)
-        gl.glVertex3f(-cubeSize, -cubeSize, cubeSize);	// Top Left Of The Quad (Bottom)
-        gl.glVertex3f(-cubeSize, -cubeSize, -cubeSize);	// Bottom Left Of The Quad (Bottom)
-        gl.glVertex3f(cubeSize, -cubeSize, -cubeSize);	// Bottom Right Of The Quad (Bottom)
-        gl.glColor3f(1.0f, 0.0f, 0.0f);	// Color Red
-        gl.glVertex3f(cubeSize, cubeSize, cubeSize);	// Top Right Of The Quad (Front)
-        gl.glVertex3f(-cubeSize, cubeSize, cubeSize);	// Top Left Of The Quad (Front)
-        gl.glVertex3f(-cubeSize, -cubeSize, cubeSize);	// Bottom Left Of The Quad (Front)
-        gl.glVertex3f(cubeSize, -cubeSize, cubeSize);	// Bottom Right Of The Quad (Front)
-        gl.glColor3f(1.0f, 1.0f, 0.0f);	// Color Yellow
-        gl.glVertex3f(cubeSize, -cubeSize, -cubeSize);	// Top Right Of The Quad (Back)
-        gl.glVertex3f(-cubeSize, -cubeSize, -cubeSize);	// Top Left Of The Quad (Back)
-        gl.glVertex3f(-cubeSize, cubeSize, -cubeSize);	// Bottom Left Of The Quad (Back)
-        gl.glVertex3f(cubeSize, cubeSize, -cubeSize);	// Bottom Right Of The Quad (Back)
-        gl.glColor3f(0.0f, 0.0f, 1.0f);	// Color Blue
-        gl.glVertex3f(-cubeSize, cubeSize, cubeSize);	// Top Right Of The Quad (Left)
-        gl.glVertex3f(-cubeSize, cubeSize, -cubeSize);	// Top Left Of The Quad (Left)
-        gl.glVertex3f(-cubeSize, -cubeSize, -cubeSize);	// Bottom Left Of The Quad (Left)
-        gl.glVertex3f(-cubeSize, -cubeSize, cubeSize);	// Bottom Right Of The Quad (Left)
-        gl.glColor3f(1.0f, 0.0f, 1.0f);	// Color Violet
-        gl.glVertex3f(cubeSize, cubeSize, -cubeSize);	// Top Right Of The Quad (Right)
-        gl.glVertex3f(cubeSize, cubeSize, cubeSize);	// Top Left Of The Quad (Right)
-        gl.glVertex3f(cubeSize, -cubeSize, cubeSize);	// Bottom Left Of The Quad (Right)
-        gl.glVertex3f(cubeSize, -cubeSize, -cubeSize);	// Bottom Right Of The Quad (Right)
-        gl.glEnd();			// End Drawing The Cube
+        gl.glBegin(GL2.GL_QUADS);        // Draw The Cube Using quads
+        gl.glColor3f(0.0f, 1.0f, 0.0f);    // Color Green
+        gl.glVertex3f(cubeSize, cubeSize, -cubeSize);    // Top Right Of The Quad (Top)
+        gl.glVertex3f(-cubeSize, cubeSize, -cubeSize);    // Top Left Of The Quad (Top)
+        gl.glVertex3f(-cubeSize, cubeSize, cubeSize);    // Bottom Left Of The Quad (Top)
+        gl.glVertex3f(cubeSize, cubeSize, cubeSize);    // Bottom Right Of The Quad (Top)
+        gl.glColor3f(1.0f, 0.5f, 0.0f);    // Color Orange
+        gl.glVertex3f(cubeSize, -cubeSize, cubeSize);    // Top Right Of The Quad (Bottom)
+        gl.glVertex3f(-cubeSize, -cubeSize, cubeSize);    // Top Left Of The Quad (Bottom)
+        gl.glVertex3f(-cubeSize, -cubeSize, -cubeSize);    // Bottom Left Of The Quad (Bottom)
+        gl.glVertex3f(cubeSize, -cubeSize, -cubeSize);    // Bottom Right Of The Quad (Bottom)
+        gl.glColor3f(1.0f, 0.0f, 0.0f);    // Color Red
+        gl.glVertex3f(cubeSize, cubeSize, cubeSize);    // Top Right Of The Quad (Front)
+        gl.glVertex3f(-cubeSize, cubeSize, cubeSize);    // Top Left Of The Quad (Front)
+        gl.glVertex3f(-cubeSize, -cubeSize, cubeSize);    // Bottom Left Of The Quad (Front)
+        gl.glVertex3f(cubeSize, -cubeSize, cubeSize);    // Bottom Right Of The Quad (Front)
+        gl.glColor3f(1.0f, 1.0f, 0.0f);    // Color Yellow
+        gl.glVertex3f(cubeSize, -cubeSize, -cubeSize);    // Top Right Of The Quad (Back)
+        gl.glVertex3f(-cubeSize, -cubeSize, -cubeSize);    // Top Left Of The Quad (Back)
+        gl.glVertex3f(-cubeSize, cubeSize, -cubeSize);    // Bottom Left Of The Quad (Back)
+        gl.glVertex3f(cubeSize, cubeSize, -cubeSize);    // Bottom Right Of The Quad (Back)
+        gl.glColor3f(0.0f, 0.0f, 1.0f);    // Color Blue
+        gl.glVertex3f(-cubeSize, cubeSize, cubeSize);    // Top Right Of The Quad (Left)
+        gl.glVertex3f(-cubeSize, cubeSize, -cubeSize);    // Top Left Of The Quad (Left)
+        gl.glVertex3f(-cubeSize, -cubeSize, -cubeSize);    // Bottom Left Of The Quad (Left)
+        gl.glVertex3f(-cubeSize, -cubeSize, cubeSize);    // Bottom Right Of The Quad (Left)
+        gl.glColor3f(1.0f, 0.0f, 1.0f);    // Color Violet
+        gl.glVertex3f(cubeSize, cubeSize, -cubeSize);    // Top Right Of The Quad (Right)
+        gl.glVertex3f(cubeSize, cubeSize, cubeSize);    // Top Left Of The Quad (Right)
+        gl.glVertex3f(cubeSize, -cubeSize, cubeSize);    // Bottom Left Of The Quad (Right)
+        gl.glVertex3f(cubeSize, -cubeSize, -cubeSize);    // Bottom Right Of The Quad (Right)
+        gl.glEnd();            // End Drawing The Cube
     }
 
     // TEST CUBE CODE END

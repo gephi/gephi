@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.ui.importer.plugin.spreadsheet.wizard;
 
 import java.util.Objects;
@@ -46,7 +47,6 @@ import org.gephi.io.importer.plugin.file.spreadsheet.process.SpreadsheetGeneralC
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ImportModeWrapper {
@@ -80,10 +80,7 @@ public class ImportModeWrapper {
             return false;
         }
         final ImportModeWrapper other = (ImportModeWrapper) obj;
-        if (this.mode != other.mode) {
-            return false;
-        }
-        return true;
+        return this.mode == other.mode;
     }
 
     @Override

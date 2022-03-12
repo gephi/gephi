@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.utils.longtask.api;
 
 /**
@@ -49,5 +50,5 @@ package org.gephi.utils.longtask.api;
  */
 public interface LongTaskErrorHandler {
 
-    public void fatalError(Throwable t);
+    void fatalError(Throwable t);
 }

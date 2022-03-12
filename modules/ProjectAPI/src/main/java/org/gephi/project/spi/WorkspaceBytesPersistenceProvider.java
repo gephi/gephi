@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.spi;
 
 import java.io.DataInputStream;
@@ -53,16 +54,16 @@ public interface WorkspaceBytesPersistenceProvider extends WorkspacePersistenceP
     /**
      * This is automatically called when saving a project file.
      *
-     * @param stream DataOutputStream stream to write to
+     * @param stream    DataOutputStream stream to write to
      * @param workspace current workspace being serialized
      */
-    public void writeBytes(DataOutputStream stream, Workspace workspace);
+    void writeBytes(DataOutputStream stream, Workspace workspace);
 
     /**
      * This is automatically called when loading a project file.
      *
-     * @param stream DataInputStream stream to read from
+     * @param stream    DataInputStream stream to read from
      * @param workspace current workspace being deserialized
      */
-    public void readBytes(DataInputStream stream, Workspace workspace);
+    void readBytes(DataInputStream stream, Workspace workspace);
 }

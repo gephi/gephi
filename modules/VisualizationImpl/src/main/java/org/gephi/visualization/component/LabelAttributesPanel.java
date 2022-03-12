@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.component;
 
 import java.awt.event.ActionEvent;
@@ -57,7 +58,6 @@ import org.gephi.visualization.text.TextModelImpl;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class LabelAttributesPanel extends javax.swing.JPanel {
@@ -69,6 +69,15 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
     private TextModelImpl textModel;
     private AttributesCheckBox[] nodeCheckBoxs;
     private AttributesCheckBox[] edgeCheckBoxs;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel contentPanel;
+    private javax.swing.JScrollPane contentScrollPane;
+    private javax.swing.JPanel controlPanel;
+    private javax.swing.JToggleButton edgesToggleButton;
+    private javax.swing.ButtonGroup elementButtonGroup;
+    private javax.swing.JLabel labelComment;
+    private javax.swing.JToggleButton nodesToggleButton;
+    private javax.swing.JCheckBox showPropertiesCheckbox;
 
     /**
      * Creates new form LabelAttributesPanel
@@ -203,19 +212,23 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
         controlPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
         elementButtonGroup.add(nodesToggleButton);
-        nodesToggleButton.setText(org.openide.util.NbBundle.getMessage(LabelAttributesPanel.class, "LabelAttributesPanel.nodesToggleButton.text")); // NOI18N
+        nodesToggleButton.setText(org.openide.util.NbBundle
+            .getMessage(LabelAttributesPanel.class, "LabelAttributesPanel.nodesToggleButton.text")); // NOI18N
         controlPanel.add(nodesToggleButton);
 
         elementButtonGroup.add(edgesToggleButton);
-        edgesToggleButton.setText(org.openide.util.NbBundle.getMessage(LabelAttributesPanel.class, "LabelAttributesPanel.edgesToggleButton.text")); // NOI18N
+        edgesToggleButton.setText(org.openide.util.NbBundle
+            .getMessage(LabelAttributesPanel.class, "LabelAttributesPanel.edgesToggleButton.text")); // NOI18N
         controlPanel.add(edgesToggleButton);
 
         contentPanel.setLayout(new java.awt.GridLayout());
         contentScrollPane.setViewportView(contentPanel);
 
-        labelComment.setText(org.openide.util.NbBundle.getMessage(LabelAttributesPanel.class, "LabelAttributesPanel.labelComment.text")); // NOI18N
+        labelComment.setText(org.openide.util.NbBundle
+            .getMessage(LabelAttributesPanel.class, "LabelAttributesPanel.labelComment.text")); // NOI18N
 
-        showPropertiesCheckbox.setText(org.openide.util.NbBundle.getMessage(LabelAttributesPanel.class, "LabelAttributesPanel.showPropertiesCheckbox.text")); // NOI18N
+        showPropertiesCheckbox.setText(org.openide.util.NbBundle
+            .getMessage(LabelAttributesPanel.class, "LabelAttributesPanel.showPropertiesCheckbox.text")); // NOI18N
         showPropertiesCheckbox.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         showPropertiesCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         showPropertiesCheckbox.setMargin(new java.awt.Insets(2, 2, 2, 0));
@@ -224,41 +237,34 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(contentScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
-                        .addComponent(showPropertiesCheckbox))
-                    .addComponent(labelComment))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(contentScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                            .addComponent(showPropertiesCheckbox))
+                        .addComponent(labelComment))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(13, 13, 13)
-                        .addComponent(labelComment))
-                    .addComponent(showPropertiesCheckbox))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(contentScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(13, 13, 13)
+                            .addComponent(labelComment))
+                        .addComponent(showPropertiesCheckbox))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(contentScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel contentPanel;
-    private javax.swing.JScrollPane contentScrollPane;
-    private javax.swing.JPanel controlPanel;
-    private javax.swing.JToggleButton edgesToggleButton;
-    private javax.swing.ButtonGroup elementButtonGroup;
-    private javax.swing.JLabel labelComment;
-    private javax.swing.JToggleButton nodesToggleButton;
-    private javax.swing.JCheckBox showPropertiesCheckbox;
     // End of variables declaration//GEN-END:variables
 
     private static class AttributesCheckBox {
@@ -271,12 +277,12 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
             this.column = column;
         }
 
-        public void setSelected(boolean selected) {
-            checkBox.setSelected(selected);
-        }
-
         public boolean isSelected() {
             return checkBox.isSelected();
+        }
+
+        public void setSelected(boolean selected) {
+            checkBox.setSelected(selected);
         }
 
         public JCheckBox getCheckBox() {

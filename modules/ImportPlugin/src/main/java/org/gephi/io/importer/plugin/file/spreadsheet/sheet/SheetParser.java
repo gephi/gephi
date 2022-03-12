@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.sheet;
 
 import java.io.Closeable;
@@ -46,6 +47,7 @@ import java.util.Map;
 
 /**
  * Simple sheet abstraction to support CSV, Excel...
+ *
  * @author Eduardo Ramos
  */
 public interface SheetParser extends Closeable, Iterable<SheetRow> {
@@ -53,13 +55,15 @@ public interface SheetParser extends Closeable, Iterable<SheetRow> {
     /**
      * Returns a map containing header names as keys and their column index as value.
      * The index can be used in {@link SheetRow#get(int)}
+     *
      * @return Header map. Empty for sheets without a header row.
      */
     Map<String, Integer> getHeaderMap();
 
     /**
      * Returns the current row number when iterating the sheet.
-     * @return 
+     *
+     * @return
      */
     long getCurrentRecordNumber();
 }

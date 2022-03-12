@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.edges;
 
 import javax.swing.Icon;
@@ -52,6 +53,7 @@ import org.openide.util.NbBundle;
 
 /**
  * Edges manipulator that selects source and target node of an edge and selects them in nodes table.
+ *
  * @author Eduardo Ramos
  */
 public class SelectNodesOnTable extends BasicEdgesManipulator {
@@ -59,13 +61,13 @@ public class SelectNodesOnTable extends BasicEdgesManipulator {
 
     @Override
     public void setup(Edge[] edges, Edge clickedEdge) {
-        this.clickedEdge=clickedEdge;
+        this.clickedEdge = clickedEdge;
     }
 
     @Override
     public void execute() {
-        Node[] nodes=new Node[]{clickedEdge.getSource(),clickedEdge.getTarget()};
-        DataTablesController dtc=Lookup.getDefault().lookup(DataTablesController.class);
+        Node[] nodes = new Node[] {clickedEdge.getSource(), clickedEdge.getTarget()};
+        DataTablesController dtc = Lookup.getDefault().lookup(DataTablesController.class);
         dtc.setNodeTableSelection(nodes);
         dtc.selectNodesTable();
     }
@@ -102,7 +104,8 @@ public class SelectNodesOnTable extends BasicEdgesManipulator {
 
     @Override
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-select-row.png", true);
+        return ImageUtilities
+            .loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/table-select-row.png", true);
     }
 
 }

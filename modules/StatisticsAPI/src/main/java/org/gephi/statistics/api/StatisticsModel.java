@@ -40,13 +40,14 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.api;
 
 import org.gephi.statistics.spi.Statistics;
 
 /**
  * Hosts executed statistics reports.
- * 
+ *
  * @author Patrick J. McSweeney, Mathieu Bastian
  * @see StatisticsController
  */
@@ -55,8 +56,9 @@ public interface StatisticsModel {
     /**
      * Returns the report for the given statistics class or <code>null</code> if no report
      * exists for this statistics.
-     * @param statistics        a statistics class
-     * @return                  the report or <code>null</code> if not found
+     *
+     * @param statistics a statistics class
+     * @return the report or <code>null</code> if not found
      */
-    public String getReport(Class<? extends Statistics> statistics);
+    String getReport(Class<? extends Statistics> statistics);
 }

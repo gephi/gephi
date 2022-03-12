@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
 import java.awt.Color;
@@ -60,28 +61,30 @@ import org.gephi.graph.api.Graph;
  */
 public interface Partition {
 
+    public static Color DEFAULT_COLOR = Color.LIGHT_GRAY;
+
     /**
      * Returns the collection of values this partition represents. Each value
      * has at least one element.
      *
      * @return values
      */
-    public Collection getValues();
+    Collection getValues(Graph graph);
 
     /**
-     * Returns the same collection as {@link #getValues() } but sorted
+     * Returns the same collection as {@link #getValues(Graph graph) } but sorted
      * descendant in counts.
      *
      * @return sorted values
      */
-    public Collection getSortedValues();
+    Collection getSortedValues(Graph graph);
 
     /**
      * Returns the number of elements that have a value in this partition.
      *
      * @return element count
      */
-    public int getElementCount();
+    int getElementCount(Graph graph);
 
     /**
      * Returns the number of elements for the given value.
@@ -89,16 +92,16 @@ public interface Partition {
      * @param value value
      * @return value count
      */
-    public int count(Object value);
+    int count(Object value, Graph graph);
 
     /**
      * Returns the element's value for this partition.
      *
      * @param element element to get the value for
-     * @param graph graph this element belongs to
+     * @param graph   graph this element belongs to
      * @return the value for this partition
      */
-    public Object getValue(Element element, Graph graph);
+    Object getValue(Element element, Graph graph);
 
     /**
      * Returns the color for the given value.
@@ -106,7 +109,7 @@ public interface Partition {
      * @param value value to get the color for
      * @return color or null if not defined
      */
-    public Color getColor(Object value);
+    Color getColor(Object value);
 
     /**
      * Sets the color for the given value.
@@ -114,15 +117,7 @@ public interface Partition {
      * @param value value to set the color for
      * @param color color
      */
-    public void setColor(Object value, Color color);
-
-    /**
-     * Sets the colors for all values. The size of <code>colors</code> must be
-     * equal to <code>size()</code>.
-     *
-     * @param colors colors to set
-     */
-    public void setColors(Color[] colors);
+    void setColor(Object value, Color color);
 
     /**
      * Returns the percentage of elements with the given value.
@@ -130,19 +125,19 @@ public interface Partition {
      * @param value value
      * @return percentage, between zero and 100
      */
-    public float percentage(Object value);
+    float percentage(Object value, Graph graph);
 
     /**
      * Returns the number of values this partition represents.
      *
      * @return value count
      */
-    public int size();
+    int size(Graph graph);
 
     /**
      * Returns the column associated with this partition.
      *
      * @return column or null if partition not based on a column
      */
-    public Column getColumn();
+    Column getColumn();
 }

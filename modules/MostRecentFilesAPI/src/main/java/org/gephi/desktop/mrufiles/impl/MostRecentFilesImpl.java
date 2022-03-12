@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.mrufiles.impl;
 
 import java.beans.PropertyChangeEvent;
@@ -53,19 +54,18 @@ import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = MostRecentFiles.class)
 public class MostRecentFilesImpl implements MostRecentFiles {
     //http://blogs.kiyut.com/tonny/2007/08/09/netbeans-platform-and-most-recently-used-file-mru/
 
+    public static final String MRU_FILE_LIST_PROPERTY = "MRUFileList";
     protected static String DEFAULT_NODE_NAME = "prefs";
     protected String nodeName = null;
-    private EventListenerList listenerList;
-    public static final String MRU_FILE_LIST_PROPERTY = "MRUFileList";
-    private List<String> mruFileList;
-    private int maxSize;
+    private final EventListenerList listenerList;
+    private final List<String> mruFileList;
+    private final int maxSize;
 
     public MostRecentFilesImpl() {
         nodeName = "mrufiles";

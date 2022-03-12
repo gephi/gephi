@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.noverlap;
 
 import java.util.ArrayList;
@@ -47,7 +48,6 @@ import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.ForceVectorNodeLayoutData;
 
 /**
- *
  * @author Mathieu Jacomy
  */
 public class NoverlapLayoutData extends ForceVectorNodeLayoutData {

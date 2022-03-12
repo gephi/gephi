@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.bridge;
 
 import java.util.Arrays;
@@ -67,7 +68,6 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class DataBridge implements VizArchitecture {
@@ -82,18 +82,16 @@ public class DataBridge implements VizArchitecture {
     protected ColumnObserver[] edgeColumnObservers;
     protected int nodeColumnHashCode;
     protected int edgeColumnHashCode;
-    private VizConfig vizConfig;
-    private TextModelImpl textModel;
     protected GraphLimits limits;
-
     //Graph
     protected GraphModel graphModel;
     protected Graph graph;
     protected GraphObserver observer;
-
     //Data
     protected NodeModel[] nodes;
     protected EdgeModel[] edges;
+    private VizConfig vizConfig;
+    private TextModelImpl textModel;
 
     @Override
     public void initArchitecture() {
@@ -185,7 +183,8 @@ public class DataBridge implements VizArchitecture {
                 boolean isView = !graphView.isMainView();
                 for (int i = 0; i < nodes.length; i++) {
                     NodeModel node = nodes[i];
-                    if (node != null && (node.getNode().getStoreId() == -1 || (isView && !graph.contains(node.getNode())))) {
+                    if (node != null &&
+                        (node.getNode().getStoreId() == -1 || (isView && !graph.contains(node.getNode())))) {
                         //Removed
                         octree.removeNode(node);
                         nodes[i] = null;
@@ -208,7 +207,8 @@ public class DataBridge implements VizArchitecture {
                 }
                 for (int i = 0; i < edges.length; i++) {
                     EdgeModel edge = edges[i];
-                    if (edge != null && (edge.getEdge().getStoreId() == -1 || (isView && !graph.contains(edge.getEdge())))) {
+                    if (edge != null &&
+                        (edge.getEdge().getStoreId() == -1 || (isView && !graph.contains(edge.getEdge())))) {
                         //Removed
                         int sourceId = edge.getEdge().getSource().getStoreId();
                         int targetId = edge.getEdge().getTarget().getStoreId();
@@ -380,7 +380,8 @@ public class DataBridge implements VizArchitecture {
 
         Column[] edgeTextColumns = textModelImpl.getEdgeTextColumns();
         Column[] edgeColumns = Arrays.copyOf(edgeTextColumns, edgeTextColumns.length + 1);
-        edgeColumns[edgeColumns.length - 1] = graphModel.getEdgeTable().getColumn("weight");//Make sure to always observe weight changes
+        edgeColumns[edgeColumns.length - 1] =
+            graphModel.getEdgeTable().getColumn("weight");//Make sure to always observe weight changes
 
         edgeColumnHashCode = Arrays.hashCode(edgeColumns);
         edgeColumnObservers = new ColumnObserver[edgeColumns.length];
@@ -401,7 +402,8 @@ public class DataBridge implements VizArchitecture {
         if (nodes == null) {
             nodes = new NodeModel[10];
         } else if (index >= nodes.length) {
-            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * nodes.length) >>> 16, index + 1), Integer.MAX_VALUE);
+            final int newLength =
+                (int) Math.min(Math.max((ONEOVERPHI * nodes.length) >>> 16, index + 1), Integer.MAX_VALUE);
             final NodeModel t[] = new NodeModel[newLength];
             System.arraycopy(nodes, 0, t, 0, nodes.length);
             nodes = t;
@@ -412,7 +414,8 @@ public class DataBridge implements VizArchitecture {
         if (edges == null) {
             edges = new EdgeModel[10];
         } else if (index >= edges.length) {
-            final int newLength = (int) Math.min(Math.max((ONEOVERPHI * edges.length) >>> 16, index + 1), Integer.MAX_VALUE);
+            final int newLength =
+                (int) Math.min(Math.max((ONEOVERPHI * edges.length) >>> 16, index + 1), Integer.MAX_VALUE);
             final EdgeModel t[] = new EdgeModel[newLength];
             System.arraycopy(edges, 0, t, 0, edges.length);
             edges = t;

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin;
 
 import java.util.ArrayList;
@@ -49,7 +50,6 @@ import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterProperty;
 
 /**
- *
  * @author mbastian
  */
 public abstract class AbstractFilter implements Filter {

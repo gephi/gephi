@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.preview;
 
 import java.awt.Graphics;
@@ -59,7 +60,6 @@ import org.gephi.preview.api.Vector;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author mbastian
  */
 public class PreviewSketch extends JPanel implements MouseListener, MouseWheelListener, MouseMotionListener {
@@ -73,9 +73,9 @@ public class PreviewSketch extends JPanel implements MouseListener, MouseWheelLi
     private final Vector lastMove = new Vector();
     //Utils
     private final RefreshLoop refreshLoop = new RefreshLoop();
+    private final boolean isRetina;
     private Timer wheelTimer;
     private boolean inited;
-    private final boolean isRetina;
 
     public PreviewSketch(G2DTarget target) {
         this.target = target;

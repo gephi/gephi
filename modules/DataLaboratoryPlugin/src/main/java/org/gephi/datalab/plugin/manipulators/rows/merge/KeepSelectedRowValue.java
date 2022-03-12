@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import javax.swing.Icon;
@@ -51,6 +52,7 @@ import org.openide.util.NbBundle;
 
 /**
  * AttributeRowsMergeStrategy that simply keeps the value of the main row selected.
+ *
  * @author Eduardo Ramos
  */
 public class KeepSelectedRowValue implements AttributeRowsMergeStrategy {

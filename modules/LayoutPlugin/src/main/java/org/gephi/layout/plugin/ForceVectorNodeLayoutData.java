@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.layout.plugin;
 
 import org.gephi.graph.spi.LayoutData;
 
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ForceVectorNodeLayoutData implements LayoutData {

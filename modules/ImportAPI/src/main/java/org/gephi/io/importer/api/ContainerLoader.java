@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 import org.gephi.graph.api.TimeFormat;
@@ -69,7 +70,7 @@ public interface ContainerLoader {
      *
      * @param edgeDraft edge that is to be pushed to this container
      */
-    public void addEdge(EdgeDraft edgeDraft);
+    void addEdge(EdgeDraft edgeDraft);
 
     /**
      * Adds a node to this container. Identified by its <b>id</b>. If no id is
@@ -77,7 +78,7 @@ public interface ContainerLoader {
      *
      * @param nodeDraft node that is to be pushed to this container
      */
-    public void addNode(NodeDraft nodeDraft);
+    void addNode(NodeDraft nodeDraft);
 
     /**
      * Removes an edge from this container. Do nothing if the edge is not in the
@@ -85,7 +86,7 @@ public interface ContainerLoader {
      *
      * @param edgeDraft edge that is to be removed from this container
      */
-    public void removeEdge(EdgeDraft edgeDraft);
+    void removeEdge(EdgeDraft edgeDraft);
 
     /**
      * Returns the node with the given <code>id</code>, or create a new node
@@ -94,7 +95,7 @@ public interface ContainerLoader {
      * @param id node identifier
      * @return found node, or a new default node
      */
-    public NodeDraft getNode(String id);
+    NodeDraft getNode(String id);
 
     /**
      * Returns <code>true</code> if a node exists with the given
@@ -103,7 +104,7 @@ public interface ContainerLoader {
      * @param id node identifier
      * @return <code>true</code> if node exists, <code>false</code> otherwise
      */
-    public boolean nodeExists(String id);
+    boolean nodeExists(String id);
 
     /**
      * Returns the edge with the given <code>id</code>, or <code>null</code> if
@@ -113,7 +114,7 @@ public interface ContainerLoader {
      * @return edge with <code>id</code> as an identifier, or <code>null</code>
      * if not found
      */
-    public EdgeDraft getEdge(String id);
+    EdgeDraft getEdge(String id);
 
     /**
      * Returns <code>true</code> if an edge exists with the given
@@ -122,7 +123,7 @@ public interface ContainerLoader {
      * @param id an edge identifier
      * @return <code>true</code> if edge exists, <code>false</code> otherwise
      */
-    public boolean edgeExists(String id);
+    boolean edgeExists(String id);
 
     /**
      * Returns <code>true</code> if an edge exists from <code>source</code> to
@@ -132,7 +133,7 @@ public interface ContainerLoader {
      * @param target edge target node
      * @return <code>true</code> if edges exists, <code>false</code> otherwise
      */
-    public boolean edgeExists(String source, String target);
+    boolean edgeExists(String source, String target);
 
     /**
      * Set edge default type: <b>DIRECTED</b>, <b>UNDIRECTED</b> or
@@ -140,7 +141,7 @@ public interface ContainerLoader {
      *
      * @param edgeDefault edge default type value
      */
-    public void setEdgeDefault(EdgeDirectionDefault edgeDefault);
+    void setEdgeDefault(EdgeDirectionDefault edgeDefault);
 
     /**
      * Returns the node column draft with <code>key</code> as identifier.
@@ -148,7 +149,7 @@ public interface ContainerLoader {
      * @param key node column key
      * @return column draft or null if not found
      */
-    public ColumnDraft getNodeColumn(String key);
+    ColumnDraft getNodeColumn(String key);
 
     /**
      * Returns the edge column draft with <code>key</code> as identifier.
@@ -156,7 +157,7 @@ public interface ContainerLoader {
      * @param key edge column key
      * @return column draft or null if not found
      */
-    public ColumnDraft getEdgeColumn(String key);
+    ColumnDraft getEdgeColumn(String key);
 
     /**
      * Adds a new node column to this container.
@@ -164,11 +165,11 @@ public interface ContainerLoader {
      * If a column with this key already exists, it is ignored and return the
      * existing column.
      *
-     * @param key node column identifier
+     * @param key       node column identifier
      * @param typeClass node column type
      * @return column draft
      */
-    public ColumnDraft addNodeColumn(String key, Class typeClass);
+    ColumnDraft addNodeColumn(String key, Class typeClass);
 
     /**
      * Adds a new edge column to this container.
@@ -176,11 +177,11 @@ public interface ContainerLoader {
      * If a column with this key already exists, it is ignored and return the
      * existing column.
      *
-     * @param key edge column identifier
+     * @param key       edge column identifier
      * @param typeClass edge column type
      * @return column draft
      */
-    public ColumnDraft addEdgeColumn(String key, Class typeClass);
+    ColumnDraft addEdgeColumn(String key, Class typeClass);
 
     /**
      * Adds a new dynamic node column to this container.
@@ -190,12 +191,12 @@ public interface ContainerLoader {
      * If a column with this key already exists, it is ignored and return the
      * existing column.
      *
-     * @param key node column identifier
+     * @param key       node column identifier
      * @param typeClass node column type
-     * @param dynamic true if the column needs to be dynamic, false otherwise
+     * @param dynamic   true if the column needs to be dynamic, false otherwise
      * @return column draft
      */
-    public ColumnDraft addNodeColumn(String key, Class typeClass, boolean dynamic);
+    ColumnDraft addNodeColumn(String key, Class typeClass, boolean dynamic);
 
     /**
      * Adds a new dynamic edge column to this container.
@@ -205,19 +206,19 @@ public interface ContainerLoader {
      * If a column with this key already exists, it is ignored and return the
      * existing column.
      *
-     * @param key edge column identifier
+     * @param key       edge column identifier
      * @param typeClass edge column type
-     * @param dynamic true if the column needs to be dynamic, false otherwise
+     * @param dynamic   true if the column needs to be dynamic, false otherwise
      * @return column draft
      */
-    public ColumnDraft addEdgeColumn(String key, Class typeClass, boolean dynamic);
+    ColumnDraft addEdgeColumn(String key, Class typeClass, boolean dynamic);
 
     /**
      * Returns the <b>factory</b> for building nodes and edges instances.
      *
      * @return the draft factory
      */
-    public ElementDraft.Factory factory();
+    ElementDraft.Factory factory();
 
     /**
      * Sets the current Time Format for dynamic data, either <code>DATE</code>,
@@ -228,7 +229,7 @@ public interface ContainerLoader {
      *
      * @param timeFormat time format
      */
-    public void setTimeFormat(TimeFormat timeFormat);
+    void setTimeFormat(TimeFormat timeFormat);
 
     /**
      * Sets the timestamp for the entire graph. All elements and all dynamic
@@ -237,7 +238,7 @@ public interface ContainerLoader {
      *
      * @param timestamp timestamp
      */
-    public void setTimestamp(String timestamp);
+    void setTimestamp(String timestamp);
 
     /**
      * Sets the interval for the entire graph. All elements and all dynamic
@@ -245,16 +246,25 @@ public interface ContainerLoader {
      * processed.
      *
      * @param start interval start
-     * @param end interval end
+     * @param end   interval end
      */
-    public void setInterval(String start, String end);
+    void setInterval(String start, String end);
 
     /**
      * Sets the type of the id for elements.
      *
      * @param type id type
      */
-    public void setElementIdType(ElementIdType type);
+    void setElementIdType(ElementIdType type);
+
+    /**
+     * Gets the current time representation, either <code>TIMESTAMP</code> or
+     * <code>INTERVAL</code>.
+     * <p>
+     *
+     * @return time representation
+     */
+    TimeRepresentation getTimeRepresentation();
 
     /**
      * Sets the current time representation, either <code>TIMESTAMP</code> or
@@ -264,15 +274,7 @@ public interface ContainerLoader {
      *
      * @param timeRepresentation time representation
      */
-    public void setTimeRepresentation(TimeRepresentation timeRepresentation);
-
-    /**
-     * Gets the current time representation, either <code>TIMESTAMP</code> or
-     * <code>INTERVAL</code>.
-     * <p>
-     * @return time representation
-     */
-    public TimeRepresentation getTimeRepresentation();
+    void setTimeRepresentation(TimeRepresentation timeRepresentation);
 
     /**
      * Sets the time zone that is used to parse date and time.
@@ -281,18 +283,18 @@ public interface ContainerLoader {
      *
      * @param timeZone time zone
      */
-    public void setTimeZone(DateTimeZone timeZone);
+    void setTimeZone(DateTimeZone timeZone);
 
     //PARAMETERS SETTERS
-    public void setAllowSelfLoop(boolean value);
+    void setAllowSelfLoop(boolean value);
 
-    public void setAllowAutoNode(boolean value);
+    void setAllowAutoNode(boolean value);
 
-    public void setAllowParallelEdge(boolean value);
+    void setAllowParallelEdge(boolean value);
 
-    public void setAutoScale(boolean autoscale);
-    
-    public void setFillLabelWithId(boolean value);
+    void setAutoScale(boolean autoscale);
 
-    public void setEdgesMergeStrategy(EdgeMergeStrategy edgesMergeStrategy);
+    void setFillLabelWithId(boolean value);
+
+    void setEdgesMergeStrategy(EdgeMergeStrategy edgesMergeStrategy);
 }

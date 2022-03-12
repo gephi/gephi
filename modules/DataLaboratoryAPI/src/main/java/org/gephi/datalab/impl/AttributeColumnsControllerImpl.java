@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.impl;
 
 import java.lang.reflect.Array;
@@ -96,7 +97,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 GraphModel graphModel = column.getTable().getGraph().getModel();
 
                 String stringValue = AttributeUtils.print(value, graphModel.getTimeFormat(), graphModel.getTimeZone());
-                value = AttributeUtils.parse(stringValue, targetType);//Try to convert to target type from string representation
+                value = AttributeUtils
+                    .parse(stringValue, targetType);//Try to convert to target type from string representation
             } catch (Exception ex) {
                 return false;//Could not parse
             }
@@ -144,14 +146,17 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     @Override
-    public Column convertAttributeColumnToNewDynamicColumn(Table table, Column column, double low, double high, String newColumnTitle) {
+    public Column convertAttributeColumnToNewDynamicColumn(Table table, Column column, double low, double high,
+                                                           String newColumnTitle) {
         return convertColumnToDynamic(table, column, low, high, newColumnTitle);
     }
 
     private Column convertColumnToDynamic(Table table, Column column, double low, double high, String newColumnTitle) {
         Class oldType = column.getTypeClass();
 
-        TimeRepresentation timeRepresentation = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getConfiguration().getTimeRepresentation();
+        TimeRepresentation timeRepresentation =
+            Lookup.getDefault().lookup(GraphController.class).getGraphModel().getConfiguration()
+                .getTimeRepresentation();
         Class<?> newType;
         if (timeRepresentation == TimeRepresentation.TIMESTAMP) {
             newType = AttributeUtils.getTimestampMapType(oldType);
@@ -165,7 +170,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             }
         }
 
-        Element rows[] = getTableAttributeRows(table);
+        Element[] rows = getTableAttributeRows(table);
 
         Object[] oldValues = new Object[rows.length];
         for (int i = 0; i < rows.length; i++) {
@@ -612,10 +617,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     /**
      * Finds the same edge (same source, target, and directedness) in the graph. If directed = false (undirected), it finds the reversed undirected edge too.
      *
-     * @param graph Graph
-     * @param id Optional id, to enforce the edge id to match too
-     * @param source Source node
-     * @param target Target node
+     * @param graph    Graph
+     * @param id       Optional id, to enforce the edge id to match too
+     * @param source   Source node
+     * @param target   Target node
      * @param directed Directedness of the edge to find
      * @return The found edge or null if not found
      */
@@ -652,13 +657,13 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
             if (!sameEdgeDefinition) {
                 Logger.getLogger("").log(
-                        Level.WARNING,
-                        "Found edge with correct id = {0} but different definition (wanted = [source = {1}, target = {2}, directed = {3}]; found = [source = {4}, target = {5}, directed = {6}]). Cannot use this edge",
-                        new Object[]{
-                            id,
-                            source.getId(), target.getId(), directed,
-                            edge.getSource().getId(), edge.getTarget().getId(), edge.isDirected()
-                        }
+                    Level.WARNING,
+                    "Found edge with correct id = {0} but different definition (wanted = [source = {1}, target = {2}, directed = {3}]; found = [source = {4}, target = {5}, directed = {6}]). Cannot use this edge",
+                    new Object[] {
+                        id,
+                        source.getId(), target.getId(), directed,
+                        edge.getSource().getId(), edge.getTarget().getId(), edge.isDirected()
+                    }
                 );
                 //Edge data is different even when the id coincides:
                 edge = null;
@@ -683,9 +688,11 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     @Override
-    public void mergeRowsValues(Column[] columns, AttributeRowsMergeStrategy[] mergeStrategies, Element[] rows, Element selectedRow, Element resultRow) {
+    public void mergeRowsValues(Column[] columns, AttributeRowsMergeStrategy[] mergeStrategies, Element[] rows,
+                                Element selectedRow, Element resultRow) {
         if (columns.length != mergeStrategies.length) {
-            throw new IllegalArgumentException("The number of columns must be equal to the number of merge strategies provided");
+            throw new IllegalArgumentException(
+                "The number of columns must be equal to the number of merge strategies provided");
         }
         if (selectedRow == null) {
             selectedRow = rows[0];
@@ -809,7 +816,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     /**
      * Used for obtaining a list of the numbers of row of a dynamic number column.
      *
-     * @param row Row
+     * @param row    Row
      * @param column Column with dynamic type
      * @return list of numbers
      */

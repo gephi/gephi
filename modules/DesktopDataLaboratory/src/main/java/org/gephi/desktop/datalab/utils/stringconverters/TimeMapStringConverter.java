@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.utils.stringconverters;
 
 import org.gephi.desktop.datalab.utils.GraphModelProvider;
@@ -52,7 +53,7 @@ import org.jdesktop.swingx.renderer.StringValue;
  * @author Eduardo Ramos
  */
 public class TimeMapStringConverter implements StringValue {
-    
+
     private final GraphModelProvider graphModelProvider;
 
     public TimeMapStringConverter(GraphModelProvider graphModelProvider) {
@@ -64,9 +65,10 @@ public class TimeMapStringConverter implements StringValue {
         String str = null;
         if (value != null) {
             TimeMap timeMap = (TimeMap) value;
-            str = timeMap.toString(graphModelProvider.getGraphModel().getTimeFormat(), graphModelProvider.getGraphModel().getTimeZone());
+            str = timeMap.toString(graphModelProvider.getGraphModel().getTimeFormat(),
+                graphModelProvider.getGraphModel().getTimeZone());
         }
-        
+
         return str;
     }
 }

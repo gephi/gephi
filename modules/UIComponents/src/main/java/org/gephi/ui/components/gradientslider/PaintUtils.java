@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components.gradientslider;
 
 import java.awt.BasicStroke;
@@ -54,20 +55,25 @@ import javax.swing.UIManager;
 // Author Jeremy Wood
 public class PaintUtils {
 
-    /** Four shades of white, each with increasing opacity. */
-    public final static Color[] whites = new Color[]{
+    /**
+     * Four shades of white, each with increasing opacity.
+     */
+    public final static Color[] whites = new Color[] {
         new Color(255, 255, 255, 50),
         new Color(255, 255, 255, 100),
         new Color(255, 255, 255, 150)
     };
-    /** Four shades of black, each with increasing opacity. */
-    public final static Color[] blacks = new Color[]{
+    /**
+     * Four shades of black, each with increasing opacity.
+     */
+    public final static Color[] blacks = new Color[] {
         new Color(0, 0, 0, 50),
         new Color(0, 0, 0, 100),
         new Color(0, 0, 0, 150)
     };
 
-    /** @return the color used to indicate when a component has
+    /**
+     * @return the color used to indicate when a component has
      * focus.  By default this uses the color (64,113,167), but you can
      * override this by calling:
      * <BR><code>UIManager.put("focusRing",customColor);</code>
@@ -80,19 +86,20 @@ public class PaintUtils {
         return new Color(64, 113, 167);
     }
 
-    /** Paints 3 different strokes around a shape to indicate focus.
+    /**
+     * Paints 3 different strokes around a shape to indicate focus.
      * The widest stroke is the most transparent, so this achieves a nice
      * "glow" effect.
      * <P>The catch is that you have to render this underneath the shape,
      * and the shape should be filled completely.
      *
-     * @param g the graphics to paint to
-     * @param shape the shape to outline
+     * @param g             the graphics to paint to
+     * @param shape         the shape to outline
      * @param biggestStroke the widest stroke to use.
      */
     public static void paintFocus(Graphics2D g, Shape shape, int biggestStroke) {
         Color focusColor = getFocusRingColor();
-        Color[] focusArray = new Color[]{
+        Color[] focusArray = new Color[] {
             new Color(focusColor.getRed(), focusColor.getGreen(), focusColor.getBlue(), 255),
             new Color(focusColor.getRed(), focusColor.getGreen(), focusColor.getBlue(), 170),
             new Color(focusColor.getRed(), focusColor.getGreen(), focusColor.getBlue(), 110)
@@ -109,11 +116,13 @@ public class PaintUtils {
         g.setStroke(new BasicStroke(1));
     }
 
-    /** Uses translucent shades of white and black to draw highlights
+    /**
+     * Uses translucent shades of white and black to draw highlights
      * and shadows around a rectangle, and then frames the rectangle
      * with a shade of gray (120).
      * <P>This should be called to add a finishing touch on top of
      * existing graphics.
+     *
      * @param g the graphics to paint to.
      * @param r the rectangle to paint.
      */

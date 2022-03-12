@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import com.bric.swing.ColorPicker;
@@ -55,18 +56,17 @@ import javax.swing.SwingUtilities;
 import org.openide.windows.WindowManager;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class JColorButton extends JButton {
 
-    public static String EVENT_COLOR = "color";
-    private Color color;
-    private boolean includeOpacity;
     private final static int ICON_WIDTH = 16;
     private final static int ICON_HEIGHT = 16;
     private final static Color DISABLED_BORDER = new Color(200, 200, 200);
     private final static Color DISABLED_FILL = new Color(220, 220, 220);
+    public static String EVENT_COLOR = "color";
+    private Color color;
+    private boolean includeOpacity;
 
     public JColorButton(Color originalColor) {
         this(originalColor, false, false);
@@ -112,7 +112,8 @@ public class JColorButton extends JButton {
                 public void mouseClicked(MouseEvent e) {
 
                     if (SwingUtilities.isRightMouseButton(e)) {
-                        Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color, JColorButton.this.includeOpacity);
+                        Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color,
+                            JColorButton.this.includeOpacity);
                         if (newColor != null) {
                             setColor(newColor);
                         }
@@ -124,13 +125,18 @@ public class JColorButton extends JButton {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color, JColorButton.this.includeOpacity);
+                    Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color,
+                        JColorButton.this.includeOpacity);
                     if (newColor != null) {
                         setColor(newColor);
                     }
                 }
             });
         }
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     public void setColor(Color color) {
@@ -142,12 +148,9 @@ public class JColorButton extends JButton {
         }
     }
 
-    public Color getColor() {
-        return color;
-    }
-
     public float[] getColorArray() {
-        return new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f};
+        return new float[] {color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f,
+            color.getAlpha() / 255f};
     }
 
     public void setIncludeOpacity(boolean includeOpacity) {

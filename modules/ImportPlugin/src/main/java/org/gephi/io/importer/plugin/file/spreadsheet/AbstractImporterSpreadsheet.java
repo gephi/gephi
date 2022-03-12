@@ -39,11 +39,10 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet;
 
 import java.io.File;
-import org.gephi.io.importer.plugin.file.spreadsheet.process.ImportNodesProcess;
-import org.gephi.io.importer.plugin.file.spreadsheet.process.AbstractImportProcess;
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -72,9 +71,11 @@ import org.gephi.graph.api.types.TimestampSet;
 import org.gephi.graph.api.types.TimestampStringMap;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.Report;
+import org.gephi.io.importer.plugin.file.spreadsheet.process.AbstractImportProcess;
 import org.gephi.io.importer.plugin.file.spreadsheet.process.ImportAdjacencyListProcess;
 import org.gephi.io.importer.plugin.file.spreadsheet.process.ImportEdgesProcess;
 import org.gephi.io.importer.plugin.file.spreadsheet.process.ImportMatrixProcess;
+import org.gephi.io.importer.plugin.file.spreadsheet.process.ImportNodesProcess;
 import org.gephi.io.importer.plugin.file.spreadsheet.process.SpreadsheetGeneralConfiguration;
 import org.gephi.io.importer.plugin.file.spreadsheet.process.SpreadsheetGeneralConfiguration.Mode;
 import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetParser;
@@ -86,24 +87,19 @@ import org.joda.time.DateTimeZone;
 import org.openide.util.Exceptions;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public abstract class AbstractImporterSpreadsheet implements FileImporter, FileImporter.FileAware, LongTask {
 
     private static final int MAX_ROWS_TO_ANALYZE_COLUMN_TYPES = 25;
-
+    //General configuration:
+    protected final SpreadsheetGeneralConfiguration generalConfig = new SpreadsheetGeneralConfiguration();
     protected ContainerLoader container;
     protected Report report;
     protected ProgressTicket progressTicket;
     protected boolean cancel = false;
-
     protected AbstractImportProcess importer = null;
-
     protected File file;
-
-    //General configuration:
-    protected final SpreadsheetGeneralConfiguration generalConfig = new SpreadsheetGeneralConfiguration();
 
     @Override
     public boolean execute(ContainerLoader container) {
@@ -197,7 +193,8 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
                     if (mode == null) {
                         for (int i = 0; i < firstRow.size(); i++) {
                             String value = firstRow.get(i);
-                            if ("id".equalsIgnoreCase(value) || "label".equalsIgnoreCase(value) || "timeset".equalsIgnoreCase(value)) {
+                            if ("id".equalsIgnoreCase(value) || "label".equalsIgnoreCase(value) ||
+                                "timeset".equalsIgnoreCase(value)) {
                                 mode = Mode.NODES_TABLE;
                             }
                         }
@@ -232,7 +229,7 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
 
             Map<String, LinkedHashSet<Class>> classMatchByHeader = new HashMap<>();
 
-            List<Class> classesToTry = Arrays.asList(new Class[]{
+            List<Class> classesToTry = Arrays.asList(new Class[] {
                 //Classes to check, in order of preference
                 Boolean.class,
                 Integer.class,
@@ -274,7 +271,8 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
                     for (Class clazz : classesToTry) {
                         if (columnMatches.contains(clazz)) {
                             if (value != null && !value.isEmpty()) {
-                                if (clazz.equals(Boolean.class)) {//Special case for booleans to not accept 0/1, only true or false
+                                if (clazz.equals(
+                                    Boolean.class)) {//Special case for booleans to not accept 0/1, only true or false
                                     if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")) {
                                         columnMatches.remove(clazz);
                                     }
@@ -333,7 +331,8 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
                     detectedClass = String.class;
                 }
 
-                if (detectedClass.equals(String.class)) {//No other thing than String found, try to guess very probable dynamic types:
+                if (detectedClass.equals(
+                    String.class)) {//No other thing than String found, try to guess very probable dynamic types:
                     if (column.toLowerCase().contains("interval")) {
                         detectedClass = IntervalSet.class;
                     }
@@ -352,7 +351,8 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
                 }
 
                 if (getMode() == Mode.EDGES_TABLE) {
-                    if (column.equalsIgnoreCase("source") || column.equalsIgnoreCase("target") || column.equalsIgnoreCase("type") || column.equalsIgnoreCase("kind")) {
+                    if (column.equalsIgnoreCase("source") || column.equalsIgnoreCase("target") ||
+                        column.equalsIgnoreCase("type") || column.equalsIgnoreCase("kind")) {
                         detectedClass = String.class;
                     }
 
@@ -370,7 +370,8 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
 
                 setColumnClass(column, detectedClass);
 
-                if (TimestampSet.class.isAssignableFrom(detectedClass) || TimestampMap.class.isAssignableFrom(detectedClass)) {
+                if (TimestampSet.class.isAssignableFrom(detectedClass) ||
+                    TimestampMap.class.isAssignableFrom(detectedClass)) {
                     foundTimeRepresentation = TimeRepresentation.TIMESTAMP;
                 }
             }
@@ -392,6 +393,10 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
         //See setFile(File file)
     }
 
+    public File getFile() {
+        return file;
+    }
+
     @Override
     public void setFile(File file) {
         File previousFile = this.file;
@@ -402,10 +407,6 @@ public abstract class AbstractImporterSpreadsheet implements FileImporter, FileI
             //But not auto detect again if the importer controller sets the file a second time, or that would cancel the possible changes made by the programmer/UI user.
             refreshAutoDetections();
         }
-    }
-
-    public File getFile() {
-        return file;
     }
 
     @Override

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.importer.plugin;
 
 import java.awt.Dimension;
@@ -66,15 +67,14 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ImporterUI.class)
 public class ImporterVnaUI implements ImporterUI {
 
+    private final String MESSAGE_LINEAR = NbBundle.getMessage(getClass(), "ImporterVnaUI.message.linear");
+    private final String MESSAGE_SQUARE_ROOT = NbBundle.getMessage(getClass(), "ImporterVnaUI.message.square_root");
+    private final String MESSAGE_LOGARITHMIC = NbBundle.getMessage(getClass(), "ImporterVnaUI.message.logarithmic");
     private ImporterVNA[] importers;
     private JComboBox comboBox;
     private JTextField textField;
     private JLabel messageLabel;
     private JPanel panel;
-
-    private final String MESSAGE_LINEAR = NbBundle.getMessage(getClass(), "ImporterVnaUI.message.linear");
-    private final String MESSAGE_SQUARE_ROOT = NbBundle.getMessage(getClass(), "ImporterVnaUI.message.square_root");
-    private final String MESSAGE_LOGARITHMIC = NbBundle.getMessage(getClass(), "ImporterVnaUI.message.logarithmic");
 
     @Override
     public void setup(Importer[] importers) {
@@ -145,14 +145,15 @@ public class ImporterVnaUI implements ImporterUI {
     public void unsetup(boolean update) {
         if (update) {
             float coefficient = 1;
-            if (((EdgeWidthFunction.Function) comboBox.getSelectedItem()).equals(EdgeWidthFunction.Function.LINEAR)) {
+            if (comboBox.getSelectedItem().equals(EdgeWidthFunction.Function.LINEAR)) {
                 try {
                     coefficient = Float.parseFloat(textField.getText());
                 } catch (NumberFormatException e) {
                 }
             }
             for (ImporterVNA importer : importers) {
-                importer.setEdgeWidthFunction(new EdgeWidthFunction((EdgeWidthFunction.Function) comboBox.getSelectedItem(), coefficient));
+                importer.setEdgeWidthFunction(
+                    new EdgeWidthFunction((EdgeWidthFunction.Function) comboBox.getSelectedItem(), coefficient));
             }
         }
         panel = null;

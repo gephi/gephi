@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.selection;
 
 import com.jogamp.opengl.GL2;
@@ -52,7 +53,6 @@ import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.model.node.NodeModel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class Rectangle implements SelectionArea {
@@ -61,13 +61,13 @@ public class Rectangle implements SelectionArea {
     private final GraphDrawable drawable;
     private final VizConfig config;
     private final float[] color;
-    //Variables
-    private float[] startPosition;
-    private float[] startPosition3d;
     private final float[] rectangle = new float[2];
     private final float[] rectangle3d = new float[2];
     private final float[] center = new float[2];
     private final float[] rectangleSize = new float[2];
+    //Variables
+    private float[] startPosition;
+    private float[] startPosition3d;
     private boolean stop = true;
     private boolean blocking = true;
     private boolean ctrl = false;
@@ -109,7 +109,7 @@ public class Rectangle implements SelectionArea {
         if (stop) {
             return nodeModel.selectionTest(distanceFromMouse, 0);
         }
-        
+
         float x = nodeModel.getX();
         float y = nodeModel.getY();
         float rad = nodeModel.getNode().size();
@@ -217,11 +217,11 @@ public class Rectangle implements SelectionArea {
         return stop;
     }
 
-    public void setCtrl(boolean ctrl) {
-        this.ctrl = ctrl;
-    }
-
     public boolean isCtrl() {
         return ctrl;
+    }
+
+    public void setCtrl(boolean ctrl) {
+        this.ctrl = ctrl;
     }
 }

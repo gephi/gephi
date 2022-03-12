@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.context;
 
 import java.awt.Font;
@@ -49,25 +50,20 @@ import org.gephi.graph.api.GraphModel;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ContextPanel extends javax.swing.JPanel {
 
-    private enum GraphType {
-
-        DIRECTED(NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphType.directed")),
-        UNDIRECTED(NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphType.undirected")),
-        MIXED(NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphType.mixed"));
-        protected final String type;
-
-        GraphType(String type) {
-            this.type = type;
-        }
-    }
     private GraphModel model;
     private NumberFormat formatter;
     private ContextRefreshThread consumerThread;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToolBar commandToolbar;
+    private javax.swing.JLabel edgeLabel;
+    private javax.swing.JLabel graphTypeLabel;
+    private javax.swing.JLabel labelEdges;
+    private javax.swing.JLabel labelNodes;
+    private javax.swing.JLabel nodeLabel;
 
     public ContextPanel() {
         initComponents();
@@ -90,35 +86,6 @@ public class ContextPanel extends javax.swing.JPanel {
         setEnable(model != null);
         if (this.model != null) {
             consumerThread = new ContextRefreshThread(model, new RefreshRunnable());
-        }
-    }
-
-    private class RefreshRunnable implements Runnable {
-
-        @Override
-        public void run() {
-            Graph visibleGraph = model.getGraphVisible();
-            Graph fullGraph = model.getGraph();
-            final int nodesFull = fullGraph.getNodeCount();
-            final int nodesVisible = visibleGraph.getNodeCount();
-            final int edgesFull = fullGraph.getEdgeCount();
-            final int edgesVisible = visibleGraph.getEdgeCount();
-            final GraphType graphType = model.isDirected() ? GraphType.DIRECTED : model.isUndirected() ? GraphType.UNDIRECTED : GraphType.MIXED;
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    String visible = NbBundle.getMessage(ContextPanel.class, "ContextPanel.visible");
-                    String nodeText = String.valueOf(nodesVisible);
-                    String edgeText = String.valueOf(edgesVisible);
-                    if (nodesFull != nodesVisible || edgesFull != edgesVisible) {
-                        nodeText += nodesFull > 0 ? " (" + formatter.format(nodesVisible / (double) nodesFull) + " " + visible + ")" : "";
-                        edgeText += edgesFull > 0 ? " (" + formatter.format(edgesVisible / (double) edgesFull) + " " + visible + ")" : "";
-                    }
-                    nodeLabel.setText(nodeText);
-                    edgeLabel.setText(edgeText);
-                    graphTypeLabel.setText(graphType.type);
-                }
-            });
         }
     }
 
@@ -167,7 +134,8 @@ public class ContextPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         add(commandToolbar, gridBagConstraints);
 
-        labelNodes.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.labelNodes.text")); // NOI18N
+        labelNodes.setText(
+            org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.labelNodes.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -175,7 +143,8 @@ public class ContextPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 0, 5);
         add(labelNodes, gridBagConstraints);
 
-        nodeLabel.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.nodeLabel.text")); // NOI18N
+        nodeLabel
+            .setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.nodeLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -185,7 +154,8 @@ public class ContextPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(7, 4, 0, 3);
         add(nodeLabel, gridBagConstraints);
 
-        labelEdges.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.labelEdges.text")); // NOI18N
+        labelEdges.setText(
+            org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.labelEdges.text")); // NOI18N
         labelEdges.setToolTipText("Number of edges, without meta-edges"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -194,7 +164,8 @@ public class ContextPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 7, 0, 5);
         add(labelEdges, gridBagConstraints);
 
-        edgeLabel.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.edgeLabel.text")); // NOI18N
+        edgeLabel
+            .setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.edgeLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -204,7 +175,8 @@ public class ContextPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 4, 0, 3);
         add(edgeLabel, gridBagConstraints);
 
-        graphTypeLabel.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphTypeLabel.text")); // NOI18N
+        graphTypeLabel.setText(
+            org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphTypeLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -213,12 +185,49 @@ public class ContextPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 7, 5, 5);
         add(graphTypeLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToolBar commandToolbar;
-    private javax.swing.JLabel edgeLabel;
-    private javax.swing.JLabel graphTypeLabel;
-    private javax.swing.JLabel labelEdges;
-    private javax.swing.JLabel labelNodes;
-    private javax.swing.JLabel nodeLabel;
+
+    private enum GraphType {
+
+        DIRECTED(NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphType.directed")),
+        UNDIRECTED(NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphType.undirected")),
+        MIXED(NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphType.mixed"));
+        protected final String type;
+
+        GraphType(String type) {
+            this.type = type;
+        }
+    }
+
+    private class RefreshRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            Graph visibleGraph = model.getGraphVisible();
+            Graph fullGraph = model.getGraph();
+            final int nodesFull = fullGraph.getNodeCount();
+            final int nodesVisible = visibleGraph.getNodeCount();
+            final int edgesFull = fullGraph.getEdgeCount();
+            final int edgesVisible = visibleGraph.getEdgeCount();
+            final GraphType graphType =
+                model.isDirected() ? GraphType.DIRECTED : model.isUndirected() ? GraphType.UNDIRECTED : GraphType.MIXED;
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    String visible = NbBundle.getMessage(ContextPanel.class, "ContextPanel.visible");
+                    String nodeText = String.valueOf(nodesVisible);
+                    String edgeText = String.valueOf(edgesVisible);
+                    if (nodesFull != nodesVisible || edgesFull != edgesVisible) {
+                        nodeText += nodesFull > 0 ?
+                            " (" + formatter.format(nodesVisible / (double) nodesFull) + " " + visible + ")" : "";
+                        edgeText += edgesFull > 0 ?
+                            " (" + formatter.format(edgesVisible / (double) edgesFull) + " " + visible + ")" : "";
+                    }
+                    nodeLabel.setText(nodeText);
+                    edgeLabel.setText(edgeText);
+                    graphTypeLabel.setText(graphType.type);
+                }
+            });
+        }
+    }
     // End of variables declaration//GEN-END:variables
 }

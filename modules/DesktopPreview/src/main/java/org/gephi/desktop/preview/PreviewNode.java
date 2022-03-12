@@ -41,14 +41,22 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.preview;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import javax.swing.SwingUtilities;
-import org.gephi.preview.api.*;
+import org.gephi.preview.api.ManagedRenderer;
+import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.spi.Renderer;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.AbstractNode;
@@ -66,7 +74,7 @@ import org.openide.util.NbBundle;
  */
 public class PreviewNode extends AbstractNode implements PropertyChangeListener {
 
-    private PropertySheet propertySheet;
+    private final PropertySheet propertySheet;
 
     public PreviewNode(PropertySheet propertySheet) {
         super(Children.LEAF);
@@ -80,7 +88,7 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
 
         Set<Renderer> enabledRenderers = null;
-        if (controller.getModel()!=null && controller.getModel().getManagedRenderers() != null) {
+        if (controller.getModel() != null && controller.getModel().getManagedRenderers() != null) {
             enabledRenderers = new HashSet<>();
             for (ManagedRenderer mr : controller.getModel().getManagedRenderers()) {
                 if (mr.isEnabled()) {
@@ -153,12 +161,30 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
         return sheet;
     }
 
+    /**
+     * default method for PropertyChangeListener, it is necessary to fire property change to update propertyEditor, which will refresh at runtime if a property value has been passively updated.
+     *
+     * @param pce a PropertyChangeEvent from a PreviewProperty object.
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent pce) {
+        firePropertyChange(pce.getPropertyName(), pce.getOldValue(), pce.getNewValue());
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                propertySheet.updateUI();
+            }
+        });
+    }
+
     private static class PreviewPropertyWrapper extends PropertySupport.ReadWrite {
 
         private final PreviewProperty property;
 
         public PreviewPropertyWrapper(PreviewProperty previewProperty) {
-            super(previewProperty.getName(), previewProperty.getType(), previewProperty.getDisplayName(), previewProperty.getDescription());
+            super(previewProperty.getName(), previewProperty.getType(), previewProperty.getDisplayName(),
+                previewProperty.getDescription());
             this.property = previewProperty;
         }
 
@@ -168,7 +194,8 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
         }
 
         @Override
-        public void setValue(Object t) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        public void setValue(Object t)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
             property.setValue(t);
         }
     }
@@ -179,7 +206,8 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
         private final PreviewProperty[] parents;
 
         public ChildPreviewPropertyWrapper(PreviewProperty previewProperty, PreviewProperty[] parents) {
-            super(previewProperty.getName(), previewProperty.getType(), previewProperty.getDisplayName(), previewProperty.getDescription());
+            super(previewProperty.getName(), previewProperty.getType(), previewProperty.getDisplayName(),
+                previewProperty.getDescription());
             this.property = previewProperty;
             this.parents = parents;
         }
@@ -190,7 +218,8 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
         }
 
         @Override
-        public void setValue(Object t) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        public void setValue(Object t)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
             property.setValue(t);
         }
 
@@ -211,7 +240,8 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
         private final PreviewProperty[] children;
 
         public ParentPreviewPropertyWrapper(PreviewProperty previewProperty, PreviewProperty[] children) {
-            super(previewProperty.getName(), previewProperty.getType(), previewProperty.getDisplayName(), previewProperty.getDescription());
+            super(previewProperty.getName(), previewProperty.getType(), previewProperty.getDisplayName(),
+                previewProperty.getDescription());
             this.property = previewProperty;
             this.children = children;
         }
@@ -222,28 +252,12 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
         }
 
         @Override
-        public void setValue(Object t) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        public void setValue(Object t)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
             property.setValue(t);
             for (PreviewProperty p : children) {
                 propertyChange(new PropertyChangeEvent(this, p.getName(), p.getValue(), p.getValue()));
             }
         }
-    }
-
-    /**
-     * default method for PropertyChangeListener, it is necessary to fire property change to update propertyEditor, which will refresh at runtime if a property value has been passively updated.
-     *
-     * @param pce a PropertyChangeEvent from a PreviewProperty object.
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent pce) {
-        firePropertyChange(pce.getPropertyName(), pce.getOldValue(), pce.getNewValue());
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                propertySheet.updateUI();
-            }
-        });
     }
 }

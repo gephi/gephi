@@ -39,16 +39,16 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.edges;
 
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.datalab.spi.edges.EdgesManipulator;
 
 /**
- *
  * @author Eduardo
  */
-public abstract class BasicEdgesManipulator implements EdgesManipulator{
+public abstract class BasicEdgesManipulator implements EdgesManipulator {
 
     @Override
     public boolean isAvailable() {

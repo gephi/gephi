@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab;
 
 import java.util.HashSet;
@@ -63,11 +64,10 @@ public class DataTablesObservers {
 
     private final Workspace workspace;
     private final GraphModel graphModel;
-
+    private final Set<ColumnObserver> columnObservers;
     private GraphObserver graphObserver;
     private TableObserver nodesTableObserver;
     private TableObserver edgesTableObserver;
-    private final Set<ColumnObserver> columnObservers;
 
     public DataTablesObservers(Workspace workspace) {
         this.workspace = workspace;
@@ -90,7 +90,7 @@ public class DataTablesObservers {
         for (Column column : graphModel.getEdgeTable()) {
             createColumnObserver(column);
         }
-        
+
         workspace.add(new LatestVisibleView(graphModel.getVisibleView()));
     }
 

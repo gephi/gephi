@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters;
 
 import java.beans.PropertyEditorManager;
@@ -51,7 +52,13 @@ import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.PropertyExecutor;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.api.Range;
-import org.gephi.filters.spi.*;
+import org.gephi.filters.spi.EdgeFilter;
+import org.gephi.filters.spi.ElementFilter;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -74,7 +81,6 @@ import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProviders({
@@ -174,7 +180,8 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             if (model != null && model.getGraphModel() != null) {
                 graph = model.getGraphModel().getGraph();
             } else {
-                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(model.getWorkspace());
+                GraphModel graphModel =
+                    Lookup.getDefault().lookup(GraphController.class).getGraphModel(model.getWorkspace());
                 graph = graphModel.getGraph();
             }
 
@@ -214,7 +221,8 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             if (model != null && model.getGraphModel() != null) {
                 graph = model.getGraphModel().getGraph();
             } else {
-                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getGraphModel(model.getWorkspace());
+                GraphModel graphModel =
+                    Lookup.getDefault().lookup(GraphController.class).getGraphModel(model.getWorkspace());
                 graph = graphModel.getGraph();
             }
             Filter filter = subQuery.getFilter();
@@ -310,15 +318,17 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         } else {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = model.getGraphModel();
-            result = (Graph) processor.process((AbstractQueryImpl) query, graphModel);
+            result = processor.process((AbstractQueryImpl) query, graphModel);
         }
         Column nodeCol = result.getModel().getNodeTable().getColumn("filter_" + title);
         if (nodeCol == null) {
-            nodeCol = result.getModel().getNodeTable().addColumn("filter_" + title, title, Boolean.class, Origin.DATA, Boolean.FALSE, true);
+            nodeCol = result.getModel().getNodeTable()
+                .addColumn("filter_" + title, title, Boolean.class, Origin.DATA, Boolean.FALSE, true);
         }
         Column edgeCol = result.getModel().getEdgeTable().getColumn("filter_" + title);
         if (edgeCol == null) {
-            edgeCol = result.getModel().getEdgeTable().addColumn("filter_" + title, title, Boolean.class, Origin.DATA, Boolean.FALSE, true);
+            edgeCol = result.getModel().getEdgeTable()
+                .addColumn("filter_" + title, title, Boolean.class, Origin.DATA, Boolean.FALSE, true);
         }
 
         result.writeLock();
@@ -348,7 +358,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         } else {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = model.getGraphModel();
-            result = (Graph) processor.process((AbstractQueryImpl) query, graphModel);
+            result = processor.process((AbstractQueryImpl) query, graphModel);
         }
 
         final Graph graphView = result;
@@ -359,7 +369,8 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 ProgressTicketProvider progressProvider = Lookup.getDefault().lookup(ProgressTicketProvider.class);
                 ProgressTicket ticket = null;
                 if (progressProvider != null) {
-                    String msg = NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToNewWorkspace.task");
+                    String msg =
+                        NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToNewWorkspace.task");
                     ticket = progressProvider.createTicket(msg, null);
                 }
                 Progress.start(ticket);
@@ -370,14 +381,14 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 Graph graph = graphModel.getGraph();
                 List<Edge> edgesToRemove = new ArrayList<>();
                 for (Edge edge : graph.getEdges()) {
-                    if(!graphView.hasEdge(edge.getId())){
+                    if (!graphView.hasEdge(edge.getId())) {
                         edgesToRemove.add(edge);
                     }
                 }
-                if(!edgesToRemove.isEmpty()){
+                if (!edgesToRemove.isEmpty()) {
                     graph.removeAllEdges(edgesToRemove);
                 }
-                
+
                 Progress.finish(ticket);
                 String workspaceName = newWorkspace.getLookup().lookup(WorkspaceInformation.class).getName();
                 //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToNewWorkspace.status", workspaceName));
@@ -396,10 +407,10 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             result = model.getGraphModel().getGraph(view);
         } else {
             FilterProcessor processor = new FilterProcessor();
-            result = (Graph) processor.process((AbstractQueryImpl) query, model.getGraphModel());
+            result = processor.process((AbstractQueryImpl) query, model.getGraphModel());
         }
         Graph fullGraph = model.getGraphModel().getGraph();
-        
+
         fullGraph.writeLock();
         try {
             for (Node n : fullGraph.getNodes()) {

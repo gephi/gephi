@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.screenshot;
 
 import com.jogamp.opengl.GL2;
@@ -139,7 +140,8 @@ public class OffscreenCanvas extends GLAbstractListener implements TileRendererB
     }
 
     @Override
-    public void reshapeTile(TileRendererBase tr, int tileX, int tileY, int tileWidth, int tileHeight, int imageWidth, int imageHeight) {
+    public void reshapeTile(TileRendererBase tr, int tileX, int tileY, int tileWidth, int tileHeight, int imageWidth,
+                            int imageHeight) {
         GL2 gl = tr.getAttachedDrawable().getGL().getGL2();
 
         double aspectRatio = (double) imageWidth / (double) imageHeight;

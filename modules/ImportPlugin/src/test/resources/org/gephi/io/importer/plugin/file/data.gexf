@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+    <graph defaultedgetype="directed">
+        <attributes class="node">
+            <attribute id="0" title="url" type="string"/>
+            <attribute id="1" title="indegree" type="float"/>
+            <attribute id="2" title="valid" type="boolean">
+                <default>true</default>
+            </attribute>
+        </attributes>
+        <nodes>
+            <node id="0" label="Node1">
+                <attvalues>
+                    <attvalue for="0" value="http://gephi.org"/>
+                    <attvalue for="1" value="1"/>
+                </attvalues>
+            </node>
+        </nodes>
+        <edges>
+            <edge id="0" source="0" target="0"/>
+        </edges>
+    </graph>
+</gexf>

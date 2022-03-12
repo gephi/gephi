@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.branding.desktop.actions;
 
 import java.awt.Desktop;
@@ -50,7 +51,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
 /**
- *
  * @author Sébastien Heymann
  */
 public class OpenOnlineDoc extends SystemAction {
@@ -73,13 +73,13 @@ public class OpenOnlineDoc extends SystemAction {
     @Override
     public void actionPerformed(ActionEvent ev) {
         /*if (Desktop.isDesktopSupported()) {*/
-            Desktop desktop = Desktop.getDesktop();
-            /*if (desktop.isSupported(Desktop.Action.BROWSE)) {*/
-                try {
-                    desktop.browse(new URI("http://gephi.org/users/support/"));
-                } catch (Exception ex) {
-                    Exceptions.printStackTrace(ex);
-                }
+        Desktop desktop = Desktop.getDesktop();
+        /*if (desktop.isSupported(Desktop.Action.BROWSE)) {*/
+        try {
+            desktop.browse(new URI("http://gephi.org/users/support/"));
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
             /*}
         }*/
     }

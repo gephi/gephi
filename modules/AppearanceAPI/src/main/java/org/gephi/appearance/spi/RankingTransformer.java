@@ -39,9 +39,9 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.spi;
 
-import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
 import org.gephi.graph.api.Element;
 
@@ -59,10 +59,11 @@ public interface RankingTransformer<E extends Element> extends Transformer {
      * The <code>ranking</code> object contains the min and max value so the
      * ranked value can be calculated.
      *
-     * @param element element to transform
-     * @param ranking ranking configuration
-     * @param interpolator interpolator
-     * @param value element's value for this ranking
+     * @param element         element to transform
+     * @param ranking         ranking configuration
+     * @param value           element's value for this ranking
+     * @param normalisedValue normalised value between 0.0 and 1.0
      */
-    public void transform(E element, Ranking ranking, Interpolator interpolator, Number value);
+    void transform(E element, Ranking ranking, Number value, float normalisedValue);
+
 }

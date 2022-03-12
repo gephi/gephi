@@ -39,16 +39,16 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.attribute;
 
 import javax.swing.JPanel;
 import org.gephi.filters.plugin.attribute.AttributeEqualBuilder.EqualStringFilter;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface EqualStringUI {
 
-    public JPanel getPanel(EqualStringFilter filter);
+    JPanel getPanel(EqualStringFilter filter);
 }

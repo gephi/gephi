@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin;
 
 import javax.swing.Icon;
@@ -47,7 +48,6 @@ import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 
 /**
- *
  * @author mbastian
  */
 public abstract class AbstractFilterBuilder implements FilterBuilder {

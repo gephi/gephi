@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.random;
 
 import java.util.ArrayList;
@@ -54,12 +55,11 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Helder Suzuki
  */
 public class RandomLayout extends AbstractLayout implements Layout {
 
-    private Random random;
+    private final Random random;
     private Graph graph;
     private boolean converged;
     private double size;
@@ -81,8 +81,10 @@ public class RandomLayout extends AbstractLayout implements Layout {
         graph.readLock();
         try {
             for (Node n : graph.getNodes()) {
-                n.setX((float) (-size / 2 + size * random.nextDouble()));
-                n.setY((float) (-size / 2 + size * random.nextDouble()));
+                if (!n.isFixed()) {
+                    n.setX((float) (-size / 2 + size * random.nextDouble()));
+                    n.setY((float) (-size / 2 + size * random.nextDouble()));
+                }
             }
             converged = true;
         } finally {
@@ -105,12 +107,12 @@ public class RandomLayout extends AbstractLayout implements Layout {
         List<LayoutProperty> properties = new ArrayList<>();
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
-                    NbBundle.getMessage(getClass(), "Random.spaceSize.name"),
-                    null,
-                    "Random.spaceSize.name",
-                    NbBundle.getMessage(getClass(), "Random.spaceSize.desc"),
-                    "getSize", "setSize"));
+                this, Double.class,
+                NbBundle.getMessage(getClass(), "Random.spaceSize.name"),
+                null,
+                "Random.spaceSize.name",
+                NbBundle.getMessage(getClass(), "Random.spaceSize.desc"),
+                "getSize", "setSize"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
@@ -121,11 +123,11 @@ public class RandomLayout extends AbstractLayout implements Layout {
     public void resetPropertiesValues() {
     }
 
-    public void setSize(Double size) {
-        this.size = size;
-    }
-
     public Double getSize() {
         return size;
+    }
+
+    public void setSize(Double size) {
+        this.size = size;
     }
 }

@@ -6,7 +6,6 @@ import org.gephi.graph.api.AttributeUtils;
 import org.jdesktop.swingx.JXTable;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ArraySparklinesGraphicsComponentProvider extends AbstractSparklinesGraphicsComponentProvider {
@@ -33,6 +32,6 @@ public class ArraySparklinesGraphicsComponentProvider extends AbstractSparklines
             result[i] = (Number) Array.get(arr, i);//This will do the auto-boxing of primitives
         }
 
-        return new Number[][]{null, result};
+        return new Number[][] {null, result};
     }
 }

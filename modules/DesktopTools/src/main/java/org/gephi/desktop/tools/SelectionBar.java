@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.tools;
 
 import java.awt.Component;
@@ -55,10 +56,14 @@ import org.gephi.visualization.api.selection.SelectionManager;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class SelectionBar extends javax.swing.JPanel {
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.swingx.JXHyperlink configureLink;
+    private javax.swing.JSeparator endSeparator;
+    private javax.swing.JLabel statusLabel;
 
     /**
      * Creates new form SelectionBar
@@ -84,10 +89,6 @@ public class SelectionBar extends javax.swing.JPanel {
                 }
             }
         });
-
-        if (UIUtils.isAquaLookAndFeel()) {
-            setBackground(UIManager.getColor("NbExplorerView.background"));
-        }
     }
 
     public JPopupMenu createPopup() {
@@ -120,17 +121,21 @@ public class SelectionBar extends javax.swing.JPanel {
                 if (manager.isSelectionEnabled()) {
                     if (manager.isRectangleSelection()) {
                         configureLink.setVisible(false);
-                        statusLabel.setText(NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.rectangleSelection"));
+                        statusLabel.setText(
+                            NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.rectangleSelection"));
                     } else if (manager.isDirectMouseSelection()) {
                         configureLink.setVisible(true);
-                        statusLabel.setText(NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.mouseSelection"));
+                        statusLabel.setText(
+                            NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.mouseSelection"));
                     } else if (manager.isDraggingEnabled()) {
                         configureLink.setVisible(true);
-                        statusLabel.setText(NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.dragging"));
+                        statusLabel
+                            .setText(NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.dragging"));
                     }
                 } else {
                     configureLink.setVisible(false);
-                    statusLabel.setText(NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.noSelection"));
+                    statusLabel
+                        .setText(NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.noSelection"));
                 }
             }
         });
@@ -153,8 +158,9 @@ public class SelectionBar extends javax.swing.JPanel {
 
         setPreferredSize(new java.awt.Dimension(180, 28));
         setLayout(new java.awt.GridBagLayout());
+        setOpaque(true);
 
-        statusLabel.setFont(statusLabel.getFont().deriveFont((float)10));
+        statusLabel.setFont(statusLabel.getFont().deriveFont((float) 10));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -162,7 +168,8 @@ public class SelectionBar extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 1, 0);
         add(statusLabel, gridBagConstraints);
 
-        configureLink.setText(org.openide.util.NbBundle.getMessage(SelectionBar.class, "SelectionBar.configureLink.text")); // NOI18N
+        configureLink.setText(
+            org.openide.util.NbBundle.getMessage(SelectionBar.class, "SelectionBar.configureLink.text")); // NOI18N
         configureLink.setClickedColor(new java.awt.Color(0, 51, 255));
         configureLink.setDefaultCapable(false);
         configureLink.setFocusable(false);
@@ -186,10 +193,6 @@ public class SelectionBar extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
         add(endSeparator, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.jdesktop.swingx.JXHyperlink configureLink;
-    private javax.swing.JSeparator endSeparator;
-    private javax.swing.JLabel statusLabel;
     // End of variables declaration//GEN-END:variables
 
     @Override

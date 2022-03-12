@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file;
 
 import java.io.IOException;
@@ -96,7 +97,7 @@ public class ImporterTGF implements FileImporter, LongTask {
         List<String> nodes = new ArrayList<>();
         List<String> edges = new ArrayList<>();
         boolean isNode = true;
-        for (; reader.ready();) {
+        for (; reader.ready(); ) {
             String line = reader.readLine().trim();
             if ("#".equalsIgnoreCase(line)) {
                 isNode = false;
@@ -112,7 +113,8 @@ public class ImporterTGF implements FileImporter, LongTask {
         Progress.switchToDeterminate(progressTicket, nodes.size() + edges.size());
 
         if (nodes.isEmpty()) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterTGF.class, "importerTGF_error_emptynodes"), Issue.Level.CRITICAL));
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterTGF.class, "importerTGF_error_emptynodes"),
+                Issue.Level.CRITICAL));
         }
         for (String n : nodes) {
             if (n.contains(" ")) {
@@ -128,12 +130,12 @@ public class ImporterTGF implements FileImporter, LongTask {
             String[] tempFields = e.split(" ");
             String from = tempFields[0];
             String to = tempFields[1];
-            if (secondSpace == -1) { 
+            if (secondSpace == -1) {
                 addEdge(from, to, null);
             } else {
                 addEdge(from, to, e.substring(secondSpace));
             }
-            
+
         }
         Progress.progress(progressTicket);      //Progress
     }

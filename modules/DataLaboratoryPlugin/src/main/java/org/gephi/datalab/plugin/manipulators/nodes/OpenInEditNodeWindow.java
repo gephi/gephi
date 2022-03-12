@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
@@ -51,6 +52,7 @@ import org.openide.util.NbBundle;
 
 /**
  * Opens the selected node(s) one or various in Edit window.
+ *
  * @author Eduardo Ramos
  */
 public class OpenInEditNodeWindow extends BasicNodesManipulator {

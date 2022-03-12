@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.api;
 
 import org.gephi.preview.spi.Renderer;
@@ -48,8 +49,8 @@ import org.gephi.preview.spi.Renderer;
  * <code>Renderer</code> and its enabled state. Used for managing renderers in
  * <code>PreviewModel</code>.
  *
- * @see PreviewModel
  * @author Eduardo Ramos
+ * @see PreviewModel
  */
 public class ManagedRenderer {
 

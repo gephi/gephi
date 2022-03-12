@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
@@ -68,7 +69,6 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.joda.time.DateTimeZone;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, LongTask {
@@ -77,15 +77,11 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
      * Formatter for limiting precision to 6 decimals, avoiding precision errors (epsilon).
      */
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("0.######");
+
     static {
         DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.ENGLISH);
         symbols.setInfinity("Infinity");
         NUMBER_FORMAT.setDecimalFormatSymbols(symbols);
-    }
-    
-    public enum ExportTable {
-        NODES,
-        EDGES;
     }
 
     //Settings
@@ -93,7 +89,6 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
     private ExportTable tableToExport = null;//If null => edges is the default
     private char fieldDelimiter = ',';
     private LinkedHashSet<String> columnIdsToExport = null;
-
     //Architecture
     private Workspace workspace;
     private Writer writer;
@@ -120,7 +115,7 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
 
     private void exportData(Graph graph) throws Exception {
         final CSVFormat format = CSVFormat.DEFAULT
-                .withDelimiter(fieldDelimiter);
+            .withDelimiter(fieldDelimiter);
 
         try (CSVPrinter csvWriter = new CSVPrinter(writer, format)) {
             boolean isEdgeTable = tableToExport != ExportTable.NODES;
@@ -269,5 +264,10 @@ public class ExporterSpreadsheet implements GraphExporter, CharacterExporter, Lo
 
     public void setTableToExport(ExportTable tableToExport) {
         this.tableToExport = tableToExport;
+    }
+
+    public enum ExportTable {
+        NODES,
+        EDGES
     }
 }

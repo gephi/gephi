@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.persistence;
 
 import javax.xml.stream.XMLStreamException;
@@ -56,7 +57,6 @@ import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Eduardo
  */
 @ServiceProvider(service = WorkspacePersistenceProvider.class, position = 16000)
@@ -93,7 +93,8 @@ public class DataLaboratoryPersistenceProvider implements WorkspaceXMLPersistenc
         return AVAILABLE_COLUMNS;
     }
 
-    private void writeDataTablesModel(XMLStreamWriter writer, DataTablesModel dataTablesModel) throws XMLStreamException {
+    private void writeDataTablesModel(XMLStreamWriter writer, DataTablesModel dataTablesModel)
+        throws XMLStreamException {
         for (Column column : dataTablesModel.getNodeAvailableColumnsModel().getAvailableColumns()) {
             writer.writeStartElement(NODE_COLUMN);
             writer.writeAttribute("id", String.valueOf(column.getIndex()));

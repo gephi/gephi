@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.utils.longtask.api;
 
 import org.gephi.utils.longtask.spi.LongTask;
@@ -50,5 +51,5 @@ import org.gephi.utils.longtask.spi.LongTask;
  */
 public interface LongTaskListener {
 
-    public void taskFinished(LongTask task);
+    void taskFinished(LongTask task);
 }

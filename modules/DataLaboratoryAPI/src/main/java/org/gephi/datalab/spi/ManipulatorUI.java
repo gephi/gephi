@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi;
 
 import javax.swing.JPanel;
@@ -48,13 +49,15 @@ import javax.swing.JPanel;
  * <p>Must provide a JPanel, a window name/title and indicate if it is modal.</p>
  * <p>The panel will be shown in a dialog with Ok/Cancel options only.</p>
  * <p>The ok button can be enabled/disabled with the <code>DialogControls</code> instance passed at setup</p>
+ *
  * @author Eduardo Ramos
  */
 public interface ManipulatorUI {
 
     /**
      * Prepare this UI to be able to interact with its Manipulator.
-     * @param m Manipulator for the UI
+     *
+     * @param m              Manipulator for the UI
      * @param dialogControls Used to enable/disable the dialog controls
      */
     void setup(Manipulator m, DialogControls dialogControls);
@@ -66,19 +69,22 @@ public interface ManipulatorUI {
 
     /**
      * Returns name/title for the window
+     *
      * @return Name/title for the window
      */
     String getDisplayName();
 
     /**
      * Returns a settings panel instance for this Manipulator.
+     *
      * @return Settings panel instance
      */
-    public JPanel getSettingsPanel();
+    JPanel getSettingsPanel();
 
     /**
      * Indicates if the created dialog has to be modal
+     *
      * @return True if modal, false otherwise
      */
-    public boolean isModal();
+    boolean isModal();
 }

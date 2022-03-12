@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.importer.plugin.file;
 
 import org.gephi.io.importer.api.FileType;
@@ -69,7 +70,7 @@ public final class ImporterBuilderVNA implements FileImporterBuilder {
     @Override
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".vna", NbBundle.getMessage(getClass(), "fileType_VNA_Name"));
-        return new FileType[]{ft};
+        return new FileType[] {ft};
     }
 
     @Override

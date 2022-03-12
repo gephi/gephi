@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.utils;
 
 import java.awt.Color;
@@ -48,7 +49,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * Class to draw time intervals as graphics, being able to indicate the colors
- * to use (or default colors). 
+ * to use (or default colors).
  * <p>
  * The result graphics are like:
  * |{background color}|time-interval{fill color}|{background color}|
@@ -90,11 +91,11 @@ public class TimeIntervalGraphics {
      * starts or ends are infinite, they will be normalized to the min or max
      * values range.
      *
-     * @param start Start of the interval (must be greater or equal than minimum
-     * time)
-     * @param end End of the interval (must be lesser or equal than maximum
-     * time)
-     * @param width Image width
+     * @param start  Start of the interval (must be greater or equal than minimum
+     *               time)
+     * @param end    End of the interval (must be lesser or equal than maximum
+     *               time)
+     * @param width  Image width
      * @param height Image height
      * @return Generated image for the interval
      */
@@ -107,17 +108,18 @@ public class TimeIntervalGraphics {
      * and border colors (or null to use default colors). If starts or ends are
      * infinite, they will be normalized to the min or max values range.
      *
-     * @param start Start of the interval (must be greater or equal than minimum
-     * time)
-     * @param end End of the interval (must be lesser or equal than maximum
-     * time)
-     * @param width Image width
+     * @param start  Start of the interval (must be greater or equal than minimum
+     *               time)
+     * @param end    End of the interval (must be lesser or equal than maximum
+     *               time)
+     * @param width  Image width
      * @param height Image height
-     * @param fill Fill color for the interval
+     * @param fill   Fill color for the interval
      * @param border Border color for the interval
      * @return Generated image for the interval
      */
-    public BufferedImage createTimeIntervalImage(double start, double end, int width, int height, Color fill, Color border) {
+    public BufferedImage createTimeIntervalImage(double start, double end, int width, int height, Color fill,
+                                                 Color border) {
         return createTimeIntervalImage(start, end, width, height, fill, border, null);
     }
 
@@ -126,22 +128,24 @@ public class TimeIntervalGraphics {
      * and border colors (or null to use default colors). If starts or ends are
      * infinite, they will be normalized to the min or max values range.
      *
-     * @param start Start of the interval (must be greater or equal than minimum
-     * time)
-     * @param end End of the interval (must be lesser or equal than maximum
-     * time)
-     * @param width Image width
-     * @param height Image height
-     * @param fill Fill color for the interval
-     * @param border Border color for the interval
+     * @param start      Start of the interval (must be greater or equal than minimum
+     *                   time)
+     * @param end        End of the interval (must be lesser or equal than maximum
+     *                   time)
+     * @param width      Image width
+     * @param height     Image height
+     * @param fill       Fill color for the interval
+     * @param border     Border color for the interval
      * @param background Background color
      * @return Generated image for the interval
      */
-    public BufferedImage createTimeIntervalImage(double start, double end, int width, int height, Color fill, Color border, Color background) {
+    public BufferedImage createTimeIntervalImage(double start, double end, int width, int height, Color fill,
+                                                 Color border, Color background) {
         if (start > end) {
             throw new IllegalArgumentException("start should be less or equal than end");
         }
-        return createTimeIntervalImage(new double[]{start}, new double[]{end}, width, height, fill, border, background);
+        return createTimeIntervalImage(new double[] {start}, new double[] {end}, width, height, fill, border,
+            background);
     }
 
     /**
@@ -150,18 +154,19 @@ public class TimeIntervalGraphics {
      * or ends are infinite, they will be normalized to the min or max values
      * range.
      *
-     * @param starts Starts of the intervals (must be greater or equal than
-     * minimum time)
-     * @param ends Ends of the intervals (must be lesser or equal than maximum
-     * time)
-     * @param width Image width
-     * @param height Image height
-     * @param fill Fill color for the interval
-     * @param border Border color for the interval
+     * @param starts     Starts of the intervals (must be greater or equal than
+     *                   minimum time)
+     * @param ends       Ends of the intervals (must be lesser or equal than maximum
+     *                   time)
+     * @param width      Image width
+     * @param height     Image height
+     * @param fill       Fill color for the interval
+     * @param border     Border color for the interval
      * @param background Background color
      * @return Generated image for the interval
      */
-    public BufferedImage createTimeIntervalImage(double starts[], double ends[], int width, int height, Color fill, Color border, Color background) {
+    public BufferedImage createTimeIntervalImage(double[] starts, double[] ends, int width, int height, Color fill,
+                                                 Color border, Color background) {
         if (starts.length != ends.length) {
             throw new IllegalArgumentException("start and ends length should be equal");
         }
@@ -198,7 +203,7 @@ public class TimeIntervalGraphics {
             g.drawLine(width, 0, width, height);
         } else {
             double xTickWidth = (double) width / range;
-            
+
             int startPixel, endPixel;
             for (int i = 0; i < starts.length; i++) {
                 g.setColor(fill);
@@ -275,7 +280,7 @@ public class TimeIntervalGraphics {
         }
         this.min = min;
         this.max = max;
-        
+
         calculateRange();
     }
 }

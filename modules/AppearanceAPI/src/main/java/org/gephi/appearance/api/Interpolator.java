@@ -39,9 +39,11 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
 import java.awt.geom.Point2D;
+import java.util.Objects;
 
 /**
  * Abstract class that defines the single {@link #interpolate(float)} method.
@@ -107,6 +109,16 @@ public abstract class Interpolator {
     public static class BezierInterpolator extends Interpolator {
 
         /**
+         * power of 2 sample size for lookup table of x values
+         */
+        private static final int SAMPLE_SIZE = 16;
+        /**
+         * difference in t used to calculate each of the xSamples values --
+         * power of 2 sample size should provide exact representation of this
+         * value and its integer multiples (integer in range of [0..SAMPLE_SIZE]
+         */
+        private static final float SAMPLE_INCREMENT = 1f / SAMPLE_SIZE;
+        /**
          * the coordinates of the 2 2D control points for a cubic Bezier curve,
          * with implicit start point (0,0) and end point (1,1) -- each
          * individual coordinate value must be in range [0,1]
@@ -117,16 +129,6 @@ public abstract class Interpolator {
          * x1 == y1 and x2 == y2 -- if so, then all x(t) == y(t) for the curve
          */
         private final boolean isCurveLinear;
-        /**
-         * power of 2 sample size for lookup table of x values
-         */
-        private static final int SAMPLE_SIZE = 16;
-        /**
-         * difference in t used to calculate each of the xSamples values --
-         * power of 2 sample size should provide exact representation of this
-         * value and its integer multiples (integer in range of [0..SAMPLE_SIZE]
-         */
-        private static final float SAMPLE_INCREMENT = 1f / SAMPLE_SIZE;
         /**
          * x values for the bezier curve, sampled at increments of 1/SAMPLE_SIZE
          * -- this is used to find the good initial guess for parameter t, given
@@ -147,21 +149,21 @@ public abstract class Interpolator {
         public BezierInterpolator(float px1, float py1, float px2, float py2) {
             // check user input for precondition
             if (px1 < 0 || px1 > 1 || py1 < 0 || py1 > 1
-                    || px2 < 0 || px2 > 1 || py2 < 0 || py2 > 1) {
+                || px2 < 0 || px2 > 1 || py2 < 0 || py2 > 1) {
                 throw new IllegalArgumentException("control point coordinates must "
-                        + "all be in range [0,1]");
+                    + "all be in range [0,1]");
             }
 
-            if(px1 == 0 && px2 == 0) {
+            if (px1 == 0 && px2 == 0) {
                 px2 += 0.01;//Fix numerical inestability with some small difference
             }
-            
+
             // save control point data
             x1 = px1;
             y1 = py1;
             x2 = px2;
             y2 = py2;
-            
+
             // calc linearity/identity curve
             isCurveLinear = ((x1 == y1) && (x2 == y2));
 
@@ -212,8 +214,9 @@ public abstract class Interpolator {
          * more numerically stable than power basis) -- 1D control coordinates
          * are (0, p1, p2, 1), where p1 and p2 are in range [0,1], and there is
          * no ordering constraint on p1 and p2, i.e., p1 &lt;= p2 does not have to
-         * be true 
-         * @param t is the paramaterized value in range [0,1]
+         * be true
+         *
+         * @param t  is the paramaterized value in range [0,1]
          * @param p1 is 1st control point coordinate in range [0,1]
          * @param p2 is 2nd control point coordinate in range [0,1]
          * @return the value of the Bezier curve at parameter t
@@ -231,8 +234,9 @@ public abstract class Interpolator {
          * evaluate Bernstein basis derivative of 1D cubic Bezier curve, where
          * 1D control points are (0, p1, p2, 1), where p1 and p2 are in range
          * [0,1], and there is no ordering constraint on p1 and p2, i.e., p1 &lt;=
-         * p2 does not have to be true 
-         * @param t is the paramaterized value in range [0,1]
+         * p2 does not have to be true
+         *
+         * @param t  is the paramaterized value in range [0,1]
          * @param p1 is 1st control point coordinate in range [0,1]
          * @param p2 is 2nd control point coordinate in range [0,1]
          * @return the value of the Bezier curve at parameter t
@@ -268,7 +272,7 @@ public abstract class Interpolator {
                     } else {
                         // linearly interpolate the time value
                         return ((i - 1) + ((x - xSamples[i - 1]) / xRange))
-                                * SAMPLE_INCREMENT;
+                            * SAMPLE_INCREMENT;
                     }
                 }
             }
@@ -314,6 +318,24 @@ public abstract class Interpolator {
             }
 
             return t;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof BezierInterpolator)) {
+                return false;
+            }
+            BezierInterpolator that = (BezierInterpolator) o;
+            return Float.compare(that.x1, x1) == 0 && Float.compare(that.y1, y1) == 0 &&
+                Float.compare(that.x2, x2) == 0 && Float.compare(that.y2, y2) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(x1, y1, x2, y2);
         }
     }
 }

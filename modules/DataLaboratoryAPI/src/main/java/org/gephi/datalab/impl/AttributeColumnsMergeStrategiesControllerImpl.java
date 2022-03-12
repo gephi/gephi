@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.impl;
 
 import java.math.BigDecimal;
@@ -63,6 +64,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Implementation of the AttributeColumnsMergeStrategiesController interface
  * declared in the Data Laboratory API.
+ *
  * @author Eduardo Ramos
  * @see AttributeColumnsMergeStrategiesController
  */
@@ -70,14 +72,16 @@ import org.openide.util.lookup.ServiceProvider;
 public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeColumnsMergeStrategiesController {
 
     @Override
-    public Column joinWithSeparatorMerge(Table table, Column[] columnsToMerge, Class newColumnType, String newColumnTitle, String separator) {
+    public Column joinWithSeparatorMerge(Table table, Column[] columnsToMerge, Class newColumnType,
+                                         String newColumnTitle, String separator) {
         if (table == null || columnsToMerge == null) {
             throw new IllegalArgumentException("Table or columns can't be null");
         }
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Column newColumn;
-        newColumn = ac.addAttributeColumn(table, newColumnTitle, newColumnType != null ? newColumnType : String.class);//Create as STRING column by default. Then it can be duplicated to other type.
+        newColumn = ac.addAttributeColumn(table, newColumnTitle, newColumnType != null ? newColumnType :
+            String.class);//Create as STRING column by default. Then it can be duplicated to other type.
         if (newColumn == null) {
             return null;
         }
@@ -89,7 +93,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         Object value;
         StringBuilder sb;
         final int columnsCount = columnsToMerge.length;
-        
+
         GraphModel graphModel = table.getGraph().getModel();
         TimeFormat timeFormat = graphModel.getTimeFormat();
         DateTimeZone timeZone = graphModel.getTimeZone();
@@ -105,7 +109,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
                     }
                 }
             }
-            
+
             ac.setAttributeValue(sb.toString(), row, newColumn);
         }
 
@@ -113,14 +117,17 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
     }
 
     @Override
-    public Column booleanLogicOperationsMerge(Table table, Column[] columnsToMerge, BooleanOperations[] booleanOperations, String newColumnTitle) {
+    public Column booleanLogicOperationsMerge(Table table, Column[] columnsToMerge,
+                                              BooleanOperations[] booleanOperations, String newColumnTitle) {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        if (table == null || columnsToMerge == null || booleanOperations == null || booleanOperations.length != columnsToMerge.length - 1) {
-            throw new IllegalArgumentException("table, columns or operations can't be null and operations length must be columns length -1");
+        if (table == null || columnsToMerge == null || booleanOperations == null ||
+            booleanOperations.length != columnsToMerge.length - 1) {
+            throw new IllegalArgumentException(
+                "table, columns or operations can't be null and operations length must be columns length -1");
         }
-        
+
         for (Column column : columnsToMerge) {
-            if(!column.getTypeClass().equals(Boolean.class)){
+            if (!column.getTypeClass().equals(Boolean.class)) {
                 throw new IllegalArgumentException("All columns have to be boolean columns");
             }
         }
@@ -165,14 +172,19 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
     }
 
     @Override
-    public Column mergeNumericColumnsToTimeInterval(Table table, Column startColumn, Column endColumn, double defaultStart, double defaultEnd) {
+    public Column mergeNumericColumnsToTimeInterval(Table table, Column startColumn, Column endColumn,
+                                                    double defaultStart, double defaultEnd) {
         checkTableAndOneColumn(table, startColumn, endColumn);
 
         Column timeIntervalColumn = getTimeIntervalColumn(table);
         final int startColumnIndex = startColumn != null ? startColumn.getIndex() : -1;
         final int endColumnIndex = endColumn != null ? endColumn.getIndex() : -1;
-        final boolean isStartColumnNumeric = startColumn != null ? (!AttributeUtils.isDynamicType(startColumn.getTypeClass()) && AttributeUtils.isNumberType(startColumn.getTypeClass())) : false;
-        final boolean isEndColumnNumeric = endColumn != null ? (!AttributeUtils.isDynamicType(endColumn.getTypeClass()) && AttributeUtils.isNumberType(endColumn.getTypeClass())) : false;
+        final boolean isStartColumnNumeric =
+            startColumn != null && (!AttributeUtils.isDynamicType(startColumn.getTypeClass()) &&
+                AttributeUtils.isNumberType(startColumn.getTypeClass()));
+        final boolean isEndColumnNumeric =
+            endColumn != null && (!AttributeUtils.isDynamicType(endColumn.getTypeClass()) &&
+                AttributeUtils.isNumberType(endColumn.getTypeClass()));
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Object value;
@@ -217,22 +229,27 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
                     end = Double.POSITIVE_INFINITY;
                 }
             }
-            
-            IntervalSet timeInterval = new IntervalSet(new double[]{start, end});
+
+            IntervalSet timeInterval = new IntervalSet(new double[] {start, end});
             row.setAttribute(timeIntervalColumn, timeInterval);
         }
-        
+
         return timeIntervalColumn;
     }
 
     @Override
-    public Column mergeDateColumnsToTimeInterval(Table table, Column startColumn, Column endColumn, SimpleDateFormat dateFormat, String defaultStartDate, String defaultEndDate) {
+    public Column mergeDateColumnsToTimeInterval(Table table, Column startColumn, Column endColumn,
+                                                 SimpleDateFormat dateFormat, String defaultStartDate,
+                                                 String defaultEndDate) {
         checkTableAndOneColumn(table, startColumn, endColumn);
         if (dateFormat == null) {
             throw new IllegalArgumentException("Date format can't be null can't be null");
         }
 
         Column timeIntervalColumn = getTimeIntervalColumn(table);
+        DateTimeZone timeZone = table.getGraph().getModel().getTimeZone();
+        dateFormat.setTimeZone(timeZone.toTimeZone());
+
         final int startColumnIndex = startColumn != null ? startColumn.getIndex() : -1;
         final int endColumnIndex = endColumn != null ? endColumn.getIndex() : -1;
         double defaultStart = parseDateToDouble(dateFormat, defaultStartDate, Double.NEGATIVE_INFINITY);
@@ -265,8 +282,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
                     end = Double.POSITIVE_INFINITY;
                 }
             }
-            
-            IntervalSet timeInterval = new IntervalSet(new double[]{start, end});
+
+            IntervalSet timeInterval = new IntervalSet(new double[] {start, end});
             row.setAttribute(timeIntervalColumn, timeInterval);
         }
         return timeIntervalColumn;
@@ -278,7 +295,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Column newColumn;
-        newColumn = ac.addAttributeColumn(table, newColumnTitle, BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        newColumn = ac.addAttributeColumn(table, newColumnTitle,
+            BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
         if (newColumn == null) {
             return null;
         }
@@ -298,7 +316,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Column newColumn;
-        newColumn = ac.addAttributeColumn(table, newColumnTitle, BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        newColumn = ac.addAttributeColumn(table, newColumnTitle,
+            BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
         if (newColumn == null) {
             return null;
         }
@@ -318,7 +337,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Column newColumn;
-        newColumn = ac.addAttributeColumn(table, newColumnTitle, BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        newColumn = ac.addAttributeColumn(table, newColumnTitle,
+            BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
         if (newColumn == null) {
             return null;
         }
@@ -340,7 +360,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Column newColumn;
-        newColumn = ac.addAttributeColumn(table, newColumnTitle, BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        newColumn = ac.addAttributeColumn(table, newColumnTitle,
+            BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
         if (newColumn == null) {
             return null;
         }
@@ -360,7 +381,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Column newColumn;
-        newColumn = ac.addAttributeColumn(table, newColumnTitle, BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        newColumn = ac.addAttributeColumn(table, newColumnTitle,
+            BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
         if (newColumn == null) {
             return null;
         }
@@ -388,7 +410,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Column newColumn;
-        newColumn = ac.addAttributeColumn(table, newColumnTitle, BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        newColumn = ac.addAttributeColumn(table, newColumnTitle,
+            BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
         if (newColumn == null) {
             return null;
         }
@@ -408,7 +431,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Column newColumn;
-        newColumn = ac.addAttributeColumn(table, newColumnTitle, BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        newColumn = ac.addAttributeColumn(table, newColumnTitle,
+            BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
         if (newColumn == null) {
             return null;
         }
@@ -428,7 +452,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         Column newColumn;
-        newColumn = ac.addAttributeColumn(table, newColumnTitle, BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        newColumn = ac.addAttributeColumn(table, newColumnTitle,
+            BigDecimal.class);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
         if (newColumn == null) {
             return null;
         }
@@ -495,11 +520,13 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
     private void checkColumnsAreNumberOrNumberList(Column[] columns) {
         if (columns == null) {
-            throw new IllegalArgumentException("All columns have to be number or number list columns and can't be null");
+            throw new IllegalArgumentException(
+                "All columns have to be number or number list columns and can't be null");
         }
         for (Column column : columns) {
-            if(!AttributeUtils.isNumberType(column.getTypeClass())){
-                throw new IllegalArgumentException("All columns have to be number or number list columns and can't be null");
+            if (!AttributeUtils.isNumberType(column.getTypeClass())) {
+                throw new IllegalArgumentException(
+                    "All columns have to be number or number list columns and can't be null");
             }
         }
     }

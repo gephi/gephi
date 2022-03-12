@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.event.ActionEvent;
@@ -52,12 +53,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class JPopupButton extends JButton {
 
-    private ArrayList<JPopupButtonItem> items;
+    private final ArrayList<JPopupButtonItem> items;
     private JPopupButtonItem selectedItem;
     private ChangeListener listener;
 
@@ -97,6 +97,10 @@ public class JPopupButton extends JButton {
         items.add(new JPopupButtonItem(object, icon));
     }
 
+    public Object getSelectedItem() {
+        return selectedItem.object;
+    }
+
     public void setSelectedItem(Object item) {
         for (JPopupButtonItem i : items) {
             if (i.object == item) {
@@ -105,10 +109,6 @@ public class JPopupButton extends JButton {
             }
         }
         throw new IllegalArgumentException("This elemen doesn't exist.");
-    }
-
-    public Object getSelectedItem() {
-        return selectedItem.object;
     }
 
     public void setChangeListener(ChangeListener changeListener) {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.merge.ui;
 
 import java.text.ParseException;
@@ -78,13 +79,32 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
     private DialogControls dialogControls;
     private ValidationPanel validationPanel;
     private ColumnWrapper column1, column2;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup;
+    private javax.swing.JLabel dateDefaultEndLabel;
+    private javax.swing.JLabel dateDefaultStartLabel;
+    private javax.swing.JComboBox dateFormatComboBox;
+    private javax.swing.JLabel dateFormatLabel;
+    private org.jdesktop.swingx.JXDatePicker defaultEndDatePicker;
+    private javax.swing.JLabel defaultEndNumberLabel;
+    private javax.swing.JTextField defaultEndNumberText;
+    private org.jdesktop.swingx.JXDatePicker defaultStartDatePicker;
+    private javax.swing.JLabel defaultStartNumberLabel;
+    private javax.swing.JTextField defaultStartNumberText;
+    private javax.swing.JComboBox endColumnComboBox;
+    private javax.swing.JLabel endColumnLabel;
+    private org.jdesktop.swingx.JXHeader header;
+    private javax.swing.JRadioButton parseDatesRadioButton;
+    private javax.swing.JRadioButton parseNumbersRadioButton;
+    private javax.swing.JComboBox startColumnComboBox;
+    private javax.swing.JLabel startColumnLabel;
 
     /**
      * Creates new form CreateTimeIntervalUI
      */
     public CreateTimeIntervalUI() {
         initComponents();
-        
+
         defaultStartDatePicker.setFormats("yyyy-MM-dd");
         defaultEndDatePicker.setFormats("yyyy-MM-dd");
 
@@ -97,6 +117,10 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         dateFormatComboBox.addItem("yyyy/MM/dd HH:mm:ss");
         dateFormatComboBox.addItem("dd-MM-yyyy HH:mm:ss");
         dateFormatComboBox.addItem("dd/MM/yyyy HH:mm:ss");
+        dateFormatComboBox.addItem("yyyy-MM-dd'T'HH:mm:ss");
+        dateFormatComboBox.addItem("yyyy/MM/dd'T'HH:mm:ss");
+        dateFormatComboBox.addItem("dd-MM-yyyy'T'HH:mm:ss");
+        dateFormatComboBox.addItem("dd/MM/yyyy'T'HH:mm:ss");
         dateFormatComboBox.setSelectedIndex(0);
     }
 
@@ -105,10 +129,14 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
     }
 
     private void readSavedParameters() {
-        parseNumbersRadioButton.setSelected(NbPreferences.forModule(CreateTimeIntervalUI.class).getBoolean(PARSE_NUMBERS_SAVED_PARAMETER, true));
-        defaultStartNumberText.setText(NbPreferences.forModule(CreateTimeIntervalUI.class).get(START_NUMBER_SAVED_PARAMETER, ""));
-        defaultEndNumberText.setText(NbPreferences.forModule(CreateTimeIntervalUI.class).get(END_NUMBER_SAVED_PARAMETER, ""));
-        dateFormatComboBox.setSelectedItem(NbPreferences.forModule(CreateTimeIntervalUI.class).get(DATE_FORMAT_SAVED_PARAMETER_STRING, "yyyy-MM-dd"));
+        parseNumbersRadioButton.setSelected(
+            NbPreferences.forModule(CreateTimeIntervalUI.class).getBoolean(PARSE_NUMBERS_SAVED_PARAMETER, true));
+        defaultStartNumberText
+            .setText(NbPreferences.forModule(CreateTimeIntervalUI.class).get(START_NUMBER_SAVED_PARAMETER, ""));
+        defaultEndNumberText
+            .setText(NbPreferences.forModule(CreateTimeIntervalUI.class).get(END_NUMBER_SAVED_PARAMETER, ""));
+        dateFormatComboBox.setSelectedItem(
+            NbPreferences.forModule(CreateTimeIntervalUI.class).get(DATE_FORMAT_SAVED_PARAMETER_STRING, "yyyy-MM-dd"));
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String date = NbPreferences.forModule(CreateTimeIntervalUI.class).get(START_DATE_SAVED_PARAMETER, "");
@@ -124,10 +152,14 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
     }
 
     private void storeSavedParameters() {
-        NbPreferences.forModule(CreateTimeIntervalUI.class).putBoolean(PARSE_NUMBERS_SAVED_PARAMETER, parseNumbersRadioButton.isSelected());
-        NbPreferences.forModule(CreateTimeIntervalUI.class).put(START_NUMBER_SAVED_PARAMETER, defaultStartNumberText.getText());
-        NbPreferences.forModule(CreateTimeIntervalUI.class).put(END_NUMBER_SAVED_PARAMETER, defaultEndNumberText.getText());
-        NbPreferences.forModule(CreateTimeIntervalUI.class).put(DATE_FORMAT_SAVED_PARAMETER_STRING, dateFormatComboBox.getSelectedItem().toString());
+        NbPreferences.forModule(CreateTimeIntervalUI.class)
+            .putBoolean(PARSE_NUMBERS_SAVED_PARAMETER, parseNumbersRadioButton.isSelected());
+        NbPreferences.forModule(CreateTimeIntervalUI.class)
+            .put(START_NUMBER_SAVED_PARAMETER, defaultStartNumberText.getText());
+        NbPreferences.forModule(CreateTimeIntervalUI.class)
+            .put(END_NUMBER_SAVED_PARAMETER, defaultEndNumberText.getText());
+        NbPreferences.forModule(CreateTimeIntervalUI.class)
+            .put(DATE_FORMAT_SAVED_PARAMETER_STRING, dateFormatComboBox.getSelectedItem().toString());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date;
         date = defaultStartDatePicker.getDate();
@@ -155,7 +187,7 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         startColumnComboBox.addItem(column2);
         endColumnComboBox.addItem(column1);
         endColumnComboBox.addItem(column2);
-        if (columns.length == 2) {//Make possible to choose null column even when 2 columns were chosen to merge 
+        if (columns.length == 2) {//Make possible to choose null column even when 2 columns were chosen to merge
             startColumnComboBox.addItem(new ColumnWrapper(null));
             endColumnComboBox.addItem(new ColumnWrapper(null));
         }
@@ -188,8 +220,11 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
             } else {
                 SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatComboBox.getSelectedItem().toString());
                 manipulator.setDateFormat(dateFormat);
-                manipulator.setStartDate(defaultStartDatePicker.getDate() != null ? dateFormat.format(defaultStartDatePicker.getDate()) : null);
-                manipulator.setEndDate(defaultEndDatePicker.getDate() != null ? dateFormat.format(defaultEndDatePicker.getDate()) : null);
+                manipulator.setStartDate(
+                    defaultStartDatePicker.getDate() != null ? dateFormat.format(defaultStartDatePicker.getDate()) :
+                        null);
+                manipulator.setEndDate(
+                    defaultEndDatePicker.getDate() != null ? dateFormat.format(defaultEndDatePicker.getDate()) : null);
             }
         }
         storeSavedParameters();
@@ -210,8 +245,9 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
             @Override
             public boolean validate(Problems prblms, String string, String t) {
                 boolean valid = validateDateFormat(t);
-                if(!valid){
-                    prblms.add(NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.invalid.dateformat"));
+                if (!valid) {
+                    prblms.add(
+                        NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.invalid.dateformat"));
                 }
                 return valid;
             }
@@ -221,7 +257,7 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
             @Override
             public boolean validate(Problems prblms, String string, String t) {
                 boolean valid = validateNumberOrEmpty(t);
-                if(!valid){
+                if (!valid) {
                     prblms.add(NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.invalid.number"));
                 }
                 return valid;
@@ -274,7 +310,8 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
     }
 
     private void refreshOkButton() {
-        boolean enabled = getComboBoxColumn(startColumnComboBox) != null || getComboBoxColumn(endColumnComboBox) != null;//At least 1 column not null
+        boolean enabled = getComboBoxColumn(startColumnComboBox) != null ||
+            getComboBoxColumn(endColumnComboBox) != null;//At least 1 column not null
         enabled &= validationPanel != null && !validationPanel.isProblem();
         dialogControls.setOkButtonEnabled(enabled);
     }
@@ -292,20 +329,6 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         defaultStartDatePicker.setEnabled(!parseNumbers);
         defaultEndDatePicker.setEnabled(!parseNumbers);
         refreshOkButton();
-    }
-
-    private class ColumnWrapper {
-
-        private Column column;
-
-        public ColumnWrapper(Column column) {
-            this.column = column;
-        }
-
-        @Override
-        public String toString() {
-            return column != null ? column.getTitle() : "";
-        }
     }
 
     /**
@@ -334,7 +357,8 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         defaultStartNumberText = new javax.swing.JTextField();
         defaultEndNumberText = new javax.swing.JTextField();
 
-        startColumnLabel.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.startColumnLabel.text")); // NOI18N
+        startColumnLabel.setText(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.startColumnLabel.text")); // NOI18N
 
         startColumnComboBox.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -350,11 +374,13 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
             }
         });
 
-        endColumnLabel.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.endColumnLabel.text")); // NOI18N
+        endColumnLabel.setText(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.endColumnLabel.text")); // NOI18N
 
         buttonGroup.add(parseNumbersRadioButton);
         parseNumbersRadioButton.setSelected(true);
-        parseNumbersRadioButton.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.parseNumbersRadioButton.text")); // NOI18N
+        parseNumbersRadioButton.setText(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.parseNumbersRadioButton.text")); // NOI18N
         parseNumbersRadioButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -362,11 +388,14 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
             }
         });
 
-        header.setDescription(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.header.description")); // NOI18N
-        header.setTitle(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.header.title")); // NOI18N
+        header.setDescription(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.header.description")); // NOI18N
+        header.setTitle(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.header.title")); // NOI18N
 
         buttonGroup.add(parseDatesRadioButton);
-        parseDatesRadioButton.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.parseDatesRadioButton.text")); // NOI18N
+        parseDatesRadioButton.setText(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.parseDatesRadioButton.text")); // NOI18N
         parseDatesRadioButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -376,143 +405,171 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
 
         defaultStartDatePicker.setEnabled(false);
 
-        dateDefaultStartLabel.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.dateDefaultStartLabel.text")); // NOI18N
+        dateDefaultStartLabel.setText(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.dateDefaultStartLabel.text")); // NOI18N
         dateDefaultStartLabel.setEnabled(false);
 
         defaultEndDatePicker.setEnabled(false);
 
-        dateDefaultEndLabel.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.dateDefaultEndLabel.text")); // NOI18N
+        dateDefaultEndLabel.setText(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.dateDefaultEndLabel.text")); // NOI18N
         dateDefaultEndLabel.setEnabled(false);
 
-        dateFormatLabel.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.dateFormatLabel.text")); // NOI18N
+        dateFormatLabel.setText(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.dateFormatLabel.text")); // NOI18N
         dateFormatLabel.setEnabled(false);
 
         dateFormatComboBox.setEditable(true);
         dateFormatComboBox.setEnabled(false);
 
-        defaultStartNumberLabel.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.defaultStartNumberLabel.text")); // NOI18N
+        defaultStartNumberLabel.setText(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.defaultStartNumberLabel.text")); // NOI18N
 
-        defaultEndNumberLabel.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.defaultEndNumberLabel.text")); // NOI18N
+        defaultEndNumberLabel.setText(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.defaultEndNumberLabel.text")); // NOI18N
 
-        defaultStartNumberText.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.defaultStartNumberText.text")); // NOI18N
+        defaultStartNumberText.setText(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.defaultStartNumberText.text")); // NOI18N
 
-        defaultEndNumberText.setText(org.openide.util.NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.defaultEndNumberText.text")); // NOI18N
+        defaultEndNumberText.setText(org.openide.util.NbBundle
+            .getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.defaultEndNumberText.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(dateDefaultStartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(dateDefaultEndLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(dateFormatLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGap(6, 6, 6))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(13, 13, 13)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(defaultStartNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(defaultEndNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(defaultStartDatePicker, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(defaultEndDatePicker, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(dateFormatComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(defaultStartNumberText)
-                            .addComponent(defaultEndNumberText)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(endColumnLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(startColumnLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(startColumnComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(endColumnComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(parseDatesRadioButton)
-                    .addComponent(parseNumbersRadioButton))
-                .addContainerGap())
+                .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addGap(15, 15, 15)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(dateDefaultStartLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(dateDefaultEndLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(dateFormatLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGap(6, 6, 6))))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(13, 13, 13)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(defaultStartNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(defaultEndNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(defaultStartDatePicker, javax.swing.GroupLayout.Alignment.TRAILING,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    Short.MAX_VALUE)
+                                .addComponent(defaultEndDatePicker, javax.swing.GroupLayout.Alignment.TRAILING,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    Short.MAX_VALUE)
+                                .addComponent(dateFormatComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(defaultStartNumberText)
+                                .addComponent(defaultEndNumberText)))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(endColumnLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(startColumnLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(startColumnComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    Short.MAX_VALUE)
+                                .addComponent(endColumnComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    Short.MAX_VALUE)))
+                        .addComponent(parseDatesRadioButton)
+                        .addComponent(parseNumbersRadioButton))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startColumnLabel)
-                    .addComponent(startColumnComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(endColumnComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(endColumnLabel))
-                .addGap(18, 18, 18)
-                .addComponent(parseNumbersRadioButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(defaultStartNumberLabel)
-                    .addComponent(defaultStartNumberText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(defaultEndNumberLabel)
-                    .addComponent(defaultEndNumberText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(33, 33, 33)
-                .addComponent(parseDatesRadioButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dateFormatComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(dateFormatLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(defaultStartDatePicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(dateDefaultStartLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dateDefaultEndLabel)
-                    .addComponent(defaultEndDatePicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 105,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(startColumnLabel)
+                        .addComponent(startColumnComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(endColumnComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(endColumnLabel))
+                    .addGap(18, 18, 18)
+                    .addComponent(parseNumbersRadioButton)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(defaultStartNumberLabel)
+                        .addComponent(defaultStartNumberText, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(defaultEndNumberLabel)
+                        .addComponent(defaultEndNumberText, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(33, 33, 33)
+                    .addComponent(parseDatesRadioButton)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(dateFormatComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dateFormatLabel))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(defaultStartDatePicker, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dateDefaultStartLabel))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(dateDefaultEndLabel)
+                        .addComponent(defaultEndDatePicker, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void parseNumbersRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parseNumbersRadioButtonActionPerformed
+    private void parseNumbersRadioButtonActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parseNumbersRadioButtonActionPerformed
         refreshTimeParseMode();
     }//GEN-LAST:event_parseNumbersRadioButtonActionPerformed
 
-    private void parseDatesRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parseDatesRadioButtonActionPerformed
+    private void parseDatesRadioButtonActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parseDatesRadioButtonActionPerformed
         refreshTimeParseMode();
     }//GEN-LAST:event_parseDatesRadioButtonActionPerformed
 
-    private void startColumnComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startColumnComboBoxActionPerformed
+    private void startColumnComboBoxActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startColumnComboBoxActionPerformed
         refreshOkButton();
     }//GEN-LAST:event_startColumnComboBoxActionPerformed
 
-    private void endColumnComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endColumnComboBoxActionPerformed
+    private void endColumnComboBoxActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endColumnComboBoxActionPerformed
         refreshOkButton();
     }//GEN-LAST:event_endColumnComboBoxActionPerformed
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup;
-    private javax.swing.JLabel dateDefaultEndLabel;
-    private javax.swing.JLabel dateDefaultStartLabel;
-    private javax.swing.JComboBox dateFormatComboBox;
-    private javax.swing.JLabel dateFormatLabel;
-    private org.jdesktop.swingx.JXDatePicker defaultEndDatePicker;
-    private javax.swing.JLabel defaultEndNumberLabel;
-    private javax.swing.JTextField defaultEndNumberText;
-    private org.jdesktop.swingx.JXDatePicker defaultStartDatePicker;
-    private javax.swing.JLabel defaultStartNumberLabel;
-    private javax.swing.JTextField defaultStartNumberText;
-    private javax.swing.JComboBox endColumnComboBox;
-    private javax.swing.JLabel endColumnLabel;
-    private org.jdesktop.swingx.JXHeader header;
-    private javax.swing.JRadioButton parseDatesRadioButton;
-    private javax.swing.JRadioButton parseNumbersRadioButton;
-    private javax.swing.JComboBox startColumnComboBox;
-    private javax.swing.JLabel startColumnLabel;
+
+    private class ColumnWrapper {
+
+        private final Column column;
+
+        public ColumnWrapper(Column column) {
+            this.column = column;
+        }
+
+        @Override
+        public String toString() {
+            return column != null ? column.getTitle() : "";
+        }
+    }
     // End of variables declaration//GEN-END:variables
 }

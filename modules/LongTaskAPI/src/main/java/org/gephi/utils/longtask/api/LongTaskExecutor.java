@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.utils.longtask.api;
 
 import java.util.Timer;
@@ -68,9 +69,9 @@ import org.openide.util.Lookup;
 public final class LongTaskExecutor {
 
     private final boolean inBackground;
-    private boolean interruptCancel;
     private final long interruptDelay;
     private final String name;
+    private boolean interruptCancel;
     private ThreadPoolExecutor executor;
     private RunningLongTask currentTask;
     private Timer cancelTimer;
@@ -81,10 +82,10 @@ public final class LongTaskExecutor {
      * Creates a new long task executor.
      *
      * @param doInBackground when <code>true</code>, the task will be executed
-     * in a separate thread
-     * @param name the name of the executor, used to recognize threads by names
+     *                       in a separate thread
+     * @param name           the name of the executor, used to recognize threads by names
      * @param interruptDelay number of seconds to wait before * calling
-     * <code>Thread.interrupt()</code> after a cancel request
+     *                       <code>Thread.interrupt()</code> after a cancel request
      */
     public LongTaskExecutor(boolean doInBackground, String name, int interruptDelay) {
         this.inBackground = doInBackground;
@@ -97,8 +98,8 @@ public final class LongTaskExecutor {
      * Creates a new long task executor.
      *
      * @param doInBackground doInBackground when <code>true</code>, the task
-     * will be executed in a separate thread
-     * @param name the name of the executor, used to recognize threads by names
+     *                       will be executed in a separate thread
+     * @param name           the name of the executor, used to recognize threads by names
      */
     public LongTaskExecutor(boolean doInBackground, String name) {
         this(doInBackground, name, 0);
@@ -109,7 +110,7 @@ public final class LongTaskExecutor {
      * Creates a new long task executor.
      *
      * @param doInBackground doInBackground when <code>true</code>, the task
-     * will be executed in a separate thread
+     *                       will be executed in a separate thread
      */
     public LongTaskExecutor(boolean doInBackground) {
         this(doInBackground, "LongTaskExecutor");
@@ -120,22 +121,24 @@ public final class LongTaskExecutor {
      * <code>null</code>. In this case <code>runnable</code> will be executed
      * normally, but without cancel and progress support.
      *
-     * @param task the task to be executed, can be <code>null</code>.
-     * @param runnable the runnable to be executed
-     * @param taskName the name of the task, is displayed in the status bar if
-     * available
+     * @param task         the task to be executed, can be <code>null</code>.
+     * @param runnable     the runnable to be executed
+     * @param taskName     the name of the task, is displayed in the status bar if
+     *                     available
      * @param errorHandler error handler for exception retrieval during
-     * execution
-     * @throws NullPointerException if <code>runnable</code> * or
-     * <code>taskName</code> is null
+     *                     execution
+     * @throws NullPointerException  if <code>runnable</code> * or
+     *                               <code>taskName</code> is null
      * @throws IllegalStateException if a task is still executing at this time
      */
-    public synchronized void execute(LongTask task, final Runnable runnable, String taskName, LongTaskErrorHandler errorHandler) {
+    public synchronized void execute(LongTask task, final Runnable runnable, String taskName,
+                                     LongTaskErrorHandler errorHandler) {
         if (runnable == null || taskName == null) {
             throw new NullPointerException();
         }
         if (executor == null) {
-            this.executor = new ThreadPoolExecutor(0, 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new NamedThreadFactory());
+            this.executor = new ThreadPoolExecutor(0, 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
+                new NamedThreadFactory());
         }
 
         RunningLongTask runningLongtask = new RunningLongTask(task, runnable, taskName, errorHandler);
@@ -152,9 +155,9 @@ public final class LongTaskExecutor {
      * <code>null</code>. In this case <code>runnable</code> will be executed
      * normally, but without cancel and progress support.
      *
-     * @param task the task to be executed, can be <code>null</code>.
+     * @param task     the task to be executed, can be <code>null</code>.
      * @param runnable the runnable to be executed
-     * @throws NullPointerException if <code>runnable</code> is null
+     * @throws NullPointerException  if <code>runnable</code> is null
      * @throws IllegalStateException if a task is still executing at this time
      */
     public synchronized void execute(LongTask task, Runnable runnable) {
@@ -171,7 +174,7 @@ public final class LongTaskExecutor {
     public synchronized void cancel() {
         if (inBackground) {
             if (executor != null) {
-                RunningLongTask rlt = (RunningLongTask) currentTask;
+                RunningLongTask rlt = currentTask;
                 if (rlt != null) {
                     boolean res = rlt.cancel();
                     if (interruptCancel && !res) {
@@ -181,7 +184,7 @@ public final class LongTaskExecutor {
                 }
             }
         } else {
-            RunningLongTask rlt = (RunningLongTask) currentTask;
+            RunningLongTask rlt = currentTask;
             if (rlt != null) {
                 boolean res = rlt.cancel();
                 if (interruptCancel && !res) {
@@ -244,7 +247,7 @@ public final class LongTaskExecutor {
         private final Runnable runnable;
         private Future<?> future;
         private ProgressTicket progress;
-        private LongTaskErrorHandler errorHandler;
+        private final LongTaskErrorHandler errorHandler;
 
         public RunningLongTask(LongTask task, Runnable runnable, String taskName, LongTaskErrorHandler errorHandler) {
             this.task = task;

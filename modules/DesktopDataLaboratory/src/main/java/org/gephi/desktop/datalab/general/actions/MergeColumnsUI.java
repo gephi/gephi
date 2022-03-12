@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.general.actions;
 
 import java.awt.event.MouseAdapter;
@@ -67,24 +68,34 @@ import org.openide.util.NbBundle;
 
 /**
  * UI for choosing columns to merge and a merge strategy.
+ *
  * @author Eduardo Ramos
  */
 public class MergeColumnsUI extends javax.swing.JPanel {
 
-    private JButton okButton;
-
-    public enum Mode {
-
-        NODES_TABLE,
-        EDGES_TABLE
-    }
-    private Mode mode = Mode.NODES_TABLE;
-    private Table table;
     private final DefaultListModel availableColumnsModel;
     private final DefaultListModel columnsToMergeModel;
+    private JButton okButton;
+    private Mode mode = Mode.NODES_TABLE;
+    private Table table;
     private AttributeColumnsMergeStrategy[] availableMergeStrategies;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addColumnButton;
+    private javax.swing.JLabel availableColumnsLabel;
+    private javax.swing.JList availableColumnsList;
+    private javax.swing.JComboBox availableStrategiesComboBox;
+    private javax.swing.JLabel availableStrategiesLabel;
+    private javax.swing.JLabel columnsToMergeLabel;
+    private javax.swing.JList columnsToMergeList;
+    private javax.swing.JLabel description;
+    private javax.swing.JLabel infoLabel;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton removeColumnButton;
 
-    /** Creates new form MergeColumnsUI */
+    /**
+     * Creates new form MergeColumnsUI
+     */
     public MergeColumnsUI() {
         initComponents();
         infoLabel.addMouseListener(new MouseAdapter() {
@@ -145,6 +156,20 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         });
     }
 
+    public static ValidationPanel createValidationPanel(MergeColumnsUI innerPanel) {
+        ValidationPanel validationPanel = new ValidationPanel();
+        if (innerPanel == null) {
+            innerPanel = new MergeColumnsUI();
+        }
+        validationPanel.setInnerComponent(innerPanel);
+
+        ValidationGroup group = validationPanel.getValidationGroup();
+
+        group.add(innerPanel.availableStrategiesComboBox, new MergeStrategyValidator(innerPanel));
+
+        return validationPanel;
+    }
+
     private void loadColumns() {
         availableColumnsModel.clear();
         columnsToMergeModel.clear();
@@ -178,11 +203,13 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         if (columnsToMerge.length < 1) {
             return;
         }
-        AttributeColumnsMergeStrategy[] strategies = DataLaboratoryHelper.getDefault().getAttributeColumnsMergeStrategies();
+        AttributeColumnsMergeStrategy[] strategies =
+            DataLaboratoryHelper.getDefault().getAttributeColumnsMergeStrategies();
         ArrayList<AttributeColumnsMergeStrategy> availableStrategiesList = new ArrayList<>();
         for (AttributeColumnsMergeStrategy strategy : strategies) {
             strategy.setup(table, columnsToMerge);
-            availableStrategiesList.add(strategy);//Add all but disallow executing the strategies that cannot be executed with given column
+            availableStrategiesList
+                .add(strategy);//Add all but disallow executing the strategies that cannot be executed with given column
         }
 
         availableMergeStrategies = availableStrategiesList.toArray(new AttributeColumnsMergeStrategy[0]);
@@ -243,31 +270,6 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         refreshOkButton();
     }
 
-    /**
-     * Class to contain a column and return its name + type with toString method.
-     */
-    class ColumnWrapper {
-
-        private Column column;
-
-        public ColumnWrapper(Column column) {
-            this.column = column;
-        }
-
-        public Column getColumn() {
-            return column;
-        }
-
-        public void setColumn(Column column) {
-            this.column = column;
-        }
-
-        @Override
-        public String toString() {
-            return column.getTitle() + " -- " + column.getTypeClass().getSimpleName();
-        }
-    }
-
     private void moveElementsFromListToOtherList(JList sourceList, JList targetList) {
         DefaultListModel sourceModel, targetModel;
         sourceModel = (DefaultListModel) sourceList.getModel();
@@ -279,45 +281,8 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         }
     }
 
-    public static ValidationPanel createValidationPanel(MergeColumnsUI innerPanel) {
-        ValidationPanel validationPanel = new ValidationPanel();
-        if (innerPanel == null) {
-            innerPanel = new MergeColumnsUI();
-        }
-        validationPanel.setInnerComponent(innerPanel);
-
-        ValidationGroup group = validationPanel.getValidationGroup();
-
-        group.add(innerPanel.availableStrategiesComboBox, new MergeStrategyValidator(innerPanel));
-
-        return validationPanel;
-    }
-
-    private static class MergeStrategyValidator implements Validator<ComboBoxModel> {
-
-        private MergeColumnsUI ui;
-
-        public MergeStrategyValidator(MergeColumnsUI ui) {
-            this.ui = ui;
-        }
-
-        @Override
-        public boolean validate(Problems problems, String string, ComboBoxModel t) {
-            if (t.getSelectedItem() != null) {
-                if (ui.canExecuteSelectedStrategy()) {
-                    return true;
-                } else {
-                    problems.add(NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.problems.not_executable_strategy"));
-                    return false;
-                }
-            } else {
-                problems.add(NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.problems.less_than_2_columns_selected"));
-                return false;
-            }
-        }
-    }
-
-    /** This method is called from within the constructor to
+    /**
+     * This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
      * always regenerated by the Form Editor.
@@ -348,10 +313,13 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         jScrollPane1.setViewportView(columnsToMergeList);
 
         description.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        description.setText(org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.description.text")); // NOI18N
+        description.setText(
+            org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.description.text")); // NOI18N
 
-        addColumnButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/datalab/resources/arrow.png"))); // NOI18N
-        addColumnButton.setText(org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.addColumnButton.text")); // NOI18N
+        addColumnButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/datalab/resources/arrow.png"))); // NOI18N
+        addColumnButton.setText(org.openide.util.NbBundle
+            .getMessage(MergeColumnsUI.class, "MergeColumnsUI.addColumnButton.text")); // NOI18N
         addColumnButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -359,8 +327,10 @@ public class MergeColumnsUI extends javax.swing.JPanel {
             }
         });
 
-        removeColumnButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/datalab/resources/arrow-180.png"))); // NOI18N
-        removeColumnButton.setText(org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.removeColumnButton.text")); // NOI18N
+        removeColumnButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/datalab/resources/arrow-180.png"))); // NOI18N
+        removeColumnButton.setText(org.openide.util.NbBundle
+            .getMessage(MergeColumnsUI.class, "MergeColumnsUI.removeColumnButton.text")); // NOI18N
         removeColumnButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -377,13 +347,16 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         jScrollPane2.setViewportView(availableColumnsList);
 
         availableColumnsLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        availableColumnsLabel.setText(org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.availableColumnsLabel.text")); // NOI18N
+        availableColumnsLabel.setText(org.openide.util.NbBundle
+            .getMessage(MergeColumnsUI.class, "MergeColumnsUI.availableColumnsLabel.text")); // NOI18N
 
         columnsToMergeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        columnsToMergeLabel.setText(org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.columnsToMergeLabel.text")); // NOI18N
+        columnsToMergeLabel.setText(org.openide.util.NbBundle
+            .getMessage(MergeColumnsUI.class, "MergeColumnsUI.columnsToMergeLabel.text")); // NOI18N
 
         availableStrategiesLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        availableStrategiesLabel.setText(org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.availableStrategiesLabel.text")); // NOI18N
+        availableStrategiesLabel.setText(org.openide.util.NbBundle
+            .getMessage(MergeColumnsUI.class, "MergeColumnsUI.availableStrategiesLabel.text")); // NOI18N
 
         availableStrategiesComboBox.addItemListener(new java.awt.event.ItemListener() {
             @Override
@@ -393,89 +366,104 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         });
 
         infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        infoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/datalab/resources/info.png"))); // NOI18N
-        infoLabel.setText(org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.infoLabel.text")); // NOI18N
+        infoLabel.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/datalab/resources/info.png"))); // NOI18N
+        infoLabel.setText(
+            org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.infoLabel.text")); // NOI18N
         infoLabel.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(description, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(availableColumnsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(availableStrategiesLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(addColumnButton)
-                                    .addComponent(removeColumnButton))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(14, 14, 14)
-                                        .addComponent(columnsToMergeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)))
-                                .addGap(30, 30, 30))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(availableStrategiesComboBox, 0, 218, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(infoLabel)
-                                .addContainerGap())))))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(description, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+                            .addContainerGap())
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(availableColumnsLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .addComponent(availableStrategiesLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 152,
+                                    Short.MAX_VALUE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(10, 10, 10)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(addColumnButton)
+                                        .addComponent(removeColumnButton))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGap(14, 14, 14)
+                                            .addComponent(columnsToMergeLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                149, Short.MAX_VALUE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING,
+                                            layout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 153,
+                                                    Short.MAX_VALUE)))
+                                    .addGap(30, 30, 30))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(availableStrategiesComboBox, 0, 218, Short.MAX_VALUE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(infoLabel)
+                                    .addContainerGap())))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(description, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(availableColumnsLabel)
-                            .addComponent(columnsToMergeLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(12, 12, 12))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(addColumnButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(removeColumnButton)
-                        .addGap(94, 94, 94)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(availableStrategiesComboBox, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(availableStrategiesLabel))
-                .addContainerGap())
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(description, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(availableColumnsLabel)
+                                .addComponent(columnsToMergeLabel))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 204,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 204,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(12, 12, 12))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(addColumnButton)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(removeColumnButton)
+                            .addGap(94, 94, 94)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(availableStrategiesComboBox, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20,
+                            javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(availableStrategiesLabel))
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void addColumnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addColumnButtonActionPerformed
+    private void addColumnButtonActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addColumnButtonActionPerformed
         moveElementsFromListToOtherList(availableColumnsList, columnsToMergeList);
     }//GEN-LAST:event_addColumnButtonActionPerformed
 
-    private void removeColumnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeColumnButtonActionPerformed
+    private void removeColumnButtonActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeColumnButtonActionPerformed
         moveElementsFromListToOtherList(columnsToMergeList, availableColumnsList);
     }//GEN-LAST:event_removeColumnButtonActionPerformed
 
-    private void availableStrategiesComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_availableStrategiesComboBoxItemStateChanged
+    private void availableStrategiesComboBoxItemStateChanged(
+        java.awt.event.ItemEvent evt) {//GEN-FIRST:event_availableStrategiesComboBoxItemStateChanged
         refreshOkButton();
         infoLabel.setEnabled(availableStrategiesComboBox.getSelectedIndex() != -1);
     }//GEN-LAST:event_availableStrategiesComboBoxItemStateChanged
 
-    private void availableColumnsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_availableColumnsListMouseClicked
+    private void availableColumnsListMouseClicked(
+        java.awt.event.MouseEvent evt) {//GEN-FIRST:event_availableColumnsListMouseClicked
         if (evt.getClickCount() == 2) {
             int index = availableColumnsList.locationToIndex(evt.getPoint());
             availableColumnsList.setSelectedIndex(index);
@@ -483,7 +471,8 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_availableColumnsListMouseClicked
 
-    private void columnsToMergeListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnsToMergeListMouseClicked
+    private void columnsToMergeListMouseClicked(
+        java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnsToMergeListMouseClicked
         if (evt.getClickCount() == 2) {
             int index = columnsToMergeList.locationToIndex(evt.getPoint());
             columnsToMergeList.setSelectedIndex(index);
@@ -491,18 +480,61 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_columnsToMergeListMouseClicked
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addColumnButton;
-    private javax.swing.JLabel availableColumnsLabel;
-    private javax.swing.JList availableColumnsList;
-    private javax.swing.JComboBox availableStrategiesComboBox;
-    private javax.swing.JLabel availableStrategiesLabel;
-    private javax.swing.JLabel columnsToMergeLabel;
-    private javax.swing.JList columnsToMergeList;
-    private javax.swing.JLabel description;
-    private javax.swing.JLabel infoLabel;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JButton removeColumnButton;
+    public enum Mode {
+
+        NODES_TABLE,
+        EDGES_TABLE
+    }
+
+    private static class MergeStrategyValidator implements Validator<ComboBoxModel> {
+
+        private final MergeColumnsUI ui;
+
+        public MergeStrategyValidator(MergeColumnsUI ui) {
+            this.ui = ui;
+        }
+
+        @Override
+        public boolean validate(Problems problems, String string, ComboBoxModel t) {
+            if (t.getSelectedItem() != null) {
+                if (ui.canExecuteSelectedStrategy()) {
+                    return true;
+                } else {
+                    problems.add(
+                        NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.problems.not_executable_strategy"));
+                    return false;
+                }
+            } else {
+                problems.add(
+                    NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.problems.less_than_2_columns_selected"));
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Class to contain a column and return its name + type with toString method.
+     */
+    class ColumnWrapper {
+
+        private Column column;
+
+        public ColumnWrapper(Column column) {
+            this.column = column;
+        }
+
+        public Column getColumn() {
+            return column;
+        }
+
+        public void setColumn(Column column) {
+            this.column = column;
+        }
+
+        @Override
+        public String toString() {
+            return column.getTitle() + " -- " + column.getTypeClass().getSimpleName();
+        }
+    }
     // End of variables declaration//GEN-END:variables
 }

@@ -39,12 +39,15 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.io;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectInformation;
@@ -131,14 +134,19 @@ public class GephiWriter {
         writer.writeEndDocument();
     }
 
-    public static void writeWorkspaceChildren(XMLStreamWriter writer, Workspace workspace, WorkspaceXMLPersistenceProvider persistenceProvider) throws Exception {
+    public static void writeWorkspaceChildren(XMLStreamWriter writer, Workspace workspace,
+                                              WorkspaceXMLPersistenceProvider persistenceProvider) throws Exception {
         String identifier = persistenceProvider.getIdentifier();
         writer.writeStartDocument("UTF-8", "1.0");
         writer.writeStartElement(identifier);
         writer.writeComment("Persistence from '" + identifier + "' (" + persistenceProvider.getClass().getName() + ")");
         try {
             persistenceProvider.writeXML(writer, workspace);
-        } catch (UnsupportedOperationException e) {
+        } catch (Exception e) {
+            Logger.getLogger("").log(
+                Level.SEVERE,
+                "Error while writing XML workspace persistence provider '" + identifier + "'",
+                e);
         }
         writer.writeEndElement();
         writer.writeEndDocument();
@@ -147,9 +155,9 @@ public class GephiWriter {
     private static String getVersion() {
         try {
             return MessageFormat.format(
-                    NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion"), // NOI18N
-                    new Object[]{System.getProperty("netbeans.buildnumber")} // NOI18N
-            );
+                NbBundle.getBundle("org.netbeans.core.startup.Bundle").getString("currentVersion"), // NOI18N
+                // NOI18N
+                System.getProperty("netbeans.buildnumber"));
         } catch (Exception e) {
             return "?";
         }

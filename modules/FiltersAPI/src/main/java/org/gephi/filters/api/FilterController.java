@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.api;
 
 import org.gephi.filters.spi.Filter;
@@ -86,10 +87,10 @@ public interface FilterController {
      * query.
      *
      * @param builder the builder that can create the filter that is to be
-     * wrapped in a new query
+     *                wrapped in a new query
      * @return a query that is wrapping <code>builder</code>
      */
-    public Query createQuery(FilterBuilder builder);
+    Query createQuery(FilterBuilder builder);
 
     /**
      * Creates a query from <code>filter</code>. The created query is a root
@@ -98,7 +99,7 @@ public interface FilterController {
      * @param filter the filter that is to be wrapped in a new query
      * @return a query that is wrapping <code>filter</code>
      */
-    public Query createQuery(Filter filter);
+    Query createQuery(Filter filter);
 
     /**
      * Adds <code>query</code> as a new query in the system. The query should be
@@ -106,43 +107,43 @@ public interface FilterController {
      *
      * @param query the query that is to be added
      */
-    public void add(Query query);
+    void add(Query query);
 
     /**
      * Removes <code>query</code> from the system if exists.
      *
      * @param query the query that is to be removed
      */
-    public void remove(Query query);
+    void remove(Query query);
 
     /**
      * Renames <code>query</code> with <code>name</code>.
      *
      * @param query the query that is to be renamed
-     * @param name the new query's name
+     * @param name  the new query's name
      */
-    public void rename(Query query, String name);
+    void rename(Query query, String name);
 
     /**
      * Sets <code>subQuery</code> as a child of <code>query</code>. If
      * <code>subQuery</code> already has a parent query, it will be removed
      * first.
      *
-     * @param query the query that <code>subQuery</code> is to be added as a new
-     * child
+     * @param query    the query that <code>subQuery</code> is to be added as a new
+     *                 child
      * @param subQuery the query that is to be added as a child of <code>
-     * query</code>
+     *                 query</code>
      */
-    public void setSubQuery(Query query, Query subQuery);
+    void setSubQuery(Query query, Query subQuery);
 
     /**
      * Removes <code>query</code> from <code>parent</code> query.
      *
-     * @param query the query that is to be removed from <code>parent</code>
+     * @param query  the query that is to be removed from <code>parent</code>
      * @param parent the query that <code>query</code> is to be removed as a
-     * child
+     *               child
      */
-    public void removeSubQuery(Query query, Query parent);
+    void removeSubQuery(Query query, Query parent);
 
     /**
      * Filters main graph with <code>query</code> and set result as the new
@@ -154,7 +155,7 @@ public interface FilterController {
      *
      * @param query the query that is to be executed
      */
-    public void filterVisible(Query query);
+    void filterVisible(Query query);
 
     /**
      * Selects <code>query</code> results on the main graph visualization
@@ -165,7 +166,7 @@ public interface FilterController {
      *
      * @param query the query that is to be executed
      */
-    public void selectVisible(Query query);
+    void selectVisible(Query query);
 
     /**
      * Filtering method for API users. The <code>query</code> is executed and
@@ -174,7 +175,7 @@ public interface FilterController {
      * @param query the query that is to be executed
      * @return a graph view that represents the query result
      */
-    public GraphView filter(Query query);
+    GraphView filter(Query query);
 
     /**
      * Exports <code>query</code> result in a new column <code>title</code>.
@@ -185,7 +186,7 @@ public interface FilterController {
      * @param title the column's title
      * @param query the query that is to be executed
      */
-    public void exportToColumn(String title, Query query);
+    void exportToColumn(String title, Query query);
 
     /**
      * Exports <code>query</code> result in a new workspace. Note that query is
@@ -194,7 +195,7 @@ public interface FilterController {
      *
      * @param query the query that is to be executed
      */
-    public void exportToNewWorkspace(Query query);
+    void exportToNewWorkspace(Query query);
 
     /**
      * Exports <code>query</code> result to visible/hidden labels. Each node and
@@ -204,18 +205,18 @@ public interface FilterController {
      *
      * @param query the query that is to be used to hide labels
      */
-    public void exportToLabelVisible(Query query);
+    void exportToLabelVisible(Query query);
 
-    public void setAutoRefresh(boolean autoRefresh);
+    void setAutoRefresh(boolean autoRefresh);
 
-    public void setCurrentQuery(Query query);
+    void setCurrentQuery(Query query);
 
     /**
      * Returns the filter's model.
      *
      * @return the filter's model
      */
-    public FilterModel getModel();
+    FilterModel getModel();
 
     /**
      * Returns the filter's model for <code>workspace</code>.
@@ -223,5 +224,5 @@ public interface FilterController {
      * @param workspace workspace
      * @return the filter's model in the given workspace
      */
-    public FilterModel getModel(Workspace workspace);
+    FilterModel getModel(Workspace workspace);
 }

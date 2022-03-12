@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file;
 
 import java.io.BufferedReader;
@@ -59,7 +60,6 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class ImporterPajek implements FileImporter, LongTask {
@@ -101,7 +101,8 @@ public class ImporterPajek implements FileImporter, LongTask {
 
             if (curLine == null) // no vertices in the graph; return empty graph
             {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat1"), Issue.Level.CRITICAL));
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat1"),
+                    Issue.Level.CRITICAL));
             }
 
             // create appropriate number of vertices
@@ -130,7 +131,9 @@ public class ImporterPajek implements FileImporter, LongTask {
                     break;
                 }
                 if (curLine.isEmpty()) { // skip blank lines
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat2", reader.getLineNumber()), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle
+                        .getMessage(ImporterPajek.class, "importerNET_error_dataformat2", reader.getLineNumber()),
+                        Issue.Level.WARNING));
                     continue;
                 }
 
@@ -172,7 +175,9 @@ public class ImporterPajek implements FileImporter, LongTask {
             String[] initial_split = curLine.trim().split("\"");
             // if there are any quote marks, there should be exactly 2
             if (initial_split.length < 1 || initial_split.length > 3) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat3", lineReader.getLineNumber()), Issue.Level.SEVERE));
+                report.logIssue(new Issue(NbBundle
+                    .getMessage(ImporterPajek.class, "importerNET_error_dataformat3", lineReader.getLineNumber()),
+                    Issue.Level.SEVERE));
             }
             index = initial_split[0].trim();
             if (initial_split.length > 1) {
@@ -203,7 +208,9 @@ public class ImporterPajek implements FileImporter, LongTask {
         }
         int v_id = Integer.parseInt(index) - 1; // go from 1-based to 0-based index
         if (v_id >= num_vertices || v_id < 0) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat4", v_id, num_vertices), Issue.Level.SEVERE));
+            report.logIssue(
+                new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat4", v_id, num_vertices),
+                    Issue.Level.SEVERE));
         }
 
         NodeDraft node = verticesArray[v_id];
@@ -227,7 +234,9 @@ public class ImporterPajek implements FileImporter, LongTask {
 
                     i++;
                 } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat5", lineReader.getLineNumber()), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle
+                        .getMessage(ImporterPajek.class, "importerNET_error_dataformat5", lineReader.getLineNumber()),
+                        Issue.Level.WARNING));
                 }
             }
 
@@ -240,7 +249,9 @@ public class ImporterPajek implements FileImporter, LongTask {
 
                     i++;
                 } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat6", lineReader.getLineNumber()), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle
+                        .getMessage(ImporterPajek.class, "importerNET_error_dataformat6", lineReader.getLineNumber()),
+                        Issue.Level.WARNING));
                 }
             }
 
@@ -248,7 +259,8 @@ public class ImporterPajek implements FileImporter, LongTask {
             for (; i < parts.length - 1; i++) {
                 // node's internal color
                 if ("ic".equals(parts[i])) {
-                    String colorName = parts[i + 1].replaceAll(" ", ""); // remove spaces from color's name so we can look it up
+                    String colorName =
+                        parts[i + 1].replaceAll(" ", ""); // remove spaces from color's name so we can look it up
                     node.setColor(colorName);
                     break;
                 }
@@ -272,10 +284,7 @@ public class ImporterPajek implements FileImporter, LongTask {
             return nextLine;
         }
 
-        boolean is_list = false;
-        if (nextLine.toLowerCase().endsWith("list")) {
-            is_list = true;
-        }
+        boolean is_list = nextLine.toLowerCase().endsWith("list");
 
         while (br.ready()) {
             if (cancel) {
@@ -286,7 +295,9 @@ public class ImporterPajek implements FileImporter, LongTask {
                 break;
             }
             if (nextLine.equals("")) { // skip blank lines
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat2", lineReader.getLineNumber()), Issue.Level.WARNING));
+                report.logIssue(new Issue(NbBundle
+                    .getMessage(ImporterPajek.class, "importerNET_error_dataformat2", lineReader.getLineNumber()),
+                    Issue.Level.WARNING));
                 continue;
             }
 
@@ -319,7 +330,9 @@ public class ImporterPajek implements FileImporter, LongTask {
                     try {
                         edgeWeight = new Double(st.nextToken());
                     } catch (Exception e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat7", lineReader.getLineNumber()), Issue.Level.WARNING));
+                        report.logIssue(new Issue(NbBundle
+                            .getMessage(ImporterPajek.class, "importerNET_error_dataformat7",
+                                lineReader.getLineNumber()), Issue.Level.WARNING));
                     }
 
                     edge.setWeight(edgeWeight);

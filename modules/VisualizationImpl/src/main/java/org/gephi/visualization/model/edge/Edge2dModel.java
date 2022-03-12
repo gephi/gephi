@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.model.edge;
 
 import com.jogamp.opengl.GL2;
@@ -51,15 +52,14 @@ import org.gephi.visualization.VizModel;
 import org.gephi.visualization.model.node.NodeModel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class Edge2dModel extends EdgeModel {
 
-    protected static float ARROW_WIDTH = 1f;
-    protected static float ARROW_HEIGHT = 1.1f;
     protected static final float WEIGHT_MINIMUM = 0.4f;
     protected static final float WEIGHT_MAXIMUM = 8f;
+    protected static float ARROW_WIDTH = 1f;
+    protected static float ARROW_HEIGHT = 1.1f;
     //An edge is set in both source node and target node octant. Hence edges are not drawn when none of
     //these octants are visible.
     protected final NodeModel sourceModel;
@@ -242,7 +242,8 @@ public class Edge2dModel extends EdgeModel {
         if (limits.getMinWeight() == limits.getMaxWeight()) {
             weightRatio = Edge2dModel.WEIGHT_MINIMUM / limits.getMinWeight();
         } else {
-            weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+            weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) /
+                (limits.getMaxWeight() - limits.getMinWeight()));
         }
         float edgeScale = vizModel.getEdgeScale();
         w = getWeight();

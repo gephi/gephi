@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
@@ -61,7 +62,6 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Daniel Bernardes
  */
 public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask {
@@ -76,20 +76,20 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
     private boolean cancel = false;
     private ProgressTicket progressTicket;
 
-    public void setExportEdgeWeight(boolean exportEdgeWeight) {
-        this.exportEdgeWeight = exportEdgeWeight;
-    }
-
     public boolean isExportEdgeWeight() {
         return exportEdgeWeight;
     }
 
-    public void setExportPosition(boolean exportPosition) {
-        this.exportPosition = exportPosition;
+    public void setExportEdgeWeight(boolean exportEdgeWeight) {
+        this.exportEdgeWeight = exportEdgeWeight;
     }
 
     public boolean isExportPosition() {
         return exportPosition;
+    }
+
+    public void setExportPosition(boolean exportPosition) {
+        this.exportPosition = exportPosition;
     }
 
     @Override
@@ -134,7 +134,7 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
 
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".net", NbBundle.getMessage(getClass(), "fileType_Pajek_Name"));
-        return new FileType[]{ft};
+        return new FileType[] {ft};
     }
 
     @Override
@@ -192,7 +192,7 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
                 edgeIterable.doBreak();
                 return;
             }
-            writer.append(Integer.toString(idx.get(edge.getSource().getId().toString())) + " ");
+            writer.append(idx.get(edge.getSource().getId().toString()) + " ");
             writer.append(Integer.toString(idx.get(edge.getTarget().getId().toString())));
             if (exportEdgeWeight) {
                 writer.append(" " + edge.getWeight());

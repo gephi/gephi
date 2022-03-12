@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.layout;
 
 import java.io.File;
@@ -70,12 +71,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class LayoutPresetPersistence {
 
-    private Map<String, List<Preset>> presets = new HashMap<>();
+    private final Map<String, List<Preset>> presets = new HashMap<>();
 
     public LayoutPresetPersistence() {
         loadPresets();
@@ -127,7 +127,8 @@ public class LayoutPresetPersistence {
         for (LayoutProperty p : layout.getProperties()) {
             for (int i = 0; i < preset.propertyNames.size(); i++) {
                 if (p.getCanonicalName().equalsIgnoreCase(preset.propertyNames.get(i))
-                        || p.getProperty().getName().equalsIgnoreCase(preset.propertyNames.get(i))) {//Also compare with property name to maintain compatibility with old presets
+                    || p.getProperty().getName().equalsIgnoreCase(preset.propertyNames
+                    .get(i))) {//Also compare with property name to maintain compatibility with old presets
                     try {
                         p.getProperty().setValue(preset.propertyValues.get(i));
                     } catch (Exception e) {
@@ -179,8 +180,8 @@ public class LayoutPresetPersistence {
 
     protected static class Preset {
 
-        private List<String> propertyNames = new ArrayList<>();
-        private List<Object> propertyValues = new ArrayList<>();
+        private final List<String> propertyNames = new ArrayList<>();
+        private final List<Object> propertyValues = new ArrayList<>();
         private String layoutClassName;
         private String name;
 
@@ -288,10 +289,7 @@ public class LayoutPresetPersistence {
                 return false;
             }
             final Preset other = (Preset) obj;
-            if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-                return false;
-            }
-            return true;
+            return (this.name == null) ? (other.name == null) : this.name.equals(other.name);
         }
 
         @Override

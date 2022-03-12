@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.filters.plugin.attribute;
 
 import java.awt.event.ActionEvent;
@@ -48,12 +49,15 @@ import org.gephi.filters.spi.FilterProperty;
 import org.openide.util.Exceptions;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class EqualBooleanPanel extends javax.swing.JPanel implements ActionListener {
 
     private EqualBooleanFilter filter;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton falseButton;
+    private javax.swing.ButtonGroup group;
+    private javax.swing.JToggleButton trueButton;
 
     public EqualBooleanPanel() {
         initComponents();
@@ -95,16 +99,14 @@ public class EqualBooleanPanel extends javax.swing.JPanel implements ActionListe
         setOpaque(false);
 
         group.add(trueButton);
-        trueButton.setText(org.openide.util.NbBundle.getMessage(EqualBooleanPanel.class, "EqualBooleanPanel.trueButton.text")); // NOI18N
+        trueButton.setText(org.openide.util.NbBundle
+            .getMessage(EqualBooleanPanel.class, "EqualBooleanPanel.trueButton.text")); // NOI18N
         add(trueButton);
 
         group.add(falseButton);
-        falseButton.setText(org.openide.util.NbBundle.getMessage(EqualBooleanPanel.class, "EqualBooleanPanel.falseButton.text")); // NOI18N
+        falseButton.setText(org.openide.util.NbBundle
+            .getMessage(EqualBooleanPanel.class, "EqualBooleanPanel.falseButton.text")); // NOI18N
         add(falseButton);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton falseButton;
-    private javax.swing.ButtonGroup group;
-    private javax.swing.JToggleButton trueButton;
     // End of variables declaration//GEN-END:variables
 }

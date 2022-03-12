@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.exporter.spi;
 
 import java.io.Writer;
@@ -52,7 +53,8 @@ public interface CharacterExporter extends Exporter {
 
     /**
      * Set the writer where to export.
-     * @param writer      the writer the exporter is to write
+     *
+     * @param writer the writer the exporter is to write
      */
-    public void setWriter(Writer writer);
+    void setWriter(Writer writer);
 }

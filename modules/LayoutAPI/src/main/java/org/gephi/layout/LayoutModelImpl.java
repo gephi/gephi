@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout;
 
 import java.beans.PropertyChangeEvent;
@@ -48,8 +49,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -70,7 +69,6 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class LayoutModelImpl implements LayoutModel {
@@ -79,11 +77,11 @@ public class LayoutModelImpl implements LayoutModel {
     private final List<PropertyChangeListener> listeners;
     //Data
     private final Map<LayoutPropertyKey, Object> savedProperties;
-    private Layout selectedLayout;
-    private LayoutBuilder selectedBuilder;
     private final Workspace workspace;
     //Util
     private final LongTaskExecutor executor;
+    private Layout selectedLayout;
+    private LayoutBuilder selectedBuilder;
 
     public LayoutModelImpl(Workspace workspace) {
         this.workspace = workspace;
@@ -110,6 +108,21 @@ public class LayoutModelImpl implements LayoutModel {
         return selectedLayout;
     }
 
+    protected void setSelectedLayout(Layout selectedLayout) {
+        Layout oldValue = this.selectedLayout;
+        this.selectedLayout = selectedLayout;
+        this.selectedBuilder = selectedLayout != null ? selectedLayout.getBuilder() : null;
+        if (oldValue != null) {
+            saveProperties(oldValue);
+        }
+
+        injectGraph();
+        if (selectedLayout != null) {
+            loadProperties(selectedLayout);
+        }
+        firePropertyChangeEvent(SELECTED_LAYOUT, oldValue, selectedLayout);
+    }
+
     @Override
     public LayoutBuilder getSelectedBuilder() {
         return selectedBuilder;
@@ -124,21 +137,6 @@ public class LayoutModelImpl implements LayoutModel {
         selectedBuilder = layoutBuilder;
         layout.resetPropertiesValues();
         return layout;
-    }
-
-    protected void setSelectedLayout(Layout selectedLayout) {
-        Layout oldValue = this.selectedLayout;
-        this.selectedLayout = selectedLayout;
-        this.selectedBuilder = selectedLayout != null ? selectedLayout.getBuilder() : null;
-        if (oldValue != null) {
-            saveProperties(oldValue);
-        }
-
-        injectGraph();
-        if (selectedLayout != null) {
-            loadProperties(selectedLayout);
-        }
-        firePropertyChangeEvent(SELECTED_LAYOUT, oldValue, selectedLayout);
     }
 
     public void injectGraph() {
@@ -192,7 +190,8 @@ public class LayoutModelImpl implements LayoutModel {
             try {
                 Object value = p.getProperty().getValue();
                 if (value != null) {
-                    savedProperties.put(new LayoutPropertyKey(p.getCanonicalName(), layout.getClass().getName()), value);
+                    savedProperties
+                        .put(new LayoutPropertyKey(p.getCanonicalName(), layout.getClass().getName()), value);
                 }
             } catch (Exception e) {
                 Exceptions.printStackTrace(e);
@@ -210,7 +209,8 @@ public class LayoutModelImpl implements LayoutModel {
         for (LayoutProperty property : layout.getProperties()) {
             for (LayoutPropertyKey l : layoutValues) {
                 if (property.getCanonicalName().equalsIgnoreCase(l.name)
-                        || property.getProperty().getName().equalsIgnoreCase(l.name)) {//Also compare with property name to maintain compatibility with old saved properties
+                    || property.getProperty().getName().equalsIgnoreCase(
+                    l.name)) {//Also compare with property name to maintain compatibility with old saved properties
                     try {
                         property.getProperty().setValue(savedProperties.get(l));
                     } catch (Exception e) {
@@ -221,43 +221,8 @@ public class LayoutModelImpl implements LayoutModel {
         }
     }
 
-    private static class LayoutPropertyKey {
-
-        private volatile int hashCode = 0;      //Cache hashcode
-        private final String name;
-        private final String layoutClassName;
-
-        public LayoutPropertyKey(String name, String layoutClassName) {
-            this.name = name;
-            this.layoutClassName = layoutClassName;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof LayoutPropertyKey)) {
-                return false;
-            }
-            if (obj == this) {
-                return true;
-            }
-            LayoutPropertyKey s = (LayoutPropertyKey) obj;
-            if (s.layoutClassName.equals(layoutClassName) && s.name.equals(name)) {
-                return true;
-            }
-
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            if (hashCode == 0) {
-                int hash = 7;
-                hash += 53 * layoutClassName.hashCode();
-                hash += 53 * name.hashCode();
-                hashCode = hash;
-            }
-            return hashCode;
-        }
+    public Workspace getWorkspace() {
+        return workspace;
     }
 
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
@@ -295,7 +260,8 @@ public class LayoutModelImpl implements LayoutModel {
             if (eventType.equals(XMLEvent.START_ELEMENT)) {
                 String name = reader.getLocalName();
                 if ("property".equalsIgnoreCase(name)) {
-                    key = new LayoutPropertyKey(reader.getAttributeValue(null, "property"), reader.getAttributeValue(null, "layout"));
+                    key = new LayoutPropertyKey(reader.getAttributeValue(null, "property"),
+                        reader.getAttributeValue(null, "layout"));
                     valueClassStr = reader.getAttributeValue(null, "class");
                 } else if ("selectedlayoutbuilder".equalsIgnoreCase(name)) {
                     selectedLayoutBuilderClass = reader.getAttributeValue(null, "class");
@@ -328,5 +294,40 @@ public class LayoutModelImpl implements LayoutModel {
 
     private Object parse(String classStr, String str) {
         return Serialization.readValueFromText(str, classStr);
+    }
+
+    private static class LayoutPropertyKey {
+
+        private final String name;
+        private final String layoutClassName;
+        private volatile int hashCode = 0;      //Cache hashcode
+
+        public LayoutPropertyKey(String name, String layoutClassName) {
+            this.name = name;
+            this.layoutClassName = layoutClassName;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof LayoutPropertyKey)) {
+                return false;
+            }
+            if (obj == this) {
+                return true;
+            }
+            LayoutPropertyKey s = (LayoutPropertyKey) obj;
+            return s.layoutClassName.equals(layoutClassName) && s.name.equals(name);
+        }
+
+        @Override
+        public int hashCode() {
+            if (hashCode == 0) {
+                int hash = 7;
+                hash += 53 * layoutClassName.hashCode();
+                hash += 53 * name.hashCode();
+                hashCode = hash;
+            }
+            return hashCode;
+        }
     }
 }

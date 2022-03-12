@@ -39,13 +39,13 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters;
 
 import java.beans.PropertyEditorSupport;
 import org.gephi.filters.api.Range;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class RangePropertyEditor extends PropertyEditorSupport {
@@ -53,19 +53,19 @@ public class RangePropertyEditor extends PropertyEditorSupport {
     private Range range;
 
     @Override
-    public void setValue(Object value) {
-        this.range = (Range) value;
-    }
-
-    @Override
     public Object getValue() {
         return range;
     }
 
     @Override
+    public void setValue(Object value) {
+        this.range = (Range) value;
+    }
+
+    @Override
     public String getAsText() {
         if (range != null) {
-            return range.getRangeType().getSimpleName() + " - " + range.toString();
+            return range.getRangeType().getSimpleName() + " - " + range;
         } else {
             return "null";
         }

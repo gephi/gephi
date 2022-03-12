@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.exporter.spi;
 
 import org.gephi.project.api.Workspace;
@@ -53,20 +54,23 @@ public interface Exporter {
 
     /**
      * Run the export process.
-     * @return          <code>true</code> if the operation is successful,
-     *                  <code>false</code> if it has been cancelled
+     *
+     * @return <code>true</code> if the operation is successful,
+     * <code>false</code> if it has been cancelled
      */
-    public boolean execute();
-
-    /**
-     * Sets the worksapce from where to export data
-     * @param workspace the workspace to export
-     */
-    public void setWorkspace(Workspace workspace);
+    boolean execute();
 
     /**
      * Returns the workspace from where data are exported
-     * @return          the workspace the data are to be exported
+     *
+     * @return the workspace the data are to be exported
      */
-    public Workspace getWorkspace();
+    Workspace getWorkspace();
+
+    /**
+     * Sets the worksapce from where to export data
+     *
+     * @param workspace the workspace to export
+     */
+    void setWorkspace(Workspace workspace);
 }

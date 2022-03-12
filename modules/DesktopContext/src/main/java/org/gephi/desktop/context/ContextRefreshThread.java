@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.context;
 
 import java.util.Timer;
@@ -48,7 +49,6 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphObserver;
 
 /**
- *
  * @author mbastian
  */
 public class ContextRefreshThread extends TimerTask {
@@ -69,7 +69,8 @@ public class ContextRefreshThread extends TimerTask {
     }
 
     private boolean initObserver() {
-        if (observer == null || observer.isDestroyed() || observer.getGraph().getView() != graphModel.getVisibleView()) {
+        if (observer == null || observer.isDestroyed() ||
+            observer.getGraph().getView() != graphModel.getVisibleView()) {
             if (observer != null && !observer.isDestroyed()) {
                 observer.destroy();
             }

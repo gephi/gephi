@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.api;
 
 import org.gephi.filters.spi.Category;
@@ -66,41 +67,41 @@ public interface FilterLibrary extends Lookup.Provider {
      * for filters working on graph topology, i.e. the structure of nodes and
      * edges.
      */
-    public final static Category TOPOLOGY = new Category(
-            NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Topology"),
-            null,
-            null);
+    Category TOPOLOGY = new Category(
+        NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Topology"),
+        null,
+        null);
 
     /**
      * Default <code>Category</code> for attributes filters. Use this category
      * for filters working on attribute values.
      */
-    public final static Category ATTRIBUTES = new Category(
-            NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Attributes"),
-            null,
-            null);
+    Category ATTRIBUTES = new Category(
+        NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Attributes"),
+        null,
+        null);
 
     /**
      * Default <code>Category</code> for filters working on edges only.
      */
-    public final static Category EDGE = new Category(
-            NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Edge"),
-            null,
-            null);
+    Category EDGE = new Category(
+        NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Edge"),
+        null,
+        null);
 
     /**
      * Adds <code>builder</code> to this library.
      *
      * @param builder the builder that is to be added
      */
-    public void addBuilder(FilterBuilder builder);
+    void addBuilder(FilterBuilder builder);
 
     /**
      * Removes <code>builder</code> from this library.
      *
      * @param builder the builder that is to be removed
      */
-    public void removeBuilder(FilterBuilder builder);
+    void removeBuilder(FilterBuilder builder);
 
     /**
      * Returns this library's lookup. The lookup is a general container for
@@ -121,7 +122,7 @@ public interface FilterLibrary extends Lookup.Provider {
      * @return the lookup container of this library
      */
     @Override
-    public Lookup getLookup();
+    Lookup getLookup();
 
     /**
      * Registers <code>mask</code> as a new <code>FilterLibraryMask</code>. Such
@@ -130,7 +131,7 @@ public interface FilterLibrary extends Lookup.Provider {
      *
      * @param mask the mask that is to be registered
      */
-    public void registerMask(FilterLibraryMask mask);
+    void registerMask(FilterLibraryMask mask);
 
     /**
      * Unregisters <code>mask</code> in the library. The mask will no longer be
@@ -138,7 +139,7 @@ public interface FilterLibrary extends Lookup.Provider {
      *
      * @param mask the mask that is to be unregistered
      */
-    public void unregisterMask(FilterLibraryMask mask);
+    void unregisterMask(FilterLibraryMask mask);
 
     /**
      * Returns the builder that has created <code>filter</code>.
@@ -146,7 +147,7 @@ public interface FilterLibrary extends Lookup.Provider {
      * @param filter the filter that the builder is to be returned
      * @return the builder that has created <code>filter</code>
      */
-    public FilterBuilder getBuilder(Filter filter);
+    FilterBuilder getBuilder(Filter filter);
 
     /**
      * Save <code>query</code> in the library in order it can be reused. Saved
@@ -154,7 +155,7 @@ public interface FilterLibrary extends Lookup.Provider {
      *
      * @param query the query that is to be saved
      */
-    public void saveQuery(Query query);
+    void saveQuery(Query query);
 
     /**
      * Delete a saved <code>query</code> from the library. Deleted queries are
@@ -162,5 +163,5 @@ public interface FilterLibrary extends Lookup.Provider {
      *
      * @param query the query that is to be deleted
      */
-    public void deleteQuery(Query query);
+    void deleteQuery(Query query);
 }

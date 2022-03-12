@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.AWTEvent;
@@ -72,12 +73,12 @@ import org.openide.windows.WindowManager;
 //Author Milos Kleint (mkleint@netbeans.org)
 public class JPopupPane {
 
-    private HideAWTListener hideListener;
-    private JComponent ancestor;
+    private final HideAWTListener hideListener;
+    private final JComponent ancestor;
     private boolean showingPopup = false;
     private JPopupPaneComponent pane;
     private JWindow popupWindow;
-    private JPanel view;
+    private final JPanel view;
 
     public JPopupPane(JComponent ancestor, JPanel content) {
         this.ancestor = ancestor;
@@ -85,46 +86,58 @@ public class JPopupPane {
         hideListener = new HideAWTListener();
     }
 
-    private class JPopupPaneComponent extends JScrollPane {
-
-        public JPopupPaneComponent() {
-            setName("jpopuppane");
-            GridLayout grid = new GridLayout(0, 1);
-            grid.setHgap(0);
-            grid.setVgap(0);
-            setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            setViewportView(view);
-            setFocusable(true);
-            setRequestFocusEnabled(true);
-            setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    public void showPopupPane() {
+        if (pane == null) {
+            pane = new JPopupPaneComponent();
         }
-        static final int ITEM_WIDTH = 400;
-
-        @Override
-        public Dimension getPreferredSize() {
-            int count = view.getComponentCount();
-            int height = count > 0 ? view.getComponent(0).getPreferredSize().height : 0;
-            int offset = count > 6 ? height * 6 + 5 : (count * height) + 5;
-            // 22 is the width of the additional scrollbar
-            return new Dimension(count > 3 ? ITEM_WIDTH + 22
-                    : ITEM_WIDTH + 2, offset);
+        if (popupWindow == null) {
+            popupWindow = new JWindow(WindowManager.getDefault().getMainWindow());
         }
+        popupWindow.getContentPane().add(pane);
+        showingPopup = true;
 
-        private int findIndex(Component comp) {
-            Component[] comps = view.getComponents();
-            for (int i = 0; i < comps.length; i++) {
-                if (comps[i] == comp) {
-                    return i;
-                }
-            }
-            return -1;
+        Toolkit.getDefaultToolkit().addAWTEventListener(hideListener, AWTEvent.MOUSE_EVENT_MASK);
+        WindowManager.getDefault().getMainWindow().addWindowStateListener(hideListener);
+        WindowManager.getDefault().getMainWindow().addComponentListener(hideListener);
+        resizePopup();
+        popupWindow.setVisible(true);
+        pane.requestFocus();
+    }
+
+    private void resizePopup() {
+        popupWindow.pack();
+        Point point = new Point(0, 0);
+        SwingUtilities.convertPointToScreen(point, ancestor);
+        Dimension dim = popupWindow.getSize();
+        Rectangle usableRect = Utilities.getUsableScreenBounds();
+        int sepShift = 0;
+        Point loc =
+            new Point(point.x + ancestor.getSize().width - dim.width - sepShift - 5 * 2, point.y - dim.height - 5);
+        if (!usableRect.contains(loc)) {
+            loc = new Point(loc.x, point.y + 5 + ancestor.getSize().height);
         }
+        popupWindow.setLocation(loc);
+    }
+
+    public void hidePopup() {
+        if (popupWindow != null) {
+//            popupWindow.getContentPane().removeAll();
+            popupWindow.setVisible(false);
+        }
+        Toolkit.getDefaultToolkit().removeAWTEventListener(hideListener);
+        WindowManager.getDefault().getMainWindow().removeWindowStateListener(hideListener);
+        WindowManager.getDefault().getMainWindow().removeComponentListener(hideListener);
+        showingPopup = false;
+    }
+
+    public boolean isPopupShown() {
+        return showingPopup;
     }
 
     private static class BottomLineBorder implements Border {
 
-        private Insets ins = new Insets(0, 0, 1, 0);
-        private Color col = new Color(221, 229, 248);
+        private final Insets ins = new Insets(0, 0, 1, 0);
+        private final Color col = new Color(221, 229, 248);
 
         public BottomLineBorder() {
         }
@@ -145,6 +158,43 @@ public class JPopupPane {
             g.setColor(col);
             g.drawRect(x, y + height - 2, width, 1);
             g.setColor(old);
+        }
+    }
+
+    private class JPopupPaneComponent extends JScrollPane {
+
+        static final int ITEM_WIDTH = 400;
+
+        public JPopupPaneComponent() {
+            setName("jpopuppane");
+            GridLayout grid = new GridLayout(0, 1);
+            grid.setHgap(0);
+            grid.setVgap(0);
+            setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            setViewportView(view);
+            setFocusable(true);
+            setRequestFocusEnabled(true);
+            setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            int count = view.getComponentCount();
+            int height = count > 0 ? view.getComponent(0).getPreferredSize().height : 0;
+            int offset = count > 6 ? height * 6 + 5 : (count * height) + 5;
+            // 22 is the width of the additional scrollbar
+            return new Dimension(count > 3 ? ITEM_WIDTH + 22
+                : ITEM_WIDTH + 2, offset);
+        }
+
+        private int findIndex(Component comp) {
+            Component[] comps = view.getComponents();
+            for (int i = 0; i < comps.length; i++) {
+                if (comps[i] == comp) {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 
@@ -175,7 +225,7 @@ public class JPopupPane {
                 int newState = windowEvent.getNewState();
 
                 if (((oldState & Frame.ICONIFIED) == 0) &&
-                        ((newState & Frame.ICONIFIED) == Frame.ICONIFIED)) {
+                    ((newState & Frame.ICONIFIED) == Frame.ICONIFIED)) {
                     hidePopup();
 //                } else if (((oldState & Frame.ICONIFIED) == Frame.ICONIFIED) &&
 //                           ((newState & Frame.ICONIFIED) == 0 )) {
@@ -198,53 +248,6 @@ public class JPopupPane {
                 resizePopup();
             }
         }
-    }
-
-    public void showPopupPane() {
-        if (pane == null) {
-            pane = new JPopupPaneComponent();
-        }
-        if (popupWindow == null) {
-            popupWindow = new JWindow(WindowManager.getDefault().getMainWindow());
-        }
-        popupWindow.getContentPane().add(pane);
-        showingPopup = true;
-
-        Toolkit.getDefaultToolkit().addAWTEventListener(hideListener, AWTEvent.MOUSE_EVENT_MASK);
-        WindowManager.getDefault().getMainWindow().addWindowStateListener(hideListener);
-        WindowManager.getDefault().getMainWindow().addComponentListener(hideListener);
-        resizePopup();
-        popupWindow.setVisible(true);
-        pane.requestFocus();
-    }
-
-    private void resizePopup() {
-        popupWindow.pack();
-        Point point = new Point(0, 0);
-        SwingUtilities.convertPointToScreen(point, ancestor);
-        Dimension dim = popupWindow.getSize();
-        Rectangle usableRect = Utilities.getUsableScreenBounds();
-        int sepShift = 0;
-        Point loc = new Point(point.x + ancestor.getSize().width - dim.width - sepShift - 5 * 2, point.y - dim.height - 5);
-        if (!usableRect.contains(loc)) {
-            loc = new Point(loc.x, point.y + 5 + ancestor.getSize().height);
-        }
-        popupWindow.setLocation(loc);
-    }
-
-    public void hidePopup() {
-        if (popupWindow != null) {
-//            popupWindow.getContentPane().removeAll();
-            popupWindow.setVisible(false);
-        }
-        Toolkit.getDefaultToolkit().removeAWTEventListener(hideListener);
-        WindowManager.getDefault().getMainWindow().removeWindowStateListener(hideListener);
-        WindowManager.getDefault().getMainWindow().removeComponentListener(hideListener);
-        showingPopup = false;
-    }
-
-    public boolean isPopupShown() {
-        return showingPopup;
     }
 }
 

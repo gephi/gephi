@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.api;
 
 import org.gephi.preview.spi.Renderer;
@@ -49,7 +50,7 @@ import org.gephi.project.api.Workspace;
  * <p>
  * This controller is a service and can therefore be found in Lookup:
  * <pre>PreviewController gc = Lookup.getDefault().lookup(PreviewController.class);</pre>
-
+ *
  * @author Yudi Xue, Mathieu Bastian
  * @see PreviewModel
  * @see Item
@@ -63,85 +64,93 @@ public interface PreviewController {
      * This task built all items from <code>ItemBuilder</code> implementations,
      * refresh graph dimensions and call all <code>Renderer.preProcess()</code>
      * method.
+     *
      * @param workspace the workspace to get the preview model from
      */
-    public void refreshPreview(Workspace workspace);
+    void refreshPreview(Workspace workspace);
 
     /**
-     * Refreshes the current preview model. 
+     * Refreshes the current preview model.
      * <p>
      * This task built all items from <code>ItemBuilder</code> implementations,
      * refresh graph dimensions and call all <code>Renderer.preProcess()</code>
      * method.
      */
-    public void refreshPreview();
+    void refreshPreview();
 
     /**
      * Returns the current preview model in the current workspace.
+     *
      * @return the current preview model
      */
-    public PreviewModel getModel();
+    PreviewModel getModel();
 
     /**
      * Returns the preview model in <code>workspace</code>.
+     *
      * @param workspace the workspace to lookup
      * @return the preview model in <code>workspace</code>
      */
-    public PreviewModel getModel(Workspace workspace);
+    PreviewModel getModel(Workspace workspace);
 
     /**
      * Renders the current preview model to <code>target</code>.
      * <p>
      * If preview model <code>managedRenderers</code> is null, this task looks for all <code>Renderer</code> implementations in their default order.
      * Then all items in the preview model are rendered.
+     *
      * @param target the target to render items to
      */
-    public void render(RenderTarget target);
+    void render(RenderTarget target);
 
     /**
      * Renders the preview model in <code>workspace</code> to <code>target</code>.
      * <p>
      * If preview model <code>managedRenderers</code> is null, this task looks for all <code>Renderer</code> implementations in their default order.
      * Then all items in the preview model are rendered.
-     * @param target the target to render items to
+     *
+     * @param target    the target to render items to
      * @param workspace the workspace to get the preview model from
      */
-    public void render(RenderTarget target, Workspace workspace);
-    
+    void render(RenderTarget target, Workspace workspace);
+
     /**
      * Renders the current preview model to <code>target</code>.
      * <p>
      * This task overrides the preview model <code>managedRenderers</code> and uses the given <code>Renderer</code> array, <b>respecting the array order</b>.
      * Then all items in the preview model are rendered.
-     * @param target the target to render items to
+     *
+     * @param target    the target to render items to
      * @param renderers renderers to use
      */
-    public void render(RenderTarget target, Renderer[] renderers);
-    
+    void render(RenderTarget target, Renderer[] renderers);
+
     /**
      * Renders the preview model in <code>workspace</code> to <code>target</code>.
      * <p>
      * This task overrides the preview model <code>managedRenderers</code> and uses the given <code>Renderer</code> array, <b>respecting the array order</b>.
      * Then all items in the preview model are rendered.
-     * @param target the target to render items to
+     *
+     * @param target    the target to render items to
      * @param renderers renderers to use
      * @param workspace the workspace to get the preview model from
      */
-    public void render(RenderTarget target, Renderer[] renderers, Workspace workspace);
+    void render(RenderTarget target, Renderer[] renderers, Workspace workspace);
 
     /**
-     * Creates a new render target of the given type. 
+     * Creates a new render target of the given type.
      * <p>
      * Default render targets names are {@link RenderTarget#G2D_TARGET},
      * {@link RenderTarget#SVG_TARGET} and {@link RenderTarget#PDF_TARGET}.
      * <p>
      * Render targets usually need some parameters when built. Parameters values
      * should simply be put in the <code>PreviewProperties</code>.
+     *
      * @param name the name of the render target
      * @return a new render target or <code>null</code> if <code>name</code> is
      * unknown
      */
-    public RenderTarget getRenderTarget(String name);
+    RenderTarget getRenderTarget(String name);
 
     /**
      * Creates a new render target of the given type in the preview model
@@ -152,38 +161,43 @@ public interface PreviewController {
      * <p>
      * Render targets usually need some parameters when built. Parameters values
      * should simply be put in the <code>PreviewProperties</code>.
-     * @param name the name of the render target
+     *
+     * @param name      the name of the render target
      * @param workspace the workspace to get the preview model from
      * @return a new render target or <code>null</code> if <code>name</code> is
      * unknown
      */
-    public RenderTarget getRenderTarget(String name, Workspace workspace);
-    
+    RenderTarget getRenderTarget(String name, Workspace workspace);
+
     /**
      * Uses <code>Lookup</code> to retrieve registered renderer providers but replaces default renderers with plugins that extend them.
-     * @see Renderer
+     *
      * @return Registered renderers replacing default renderers with their extension plugins in case they exist
+     * @see Renderer
      */
-    public Renderer[] getRegisteredRenderers();
-    
+    Renderer[] getRegisteredRenderers();
+
     /**
      * Returns true if any renderer plugin is registered.
+     *
      * @return True if any plugin renderer is found in the system
      */
-    public boolean isAnyPluginRendererRegistered();
-    
+    boolean isAnyPluginRendererRegistered();
+
     /**
      * Sends a <code>PreviewMouseEvent</code> to the current workspace, if any.
+     *
      * @param event PreviewMouseEvent
      * @return True if the event was consumed, false otherwise
      */
-    public boolean sendMouseEvent(PreviewMouseEvent event);
-    
+    boolean sendMouseEvent(PreviewMouseEvent event);
+
     /**
      * Sends a <code>PreviewMouseEvent</code> to the given workspace.
-     * @param event PreviewMouseEvent
+     *
+     * @param event     PreviewMouseEvent
      * @param workspace workspace
      * @return True if the event was consumed, false otherwise
      */
-    public boolean sendMouseEvent(PreviewMouseEvent event, Workspace workspace);
+    boolean sendMouseEvent(PreviewMouseEvent event, Workspace workspace);
 }

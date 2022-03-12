@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.edges;
 
 import org.gephi.datalab.spi.edges.EdgesManipulator;
@@ -47,10 +48,11 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for CopyEdgeDataToOtherEdges edges manipulator.
+ *
  * @author Eduardo Ramos
  */
-@ServiceProvider(service=EdgesManipulatorBuilder.class)
-public class CopyEdgeDataToOtherEdgesBuilder implements EdgesManipulatorBuilder{
+@ServiceProvider(service = EdgesManipulatorBuilder.class)
+public class CopyEdgeDataToOtherEdgesBuilder implements EdgesManipulatorBuilder {
 
     @Override
     public EdgesManipulator getEdgesManipulator() {

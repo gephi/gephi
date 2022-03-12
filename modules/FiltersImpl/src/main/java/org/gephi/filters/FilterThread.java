@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters;
 
 import java.util.Iterator;
@@ -59,17 +60,16 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class FilterThread extends Thread {
 
     private final FilterModelImpl model;
     private final AtomicReference<AbstractQueryImpl> rootQuery;
-    ConcurrentHashMap<String, PropertyModifier> modifiersMap;
-    private boolean running = true;
     private final Object lock = new Object();
     private final boolean filtering;
+    ConcurrentHashMap<String, PropertyModifier> modifiersMap;
+    private boolean running = true;
 
     public FilterThread(FilterModelImpl model) {
         super("Filter Thread - " + model.getWorkspace().toString());
@@ -98,7 +98,7 @@ public class FilterThread extends Thread {
                 return;
             }
             Query modifiedQuery = null;
-            for (Iterator<PropertyModifier> itr = modifiersMap.values().iterator(); itr.hasNext();) {
+            for (Iterator<PropertyModifier> itr = modifiersMap.values().iterator(); itr.hasNext(); ) {
                 PropertyModifier pm = itr.next();
                 itr.remove();
                 pm.callback.setValue(pm.value);
@@ -146,7 +146,7 @@ public class FilterThread extends Thread {
     private void filter(AbstractQueryImpl query) {
         FilterProcessor processor = new FilterProcessor();
         GraphModel graphModel = model.getGraphModel();
-        Graph result = processor.process((AbstractQueryImpl) query, graphModel);
+        Graph result = processor.process(query, graphModel);
         if (running) {
             GraphView view = result.getView();
             graphModel.setVisibleView(view);
@@ -163,7 +163,7 @@ public class FilterThread extends Thread {
     private void select(AbstractQueryImpl query) {
         FilterProcessor processor = new FilterProcessor();
         GraphModel graphModel = model.getGraphModel();
-        Graph result = processor.process((AbstractQueryImpl) query, graphModel);
+        Graph result = processor.process(query, graphModel);
         if (running) {
             VisualizationController visController = Lookup.getDefault().lookup(VisualizationController.class);
             if (visController != null) {
@@ -179,15 +179,15 @@ public class FilterThread extends Thread {
         }
     }
 
+    public AbstractQueryImpl getRootQuery() {
+        return rootQuery.get();
+    }
+
     public void setRootQuery(AbstractQueryImpl rootQuery) {
         this.rootQuery.set(rootQuery);
         synchronized (this.lock) {
             lock.notify();
         }
-    }
-
-    public AbstractQueryImpl getRootQuery() {
-        return rootQuery.get();
     }
 
     public void setRunning(boolean running) {

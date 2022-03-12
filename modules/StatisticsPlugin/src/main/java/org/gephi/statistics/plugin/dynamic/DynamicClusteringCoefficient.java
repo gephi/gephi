@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin.dynamic;
 
 import java.text.DecimalFormat;
@@ -70,7 +71,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask {
@@ -112,7 +112,10 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
             Table nodeTable = graphModel.getNodeTable();
             dynamicCoefficientColumn = nodeTable.getColumn(DYNAMIC_CLUSTERING_COEFFICIENT);
             if (dynamicCoefficientColumn == null) {
-                dynamicCoefficientColumn = nodeTable.addColumn(DYNAMIC_CLUSTERING_COEFFICIENT, NbBundle.getMessage(DynamicClusteringCoefficient.class, "DynamicClusteringCoefficient.nodecolumn.ClusteringCoefficient"), tr.equals(TimeRepresentation.INTERVAL) ? IntervalDoubleMap.class : TimestampDoubleMap.class, null);
+                dynamicCoefficientColumn = nodeTable.addColumn(DYNAMIC_CLUSTERING_COEFFICIENT, NbBundle
+                        .getMessage(DynamicClusteringCoefficient.class,
+                            "DynamicClusteringCoefficient.nodecolumn.ClusteringCoefficient"),
+                    tr.equals(TimeRepresentation.INTERVAL) ? IntervalDoubleMap.class : TimestampDoubleMap.class, null);
             }
         }
     }
@@ -126,14 +129,14 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
         dataset.addSeries(dSeries);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Clustering Coefficient",
-                "Time",
-                "Average Clustering Coefficient",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "Clustering Coefficient",
+            "Time",
+            "Average Clustering Coefficient",
+            dataset,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
 
         chart.removeLegend();
         ChartUtils.decorateChart(chart);
@@ -143,12 +146,12 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
         NumberFormat f = new DecimalFormat("#0.000000");
 
         String report = "<HTML> <BODY> <h1>Dynamic Clustering Coefficient Report </h1> "
-                + "<hr>"
-                + "<br> Bounds: from " + f.format(bounds.getLow()) + " to " + f.format(bounds.getHigh())
-                + "<br> Window: " + window
-                + "<br> Tick: " + tick
-                + "<br><br><h2> Average clustering cloefficient over time: </h2>"
-                + "<br /><br />" + coefficientImageFile;
+            + "<hr>"
+            + "<br> Bounds: from " + f.format(bounds.getLow()) + " to " + f.format(bounds.getHigh())
+            + "<br> Window: " + window
+            + "<br> Tick: " + tick
+            + "<br><br><h2> Average clustering cloefficient over time: </h2>"
+            + "<br /><br />" + coefficientImageFile;
 
         /*for (Interval<Double> average : averages) {
         report += average.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
@@ -168,7 +171,7 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
         TimeRepresentation tr = graphModel.getConfiguration().getTimeRepresentation();
 
         graph.readLock();
-        
+
         try {
             clusteringCoefficientStat = new ClusteringCoefficient();
             clusteringCoefficientStat.setDirected(isDirected);
@@ -183,7 +186,8 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
 
                     switch (tr) {
                         case INTERVAL:
-                            n.setAttribute(dynamicCoefficientColumn, coef, new Interval(interval.getLow(), interval.getLow() + tick));
+                            n.setAttribute(dynamicCoefficientColumn, coef,
+                                new Interval(interval.getLow(), interval.getLow() + tick));
                             break;
                         case TIMESTAMP:
                             n.setAttribute(dynamicCoefficientColumn, coef, interval.getLow());
@@ -215,8 +219,8 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
     }
 
     @Override
-    public void setBounds(Interval bounds) {
-        this.bounds = bounds;
+    public double getWindow() {
+        return window;
     }
 
     @Override
@@ -225,18 +229,13 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
     }
 
     @Override
-    public void setTick(double tick) {
-        this.tick = tick;
-    }
-
-    @Override
-    public double getWindow() {
-        return window;
-    }
-
-    @Override
     public double getTick() {
         return tick;
+    }
+
+    @Override
+    public void setTick(double tick) {
+        this.tick = tick;
     }
 
     @Override
@@ -244,20 +243,25 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
         return bounds;
     }
 
-    public void setDirected(boolean isDirected) {
-        this.isDirected = isDirected;
+    @Override
+    public void setBounds(Interval bounds) {
+        this.bounds = bounds;
     }
 
     public boolean isDirected() {
         return isDirected;
     }
 
-    public void setAverageOnly(boolean averageOnly) {
-        this.averageOnly = averageOnly;
+    public void setDirected(boolean isDirected) {
+        this.isDirected = isDirected;
     }
 
     public boolean isAverageOnly() {
         return averageOnly;
+    }
+
+    public void setAverageOnly(boolean averageOnly) {
+        this.averageOnly = averageOnly;
     }
 
     @Override

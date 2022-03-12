@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.generator.api;
 
 import org.gephi.io.generator.spi.Generator;
@@ -49,6 +50,7 @@ import org.gephi.io.generator.spi.Generator;
  * <p>
  * This controller is a singleton and can therefore be found in Lookup:
  * <pre>GeneratorController gc = Lookup.getDefault().lookup(GeneratorController.class);</pre>
+ *
  * @author Mathieu Bastian
  * @see Generator
  */
@@ -56,16 +58,18 @@ public interface GeneratorController {
 
     /**
      * Returns generators currently loaded in the system.
-     * @return          generators array that are available
+     *
+     * @return generators array that are available
      */
-    public Generator[] getGenerators();
+    Generator[] getGenerators();
 
     /**
      * Execute a generator task in a background thread.
      * <p>
      * The created elements are appened in the current workspace, or in a new
      * workspace if the project is empty.
+     *
      * @param generator the generator that is to be executed
      */
-    public void generate(Generator generator);
+    void generate(Generator generator);
 }

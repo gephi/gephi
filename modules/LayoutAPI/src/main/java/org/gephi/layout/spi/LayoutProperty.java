@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.spi;
 
 import java.beans.PropertyEditor;
@@ -67,7 +68,138 @@ public final class LayoutProperty {
     }
 
     /**
+     * Create a property.
+     * The parameter <code>propertyName</code> will be used as the canonical name of the <code>LayoutProperty</code>.
+     *
+     * @param layout              The layout instance
+     * @param valueType           The type of the property value, ex: <code>Double.class</code>
+     * @param propertyName        The display name of the property
+     * @param propertyCategory    A category string or <code>null</code> for using
+     *                            default category
+     * @param propertyDescription A description string for the property
+     * @param getMethod           The name of the get method for this property, must exist
+     *                            to make Java reflexion working.
+     * @param setMethod           The name of the set method for this property, must exist
+     *                            to make Java reflexion working.
+     * @return the created property
+     * @throws NoSuchMethodException if the getter or setter methods cannot be found
+     */
+    public static LayoutProperty createProperty(Layout layout, Class valueType, String propertyName,
+                                                String propertyCategory, String propertyDescription, String getMethod,
+                                                String setMethod) throws NoSuchMethodException {
+        Property property = new PropertySupport.Reflection(
+            layout, valueType, getMethod, setMethod);
+
+        property.setName(propertyName);
+        property.setShortDescription(propertyDescription);
+
+        return new LayoutProperty(property, propertyCategory, propertyName);
+    }
+
+    /**
+     * Create a property, with a particular {@link PropertyEditor}. A particular
+     * editor must be specified when the property type don't have a registered
+     * editor class.
+     * The parameter <code>propertyName</code> will be used as the canonical name of the <code>LayoutProperty</code>.
+     *
+     * @param layout              The layout instance
+     * @param valueType           The type of the property value, ex: <code>Double.class</code>
+     * @param propertyName        The display name of the property
+     * @param propertyCategory    A category string or <code>null</code> for using
+     *                            default category
+     * @param propertyDescription A description string for the property
+     * @param getMethod           The name of the get method for this property, must exist
+     *                            to make Java reflexion working.
+     * @param setMethod           The name of the set method for this property, must exist
+     *                            to make Java reflexion working.
+     * @param editorClass         A <code>PropertyEditor</code> class for the given type
+     * @return the created property
+     * @throws NoSuchMethodException if the getter or setter methods cannot be found
+     */
+    public static LayoutProperty createProperty(Layout layout, Class valueType, String propertyName,
+                                                String propertyCategory, String propertyDescription, String getMethod,
+                                                String setMethod, Class<? extends PropertyEditor> editorClass)
+        throws NoSuchMethodException {
+        PropertySupport.Reflection property = new PropertySupport.Reflection(
+            layout, valueType, getMethod, setMethod);
+
+        property.setName(propertyName);
+        property.setShortDescription(propertyDescription);
+        property.setPropertyEditorClass(editorClass);
+
+        return new LayoutProperty(property, propertyCategory, propertyName);
+    }
+
+    /**
+     * Create a property.
+     * The parameter <code>propertyName</code> will be used as the canonical name of the <code>LayoutProperty</code>.
+     *
+     * @param layout                The layout instance
+     * @param valueType             The type of the property value, ex: <code>Double.class</code>
+     * @param propertyName          The display name of the property
+     * @param propertyCategory      A category string or <code>null</code> for using
+     *                              default category
+     * @param propertyCanonicalName Canonical name for the <code>LayoutProperty</code>. It should be unique and not localized
+     * @param propertyDescription   A description string for the property
+     * @param getMethod             The name of the get method for this property, must exist
+     *                              to make Java reflexion working.
+     * @param setMethod             The name of the set method for this property, must exist
+     *                              to make Java reflexion working.
+     * @return the created property
+     * @throws NoSuchMethodException if the getter or setter methods cannot be found
+     */
+    public static LayoutProperty createProperty(Layout layout, Class valueType, String propertyName,
+                                                String propertyCategory, String propertyCanonicalName,
+                                                String propertyDescription, String getMethod, String setMethod)
+        throws NoSuchMethodException {
+        Property property = new PropertySupport.Reflection(
+            layout, valueType, getMethod, setMethod);
+
+        property.setName(propertyName);
+        property.setShortDescription(propertyDescription);
+
+        return new LayoutProperty(property, propertyCategory, propertyCanonicalName);
+    }
+
+    /**
+     * Create a property, with a particular {@link PropertyEditor}. A particular
+     * editor must be specified when the property type don't have a registered
+     * editor class.
+     * The parameter <code>propertyName</code> will be used as the canonical name of the <code>LayoutProperty</code>.
+     *
+     * @param layout                The layout instance
+     * @param valueType             The type of the property value, ex: <code>Double.class</code>
+     * @param propertyName          The display name of the property
+     * @param propertyCategory      A category string or <code>null</code> for using
+     *                              default category
+     * @param propertyCanonicalName Canonical name for the <code>LayoutProperty</code>. It should be unique and not localized
+     * @param propertyDescription   A description string for the property
+     * @param getMethod             The name of the get method for this property, must exist
+     *                              to make Java reflexion working.
+     * @param setMethod             The name of the set method for this property, must exist
+     *                              to make Java reflexion working.
+     * @param editorClass           A <code>PropertyEditor</code> class for the given type
+     * @return the created property
+     * @throws NoSuchMethodException if the getter or setter methods cannot be found
+     */
+    public static LayoutProperty createProperty(Layout layout, Class valueType, String propertyName,
+                                                String propertyCategory, String propertyCanonicalName,
+                                                String propertyDescription, String getMethod, String setMethod,
+                                                Class<? extends PropertyEditor> editorClass)
+        throws NoSuchMethodException {
+        PropertySupport.Reflection property = new PropertySupport.Reflection(
+            layout, valueType, getMethod, setMethod);
+
+        property.setName(propertyName);
+        property.setShortDescription(propertyDescription);
+        property.setPropertyEditorClass(editorClass);
+
+        return new LayoutProperty(property, propertyCategory, propertyCanonicalName);
+    }
+
+    /**
      * Return the underlying <code>Property</code>.
+     *
      * @return the instance of <code>Node.Property</code>
      */
     public Property getProperty() {
@@ -83,119 +215,5 @@ public final class LayoutProperty {
 
     public String getCanonicalName() {
         return canonicalName;
-    }
-
-    /**
-     * Create a property.
-     * The parameter <code>propertyName</code> will be used as the canonical name of the <code>LayoutProperty</code>.
-     * @param layout The layout instance
-     * @param valueType The type of the property value, ex: <code>Double.class</code>
-     * @param propertyName The display name of the property
-     * @param propertyCategory A category string or <code>null</code> for using
-     * default category
-     * @param propertyDescription A description string for the property
-     * @param getMethod The name of the get method for this property, must exist
-     * to make Java reflexion working.
-     * @param setMethod The name of the set method for this property, must exist
-     * to make Java reflexion working.
-     * @return the created property
-     * @throws NoSuchMethodException if the getter or setter methods cannot be found
-     */
-    public static LayoutProperty createProperty(Layout layout, Class valueType, String propertyName, String propertyCategory, String propertyDescription, String getMethod, String setMethod) throws NoSuchMethodException {
-        Property property = new PropertySupport.Reflection(
-                layout, valueType, getMethod, setMethod);
-
-        property.setName(propertyName);
-        property.setShortDescription(propertyDescription);
-
-        return new LayoutProperty(property, propertyCategory, propertyName);
-    }
-
-    /**
-     * Create a property, with a particular {@link PropertyEditor}. A particular
-     * editor must be specified when the property type don't have a registered
-     * editor class.
-     * The parameter <code>propertyName</code> will be used as the canonical name of the <code>LayoutProperty</code>.
-     * @param layout The layout instance
-     * @param valueType The type of the property value, ex: <code>Double.class</code>
-     * @param propertyName The display name of the property
-     * @param propertyCategory A category string or <code>null</code> for using
-     * default category
-     * @param propertyDescription A description string for the property
-     * @param getMethod The name of the get method for this property, must exist
-     * to make Java reflexion working.
-     * @param setMethod The name of the set method for this property, must exist
-     * to make Java reflexion working.
-     * @param editorClass A <code>PropertyEditor</code> class for the given type
-     * @return the created property
-     * @throws NoSuchMethodException if the getter or setter methods cannot be found
-     */
-    public static LayoutProperty createProperty(Layout layout, Class valueType, String propertyName, String propertyCategory, String propertyDescription, String getMethod, String setMethod, Class<? extends PropertyEditor> editorClass) throws NoSuchMethodException {
-        PropertySupport.Reflection property = new PropertySupport.Reflection(
-                layout, valueType, getMethod, setMethod);
-
-        property.setName(propertyName);
-        property.setShortDescription(propertyDescription);
-        property.setPropertyEditorClass(editorClass);
-
-        return new LayoutProperty(property, propertyCategory, propertyName);
-    }
-
-    /**
-     * Create a property.
-     * The parameter <code>propertyName</code> will be used as the canonical name of the <code>LayoutProperty</code>.
-     * @param layout The layout instance
-     * @param valueType The type of the property value, ex: <code>Double.class</code>
-     * @param propertyName The display name of the property
-     * @param propertyCategory A category string or <code>null</code> for using
-     * default category
-     * @param propertyCanonicalName Canonical name for the <code>LayoutProperty</code>. It should be unique and not localized
-     * @param propertyDescription A description string for the property
-     * @param getMethod The name of the get method for this property, must exist
-     * to make Java reflexion working.
-     * @param setMethod The name of the set method for this property, must exist
-     * to make Java reflexion working.
-     * @return the created property
-     * @throws NoSuchMethodException if the getter or setter methods cannot be found
-     */
-    public static LayoutProperty createProperty(Layout layout, Class valueType, String propertyName, String propertyCategory, String propertyCanonicalName, String propertyDescription, String getMethod, String setMethod) throws NoSuchMethodException {
-        Property property = new PropertySupport.Reflection(
-                layout, valueType, getMethod, setMethod);
-
-        property.setName(propertyName);
-        property.setShortDescription(propertyDescription);
-
-        return new LayoutProperty(property, propertyCategory, propertyCanonicalName);
-    }
-
-    /**
-     * Create a property, with a particular {@link PropertyEditor}. A particular
-     * editor must be specified when the property type don't have a registered
-     * editor class.
-     * The parameter <code>propertyName</code> will be used as the canonical name of the <code>LayoutProperty</code>.
-     * @param layout The layout instance
-     * @param valueType The type of the property value, ex: <code>Double.class</code>
-     * @param propertyName The display name of the property
-     * @param propertyCategory A category string or <code>null</code> for using
-     * default category
-     * @param propertyCanonicalName Canonical name for the <code>LayoutProperty</code>. It should be unique and not localized
-     * @param propertyDescription A description string for the property
-     * @param getMethod The name of the get method for this property, must exist
-     * to make Java reflexion working.
-     * @param setMethod The name of the set method for this property, must exist
-     * to make Java reflexion working.
-     * @param editorClass A <code>PropertyEditor</code> class for the given type
-     * @return the created property
-     * @throws NoSuchMethodException if the getter or setter methods cannot be found
-     */
-    public static LayoutProperty createProperty(Layout layout, Class valueType, String propertyName, String propertyCategory, String propertyCanonicalName, String propertyDescription, String getMethod, String setMethod, Class<? extends PropertyEditor> editorClass) throws NoSuchMethodException {
-        PropertySupport.Reflection property = new PropertySupport.Reflection(
-                layout, valueType, getMethod, setMethod);
-
-        property.setName(propertyName);
-        property.setShortDescription(propertyDescription);
-        property.setPropertyEditorClass(editorClass);
-
-        return new LayoutProperty(property, propertyCategory, propertyCanonicalName);
     }
 }

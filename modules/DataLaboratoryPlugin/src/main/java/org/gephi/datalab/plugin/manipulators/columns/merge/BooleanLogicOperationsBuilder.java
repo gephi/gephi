@@ -48,10 +48,11 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Builder for BooleanLogicOperations AttributeColumnsMergeStrategy.
+ *
  * @author Eduardo Ramos
  */
-@ServiceProvider(service=AttributeColumnsMergeStrategyBuilder.class)
-public class BooleanLogicOperationsBuilder implements AttributeColumnsMergeStrategyBuilder{
+@ServiceProvider(service = AttributeColumnsMergeStrategyBuilder.class)
+public class BooleanLogicOperationsBuilder implements AttributeColumnsMergeStrategyBuilder {
 
     @Override
     public AttributeColumnsMergeStrategy getAttributeColumnsMergeStrategy() {

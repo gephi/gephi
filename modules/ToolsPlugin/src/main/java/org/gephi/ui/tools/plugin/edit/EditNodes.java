@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.tools.plugin.edit;
 
 import java.awt.Color;
@@ -69,11 +70,11 @@ import org.openide.util.NbBundle;
  */
 public class EditNodes extends AbstractNode {
 
-    private PropertySet[] propertySets;
     private final Node[] nodes;
     private final boolean multipleNodes;
     private final TimeFormat currentTimeFormat;
     private final DateTimeZone dateTimeZone;
+    private PropertySet[] propertySets;
 
     /**
      * Single node edition mode will always be enabled with this single node
@@ -83,7 +84,7 @@ public class EditNodes extends AbstractNode {
      */
     public EditNodes(Node node) {
         super(Children.LEAF);
-        this.nodes = new Node[]{node};
+        this.nodes = new Node[] {node};
         setName(node.getLabel());
         multipleNodes = false;
 
@@ -114,7 +115,7 @@ public class EditNodes extends AbstractNode {
 
     @Override
     public PropertySet[] getPropertySets() {
-        propertySets = new PropertySet[]{prepareNodesProperties(), prepareNodesAttributes()};
+        propertySets = new PropertySet[] {prepareNodesProperties(), prepareNodesAttributes()};
         return propertySets;
     }
 
@@ -135,7 +136,8 @@ public class EditNodes extends AbstractNode {
             if (nodes.length > 1) {
                 set.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.attributes.text.multiple"));
             } else {
-                set.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.attributes.text", nodes[0].getLabel()));
+                set.setDisplayName(
+                    NbBundle.getMessage(EditNodes.class, "EditNodes.attributes.text", nodes[0].getLabel()));
             }
 
             Node row = nodes[0];
@@ -153,12 +155,13 @@ public class EditNodes extends AbstractNode {
                 if (ac.canChangeColumnData(column)) {
                     //Editable column, provide "set" method:
                     if (propEditor != null && !type.isArray()) {//The type can be edited by default:
-                        p = new PropertySupport.Reflection(wrap, type, "getValue" + type.getSimpleName(), "setValue" + type.getSimpleName());
+                        p = new PropertySupport.Reflection(wrap, type, "getValue" + type.getSimpleName(),
+                            "setValue" + type.getSimpleName());
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", "setValueAsString");
                     }
                 } else //Not editable column, do not provide "set" method:
-                 if (propEditor != null) {//The type can be edited by default:
+                    if (propEditor != null) {//The type can be edited by default:
                         p = new PropertySupport.Reflection(wrap, type, "getValue" + type.getSimpleName(), null);
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", null);
@@ -277,6 +280,36 @@ public class EditNodes extends AbstractNode {
         }
     }
 
+    /**
+     * Used to build property for each position coordinate (x,y,z) in the same
+     * way.
+     *
+     * @return Property for that coordinate
+     */
+    private Property buildGeneralPositionProperty(Node node, String coordinate) throws NoSuchMethodException {
+        //Position:
+        Property p = new PropertySupport.Reflection(node, Float.TYPE, coordinate, "set" + coordinate.toUpperCase());
+        p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.position.text", coordinate));
+        p.setName(coordinate);
+        return p;
+    }
+
+    /**
+     * Used to build property for each position coordinate of various nodes
+     * (x,y,z) in the same way.
+     *
+     * @return Property for that coordinate
+     */
+    private Property buildMultipleNodesGeneralPositionProperty(MultipleNodesPropertiesWrapper nodesWrapper,
+                                                               String coordinate) throws NoSuchMethodException {
+        //Position:
+        Property p = new PropertySupport.Reflection(nodesWrapper, Float.class, "getNodes" + coordinate.toUpperCase(),
+            "setNodes" + coordinate.toUpperCase());
+        p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.position.text", coordinate));
+        p.setName(coordinate);
+        return p;
+    }
+
     public class SingleNodePropertiesWrapper {
 
         private final Node node;
@@ -318,10 +351,6 @@ public class EditNodes extends AbstractNode {
     public class MultipleNodesPropertiesWrapper {
 
         private final Node[] nodes;
-
-        public MultipleNodesPropertiesWrapper(Node[] nodes) {
-            this.nodes = nodes;
-        }
         //Methods and fields for multiple nodes editing:
         private Float nodesX = null;
         private Float nodesY = null;
@@ -331,6 +360,10 @@ public class EditNodes extends AbstractNode {
         private Color labelsColor = null;
         private Float labelsSize = null;
         private Boolean labelsVisible = null;
+
+        public MultipleNodesPropertiesWrapper(Node[] nodes) {
+            this.nodes = nodes;
+        }
 
         public Float getNodesX() {
             return nodesX;
@@ -432,33 +465,5 @@ public class EditNodes extends AbstractNode {
                 textProps.setVisible(visible);
             }
         }
-    }
-
-    /**
-     * Used to build property for each position coordinate (x,y,z) in the same
-     * way.
-     *
-     * @return Property for that coordinate
-     */
-    private Property buildGeneralPositionProperty(Node node, String coordinate) throws NoSuchMethodException {
-        //Position:
-        Property p = new PropertySupport.Reflection(node, Float.TYPE, coordinate, "set" + coordinate.toUpperCase());
-        p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.position.text", coordinate));
-        p.setName(coordinate);
-        return p;
-    }
-
-    /**
-     * Used to build property for each position coordinate of various nodes
-     * (x,y,z) in the same way.
-     *
-     * @return Property for that coordinate
-     */
-    private Property buildMultipleNodesGeneralPositionProperty(MultipleNodesPropertiesWrapper nodesWrapper, String coordinate) throws NoSuchMethodException {
-        //Position:
-        Property p = new PropertySupport.Reflection(nodesWrapper, Float.class, "getNodes" + coordinate.toUpperCase(), "setNodes" + coordinate.toUpperCase());
-        p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.position.text", coordinate));
-        p.setName(coordinate);
-        return p;
     }
 }

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.filters.plugin.dynamic;
 
 import java.awt.event.ActionEvent;
@@ -51,13 +52,15 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class DynamicRangePanel extends javax.swing.JPanel {
 
     private final String OPEN;
     private final String CLOSE;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox keepEmptyCheckbox;
+    private javax.swing.JButton timelineButton;
 
     public DynamicRangePanel() {
         initComponents();
@@ -109,21 +112,21 @@ public class DynamicRangePanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
-        timelineButton.setText(org.openide.util.NbBundle.getMessage(DynamicRangePanel.class, "DynamicRangePanel.timelineButton.text")); // NOI18N
+        timelineButton.setText(org.openide.util.NbBundle
+            .getMessage(DynamicRangePanel.class, "DynamicRangePanel.timelineButton.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         add(timelineButton, gridBagConstraints);
 
-        keepEmptyCheckbox.setText(org.openide.util.NbBundle.getMessage(DynamicRangePanel.class, "DynamicRangePanel.keepEmptyCheckbox.text")); // NOI18N
-        keepEmptyCheckbox.setToolTipText(org.openide.util.NbBundle.getMessage(DynamicRangePanel.class, "DynamicRangePanel.keepEmptyCheckbox.toolTipText")); // NOI18N
+        keepEmptyCheckbox.setText(org.openide.util.NbBundle
+            .getMessage(DynamicRangePanel.class, "DynamicRangePanel.keepEmptyCheckbox.text")); // NOI18N
+        keepEmptyCheckbox.setToolTipText(org.openide.util.NbBundle
+            .getMessage(DynamicRangePanel.class, "DynamicRangePanel.keepEmptyCheckbox.toolTipText")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         add(keepEmptyCheckbox, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox keepEmptyCheckbox;
-    private javax.swing.JButton timelineButton;
     // End of variables declaration//GEN-END:variables
 }

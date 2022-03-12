@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.exporter.preview;
 
 import javax.swing.JPanel;
@@ -50,15 +51,14 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Taras Klaskovsky
  */
 @ServiceProvider(service = ExporterUI.class)
 public class UIExporterPNG implements ExporterUI {
 
+    private final ExporterPNGSettings settings = new ExporterPNGSettings();
     private UIExporterPNGPanel panel;
     private PNGExporter exporter;
-    private ExporterPNGSettings settings = new ExporterPNGSettings();
     private ValidationPanel validationPanel;
 
     @Override
@@ -96,25 +96,28 @@ public class UIExporterPNG implements ExporterUI {
         return NbBundle.getMessage(UIExporterPDF.class, "UIExporterPNG.name");
     }
 
-    private static class ExporterPNGSettings {
+    private static class ExporterPNGSettings extends AbstractExporterSettings {
 
-        private int width = 1024;
-        private int height = 1024;
-        private int margin = 4;
-        private boolean transparentBackground;
+        // Preference names
+        private final static String WIDTH = "PNG_width";
+        private final static String HEIGHT = "PNG_height";
+        private final static String MARGIN = "PNG_margin";
+        private final static String TRANSPARENT_BACKGROUND = "PNG_transparentBackground";
+        // Default
+        private final static PNGExporter DEFAULT = new PNGExporter();
 
         void load(PNGExporter exporter) {
-            exporter.setHeight(height);
-            exporter.setWidth(width);
-            exporter.setMargin(margin);
-            exporter.setTransparentBackground(transparentBackground);
+            exporter.setHeight(get(HEIGHT, DEFAULT.getHeight()));
+            exporter.setWidth(get(WIDTH, DEFAULT.getWidth()));
+            exporter.setMargin(get(MARGIN, DEFAULT.getMargin()));
+            exporter.setTransparentBackground(get(TRANSPARENT_BACKGROUND, DEFAULT.isTransparentBackground()));
         }
 
         void save(PNGExporter exporter) {
-            height = exporter.getHeight();
-            width = exporter.getWidth();
-            margin = exporter.getMargin();
-            transparentBackground = exporter.isTransparentBackground();
+            put(HEIGHT, exporter.getHeight());
+            put(WIDTH, exporter.getWidth());
+            put(MARGIN, exporter.getMargin());
+            put(TRANSPARENT_BACKGROUND, exporter.isTransparentBackground());
         }
     }
 }

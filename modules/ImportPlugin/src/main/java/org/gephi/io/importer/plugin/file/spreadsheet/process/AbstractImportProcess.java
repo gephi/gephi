@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.process;
 
 import java.io.Closeable;
@@ -60,7 +61,6 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public abstract class AbstractImportProcess implements Closeable {
@@ -70,13 +70,13 @@ public abstract class AbstractImportProcess implements Closeable {
     protected final Report report;
     protected final ProgressTicket progressTicket;
     protected final SheetParser parser;
-    protected boolean cancel = false;
-
     protected final Map<String, Integer> specialColumnsIndexMap = new HashMap<>();
     protected final Map<String, Integer> headersIndexMap = new HashMap<>();
     protected final Map<String, Class> headersClassMap = new HashMap<>();
+    protected boolean cancel = false;
 
-    public AbstractImportProcess(SpreadsheetGeneralConfiguration generalConfig, ContainerLoader container, ProgressTicket progressTicket, SheetParser parser) {
+    public AbstractImportProcess(SpreadsheetGeneralConfiguration generalConfig, ContainerLoader container,
+                                 ProgressTicket progressTicket, SheetParser parser) {
         this.generalConfig = generalConfig;
         this.container = container;
         this.progressTicket = progressTicket;
@@ -89,7 +89,8 @@ public abstract class AbstractImportProcess implements Closeable {
 
     public abstract boolean execute();
 
-    protected void setupColumnsIndexesAndFindSpecialColumns(List<String> specialColumnNames, Map<String, Class> columnsClasses) {
+    protected void setupColumnsIndexesAndFindSpecialColumns(List<String> specialColumnNames,
+                                                            Map<String, Class> columnsClasses) {
         Map<String, Integer> headerMap = parser.getHeaderMap();
         Set<String> lowerCaseHeaders = new HashSet<>();
         for (Map.Entry<String, Integer> entry : headerMap.entrySet()) {

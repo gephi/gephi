@@ -39,9 +39,11 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.ui.importer.plugin.spreadsheet.wizard;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import org.gephi.io.importer.plugin.file.spreadsheet.ImporterSpreadsheetCSV;
@@ -55,17 +57,28 @@ import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
 
     private final ImporterSpreadsheetCSV importer;
 
-    private WizardPanel1CSV wizard1;
+    private final WizardPanel1CSV wizard1;
     private ValidationPanel validationPanel;
 
     private boolean initialized = false;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox charsetComboBox;
+    private javax.swing.JLabel charsetLabel;
+    private javax.swing.JLabel filePathLabel;
+    private javax.swing.JComboBox modeComboBox;
+    private javax.swing.JLabel modeLabel;
+    private javax.swing.JTextField pathTextField;
+    private javax.swing.JLabel previewLabel;
+    private javax.swing.JTable previewTable;
+    private javax.swing.JScrollPane scroll;
+    private javax.swing.JComboBox separatorComboBox;
+    private javax.swing.JLabel separatorLabel;
 
     /**
      * Creates new form WizardVisualPanel1CSV
@@ -79,7 +92,8 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
         SeparatorWrapper comma, semicolon, tab, space;
 
         separatorComboBox.addItem(comma = new SeparatorWrapper((','), getMessage("WizardVisualPanel1CSV.comma")));
-        separatorComboBox.addItem(semicolon = new SeparatorWrapper((';'), getMessage("WizardVisualPanel1CSV.semicolon")));
+        separatorComboBox
+            .addItem(semicolon = new SeparatorWrapper((';'), getMessage("WizardVisualPanel1CSV.semicolon")));
         separatorComboBox.addItem(tab = new SeparatorWrapper(('\t'), getMessage("WizardVisualPanel1CSV.tab")));
         separatorComboBox.addItem(space = new SeparatorWrapper((' '), getMessage("WizardVisualPanel1CSV.space")));
 
@@ -120,7 +134,8 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
         if (selectedCharset != null) {
             charsetComboBox.setSelectedItem(selectedCharset.name());
         } else {
-            charsetComboBox.setSelectedItem(Charset.forName("UTF-8").name());//UTF-8 by default, not system default charset
+            charsetComboBox
+                .setSelectedItem(StandardCharsets.UTF_8.name());//UTF-8 by default, not system default charset
         }
 
         //File path:
@@ -129,7 +144,7 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
         pathTextField.setToolTipText(filePath);
 
         initialized = true;
-        
+
         refreshPreviewTable();
     }
 
@@ -150,7 +165,7 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
                 }
                 if (hasRowsMissingSourcesOrTargets()) {
                     prblms.add(NbBundle.getMessage(WizardVisualPanel1CSV.class,
-                            "WizardVisualPanel1CSV.validation.edges.empty-sources-or-targets"
+                        "WizardVisualPanel1CSV.validation.edges.empty-sources-or-targets"
                     ), Severity.WARNING);
                 }
                 return true;
@@ -237,30 +252,6 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
         return scroll;
     }
 
-    class SeparatorWrapper {
-
-        private Character separator;
-        private String displayText;
-
-        public SeparatorWrapper(Character separator) {
-            this.separator = separator;
-        }
-
-        public SeparatorWrapper(Character separator, String displayText) {
-            this.separator = separator;
-            this.displayText = displayText;
-        }
-
-        @Override
-        public String toString() {
-            if (displayText != null) {
-                return displayText;
-            } else {
-                return String.valueOf(separator);
-            }
-        }
-    }
-
     private String getMessage(String resName) {
         return NbBundle.getMessage(WizardVisualPanel1CSV.class, resName);
     }
@@ -284,13 +275,16 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
         charsetLabel = new javax.swing.JLabel();
         charsetComboBox = new javax.swing.JComboBox();
 
-        filePathLabel.setText(org.openide.util.NbBundle.getMessage(WizardVisualPanel1CSV.class, "WizardVisualPanel1CSV.filePathLabel.text")); // NOI18N
+        filePathLabel.setText(org.openide.util.NbBundle
+            .getMessage(WizardVisualPanel1CSV.class, "WizardVisualPanel1CSV.filePathLabel.text")); // NOI18N
 
         pathTextField.setEditable(false);
-        pathTextField.setText(org.openide.util.NbBundle.getMessage(WizardVisualPanel1CSV.class, "WizardVisualPanel1CSV.pathTextField.text")); // NOI18N
+        pathTextField.setText(org.openide.util.NbBundle
+            .getMessage(WizardVisualPanel1CSV.class, "WizardVisualPanel1CSV.pathTextField.text")); // NOI18N
 
         separatorLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        separatorLabel.setText(org.openide.util.NbBundle.getMessage(WizardVisualPanel1CSV.class, "WizardVisualPanel1CSV.separatorLabel.text")); // NOI18N
+        separatorLabel.setText(org.openide.util.NbBundle
+            .getMessage(WizardVisualPanel1CSV.class, "WizardVisualPanel1CSV.separatorLabel.text")); // NOI18N
 
         separatorComboBox.setEditable(true);
         separatorComboBox.addItemListener(new java.awt.event.ItemListener() {
@@ -300,7 +294,8 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
         });
 
         modeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        modeLabel.setText(org.openide.util.NbBundle.getMessage(WizardVisualPanel1CSV.class, "WizardVisualPanel1CSV.modeLabel.text")); // NOI18N
+        modeLabel.setText(org.openide.util.NbBundle
+            .getMessage(WizardVisualPanel1CSV.class, "WizardVisualPanel1CSV.modeLabel.text")); // NOI18N
 
         modeComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -308,13 +303,15 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
             }
         });
 
-        previewLabel.setText(org.openide.util.NbBundle.getMessage(WizardVisualPanel1CSV.class, "WizardVisualPanel1CSV.previewLabel.text")); // NOI18N
+        previewLabel.setText(org.openide.util.NbBundle
+            .getMessage(WizardVisualPanel1CSV.class, "WizardVisualPanel1CSV.previewLabel.text")); // NOI18N
 
         previewTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         scroll.setViewportView(previewTable);
 
         charsetLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        charsetLabel.setText(org.openide.util.NbBundle.getMessage(WizardVisualPanel1CSV.class, "WizardVisualPanel1CSV.charsetLabel.text")); // NOI18N
+        charsetLabel.setText(org.openide.util.NbBundle
+            .getMessage(WizardVisualPanel1CSV.class, "WizardVisualPanel1CSV.charsetLabel.text")); // NOI18N
 
         charsetComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -326,59 +323,68 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(scroll, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
-                    .addComponent(filePathLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(separatorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(separatorComboBox, 0, 90, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(modeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(modeComboBox, 0, 123, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(charsetLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
-                            .addComponent(charsetComboBox, 0, 308, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(previewLabel)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(pathTextField, javax.swing.GroupLayout.Alignment.LEADING))
-                .addContainerGap())
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(scroll, javax.swing.GroupLayout.Alignment.LEADING,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
+                        .addComponent(filePathLabel, javax.swing.GroupLayout.Alignment.LEADING,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(separatorLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(separatorComboBox, 0, 90, Short.MAX_VALUE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(modeLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(modeComboBox, 0, 123, Short.MAX_VALUE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(charsetLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
+                                .addComponent(charsetComboBox, 0, 308, Short.MAX_VALUE)))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(previewLabel)
+                            .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(pathTextField, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(filePathLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(separatorLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(separatorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(modeLabel)
-                            .addComponent(charsetLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(modeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(charsetComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
-                .addComponent(previewLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(filePathLabel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(pathTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(separatorLabel)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(separatorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(modeLabel)
+                                .addComponent(charsetLabel))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(modeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(charsetComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                    javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGap(18, 18, 18)
+                    .addComponent(previewLabel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void separatorComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_separatorComboBoxItemStateChanged
+    private void separatorComboBoxItemStateChanged(
+        java.awt.event.ItemEvent evt) {//GEN-FIRST:event_separatorComboBoxItemStateChanged
         if (initialized) {
             Object item = separatorComboBox.getSelectedItem();
             if (!(item instanceof SeparatorWrapper)) {
@@ -393,30 +399,44 @@ public class WizardVisualPanel1CSV extends AbstractWizardVisualPanel1 {
         }
     }//GEN-LAST:event_separatorComboBoxItemStateChanged
 
-    private void charsetComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_charsetComboBoxItemStateChanged
+    private void charsetComboBoxItemStateChanged(
+        java.awt.event.ItemEvent evt) {//GEN-FIRST:event_charsetComboBoxItemStateChanged
         if (initialized) {
             importer.setCharset(getSelectedCharset());
             refreshPreviewTable();
         }
     }//GEN-LAST:event_charsetComboBoxItemStateChanged
 
-    private void modeComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_modeComboBoxItemStateChanged
+    private void modeComboBoxItemStateChanged(
+        java.awt.event.ItemEvent evt) {//GEN-FIRST:event_modeComboBoxItemStateChanged
         if (initialized) {
             importer.setMode(getSelectedMode());
             refreshPreviewTable();
         }
     }//GEN-LAST:event_modeComboBoxItemStateChanged
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox charsetComboBox;
-    private javax.swing.JLabel charsetLabel;
-    private javax.swing.JLabel filePathLabel;
-    private javax.swing.JComboBox modeComboBox;
-    private javax.swing.JLabel modeLabel;
-    private javax.swing.JTextField pathTextField;
-    private javax.swing.JLabel previewLabel;
-    private javax.swing.JTable previewTable;
-    private javax.swing.JScrollPane scroll;
-    private javax.swing.JComboBox separatorComboBox;
-    private javax.swing.JLabel separatorLabel;
+
+    class SeparatorWrapper {
+
+        private final Character separator;
+        private String displayText;
+
+        public SeparatorWrapper(Character separator) {
+            this.separator = separator;
+        }
+
+        public SeparatorWrapper(Character separator, String displayText) {
+            this.separator = separator;
+            this.displayText = displayText;
+        }
+
+        @Override
+        public String toString() {
+            if (displayText != null) {
+                return displayText;
+            } else {
+                return String.valueOf(separator);
+            }
+        }
+    }
     // End of variables declaration//GEN-END:variables
 }

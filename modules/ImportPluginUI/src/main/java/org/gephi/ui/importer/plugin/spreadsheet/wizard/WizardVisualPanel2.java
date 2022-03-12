@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.ui.importer.plugin.spreadsheet.wizard;
 
 import java.awt.event.ActionEvent;
@@ -59,19 +60,18 @@ import org.gephi.ui.utils.SupportedColumnTypeWrapper;
 import org.gephi.ui.utils.TimeRepresentationWrapper;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
-import org.openide.util.NbPreferences;
 
 public final class WizardVisualPanel2 extends JPanel {
 
     private static final String ASSIGN_NEW_NODES_IDS_SAVED_PREFERENCES = "WizardVisualPanel2_assign_new_nodes_ids";
     private static final String CREATE_NEW_NODES_SAVED_PREFERENCES = "WizardVisualPanel2_create_new_nodes";
     private final WizardPanel2 wizard2;
-
-    private JComboBox timeRepresentationComboBox = new JComboBox();
     private final ArrayList<JCheckBox> columnsCheckBoxes = new ArrayList<>();
     private final ArrayList<JComboBox> columnsComboBoxes = new ArrayList<>();
-
     private final AbstractImporterSpreadsheet importer;
+    private JComboBox timeRepresentationComboBox = new JComboBox();
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane scroll;
 
     /**
      * Creates new form WizardVisualPanel2
@@ -135,7 +135,8 @@ public final class WizardVisualPanel2 extends JPanel {
 
                 JCheckBox columnCheckBox = new JCheckBox(header, true);
 
-                if (importer.getMode() == Mode.EDGES_TABLE && (header.equalsIgnoreCase("source") || header.equalsIgnoreCase("target"))) {
+                if (importer.getMode() == Mode.EDGES_TABLE &&
+                    (header.equalsIgnoreCase("source") || header.equalsIgnoreCase("target"))) {
                     columnCheckBox.setEnabled(false);
                 }
 
@@ -163,7 +164,8 @@ public final class WizardVisualPanel2 extends JPanel {
 
     private void fillComboBoxWithColumnTypes(String column, JComboBox comboBox) {
         comboBox.removeAllItems();
-        List<SupportedColumnTypeWrapper> supportedTypesWrappers = SupportedColumnTypeWrapper.buildOrderedSupportedTypesList(importer.getTimeRepresentation());
+        List<SupportedColumnTypeWrapper> supportedTypesWrappers =
+            SupportedColumnTypeWrapper.buildOrderedSupportedTypesList(importer.getTimeRepresentation());
 
         for (SupportedColumnTypeWrapper supportedColumnTypeWrapper : supportedTypesWrappers) {
             comboBox.addItem(supportedColumnTypeWrapper);
@@ -213,7 +215,7 @@ public final class WizardVisualPanel2 extends JPanel {
         }
         return types.toArray(new Class[0]);
     }
-    
+
     @Override
     public String getName() {
         return NbBundle.getMessage(WizardVisualPanel2.class, "WizardVisualPanel2.name");
@@ -235,14 +237,12 @@ public final class WizardVisualPanel2 extends JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane scroll;
     // End of variables declaration//GEN-END:variables
 }

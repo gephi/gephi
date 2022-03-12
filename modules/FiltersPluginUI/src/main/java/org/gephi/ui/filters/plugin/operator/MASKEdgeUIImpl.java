@@ -48,7 +48,6 @@ import org.gephi.filters.plugin.operator.MASKEdgeUI;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = MASKEdgeUI.class)

@@ -39,41 +39,41 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.preview.api;
 
 import java.beans.PropertyChangeListener;
 import org.gephi.preview.api.PreviewPreset;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface PreviewUIController {
 
     //Property
-    public static final String SELECT = "select";
-    public static final String UNSELECT = "unselect";
-    public static final String REFRESHED = "refreshed";
-    public static final String REFRESHING = "refreshing";
-    public static final String GRAPH_CHANGED = "graph_changed";
+    String SELECT = "select";
+    String UNSELECT = "unselect";
+    String REFRESHED = "refreshed";
+    String REFRESHING = "refreshing";
+    String GRAPH_CHANGED = "graph_changed";
 
-    public void refreshPreview();
+    void refreshPreview();
 
-    public void setCurrentPreset(PreviewPreset preset);
+    void setCurrentPreset(PreviewPreset preset);
 
-    public void setVisibilityRatio(float visibilityRatio);
+    void setVisibilityRatio(float visibilityRatio);
 
-    public PreviewPreset[] getDefaultPresets();
+    PreviewPreset[] getDefaultPresets();
 
-    public PreviewPreset[] getUserPresets();
+    PreviewPreset[] getUserPresets();
 
-    public void addPreset(PreviewPreset preset);
+    void addPreset(PreviewPreset preset);
 
-    public void savePreset(String name);
+    void savePreset(String name);
 
-    public PreviewUIModel getModel();
+    PreviewUIModel getModel();
 
-    public void addPropertyChangeListener(PropertyChangeListener listener);
+    void addPropertyChangeListener(PropertyChangeListener listener);
 
-    public void removePropertyChangeListener(PropertyChangeListener listener);
+    void removePropertyChangeListener(PropertyChangeListener listener);
 }

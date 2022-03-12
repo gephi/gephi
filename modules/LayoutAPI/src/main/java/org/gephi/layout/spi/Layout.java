@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.layout.spi;
 
 import org.gephi.graph.api.GraphModel;
@@ -62,48 +63,52 @@ public interface Layout {
     /**
      * initAlgo() is called to initialize the algorithm (prepare to run).
      */
-    public void initAlgo();
+    void initAlgo();
 
     /**
      * Injects the graph model for the graph this Layout should operate on.
      * <p>
      * It's preferable to get <b>visible</b> graph to perform on visualization.
-     * @param graphModel    the graph model that the layout is to be working on
+     *
+     * @param graphModel the graph model that the layout is to be working on
      */
-    public void setGraphModel(GraphModel graphModel);
+    void setGraphModel(GraphModel graphModel);
 
     /**
      * Run a step in the algorithm, should be called only if canAlgo() returns
      * true.
      */
-    public void goAlgo();
+    void goAlgo();
 
     /**
      * Tests if the algorithm can run, called before each pass.
-     * @return              <code>true</code> if the algorithm can run, <code>
-     *                      false</code> otherwise
+     *
+     * @return <code>true</code> if the algorithm can run, <code>
+     * false</code> otherwise
      */
-    public boolean canAlgo();
+    boolean canAlgo();
 
     /**
      * Called when the algorithm is finished (canAlgo() returns false).
      */
-    public void endAlgo();
+    void endAlgo();
 
     /**
      * The properties for this layout.
-     * @return              the layout properties
+     *
+     * @return the layout properties
      */
-    public LayoutProperty[] getProperties();
+    LayoutProperty[] getProperties();
 
     /**
      * Resets the properties values to the default values.
      */
-    public void resetPropertiesValues();
+    void resetPropertiesValues();
 
     /**
      * The reference to the LayoutBuilder that instanciated this Layout.
-     * @return              the reference to the builder that builts this instance
+     *
+     * @return the reference to the builder that builts this instance
      */
-    public LayoutBuilder getBuilder();
+    LayoutBuilder getBuilder();
 }

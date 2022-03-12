@@ -40,6 +40,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.statistics.api;
 
 import org.gephi.project.api.Workspace;
@@ -53,7 +54,7 @@ import org.gephi.utils.longtask.spi.LongTask;
  * <p>
  * This controller is a service and can therefore be found in Lookup:
  * <pre>StatisticsController sc = Lookup.getDefault().lookup(StatisticsController.class);</pre>
- * 
+ *
  * @author Patrick J. McSweeney, Mathieu Bastian
  * @see StatisticsBuilder
  */
@@ -63,38 +64,43 @@ public interface StatisticsController {
      * Execute the statistics algorithm in a background thread and notify
      * <code>listener</code> when finished. The <code>statistics</code> should
      * implement {@link LongTask}.
-     * @param statistics    the statistics algorithm instance
-     * @param listener      a listener that is notified when execution finished
+     *
+     * @param statistics the statistics algorithm instance
+     * @param listener   a listener that is notified when execution finished
      * @throws IllegalArgumentException if <code>statistics</code> doesn't
-     * implement {@link LongTask}
+     *                                  implement {@link LongTask}
      */
-    public void execute(Statistics statistics, LongTaskListener listener);
+    void execute(Statistics statistics, LongTaskListener listener);
 
     /**
      * Executes <code>statistics</code> in the current thread.
-     * @param statistics    the statistics to execute
+     *
+     * @param statistics the statistics to execute
      */
-    public void execute(Statistics statistics);
-    
+    void execute(Statistics statistics);
+
     /**
      * Finds the builder from the statistics class.
-     * @param statistics    the statistics class
-     * @return              the builder, or <code>null</code> if not found
+     *
+     * @param statistics the statistics class
+     * @return the builder, or <code>null</code> if not found
      */
-    public StatisticsBuilder getBuilder(Class<? extends Statistics> statistics);
+    StatisticsBuilder getBuilder(Class<? extends Statistics> statistics);
 
     /**
      * Returns the current <code>StatisticsModel</code>, from the current
      * workspace
-     * @return              the current <code>StatisticsModel</code>
+     *
+     * @return the current <code>StatisticsModel</code>
      */
-    public StatisticsModel getModel();
-    
+    StatisticsModel getModel();
+
     /**
      * Returns the <code>StatisticsModel</code> for <code>workspace</code>
-     * @param               workspace the workspace to return the model for
-     * @return              the <code>StatisticsModel</code> associated to
-     *                      <code>workspace</code>
+     *
+     * @param workspace the workspace to return the model for
+     * @return the <code>StatisticsModel</code> associated to
+     * <code>workspace</code>
      */
-    public StatisticsModel getModel(Workspace workspace);
+    StatisticsModel getModel(Workspace workspace);
 }

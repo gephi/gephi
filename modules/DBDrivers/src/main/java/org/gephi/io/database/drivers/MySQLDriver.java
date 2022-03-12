@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.database.drivers;
 
 import java.sql.Connection;
@@ -49,7 +50,6 @@ import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = SQLDriver.class, position = 10)

@@ -39,27 +39,30 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.exporter.spi;
 
 /**
  * Exporter interface for exporters that export the graph, either complete or
  * filtered (i.e. visible graph).
- * 
+ *
  * @author Mathieu Bastian
  */
 public interface GraphExporter extends Exporter {
 
     /**
-     * Sets if only the visible graph has to be exported. If <code>false</code>,
-     * the complete graph is exported.
-     * @param exportVisible the export visible parameter value
+     * Returns <code>true</code> if only the visible graph has to be exported.
+     *
+     * @return <code>true</code> if only the visible graph has to be exported,
+     * <code>false</code> for the complete graph.
      */
-    public void setExportVisible(boolean exportVisible);
+    boolean isExportVisible();
 
     /**
-     * Returns <code>true</code> if only the visible graph has to be exported.
-     * @return  <code>true</code> if only the visible graph has to be exported,
-     *          <code>false</code> for the complete graph.
+     * Sets if only the visible graph has to be exported. If <code>false</code>,
+     * the complete graph is exported.
+     *
+     * @param exportVisible the export visible parameter value
      */
-    public boolean isExportVisible();
+    void setExportVisible(boolean exportVisible);
 }

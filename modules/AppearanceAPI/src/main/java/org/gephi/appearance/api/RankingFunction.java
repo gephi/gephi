@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
 /**
@@ -51,14 +52,7 @@ public interface RankingFunction extends Function {
      *
      * @return ranking
      */
-    public Ranking getRanking();
-
-    /**
-     * Sets the interpolator for this function.
-     *
-     * @param interpolator interpolator
-     */
-    public void setInterpolator(Interpolator interpolator);
+    Ranking getRanking();
 
     /**
      * Returns the interpolator.
@@ -68,5 +62,12 @@ public interface RankingFunction extends Function {
      *
      * @return interpolator
      */
-    public Interpolator getInterpolator();
+    Interpolator getInterpolator();
+
+    /**
+     * Sets the interpolator for this function.
+     *
+     * @param interpolator interpolator
+     */
+    void setInterpolator(Interpolator interpolator);
 }

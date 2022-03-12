@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.io.export;
 
 import org.gephi.io.exporter.api.ExportController;
@@ -55,7 +56,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ExportControllerUI.class)
@@ -88,14 +88,17 @@ public class DesktopExportController implements ExportControllerUI {
             task = (LongTask) exporter;
         }
 
-        String taskmsg = NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.exportTaskName", fileObject.getNameExt());
+        String taskmsg = NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.exportTaskName",
+            fileObject.getNameExt());
         executor.execute(task, new Runnable() {
 
             @Override
             public void run() {
                 try {
                     controller.exportFile(FileUtil.toFile(fileObject), exporter);
-                    StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.status.exportSuccess", fileObject.getNameExt()));
+                    StatusDisplayer.getDefault().setStatusText(NbBundle
+                        .getMessage(DesktopExportController.class, "DesktopExportController.status.exportSuccess",
+                            fileObject.getNameExt()));
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }

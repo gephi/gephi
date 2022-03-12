@@ -53,90 +53,86 @@ import java.util.logging.Logger;
  *
  * @author Mathieu Bastian
  */
-public class DialogFileFilter extends javax.swing.filechooser.FileFilter
-{
+public class DialogFileFilter extends javax.swing.filechooser.FileFilter {
 
-	private String description;
-	private List<String> extensions;
+    private String description;
+    private final List<String> extensions;
 
-	public DialogFileFilter(String description)
-	{
-		if(description == null)
-		{
-			Logger.getLogger(DialogFileFilter.class.getName()).throwing(getClass().getName(), "constructor", new NullPointerException("Description cannot be null."));
-		}
-		this.description = description;
-		this.extensions = new ArrayList<>();
-	}
+    public DialogFileFilter(String description) {
+        if (description == null) {
+            Logger.getLogger(DialogFileFilter.class.getName())
+                .throwing(getClass().getName(), "constructor", new NullPointerException("Description cannot be null."));
+        }
+        this.description = description;
+        this.extensions = new ArrayList<>();
+    }
 
-	@Override
-	public boolean accept(File file)
-	{
-		if(file.isDirectory() || extensions.isEmpty()) {
-			return true;
-		}
-		String fileName = file.getName().toLowerCase();
-		for(String extension : extensions){
-			if(fileName.endsWith(extension)){
-				return true;
-			}
-		}
-		return false;
-	}
-	@Override
-	public String getDescription(){
-		StringBuffer buffer = new StringBuffer(description);
-		buffer.append(" (");
-		for(String extension : extensions){
-			buffer.append("*"+extension).append(" ");
-		}
-		buffer.deleteCharAt(buffer.length()-1);
-		return buffer.append(")").toString();
-	}
+    @Override
+    public boolean accept(File file) {
+        if (file.isDirectory() || extensions.isEmpty()) {
+            return true;
+        }
+        String fileName = file.getName().toLowerCase();
+        for (String extension : extensions) {
+            if (fileName.endsWith(extension)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String getDescription() {
+        StringBuffer buffer = new StringBuffer(description);
+        buffer.append(" (");
+        for (String extension : extensions) {
+            buffer.append("*" + extension).append(" ");
+        }
+        buffer.deleteCharAt(buffer.length() - 1);
+        return buffer.append(")").toString();
+    }
 
 
-	public void setDescription(String description){
-		if(description == null)
-		{
-            Logger.getLogger(DialogFileFilter.class.getName()).throwing(getClass().getName(), "setDescription", new NullPointerException("Description cannot be null."));
-		}
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        if (description == null) {
+            Logger.getLogger(DialogFileFilter.class.getName()).throwing(getClass().getName(), "setDescription",
+                new NullPointerException("Description cannot be null."));
+        }
+        this.description = description;
+    }
 
 
-	public void addExtension(String extension){
-		if(extension == null)
-		{
-            Logger.getLogger(DialogFileFilter.class.getName()).throwing(getClass().getName(), "addExtension", new NullPointerException("Description cannot be null."));
-		}
-		extensions.add(extension);
-	}
+    public void addExtension(String extension) {
+        if (extension == null) {
+            Logger.getLogger(DialogFileFilter.class.getName()).throwing(getClass().getName(), "addExtension",
+                new NullPointerException("Description cannot be null."));
+        }
+        extensions.add(extension);
+    }
 
-    public void addExtensions(String[] extension){
-		if(extension == null)
-		{
-            Logger.getLogger(DialogFileFilter.class.getName()).throwing(getClass().getName(), "addExtensions", new NullPointerException("Description cannot be null."));
-		}
-		for(int i=0;i<extension.length;i++)
-        {
+    public void addExtensions(String[] extension) {
+        if (extension == null) {
+            Logger.getLogger(DialogFileFilter.class.getName()).throwing(getClass().getName(), "addExtensions",
+                new NullPointerException("Description cannot be null."));
+        }
+        for (int i = 0; i < extension.length; i++) {
             extensions.add(extension[i]);
         }
-	}
+    }
 
-	public void removeExtension(String extension)
-	{
-		extensions.remove(extension);
-	}
-
-
-	public void clearExtensions(){
-		extensions.clear();
-	}
+    public void removeExtension(String extension) {
+        extensions.remove(extension);
+    }
 
 
-	public List<String> getExtensions(){
-		return extensions;
-	}
+    public void clearExtensions() {
+        extensions.clear();
+    }
+
+
+    public List<String> getExtensions() {
+        return extensions;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -153,10 +149,7 @@ public class DialogFileFilter extends javax.swing.filechooser.FileFilter
         if (!Objects.equals(this.description, other.description)) {
             return false;
         }
-        if (!Objects.equals(this.extensions, other.extensions)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.extensions, other.extensions);
     }
 
     @Override

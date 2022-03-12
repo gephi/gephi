@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.operator;
 
 import java.util.ArrayList;
@@ -62,7 +63,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = FilterBuilder.class)
@@ -108,11 +108,6 @@ public class MASKBuilderEdge implements FilterBuilder {
 
     public static class MaskEdgeOperator implements Operator {
 
-        public enum EdgesOptions {
-
-            SOURCE, TARGET, ANY, BOTH
-        }
-
         private EdgesOptions option = EdgesOptions.ANY;
         private FilterProperty[] filterProperties;
 
@@ -131,7 +126,7 @@ public class MASKBuilderEdge implements FilterBuilder {
             if (filterProperties == null) {
                 filterProperties = new FilterProperty[0];
                 try {
-                    filterProperties = new FilterProperty[]{
+                    filterProperties = new FilterProperty[] {
                         FilterProperty.createProperty(this, String.class, "option")
                     };
                 } catch (Exception ex) {
@@ -147,7 +142,7 @@ public class MASKBuilderEdge implements FilterBuilder {
                 throw new IllegalArgumentException("Filter accepts a single graph in parameter");
             }
 
-            Graph graph = (Graph) graphs[0];
+            Graph graph = graphs[0];
             Graph mainGraph = graph.getView().getGraphModel().getGraph();
 
             List<Edge> edgesToKeep = new ArrayList<>();
@@ -230,6 +225,11 @@ public class MASKBuilderEdge implements FilterBuilder {
 
         public void setOption(String option) {
             this.option = EdgesOptions.valueOf(option);
+        }
+
+        public enum EdgesOptions {
+
+            SOURCE, TARGET, ANY, BOTH
         }
     }
 }

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file;
 
 import java.awt.Color;
@@ -70,13 +71,6 @@ public class ImporterDOT implements FileImporter, LongTask {
     private boolean cancel = false;
     //Data
     private String graphName = "";
-
-    private static class ParseException extends RuntimeException {
-
-        public ParseException() {
-            super("Parse error while parsing DOT file");
-        }
-    }
 
     @Override
     public boolean execute(ContainerLoader container) {
@@ -131,9 +125,12 @@ public class ImporterDOT implements FileImporter, LongTask {
         boolean found = false;
         while (streamTokenizer.nextToken() != StreamTokenizer.TT_EOF) {
             if (streamTokenizer.ttype == StreamTokenizer.TT_WORD) {
-                if (streamTokenizer.sval.equalsIgnoreCase("digraph") || streamTokenizer.sval.equalsIgnoreCase("graph")) {
+                if (streamTokenizer.sval.equalsIgnoreCase("digraph") ||
+                    streamTokenizer.sval.equalsIgnoreCase("graph")) {
                     found = true;
-                    container.setEdgeDefault(streamTokenizer.sval.equalsIgnoreCase("digraph") ? EdgeDirectionDefault.DIRECTED : EdgeDirectionDefault.UNDIRECTED);
+                    container.setEdgeDefault(
+                        streamTokenizer.sval.equalsIgnoreCase("digraph") ? EdgeDirectionDefault.DIRECTED :
+                            EdgeDirectionDefault.UNDIRECTED);
                     streamTokenizer.nextToken();
                     if (streamTokenizer.ttype == StreamTokenizer.TT_WORD) {
                         graphName = streamTokenizer.sval;
@@ -151,7 +148,8 @@ public class ImporterDOT implements FileImporter, LongTask {
             }
         }
         if (!found) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_nothingfound"), Issue.Level.SEVERE));
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_nothingfound"),
+                Issue.Level.SEVERE));
         }
     }
 
@@ -165,8 +163,9 @@ public class ImporterDOT implements FileImporter, LongTask {
     protected void stmt(StreamTokenizerWithMultilineLiterals streamTokenizer) throws Exception {
         //tk.nextToken();
 
-        if (streamTokenizer.sval == null || streamTokenizer.sval.equalsIgnoreCase("graph") || streamTokenizer.sval.equalsIgnoreCase("node")
-                || streamTokenizer.sval.equalsIgnoreCase("edge")) {
+        if (streamTokenizer.sval == null || streamTokenizer.sval.equalsIgnoreCase("graph") ||
+            streamTokenizer.sval.equalsIgnoreCase("node")
+            || streamTokenizer.sval.equalsIgnoreCase("edge")) {
         } else {
             String nodeId = nodeID(streamTokenizer);
             streamTokenizer.nextToken();
@@ -185,8 +184,9 @@ public class ImporterDOT implements FileImporter, LongTask {
     }
 
     protected String nodeID(StreamTokenizerWithMultilineLiterals streamTokenizer) {
-        if (streamTokenizer.ttype == '"' || streamTokenizer.ttype == StreamTokenizer.TT_WORD || (streamTokenizer.ttype >= 'a' && streamTokenizer.ttype <= 'z')
-                || (streamTokenizer.ttype >= 'A' && streamTokenizer.ttype <= 'Z')) {
+        if (streamTokenizer.ttype == '"' || streamTokenizer.ttype == StreamTokenizer.TT_WORD ||
+            (streamTokenizer.ttype >= 'a' && streamTokenizer.ttype <= 'z')
+            || (streamTokenizer.ttype >= 'A' && streamTokenizer.ttype <= 'Z')) {
             return streamTokenizer.sval;
         } else {
             return null;
@@ -222,11 +222,13 @@ public class ImporterDOT implements FileImporter, LongTask {
                 throw new ParseException();
             }
 
-            return Color.getHSBColor(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2]));
+            return Color
+                .getHSBColor(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2]));
         }
     }
 
-    protected void nodeAttributes(StreamTokenizerWithMultilineLiterals streamTokenizer, final NodeDraft nodeDraft) throws Exception {
+    protected void nodeAttributes(StreamTokenizerWithMultilineLiterals streamTokenizer, final NodeDraft nodeDraft)
+        throws Exception {
         streamTokenizer.nextToken();
 
         if (streamTokenizer.ttype == ']' || streamTokenizer.ttype == StreamTokenizer.TT_EOF) {
@@ -240,11 +242,15 @@ public class ImporterDOT implements FileImporter, LongTask {
                     if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
                         nodeDraft.setLabel(streamTokenizer.sval);
                     } else {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_labelunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                        report.logIssue(new Issue(NbBundle
+                            .getMessage(ImporterDOT.class, "importerDOT_error_labelunreachable",
+                                streamTokenizer.lineno()), Issue.Level.WARNING));
                         streamTokenizer.pushBack();
                     }
                 } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_labelunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle
+                        .getMessage(ImporterDOT.class, "importerDOT_error_labelunreachable", streamTokenizer.lineno()),
+                        Issue.Level.WARNING));
                     streamTokenizer.pushBack();
                 }
             } else if (streamTokenizer.sval.equalsIgnoreCase("color")) {
@@ -254,11 +260,15 @@ public class ImporterDOT implements FileImporter, LongTask {
                     try {
                         nodeDraft.setColor(parseColor(streamTokenizer));
                     } catch (ParseException e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_colorunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                        report.logIssue(new Issue(NbBundle
+                            .getMessage(ImporterDOT.class, "importerDOT_error_colorunreachable",
+                                streamTokenizer.lineno()), Issue.Level.WARNING));
                         streamTokenizer.pushBack();
                     }
                 } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_colorunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle
+                        .getMessage(ImporterDOT.class, "importerDOT_error_colorunreachable", streamTokenizer.lineno()),
+                        Issue.Level.WARNING));
                     streamTokenizer.pushBack();
                 }
             } else if (streamTokenizer.sval.equalsIgnoreCase("pos")) {
@@ -279,11 +289,15 @@ public class ImporterDOT implements FileImporter, LongTask {
                         } catch (Exception e) {
                         }
                     } else {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_posunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                        report.logIssue(new Issue(NbBundle
+                            .getMessage(ImporterDOT.class, "importerDOT_error_posunreachable",
+                                streamTokenizer.lineno()), Issue.Level.WARNING));
                         streamTokenizer.pushBack();
                     }
                 } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_posunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle
+                        .getMessage(ImporterDOT.class, "importerDOT_error_posunreachable", streamTokenizer.lineno()),
+                        Issue.Level.WARNING));
                     streamTokenizer.pushBack();
                 }
             } else if (streamTokenizer.sval.equalsIgnoreCase("style")) {
@@ -321,7 +335,8 @@ public class ImporterDOT implements FileImporter, LongTask {
         nodeAttributes(streamTokenizer, nodeDraft);
     }
 
-    protected void edgeStructure(StreamTokenizerWithMultilineLiterals streamTokenizer, final NodeDraft nodeDraft) throws Exception {
+    protected void edgeStructure(StreamTokenizerWithMultilineLiterals streamTokenizer, final NodeDraft nodeDraft)
+        throws Exception {
         streamTokenizer.nextToken();
 
         EdgeDraft edge = null;
@@ -348,7 +363,9 @@ public class ImporterDOT implements FileImporter, LongTask {
                 container.addEdge(edge);
             }
         } else {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_edgeparsing", streamTokenizer.lineno()), Issue.Level.SEVERE));
+            report.logIssue(new Issue(
+                NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_edgeparsing", streamTokenizer.lineno()),
+                Issue.Level.SEVERE));
             if (streamTokenizer.ttype == StreamTokenizer.TT_WORD) {
                 streamTokenizer.pushBack();
             }
@@ -364,7 +381,8 @@ public class ImporterDOT implements FileImporter, LongTask {
         }
     }
 
-    protected void edgeAttributes(StreamTokenizerWithMultilineLiterals streamTokenizer, final EdgeDraft edge) throws Exception {
+    protected void edgeAttributes(StreamTokenizerWithMultilineLiterals streamTokenizer, final EdgeDraft edge)
+        throws Exception {
         streamTokenizer.nextToken();
 
         if (streamTokenizer.ttype == ']' || streamTokenizer.ttype == StreamTokenizer.TT_EOF) {
@@ -377,11 +395,15 @@ public class ImporterDOT implements FileImporter, LongTask {
                     if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
                         edge.setLabel(streamTokenizer.sval);
                     } else {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_labelunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                        report.logIssue(new Issue(NbBundle
+                            .getMessage(ImporterDOT.class, "importerDOT_error_labelunreachable",
+                                streamTokenizer.lineno()), Issue.Level.WARNING));
                         streamTokenizer.pushBack();
                     }
                 } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_labelunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle
+                        .getMessage(ImporterDOT.class, "importerDOT_error_labelunreachable", streamTokenizer.lineno()),
+                        Issue.Level.WARNING));
                     streamTokenizer.pushBack();
                 }
             } else if (streamTokenizer.sval.equalsIgnoreCase("color")) {
@@ -391,18 +413,23 @@ public class ImporterDOT implements FileImporter, LongTask {
                     try {
                         edge.setColor(parseColor(streamTokenizer));
                     } catch (ParseException e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_colorunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                        report.logIssue(new Issue(NbBundle
+                            .getMessage(ImporterDOT.class, "importerDOT_error_colorunreachable",
+                                streamTokenizer.lineno()), Issue.Level.WARNING));
                         streamTokenizer.pushBack();
                     }
                 } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_color_labelunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle
+                        .getMessage(ImporterDOT.class, "importerDOT_color_labelunreachable", streamTokenizer.lineno()),
+                        Issue.Level.WARNING));
                     streamTokenizer.pushBack();
                 }
             } else if (streamTokenizer.sval.equalsIgnoreCase("style")) {
                 streamTokenizer.nextToken();
                 if (streamTokenizer.ttype == '=') {
                     streamTokenizer.nextToken();
-                    if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"'); else {
+                    if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
+                    } else {
                         //System.err.println("couldn't find style at line " + streamTokenizer.lineno());
                         streamTokenizer.pushBack();
                     }
@@ -419,14 +446,20 @@ public class ImporterDOT implements FileImporter, LongTask {
                             Float weight = Float.parseFloat(streamTokenizer.sval);
                             edge.setWeight(weight);
                         } catch (Exception e) {
-                            report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_weightunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                            report.logIssue(new Issue(NbBundle
+                                .getMessage(ImporterDOT.class, "importerDOT_error_weightunreachable",
+                                    streamTokenizer.lineno()), Issue.Level.WARNING));
                         }
                     } else {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_weightunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                        report.logIssue(new Issue(NbBundle
+                            .getMessage(ImporterDOT.class, "importerDOT_error_weightunreachable",
+                                streamTokenizer.lineno()), Issue.Level.WARNING));
                         streamTokenizer.pushBack();
                     }
                 } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_weightunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle
+                        .getMessage(ImporterDOT.class, "importerDOT_error_weightunreachable", streamTokenizer.lineno()),
+                        Issue.Level.WARNING));
                     streamTokenizer.pushBack();
                 }
             }
@@ -458,5 +491,12 @@ public class ImporterDOT implements FileImporter, LongTask {
     @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
+    }
+
+    private static class ParseException extends RuntimeException {
+
+        public ParseException() {
+            super("Parse error while parsing DOT file");
+        }
     }
 }

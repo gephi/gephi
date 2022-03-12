@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.general.ui;
 
 import javax.swing.JComboBox;
@@ -65,6 +66,17 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
     private Node[] nodes;
     private Graph graph;
     private Workspace workspace;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JRadioButton directedRadioButton;
+    private javax.swing.ButtonGroup directedUndirectedRadioButtonGroup;
+    private javax.swing.JComboBox edgeTypeComboBox;
+    private javax.swing.JLabel edgeTypeLabel;
+    private javax.swing.JLabel sourceNodeLabel;
+    private javax.swing.JComboBox sourceNodesComboBox;
+    private javax.swing.JLabel targetNodeLabel;
+    private javax.swing.JComboBox targetNodesComboBox;
+    private javax.swing.JRadioButton undirectedRadioButton;
 
     /**
      * Creates new form AddEdgeToGraphUI
@@ -160,7 +172,8 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
     }
 
     private String getSelectedEdgeType() {
-        String edgeType = edgeTypeComboBox.getSelectedItem() != null ? edgeTypeComboBox.getSelectedItem().toString() : null;
+        String edgeType =
+            edgeTypeComboBox.getSelectedItem() != null ? edgeTypeComboBox.getSelectedItem().toString() : null;
         if (edgeType != null && edgeType.trim().isEmpty()) {
             edgeType = null;
         }
@@ -171,17 +184,6 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
     private void refreshAvailableEdgeTypes() {
         for (Object edgeType : graph.getModel().getEdgeTypeLabels()) {
             edgeTypeComboBox.addItem(edgeType);
-        }
-    }
-
-    private class SelectedOptions {
-
-        private Node source;
-        private Node target;
-        private Object edgeType;
-        private boolean directed = false;
-
-        public SelectedOptions() {
         }
     }
 
@@ -204,18 +206,24 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         edgeTypeComboBox = new javax.swing.JComboBox();
 
         directedUndirectedRadioButtonGroup.add(directedRadioButton);
-        directedRadioButton.setText(org.openide.util.NbBundle.getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.directedRadioButton.text")); // NOI18N
+        directedRadioButton.setText(org.openide.util.NbBundle
+            .getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.directedRadioButton.text")); // NOI18N
 
         directedUndirectedRadioButtonGroup.add(undirectedRadioButton);
-        undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.undirectedRadioButton.text")); // NOI18N
+        undirectedRadioButton.setText(org.openide.util.NbBundle
+            .getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.undirectedRadioButton.text")); // NOI18N
 
-        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.descriptionLabel.text")); // NOI18N
+        descriptionLabel.setText(org.openide.util.NbBundle
+            .getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.descriptionLabel.text")); // NOI18N
 
-        sourceNodeLabel.setText(org.openide.util.NbBundle.getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.sourceNodeLabel.text")); // NOI18N
+        sourceNodeLabel.setText(org.openide.util.NbBundle
+            .getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.sourceNodeLabel.text")); // NOI18N
 
-        targetNodeLabel.setText(org.openide.util.NbBundle.getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.targetNodeLabel.text")); // NOI18N
+        targetNodeLabel.setText(org.openide.util.NbBundle
+            .getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.targetNodeLabel.text")); // NOI18N
 
-        edgeTypeLabel.setText(org.openide.util.NbBundle.getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.edgeTypeLabel.text")); // NOI18N
+        edgeTypeLabel.setText(org.openide.util.NbBundle
+            .getMessage(AddEdgeToGraphUI.class, "AddEdgeToGraphUI.edgeTypeLabel.text")); // NOI18N
 
         edgeTypeComboBox.setEditable(true);
 
@@ -223,63 +231,72 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(directedRadioButton)
-                            .addComponent(sourceNodeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(sourceNodesComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(undirectedRadioButton)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(targetNodeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(targetNodesComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(edgeTypeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(edgeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(directedRadioButton)
+                                .addComponent(sourceNodeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 73,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(sourceNodesComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                    Short.MAX_VALUE)
+                                .addComponent(undirectedRadioButton)))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(targetNodeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 73,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(targetNodesComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(edgeTypeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 73,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(edgeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(directedRadioButton)
-                    .addComponent(undirectedRadioButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(sourceNodesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sourceNodeLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(targetNodesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(targetNodeLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(edgeTypeLabel)
-                    .addComponent(edgeTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(directedRadioButton)
+                        .addComponent(undirectedRadioButton))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(sourceNodesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(sourceNodeLabel))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(targetNodesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(targetNodeLabel))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(edgeTypeLabel)
+                        .addComponent(edgeTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JRadioButton directedRadioButton;
-    private javax.swing.ButtonGroup directedUndirectedRadioButtonGroup;
-    private javax.swing.JComboBox edgeTypeComboBox;
-    private javax.swing.JLabel edgeTypeLabel;
-    private javax.swing.JLabel sourceNodeLabel;
-    private javax.swing.JComboBox sourceNodesComboBox;
-    private javax.swing.JLabel targetNodeLabel;
-    private javax.swing.JComboBox targetNodesComboBox;
-    private javax.swing.JRadioButton undirectedRadioButton;
+    private class SelectedOptions {
+
+        private Node source;
+        private Node target;
+        private Object edgeType;
+        private boolean directed = false;
+
+        public SelectedOptions() {
+        }
+    }
     // End of variables declaration//GEN-END:variables
 }

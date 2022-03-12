@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 import org.gephi.io.importer.spi.Importer;
@@ -62,17 +63,12 @@ import org.gephi.io.processor.spi.Processor;
 public interface Container {
 
     /**
-     * Container factory.
+     * If exists, returns the source of the data.
+     *
+     * @return source of the data, or <code>null</code> if source is not
+     * defined.
      */
-    public interface Factory {
-
-        /**
-         * Returns a newly created container instance.
-         *
-         * @return new container
-         */
-        public Container newContainer();
-    }
+    String getSource();
 
     /**
      * Sets the source of the data put in the container. Could be a file name.
@@ -80,15 +76,7 @@ public interface Container {
      * @param source original source of data.
      * @throws NullPointerException if <code>source</code> is <code>null</code>
      */
-    public void setSource(String source);
-
-    /**
-     * If exists, returns the source of the data.
-     *
-     * @return source of the data, or <code>null</code> if source is not
-     * defined.
-     */
-    public String getSource();
+    void setSource(String source);
 
     /**
      * Gets the container loading interface.
@@ -99,7 +87,7 @@ public interface Container {
      *
      * @return containers loading interface
      */
-    public ContainerLoader getLoader();
+    ContainerLoader getLoader();
 
     /**
      * Get the container unloading interface.
@@ -110,7 +98,15 @@ public interface Container {
      *
      * @return container unloading interface
      */
-    public ContainerUnloader getUnloader();
+    ContainerUnloader getUnloader();
+
+    /**
+     * Returns the report associated to this container, if it exists.
+     *
+     * @return report set for this container or <code>null</code> if no report
+     * is defined
+     */
+    Report getReport();
 
     /**
      * Sets a report this container can use to report issues detected when
@@ -120,18 +116,10 @@ public interface Container {
      * report can be associated to a container.
      *
      * @param report set <code>report</code> as the default report for this
-     * container
+     *               container
      * @throws NullPointerException if <code>report</code> is <code>null</code>
      */
-    public void setReport(Report report);
-
-    /**
-     * Returns the report associated to this container, if it exists.
-     *
-     * @return report set for this container or <code>null</code> if no report
-     * is defined
-     */
-    public Report getReport();
+    void setReport(Report report);
 
     /**
      * This method must be called after the loading is complete and before
@@ -142,12 +130,12 @@ public interface Container {
      * @return <code>true</code> if container data is consistent,
      * <code>false</code> otherwise
      */
-    public boolean verify();
+    boolean verify();
 
     /**
      * Close the current loading and clean content before unloading.
      */
-    public void closeLoader();
+    void closeLoader();
 
     /**
      * Returns true if this container contains a dynamic graph.
@@ -156,7 +144,7 @@ public interface Container {
      *
      * @return true if dynamic, false otherwise
      */
-    public boolean isDynamicGraph();
+    boolean isDynamicGraph();
 
     /**
      * Returns true if this container contains elements that have dynamic
@@ -166,14 +154,14 @@ public interface Container {
      *
      * @return true if dynamic attributes, false otherwise
      */
-    public boolean hasDynamicAttributes();
+    boolean hasDynamicAttributes();
 
     /**
      * Returns true if edges in this container are self-loops.
      *
      * @return true if presence of self-loops, false otherwise
      */
-    public boolean hasSelfLoops();
+    boolean hasSelfLoops();
 
     /**
      * Returns true if this container contains a multigraph.
@@ -183,5 +171,18 @@ public interface Container {
      *
      * @return true if multigraph, false otherwise
      */
-    public boolean isMultiGraph();
+    boolean isMultiGraph();
+
+    /**
+     * Container factory.
+     */
+    interface Factory {
+
+        /**
+         * Returns a newly created container instance.
+         *
+         * @return new container
+         */
+        Container newContainer();
+    }
 }

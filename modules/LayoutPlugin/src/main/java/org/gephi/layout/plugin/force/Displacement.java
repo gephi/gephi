@@ -39,17 +39,17 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.force;
 
 import org.gephi.graph.api.Node;
 
 /**
- *
  * @author Helder Suzuki
  */
 public interface Displacement {
 
-    public void setStep(float step);
+    void setStep(float step);
 
-    public void moveNode(Node node, ForceVector forceData);
+    void moveNode(Node node, ForceVector forceData);
 }

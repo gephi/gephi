@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.utils;
 
 import org.gephi.io.exporter.api.FileType;
@@ -56,7 +57,8 @@ public class GraphFileExporterBuilderDecorator implements GraphFileExporterBuild
     private final GraphFileExporterBuilder instance;
     private final ExporterSpreadsheet.ExportTable initialSelectedTable;
 
-    public GraphFileExporterBuilderDecorator(GraphFileExporterBuilder instance, ExporterSpreadsheet.ExportTable initialSelectedTable) {
+    public GraphFileExporterBuilderDecorator(GraphFileExporterBuilder instance,
+                                             ExporterSpreadsheet.ExportTable initialSelectedTable) {
         this.instance = instance;
         this.initialSelectedTable = initialSelectedTable;
     }

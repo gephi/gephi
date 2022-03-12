@@ -40,6 +40,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components;
 
 import java.awt.Dimension;
@@ -64,6 +65,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,13 +81,12 @@ import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
 
 /**
- *
  * @author Mathieu Bastian
  * @author Patick J. McSweeney
  */
 class ReportSelection implements Transferable {
 
-    private static ArrayList flavors = new ArrayList();
+    private static final ArrayList flavors = new ArrayList();
 
     static {
         try {
@@ -94,11 +95,12 @@ class ReportSelection implements Transferable {
             Exceptions.printStackTrace(ex);
         }
     }
+
     private String html;
 
     public ReportSelection(String html) {
         this.html = html;
-        String newHTML = new String();
+        String newHTML = "";
         String[] result = html.split("file:");
         boolean first = true;
         for (int i = 0; i < result.length; i++) {
@@ -114,7 +116,7 @@ class ReportSelection implements Transferable {
                 File file = new File(filename);
                 try {
                     BufferedImage image = ImageIO.read(file);
-                    ImageIO.write((RenderedImage) image, "PNG", out);
+                    ImageIO.write(image, "PNG", out);
                 } catch (Exception e) {
                     Exceptions.printStackTrace(e);
                 }
@@ -157,7 +159,16 @@ class ReportSelection implements Transferable {
 
 public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
-    private String mHTMLReport;
+    private final String LAST_PATH = "SimpleHTMLReport_Save_Last_Path";
+    private final String mHTMLReport;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton closeButton;
+    private javax.swing.JButton copyButton;
+    private javax.swing.JEditorPane displayPane;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JButton printButton;
+    private javax.swing.JButton saveButton;
 
     public SimpleHTMLReport(java.awt.Frame parent, String html) {
         super(parent, false);
@@ -183,7 +194,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        displayPane = (javax.swing.JEditorPane)(new JHTMLEditorPane());
+        displayPane = new JHTMLEditorPane();
         closeButton = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         printButton = new javax.swing.JButton();
@@ -195,7 +206,8 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
         jScrollPane1.setViewportView(displayPane);
 
-        closeButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.closeButton.text")); // NOI18N
+        closeButton.setText(org.openide.util.NbBundle
+            .getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.closeButton.text")); // NOI18N
         closeButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -206,8 +218,10 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        printButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/print.png"))); // NOI18N
-        printButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.printButton.text")); // NOI18N
+        printButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/ui/components/resources/print.png"))); // NOI18N
+        printButton.setText(org.openide.util.NbBundle
+            .getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.printButton.text")); // NOI18N
         printButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -216,8 +230,10 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         });
         jToolBar1.add(printButton);
 
-        copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/copy.gif"))); // NOI18N
-        copyButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.copyButton.text")); // NOI18N
+        copyButton.setIcon(
+            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/copy.gif"))); // NOI18N
+        copyButton.setText(
+            org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.copyButton.text")); // NOI18N
         copyButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -226,8 +242,10 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         });
         jToolBar1.add(copyButton);
 
-        saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/save.png"))); // NOI18N
-        saveButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.saveButton.text")); // NOI18N
+        saveButton.setIcon(
+            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/save.png"))); // NOI18N
+        saveButton.setText(
+            org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.saveButton.text")); // NOI18N
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -240,29 +258,31 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(closeButton)
-                .addContainerGap())
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(closeButton)
+                    .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(closeButton)
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(closeButton)
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
+    private void printButtonActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
         PrinterJob pjob = PrinterJob.getPrinterJob();
         PageFormat pf = pjob.defaultPage();
         pjob.setPrintable(this, pf);
@@ -274,8 +294,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         } catch (PrinterException e) {
             Exceptions.printStackTrace(e);
         }
-}//GEN-LAST:event_printButtonActionPerformed
-    private final String LAST_PATH = "SimpleHTMLReport_Save_Last_Path";
+    }//GEN-LAST:event_printButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         final String html = this.mHTMLReport;
@@ -293,9 +312,13 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
                 public void run() {
                     try {
                         if (saveReport(html, destinationFolder)) {
-                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveSuccess", destinationFolder.getName()));
-                        }else{
-                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveError", destinationFolder.getName()));
+                            StatusDisplayer.getDefault().setStatusText(NbBundle
+                                .getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveSuccess",
+                                    destinationFolder.getName()));
+                        } else {
+                            StatusDisplayer.getDefault().setStatusText(NbBundle
+                                .getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveError",
+                                    destinationFolder.getName()));
                         }
                     } catch (IOException e) {
                         Exceptions.printStackTrace(e);
@@ -310,8 +333,8 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
     private boolean saveReport(String html, File destinationFolder) throws IOException {
         if (!destinationFolder.exists()) {
             destinationFolder.mkdir();
-        }else{
-            if(!destinationFolder.isDirectory()){
+        } else {
+            if (!destinationFolder.isDirectory()) {
                 return false;
             }
         }
@@ -339,7 +362,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         //Write HTML file
         File htmlFile = new File(destinationFolder, "report.html");
         FileOutputStream outputStream = new FileOutputStream(htmlFile);
-        OutputStreamWriter out = new OutputStreamWriter(outputStream, "UTF-8");
+        OutputStreamWriter out = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
         out.append(replaceBuffer.toString());
         out.flush();
         out.close();
@@ -359,18 +382,10 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
     }//GEN-LAST:event_copyButtonActionPerformed
 
-    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
+    private void closeButtonActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         dispose(); // TODO add your handling code here:
     }//GEN-LAST:event_closeButtonActionPerformed
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton closeButton;
-    private javax.swing.JButton copyButton;
-    private javax.swing.JEditorPane displayPane;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JButton printButton;
-    private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -386,20 +401,20 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
             scaleX = Math.min(scaleX, 1.0);
             double scaleY = scaleX;
 
-            int end = (int) (pageIndex * ((1.0f / scaleY) * (double) pageFormat.getImageableHeight()));
+            int end = (int) (pageIndex * ((1.0f / scaleY) * pageFormat.getImageableHeight()));
             Rectangle allocation = new Rectangle(0,
-                    -end,
-                    (int) pageFormat.getImageableWidth(),
-                    (int) pageFormat.getImageableHeight());
+                -end,
+                (int) pageFormat.getImageableWidth(),
+                (int) pageFormat.getImageableHeight());
             ((Graphics2D) graphics).scale(scaleX, scaleY);
 
             graphics.setClip((int) (pageFormat.getImageableX() / scaleX),
-                    (int) (pageFormat.getImageableY() / scaleY),
-                    (int) (pageFormat.getImageableWidth() / scaleX),
-                    (int) (pageFormat.getImageableHeight() / scaleY));
+                (int) (pageFormat.getImageableY() / scaleY),
+                (int) (pageFormat.getImageableWidth() / scaleX),
+                (int) (pageFormat.getImageableHeight() / scaleY));
 
-            ((Graphics2D) graphics).translate(((Graphics2D) graphics).getClipBounds().getX(),
-                    ((Graphics2D) graphics).getClipBounds().getY());
+            ((Graphics2D) graphics).translate(graphics.getClipBounds().getX(),
+                graphics.getClipBounds().getY());
 
             rootView.paint(graphics, allocation);
 

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.timeline;
 
 import java.awt.Graphics;
@@ -49,7 +50,6 @@ import org.gephi.utils.sparklines.SparklineGraph;
 import org.gephi.utils.sparklines.SparklineParameters;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class Sparkline {
@@ -65,7 +65,7 @@ public class Sparkline {
         double newMax = model.getCustomMax();
         TimelineChart newChart = model.getChart();
         if (chart == null || newMax != max || newMin != min || image.getWidth() != width || image.getHeight() != height
-                || newChart != chart) {
+            || newChart != chart) {
             min = newMin;
             max = newMax;
             chart = newChart;
@@ -93,7 +93,8 @@ public class Sparkline {
     }
 
     private BufferedImage draw() {
-        BufferedImage img = SparklineGraph.draw(chart.getX(), chart.getY(), chart.getMinY(), chart.getMaxY(), parameters);
+        BufferedImage img =
+            SparklineGraph.draw(chart.getX(), chart.getY(), chart.getMinY(), chart.getMaxY(), parameters);
         return img;
     }
 }

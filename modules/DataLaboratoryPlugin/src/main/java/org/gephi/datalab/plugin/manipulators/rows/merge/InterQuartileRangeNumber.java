@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import java.math.BigDecimal;
@@ -56,6 +57,7 @@ import org.openide.util.NbBundle;
 /**
  * AttributeRowsMergeStrategy for any number or number list column that
  * calculates the inter quartile range of all the values.
+ *
  * @author Eduardo Ramos
  */
 public class InterQuartileRangeNumber implements AttributeRowsMergeStrategy {
@@ -77,8 +79,9 @@ public class InterQuartileRangeNumber implements AttributeRowsMergeStrategy {
 
     @Override
     public void execute() {
-        BigDecimal  Q1, Q3;
-        Number[] numbers=Lookup.getDefault().lookup(AttributeColumnsController.class).getRowsColumnNumbers(rows, column);
+        BigDecimal Q1, Q3;
+        Number[] numbers =
+            Lookup.getDefault().lookup(AttributeColumnsController.class).getRowsColumnNumbers(rows, column);
         Q3 = StatisticsUtils.quartile3(numbers);
         Q1 = StatisticsUtils.quartile1(numbers);
         if (Q3 != null && Q1 != null) {

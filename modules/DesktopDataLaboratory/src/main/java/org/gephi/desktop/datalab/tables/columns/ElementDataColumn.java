@@ -39,26 +39,26 @@
 
  Portions Copyrighted 2015 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.tables.columns;
 
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Element;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public interface ElementDataColumn<T extends Element> {
 
-    public Class getColumnClass();
+    Class getColumnClass();
 
-    public String getColumnName();
+    String getColumnName();
 
-    public Object getValueFor(T element);
+    Object getValueFor(T element);
 
-    public void setValueFor(T element, Object value);
+    void setValueFor(T element, Object value);
 
-    public boolean isEditable();
-    
-    public Column getColumn();
+    boolean isEditable();
+
+    Column getColumn();
 }

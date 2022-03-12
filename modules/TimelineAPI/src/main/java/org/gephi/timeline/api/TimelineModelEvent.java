@@ -39,26 +39,22 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.timeline.api;
 
 /**
  * Timeline model event.
- * 
+ *
  * @author Mathieu Bastian
  * @see TimelineModelListener
  */
 public final class TimelineModelEvent {
 
-    public enum EventType {
-
-        MODEL, MIN_MAX, INTERVAL, CUSTOM_BOUNDS, ENABLED, PLAY_START, PLAY_STOP, CHART, VALID_BOUNDS
-    }
-
     private final EventType type;
     private final TimelineModel source;
     private final Object data;
 
-    public TimelineModelEvent (EventType type, TimelineModel source, Object data) {
+    public TimelineModelEvent(EventType type, TimelineModel source, Object data) {
         this.type = type;
         this.source = source;
         this.data = data;
@@ -74,5 +70,10 @@ public final class TimelineModelEvent {
 
     public Object getData() {
         return data;
+    }
+
+    public enum EventType {
+
+        MODEL, MIN_MAX, INTERVAL, CUSTOM_BOUNDS, ENABLED, PLAY_START, PLAY_STOP, CHART, VALID_BOUNDS
     }
 }

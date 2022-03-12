@@ -39,12 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.utils;
 
 import java.awt.Font;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class FontUtils {

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.tools.plugin;
 
 import javax.swing.Icon;
@@ -56,7 +57,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Tool.class)
@@ -65,7 +65,7 @@ public class Edit implements Tool {
 
     @Override
     public void select() {
-        edc=Lookup.getDefault().lookup(EditWindowController.class);
+        edc = Lookup.getDefault().lookup(EditWindowController.class);
         edc.openEditWindow();
     }
 
@@ -77,17 +77,17 @@ public class Edit implements Tool {
 
     @Override
     public ToolEventListener[] getListeners() {
-        return new ToolEventListener[]{new NodeClickEventListener() {
+        return new ToolEventListener[] {new NodeClickEventListener() {
 
-                @Override
-                public void clickNodes(Node[] nodes) {
-                    if (nodes.length > 0) {
-                        edc.editNode(nodes[0]);
-                    } else {
-                        edc.disableEdit();
-                    }
+            @Override
+            public void clickNodes(Node[] nodes) {
+                if (nodes.length > 0) {
+                    edc.editNode(nodes[0]);
+                } else {
+                    edc.disableEdit();
                 }
-            }};
+            }
+        }};
     }
 
     @Override
@@ -116,7 +116,7 @@ public class Edit implements Tool {
 
             @Override
             public int getPosition() {
-                return 200;
+                return 10;
             }
         };
     }

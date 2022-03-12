@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import org.gephi.io.exporter.api.FileType;
@@ -48,11 +49,10 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author megaterik
  */
 @ServiceProvider(service = GraphFileExporterBuilder.class)
-public class ExporterBuilderVNA implements GraphFileExporterBuilder{
+public class ExporterBuilderVNA implements GraphFileExporterBuilder {
     @Override
     public GraphExporter buildExporter() {
         return new ExporterVNA();
@@ -60,12 +60,13 @@ public class ExporterBuilderVNA implements GraphFileExporterBuilder{
 
     @Override
     public FileType[] getFileTypes() {
-        return new FileType[]{new FileType(".vna", NbBundle.getMessage(ExporterBuilderVNA.class, "fileType_VNA_Name"))};
+        return new FileType[] {
+            new FileType(".vna", NbBundle.getMessage(ExporterBuilderVNA.class, "fileType_VNA_Name"))};
     }
 
     @Override
     public String getName() {
         return "vna";
     }
-    
+
 }

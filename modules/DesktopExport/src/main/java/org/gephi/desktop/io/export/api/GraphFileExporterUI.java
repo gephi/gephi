@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.io.export.api;
 
 import java.awt.BorderLayout;
@@ -52,7 +53,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -79,7 +79,6 @@ import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ExporterClassUI.class)
@@ -107,7 +106,7 @@ public final class GraphFileExporterUI implements ExporterClassUI {
     }
 
     public void action(GraphFileExporterBuilder exporterBuilder) {
-        action(new GraphFileExporterBuilder[]{exporterBuilder});
+        action(new GraphFileExporterBuilder[] {exporterBuilder});
     }
 
     public void action(final GraphFileExporterBuilder[] exporterBuilders) {
@@ -128,7 +127,8 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         //Options panel
         FlowLayout layout = new FlowLayout(FlowLayout.RIGHT);
         JPanel optionsPanel = new JPanel(layout);
-        final JButton optionsButton = new JButton(NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsButton_name"));
+        final JButton optionsButton =
+            new JButton(NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsButton_name"));
         optionsPanel.add(optionsButton);
         optionsButton.addActionListener(new ActionListener() {
 
@@ -139,8 +139,11 @@ public final class GraphFileExporterUI implements ExporterClassUI {
                     JPanel panel = exporterUI.getPanel();
                     exporterUI.setup(selectedExporter);
 
-                    DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsDialog_title", selectedBuilder.getName()));
-                    TopDialog topDialog = new TopDialog(dialog, dd.getTitle(), dd.isModal(), dd, dd.getClosingOptions(), dd.getButtonListener());
+                    DialogDescriptor dd = new DialogDescriptor(panel, NbBundle
+                        .getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsDialog_title",
+                            selectedBuilder.getName()));
+                    TopDialog topDialog = new TopDialog(dialog, dd.getTitle(), dd.isModal(), dd, dd.getClosingOptions(),
+                        dd.getButtonListener());
                     topDialog.setVisible(true);
                     Object result = (dd.getValue() != null) ? dd.getValue() : NotifyDescriptor.CLOSED_OPTION;
 //                    Object result = DialogDisplayer.getDefault().notify(dd);
@@ -175,7 +178,8 @@ public final class GraphFileExporterUI implements ExporterClassUI {
                 Component c = dialog.getContentPane().getComponent(0);
                 if (c != null && c instanceof JComponent) {
                     Insets insets = ((JComponent) c).getInsets();
-                    southPanel.setBorder(BorderFactory.createEmptyBorder(insets.top, insets.left, insets.bottom, insets.right));
+                    southPanel.setBorder(
+                        BorderFactory.createEmptyBorder(insets.top, insets.left, insets.bottom, insets.right));
                 }
                 dialog.getContentPane().add(southPanel, BorderLayout.SOUTH);
 
@@ -197,18 +201,16 @@ public final class GraphFileExporterUI implements ExporterClassUI {
                 DialogFileFilter fileFilter = (DialogFileFilter) evt.getNewValue();
 
                 //Save last file filter
-                NbPreferences.forModule(GraphFileExporterUI.class).put(LAST_FILE_FILTER, fileFilter.getExtensions().toString());
+                NbPreferences.forModule(GraphFileExporterUI.class)
+                    .put(LAST_FILE_FILTER, fileFilter.getExtensions().toString());
 
                 //Options panel enabling
                 selectedBuilder = getExporter(exporterBuilders, fileFilter);
                 if (selectedBuilder != null) {
                     selectedExporter = selectedBuilder.buildExporter();
                 }
-                if (selectedBuilder != null && exportController.getExportController().getUI(selectedExporter) != null) {
-                    optionsButton.setEnabled(true);
-                } else {
-                    optionsButton.setEnabled(false);
-                }
+                optionsButton.setEnabled(
+                    selectedBuilder != null && exportController.getExportController().getUI(selectedExporter) != null);
 
                 //Selected file extension change
                 if (selectedFile != null && fileFilter != null) {
@@ -301,18 +303,24 @@ public final class GraphFileExporterUI implements ExporterClassUI {
             }
             if (!file.exists()) {
                 if (!file.createNewFile()) {
-                    String failMsg = NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_SaveFailed", new Object[]{file.getPath()});
+                    String failMsg = NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_SaveFailed",
+                        new Object[] {file.getPath()});
                     JOptionPane.showMessageDialog(null, failMsg);
                     return false;
                 }
             } else {
-                String overwriteMsg = NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_overwriteDialog_message", new Object[]{file.getPath()});
-                if (JOptionPane.showConfirmDialog(null, overwriteMsg, NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_overwriteDialog_title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+                String overwriteMsg = NbBundle
+                    .getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_overwriteDialog_message",
+                        new Object[] {file.getPath()});
+                if (JOptionPane.showConfirmDialog(null, overwriteMsg,
+                    NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_overwriteDialog_title"),
+                    JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
                     return false;
                 }
             }
         } catch (IOException ex) {
-            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+            NotifyDescriptor.Message msg =
+                new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
             DialogDisplayer.getDefault().notifyLater(msg);
             return false;
         }
@@ -320,7 +328,8 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         return true;
     }
 
-    private GraphFileExporterBuilder getExporter(GraphFileExporterBuilder[] exporterBuilders, DialogFileFilter fileFilter) {
+    private GraphFileExporterBuilder getExporter(GraphFileExporterBuilder[] exporterBuilders,
+                                                 DialogFileFilter fileFilter) {
         //Find fileFilter
         for (GraphFileExporterBuilder graphFileExporter : exporterBuilders) {
             for (FileType fileType : graphFileExporter.getFileTypes()) {

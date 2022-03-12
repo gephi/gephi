@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
@@ -69,9 +70,11 @@ public class ConvertColumnToDynamic implements AttributeColumnsManipulator {
     @Override
     public void execute(Table table, Column column) {
         if (replaceColumn) {
-            Lookup.getDefault().lookup(AttributeColumnsController.class).convertAttributeColumnToDynamic(table, column, low, high);
+            Lookup.getDefault().lookup(AttributeColumnsController.class)
+                .convertAttributeColumnToDynamic(table, column, low, high);
         } else {
-            Lookup.getDefault().lookup(AttributeColumnsController.class).convertAttributeColumnToNewDynamicColumn(table, column, low, high, title);
+            Lookup.getDefault().lookup(AttributeColumnsController.class)
+                .convertAttributeColumnToNewDynamicColumn(table, column, low, high, title);
         }
     }
 
@@ -92,7 +95,9 @@ public class ConvertColumnToDynamic implements AttributeColumnsManipulator {
 
     @Override
     public AttributeColumnsManipulatorUI getUI(Table table, Column column) {
-        TimeRepresentation timeRepresentation = Lookup.getDefault().lookup(GraphController.class).getGraphModel().getConfiguration().getTimeRepresentation();
+        TimeRepresentation timeRepresentation =
+            Lookup.getDefault().lookup(GraphController.class).getGraphModel().getConfiguration()
+                .getTimeRepresentation();
 
         if (timeRepresentation == TimeRepresentation.INTERVAL) {
             return new ConvertColumnToDynamicUI();

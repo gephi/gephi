@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.plugin.partition;
 
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.appearance.api.AppearanceController;
 import org.gephi.appearance.api.AppearanceModel;
+import org.gephi.appearance.api.Partition;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
 import org.gephi.filters.spi.Category;
@@ -65,16 +67,15 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author mbastian
  */
 @ServiceProvider(service = CategoryBuilder.class)
 public class IntraEdgesBuilder implements CategoryBuilder {
 
     public final static Category INTRA_EDGES = new Category(
-            NbBundle.getMessage(IntraEdgesBuilder.class, "IntraEdgesBuilder.name"),
-            null,
-            FilterLibrary.ATTRIBUTES);
+        NbBundle.getMessage(IntraEdgesBuilder.class, "IntraEdgesBuilder.name"),
+        null,
+        FilterLibrary.ATTRIBUTES);
 
     @Override
     public Category getCategory() {
@@ -89,12 +90,13 @@ public class IntraEdgesBuilder implements CategoryBuilder {
         AppearanceModel am = Lookup.getDefault().lookup(AppearanceController.class).getModel(workspace);
 
         //Force refresh
-        am.getNodeFunctions(graph);
+        am.getNodeFunctions();
 
         for (Column nodeCol : gm.getNodeTable()) {
             if (!nodeCol.isProperty()) {
-                if (am.getNodePartition(graph, nodeCol) != null) {
-                    IntraEdgesFilterBuilder builder = new IntraEdgesFilterBuilder(nodeCol, am);
+                Partition partition = am.getNodePartition(nodeCol);
+                if (am.getNodePartition(nodeCol) != null) {
+                    IntraEdgesFilterBuilder builder = new IntraEdgesFilterBuilder(partition);
                     builders.add(builder);
                 }
             }
@@ -105,12 +107,10 @@ public class IntraEdgesBuilder implements CategoryBuilder {
 
     private static class IntraEdgesFilterBuilder implements FilterBuilder {
 
-        private final Column column;
-        private final AppearanceModel model;
+        private final Partition partition;
 
-        public IntraEdgesFilterBuilder(Column column, AppearanceModel model) {
-            this.column = column;
-            this.model = model;
+        public IntraEdgesFilterBuilder(Partition partition) {
+            this.partition = partition;
         }
 
         @Override
@@ -120,7 +120,7 @@ public class IntraEdgesBuilder implements CategoryBuilder {
 
         @Override
         public String getName() {
-            return column.getTitle();
+            return partition.getColumn().getTitle();
         }
 
         @Override
@@ -135,7 +135,7 @@ public class IntraEdgesBuilder implements CategoryBuilder {
 
         @Override
         public IntraEdgesFilter getFilter(Workspace workspace) {
-            return new IntraEdgesFilter(column, model);
+            return new IntraEdgesFilter(partition);
         }
 
         @Override
@@ -154,19 +154,20 @@ public class IntraEdgesBuilder implements CategoryBuilder {
 
     public static class IntraEdgesFilter extends PartitionFilter implements EdgeFilter {
 
-        public IntraEdgesFilter(Column column, AppearanceModel model) {
-            super(column, model);
+        public IntraEdgesFilter(Partition partition) {
+            super(partition);
         }
 
         @Override
         public String getName() {
-            return NbBundle.getMessage(IntraEdgesBuilder.class, "IntraEdgesBuilder.name") + " (" + column.getTitle() + ")";
+            return NbBundle.getMessage(IntraEdgesBuilder.class, "IntraEdgesBuilder.name") + " (" + partition.getColumn().getTitle() +
+                ")";
         }
 
         @Override
         public boolean init(Graph graph) {
-            partition = appearanceModel.getNodePartition(graph.getModel().getGraph(), column);
-            return partition != null;
+            this.graph = graph;
+            return partition != null && partition.getColumn() != null;
         }
 
         @Override

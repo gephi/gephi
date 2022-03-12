@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -40,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi.values;
 
 import org.gephi.datalab.spi.Manipulator;
@@ -48,15 +48,17 @@ import org.gephi.graph.api.Element;
 
 /**
  * Manipulator for a single AttributeValue (cells) on right click.
+ *
  * @author Eduardo Ramos
  */
-public interface AttributeValueManipulator extends Manipulator{
+public interface AttributeValueManipulator extends Manipulator {
 
     /**
      * Prepare the AttributeValue data.
      * AttributeRow and AttributeColumn are provided.
-     * @param row Row
+     *
+     * @param row    Row
      * @param column Column
      */
-    void setup (Element row, Column column);
+    void setup(Element row, Column column);
 }

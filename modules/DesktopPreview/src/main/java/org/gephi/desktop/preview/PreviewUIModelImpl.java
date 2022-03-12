@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.preview;
 
 import org.gephi.desktop.preview.api.PreviewUIModel;
@@ -47,7 +48,6 @@ import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.presets.DefaultPreset;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class PreviewUIModelImpl implements PreviewUIModel {
@@ -74,6 +74,10 @@ public class PreviewUIModelImpl implements PreviewUIModel {
         return currentPreset;
     }
 
+    public void setCurrentPreset(PreviewPreset preset) {
+        currentPreset = preset;
+    }
+
     @Override
     public float getVisibilityRatio() {
         return visibilityRatio;
@@ -83,22 +87,18 @@ public class PreviewUIModelImpl implements PreviewUIModel {
         this.visibilityRatio = visibilityRatio;
     }
 
-    public void setCurrentPreset(PreviewPreset preset) {
-        currentPreset = preset;
-    }
-
     @Override
     public boolean isRefreshing() {
         return refreshing;
     }
 
+    public void setRefreshing(boolean refreshing) {
+        this.refreshing = refreshing;
+    }
+
     @Override
     public boolean isWorkspaceBarVisible() {
         return workspaceBarVisible;
-    }
-
-    public void setRefreshing(boolean refreshing) {
-        this.refreshing = refreshing;
     }
 
     public void setWorkspaceBarVisible(boolean workspaceBarVisible) {

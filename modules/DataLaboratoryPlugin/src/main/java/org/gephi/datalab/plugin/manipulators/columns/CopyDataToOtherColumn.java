@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
@@ -57,6 +58,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * AttributeColumnsManipulator that copies data from a Column of a Table to other AttributeColumn.
  * Allows the user to select the target column in the UI
+ *
  * @author Eduardo Ramos
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
@@ -67,7 +69,8 @@ public class CopyDataToOtherColumn implements AttributeColumnsManipulator {
     @Override
     public void execute(Table table, Column column) {
         if (targetColumn != null && targetColumn != column) {
-            Lookup.getDefault().lookup(AttributeColumnsController.class).copyColumnDataToOtherColumn(table, column, targetColumn);
+            Lookup.getDefault().lookup(AttributeColumnsController.class)
+                .copyColumnDataToOtherColumn(table, column, targetColumn);
             Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
         }
     }
@@ -88,7 +91,7 @@ public class CopyDataToOtherColumn implements AttributeColumnsManipulator {
     }
 
     @Override
-    public AttributeColumnsManipulatorUI getUI(Table table,Column column) {
+    public AttributeColumnsManipulatorUI getUI(Table table, Column column) {
         return new CopyDataToOtherColumnUI();
     }
 

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns;
 
 import java.awt.Image;
@@ -57,6 +58,7 @@ import org.openide.util.lookup.ServiceProvider;
  * AttributeColumnsManipulator that creates a new string list column from the given column and regular expression with values that are
  * the list of matching groups of the given regular expression.
  * Allows the user to select the title of the new column in the UI
+ *
  * @author Eduardo Ramos
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
@@ -65,7 +67,8 @@ public class CreateFoundGroupsListColumn extends GeneralCreateColumnFromRegex {
     @Override
     public void execute(Table table, Column column) {
         if (pattern != null) {
-            Lookup.getDefault().lookup(AttributeColumnsController.class).createFoundGroupsListColumn(table, column, title, pattern);
+            Lookup.getDefault().lookup(AttributeColumnsController.class)
+                .createFoundGroupsListColumn(table, column, title, pattern);
         }
     }
 
@@ -82,11 +85,11 @@ public class CreateFoundGroupsListColumn extends GeneralCreateColumnFromRegex {
     @Override
     public boolean canManipulateColumn(Table table, Column column) {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        return ac.getTableRowsCount(table)>0;//Make sure that there is at least 1 row
+        return ac.getTableRowsCount(table) > 0;//Make sure that there is at least 1 row
     }
 
     @Override
-    public AttributeColumnsManipulatorUI getUI(Table table,Column column) {
+    public AttributeColumnsManipulatorUI getUI(Table table, Column column) {
         GeneralCreateColumnFromRegexUI ui = new GeneralCreateColumnFromRegexUI();
         ui.setMode(GeneralCreateColumnFromRegexUI.Mode.MATCHING_GROUPS);
         return ui;

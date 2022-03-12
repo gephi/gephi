@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.ui.appearance.plugin.category;
 
 import javax.swing.Icon;
@@ -47,7 +48,6 @@ import org.gephi.appearance.spi.TransformerCategory;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author mbastian
  */
 public class DefaultCategory {

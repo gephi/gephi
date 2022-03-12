@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.generator.spi;
 
 import org.gephi.io.importer.api.ContainerLoader;
@@ -48,6 +49,7 @@ import org.gephi.utils.longtask.spi.LongTask;
  * Define a generator, that is generating graph structure from a bunch of parameters.
  * <p>
  * Extends <code>LongTask</code> to support tasks progress and cancellation.
+ *
  * @author Mathieu Bastian
  */
 public interface Generator extends LongTask {
@@ -57,20 +59,23 @@ public interface Generator extends LongTask {
      * <p>
      * From the container content, the controller makes verification and append
      * the graph to <code>GraphAPI</code>.
+     *
      * @param container the container the graph is to be pushed
      */
-    public void generate(ContainerLoader container);
+    void generate(ContainerLoader container);
 
     /**
      * Returns the generator display name.
-     * @return          returns the generator name
+     *
+     * @return returns the generator name
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the UI that belongs to this generator, or <code>null</code> if UI
      * is not needed.
-     * @return          the UI thet belongs to this generator, or <code>null</code>
+     *
+     * @return the UI thet belongs to this generator, or <code>null</code>
      */
-    public GeneratorUI getUI();
+    GeneratorUI getUI();
 }

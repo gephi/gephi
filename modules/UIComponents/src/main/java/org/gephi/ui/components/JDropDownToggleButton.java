@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.Point;
@@ -58,15 +59,16 @@ import javax.swing.event.PopupMenuListener;
 import org.openide.util.ImageUtilities;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class JDropDownToggleButton extends JToggleButton {
 
-    private boolean mouseInButton = false;
-    private boolean mouseInArrowArea = false;
-    private Map<String, Icon> regIcons = new HashMap<>(5);
-    private Map<String, Icon> arrowIcons = new HashMap<>(5);
+    /**
+     * Use this property name to assign or remove popup menu to/from buttons created by this factory,
+     * e.g. <code>dropDownButton.putClientProperty( PROP_DROP_DOWN_MENU, new JPopupMenu() )</code>
+     * The property value must be <code>JPopupMenu</code>, removing this property removes the arrow from the button.
+     */
+    public static final String PROP_DROP_DOWN_MENU = "dropDownMenu";
     private static final String ICON_NORMAL = "normal"; //NOI18N
     private static final String ICON_PRESSED = "pressed"; //NOI18N
     private static final String ICON_ROLLOVER = "rollover"; //NOI18N
@@ -76,12 +78,10 @@ public class JDropDownToggleButton extends JToggleButton {
     private static final String ICON_DISABLED_SELECTED = "disabledSelected"; //NOI18N
     private static final String ICON_ROLLOVER_LINE = "rolloverLine"; //NOI18N
     private static final String ICON_ROLLOVER_SELECTED_LINE = "rolloverSelectedLine"; //NOI18N
-    /**
-     * Use this property name to assign or remove popup menu to/from buttons created by this factory,
-     * e.g. <code>dropDownButton.putClientProperty( PROP_DROP_DOWN_MENU, new JPopupMenu() )</code>
-     * The property value must be <code>JPopupMenu</code>, removing this property removes the arrow from the button.
-     */
-    public static final String PROP_DROP_DOWN_MENU = "dropDownMenu";
+    private boolean mouseInButton = false;
+    private boolean mouseInArrowArea = false;
+    private final Map<String, Icon> regIcons = new HashMap<>(5);
+    private final Map<String, Icon> arrowIcons = new HashMap<>(5);
     private PopupMenuListener menuListener;
 
     public JDropDownToggleButton(Icon icon, JPopupMenu popup) {
@@ -167,6 +167,19 @@ public class JDropDownToggleButton extends JToggleButton {
         });
 
         setModel(new Model());
+    }
+
+    /**
+     * Creates JToggleButton with a small arrow that shows the provided popup menu when clicked.
+     *
+     * @param icon         The default icon, cannot be null
+     * @param dropDownMenu Popup menu to display when the arrow is clicked. If this parameter is null
+     *                     then the button doesn't show any arrow and behaves like a regular JToggleButton. It is possible to add
+     *                     the popup menu later using PROP_DROP_DOWN_MENU client property.
+     * @return A toggle-button that is capable of displaying an 'arrow' in its icon to open a popup menu.
+     */
+    public static JToggleButton createDropDownToggleButton(Icon icon, JPopupMenu dropDownMenu) {
+        return new JDropDownToggleButton(icon, dropDownMenu);
     }
 
     private PopupMenuListener getMenuListener() {
@@ -430,18 +443,5 @@ public class JDropDownToggleButton extends JToggleButton {
             }
             super.setRollover(b);
         }
-    }
-
-    /**
-     * Creates JToggleButton with a small arrow that shows the provided popup menu when clicked.
-     *
-     * @param icon The default icon, cannot be null
-     * @param dropDownMenu Popup menu to display when the arrow is clicked. If this parameter is null
-     * then the button doesn't show any arrow and behaves like a regular JToggleButton. It is possible to add
-     * the popup menu later using PROP_DROP_DOWN_MENU client property.
-     * @return A toggle-button that is capable of displaying an 'arrow' in its icon to open a popup menu.
-     */
-    public static JToggleButton createDropDownToggleButton(Icon icon, JPopupMenu dropDownMenu) {
-        return new JDropDownToggleButton(icon, dropDownMenu);
     }
 }

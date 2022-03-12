@@ -39,13 +39,13 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.gephi.graph.api.Column;
@@ -111,16 +111,15 @@ public class PageRank implements Statistics, LongTask {
         }
     }
 
-    public void setDirected(boolean isDirected) {
-        this.isDirected = isDirected;
-    }
-
     /**
-     *
      * @return
      */
     public boolean getDirected() {
         return isDirected;
+    }
+
+    public void setDirected(boolean isDirected) {
+        this.isDirected = isDirected;
     }
 
     @Override
@@ -163,7 +162,7 @@ public class PageRank implements Statistics, LongTask {
     }
 
     private void saveCalculatedValues(Graph graph, Column attributeColumn, HashMap<Node, Integer> indicies,
-            double[] nodePagrank) {
+                                      double[] nodePagrank) {
         for (Node s : graph.getNodes()) {
             int s_index = indicies.get(s);
 
@@ -171,7 +170,8 @@ public class PageRank implements Statistics, LongTask {
         }
     }
 
-    private void setInitialValues(Graph graph, Map<Node, Integer> indicies, double[] pagerankValues, double[] weights, boolean directed, boolean useWeights) {
+    private void setInitialValues(Graph graph, Map<Node, Integer> indicies, double[] pagerankValues, double[] weights,
+                                  boolean directed, boolean useWeights) {
         final int N = graph.getNodeCount();
         for (Node s : graph.getNodes()) {
             final int index = indicies.get(s);
@@ -182,10 +182,10 @@ public class PageRank implements Statistics, LongTask {
                 if (directed) {
                     eIter = ((DirectedGraph) graph).getOutEdges(s);
                 } else {
-                    eIter = ((UndirectedGraph) graph).getEdges(s);
+                    eIter = graph.getEdges(s);
                 }
                 for (Edge edge : eIter) {
-                    if(!edge.isSelfLoop()){
+                    if (!edge.isSelfLoop()) {
                         sum += edge.getWeight();
                     }
                 }
@@ -194,7 +194,8 @@ public class PageRank implements Statistics, LongTask {
         }
     }
 
-    private double calculateR(Graph graph, double[] pagerankValues, HashMap<Node, Integer> indicies, boolean directed, double prob) {
+    private double calculateR(Graph graph, double[] pagerankValues, HashMap<Node, Integer> indicies, boolean directed,
+                              double prob) {
         int N = graph.getNodeCount();
         double r = (1.0 - prob) / N;//Initialize to damping factor
 
@@ -262,8 +263,10 @@ public class PageRank implements Statistics, LongTask {
         return inNeighborsPerNode;
     }
 
-    private Map<Node, Object2DoubleOpenHashMap<Node>> calculateInWeightPerNodeAndNeighbor(Graph graph, boolean directed, boolean useWeights) {
-        Object2ObjectOpenHashMap<Node, Object2DoubleOpenHashMap<Node>> inWeightPerNodeAndNeighbor = new Object2ObjectOpenHashMap<>();
+    private Map<Node, Object2DoubleOpenHashMap<Node>> calculateInWeightPerNodeAndNeighbor(Graph graph, boolean directed,
+                                                                                          boolean useWeights) {
+        Object2ObjectOpenHashMap<Node, Object2DoubleOpenHashMap<Node>> inWeightPerNodeAndNeighbor =
+            new Object2ObjectOpenHashMap<>();
 
         if (useWeights) {
             NodeIterable nodesIterable = graph.getNodes();
@@ -294,7 +297,7 @@ public class PageRank implements Statistics, LongTask {
                     nodesIterable.doBreak();
                     break;
                 }
-                
+
                 inWeightPerNodeAndNeighbor.put(node, inWeightPerNeighbor);
             }
         }
@@ -303,8 +306,10 @@ public class PageRank implements Statistics, LongTask {
     }
 
     private double updateValueForNode(Graph graph, Node node, double[] pagerankValues, double[] weights,
-            HashMap<Node, Integer> indicies, boolean directed, boolean useWeights, double r, double prob,
-            Map<Node, Set<Node>> inNeighborsPerNode, final Object2DoubleOpenHashMap<Node> inWeightPerNeighbor) {
+                                      HashMap<Node, Integer> indicies, boolean directed, boolean useWeights, double r,
+                                      double prob,
+                                      Map<Node, Set<Node>> inNeighborsPerNode,
+                                      final Object2DoubleOpenHashMap<Node> inWeightPerNeighbor) {
         double res = r;
 
         double sumNeighbors = 0;
@@ -331,7 +336,7 @@ public class PageRank implements Statistics, LongTask {
     }
 
     double[] calculatePagerank(Graph graph, HashMap<Node, Integer> indicies,
-            boolean directed, boolean useWeights, double eps, double prob) {
+                               boolean directed, boolean useWeights, double eps, double prob) {
         int N = graph.getNodeCount();
         double[] pagerankValues = new double[N];
         double[] temp = new double[N];
@@ -339,7 +344,8 @@ public class PageRank implements Statistics, LongTask {
         Progress.start(progress);
         final double[] weights = useWeights ? new double[N] : null;
         final Map<Node, Set<Node>> inNeighborsPerNode = calculateInNeighborsPerNode(graph, directed);
-        final Map<Node, Object2DoubleOpenHashMap<Node>> inWeightPerNodeAndNeighbor = calculateInWeightPerNodeAndNeighbor(graph, directed, useWeights);
+        final Map<Node, Object2DoubleOpenHashMap<Node>> inWeightPerNodeAndNeighbor =
+            calculateInWeightPerNodeAndNeighbor(graph, directed, useWeights);
 
         setInitialValues(graph, indicies, pagerankValues, weights, directed, useWeights);
 
@@ -350,7 +356,9 @@ public class PageRank implements Statistics, LongTask {
             NodeIterable nodesIterable = graph.getNodes();
             for (Node s : nodesIterable) {
                 int s_index = indicies.get(s);
-                temp[s_index] = updateValueForNode(graph, s, pagerankValues, weights, indicies, directed, useWeights, r, prob, inNeighborsPerNode, inWeightPerNodeAndNeighbor.get(s));
+                temp[s_index] =
+                    updateValueForNode(graph, s, pagerankValues, weights, indicies, directed, useWeights, r, prob,
+                        inNeighborsPerNode, inWeightPerNodeAndNeighbor.get(s));
 
                 if ((temp[s_index] - pagerankValues[s_index]) / pagerankValues[s_index] >= eps) {
                     done = false;
@@ -383,7 +391,6 @@ public class PageRank implements Statistics, LongTask {
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -407,36 +414,36 @@ public class PageRank implements Statistics, LongTask {
         dataset.addSeries(dSeries);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "PageRank Distribution",
-                "Score",
-                "Count",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            "PageRank Distribution",
+            "Score",
+            "Count",
+            dataset,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dSeries, true);
         String imageFile = ChartUtils.renderChart(chart, "pageranks.png");
 
         String report = "<HTML> <BODY> <h1>PageRank Report </h1> "
-                + "<hr> <br />"
-                + "<h2> Parameters: </h2>"
-                + "Epsilon = " + epsilon + "<br>"
-                + "Probability = " + probability
-                + "<br> <h2> Results: </h2>"
-                + imageFile
-                + "<br /><br />" + "<h2> Algorithm: </h2>"
-                + "Sergey Brin, Lawrence Page, <i>The Anatomy of a Large-Scale Hypertextual Web Search Engine</i>, in Proceedings of the seventh International Conference on the World Wide Web (WWW1998):107-117<br />"
-                + "</BODY> </HTML>";
+            + "<hr> <br />"
+            + "<h2> Parameters: </h2>"
+            + "Epsilon = " + epsilon + "<br>"
+            + "Probability = " + probability
+            + "<br> <h2> Results: </h2>"
+            + imageFile
+            + "<br /><br />" + "<h2> Algorithm: </h2>"
+            +
+            "Page, Lawrence and Brin, Sergey and Motwani, Rajeev and Winograd, Terry (1999) <i>The PageRank Citation Ranking: Bringing Order to the Web.</i> Technical Report. Stanford InfoLab.<br />"
+            + "</BODY> </HTML>";
 
         return report;
 
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -446,7 +453,6 @@ public class PageRank implements Statistics, LongTask {
     }
 
     /**
-     *
      * @param progressTicket
      */
     @Override
@@ -455,23 +461,6 @@ public class PageRank implements Statistics, LongTask {
     }
 
     /**
-     *
-     * @param prob
-     */
-    public void setProbability(double prob) {
-        probability = prob;
-    }
-
-    /**
-     *
-     * @param eps
-     */
-    public void setEpsilon(double eps) {
-        epsilon = eps;
-    }
-
-    /**
-     *
      * @return
      */
     public double getProbability() {
@@ -479,11 +468,24 @@ public class PageRank implements Statistics, LongTask {
     }
 
     /**
-     *
+     * @param prob
+     */
+    public void setProbability(double prob) {
+        probability = prob;
+    }
+
+    /**
      * @return
      */
     public double getEpsilon() {
         return epsilon;
+    }
+
+    /**
+     * @param eps
+     */
+    public void setEpsilon(double eps) {
+        epsilon = eps;
     }
 
     public boolean isUseEdgeWeight() {

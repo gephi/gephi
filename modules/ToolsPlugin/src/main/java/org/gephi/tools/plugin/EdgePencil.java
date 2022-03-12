@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.tools.plugin;
 
 import java.awt.Color;
@@ -64,7 +65,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Tool.class)
@@ -148,7 +148,8 @@ public class EdgePencil implements Tool {
                     color = edgePencilPanel.getColor();
                     weight = edgePencilPanel.getWeight();
                     boolean directed = edgePencilPanel.isDirected;
-                    Edge edge = Lookup.getDefault().lookup(GraphElementsController.class).createEdge(sourceNode, n, directed);
+                    Edge edge =
+                        Lookup.getDefault().lookup(GraphElementsController.class).createEdge(sourceNode, n, directed);
                     edge.setColor(color);
                     sourceNode = null;
                     edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));

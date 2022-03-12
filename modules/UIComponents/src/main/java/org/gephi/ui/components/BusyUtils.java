@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.Dimension;
@@ -48,7 +49,6 @@ import javax.swing.SwingConstants;
 import org.jdesktop.swingx.JXBusyLabel;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class BusyUtils {
@@ -57,9 +57,10 @@ public class BusyUtils {
      * Creates a new <code>JXBusyLabel</code> wrapper and set it at the center of <code>scrollPane</code>. When users
      * calls <code>BusyLabel.setBusy(false)</code>, the label is removed from <code>scrollPanel</code> and
      * <code>component</code> is set instead.
+     *
      * @param scrollPane the scroll Panel where the label is to be put
-     * @param text the text set to the newly created label
-     * @param component the component to set in <code>scrollPane</code> when it is not busy anymore
+     * @param text       the text set to the newly created label
+     * @param component  the component to set in <code>scrollPane</code> when it is not busy anymore
      * @return the newly created <code>JXBusyLabel</code> wrapper
      */
     public static BusyLabel createCenteredBusyLabel(JScrollPane scrollPane, String text, JComponent component) {
@@ -68,8 +69,8 @@ public class BusyUtils {
 
     public static class BusyLabel {
 
-        private JScrollPane scrollPane;
-        private JXBusyLabel busyLabel;
+        private final JScrollPane scrollPane;
+        private final JXBusyLabel busyLabel;
         private JComponent component;
 
         private BusyLabel(JScrollPane scrollpane, String text, JComponent component) {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.utils.stringconverters;
 
 import org.jdesktop.swingx.renderer.StringValue;
@@ -57,7 +58,7 @@ public class DefaultStringRepresentationConverter implements StringValue {
         if (value != null) {
             str = value.toString();
         }
-        
+
         return str;
     }
 }

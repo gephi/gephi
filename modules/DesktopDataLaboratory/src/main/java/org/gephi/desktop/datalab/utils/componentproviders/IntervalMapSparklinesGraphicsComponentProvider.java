@@ -9,7 +9,6 @@ import org.jdesktop.swingx.JXTable;
 import org.joda.time.DateTimeZone;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class IntervalMapSparklinesGraphicsComponentProvider extends AbstractSparklinesGraphicsComponentProvider {
@@ -51,6 +50,6 @@ public class IntervalMapSparklinesGraphicsComponentProvider extends AbstractSpar
             }
         }
 
-        return new Number[][]{xValues.toArray(new Number[0]), yValues.toArray(new Number[0])};
+        return new Number[][] {xValues.toArray(new Number[0]), yValues.toArray(new Number[0])};
     }
 }

@@ -1,21 +1,20 @@
 package org.gephi.visualization.scheduler;
 
 /**
- *
  * @author mbastian
  */
 public class BasicFPSAnimator extends Thread {
 
     //Runnable
     protected final Runnable runnable;
+    //Lock
+    protected final Object worldLock;
+    protected final Object lock = new Object();
     //Fps
     protected long startTime;
     protected long delay;
     //Flag
     protected boolean animating = true;
-    //Lock
-    protected final Object worldLock;
-    protected final Object lock = new Object();
 
     public BasicFPSAnimator(Runnable runnable, Object worldLock, String name, float fps) {
         super(name);

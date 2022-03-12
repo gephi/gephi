@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.filters.library;
 
 import java.util.HashSet;
@@ -64,11 +65,18 @@ import org.openide.util.LookupListener;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class FiltersExplorer extends BeanTreeView {
 
+    public static final Category QUERIES = new Category(
+        NbBundle.getMessage(FiltersExplorer.class, "FiltersExplorer.Queries"),
+        null,
+        null);
+    private final Category UNSORTED = new Category(
+        NbBundle.getMessage(FiltersExplorer.class, "FiltersExplorer.UnsortedCategory"),
+        null,
+        null);
     private ExplorerManager manager;
     private FilterLibrary filterLibrary;
     private FilterUIModel uiModel;
@@ -108,6 +116,43 @@ public class FiltersExplorer extends BeanTreeView {
         updateEnabled(model != null);
     }
 
+    private void updateEnabled(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                setRootVisible(enabled);
+                setEnabled(enabled);
+            }
+        });
+    }
+
+    private void loadExpandStatus(CategoryNode node) {
+        if (uiModel == null) {
+            return;
+        }
+        if (uiModel.isExpanded(node.getCategory())) {
+            expandNode(node);
+        }
+        for (Node n : node.getChildren().getNodes()) {
+            if (n instanceof CategoryNode) {
+                loadExpandStatus((CategoryNode) n);
+            }
+        }
+    }
+
+    private void saveExpandStatus(CategoryNode node) {
+        if (uiModel == null) {
+            return;
+        }
+        uiModel.setExpand(node.getCategory(), isExpanded(node));
+        for (Node n : node.getChildren().getNodes()) {
+            if (n instanceof CategoryNode) {
+                saveExpandStatus((CategoryNode) n);
+            }
+        }
+    }
+
     protected class Utils implements LookupListener {
 
         private final Lookup.Result<FilterBuilder> lookupResult;
@@ -138,7 +183,8 @@ public class FiltersExplorer extends BeanTreeView {
                 if (fb.getCategory() == null && category.equals(UNSORTED)) {
                     return false;
                 }
-                if (fb.getCategory() != null && fb.getCategory().getParent() != null && fb.getCategory().getParent().equals(category)) {
+                if (fb.getCategory() != null && fb.getCategory().getParent() != null &&
+                    fb.getCategory().getParent().equals(category)) {
                     return false;
                 }
                 if (fb.getCategory() != null && fb.getCategory().equals(category)) {
@@ -191,7 +237,8 @@ public class FiltersExplorer extends BeanTreeView {
                 for (CategoryBuilder cb : filterLibrary.getLookup().lookupAll(CategoryBuilder.class)) {
                     if (cb.getCategory().getParent() == category) {
                         cats.add(cb.getCategory());
-                    } else if (cb.getCategory().getParent() != null && cb.getCategory().getParent().getParent() == category) {
+                    } else if (cb.getCategory().getParent() != null &&
+                        cb.getCategory().getParent().getParent() == category) {
                         cats.add(cb.getCategory().getParent());
                     } else if (cb.getCategory() == category) {
                         for (FilterBuilder fb : cb.getBuilders(uiModel.getWorkspace())) {
@@ -210,51 +257,6 @@ public class FiltersExplorer extends BeanTreeView {
                 }
             }
             return true;
-        }
-    }
-    private final Category UNSORTED = new Category(
-            NbBundle.getMessage(FiltersExplorer.class, "FiltersExplorer.UnsortedCategory"),
-            null,
-            null);
-    public static final Category QUERIES = new Category(
-            NbBundle.getMessage(FiltersExplorer.class, "FiltersExplorer.Queries"),
-            null,
-            null);
-
-    private void updateEnabled(final boolean enabled) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                setRootVisible(enabled);
-                setEnabled(enabled);
-            }
-        });
-    }
-
-    private void loadExpandStatus(CategoryNode node) {
-        if (uiModel == null) {
-            return;
-        }
-        if (uiModel.isExpanded(node.getCategory())) {
-            expandNode(node);
-        }
-        for (Node n : node.getChildren().getNodes()) {
-            if (n instanceof CategoryNode) {
-                loadExpandStatus((CategoryNode) n);
-            }
-        }
-    }
-
-    private void saveExpandStatus(CategoryNode node) {
-        if (uiModel == null) {
-            return;
-        }
-        uiModel.setExpand(node.getCategory(), isExpanded(node));
-        for (Node n : node.getChildren().getNodes()) {
-            if (n instanceof CategoryNode) {
-                saveExpandStatus((CategoryNode) n);
-            }
         }
     }
 }

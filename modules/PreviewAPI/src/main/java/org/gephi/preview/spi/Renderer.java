@@ -39,9 +39,18 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.spi;
 
-import org.gephi.preview.api.*;
+import org.gephi.preview.api.CanvasSize;
+import org.gephi.preview.api.G2DTarget;
+import org.gephi.preview.api.Item;
+import org.gephi.preview.api.PDFTarget;
+import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.api.RenderTarget;
+import org.gephi.preview.api.SVGTarget;
 
 /**
  * Renderer describes how a particular {@link Item} object is rendered on a particular
@@ -96,6 +105,7 @@ import org.gephi.preview.api.*;
  * <p>
  * <code>@ServiceProvider(service=Renderer.class, position=XXX)</code>
  * <b>Position parameter optional but recommended</b> in order to control the default order in which the available renderers are executed.
+ *
  * @author Yudi Xue, Mathieu Bastian
  */
 public interface Renderer {
@@ -103,9 +113,10 @@ public interface Renderer {
     /**
      * Provides an user friendly name for the renderer.
      * This name will appear in the renderers manager UI.
+     *
      * @return User friendly renderer name, not null
      */
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * This method is called before rendering for all renderers and initializes
@@ -118,9 +129,10 @@ public interface Renderer {
      * {@link Item#setData(java.lang.String, java.lang.Object)}. Global states can
      * be stored in properties using
      * {@link PreviewProperties#putValue(java.lang.String, java.lang.Object)}.
+     *
      * @param previewModel the model to get items from
      */
-    public void preProcess(PreviewModel previewModel);
+    void preProcess(PreviewModel previewModel);
 
     /**
      * Render <code>item</code> to <code>target</code> using the global properties
@@ -129,11 +141,23 @@ public interface Renderer {
      * The target can be one of the default target {@link G2DTarget},
      * {@link SVGTarget} or {@link PDFTarget}. Each target contains an access to
      * it's drawing canvas so the renderer can draw visual items.
-     * @param item the item to be rendered
-     * @param target the target to render the item on
+     *
+     * @param item       the item to be rendered
+     * @param target     the target to render the item on
      * @param properties the central properties
      */
-    public void render(Item item, RenderTarget target, PreviewProperties properties);
+    void render(Item item, RenderTarget target, PreviewProperties properties);
+
+    /**
+     * This method is called after rendering all items to perform post-processing.
+     * <p>
+     * This method has access to the <code>model</code> but also to the <code>target</code> and <code>properties</code>.
+     *
+     * @param previewModel the model to get items from
+     * @param target     the target to render the item on
+     * @param properties the central properties
+     */
+    void postProcess(PreviewModel previewModel, RenderTarget target, PreviewProperties properties);
 
     /**
      * Returns all associated properties for this renderer. Properties can be built
@@ -141,7 +165,7 @@ public interface Renderer {
      *
      * @return a properties array
      */
-    public PreviewProperty[] getProperties();
+    PreviewProperty[] getProperties();
 
     /**
      * Based on <code>properties</code>, determine whether this renderer is
@@ -155,12 +179,13 @@ public interface Renderer {
      * is <code>true</code> if the user is currently moving the canvas. Renderers
      * other than the node renderer usually render nothing while the user is moving
      * to speeds things up.</li></ul>
-     * @param item the item to be tested
+     *
+     * @param item       the item to be tested
      * @param properties the current properties
      * @return <code>true</code> if <code>item</code> can be rendered by this
      * renderer, <code>false</code> otherwise
      */
-    public boolean isRendererForitem(Item item, PreviewProperties properties);
+    boolean isRendererForitem(Item item, PreviewProperties properties);
 
     /**
      * Based on the <code>itemBuilder</code> class and the <code>properties</code>,
@@ -172,7 +197,7 @@ public interface Renderer {
      * You can simply return true if the builder builds items that this renderer renders,
      * but you can also check the current properties to see if your renderer is going to produce any graphic.
      * <p>
-     *
+     * <p>
      * Additional states in <code>properties</code> helps to make a decision,
      * including:
      * <ul>
@@ -181,22 +206,23 @@ public interface Renderer {
      * is <code>true</code> if the user is currently moving the canvas. Renderers
      * other than the node renderer usually render nothing while the user is moving
      * to speeds things up.</li></ul>
+     *
      * @param itemBuilder builder that your renderer may need
-     * @param properties the current properties
+     * @param properties  the current properties
      * @return <code>true</code> if you are going to use built items for rendering, <code>false</code> otherwise
      */
-    public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties);
+    boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties);
 
     /**
      * Compute the canvas size of the item to render.
-     *
+     * <p>
      * The returned <code>CanvasSize</code> has to embed the whole item to
      * render. If the canvas size cannot be computed, a <code>CanvasSize</code>
      * with both width and height equlal to zero is returned.
      *
-     * @param item the item to get the canvas size
+     * @param item       the item to get the canvas size
      * @param properties the current properties
      * @return the item canvas size
      */
-    public CanvasSize getCanvasSize(Item item, PreviewProperties properties);
+    CanvasSize getCanvasSize(Item item, PreviewProperties properties);
 }

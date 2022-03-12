@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.filters.plugin.attribute;
 
 import java.text.DecimalFormat;
@@ -52,12 +53,18 @@ import org.openide.util.Exceptions;
 import org.openide.util.WeakListeners;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListener {
 
     private EqualNumberFilter filter;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel labelValue;
+    private javax.swing.JLabel maxLabel;
+    private javax.swing.JLabel minLabel;
+    private javax.swing.JSpinner valueSpinner;
 
     public EqualNumberPanel() {
         initComponents();
@@ -67,7 +74,7 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
     public void stateChanged(ChangeEvent evt) {
         FilterProperty match = filter.getProperties()[1];
         try {
-            match.setValue((Number) valueSpinner.getValue());
+            match.setValue(valueSpinner.getValue());
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
@@ -154,7 +161,8 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
         setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
 
-        labelValue.setText(org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.labelValue.text")); // NOI18N
+        labelValue.setText(
+            org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.labelValue.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -169,7 +177,8 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
         add(valueSpinner, gridBagConstraints);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.jLabel1.text")); // NOI18N
+        jLabel1.setText(
+            org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.jLabel1.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -178,7 +187,8 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
         add(jLabel1, gridBagConstraints);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jLabel2.setText(org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.jLabel2.text")); // NOI18N
+        jLabel2.setText(
+            org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.jLabel2.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -187,7 +197,8 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
         add(jLabel2, gridBagConstraints);
 
         minLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
-        minLabel.setText(org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.minLabel.text")); // NOI18N
+        minLabel.setText(
+            org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.minLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -196,7 +207,8 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
         add(minLabel, gridBagConstraints);
 
         maxLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
-        maxLabel.setText(org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.maxLabel.text")); // NOI18N
+        maxLabel.setText(
+            org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.maxLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -204,12 +216,5 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(maxLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel labelValue;
-    private javax.swing.JLabel maxLabel;
-    private javax.swing.JLabel minLabel;
-    private javax.swing.JSpinner valueSpinner;
     // End of variables declaration//GEN-END:variables
 }

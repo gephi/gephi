@@ -39,17 +39,28 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import org.gephi.filters.api.Range;
-import org.gephi.filters.spi.*;
-import org.gephi.graph.api.*;
+import org.gephi.filters.spi.ComplexFilter;
+import org.gephi.filters.spi.EdgeFilter;
+import org.gephi.filters.spi.ElementFilter;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.filters.spi.Operator;
+import org.gephi.filters.spi.RangeFilter;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Subgraph;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class FilterProcessor {
@@ -74,7 +85,7 @@ public class FilterProcessor {
                     //Leaves
                     GraphView newView = graphModel.copyView(graphModel.getGraph().getView());
                     views.add(newView);
-                    input = new Graph[]{graphModel.getGraph(newView)};    //duplicate root
+                    input = new Graph[] {graphModel.getGraph(newView)};    //duplicate root
                 }
                 //PROCESS
                 if (q instanceof OperatorQueryImpl && !((OperatorQueryImpl) q).isSimple()) {
@@ -175,7 +186,9 @@ public class FilterProcessor {
             if (q instanceof OperatorQueryImpl && q.getChildrenCount() > 0) {
                 boolean canSimplify = true;
                 for (AbstractQueryImpl child : q.children) {
-                    if (child.getChildrenCount() > 0 || !(child.getFilter() instanceof NodeFilter || child.getFilter() instanceof EdgeFilter || child.getFilter() instanceof ElementFilter)) {
+                    if (child.getChildrenCount() > 0 ||
+                        !(child.getFilter() instanceof NodeFilter || child.getFilter() instanceof EdgeFilter ||
+                            child.getFilter() instanceof ElementFilter)) {
                         canSimplify = false;
                     }
                 }
@@ -234,9 +247,11 @@ public class FilterProcessor {
             } else if (previousRange == null) {
                 newRange = new Range(min, max, min, max, values);
                 rangeFilter.getRangeProperty().setValue(newRange);
-            } else if (previousRange != null && (previousRange.getMinimum() == null || previousRange.getMaximum() == null)) {
+            } else if (previousRange != null &&
+                (previousRange.getMinimum() == null || previousRange.getMaximum() == null)) {
                 //Opening projects
-                newRange = new Range(previousRange.getLowerBound(), previousRange.getUpperBound(), min, max, previousRange.isLeftInclusive(), previousRange.isRightInclusive(), values);
+                newRange = new Range(previousRange.getLowerBound(), previousRange.getUpperBound(), min, max,
+                    previousRange.isLeftInclusive(), previousRange.isRightInclusive(), values);
                 rangeFilter.getRangeProperty().setValue(newRange);
             } else {
                 //Collect some info
@@ -265,7 +280,8 @@ public class FilterProcessor {
                     lowerBound = min;
                 }
 
-                newRange = new Range(lowerBound, upperBound, min, max, previousRange.isLeftInclusive(), previousRange.isRightInclusive(), values);
+                newRange = new Range(lowerBound, upperBound, min, max, previousRange.isLeftInclusive(),
+                    previousRange.isRightInclusive(), values);
                 if (!newRange.equals(previousRange)) {
                     rangeFilter.getRangeProperty().setValue(newRange);
                 }

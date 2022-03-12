@@ -56,42 +56,44 @@ import javax.swing.JTree;
 
 /**
  * A simple tree cell editor helper used to properly display a node while in editing mode.
+ *
  * @author Soot Phengsy
  */
 class DirectoryCellEditor extends DefaultCellEditor {
-    
-    private final JPanel editorPanel = new JPanel(new BorderLayout());
+
     private static JTextField textField;
     private static JTree tree;
     private static JFileChooser fileChooser;
-    
+    private final JPanel editorPanel = new JPanel(new BorderLayout());
+
     public DirectoryCellEditor(JTree tree, JFileChooser fileChooser, final JTextField textField) {
         super(textField);
-        this.tree = tree;
-        this.textField = textField;
-        this.fileChooser = fileChooser;
+        DirectoryCellEditor.tree = tree;
+        DirectoryCellEditor.textField = textField;
+        DirectoryCellEditor.fileChooser = fileChooser;
     }
-    
+
+    public static JTextField getTextField() {
+        return textField;
+    }
+
     @Override
     public boolean isCellEditable(EventObject event) {
-        return ((event instanceof MouseEvent) ? false : true);
+        return (!(event instanceof MouseEvent));
     }
-    
+
     @Override
-    public Component getTreeCellEditorComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row) {
+    public Component getTreeCellEditorComponent(JTree tree, Object value, boolean isSelected, boolean expanded,
+                                                boolean leaf, int row) {
         Component c = super.getTreeCellEditorComponent(tree, value, isSelected, expanded, leaf, row);
-        DirectoryNode node = (DirectoryNode)value;
+        DirectoryNode node = (DirectoryNode) value;
         editorPanel.setOpaque(false);
         editorPanel.add(new JLabel(fileChooser.getIcon(node.getFile())), BorderLayout.CENTER);
         editorPanel.add(c, BorderLayout.EAST);
-        textField = (JTextField)getComponent();
+        textField = (JTextField) getComponent();
         String text = fileChooser.getName(node.getFile());
         textField.setText(text);
         textField.setColumns(text.length());
         return editorPanel;
-    }
-    
-    public static JTextField getTextField() {
-        return textField;
     }
 }

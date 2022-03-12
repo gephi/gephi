@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.timeline.api;
 
 import org.gephi.graph.api.TimeFormat;
@@ -73,14 +74,14 @@ public interface TimelineController {
      * @param workspace the workspace to get the model from
      * @return the timeline model for this workspace
      */
-    public TimelineModel getModel(Workspace workspace);
+    TimelineModel getModel(Workspace workspace);
 
     /**
      * Get the current model from the current workspace
      *
      * @return the current model, or <code>null</code> if no active workspace
      */
-    public TimelineModel getModel();
+    TimelineModel getModel();
 
     /**
      * Sets the timeline custom bounds. Custom bounds still need to be included
@@ -90,16 +91,16 @@ public interface TimelineController {
      * @param min the lower bound
      * @param max the upper bound
      * @throws IllegalArgumentException if <code>min</code> is superior or equal than
-     * <code>max</code> or out of bounds
+     *                                  <code>max</code> or out of bounds
      */
-    public void setCustomBounds(double min, double max);
+    void setCustomBounds(double min, double max);
 
     /**
      * Sets the timeline enable status.
      *
      * @param enabled the enabled value to set
      */
-    public void setEnabled(boolean enabled);
+    void setEnabled(boolean enabled);
 
     /**
      * Sets the current timeline interval. This is propagated to the
@@ -107,25 +108,25 @@ public interface TimelineController {
      * with.
      *
      * @param from the lower bound
-     * @param to the upper bound
+     * @param to   the upper bound
      * @throws IllegalArgumentException if <code>min</code> is superior or equal than
-     * <code>max</code> or out of bounds
+     *                                  <code>max</code> or out of bounds
      */
-    public void setInterval(double from, double to);
-    
-    public void setTimeFormat(TimeFormat timeFormat);
-    
+    void setInterval(double from, double to);
+
+    void setTimeFormat(TimeFormat timeFormat);
+
 
     /**
      * Starts the timeline animation using the current delay, step size and play
      * mode.
      */
-    public void startPlay();
+    void startPlay();
 
     /**
      * Stops the timeline animation.
      */
-    public void stopPlay();
+    void stopPlay();
 
     /**
      * Sets the play delay in milliseconds. Defines the time between each
@@ -133,7 +134,7 @@ public interface TimelineController {
      *
      * @param delay the delay in milliseconds
      */
-    public void setPlaySpeed(int delay);
+    void setPlaySpeed(int delay);
 
     /**
      * Sets the play step. Defines how much the interval is moved at each step
@@ -141,14 +142,14 @@ public interface TimelineController {
      *
      * @param step the step, between 0 and 1
      */
-    public void setPlayStep(double step);
+    void setPlayStep(double step);
 
     /**
      * Sets the play mode. This defines how the interval is moved.
      *
      * @param playMode the play mode
      */
-    public void setPlayMode(TimelineModel.PlayMode playMode);
+    void setPlayMode(TimelineModel.PlayMode playMode);
 
     /**
      * Returns all the possible dynamic attribute columns. This is essentially
@@ -156,7 +157,7 @@ public interface TimelineController {
      *
      * @return all dynamic number columns in the graph table
      */
-    public String[] getDynamicGraphColumns();
+    String[] getDynamicGraphColumns();
 
     /**
      * Select a column to make a {@link TimelineChart} of it. The column must be
@@ -164,21 +165,21 @@ public interface TimelineController {
      *
      * @param column the column to select
      * @throws IllegalArgumentException if <code>column</code> is not a graph
-     * column
+     *                                  column
      */
-    public void selectColumn(String column);
+    void selectColumn(String column);
 
     /**
      * Add <code>listener</code> to the list of event listerners.
      *
      * @param listener the listener to add
      */
-    public void addListener(TimelineModelListener listener);
+    void addListener(TimelineModelListener listener);
 
     /**
      * Remove <code>listerner</code> from the list of event listeners.
      *
      * @param listener the listener to remove
      */
-    public void removeListener(TimelineModelListener listener);
+    void removeListener(TimelineModelListener listener);
 }

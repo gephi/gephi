@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.spi;
 
 import javax.swing.AbstractButton;
@@ -67,7 +68,7 @@ public interface TransformerUI<T extends Transformer> {
      *
      * @return transformer category
      */
-    public TransformerCategory getCategory();
+    TransformerCategory getCategory();
 
     /**
      * Returns the transformer panel for the given function.
@@ -75,40 +76,40 @@ public interface TransformerUI<T extends Transformer> {
      * @param function function
      * @return transformer panel
      */
-    public JPanel getPanel(Function function);
+    JPanel getPanel(Function function);
 
     /**
      * Returns the transformer's display name.
      *
      * @return display name
      */
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * Returns the transformer's description.
      *
      * @return description or null if missing
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * Returns the transformer's icon.
      *
      * @return icon or null if missing
      */
-    public Icon getIcon();
+    Icon getIcon();
 
     /**
      * Returns the control buttons associated with this transformer.
      *
      * @return control buttons or null if missing
      */
-    public AbstractButton[] getControlButton();
+    AbstractButton[] getControlButton();
 
     /**
      * Returns the transformer class this transformer UI is associated with.
      *
      * @return transformer class
      */
-    public Class<? extends T> getTransformerClass();
+    Class<? extends T> getTransformerClass();
 }

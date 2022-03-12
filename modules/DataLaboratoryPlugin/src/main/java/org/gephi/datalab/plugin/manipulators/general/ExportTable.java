@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.general;
 
 import javax.swing.Icon;
@@ -52,14 +53,15 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * GeneralActionsManipulator that exports a table to a spreadsheet file.
+ *
  * @author Eduardo Ramos
  */
-@ServiceProvider(service=GeneralActionsManipulator.class)
+@ServiceProvider(service = GeneralActionsManipulator.class)
 public class ExportTable implements GeneralActionsManipulator {
 
     @Override
     public void execute() {
-        DataTablesController dtc=Lookup.getDefault().lookup(DataTablesController.class);
+        DataTablesController dtc = Lookup.getDefault().lookup(DataTablesController.class);
         dtc.exportCurrentTable();
     }
 

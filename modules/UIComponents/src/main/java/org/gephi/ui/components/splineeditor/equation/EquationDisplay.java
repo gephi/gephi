@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components.splineeditor.equation;
 
 import java.awt.BasicStroke;
@@ -72,29 +73,29 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
     private static final float STROKE_AXIS = 1.2f;
     private static final float STROKE_GRID = 1.0f;
     private static final float COEFF_ZOOM = 1.1f;
-    private List<DrawableEquation> equations;
     protected double minX;
     protected double maxX;
     protected double minY;
     protected double maxY;
-    private double originX;
-    private double originY;
-    private double majorX;
-    private int minorX;
-    private double majorY;
-    private int minorY;
+    private final List<DrawableEquation> equations;
+    private final double originX;
+    private final double originY;
+    private final double majorX;
+    private final int minorX;
+    private final double majorY;
+    private final int minorY;
     private boolean drawText = true;
     private Point dragStart;
-    private NumberFormat formatter;
-    private ZoomHandler zoomHandler;
-    private PanMotionHandler panMotionHandler;
-    private PanHandler panHandler;
+    private final NumberFormat formatter;
+    private final ZoomHandler zoomHandler;
+    private final PanMotionHandler panMotionHandler;
+    private final PanHandler panHandler;
 
     public EquationDisplay(double originX, double originY,
-            double minX, double maxX,
-            double minY, double maxY,
-            double majorX, int minorX,
-            double majorY, int minorY) {
+                           double minX, double maxX,
+                           double minY, double maxY,
+                           double majorX, int minorX,
+                           double majorY, int minorY) {
         if (minX >= maxX) {
             throw new IllegalArgumentException("minX must be < to maxX");
         }
@@ -426,7 +427,7 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
 
     protected void setupGraphics(Graphics2D g2) {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+            RenderingHints.VALUE_ANTIALIAS_ON);
     }
 
     protected void paintBackground(Graphics2D g2) {
@@ -434,10 +435,14 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
         g2.fill(g2.getClipBounds());
     }
 
+    public List<DrawableEquation> getEquations() {
+        return equations;
+    }
+
     private class DrawableEquation {
 
-        private AbstractEquation equation;
-        private Color color;
+        private final AbstractEquation equation;
+        private final Color color;
 
         DrawableEquation(AbstractEquation equation, Color color) {
             this.equation = equation;
@@ -496,21 +501,17 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
             Point dragEnd = e.getPoint();
 
             double distance = xPixelToPosition(dragEnd.getX())
-                    - xPixelToPosition(dragStart.getX());
+                - xPixelToPosition(dragStart.getX());
             minX -= distance;
             maxX -= distance;
 
             distance = yPixelToPosition(dragEnd.getY())
-                    - yPixelToPosition(dragStart.getY());
+                - yPixelToPosition(dragStart.getY());
             minY -= distance;
             maxY -= distance;
 
             repaint();
             dragStart = dragEnd;
         }
-    }
-
-    public List<DrawableEquation> getEquations() {
-        return equations;
     }
 }

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.statistics.plugin;
 
 import java.text.DecimalFormat;
@@ -103,7 +104,7 @@ public class ModularityUI implements StatisticsUI {
 
     @Override
     public String getCategory() {
-        return StatisticsUI.CATEGORY_NETWORK_OVERVIEW;
+        return StatisticsUI.CATEGORY_COMMUNITY_DETECTION;
     }
 
     @Override

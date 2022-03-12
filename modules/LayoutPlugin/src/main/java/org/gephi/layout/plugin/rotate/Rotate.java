@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.rotate;
 
 import javax.swing.Icon;
@@ -50,7 +51,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Helder Suzuki
  */
 @ServiceProvider(service = LayoutBuilder.class)
@@ -59,7 +59,7 @@ public class Rotate implements LayoutBuilder {
     private final RotateLayoutUI ui = new RotateLayoutUI();
 
     @Override
-    public Layout buildLayout() {
+    public RotateLayout buildLayout() {
         return new RotateLayout(this, 90);
     }
 

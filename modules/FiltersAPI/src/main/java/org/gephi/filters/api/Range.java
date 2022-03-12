@@ -39,10 +39,10 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.api;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public final class Range {
@@ -83,15 +83,39 @@ public final class Range {
         this.values = values;
     }
 
-    public Range(Number lowerBound, Number upperBound, Number min, Number max, boolean leftInclusive, boolean rightInclusive, Number[] values) {
+    public Range(Number lowerBound, Number upperBound, Number min, Number max, boolean leftInclusive,
+                 boolean rightInclusive, Number[] values) {
         this(lowerBound, upperBound, min, max, values);
         this.leftInclusive = leftInclusive;
         this.rightInclusive = rightInclusive;
     }
 
+    public static Number trimToBounds(Number min, Number max, Number value) {
+        if (min != null && max != null && value != null) {
+            if (min.getClass().equals(max.getClass()) && max.getClass().equals(value.getClass())) {
+                if (min instanceof Long || min instanceof Integer || min instanceof Short || min instanceof Byte) {
+                    if (value.longValue() < min.longValue()) {
+                        value = min;
+                    } else if (value.longValue() > max.longValue()) {
+                        value = max;
+                    }
+                } else if (min instanceof Float || min instanceof Double) {
+                    if (value.doubleValue() < min.doubleValue()) {
+                        value = min;
+                    } else if (value.doubleValue() > max.doubleValue()) {
+                        value = max;
+                    }
+                }
+            } else {
+                throw new IllegalArgumentException("min, max and value must be the same class");
+            }
+        }
+        return value;
+    }
+
     public boolean isInRange(Number value) {
         return ((Comparable) lowerNumber).compareTo(value) <= (leftInclusive ? 0 : -1)
-                && ((Comparable) upperNumber).compareTo(value) >= (rightInclusive ? 0 : 1);
+            && ((Comparable) upperNumber).compareTo(value) >= (rightInclusive ? 0 : 1);
     }
 
     public Double getLowerDouble() {
@@ -174,29 +198,6 @@ public final class Range {
         return rightInclusive;
     }
 
-    public static Number trimToBounds(Number min, Number max, Number value) {
-        if (min != null && max != null && value != null) {
-            if (min.getClass().equals(max.getClass()) && max.getClass().equals(value.getClass())) {
-                if (min instanceof Long || min instanceof Integer || min instanceof Short || min instanceof Byte) {
-                    if (value.longValue() < min.longValue()) {
-                        value = min;
-                    } else if (value.longValue() > max.longValue()) {
-                        value = max;
-                    }
-                } else if (min instanceof Float || min instanceof Double) {
-                    if (value.doubleValue() < min.doubleValue()) {
-                        value = min;
-                    } else if (value.doubleValue() > max.doubleValue()) {
-                        value = max;
-                    }
-                }
-            } else {
-                throw new IllegalArgumentException("min, max and value must be the same class");
-            }
-        }
-        return value;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -206,10 +207,12 @@ public final class Range {
             return false;
         }
         final Range other = (Range) obj;
-        if (this.lowerNumber != other.lowerNumber && (this.lowerNumber == null || !this.lowerNumber.equals(other.lowerNumber))) {
+        if (this.lowerNumber != other.lowerNumber &&
+            (this.lowerNumber == null || !this.lowerNumber.equals(other.lowerNumber))) {
             return false;
         }
-        if (this.upperNumber != other.upperNumber && (this.upperNumber == null || !this.upperNumber.equals(other.upperNumber))) {
+        if (this.upperNumber != other.upperNumber &&
+            (this.upperNumber == null || !this.upperNumber.equals(other.upperNumber))) {
             return false;
         }
         if (this.min != other.min && (this.min == null || !this.min.equals(other.min))) {
@@ -221,10 +224,7 @@ public final class Range {
         if (this.leftInclusive != other.leftInclusive) {
             return false;
         }
-        if (this.rightInclusive != other.rightInclusive) {
-            return false;
-        }
-        return true;
+        return this.rightInclusive == other.rightInclusive;
     }
 
     @Override

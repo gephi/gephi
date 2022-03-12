@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.statistics.api;
 
 import javax.swing.event.ChangeListener;
@@ -46,7 +47,6 @@ import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface StatisticsModelUI {
@@ -54,48 +54,53 @@ public interface StatisticsModelUI {
     /**
      * Returns the result string for the given <code>StatisticsUI</code> class or
      * <code>null</code> if no result string exists for this statistics.
-     * @param statisticsUI      a statisticsUI class
-     * @return                  the result or <code>null</code> if not found
+     *
+     * @param statisticsUI a statisticsUI class
+     * @return the result or <code>null</code> if not found
      */
-    public String getResult(StatisticsUI statisticsUI);
+    String getResult(StatisticsUI statisticsUI);
 
     /**
      * Returns <code>true</code> if the statistics front-end is visible, <code>
      * false</code> otherwise.
-     * @param statisticsUI      an UI instance
-     * @return                  <code>true</code> if the statistics front-end
-     *                          is visible, <code>false</code> otherwise
+     *
+     * @param statisticsUI an UI instance
+     * @return <code>true</code> if the statistics front-end
+     * is visible, <code>false</code> otherwise
      */
-    public boolean isStatisticsUIVisible(StatisticsUI statisticsUI);
+    boolean isStatisticsUIVisible(StatisticsUI statisticsUI);
 
     /**
      * Returns <code>true</code> if the UI is in running state, <code>false</code>
      * otherwise.
-     * @param statisticsUI      an UI instance
-     * @return                  <code>true</code> if the statistics is running,
-     *                          <code>false</code> otherwise
+     *
+     * @param statisticsUI an UI instance
+     * @return <code>true</code> if the statistics is running,
+     * <code>false</code> otherwise
      */
-    public boolean isRunning(StatisticsUI statisticsUI);
+    boolean isRunning(StatisticsUI statisticsUI);
 
     /**
      * Returns the <code>Statistics</code> instance currently running for the
      * particular <code>StatisticsUI</code> registered or <code>null</code> if
      * the statistics is not running.
-     * @param statisticsUI      an UI instance
-     * @return                  the statistics instance if it is running, or
-     *                          <code>null</code> if not running
+     *
+     * @param statisticsUI an UI instance
+     * @return the statistics instance if it is running, or
+     * <code>null</code> if not running
      */
-    public Statistics getRunning(StatisticsUI statisticsUI);
-    
+    Statistics getRunning(StatisticsUI statisticsUI);
+
     /**
      * Returns the report for the given statistics class or <code>null</code> if no report
      * exists for this statistics.
-     * @param statistics        a statistics class
-     * @return                  the report or <code>null</code> if not found
+     *
+     * @param statistics a statistics class
+     * @return the report or <code>null</code> if not found
      */
-    public String getReport(Class<? extends Statistics> statistics);
+    String getReport(Class<? extends Statistics> statistics);
 
-    public void addChangeListener(ChangeListener changeListener);
+    void addChangeListener(ChangeListener changeListener);
 
-    public void removeChangeListener(ChangeListener changeListener);
+    void removeChangeListener(ChangeListener changeListener);
 }

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file;
 
 import org.gephi.io.importer.api.FileType;
@@ -49,7 +50,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author rlfnb
  */
 @ServiceProvider(service = FileImporterBuilder.class)
@@ -70,7 +70,7 @@ public final class ImporterBuilderTGF implements FileImporterBuilder {
     @Override
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".tgf", NbBundle.getMessage(getClass(), "fileType_TGF_Name"));
-        return new FileType[]{ft};
+        return new FileType[] {ft};
     }
 
     @Override

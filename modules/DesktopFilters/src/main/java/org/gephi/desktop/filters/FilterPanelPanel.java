@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.filters;
 
 import java.awt.BorderLayout;
@@ -57,13 +58,12 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class FilterPanelPanel extends JPanel implements ChangeListener {
 
-    private Query selectedQuery;
     private final String settingsString;
+    private Query selectedQuery;
     private FilterUIModel uiModel;
 
     public FilterPanelPanel() {
@@ -122,7 +122,8 @@ public class FilterPanelPanel extends JPanel implements ChangeListener {
                         if (panel != null) {
                             add(panel, BorderLayout.CENTER);
                             panel.setOpaque(false);
-                            setBorder(javax.swing.BorderFactory.createTitledBorder(query.getFilter().getName() + " " + settingsString));
+                            setBorder(javax.swing.BorderFactory
+                                .createTitledBorder(query.getFilter().getName() + " " + settingsString));
                         }
                     } catch (Exception e) {
                         Logger.getLogger("").log(Level.SEVERE, "Error while setting query", e);

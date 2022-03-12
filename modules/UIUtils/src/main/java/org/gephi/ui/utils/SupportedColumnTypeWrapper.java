@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.utils;
 
 import java.math.BigDecimal;
@@ -52,10 +53,6 @@ import java.util.Set;
 import org.gephi.graph.api.AttributeUtils;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.TimeRepresentation;
-import org.gephi.graph.api.types.IntervalMap;
-import org.gephi.graph.api.types.IntervalSet;
-import org.gephi.graph.api.types.TimestampMap;
-import org.gephi.graph.api.types.TimestampSet;
 import org.gephi.utils.Attributes;
 
 /**
@@ -65,10 +62,60 @@ import org.gephi.utils.Attributes;
  */
 public class SupportedColumnTypeWrapper implements Comparable<SupportedColumnTypeWrapper> {
 
+    private static final List<Class> SIMPLE_TYPES_ORDER = Arrays.asList(new Class[] {
+        String.class,
+        Integer.class,
+        Long.class,
+        Float.class,
+        Double.class,
+        Boolean.class,
+        BigInteger.class,
+        BigDecimal.class,
+        Byte.class,
+        Short.class,
+        Character.class
+    });
     private final Class<?> type;
 
     public SupportedColumnTypeWrapper(Class type) {
         this.type = type;
+    }
+
+    /**
+     * Build a list of column type wrappers from GraphStore supported types.
+     *
+     * @param graphModel
+     * @return Ordered column type wrappers list
+     */
+    public static List<SupportedColumnTypeWrapper> buildOrderedSupportedTypesList(GraphModel graphModel) {
+        TimeRepresentation timeRepresentation = graphModel.getConfiguration().getTimeRepresentation();
+        return buildOrderedSupportedTypesList(timeRepresentation);
+    }
+
+    /**
+     * Build a list of column type wrappers from GraphStore supported types.
+     *
+     * @param timeRepresentation
+     * @return Ordered column type wrappers list
+     */
+    public static List<SupportedColumnTypeWrapper> buildOrderedSupportedTypesList(
+        TimeRepresentation timeRepresentation) {
+        List<SupportedColumnTypeWrapper> supportedTypesWrappers = new ArrayList<>();
+
+        for (Class<?> type : AttributeUtils.getSupportedTypes()) {
+            if (type.equals(Map.class) || type.equals(List.class) || type.equals(Set.class)) {
+                continue;
+                //Not yet supported in Gephi
+            }
+
+            if (AttributeUtils.isStandardizedType(type) && Attributes.isTypeAvailable(type, timeRepresentation)) {
+                supportedTypesWrappers.add(new SupportedColumnTypeWrapper(type));
+            }
+        }
+
+        Collections.sort(supportedTypesWrappers);
+
+        return supportedTypesWrappers;
     }
 
     @Override
@@ -100,25 +147,8 @@ public class SupportedColumnTypeWrapper implements Comparable<SupportedColumnTyp
             return false;
         }
         final SupportedColumnTypeWrapper other = (SupportedColumnTypeWrapper) obj;
-        if (this.type != other.type && (this.type == null || !this.type.equals(other.type))) {
-            return false;
-        }
-        return true;
+        return this.type == other.type || (this.type != null && this.type.equals(other.type));
     }
-
-    private static final List<Class> SIMPLE_TYPES_ORDER = Arrays.asList(new Class[]{
-        String.class,
-        Integer.class,
-        Long.class,
-        Float.class,
-        Double.class,
-        Boolean.class,
-        BigInteger.class,
-        BigDecimal.class,
-        Byte.class,
-        Short.class,
-        Character.class
-    });
 
     /**
      * Order for column types by name. Simple types appear first, then dynamic types and then array/list types.
@@ -158,41 +188,5 @@ public class SupportedColumnTypeWrapper implements Comparable<SupportedColumnTyp
                 }
             }
         }
-    }
-
-    /**
-     * Build a list of column type wrappers from GraphStore supported types.
-     *
-     * @param graphModel
-     * @return Ordered column type wrappers list
-     */
-    public static List<SupportedColumnTypeWrapper> buildOrderedSupportedTypesList(GraphModel graphModel) {
-        TimeRepresentation timeRepresentation = graphModel.getConfiguration().getTimeRepresentation();
-        return buildOrderedSupportedTypesList(timeRepresentation);
-    }
-
-    /**
-     * Build a list of column type wrappers from GraphStore supported types.
-     *
-     * @param timeRepresentation
-     * @return Ordered column type wrappers list
-     */
-    public static List<SupportedColumnTypeWrapper> buildOrderedSupportedTypesList(TimeRepresentation timeRepresentation) {
-        List<SupportedColumnTypeWrapper> supportedTypesWrappers = new ArrayList<>();
-
-        for (Class<?> type : AttributeUtils.getSupportedTypes()) {
-            if (type.equals(Map.class) || type.equals(List.class) || type.equals(Set.class)) {
-                continue;
-                //Not yet supported in Gephi
-            }
-
-            if (AttributeUtils.isStandardizedType(type) && Attributes.isTypeAvailable(type, timeRepresentation)) {
-                supportedTypesWrappers.add(new SupportedColumnTypeWrapper(type));
-            }
-        }
-
-        Collections.sort(supportedTypesWrappers);
-
-        return supportedTypesWrappers;
     }
 }

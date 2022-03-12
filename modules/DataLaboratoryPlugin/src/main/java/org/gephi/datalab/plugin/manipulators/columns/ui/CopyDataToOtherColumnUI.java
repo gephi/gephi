@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.ui;
 
 import java.util.ArrayList;
@@ -63,6 +64,10 @@ public class CopyDataToOtherColumnUI extends javax.swing.JPanel implements Attri
 
     CopyDataToOtherColumn manipulator;
     Column[] columns;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox columnsComboBox;
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JLabel sourceColumnLabel;
 
     /**
      * Creates new form CopyDataToOtherColumnUI
@@ -72,10 +77,13 @@ public class CopyDataToOtherColumnUI extends javax.swing.JPanel implements Attri
     }
 
     @Override
-    public void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column, DialogControls dialogControls) {
+    public void setup(AttributeColumnsManipulator m, GraphModel graphModel, Table table, Column column,
+                      DialogControls dialogControls) {
         this.manipulator = (CopyDataToOtherColumn) m;
 
-        sourceColumnLabel.setText(NbBundle.getMessage(CopyDataToOtherColumnUI.class, "CopyDataToOtherColumnUI.sourceColumnLabel.text", column.getTitle()));
+        sourceColumnLabel.setText(NbBundle
+            .getMessage(CopyDataToOtherColumnUI.class, "CopyDataToOtherColumnUI.sourceColumnLabel.text",
+                column.getTitle()));
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
@@ -127,7 +135,8 @@ public class CopyDataToOtherColumnUI extends javax.swing.JPanel implements Attri
         sourceColumnLabel = new javax.swing.JLabel();
 
         descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(CopyDataToOtherColumnUI.class, "CopyDataToOtherColumnUI.descriptionLabel.text")); // NOI18N
+        descriptionLabel.setText(org.openide.util.NbBundle
+            .getMessage(CopyDataToOtherColumnUI.class, "CopyDataToOtherColumnUI.descriptionLabel.text")); // NOI18N
 
         sourceColumnLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         sourceColumnLabel.setText(null);
@@ -136,29 +145,28 @@ public class CopyDataToOtherColumnUI extends javax.swing.JPanel implements Attri
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(columnsComboBox, 0, 192, Short.MAX_VALUE)
-                    .addComponent(sourceColumnLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(columnsComboBox, 0, 192, Short.MAX_VALUE)
+                        .addComponent(sourceColumnLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(sourceColumnLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(descriptionLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(columnsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(sourceColumnLabel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(descriptionLabel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(columnsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox columnsComboBox;
-    private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JLabel sourceColumnLabel;
     // End of variables declaration//GEN-END:variables
 }

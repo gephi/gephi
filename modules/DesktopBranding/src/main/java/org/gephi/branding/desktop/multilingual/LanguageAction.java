@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.branding.desktop.multilingual;
 
 import java.awt.event.ActionEvent;
@@ -46,7 +47,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Icon;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
@@ -59,45 +64,6 @@ import org.openide.util.actions.CallableSystemAction;
 public final class LanguageAction extends CallableSystemAction {
 
     private static final String APPNAME = "gephi";
-
-    public enum Language {
-
-        EN_US("en", "English"),
-        CS_CS("cs", "Čeština"),
-        DE_DE("de", "Deutsch"),
-        ES_ES("es", "Español"),
-        FR_FR("fr", "Français"),
-        PT_BR("pt", "BR", "Português do Brasil"),
-        RU_RU("ru", "Русский"),
-        ZH_CN("zh", "CN", "中文"),
-        JA_JA("ja", "日本語");
-        private String language;
-        private String country = null;
-        private String name;
-
-        private Language(String locale, String name) {
-            this.language = locale;
-            this.name = name;
-        }
-
-        private Language(String language, String country, String name) {
-            this.language = language;
-            this.name = name;
-            this.country = country;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getLanguage() {
-            return language;
-        }
-
-        public String getCountry() {
-            return country;
-        }
-    }
 
     @Override
     public void performAction() {
@@ -124,12 +90,16 @@ public final class LanguageAction extends CallableSystemAction {
                 public void actionPerformed(ActionEvent e) {
                     String msg = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.message");
                     String title = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.title");
-                    DialogDescriptor.Confirmation dd = new DialogDescriptor.Confirmation(msg, title, DialogDescriptor.YES_NO_OPTION);
+                    DialogDescriptor.Confirmation dd =
+                        new DialogDescriptor.Confirmation(msg, title, DialogDescriptor.YES_NO_OPTION);
                     if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.YES_OPTION)) {
                         try {
                             setLanguage(lang);
                         } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(null, NbBundle.getMessage(LanguageAction.class, "ChangeLang.Error.message"), NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.title"), JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null,
+                                NbBundle.getMessage(LanguageAction.class, "ChangeLang.Error.message"),
+                                NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.title"),
+                                JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
@@ -199,7 +169,46 @@ public final class LanguageAction extends CallableSystemAction {
         FileWriter writer = new FileWriter(confFile);
         writer.write(outputBuilder.toString());
         writer.close();
-        
+
         LifecycleManager.getDefault().exit();
+    }
+
+    public enum Language {
+
+        EN_US("en", "English"),
+        CS_CS("cs", "Čeština"),
+        DE_DE("de", "Deutsch"),
+        ES_ES("es", "Español"),
+        FR_FR("fr", "Français"),
+        PT_BR("pt", "BR", "Português do Brasil"),
+        RU_RU("ru", "Русский"),
+        ZH_CN("zh", "CN", "中文"),
+        JA_JA("ja", "日本語");
+        private final String language;
+        private String country = null;
+        private final String name;
+
+        Language(String locale, String name) {
+            this.language = locale;
+            this.name = name;
+        }
+
+        Language(String language, String country, String name) {
+            this.language = language;
+            this.name = name;
+            this.country = country;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getLanguage() {
+            return language;
+        }
+
+        public String getCountry() {
+            return country;
+        }
     }
 }

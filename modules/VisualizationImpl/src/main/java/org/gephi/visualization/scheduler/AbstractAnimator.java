@@ -3,17 +3,16 @@ package org.gephi.visualization.scheduler;
 import java.util.concurrent.Semaphore;
 
 /**
- *
  * @author mbastian
  */
 public abstract class AbstractAnimator extends Thread {
 
     //Runnable
     protected final Runnable runnable;
-    //Flag
-    protected boolean animating = true;
     //Lock
     protected final Semaphore semaphore;
+    //Flag
+    protected boolean animating = true;
 
     public AbstractAnimator(Runnable runnable, Semaphore semaphore, String name) {
         super(name);

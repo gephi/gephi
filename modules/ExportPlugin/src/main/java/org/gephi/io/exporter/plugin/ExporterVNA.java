@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
@@ -46,6 +47,7 @@ import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.gephi.graph.api.Column;
+import org.gephi.graph.api.ColumnIterable;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
@@ -60,11 +62,11 @@ import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 
 /**
- *
  * @author megaterik
  */
 public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
 
+    static final String valueForEmptyAttributes = "\"\"";
     private boolean exportVisible;
     private Workspace workspace;
     private boolean cancel = false;
@@ -75,7 +77,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportSize = true;
     private boolean exportShortLabel = true;
     private boolean exportColor = true;
-    private boolean exportDynamicWeight = true;
+    private final boolean exportDynamicWeight = true;
     private boolean exportAttributes = true;
     private boolean normalize = false;
     private Writer writer;
@@ -90,13 +92,13 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     private double getHigh;
 
     @Override
-    public void setExportVisible(boolean exportVisible) {
-        this.exportVisible = exportVisible;
+    public boolean isExportVisible() {
+        return exportVisible;
     }
 
     @Override
-    public boolean isExportVisible() {
-        return exportVisible;
+    public void setExportVisible(boolean exportVisible) {
+        this.exportVisible = exportVisible;
     }
 
     @Override
@@ -148,18 +150,20 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             return res;
         }
     }
+    /*
+     * prints node data in format "id (attributes)*
+     */
 
     private boolean atLeastOneNonStandartAttribute(GraphModel graphModel) {
-        for (Column col : graphModel.getNodeTable()) {
+        ColumnIterable columnIterable = graphModel.getNodeTable();
+        for (Column col : columnIterable) {
             if (!col.isProperty()) {
+                columnIterable.doBreak();
                 return true;
             }
         }
         return false;
     }
-    /*
-     * prints node data in format "id (attributes)*
-     */
 
     private void exportNodeData(Graph graph) throws IOException {
         //header
@@ -196,7 +200,6 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             }
         }
     }
-    static final String valueForEmptyAttributes = "\"\"";
 
     private void calculateMinMaxForNormalization(Graph graph) {
         minX = Double.POSITIVE_INFINITY;
@@ -220,8 +223,8 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             minY = Math.min(minY, node.y());
             maxY = Math.max(maxY, node.y());
 
-            minSize = Math.min(minSize, node.r());
-            maxSize = Math.max(maxSize, node.r());
+            minSize = Math.min(minSize, node.size());
+            maxSize = Math.max(maxSize, node.size());
         }
     }
 
@@ -259,7 +262,8 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
                 if (!normalize) {
                     writer.append(" ").append(Float.toString(node.x())).append(" ").append(Float.toString(node.y()));
                 } else {
-                    writer.append(" ").append(Double.toString((node.x() - minX) / (maxX - minX))).append(" ").append(Double.toString((node.y() - minY) / (maxY - minY)));
+                    writer.append(" ").append(Double.toString((node.x() - minX) / (maxX - minX))).append(" ")
+                        .append(Double.toString((node.y() - minY) / (maxY - minY)));
                 }
             }
             if (exportSize) {
@@ -332,7 +336,8 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
 
         EdgeIterable edgeIterable = graph.getEdges();
         for (Edge edge : edgeIterable) {
-            printEdgeData(edge, edge.getSource(), edge.getTarget(), graph);//all edges in vna are directed, so make clone
+            printEdgeData(edge, edge.getSource(), edge.getTarget(),
+                graph);//all edges in vna are directed, so make clone
             if (!edge.isDirected() && !edge.isSelfLoop()) {
                 printEdgeData(edge, edge.getTarget(), edge.getSource(), graph);
             }
@@ -345,13 +350,13 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     }
 
     @Override
-    public void setWorkspace(Workspace workspace) {
-        this.workspace = workspace;
+    public Workspace getWorkspace() {
+        return workspace;
     }
 
     @Override
-    public Workspace getWorkspace() {
-        return workspace;
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 
     @Override

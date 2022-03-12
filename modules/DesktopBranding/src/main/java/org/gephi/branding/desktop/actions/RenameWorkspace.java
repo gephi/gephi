@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
@@ -53,7 +54,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class RenameWorkspace extends SystemAction {
@@ -63,9 +63,11 @@ public class RenameWorkspace extends SystemAction {
         String name = "";
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         name = pc.getCurrentWorkspace().getLookup().lookup(WorkspaceInformation.class).getName();
-        DialogDescriptor.InputLine dd = new DialogDescriptor.InputLine("", NbBundle.getMessage(RenameWorkspace.class, "RenameWorkspace.dialog.title"));
+        DialogDescriptor.InputLine dd = new DialogDescriptor.InputLine("",
+            NbBundle.getMessage(RenameWorkspace.class, "RenameWorkspace.dialog.title"));
         dd.setInputText(name);
-        if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION) && !dd.getInputText().isEmpty()) {
+        if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION) &&
+            !dd.getInputText().isEmpty()) {
             Lookup.getDefault().lookup(ProjectControllerUI.class).renameWorkspace(dd.getInputText());
         }
     }
@@ -74,7 +76,7 @@ public class RenameWorkspace extends SystemAction {
     public boolean isEnabled() {
         return Lookup.getDefault().lookup(ProjectControllerUI.class).canRenameWorkspace();
     }
-    
+
     @Override
     protected String iconResource() {
         return "org/gephi/branding/desktop/actions/resources/renameWorkspace.png";

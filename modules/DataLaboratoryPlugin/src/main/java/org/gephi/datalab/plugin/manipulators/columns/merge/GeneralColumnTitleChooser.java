@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
 import org.gephi.graph.api.Table;
@@ -46,24 +47,28 @@ import org.gephi.graph.api.Table;
 /**
  * Interface that general merge strategies that only need to choose a title for the column to create
  * should implement in order to be able to use GeneralColumnTitleChooserUI.
+ *
  * @author Eduardo Ramos
  */
 public interface GeneralColumnTitleChooser {
 
     /**
      * Provide a initial title for the UI if needed.
+     *
      * @return Title
      */
     String getColumnTitle();
 
     /**
      * Called from the UI to set the final title to use.
+     *
      * @param columnTitle Title
      */
     void setColumnTitle(String columnTitle);
 
     /**
      * Manipulators must provide the table to use in the UI to validate the column title with this method.
+     *
      * @return Table for the new column
      */
     Table getTable();

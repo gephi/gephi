@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components;
 
 import java.awt.Cursor;
@@ -54,7 +55,6 @@ import javax.swing.event.ChangeListener;
 import org.gephi.utils.NumberUtils;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class JRangeSliderPanel extends javax.swing.JPanel {
@@ -65,6 +65,10 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
     private String lowerBound = "N/A";
     private String upperBound = "N/A";
     private Range range;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField lowerBoundTextField;
+    private javax.swing.JSlider rangeSlider;
+    private javax.swing.JTextField upperBoundTextField;
 
     /**
      * Creates new form JRangeSliderPanel
@@ -200,7 +204,8 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         add(rangeSlider, gridBagConstraints);
 
-        lowerBoundTextField.setText(org.openide.util.NbBundle.getMessage(JRangeSliderPanel.class, "JRangeSliderPanel.lowerBoundTextField.text")); // NOI18N
+        lowerBoundTextField.setText(org.openide.util.NbBundle
+            .getMessage(JRangeSliderPanel.class, "JRangeSliderPanel.lowerBoundTextField.text")); // NOI18N
         lowerBoundTextField.setBorder(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -211,7 +216,8 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
         add(lowerBoundTextField, gridBagConstraints);
 
         upperBoundTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        upperBoundTextField.setText(org.openide.util.NbBundle.getMessage(JRangeSliderPanel.class, "JRangeSliderPanel.upperBoundTextField.text")); // NOI18N
+        upperBoundTextField.setText(org.openide.util.NbBundle
+            .getMessage(JRangeSliderPanel.class, "JRangeSliderPanel.upperBoundTextField.text")); // NOI18N
         upperBoundTextField.setBorder(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -222,18 +228,14 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
         add(upperBoundTextField, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField lowerBoundTextField;
-    private javax.swing.JSlider rangeSlider;
-    private javax.swing.JTextField upperBoundTextField;
     // End of variables declaration//GEN-END:variables
 
     public static class Range<T extends Number & Comparable> {
 
         private final JRangeSliderPanel slider;
         private final Class<T> type;
-        private T min;
-        private T max;
+        private final T min;
+        private final T max;
         private T lowerBound;
         private T upperBound;
         private int sliderLowValue = -1;
@@ -252,17 +254,40 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             this(slider, min, max, min, max, type);
         }
 
+        public static Range build(JRangeSliderPanel slider, Number min, Number max) {
+            return build(slider, min, max, min, max);
+        }
+
+        public static Range build(JRangeSliderPanel slider, Number min, Number max, Number lowerBound,
+                                  Number upperBound) {
+            if (min instanceof Double) {
+                return new Range(slider, min, max, lowerBound, upperBound, Double.class);
+            } else if (min instanceof Float) {
+                return new Range(slider, min, max, lowerBound, upperBound, Float.class);
+            } else if (min instanceof Long) {
+                return new Range(slider, min, max, lowerBound, upperBound, Long.class);
+            } else if (min instanceof Integer) {
+                return new Range(slider, min, max, lowerBound, upperBound, Integer.class);
+            } else if (min instanceof Short) {
+                return new Range(slider, min, max, lowerBound, upperBound, Short.class);
+            } else if (min instanceof Byte) {
+                return new Range(slider, min, max, lowerBound, upperBound, Byte.class);
+            } else if (min instanceof BigDecimal) {
+                return new Range(slider, min, max, lowerBound, upperBound, BigDecimal.class);
+            } else if (min instanceof BigInteger) {
+                return new Range(slider, min, max, lowerBound, upperBound, BigInteger.class);
+            } else {
+                throw new UnsupportedOperationException("Unsupported number type " + min.getClass().getName());
+            }
+        }
+
         public T getLowerBound() {
             return lowerBound;
         }
 
-        public T getUpperBound() {
-            return upperBound;
-        }
-
         private void setLowerBound(String bound) {
             try {
-                T v = (T) NumberUtils.parseNumber(bound, type);
+                T v = NumberUtils.parseNumber(bound, type);
 
                 if (v.compareTo(min) < 0) {
                     lowerBound = min;
@@ -276,9 +301,13 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             refreshSlider();
         }
 
+        public T getUpperBound() {
+            return upperBound;
+        }
+
         private void setUpperBound(String bound) {
             try {
-                T v = (T) NumberUtils.parseNumber(bound, type);
+                T v = NumberUtils.parseNumber(bound, type);
                 if (v.compareTo(max) > 0) {
                     upperBound = max;
                 } else if (v.compareTo(lowerBound) < 0) {
@@ -298,11 +327,11 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             BigDecimal maxBigDecimal = new BigDecimal(max.toString());
 
             double normalizedLow = (lowerBoundBigDecimal.subtract(minBigDecimal))
-                    .divide(maxBigDecimal.subtract(minBigDecimal), RoundingMode.HALF_UP)
-                    .doubleValue();
+                .divide(maxBigDecimal.subtract(minBigDecimal), RoundingMode.HALF_UP)
+                .doubleValue();
             double normalizedUp = (upperBoundBigDecimal.subtract(minBigDecimal))
-                    .divide(maxBigDecimal.subtract(minBigDecimal), RoundingMode.HALF_UP)
-                    .doubleValue();
+                .divide(maxBigDecimal.subtract(minBigDecimal), RoundingMode.HALF_UP)
+                .doubleValue();
 
             sliderLowValue = (int) (normalizedLow * SLIDER_MAXIMUM);
             sliderUpValue = (int) (normalizedUp * SLIDER_MAXIMUM);
@@ -323,54 +352,36 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
                 BigDecimal maxBigDecimal = new BigDecimal(max.toString());
 
                 if (lowerChanged) {
-                    BigDecimal newLowerBound = (BigDecimal.valueOf(normalizedLow).multiply(maxBigDecimal.subtract(minBigDecimal))).add(minBigDecimal);
+                    BigDecimal newLowerBound =
+                        (BigDecimal.valueOf(normalizedLow).multiply(maxBigDecimal.subtract(minBigDecimal)))
+                            .add(minBigDecimal);
 
                     if (type.equals(Double.class) || type.equals(Float.class) || type.equals(BigDecimal.class)) {
                         lowerBound = NumberUtils.parseNumber(newLowerBound.toString(), type);
                     } else {
-                        lowerBound = NumberUtils.parseNumber(newLowerBound.setScale(0, RoundingMode.HALF_UP).toBigInteger().toString(), type);
+                        lowerBound = NumberUtils
+                            .parseNumber(newLowerBound.setScale(0, RoundingMode.HALF_UP).toBigInteger().toString(),
+                                type);
                     }
 
                     slider.firePropertyChange(LOWER_BOUND, null, lowerBound);
                 }
 
                 if (upperChanged) {
-                    BigDecimal newUpperBound = (BigDecimal.valueOf(normalizedUp).multiply(maxBigDecimal.subtract(minBigDecimal))).add(minBigDecimal);
+                    BigDecimal newUpperBound =
+                        (BigDecimal.valueOf(normalizedUp).multiply(maxBigDecimal.subtract(minBigDecimal)))
+                            .add(minBigDecimal);
 
                     if (type.equals(Double.class) || type.equals(Float.class) || type.equals(BigDecimal.class)) {
                         upperBound = NumberUtils.parseNumber(newUpperBound.toString(), type);
                     } else {
-                        upperBound = NumberUtils.parseNumber(newUpperBound.setScale(0, RoundingMode.HALF_UP).toBigInteger().toString(), type);
+                        upperBound = NumberUtils
+                            .parseNumber(newUpperBound.setScale(0, RoundingMode.HALF_UP).toBigInteger().toString(),
+                                type);
                     }
 
                     slider.firePropertyChange(UPPER_BOUND, null, upperBound);
                 }
-            }
-        }
-
-        public static Range build(JRangeSliderPanel slider, Number min, Number max) {
-            return build(slider, min, max, min, max);
-        }
-
-        public static Range build(JRangeSliderPanel slider, Number min, Number max, Number lowerBound, Number upperBound) {
-            if (min instanceof Double) {
-                return new Range(slider, min, max, lowerBound, upperBound, Double.class);
-            } else if (min instanceof Float) {
-                return new Range(slider, min, max, lowerBound, upperBound, Float.class);
-            } else if (min instanceof Long) {
-                return new Range(slider, min, max, lowerBound, upperBound, Long.class);
-            } else if (min instanceof Integer) {
-                return new Range(slider, min, max, lowerBound, upperBound, Integer.class);
-            } else if (min instanceof Short) {
-                return new Range(slider, min, max, lowerBound, upperBound, Short.class);
-            } else if (min instanceof Byte) {
-                return new Range(slider, min, max, lowerBound, upperBound, Byte.class);
-            } else if (min instanceof BigDecimal) {
-                return new Range(slider, min, max, lowerBound, upperBound, BigDecimal.class);
-            } else if (min instanceof BigInteger) {
-                return new Range(slider, min, max, lowerBound, upperBound, BigInteger.class);
-            } else {
-                throw new UnsupportedOperationException("Unsupported number type " + min.getClass().getName());
             }
         }
     }

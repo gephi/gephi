@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.force.yifanHu;
 
 import javax.swing.Icon;
@@ -51,13 +52,12 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Helder Suzuki
  */
 @ServiceProvider(service = LayoutBuilder.class)
 public class YifanHuProportional implements LayoutBuilder {
 
-    private YifanHuProportionalLayoutUI ui = new YifanHuProportionalLayoutUI();
+    private final YifanHuProportionalLayoutUI ui = new YifanHuProportionalLayoutUI();
 
     @Override
     public YifanHuLayout buildLayout() {

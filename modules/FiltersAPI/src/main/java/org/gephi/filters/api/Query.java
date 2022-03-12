@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.api;
 
 import org.gephi.filters.spi.Filter;
@@ -68,21 +69,21 @@ public interface Query {
      *
      * @return query's name
      */
-    public String getName();
-    
+    String getName();
+
     /**
      * Sets the query name to a custom value
-     * 
+     *
      * @param name Custom name
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Returns queries that are children of this query.
      *
      * @return query's children
      */
-    public Query[] getChildren();
+    Query[] getChildren();
 
     /**
      * Returns the limit number of children this query can have. Return 1 for a
@@ -90,21 +91,21 @@ public interface Query {
      *
      * @return the number of allowed children query
      */
-    public int getChildrenSlotsCount();
+    int getChildrenSlotsCount();
 
     /**
      * Returns the parent query or <code>null</code> if this query is root.
      *
      * @return the query's parent query, or <code>null</code>
      */
-    public Query getParent();
+    Query getParent();
 
     /**
      * Returns the number of properties this query has.
      *
      * @return the query's number of properties
      */
-    public int getPropertiesCount();
+    int getPropertiesCount();
 
     /**
      * Returns the name of the property at the specified <code>index</code>.
@@ -112,9 +113,9 @@ public interface Query {
      * @param index the index of the property
      * @return the query's property name
      * @throws ArrayIndexOutOfBoundsException if <code>index</code> is out of
-     * bounds
+     *                                        bounds
      */
-    public String getPropertyName(int index);
+    String getPropertyName(int index);
 
     /**
      * Returns the value of the property at the specified <code>index</code>.
@@ -122,9 +123,9 @@ public interface Query {
      * @param index the index of the property
      * @return the query's property value
      * @throws ArrayIndexOutOfBoundsException if <code>index</code> is out of
-     * bounds
+     *                                        bounds
      */
-    public Object getPropertyValue(int index);
+    Object getPropertyValue(int index);
 
     /**
      * Utility method that returns all queries in this query hierarchy that are
@@ -134,21 +135,21 @@ public interface Query {
      * @return all queries, including self that are <code>filterClass</code>
      * instance
      */
-    public Query[] getQueries(Class<? extends Filter> filterClass);
+    Query[] getQueries(Class<? extends Filter> filterClass);
 
     /**
      * Utility method that returns all descendant queries plus this query.
      *
      * @return all descendant queries and self
      */
-    public Query[] getDescendantsAndSelf();
+    Query[] getDescendantsAndSelf();
 
     /**
      * Returns the filter this query is wrapping.
      *
      * @return the filter
      */
-    public Filter getFilter();
+    Filter getFilter();
 
     /**
      * Returns the filter builder that creates the filter this query is
@@ -156,5 +157,5 @@ public interface Query {
      *
      * @return the builder or null
      */
-    public FilterBuilder getBuilder();
+    FilterBuilder getBuilder();
 }

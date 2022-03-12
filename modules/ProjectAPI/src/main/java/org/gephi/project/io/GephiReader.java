@@ -39,25 +39,23 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.io;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
+import org.gephi.project.api.GephiFormatException;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.ProjectsImpl;
 import org.gephi.project.impl.WorkspaceProviderImpl;
-import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.gephi.workspace.impl.WorkspaceImpl;
 import org.gephi.workspace.impl.WorkspaceInformationImpl;
-import org.openide.util.Lookup;
 
 public class GephiReader {
 
-    static final String VERSION = "0.7";
+    static final String VERSION = "0.9";
 
     public static ProjectImpl readProject(XMLStreamReader reader, ProjectsImpl projects) throws Exception {
         ProjectImpl project = null;
@@ -69,8 +67,10 @@ public class GephiReader {
                 if ("projectFile".equalsIgnoreCase(name) || "gephiFile".equalsIgnoreCase(name)) {
                     //Version
                     String version = reader.getAttributeValue(null, "version");
-                    if (version == null || version.isEmpty() || Double.parseDouble(version) < Double.parseDouble(VERSION)) {
-                        throw new GephiFormatException("Gephi project file version must be at least of version " + VERSION);
+                    if (version == null || version.isEmpty() ||
+                        Double.parseDouble(version) < Double.parseDouble(VERSION)) {
+                        throw new GephiFormatException(
+                            "Gephi project file version must be at least of version " + VERSION);
                     }
                 } else if ("project".equalsIgnoreCase(name)) {
                     String projectName = reader.getAttributeValue(null, "name");
@@ -81,9 +81,6 @@ public class GephiReader {
                         Integer workspaceIds = Integer.parseInt(reader.getAttributeValue(null, "ids"));
                         project.setWorkspaceIds(workspaceIds);
                     }
-                } else if ("workspace".equalsIgnoreCase(name)) {
-                    //Legacy workspace reading
-                    readWorkspaceLegacy(reader, project);
                 }
             } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
                 if ("project".equalsIgnoreCase(reader.getLocalName())) {
@@ -93,51 +90,6 @@ public class GephiReader {
         }
 
         return project;
-    }
-
-    private static void readWorkspaceLegacy(XMLStreamReader reader, ProjectImpl project) throws Exception {
-        WorkspaceImpl workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace();
-        WorkspaceInformationImpl info = workspace.getLookup().lookup(WorkspaceInformationImpl.class);
-
-        //Name
-        info.setName(reader.getAttributeValue(null, "name"));
-
-        //Status
-        String workspaceStatus = reader.getAttributeValue(null, "status");
-        if (workspaceStatus.equals("open")) {
-            info.open();
-        } else if (workspaceStatus.equals("closed")) {
-            info.close();
-        } else {
-            info.invalid();
-        }
-
-        Map<String, WorkspaceXMLPersistenceProvider> providers = new LinkedHashMap<>();
-        for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
-            String id = w.getIdentifier();
-            if (id != null && !id.isEmpty() && w instanceof WorkspaceXMLPersistenceProvider) {
-                providers.put(w.getIdentifier(), (WorkspaceXMLPersistenceProvider) w);
-            }
-        }
-
-        boolean end = false;
-        while (reader.hasNext() && !end) {
-            Integer eventType = reader.next();
-            if (eventType.equals(XMLEvent.START_ELEMENT)) {
-                String name = reader.getLocalName();
-                WorkspaceXMLPersistenceProvider pp = providers.get(name);
-                if (pp != null) {
-                    try {
-                        pp.readXML(reader, workspace);
-                    } catch (UnsupportedOperationException e) {
-                    }
-                }
-            } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
-                if ("workspace".equalsIgnoreCase(reader.getLocalName())) {
-                    end = true;
-                }
-            }
-        }
     }
 
     public static WorkspaceImpl readWorkspace(XMLStreamReader reader, ProjectImpl project) throws Exception {
@@ -182,7 +134,8 @@ public class GephiReader {
         return workspace;
     }
 
-    public static void readWorkspaceChildren(Workspace workspace, XMLStreamReader reader, WorkspaceXMLPersistenceProvider persistenceProvider) throws Exception {
+    public static void readWorkspaceChildren(Workspace workspace, XMLStreamReader reader,
+                                             WorkspaceXMLPersistenceProvider persistenceProvider) throws Exception {
         String identifier = persistenceProvider.getIdentifier();
         boolean end = false;
         while (reader.hasNext() && !end) {

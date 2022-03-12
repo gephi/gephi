@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics;
 
 import javax.xml.stream.XMLStreamException;
@@ -50,7 +51,6 @@ import org.gephi.project.spi.WorkspaceXMLPersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = WorkspacePersistenceProvider.class)
@@ -79,7 +79,7 @@ public class StatisticsPersistenceProvider implements WorkspaceXMLPersistencePro
             statModel.readXML(reader);
         } catch (XMLStreamException ex) {
             throw new RuntimeException(ex);
-        }    
+        }
     }
 
     @Override

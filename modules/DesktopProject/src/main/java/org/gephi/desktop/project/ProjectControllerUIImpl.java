@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.project;
 
 import java.io.File;
@@ -59,6 +60,8 @@ import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.spi.FileImporterBuilder;
+import org.gephi.project.api.GephiFormatException;
+import org.gephi.project.api.LegacyGephiFormatException;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
@@ -84,12 +87,16 @@ import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.WindowManager;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ProjectControllerUI.class)
 public class ProjectControllerUIImpl implements ProjectControllerUI {
 
+    //Project
+    private final ProjectController controller;
+    private final ImportControllerUI importControllerUI;
+    //Utilities
+    private final LongTaskExecutor longTaskExecutor;
     //Actions
     private boolean openProject = true;
     private boolean newProject = true;
@@ -102,11 +109,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     private boolean deleteWorkspace = false;
     private boolean duplicateWorkspace = false;
     private boolean renameWorkspace = false;
-    //Project
-    private final ProjectController controller;
-    private final ImportControllerUI importControllerUI;
-    //Utilities
-    private final LongTaskExecutor longTaskExecutor;
 
     public ProjectControllerUIImpl() {
 
@@ -119,15 +121,16 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             @Override
             public void fatalError(Throwable t) {
                 unlockProjectActions();
-//                String txt = NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.error.open");
-//                String message = txt + "\n\n" + t.getMessage();
-//                if (t.getCause() != null) {
-//                    message = txt + "\n\n" + t.getCause().getClass().getSimpleName() + " - " + t.getCause().getMessage();
-//                }
-//                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(message, NotifyDescriptor.WARNING_MESSAGE);
-//                DialogDisplayer.getDefault().notify(msg);
 
-                Exceptions.printStackTrace(t);
+                if (t instanceof LegacyGephiFormatException || t instanceof GephiFormatException) {
+                    NotifyDescriptor.Message msg =
+                        new NotifyDescriptor.Message(t.getLocalizedMessage(), NotifyDescriptor.WARNING_MESSAGE);
+                    DialogDisplayer.getDefault().notify(msg);
+                }
+
+                if (!(t instanceof LegacyGephiFormatException)) {
+                    Exceptions.printStackTrace(t);
+                }
             }
         });
         longTaskExecutor.setLongTaskListener(new LongTaskListener() {
@@ -148,7 +151,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             public void run() {
                 saveTask.run();
                 //Status line
-                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.saved", fileName));
+                StatusDisplayer.getDefault().setStatusText(
+                    NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.saved", fileName));
             }
         };
         if (saveTask instanceof LongTask) {
@@ -178,7 +182,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         final String LAST_PATH = "SaveAsProject_Last_Path";
         final String LAST_PATH_DEFAULT = "SaveAsProject_Last_Path_Default";
 
-        DialogFileFilter filter = new DialogFileFilter(NbBundle.getMessage(ProjectControllerUIImpl.class, "SaveAsProject_filechooser_filter"));
+        DialogFileFilter filter = new DialogFileFilter(
+            NbBundle.getMessage(ProjectControllerUIImpl.class, "SaveAsProject_filechooser_filter"));
         filter.addExtension(".gephi");
 
         //Get last directory
@@ -252,21 +257,22 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             if (!file.exists()) {
                 if (!file.createNewFile()) {
                     String failMsg = NbBundle.getMessage(
-                            ProjectControllerUIImpl.class,
-                            "SaveAsProject_SaveFailed", new Object[]{file.getPath()});
+                        ProjectControllerUIImpl.class,
+                        "SaveAsProject_SaveFailed", new Object[] {file.getPath()});
                     JOptionPane.showMessageDialog(null, failMsg);
                     return false;
                 }
             } else {
                 String overwriteMsg = NbBundle.getMessage(
-                        ProjectControllerUIImpl.class,
-                        "SaveAsProject_Overwrite", new Object[]{file.getPath()});
+                    ProjectControllerUIImpl.class,
+                    "SaveAsProject_Overwrite", new Object[] {file.getPath()});
                 if (JOptionPane.showConfirmDialog(null, overwriteMsg) != JOptionPane.OK_OPTION) {
                     return false;
                 }
             }
         } catch (IOException ex) {
-            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+            NotifyDescriptor.Message msg =
+                new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
             DialogDisplayer.getDefault().notifyLater(msg);
             return false;
         }
@@ -281,12 +287,13 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             String messageBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_message");
             String titleBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_title");
             String saveBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_save");
-            String doNotSaveBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_doNotSave");
+            String doNotSaveBundle =
+                NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_doNotSave");
             String cancelBundle = NbBundle.getMessage(ProjectControllerUIImpl.class, "CloseProject_confirm_cancel");
             NotifyDescriptor msg = new NotifyDescriptor(messageBundle, titleBundle,
-                    NotifyDescriptor.YES_NO_CANCEL_OPTION,
-                    NotifyDescriptor.INFORMATION_MESSAGE,
-                    new Object[]{saveBundle, doNotSaveBundle, cancelBundle}, saveBundle);
+                NotifyDescriptor.YES_NO_CANCEL_OPTION,
+                NotifyDescriptor.INFORMATION_MESSAGE,
+                new Object[] {saveBundle, doNotSaveBundle, cancelBundle}, saveBundle);
             Object result = DialogDisplayer.getDefault().notify(msg);
             if (result == saveBundle) {
                 saveProject();
@@ -348,7 +355,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                     }
                 });
                 //Status line
-                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.opened", fileName));
+                StatusDisplayer.getDefault().setStatusText(
+                    NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.status.opened", fileName));
             }
         };
         if (loadTask instanceof LongTask) {
@@ -467,7 +475,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         if (ui != null) {
             JPanel panel = ui.getPanel();
             ui.setup(project);
-            DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectProperties_dialog_title"));
+            DialogDescriptor dd = new DialogDescriptor(panel,
+                NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectProperties_dialog_title"));
             Object result = DialogDisplayer.getDefault().notify(dd);
             if (result == NotifyDescriptor.OK_OPTION) {
                 ui.unsetup(project);
@@ -484,7 +493,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     public void openFile(FileImporterBuilder[] builders) {
         List<FileFilter> filters = new ArrayList<>();
 
-        DialogFileFilter graphFilter = new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_graphfilter"));
+        DialogFileFilter graphFilter =
+            new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_graphfilter"));
 
         List<FileType> fileTypes;
         if (builders != null) {
@@ -494,7 +504,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 fileTypes.addAll(Arrays.asList(builder.getFileTypes()));
             }
         } else {
-            DialogFileFilter gephiFilter = new DialogFileFilter(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject_filechooser_filter"));
+            DialogFileFilter gephiFilter = new DialogFileFilter(
+                NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject_filechooser_filter"));
             gephiFilter.addExtension(".gephi");
 
             filters.add(gephiFilter);
@@ -510,8 +521,9 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
             graphFilter.addExtensions(fileType.getExtensions());
         }
-        DialogFileFilter zipFileFilter = new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_zipfilter"));
-        zipFileFilter.addExtensions(new String[]{".zip", ".gz", ".bz2"});
+        DialogFileFilter zipFileFilter =
+            new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_zipfilter"));
+        zipFileFilter.addExtensions(new String[] {".zip", ".gz", ".bz2"});
 
         filters.add(graphFilter);
         filters.add(zipFileFilter);
@@ -555,7 +567,9 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
                 if (fileObject.getExt().equalsIgnoreCase("gephi")) {
                     if (gephiFile != null) {
-                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.error.multipleGephi"), NotifyDescriptor.ERROR_MESSAGE);
+                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle
+                            .getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.error.multipleGephi"),
+                            NotifyDescriptor.ERROR_MESSAGE);
                         DialogDisplayer.getDefault().notify(msg);
                         return;
                     } else {
@@ -579,7 +593,9 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                     loadProject(gephiFile);
                 } catch (Exception ew) {
                     Exceptions.printStackTrace(ew);
-                    NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject.defaulterror"), NotifyDescriptor.WARNING_MESSAGE);
+                    NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
+                        NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject.defaulterror"),
+                        NotifyDescriptor.WARNING_MESSAGE);
                     DialogDisplayer.getDefault().notify(msg);
                 }
             } else {
@@ -604,7 +620,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 @Override
                 public void run() {
                     JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-                    String title = frame.getTitle() + " - " + project.getLookup().lookup(ProjectInformation.class).getName();
+                    String title =
+                        frame.getTitle() + " - " + project.getLookup().lookup(ProjectInformation.class).getName();
                     frame.setTitle(title);
                 }
             });

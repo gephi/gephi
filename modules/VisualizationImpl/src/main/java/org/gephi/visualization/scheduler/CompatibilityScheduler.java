@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.scheduler;
 
 import com.jogamp.opengl.GL2;
@@ -52,11 +53,12 @@ import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.CompatibilityEngine;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
+    private final float updateFpsLimit = 5f;
+    private final Object worldLock = new Object();
     //States
     AtomicBoolean animating = new AtomicBoolean();
     AtomicBoolean cameraMoved = new AtomicBoolean();
@@ -73,8 +75,6 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     private BasicFPSAnimator displayAnimator;
     private BasicFPSAnimator updateAnimator;
     private float displayFpsLimit = 30f;
-    private final float updateFpsLimit = 5f;
-    private final Object worldLock = new Object();
 
     @Override
     public void initArchitecture() {
@@ -218,15 +218,15 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     }
 
     @Override
+    public float getFps() {
+        return displayFpsLimit;
+    }
+
+    @Override
     public void setFps(float maxFps) {
         this.displayFpsLimit = maxFps;
         if (displayAnimator != null) {
             displayAnimator.setFps(maxFps);
         }
-    }
-
-    @Override
-    public float getFps() {
-        return displayFpsLimit;
     }
 }

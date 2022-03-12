@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.ui.utils;
 
 import org.gephi.graph.api.TimeFormat;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class TimeFormatWrapper {
@@ -75,10 +75,7 @@ public class TimeFormatWrapper {
             return false;
         }
         final TimeFormatWrapper other = (TimeFormatWrapper) obj;
-        if (this.timeFormat != other.timeFormat) {
-            return false;
-        }
-        return true;
+        return this.timeFormat == other.timeFormat;
     }
 
     public TimeFormat getTimeFormat() {

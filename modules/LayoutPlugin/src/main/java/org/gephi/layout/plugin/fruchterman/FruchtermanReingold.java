@@ -39,8 +39,11 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.fruchterman;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
@@ -49,14 +52,10 @@ import org.gephi.layout.plugin.ForceVectorNodeLayoutData;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.openide.util.Exceptions;
-
 /**
- *
  * @author Mathieu Jacomy
  */
 public class FruchtermanReingold extends AbstractLayout implements Layout {
@@ -102,8 +101,10 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
                 layoutData.dy = 0;
             }
 
-            float maxDisplace = (float) (Math.sqrt(AREA_MULTIPLICATOR * area) / 10f);                    // Déplacement limite : on peut le calibrer...
-            float k = (float) Math.sqrt((AREA_MULTIPLICATOR * area) / (1f + nodes.length));        // La variable k, l'idée principale du layout.
+            float maxDisplace = (float) (Math.sqrt(AREA_MULTIPLICATOR * area) /
+                10f);                    // Déplacement limite : on peut le calibrer...
+            float k = (float) Math.sqrt((AREA_MULTIPLICATOR * area) /
+                (1f + nodes.length));        // La variable k, l'idée principale du layout.
 
             for (Node N1 : nodes) {
                 for (Node N2 : nodes) {    // On fait toutes les paires de noeuds
@@ -198,26 +199,26 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
 
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class,
-                    NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.area.name"),
-                    FRUCHTERMAN_REINGOLD,
-                    "fruchtermanReingold.area.name",
-                    NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.area.desc"),
-                    "getArea", "setArea"));
+                this, Float.class,
+                NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.area.name"),
+                FRUCHTERMAN_REINGOLD,
+                "fruchtermanReingold.area.name",
+                NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.area.desc"),
+                "getArea", "setArea"));
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
-                    NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.gravity.name"),
-                    FRUCHTERMAN_REINGOLD,
-                    "fruchtermanReingold.gravity.name",
-                    NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.gravity.desc"),
-                    "getGravity", "setGravity"));
+                this, Double.class,
+                NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.gravity.name"),
+                FRUCHTERMAN_REINGOLD,
+                "fruchtermanReingold.gravity.name",
+                NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.gravity.desc"),
+                "getGravity", "setGravity"));
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
-                    NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.speed.name"),
-                    FRUCHTERMAN_REINGOLD,
-                    "fruchtermanReingold.speed.name",
-                    NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.speed.desc"),
-                    "getSpeed", "setSpeed"));
+                this, Double.class,
+                NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.speed.name"),
+                FRUCHTERMAN_REINGOLD,
+                "fruchtermanReingold.speed.name",
+                NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.speed.desc"),
+                "getSpeed", "setSpeed"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }

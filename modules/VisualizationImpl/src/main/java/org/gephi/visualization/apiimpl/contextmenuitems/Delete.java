@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import java.awt.event.KeyEvent;
@@ -61,8 +62,8 @@ public class Delete extends BasicItem {
     @Override
     public void execute() {
         NotifyDescriptor.Confirmation notifyDescriptor = new NotifyDescriptor.Confirmation(
-                NbBundle.getMessage(Delete.class, "GraphContextMenu.Delete.message"),
-                NbBundle.getMessage(Delete.class, "GraphContextMenu.Delete.message.title"), NotifyDescriptor.YES_NO_OPTION);
+            NbBundle.getMessage(Delete.class, "GraphContextMenu.Delete.message"),
+            NbBundle.getMessage(Delete.class, "GraphContextMenu.Delete.message.title"), NotifyDescriptor.YES_NO_OPTION);
         if (DialogDisplayer.getDefault().notify(notifyDescriptor).equals(NotifyDescriptor.YES_OPTION)) {
             GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
             gec.deleteNodes(nodes);

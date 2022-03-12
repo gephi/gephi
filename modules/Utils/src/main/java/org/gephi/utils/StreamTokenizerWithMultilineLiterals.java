@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2017 Gephi Consortium.
  */
+
 package org.gephi.utils;
 
 /* This is a small modification of StreamTokenizer to support multiline literal strings. See https://bugs.openjdk.java.net/browse/JDK-4239144 */
@@ -102,48 +103,42 @@ import java.util.Arrays;
  * {@code nextToken} method in each iteration of the loop until
  * it returns the value {@code TT_EOF}.
  *
- * @author  James Gosling
- * @see     java.io.StreamTokenizer#nextToken()
- * @see     java.io.StreamTokenizer#TT_EOF
- * @since   JDK1.0
+ * @author James Gosling
+ * @see java.io.StreamTokenizer#nextToken()
+ * @see java.io.StreamTokenizer#TT_EOF
+ * @since JDK1.0
  */
 
 public class StreamTokenizerWithMultilineLiterals {
 
-    /* Only one of these will be non-null */
-    private Reader reader = null;
-    private InputStream input = null;
-
-    private char buf[] = new char[20];
-
     /**
-     * The next character to be considered by the nextToken method.  May also
-     * be NEED_CHAR to indicate that a new character should be read, or SKIP_LF
-     * to indicate that a new character should be read and, if it is a '\n'
-     * character, it should be discarded and a second new character should be
-     * read.
+     * A constant indicating that the end of the stream has been read.
      */
-    private int peekc = NEED_CHAR;
-
+    public static final int TT_EOF = -1;
+    /**
+     * A constant indicating that the end of the line has been read.
+     */
+    public static final int TT_EOL = '\n';
+    /**
+     * A constant indicating that a number token has been read.
+     */
+    public static final int TT_NUMBER = -2;
+    /**
+     * A constant indicating that a word token has been read.
+     */
+    public static final int TT_WORD = -3;
     private static final int NEED_CHAR = Integer.MAX_VALUE;
     private static final int SKIP_LF = Integer.MAX_VALUE - 1;
-
-    private boolean pushedBack;
-    private boolean forceLower;
-    /** The line number of the last token read */
-    private int LINENO = 1;
-
-    private boolean eolIsSignificantP = false;
-    private boolean slashSlashCommentsP = false;
-    private boolean slashStarCommentsP = false;
-
-    private byte ctype[] = new byte[256];
     private static final byte CT_WHITESPACE = 1;
     private static final byte CT_DIGIT = 2;
     private static final byte CT_ALPHA = 4;
     private static final byte CT_QUOTE = 8;
     private static final byte CT_COMMENT = 16;
-
+    /* A constant indicating that no token has been read, used for
+     * initializing ttype.  FIXME This could be made public and
+     * made available as the part of the API in a future release.
+     */
+    private static final int TT_NOTHING = -4;
     /**
      * After a call to the {@code nextToken} method, this field
      * contains the type of the token just read. For a single character
@@ -163,42 +158,15 @@ public class StreamTokenizerWithMultilineLiterals {
      * <p>
      * The initial value of this field is -4.
      *
-     * @see     java.io.StreamTokenizer#eolIsSignificant(boolean)
-     * @see     java.io.StreamTokenizer#nextToken()
-     * @see     java.io.StreamTokenizer#quoteChar(int)
-     * @see     java.io.StreamTokenizer#TT_EOF
-     * @see     java.io.StreamTokenizer#TT_EOL
-     * @see     java.io.StreamTokenizer#TT_NUMBER
-     * @see     java.io.StreamTokenizer#TT_WORD
+     * @see java.io.StreamTokenizer#eolIsSignificant(boolean)
+     * @see java.io.StreamTokenizer#nextToken()
+     * @see java.io.StreamTokenizer#quoteChar(int)
+     * @see java.io.StreamTokenizer#TT_EOF
+     * @see java.io.StreamTokenizer#TT_EOL
+     * @see java.io.StreamTokenizer#TT_NUMBER
+     * @see java.io.StreamTokenizer#TT_WORD
      */
     public int ttype = TT_NOTHING;
-
-    /**
-     * A constant indicating that the end of the stream has been read.
-     */
-    public static final int TT_EOF = -1;
-
-    /**
-     * A constant indicating that the end of the line has been read.
-     */
-    public static final int TT_EOL = '\n';
-
-    /**
-     * A constant indicating that a number token has been read.
-     */
-    public static final int TT_NUMBER = -2;
-
-    /**
-     * A constant indicating that a word token has been read.
-     */
-    public static final int TT_WORD = -3;
-
-    /* A constant indicating that no token has been read, used for
-     * initializing ttype.  FIXME This could be made public and
-     * made available as the part of the API in a future release.
-     */
-    private static final int TT_NOTHING = -4;
-
     /**
      * If the current token is a word token, this field contains a
      * string giving the characters of the word token. When the current
@@ -212,12 +180,11 @@ public class StreamTokenizerWithMultilineLiterals {
      * <p>
      * The initial value of this field is null.
      *
-     * @see     java.io.StreamTokenizer#quoteChar(int)
-     * @see     java.io.StreamTokenizer#TT_WORD
-     * @see     java.io.StreamTokenizer#ttype
+     * @see java.io.StreamTokenizer#quoteChar(int)
+     * @see java.io.StreamTokenizer#TT_WORD
+     * @see java.io.StreamTokenizer#ttype
      */
     public String sval;
-
     /**
      * If the current token is a number, this field contains the value
      * of that number. The current token is a number when the value of
@@ -225,12 +192,36 @@ public class StreamTokenizerWithMultilineLiterals {
      * <p>
      * The initial value of this field is 0.0.
      *
-     * @see     java.io.StreamTokenizer#TT_NUMBER
-     * @see     java.io.StreamTokenizer#ttype
+     * @see java.io.StreamTokenizer#TT_NUMBER
+     * @see java.io.StreamTokenizer#ttype
      */
     public double nval;
+    /* Only one of these will be non-null */
+    private Reader reader = null;
+    private InputStream input = null;
+    private char[] buf = new char[20];
+    /**
+     * The next character to be considered by the nextToken method.  May also
+     * be NEED_CHAR to indicate that a new character should be read, or SKIP_LF
+     * to indicate that a new character should be read and, if it is a '\n'
+     * character, it should be discarded and a second new character should be
+     * read.
+     */
+    private int peekc = NEED_CHAR;
+    private boolean pushedBack;
+    private boolean forceLower;
+    /**
+     * The line number of the last token read
+     */
+    private int LINENO = 1;
+    private boolean eolIsSignificantP = false;
+    private boolean slashSlashCommentsP = false;
+    private boolean slashStarCommentsP = false;
+    private final byte[] ctype = new byte[256];
 
-    /** Private constructor that initializes everything except the streams. */
+    /**
+     * Private constructor that initializes everything except the streams.
+     */
     private StreamTokenizerWithMultilineLiterals() {
         wordChars('a', 'z');
         wordChars('A', 'Z');
@@ -261,17 +252,16 @@ public class StreamTokenizerWithMultilineLiterals {
      * <li>C-style and C++-style comments are not recognized.
      * </ul>
      *
+     * @param is an input stream.
+     * @see java.io.BufferedReader
+     * @see java.io.InputStreamReader
+     * @see java.io.StreamTokenizer#StreamTokenizer(java.io.Reader)
      * @deprecated As of JDK version 1.1, the preferred way to tokenize an
      * input stream is to convert it into a character stream, for example:
      * <blockquote><pre>
      *   Reader r = new BufferedReader(new InputStreamReader(is));
      *   StreamTokenizer st = new StreamTokenizer(r);
      * </pre></blockquote>
-     *
-     * @param      is        an input stream.
-     * @see        java.io.BufferedReader
-     * @see        java.io.InputStreamReader
-     * @see        java.io.StreamTokenizer#StreamTokenizer(java.io.Reader)
      */
     @Deprecated
     public StreamTokenizerWithMultilineLiterals(InputStream is) {
@@ -285,8 +275,8 @@ public class StreamTokenizerWithMultilineLiterals {
     /**
      * Create a tokenizer that parses the given character stream.
      *
-     * @param r  a Reader object providing the input stream.
-     * @since   JDK1.1
+     * @param r a Reader object providing the input stream.
+     * @since JDK1.1
      */
     public StreamTokenizerWithMultilineLiterals(Reader r) {
         this();
@@ -301,11 +291,12 @@ public class StreamTokenizerWithMultilineLiterals {
      * "ordinary." See the {@code ordinaryChar} method
      * for more information on a character being ordinary.
      *
-     * @see     java.io.StreamTokenizer#ordinaryChar(int)
+     * @see java.io.StreamTokenizer#ordinaryChar(int)
      */
     public void resetSyntax() {
-        for (int i = ctype.length; --i >= 0;)
+        for (int i = ctype.length; --i >= 0; ) {
             ctype[i] = 0;
+        }
     }
 
     /**
@@ -314,16 +305,19 @@ public class StreamTokenizerWithMultilineLiterals {
      * are word constituents. A word token consists of a word constituent
      * followed by zero or more word constituents or number constituents.
      *
-     * @param   low   the low end of the range.
-     * @param   hi    the high end of the range.
+     * @param low the low end of the range.
+     * @param hi  the high end of the range.
      */
     public void wordChars(int low, int hi) {
-        if (low < 0)
+        if (low < 0) {
             low = 0;
-        if (hi >= ctype.length)
+        }
+        if (hi >= ctype.length) {
             hi = ctype.length - 1;
-        while (low <= hi)
+        }
+        while (low <= hi) {
             ctype[low++] |= CT_ALPHA;
+        }
     }
 
     /**
@@ -335,16 +329,19 @@ public class StreamTokenizerWithMultilineLiterals {
      * <p>Any other attribute settings for the characters in the specified
      * range are cleared.
      *
-     * @param   low   the low end of the range.
-     * @param   hi    the high end of the range.
+     * @param low the low end of the range.
+     * @param hi  the high end of the range.
      */
     public void whitespaceChars(int low, int hi) {
-        if (low < 0)
+        if (low < 0) {
             low = 0;
-        if (hi >= ctype.length)
+        }
+        if (hi >= ctype.length) {
             hi = ctype.length - 1;
-        while (low <= hi)
+        }
+        while (low <= hi) {
             ctype[low++] = CT_WHITESPACE;
+        }
     }
 
     /**
@@ -354,17 +351,20 @@ public class StreamTokenizerWithMultilineLiterals {
      * {@code ordinaryChar} method for more information on a
      * character being ordinary.
      *
-     * @param   low   the low end of the range.
-     * @param   hi    the high end of the range.
-     * @see     java.io.StreamTokenizer#ordinaryChar(int)
+     * @param low the low end of the range.
+     * @param hi  the high end of the range.
+     * @see java.io.StreamTokenizer#ordinaryChar(int)
      */
     public void ordinaryChars(int low, int hi) {
-        if (low < 0)
+        if (low < 0) {
             low = 0;
-        if (hi >= ctype.length)
+        }
+        if (hi >= ctype.length) {
             hi = ctype.length - 1;
-        while (low <= hi)
+        }
+        while (low <= hi) {
             ctype[low++] = 0;
+        }
     }
 
     /**
@@ -381,12 +381,13 @@ public class StreamTokenizerWithMultilineLiterals {
      * lines. The {@code lineno} method may no longer reflect
      * the presence of such terminator characters in its line count.
      *
-     * @param   ch   the character.
-     * @see     java.io.StreamTokenizer#ttype
+     * @param ch the character.
+     * @see java.io.StreamTokenizer#ttype
      */
     public void ordinaryChar(int ch) {
-        if (ch >= 0 && ch < ctype.length)
+        if (ch >= 0 && ch < ctype.length) {
             ctype[ch] = 0;
+        }
     }
 
     /**
@@ -396,11 +397,12 @@ public class StreamTokenizerWithMultilineLiterals {
      *
      * <p>Any other attribute settings for the specified character are cleared.
      *
-     * @param   ch   the character.
+     * @param ch the character.
      */
     public void commentChar(int ch) {
-        if (ch >= 0 && ch < ctype.length)
+        if (ch >= 0 && ch < ctype.length) {
             ctype[ch] = CT_COMMENT;
+        }
     }
 
     /**
@@ -422,14 +424,15 @@ public class StreamTokenizerWithMultilineLiterals {
      *
      * <p>Any other attribute settings for the specified character are cleared.
      *
-     * @param   ch   the character.
-     * @see     java.io.StreamTokenizer#nextToken()
-     * @see     java.io.StreamTokenizer#sval
-     * @see     java.io.StreamTokenizer#ttype
+     * @param ch the character.
+     * @see java.io.StreamTokenizer#nextToken()
+     * @see java.io.StreamTokenizer#sval
+     * @see java.io.StreamTokenizer#ttype
      */
     public void quoteChar(int ch) {
-        if (ch >= 0 && ch < ctype.length)
+        if (ch >= 0 && ch < ctype.length) {
             ctype[ch] = CT_QUOTE;
+        }
     }
 
     /**
@@ -448,13 +451,14 @@ public class StreamTokenizerWithMultilineLiterals {
      * field to the value {@code TT_NUMBER} and putting the numeric
      * value of the token into the {@code nval} field.
      *
-     * @see     java.io.StreamTokenizer#nval
-     * @see     java.io.StreamTokenizer#TT_NUMBER
-     * @see     java.io.StreamTokenizer#ttype
+     * @see java.io.StreamTokenizer#nval
+     * @see java.io.StreamTokenizer#TT_NUMBER
+     * @see java.io.StreamTokenizer#ttype
      */
     public void parseNumbers() {
-        for (int i = '0'; i <= '9'; i++)
+        for (int i = '0'; i <= '9'; i++) {
             ctype[i] |= CT_DIGIT;
+        }
         ctype['.'] |= CT_DIGIT;
         ctype['-'] |= CT_DIGIT;
     }
@@ -475,12 +479,12 @@ public class StreamTokenizerWithMultilineLiterals {
      * If the {@code flag} is false, end-of-line characters are
      * treated as white space and serve only to separate tokens.
      *
-     * @param   flag   {@code true} indicates that end-of-line characters
-     *                 are separate tokens; {@code false} indicates that
-     *                 end-of-line characters are white space.
-     * @see     java.io.StreamTokenizer#nextToken()
-     * @see     java.io.StreamTokenizer#ttype
-     * @see     java.io.StreamTokenizer#TT_EOL
+     * @param flag {@code true} indicates that end-of-line characters
+     *             are separate tokens; {@code false} indicates that
+     *             end-of-line characters are white space.
+     * @see java.io.StreamTokenizer#nextToken()
+     * @see java.io.StreamTokenizer#ttype
+     * @see java.io.StreamTokenizer#TT_EOL
      */
     public void eolIsSignificant(boolean flag) {
         eolIsSignificantP = flag;
@@ -495,8 +499,8 @@ public class StreamTokenizerWithMultilineLiterals {
      * If the flag argument is {@code false}, then C-style comments
      * are not treated specially.
      *
-     * @param   flag   {@code true} indicates to recognize and ignore
-     *                 C-style comments.
+     * @param flag {@code true} indicates to recognize and ignore
+     *             C-style comments.
      */
     public void slashStarComments(boolean flag) {
         slashStarCommentsP = flag;
@@ -512,8 +516,8 @@ public class StreamTokenizerWithMultilineLiterals {
      * If the flag argument is {@code false}, then C++-style
      * comments are not treated specially.
      *
-     * @param   flag   {@code true} indicates to recognize and ignore
-     *                 C++-style comments.
+     * @param flag {@code true} indicates to recognize and ignore
+     *             C++-style comments.
      */
     public void slashSlashComments(boolean flag) {
         slashSlashCommentsP = flag;
@@ -530,24 +534,27 @@ public class StreamTokenizerWithMultilineLiterals {
      * If the flag argument is {@code false}, then the
      * {@code sval} field is not modified.
      *
-     * @param   fl   {@code true} indicates that all word tokens should
-     *               be lowercased.
-     * @see     java.io.StreamTokenizer#nextToken()
-     * @see     java.io.StreamTokenizer#ttype
-     * @see     java.io.StreamTokenizer#TT_WORD
+     * @param fl {@code true} indicates that all word tokens should
+     *           be lowercased.
+     * @see java.io.StreamTokenizer#nextToken()
+     * @see java.io.StreamTokenizer#ttype
+     * @see java.io.StreamTokenizer#TT_WORD
      */
     public void lowerCaseMode(boolean fl) {
         forceLower = fl;
     }
 
-    /** Read the next character */
+    /**
+     * Read the next character
+     */
     private int read() throws IOException {
-        if (reader != null)
+        if (reader != null) {
             return reader.read();
-        else if (input != null)
+        } else if (input != null) {
             return input.read();
-        else
+        } else {
             throw new IllegalStateException();
+        }
     }
 
     /**
@@ -562,34 +569,38 @@ public class StreamTokenizerWithMultilineLiterals {
      * calling nextToken to parse successive tokens until TT_EOF
      * is returned.
      *
-     * @return     the value of the {@code ttype} field.
-     * @exception  IOException  if an I/O error occurs.
-     * @see        java.io.StreamTokenizer#nval
-     * @see        java.io.StreamTokenizer#sval
-     * @see        java.io.StreamTokenizer#ttype
+     * @return the value of the {@code ttype} field.
+     * @throws IOException if an I/O error occurs.
+     * @see java.io.StreamTokenizer#nval
+     * @see java.io.StreamTokenizer#sval
+     * @see java.io.StreamTokenizer#ttype
      */
     public int nextToken() throws IOException {
         if (pushedBack) {
             pushedBack = false;
             return ttype;
         }
-        byte ct[] = ctype;
+        byte[] ct = ctype;
         sval = null;
 
         int c = peekc;
-        if (c < 0)
+        if (c < 0) {
             c = NEED_CHAR;
+        }
         if (c == SKIP_LF) {
             c = read();
-            if (c < 0)
+            if (c < 0) {
                 return ttype = TT_EOF;
-            if (c == '\n')
+            }
+            if (c == '\n') {
                 c = NEED_CHAR;
+            }
         }
         if (c == NEED_CHAR) {
             c = read();
-            if (c < 0)
+            if (c < 0) {
                 return ttype = TT_EOF;
+            }
         }
         ttype = c;              /* Just to be safe */
 
@@ -607,8 +618,9 @@ public class StreamTokenizerWithMultilineLiterals {
                     return ttype = TT_EOL;
                 }
                 c = read();
-                if (c == '\n')
+                if (c == '\n') {
                     c = read();
+                }
             } else {
                 if (c == '\n') {
                     LINENO++;
@@ -618,8 +630,9 @@ public class StreamTokenizerWithMultilineLiterals {
                 }
                 c = read();
             }
-            if (c < 0)
+            if (c < 0) {
                 return ttype = TT_EOF;
+            }
             ctype = c < 256 ? ct[c] : CT_ALPHA;
         }
 
@@ -637,13 +650,14 @@ public class StreamTokenizerWithMultilineLiterals {
             int decexp = 0;
             int seendot = 0;
             while (true) {
-                if (c == '.' && seendot == 0)
+                if (c == '.' && seendot == 0) {
                     seendot = 1;
-                else if ('0' <= c && c <= '9') {
+                } else if ('0' <= c && c <= '9') {
                     v = v * 10 + (c - '0');
                     decexp += seendot;
-                } else
+                } else {
                     break;
+                }
                 c = read();
             }
             peekc = c;
@@ -673,8 +687,9 @@ public class StreamTokenizerWithMultilineLiterals {
             } while ((ctype & (CT_ALPHA | CT_DIGIT)) != 0);
             peekc = c;
             sval = String.copyValueOf(buf, 0, i);
-            if (forceLower)
+            if (forceLower) {
                 sval = sval.toLowerCase();
+            }
             return ttype = TT_WORD;
         }
 
@@ -699,33 +714,35 @@ public class StreamTokenizerWithMultilineLiterals {
                             if ('0' <= c2 && c2 <= '7' && first <= '3') {
                                 c = (c << 3) + (c2 - '0');
                                 d = read();
-                            } else
+                            } else {
                                 d = c2;
-                        } else
-                          d = c2;
+                            }
+                        } else {
+                            d = c2;
+                        }
                     } else {
                         switch (c) {
-                        case 'a':
-                            c = 0x7;
-                            break;
-                        case 'b':
-                            c = '\b';
-                            break;
-                        case 'f':
-                            c = 0xC;
-                            break;
-                        case 'n':
-                            c = '\n';
-                            break;
-                        case 'r':
-                            c = '\r';
-                            break;
-                        case 't':
-                            c = '\t';
-                            break;
-                        case 'v':
-                            c = 0xB;
-                            break;
+                            case 'a':
+                                c = 0x7;
+                                break;
+                            case 'b':
+                                c = '\b';
+                                break;
+                            case 'f':
+                                c = 0xC;
+                                break;
+                            case 'n':
+                                c = '\n';
+                                break;
+                            case 'r':
+                                c = '\r';
+                                break;
+                            case 't':
+                                c = '\t';
+                                break;
+                            case 'v':
+                                c = 0xB;
+                                break;
                         }
                         d = read();
                     }
@@ -736,7 +753,7 @@ public class StreamTokenizerWithMultilineLiterals {
                 if (i >= buf.length) {
                     buf = Arrays.copyOf(buf, buf.length * 2);
                 }
-                buf[i++] = (char)c;
+                buf[i++] = (char) c;
             }
 
             /* If we broke out of the loop because we found a matching quote
@@ -766,19 +783,22 @@ public class StreamTokenizerWithMultilineLiterals {
                             c = read();
                         }
                     }
-                    if (c < 0)
+                    if (c < 0) {
                         return ttype = TT_EOF;
+                    }
                     prevc = c;
                 }
                 return nextToken();
             } else if (c == '/' && slashSlashCommentsP) {
-                while ((c = read()) != '\n' && c != '\r' && c >= 0);
+                while ((c = read()) != '\n' && c != '\r' && c >= 0) {
+                }
                 peekc = c;
                 return nextToken();
             } else {
                 /* Now see if it is still a single line comment */
                 if ((ct['/'] & CT_COMMENT) != 0) {
-                    while ((c = read()) != '\n' && c != '\r' && c >= 0);
+                    while ((c = read()) != '\n' && c != '\r' && c >= 0) {
+                    }
                     peekc = c;
                     return nextToken();
                 } else {
@@ -789,7 +809,8 @@ public class StreamTokenizerWithMultilineLiterals {
         }
 
         if ((ctype & CT_COMMENT) != 0) {
-            while ((c = read()) != '\n' && c != '\r' && c >= 0);
+            while ((c = read()) != '\n' && c != '\r' && c >= 0) {
+            }
             peekc = c;
             return nextToken();
         }
@@ -803,20 +824,21 @@ public class StreamTokenizerWithMultilineLiterals {
      * field, and not to modify the value in the {@code nval} or
      * {@code sval} field.
      *
-     * @see     java.io.StreamTokenizer#nextToken()
-     * @see     java.io.StreamTokenizer#nval
-     * @see     java.io.StreamTokenizer#sval
-     * @see     java.io.StreamTokenizer#ttype
+     * @see java.io.StreamTokenizer#nextToken()
+     * @see java.io.StreamTokenizer#nval
+     * @see java.io.StreamTokenizer#sval
+     * @see java.io.StreamTokenizer#ttype
      */
     public void pushBack() {
-        if (ttype != TT_NOTHING)   /* No-op if nextToken() not called */
+        if (ttype != TT_NOTHING)   /* No-op if nextToken() not called */ {
             pushedBack = true;
+        }
     }
 
     /**
      * Return the current line number.
      *
-     * @return  the current line number of this stream tokenizer.
+     * @return the current line number of this stream tokenizer.
      */
     public int lineno() {
         return LINENO;
@@ -831,30 +853,30 @@ public class StreamTokenizerWithMultilineLiterals {
      *
      * <blockquote><pre>Token['a'], line 10</pre></blockquote>
      *
-     * @return  a string representation of the token
-     * @see     java.io.StreamTokenizer#nval
-     * @see     java.io.StreamTokenizer#sval
-     * @see     java.io.StreamTokenizer#ttype
+     * @return a string representation of the token
+     * @see java.io.StreamTokenizer#nval
+     * @see java.io.StreamTokenizer#sval
+     * @see java.io.StreamTokenizer#ttype
      */
     public String toString() {
         String ret;
         switch (ttype) {
-          case TT_EOF:
-            ret = "EOF";
-            break;
-          case TT_EOL:
-            ret = "EOL";
-            break;
-          case TT_WORD:
-            ret = sval;
-            break;
-          case TT_NUMBER:
-            ret = "n=" + nval;
-            break;
-          case TT_NOTHING:
-            ret = "NOTHING";
-            break;
-          default: {
+            case TT_EOF:
+                ret = "EOF";
+                break;
+            case TT_EOL:
+                ret = "EOL";
+                break;
+            case TT_WORD:
+                ret = sval;
+                break;
+            case TT_NUMBER:
+                ret = "n=" + nval;
+                break;
+            case TT_NOTHING:
+                ret = "NOTHING";
+                break;
+            default: {
                 /*
                  * ttype is the first character of either a quoted string or
                  * is an ordinary character. ttype can definitely not be less
@@ -867,7 +889,7 @@ public class StreamTokenizerWithMultilineLiterals {
                     break;
                 }
 
-                char s[] = new char[3];
+                char[] s = new char[3];
                 s[0] = s[2] = '\'';
                 s[1] = (char) ttype;
                 ret = new String(s);

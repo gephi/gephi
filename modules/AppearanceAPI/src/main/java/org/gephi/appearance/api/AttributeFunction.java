@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
 import org.gephi.graph.api.Column;
@@ -53,5 +54,5 @@ public interface AttributeFunction extends Function {
      *
      * @return column
      */
-    public Column getColumn();
+    Column getColumn();
 }

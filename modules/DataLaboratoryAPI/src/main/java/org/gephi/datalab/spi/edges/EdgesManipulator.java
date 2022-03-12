@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -40,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi.edges;
 
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
@@ -48,13 +48,15 @@ import org.gephi.graph.api.Edge;
 
 /**
  * Manipulator for edges.
- * @see Manipulator
+ *
  * @author Eduardo Ramos
+ * @see Manipulator
  */
-public interface EdgesManipulator extends ContextMenuItemManipulator{
+public interface EdgesManipulator extends ContextMenuItemManipulator {
     /**
      * Prepare edges for this action.
-     * @param edges All selected edges to operate
+     *
+     * @param edges       All selected edges to operate
      * @param clickedEdge The right clicked edge of all edges
      */
     void setup(Edge[] edges, Edge clickedEdge);

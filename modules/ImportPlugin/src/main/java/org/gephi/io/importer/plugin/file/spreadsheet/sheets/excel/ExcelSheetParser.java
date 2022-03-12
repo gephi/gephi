@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.sheets.excel;
 
 import java.io.IOException;
@@ -53,7 +54,6 @@ import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetParser;
 import org.gephi.io.importer.plugin.file.spreadsheet.sheet.SheetRow;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class ExcelSheetParser implements SheetParser {

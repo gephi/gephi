@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.importer;
 
 import java.awt.Dialog;
@@ -98,7 +99,6 @@ import org.openide.util.io.ReaderInputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  * @author Sebastien Heymann
  */
@@ -125,7 +125,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
     @Override
     public void importFile(FileObject fileObject) {
-        importFiles(new FileObject[]{fileObject});
+        importFiles(new FileObject[] {fileObject});
     }
 
     @Override
@@ -141,7 +141,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 try {
                     //Copy the archived file so we never have problems converting it to a simple File during import:
                     File tempDir = TempDirUtils.createTempDirectory();
-                    fileObjects[i] = FileUtil.copyFile(fileObjects[i], FileUtil.toFileObject(tempDir), fileObjects[i].getName());
+                    fileObjects[i] =
+                        FileUtil.copyFile(fileObjects[i], FileUtil.toFileObject(tempDir), fileObjects[i].getName());
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
                 }
@@ -156,7 +157,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 importers[i] = controller.getFileImporter(fileObject);
 
                 if (importers[i] == null) {
-                    NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                    NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
+                        NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"),
+                        NotifyDescriptor.WARNING_MESSAGE);
                     DialogDisplayer.getDefault().notify(msg);
                     return;
                 }
@@ -177,7 +180,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     public void importStream(final InputStream stream, String importerName) {
         final FileImporter importer = controller.getFileImporter(importerName);
         if (importer == null) {
-            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
+            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
+                NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"),
+                NotifyDescriptor.WARNING_MESSAGE);
             DialogDisplayer.getDefault().notify(msg);
             return;
         }
@@ -194,7 +199,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     public void importFile(final Reader reader, String importerName) {
         final FileImporter importer = controller.getFileImporter(importerName);
         if (importer == null) {
-            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
+            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(
+                NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"),
+                NotifyDescriptor.WARNING_MESSAGE);
             DialogDisplayer.getDefault().notify(msg);
             return;
         }
@@ -203,7 +210,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     }
 
     private void importFile(final Reader reader, final FileImporter importer) {
-        importFiles(new Reader[]{reader}, new FileImporter[]{importer});
+        importFiles(new Reader[] {reader}, new FileImporter[] {importer});
     }
 
     private void importFiles(final Reader[] readers, final FileImporter[] importers) {
@@ -238,7 +245,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                             //There is no source file but the importer needs it, create temporary copy:
                             String fileName = "tmp_file" + 1;
                             String charset = "UTF-8";
-                            if (fileObjects != null && fileObjects[i] != null) {//Netbeans FileUtil.toFile bug returning null?? Try to recover:
+                            if (fileObjects != null &&
+                                fileObjects[i] != null) {//Netbeans FileUtil.toFile bug returning null?? Try to recover:
                                 fileName = fileObjects[i].getNameExt();
                                 CharsetToolkit charsetToolkit = new CharsetToolkit(fileObjects[i].getInputStream());
                                 charset = charsetToolkit.getCharset().name();
@@ -258,10 +266,13 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
             for (Map.Entry<ImporterUI, List<FileImporter>> entry : importerUIs.entrySet()) {
                 ImporterUI ui = entry.getKey();
-                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
+                String title = NbBundle
+                    .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title",
+                        ui.getDisplayName());
                 JPanel panel = ui.getPanel();
 
-                FileImporter[] fi = (FileImporter[]) entry.getValue().toArray((FileImporter[]) Array.newInstance(entry.getValue().get(0).getClass(), 0));
+                FileImporter[] fi = entry.getValue()
+                    .toArray((FileImporter[]) Array.newInstance(entry.getValue().get(0).getClass(), 0));
                 ui.setup(fi);
 
                 if (panel != null) {
@@ -313,7 +324,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         }
     }
 
-    private void doImport(final List<Container> results, final Reader reader, final File file, final FileImporter importer) {
+    private void doImport(final List<Container> results, final Reader reader, final File file,
+                          final FileImporter importer) {
         LongTask task = null;
         if (importer instanceof LongTask) {
             task = (LongTask) importer;
@@ -328,8 +340,11 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         }
 
         //Execute task
-        final String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource", importer.getClass().getSimpleName());
-        String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
+        final String containerSource = NbBundle
+            .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource",
+                importer.getClass().getSimpleName());
+        String taskName =
+            NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
         executor.execute(task, new Runnable() {
             @Override
             public void run() {
@@ -375,16 +390,19 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     public void importDatabase(Database database, final DatabaseImporter importer) {
         try {
             if (importer == null) {
-                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle
+                    .getMessage(DesktopImportControllerUI.class,
+                        "DesktopImportControllerUI.error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(msg);
                 return;
             }
 
             ImporterUI ui = controller.getUI(importer);
             if (ui != null) {
-                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.database.ui.dialog.title");
+                String title = NbBundle
+                    .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.database.ui.dialog.title");
                 JPanel panel = ui.getPanel();
-                ui.setup(new DatabaseImporter[]{importer});
+                ui.setup(new DatabaseImporter[] {importer});
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
                     ValidationPanel vp = (ValidationPanel) panel;
@@ -413,9 +431,11 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Execute task
-            final String containerSource = database != null ? database.getName() : (ui != null ? ui.getDisplayName() : importer.getClass().getSimpleName());
+            final String containerSource = database != null ? database.getName() :
+                (ui != null ? ui.getDisplayName() : importer.getClass().getSimpleName());
             final Database db = database;
-            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
+            String taskName = NbBundle
+                .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
                 @Override
                 public void run() {
@@ -439,17 +459,22 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     public void importWizard(final WizardImporter importer) {
         try {
             if (importer == null) {
-                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle
+                    .getMessage(DesktopImportControllerUI.class,
+                        "DesktopImportControllerUI.error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(msg);
                 return;
             }
 
-            String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.wizardSource", "");
+            String containerSource =
+                NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.wizardSource", "");
             ImporterUI ui = controller.getUI(importer);
             if (ui != null) {
-                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.wizard.ui.dialog.title", ui.getDisplayName());
+                String title = NbBundle
+                    .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.wizard.ui.dialog.title",
+                        ui.getDisplayName());
                 JPanel panel = ui.getPanel();
-                ui.setup(new WizardImporter[]{importer});
+                ui.setup(new WizardImporter[] {importer});
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
                     ValidationPanel vp = (ValidationPanel) panel;
@@ -481,7 +506,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
             //Execute task
             final String source = containerSource;
-            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
+            String taskName = NbBundle
+                .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
                 @Override
                 public void run() {
@@ -502,7 +528,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     }
 
     private void finishImport(Container container) {
-        finishImport(new Container[]{container});
+        finishImport(new Container[] {container});
     }
 
     private void finishImport(Container[] containers) {
@@ -521,7 +547,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         //Report panel
         ReportPanel reportPanel = new ReportPanel();
         reportPanel.setData(finalReport, containers);
-        DialogDescriptor dd = new DialogDescriptor(reportPanel, NbBundle.getMessage(DesktopImportControllerUI.class, "ReportPanel.title"));
+        DialogDescriptor dd = new DialogDescriptor(reportPanel,
+            NbBundle.getMessage(DesktopImportControllerUI.class, "ReportPanel.title"));
         Object response = DialogDisplayer.getDefault().notify(dd);
         reportPanel.destroy();
         finalReport.clean();
@@ -552,7 +579,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                     SwingUtilities.invokeAndWait(new Runnable() {
                         @Override
                         public void run() {
-                            String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.processor.ui.dialog.title");
+                            String title = NbBundle.getMessage(DesktopImportControllerUI.class,
+                                "DesktopImportControllerUI.processor.ui.dialog.title");
 
                             pui.setup(processor);
                             final DialogDescriptor dd2 = new DialogDescriptor(panel, title);
@@ -567,7 +595,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                                 dd2.setValid(!vp.isProblem());
                             }
                             Object result = DialogDisplayer.getDefault().notify(dd2);
-                            if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
+                            if (result.equals(NotifyDescriptor.CANCEL_OPTION) ||
+                                result.equals(NotifyDescriptor.CLOSED_OPTION)) {
                                 validResult.setResult(false);
                             } else {
                                 pui.unsetup(); //true
@@ -590,7 +619,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //StatusLine notify
-            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.status.multiImportSuccess", containers.length));
+            StatusDisplayer.getDefault().setStatusText(NbBundle
+                .getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.status.multiImportSuccess",
+                    containers.length));
         }
     }
 
@@ -598,24 +629,13 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         ProcessorIssuesReportPanel issuesReport = new ProcessorIssuesReportPanel();
         issuesReport.setData(report);
 
-        DialogDescriptor dd = new DialogDescriptor(issuesReport, NbBundle.getMessage(DesktopImportControllerUI.class, "ProcessorIssuesReportPanel.title"));
-        dd.setOptions(new Object[]{NbBundle.getMessage(DesktopImportControllerUI.class, "ProcessorIssuesReportPanel.close")});
+        DialogDescriptor dd = new DialogDescriptor(issuesReport,
+            NbBundle.getMessage(DesktopImportControllerUI.class, "ProcessorIssuesReportPanel.title"));
+        dd.setOptions(
+            new Object[] {NbBundle.getMessage(DesktopImportControllerUI.class, "ProcessorIssuesReportPanel.close")});
 
         DialogDisplayer.getDefault().notify(dd);
         issuesReport.destroy();
-    }
-
-    private static class ValidResult {
-
-        private boolean result = true;
-
-        public void setResult(boolean result) {
-            this.result = result;
-        }
-
-        public boolean isResult() {
-            return result;
-        }
     }
 
     @Override
@@ -630,5 +650,18 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
         }
         return null;
+    }
+
+    private static class ValidResult {
+
+        private boolean result = true;
+
+        public boolean isResult() {
+            return result;
+        }
+
+        public void setResult(boolean result) {
+            this.result = result;
+        }
     }
 }

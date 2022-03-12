@@ -39,19 +39,20 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.utils;
 
 import org.gephi.graph.api.GraphModel;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public interface GraphModelProvider {
-    
+
     /**
      * Returns the current graph model. Cannot be null
-     * @return 
+     *
+     * @return
      */
     GraphModel getGraphModel();
 }

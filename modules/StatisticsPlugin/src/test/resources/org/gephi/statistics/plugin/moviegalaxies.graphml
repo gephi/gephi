@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+
+  <!-- property keys -->
+  <key id="key0" for="graph" attr.name="dl" attr.type="float" />
+  <key id="key1" for="node" attr.name="partition" attr.type="int" />
+
+  <graph id="G" edgedefault="undirected" parse.nodeids="canonical" parse.edgeids="canonical" parse.order="nodesfirst">
+
+   <!-- graph properties -->
+   <data key="key0">229.04187438186472</data>
+
+   <!-- vertices -->
+    <node id="n0">
+      <data key="key1">1</data>
+    </node>
+    <node id="n1">
+      <data key="key1">1</data>
+    </node>
+    <node id="n2">
+      <data key="key1">1</data>
+    </node>
+    <node id="n3">
+      <data key="key1">0</data>
+    </node>
+    <node id="n4">
+      <data key="key1">2</data>
+    </node>
+    <node id="n5">
+      <data key="key1">0</data>
+    </node>
+    <node id="n6">
+      <data key="key1">1</data>
+    </node>
+    <node id="n7">
+      <data key="key1">0</data>
+    </node>
+    <node id="n8">
+      <data key="key1">1</data>
+    </node>
+    <node id="n9">
+      <data key="key1">2</data>
+    </node>
+    <node id="n10">
+      <data key="key1">2</data>
+    </node>
+    <node id="n11">
+      <data key="key1">0</data>
+    </node>
+    <node id="n12">
+      <data key="key1">1</data>
+    </node>
+    <node id="n13">
+      <data key="key1">1</data>
+    </node>
+    <node id="n14">
+      <data key="key1">3</data>
+    </node>
+    <node id="n15">
+      <data key="key1">0</data>
+    </node>
+    <node id="n16">
+      <data key="key1">0</data>
+    </node>
+    <node id="n17">
+      <data key="key1">2</data>
+    </node>
+    <node id="n18">
+      <data key="key1">2</data>
+    </node>
+    <node id="n19">
+      <data key="key1">1</data>
+    </node>
+    <node id="n20">
+      <data key="key1">0</data>
+    </node>
+    <node id="n21">
+      <data key="key1">1</data>
+    </node>
+    <node id="n22">
+      <data key="key1">2</data>
+    </node>
+    <node id="n23">
+      <data key="key1">0</data>
+    </node>
+    <node id="n24">
+      <data key="key1">2</data>
+    </node>
+    <node id="n25">
+      <data key="key1">0</data>
+    </node>
+    <node id="n26">
+      <data key="key1">0</data>
+    </node>
+
+   <!-- edges -->
+    <edge id="e0" source="n0" target="n6">
+    </edge>
+    <edge id="e1" source="n0" target="n13">
+    </edge>
+    <edge id="e2" source="n0" target="n1">
+    </edge>
+    <edge id="e3" source="n0" target="n2">
+    </edge>
+    <edge id="e4" source="n0" target="n8">
+    </edge>
+    <edge id="e5" source="n0" target="n14">
+    </edge>
+    <edge id="e6" source="n0" target="n19">
+    </edge>
+    <edge id="e7" source="n1" target="n2">
+    </edge>
+    <edge id="e8" source="n1" target="n6">
+    </edge>
+    <edge id="e9" source="n1" target="n12">
+    </edge>
+    <edge id="e10" source="n1" target="n13">
+    </edge>
+    <edge id="e11" source="n1" target="n14">
+    </edge>
+    <edge id="e12" source="n1" target="n8">
+    </edge>
+    <edge id="e13" source="n1" target="n19">
+    </edge>
+    <edge id="e14" source="n2" target="n6">
+    </edge>
+    <edge id="e15" source="n2" target="n13">
+    </edge>
+    <edge id="e16" source="n2" target="n8">
+    </edge>
+    <edge id="e17" source="n2" target="n14">
+    </edge>
+    <edge id="e18" source="n2" target="n19">
+    </edge>
+    <edge id="e19" source="n3" target="n5">
+    </edge>
+    <edge id="e20" source="n3" target="n15">
+    </edge>
+    <edge id="e21" source="n3" target="n26">
+    </edge>
+    <edge id="e22" source="n3" target="n7">
+    </edge>
+    <edge id="e23" source="n3" target="n11">
+    </edge>
+    <edge id="e24" source="n4" target="n7">
+    </edge>
+    <edge id="e25" source="n4" target="n9">
+    </edge>
+    <edge id="e26" source="n4" target="n10">
+    </edge>
+    <edge id="e27" source="n4" target="n14">
+    </edge>
+    <edge id="e28" source="n4" target="n17">
+    </edge>
+    <edge id="e29" source="n4" target="n22">
+    </edge>
+    <edge id="e30" source="n4" target="n24">
+    </edge>
+    <edge id="e31" source="n4" target="n18">
+    </edge>
+    <edge id="e32" source="n5" target="n7">
+    </edge>
+    <edge id="e33" source="n5" target="n14">
+    </edge>
+    <edge id="e34" source="n5" target="n23">
+    </edge>
+    <edge id="e35" source="n5" target="n25">
+    </edge>
+    <edge id="e36" source="n5" target="n11">
+    </edge>
+    <edge id="e37" source="n5" target="n15">
+    </edge>
+    <edge id="e38" source="n5" target="n26">
+    </edge>
+    <edge id="e39" source="n6" target="n13">
+    </edge>
+    <edge id="e40" source="n6" target="n8">
+    </edge>
+    <edge id="e41" source="n6" target="n14">
+    </edge>
+    <edge id="e42" source="n6" target="n19">
+    </edge>
+    <edge id="e43" source="n7" target="n9">
+    </edge>
+    <edge id="e44" source="n7" target="n10">
+    </edge>
+    <edge id="e45" source="n7" target="n14">
+    </edge>
+    <edge id="e46" source="n7" target="n15">
+    </edge>
+    <edge id="e47" source="n7" target="n16">
+    </edge>
+    <edge id="e48" source="n7" target="n17">
+    </edge>
+    <edge id="e49" source="n7" target="n20">
+    </edge>
+    <edge id="e50" source="n7" target="n22">
+    </edge>
+    <edge id="e51" source="n7" target="n25">
+    </edge>
+    <edge id="e52" source="n7" target="n26">
+    </edge>
+    <edge id="e53" source="n7" target="n8">
+    </edge>
+    <edge id="e54" source="n7" target="n11">
+    </edge>
+    <edge id="e55" source="n7" target="n12">
+    </edge>
+    <edge id="e56" source="n7" target="n18">
+    </edge>
+    <edge id="e57" source="n7" target="n19">
+    </edge>
+    <edge id="e58" source="n7" target="n21">
+    </edge>
+    <edge id="e59" source="n7" target="n23">
+    </edge>
+    <edge id="e60" source="n7" target="n24">
+    </edge>
+    <edge id="e61" source="n8" target="n12">
+    </edge>
+    <edge id="e62" source="n8" target="n13">
+    </edge>
+    <edge id="e63" source="n8" target="n14">
+    </edge>
+    <edge id="e64" source="n8" target="n19">
+    </edge>
+    <edge id="e65" source="n8" target="n21">
+    </edge>
+    <edge id="e66" source="n9" target="n10">
+    </edge>
+    <edge id="e67" source="n9" target="n17">
+    </edge>
+    <edge id="e68" source="n9" target="n22">
+    </edge>
+    <edge id="e69" source="n9" target="n14">
+    </edge>
+    <edge id="e70" source="n9" target="n18">
+    </edge>
+    <edge id="e71" source="n9" target="n24">
+    </edge>
+    <edge id="e72" source="n10" target="n17">
+    </edge>
+    <edge id="e73" source="n10" target="n22">
+    </edge>
+    <edge id="e74" source="n10" target="n14">
+    </edge>
+    <edge id="e75" source="n10" target="n18">
+    </edge>
+    <edge id="e76" source="n10" target="n24">
+    </edge>
+    <edge id="e77" source="n11" target="n15">
+    </edge>
+    <edge id="e78" source="n11" target="n16">
+    </edge>
+    <edge id="e79" source="n11" target="n20">
+    </edge>
+    <edge id="e80" source="n11" target="n26">
+    </edge>
+    <edge id="e81" source="n12" target="n19">
+    </edge>
+    <edge id="e82" source="n12" target="n21">
+    </edge>
+    <edge id="e83" source="n13" target="n14">
+    </edge>
+    <edge id="e84" source="n13" target="n19">
+    </edge>
+    <edge id="e85" source="n14" target="n17">
+    </edge>
+    <edge id="e86" source="n14" target="n22">
+    </edge>
+    <edge id="e87" source="n14" target="n25">
+    </edge>
+    <edge id="e88" source="n14" target="n18">
+    </edge>
+    <edge id="e89" source="n14" target="n19">
+    </edge>
+    <edge id="e90" source="n14" target="n23">
+    </edge>
+    <edge id="e91" source="n14" target="n24">
+    </edge>
+    <edge id="e92" source="n15" target="n26">
+    </edge>
+    <edge id="e93" source="n16" target="n20">
+    </edge>
+    <edge id="e94" source="n17" target="n18">
+    </edge>
+    <edge id="e95" source="n17" target="n22">
+    </edge>
+    <edge id="e96" source="n17" target="n24">
+    </edge>
+    <edge id="e97" source="n18" target="n22">
+    </edge>
+    <edge id="e98" source="n18" target="n24">
+    </edge>
+    <edge id="e99" source="n19" target="n21">
+    </edge>
+    <edge id="e100" source="n22" target="n24">
+    </edge>
+    <edge id="e101" source="n23" target="n25">
+    </edge>
+
+  </graph>
+</graphml>

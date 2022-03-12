@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.io;
 
 import java.util.Collection;
@@ -57,7 +58,8 @@ public class PersistenceProviderUtils {
                 String id = w.getIdentifier();
                 if (id != null && !id.isEmpty()) {
                     if (providers.containsKey(w.getIdentifier())) {
-                        throw new RuntimeException("Found a duplicate workspace persistence provider with the idenfier '" + id + "'");
+                        throw new RuntimeException(
+                            "Found a duplicate workspace persistence provider with the idenfier '" + id + "'");
                     }
                     providers.put(w.getIdentifier(), w);
                 }

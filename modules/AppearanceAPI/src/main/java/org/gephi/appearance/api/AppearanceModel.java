@@ -39,11 +39,11 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.api;
 
-import org.gephi.appearance.spi.Transformer;
 import org.gephi.graph.api.Column;
-import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 
 /**
@@ -54,9 +54,83 @@ import org.gephi.project.api.Workspace;
 public interface AppearanceModel {
 
     /**
+     * Return the workspace this model is associated with
+     *
+     * @return the workspace of this model
+     */
+    Workspace getWorkspace();
+
+    /**
+     * Returns <code>true</code> if rankings are using the currently visible
+     * graph as a scale. If <code>false</code> the complete graph is used to
+     * determine minimum and maximum values.
+     *
+     * @return <code>true</code> if using a local scale, <code>false</code> if
+     * global scale
+     */
+    boolean isRankingLocalScale();
+
+    /**
+     * Returns <code>true</code> if partitions are using the currently visible
+     * graph as a source. If <code>false</code> the complete graph is used to
+     * determine partitions.
+     *
+     * @return <code>true</code> if using a local scale, <code>false</code> if
+     * global scale
+     */
+    boolean isPartitionLocalScale();
+
+    /**
+     * Returns <code>true</code> if null values are considered in functions. If <code>false</code> elements with null
+     * values will be transformed as well. Default value is <code>false</code>.
+     * <p>
+     * When using a ranking function, null values will receive the lowest normalised value.
+     *
+     * @return <code>true</code> if null values are transformed, <code>false</code> otherwise
+     */
+    boolean isTransformNullValues();
+
+    /**
+     * Returns the node partition for thid column.
+     *
+     * @param column column
+     * @return node partition of null if it doesn't exist
+     */
+    Partition getNodePartition(Column column);
+
+    /**
+     * Returns the edge partition for this column.
+     *
+     * @param column column
+     * @return edge partition of null if it doesn't exist
+     */
+    Partition getEdgePartition(Column column);
+
+    /**
+     * Returns all node functions for the given graph.
+     *
+     * @return all node functions
+     */
+    Function[] getNodeFunctions();
+
+    /**
+     * Returns all edge functions for the given graph.
+     *
+     * @return all edge functions
+     */
+    Function[] getEdgeFunctions();
+
+    /**
+     * Returns the graph model this model is associated with.
+     *
+     * @return the graph model
+     */
+    GraphModel getGraphModel();
+
+    /**
      * Identifies the non-column-based functions.
      */
-    public enum GraphFunction {
+    enum GraphFunction {
         NODE_DEGREE("degree"),
         NODE_INDEGREE("indegree"),
         NODE_OUTDEGREE("outdegree"),
@@ -73,97 +147,4 @@ public interface AppearanceModel {
             return id;
         }
     }
-
-    /**
-     * Return the workspace this model is associated with
-     *
-     * @return the workspace of this model
-     */
-    public Workspace getWorkspace();
-
-    /**
-     * Returns <code>true</code> if rankings are using the currently visible
-     * graph as a scale. If <code>false</code> the complete graph is used to
-     * determine minimum and maximum values, the ranking scale.
-     *
-     * @return <code>true</code> if using a local scale, <code>false</code> if
-     * global scale
-     */
-    public boolean isLocalScale();
-
-    /**
-     * Returns the node partition for this graph and column.
-     *
-     * @param graph graph
-     * @param column column
-     * @return node partition of null if it doesn't exist
-     */
-    public Partition getNodePartition(Graph graph, Column column);
-
-    /**
-     * Returns the edge partition for this graph and column.
-     *
-     * @param graph graph
-     * @param column column
-     * @return edge partition of null if it doesn't exist
-     */
-    public Partition getEdgePartition(Graph graph, Column column);
-
-    /**
-     * Returns all node functions for the given graph.
-     *
-     * @param graph graph
-     * @return all node functions
-     */
-    public Function[] getNodeFunctions(Graph graph);
-
-    /**
-     * Returns the node function for the given column and transformer.
-     *
-     * @param graph graph
-     * @param column column
-     * @param transformer transformer class
-     * @return node function or null if not found
-     */
-    public Function getNodeFunction(Graph graph, Column column, Class<? extends Transformer> transformer);
-
-    /**
-     * Returns the node function for the given graph function identifier and
-     * transformer.
-     *
-     * @param graph graph
-     * @param graphFunction graphFunction
-     * @param transformer transformer class
-     * @return node function or null if not found
-     */
-    public Function getNodeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer);
-
-    /**
-     * Returns all edge functions for the given graph.
-     *
-     * @param graph graph
-     * @return all edge functions
-     */
-    public Function[] getEdgeFunctions(Graph graph);
-
-    /**
-     * Returns the node function for the given column and transformer.
-     *
-     * @param graph graph
-     * @param column column
-     * @param transformer transformer class
-     * @return edge function or null if not found
-     */
-    public Function getEdgeFunction(Graph graph, Column column, Class<? extends Transformer> transformer);
-
-    /**
-     * Returns the edge function for the given graph function identifier and
-     * transformer.
-     *
-     * @param graph graph
-     * @param graphFunction graphFunction
-     * @param transformer transformer class
-     * @return edge function or null if not found
-     */
-    public Function getEdgeFunction(Graph graph, GraphFunction graphFunction, Class<? extends Transformer> transformer);
 }

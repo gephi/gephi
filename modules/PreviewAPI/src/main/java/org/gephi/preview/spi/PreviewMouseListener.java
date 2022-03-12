@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2012 Gephi Consortium.
  */
+
 package org.gephi.preview.spi;
 
 import org.gephi.preview.api.PreviewMouseEvent;
@@ -48,42 +49,47 @@ import org.gephi.project.api.Workspace;
 /**
  * <p>Listener for mouse events in Preview.</p>
  * <p>Listeners will <b>always</b> receive left mouse button events. Right button is reserved for zooming and moving the canvas</p>
- * 
- * <p>In order to enable a <code>PreviewMouseListener</code>, annotate it with <code>ServiceProvider</code> annotation and implement <code>MouseResponsiveRenderer</code> 
+ *
+ * <p>In order to enable a <code>PreviewMouseListener</code>, annotate it with <code>ServiceProvider</code> annotation and implement <code>MouseResponsiveRenderer</code>
  * in a <code>Renderer</code> and return true for the listener in the <code>needsPreviewMouseListener</code> method.</p>
+ *
  * @author Eduardo Ramos
  */
 public interface PreviewMouseListener {
-    
+
     /**
      * A single click event.
-     * @param event Mouse event
+     *
+     * @param event      Mouse event
      * @param properties Preview properties for the workspace
      * @param workspace  Current workspace
      */
-    public void mouseClicked(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
-    
+    void mouseClicked(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
+
     /**
      * A mouse press event. If your listener needs to receive drag or release events, you <b>must</b> mark the previous press event as consumed.
-     * @param event Mouse event
+     *
+     * @param event      Mouse event
      * @param properties Preview properties for the workspace
      * @param workspace  Current workspace
      */
-    public void mousePressed(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
-    
+    void mousePressed(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
+
     /**
      * If your listener needs to receive drag events, you <b>must</b> mark the previous press event as consumed.
-     * @param event Mouse event
+     *
+     * @param event      Mouse event
      * @param properties Preview properties for the workspace
      * @param workspace  Current workspace
      */
-    public void mouseDragged(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
-    
+    void mouseDragged(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
+
     /**
      * If your listener needs to receive release events, you <b>must</b> mark the previous press event as consumed.
-     * @param event Mouse event
+     *
+     * @param event      Mouse event
      * @param properties Preview properties for the workspace
      * @param workspace  Current workspace
      */
-    public void mouseReleased(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
+    void mouseReleased(PreviewMouseEvent event, PreviewProperties properties, Workspace workspace);
 }

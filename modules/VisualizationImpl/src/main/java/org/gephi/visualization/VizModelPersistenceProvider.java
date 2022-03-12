@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization;
 
 import javax.xml.stream.XMLStreamException;
@@ -51,7 +52,6 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = WorkspacePersistenceProvider.class)
@@ -76,7 +76,8 @@ public class VizModelPersistenceProvider implements WorkspaceXMLPersistenceProvi
             vizModel = new VizModel(workspace);
             workspace.add(vizModel);
         }
-        Lookup.getDefault().lookup(VizController.class).refreshWorkspace();//Necessary to get events from reading xml properties such as background color changed
+        Lookup.getDefault().lookup(VizController.class)
+            .refreshWorkspace();//Necessary to get events from reading xml properties such as background color changed
         try {
             vizModel.readXML(reader, workspace);
         } catch (XMLStreamException ex) {

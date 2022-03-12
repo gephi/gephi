@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.api.datatables;
 
 import org.gephi.graph.api.Table;
@@ -48,37 +49,43 @@ import org.gephi.graph.api.Table;
  * <p>It provides methods to control the Data Table UI that shows a table for nodes and edges.</p>
  * <p>This is done by registering the data table ui as a listener of these events that can be requested with this controller.
  * <b>Note that data table ui will not be registered to listen to the events of this controller until it is instanced opening Data Laboratory Group</b></p>
+ *
  * @author Eduardo Ramos
  */
 public interface DataTablesController extends DataTablesCommonInterface {
 
     /**
      * Request the tables implementation to show the given table (nodes or edges table)
+     *
      * @param table Table to show
      */
     void selectTable(Table table);
 
     /**
-     * Register a listener for these requests.
-     * @param listener Instance of DataTablesEventListener
-     */
-    void setDataTablesEventListener(DataTablesEventListener listener);
-
-    /**
      * Returns the current registered DataTablesEventListener.
      * It can be null if it is still not activated or there is no active workspace.
+     *
      * @return Current listener or null
      */
     DataTablesEventListener getDataTablesEventListener();
 
     /**
+     * Register a listener for these requests.
+     *
+     * @param listener Instance of DataTablesEventListener
+     */
+    void setDataTablesEventListener(DataTablesEventListener listener);
+
+    /**
      * Indicates if Data Table UI is registered as a listener of the events created by this controller.
+     *
      * @return True if Data Table UI is prepared, false otherwise
      */
     boolean isDataTablesReady();
 
     /**
      * Looks for an available <code>DataTablesEventListenerBuilder</code> and sets its <code>DataTablesEventListener</code>.
+     *
      * @return True if listener found, false otherwise
      */
     boolean prepareDataTables();

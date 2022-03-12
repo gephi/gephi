@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components.richtooltip;
 
 import java.awt.Dimension;
@@ -84,6 +85,7 @@ import javax.swing.PopupFactory;
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * Rich tooltip for command buttons.
  *
@@ -235,6 +237,8 @@ public class RichTooltip {
      * @see #getFooterSections()
      */
     protected List<String> footerSections;
+    private Popup tipWindow;
+    private boolean tipShowing = false;
 
     /**
      * Creates an empty tooltip.
@@ -245,18 +249,14 @@ public class RichTooltip {
     /**
      * Creates a tooltip with the specified title and description section.
      *
-     * @param title
-     *            Tooltip title.
-     * @param descriptionSection
-     *            Tooltip main description section.
+     * @param title              Tooltip title.
+     * @param descriptionSection Tooltip main description section.
      */
     public RichTooltip(String title, String descriptionSection) {
         this.setTitle(title);
         this.addDescriptionSection(descriptionSection);
     }
-    private Popup tipWindow;
-    private boolean tipShowing = false;
-    
+
     public void showTooltip(JComponent component) {
         if (component == null || !component.isShowing()) {
             return;
@@ -316,32 +316,9 @@ public class RichTooltip {
     }
 
     /**
-     * Sets the title for this tooltip.
-     *
-     * @param title
-     *            The new tooltip title.
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * Sets the main image for this tooltip.
-     *
-     * @param image
-     *            The main image for this tooltip.
-     * @see #getMainImage()
-     * @see #addDescriptionSection(String)
-     */
-    public void setMainImage(Image image) {
-        this.mainImage = image;
-    }
-
-    /**
      * Adds the specified description section to this tooltip.
      *
-     * @param section
-     *            The description section to add.
+     * @param section The description section to add.
      * @see #getDescriptionSections()
      * @see #setMainImage(Image)
      * @see #setTitle(String)
@@ -354,22 +331,9 @@ public class RichTooltip {
     }
 
     /**
-     * Sets the footer image for this tooltip.
-     *
-     * @param image
-     *            The footer image for this tooltip.
-     * @see #getFooterImage()
-     * @see #addFooterSection(String)
-     */
-    public void setFooterImage(Image image) {
-        this.footerImage = image;
-    }
-
-    /**
      * Adds the specified footer section to this tooltip.
      *
-     * @param section
-     *            The footer section to add.
+     * @param section The footer section to add.
      * @see #getFooterSections()
      * @see #setFooterImage(Image)
      */
@@ -392,6 +356,15 @@ public class RichTooltip {
     }
 
     /**
+     * Sets the title for this tooltip.
+     *
+     * @param title The new tooltip title.
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
      * Returns the main image of this tooltip. Can return <code>null</code>.
      *
      * @return The main image of this tooltip.
@@ -400,6 +373,17 @@ public class RichTooltip {
      */
     public Image getMainImage() {
         return this.mainImage;
+    }
+
+    /**
+     * Sets the main image for this tooltip.
+     *
+     * @param image The main image for this tooltip.
+     * @see #getMainImage()
+     * @see #addDescriptionSection(String)
+     */
+    public void setMainImage(Image image) {
+        this.mainImage = image;
     }
 
     /**
@@ -428,6 +412,17 @@ public class RichTooltip {
      */
     public Image getFooterImage() {
         return this.footerImage;
+    }
+
+    /**
+     * Sets the footer image for this tooltip.
+     *
+     * @param image The footer image for this tooltip.
+     * @see #getFooterImage()
+     * @see #addFooterSection(String)
+     */
+    public void setFooterImage(Image image) {
+        this.footerImage = image;
     }
 
     /**

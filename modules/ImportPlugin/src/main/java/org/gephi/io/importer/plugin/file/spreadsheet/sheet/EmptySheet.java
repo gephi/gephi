@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.sheet;
 
 import java.io.IOException;
@@ -47,11 +48,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public final class EmptySheet implements SheetParser {
-    
+
     public static final EmptySheet INSTANCE = new EmptySheet();
 
     @Override

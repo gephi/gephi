@@ -28,6 +28,15 @@
     
         <key>CFBundleIconFile</key>
         <string>${brandingToken}.icns</string>
+        
+        <key>LSApplicationCategoryType</key>
+	    <string>public.app-category.graphics-design</string>
+        
+        <key>LSMinimumSystemVersion</key>
+	    <string>10.9.0</string>
+        
+        <key>NSHumanReadableCopyright</key>
+	    <string>Copyright 2008, 2021 Gephi</string>
     
         <key>NSHighResolutionCapable</key> 
         <true/>
@@ -42,7 +51,7 @@
                 <key>CFBundleTypeName</key>
                 <string>Gephi Project File</string>
                 <key>CFBundleTypeRole</key>
-                <string>Viewer</string>
+                <string>Editor</string>
             </dict>
             <dict>
                 <key>CFBundleTypeExtensions</key>
@@ -52,7 +61,7 @@
                 <key>CFBundleTypeName</key>
                 <string>GEXF Graph File</string>
                 <key>CFBundleTypeRole</key>
-                <string>Viewer</string>
+                <string>Editor</string>
             </dict>
         </array>
     </dict>

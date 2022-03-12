@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components.gradientslider;
 
 import com.bric.swing.ColorPicker;
@@ -61,7 +62,8 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.plaf.ComponentUI;
 
-/** This component lets the user manipulate the colors in a gradient.
+/**
+ * This component lets the user manipulate the colors in a gradient.
  * A <code>GradientSlider</code> can contain any number of thumbs.  The
  * slider itself represents a range of values from zero to one, so the thumbs
  * must always be within this range.  Each thumb maps to a specific <code>Color</code>.
@@ -82,36 +84,54 @@ public class GradientSlider extends MultiThumbSlider {
         }
     }
 
-    /** Create a horizontal <code>GradientSlider</code> that
+    /**
+     * The popup for contextual menus.
+     */
+    JPopupMenu popup;
+
+    /**
+     * Create a horizontal <code>GradientSlider</code> that
      * represents a gradient from white to black.
      */
     public GradientSlider() {
         this(HORIZONTAL);
     }
 
-    /** Create a <code>GradientSlider</code> that represents a
+    /**
+     * Create a <code>GradientSlider</code> that represents a
      * gradient form white to black.
+     *
      * @param orientation HORIZONTAL or VERTICAL
      */
     public GradientSlider(int orientation) {
-        this(orientation, new float[]{0f, 1f}, new Color[]{Color.white, Color.black});
+        this(orientation, new float[] {0f, 1f}, new Color[] {Color.white, Color.black});
     }
 
-    /** Create a new <code>GradientSlider</code>.
+    /**
+     * Create a new <code>GradientSlider</code>.
      *
-     * @param orientation HORIZONTAL or VERTICAL
+     * @param orientation    HORIZONTAL or VERTICAL
      * @param thumbPositions the initial positions of each thumb
-     * @param values the initial colors at each position
+     * @param values         the initial colors at each position
      * @throws IllegalArgumentException if the number of elements in
-     * <code>thumbPositions</code> does not equal the number of elements
-     * in <code>values</code>.
-     *
+     *                                  <code>thumbPositions</code> does not equal the number of elements
+     *                                  in <code>values</code>.
      */
     public GradientSlider(int orientation, float[] thumbPositions, Color[] values) {
         super(orientation, thumbPositions, values);
     }
 
-    /** Returns the Color at the specified position.
+    private static Color tween(Color c1, Color c2, float p) {
+        return new Color(
+            (int) (c1.getRed() * (1 - p) + c2.getRed() * (p)),
+            (int) (c1.getGreen() * (1 - p) + c2.getGreen() * (p)),
+            (int) (c1.getBlue() * (1 - p) + c2.getBlue() * (p)),
+            (int) (c1.getAlpha() * (1 - p) + c2.getAlpha() * (p)));
+    }
+
+    /**
+     * Returns the Color at the specified position.
+     *
      * @return color
      */
     @Override
@@ -126,16 +146,18 @@ public class GradientSlider extends MultiThumbSlider {
             }
         }
         if (pos < thumbPositions[0]) {
-            return (Color) values[0];
+            return values[0];
         }
         if (pos > thumbPositions[thumbPositions.length - 1]) {
-            return (Color) values[values.length - 1];
+            return values[values.length - 1];
         }
         return null;
     }
 
-    /** This is identical to <code>getValues()</code>,
+    /**
+     * This is identical to <code>getValues()</code>,
      * except the return value is an array of <code>Colors</code>.
+     *
      * @return color array
      */
     public Color[] getColors() {
@@ -146,15 +168,8 @@ public class GradientSlider extends MultiThumbSlider {
         return c;
     }
 
-    private static Color tween(Color c1, Color c2, float p) {
-        return new Color(
-                (int) (c1.getRed() * (1 - p) + c2.getRed() * (p)),
-                (int) (c1.getGreen() * (1 - p) + c2.getGreen() * (p)),
-                (int) (c1.getBlue() * (1 - p) + c2.getBlue() * (p)),
-                (int) (c1.getAlpha() * (1 - p) + c2.getAlpha() * (p)));
-    }
-
-    /** This invokes a <code>ColorPicker</code> dialog to edit
+    /**
+     * This invokes a <code>ColorPicker</code> dialog to edit
      * the thumb at the selected index.
      *
      * @return return true if successful
@@ -172,6 +187,85 @@ public class GradientSlider extends MultiThumbSlider {
         }
     }
 
+    private JPopupMenu createPopup() {
+        return new ColorPickerPopup();
+    }
+
+    /**
+     * This shows a mini ColorPicker panel to let the user
+     * change the selected color.
+     *
+     * @return true if successful
+     */
+    @Override
+    public boolean doPopup(int x, int y) {
+        if (popup == null) {
+            popup = createPopup();
+        }
+        popup.show(this, x, y);
+        return true;
+    }
+
+    private Frame getFrame() {
+        Window w = SwingUtilities.getWindowAncestor(this);
+        if (w instanceof Frame) {
+            return ((Frame) w);
+        }
+        return null;
+    }
+
+    private boolean showColorPicker() {
+        Color[] colors = getColors();
+        int i = getSelectedThumb();
+
+        Frame frame = getFrame();
+
+        boolean includeOpacity =
+            MultiThumbSliderUI.getProperty(this, "GradientSlider.includeOpacity", "true").equals("true");
+        colors[i] = ColorPicker.showDialog(frame, colors[i], includeOpacity);
+        if (colors[i] != null) {
+            setValues(getThumbPositions(), colors);
+        }
+        return true;
+    }
+
+    /**
+     * TODO: If developers don't want to bundle the ColorPicker with their programs,
+     * they can use this method instead of <code>showColorPicker()</code>.
+     */
+    private void showJColorChooser() {
+        Color[] colors = getColors();
+        int i = getSelectedThumb();
+        if (i >= 0 && i < colors.length) {
+            colors[i] = JColorChooser.showDialog(this, "Choose a Color", colors[i]);
+            if (colors[i] != null) {
+                setValues(getThumbPositions(), colors);
+            }
+        }
+    }
+
+    @Override
+    public void updateUI() {
+        String name = UIManager.getString("GradientSliderUI");
+        try {
+            Class c = Class.forName(name);
+            Constructor[] constructors = c.getConstructors();
+            for (int a = 0; a < constructors.length; a++) {
+                Class[] types = constructors[a].getParameterTypes();
+                if (types.length == 1 && types[0].equals(GradientSlider.class)) {
+                    ComponentUI ui = (ComponentUI) constructors[a].newInstance(new Object[] {this});
+                    setUI(ui);
+                    return;
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("The class \"" + name + "\" could not be found.");
+        } catch (Throwable t) {
+            RuntimeException e = new RuntimeException("The class \"" + name + "\" could not be constructed.", t);
+            throw e;
+        }
+    }
+
     class SelectThumbRunnable implements Runnable {
 
         int index;
@@ -184,12 +278,6 @@ public class GradientSlider extends MultiThumbSlider {
         public void run() {
             setSelectedThumb(index);
         }
-    }
-    /** The popup for contextual menus. */
-    JPopupMenu popup;
-
-    private JPopupMenu createPopup() {
-        return new ColorPickerPopup();
     }
 
     abstract class AbstractPopup extends JPopupMenu {
@@ -258,7 +346,9 @@ public class GradientSlider extends MultiThumbSlider {
 
         public ColorPickerPopup() {
             super();
-            boolean includeOpacity = MultiThumbSliderUI.getProperty(GradientSlider.this, "GradientSlider.includeOpacity", "true").equals("true");
+            boolean includeOpacity =
+                MultiThumbSliderUI.getProperty(GradientSlider.this, "GradientSlider.includeOpacity", "true")
+                    .equals("true");
 
             mini = new ColorPicker(false, includeOpacity);
             mini.setMode(0);
@@ -290,78 +380,6 @@ public class GradientSlider extends MultiThumbSlider {
         @Override
         public void setColor(Color c) {
             mini.setRGB(c.getRed(), c.getGreen(), c.getBlue());
-        }
-    }
-
-    /** This shows a mini ColorPicker panel to let the user
-     * change the selected color.
-     * @return true if successful
-     */
-    @Override
-    public boolean doPopup(int x, int y) {
-        if (popup == null) {
-            popup = createPopup();
-        }
-        popup.show(this, x, y);
-        return true;
-    }
-
-    private Frame getFrame() {
-        Window w = SwingUtilities.getWindowAncestor(this);
-        if (w instanceof Frame) {
-            return ((Frame) w);
-        }
-        return null;
-    }
-
-    private boolean showColorPicker() {
-        Color[] colors = getColors();
-        int i = getSelectedThumb();
-
-        Frame frame = getFrame();
-
-        boolean includeOpacity = MultiThumbSliderUI.getProperty(this, "GradientSlider.includeOpacity", "true").equals("true");
-        colors[i] = ColorPicker.showDialog(frame, colors[i], includeOpacity);
-        if (colors[i] != null) {
-            setValues(getThumbPositions(), colors);
-        }
-        return true;
-    }
-
-    /** TODO: If developers don't want to bundle the ColorPicker with their programs,
-     * they can use this method instead of <code>showColorPicker()</code>.
-     */
-    private void showJColorChooser() {
-        Color[] colors = getColors();
-        int i = getSelectedThumb();
-        if (i >= 0 && i < colors.length) {
-            colors[i] = JColorChooser.showDialog(this, "Choose a Color", colors[i]);
-            if (colors[i] != null) {
-                setValues(getThumbPositions(), colors);
-            }
-        }
-    }
-
-    @Override
-    public void updateUI() {
-        String name = UIManager.getString("GradientSliderUI");
-        try {
-            Class c = Class.forName(name);
-            Constructor[] constructors = c.getConstructors();
-            for (int a = 0; a < constructors.length; a++) {
-                Class[] types = constructors[a].getParameterTypes();
-                if (types.length == 1 && types[0].equals(GradientSlider.class)) {
-                    ComponentUI ui = (ComponentUI) constructors[a].newInstance(new Object[]{this});
-                    setUI(ui);
-                    return;
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("The class \"" + name + "\" could not be found.");
-        } catch (Throwable t) {
-            RuntimeException e = new RuntimeException("The class \"" + name + "\" could not be constructed.");
-            e.initCause(t);
-            throw e;
         }
     }
 }

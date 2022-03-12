@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.desktop.project.api;
 
 import java.io.File;
@@ -47,56 +48,55 @@ import org.gephi.project.api.Project;
 import org.gephi.project.api.Workspace;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public interface ProjectControllerUI {
 
-    public void saveProject();
+    void saveProject();
 
-    public void saveAsProject();
+    void saveAsProject();
 
-    public void openProject(File file);
+    void openProject(File file);
 
-    public void renameProject(final String name);
+    void renameProject(final String name);
 
-    public void projectProperties();
+    void projectProperties();
 
-    public void openFile(FileImporterBuilder[] builders);
-    
-    public void openFile();
+    void openFile(FileImporterBuilder[] builders);
 
-    public Workspace newWorkspace();
+    void openFile();
 
-    public Workspace duplicateWorkspace();
+    Workspace newWorkspace();
 
-    public Project getCurrentProject();
+    Workspace duplicateWorkspace();
 
-    public Project newProject();
+    Project getCurrentProject();
 
-    public void deleteWorkspace();
+    Project newProject();
 
-    public void closeProject();
+    void deleteWorkspace();
 
-    public void renameWorkspace(final String name);
+    void closeProject();
 
-    public boolean canNewProject();
+    void renameWorkspace(final String name);
 
-    public boolean canCloseProject();
+    boolean canNewProject();
 
-    public boolean canOpenFile();
+    boolean canCloseProject();
 
-    public boolean canSave();
+    boolean canOpenFile();
 
-    public boolean canSaveAs();
+    boolean canSave();
 
-    public boolean canNewWorkspace();
+    boolean canSaveAs();
 
-    public boolean canDuplicateWorkspace();
+    boolean canNewWorkspace();
 
-    public boolean canDeleteWorkspace();
+    boolean canDuplicateWorkspace();
 
-    public boolean canRenameWorkspace();
+    boolean canDeleteWorkspace();
 
-    public boolean canProjectProperties();
+    boolean canRenameWorkspace();
+
+    boolean canProjectProperties();
 }

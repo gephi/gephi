@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file;
 
 import java.io.BufferedReader;
@@ -58,7 +59,6 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Sebastien Heymann
  */
 public class ImporterTLP implements FileImporter, LongTask {
@@ -142,7 +142,8 @@ public class ImporterTLP implements FileImporter, LongTask {
 
     private void parseEdge(String[] tokens, int cptLine) {
         if (tokens.length != 4) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerTPL_error_dataformat1", cptLine), Issue.Level.WARNING));
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerTPL_error_dataformat1", cptLine),
+                Issue.Level.WARNING));
         }
         String id = tokens[1];
         EdgeDraft edge = container.factory().newEdgeDraft(id);

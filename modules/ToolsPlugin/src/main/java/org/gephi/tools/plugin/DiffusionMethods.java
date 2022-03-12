@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.tools.plugin;
 
 import java.util.HashSet;
@@ -49,14 +50,13 @@ import org.gephi.graph.api.Node;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class DiffusionMethods {
 
     public static Node[] getNeighbors(Graph graph, Node[] nodes) {
         Set<Node> nodeTree = new HashSet<>();
-        
+
         graph.readLock();
         try {
             for (Node n : nodes) {

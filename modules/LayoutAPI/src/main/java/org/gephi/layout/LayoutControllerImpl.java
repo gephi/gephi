@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout;
 
 import org.gephi.layout.api.LayoutController;
@@ -55,7 +56,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = LayoutController.class)
@@ -160,9 +160,9 @@ public class LayoutControllerImpl implements LayoutController {
     private static class LayoutRun implements LongTask, Runnable {
 
         private final Layout layout;
+        private final Integer iterations;
         private boolean stopRun = false;
         private ProgressTicket progressTicket;
-        private final Integer iterations;
 
         public LayoutRun(Layout layout) {
             this.layout = layout;
@@ -189,7 +189,8 @@ public class LayoutControllerImpl implements LayoutController {
             }
             layout.endAlgo();
             if (i > 1) {
-                Progress.finish(progressTicket, NbBundle.getMessage(LayoutControllerImpl.class, "LayoutRun.end", layout.getBuilder().getName(), i));
+                Progress.finish(progressTicket,
+                    NbBundle.getMessage(LayoutControllerImpl.class, "LayoutRun.end", layout.getBuilder().getName(), i));
             } else {
                 Progress.finish(progressTicket);
             }

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.timeline;
 
 import java.awt.Point;
@@ -59,7 +60,6 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class TimelineTooltip {
@@ -72,7 +72,7 @@ public class TimelineTooltip {
     private String y;
     private Timer timer;
     private RichTooltip tooltip;
-    private Lock lock = new ReentrantLock();
+    private final Lock lock = new ReentrantLock();
 
     public void setModel(TimelineModel model) {
         this.model = model;
@@ -134,29 +134,28 @@ public class TimelineTooltip {
                     min = decimalFormat.format(model.getCustomMin());
                     max = decimalFormat.format(model.getCustomMax());
                     position = decimalFormat.format(currentPosition);
-                }   break;
-            case DATE:
-                {
-                    DateTime minDate = new DateTime((long) model.getCustomMin());
-                    DateTime maxDate = new DateTime((long) model.getCustomMax());
-                    DateTime posDate = new DateTime((long) currentPosition);
-                    DateTimeFormatter formatter = ISODateTimeFormat.date();
-                    min = formatter.print(minDate);
-                    max = formatter.print(maxDate);
-                    position = formatter.print(posDate);
-                    break;
                 }
-            default:
-                {
-                    DateTime minDate = new DateTime((long) model.getCustomMin());
-                    DateTime maxDate = new DateTime((long) model.getCustomMax());
-                    DateTime posDate = new DateTime((long) currentPosition);
-                    DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
-                    min = formatter.print(minDate);
-                    max = formatter.print(maxDate);
-                    position = formatter.print(posDate);
-                    break;
-                }
+                break;
+            case DATE: {
+                DateTime minDate = new DateTime((long) model.getCustomMin());
+                DateTime maxDate = new DateTime((long) model.getCustomMax());
+                DateTime posDate = new DateTime((long) currentPosition);
+                DateTimeFormatter formatter = ISODateTimeFormat.date();
+                min = formatter.print(minDate);
+                max = formatter.print(maxDate);
+                position = formatter.print(posDate);
+                break;
+            }
+            default: {
+                DateTime minDate = new DateTime((long) model.getCustomMin());
+                DateTime maxDate = new DateTime((long) model.getCustomMax());
+                DateTime posDate = new DateTime((long) currentPosition);
+                DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
+                min = formatter.print(minDate);
+                max = formatter.print(maxDate);
+                position = formatter.print(posDate);
+                break;
+            }
         }
 
         if (model.getChart() != null) {
@@ -172,10 +171,12 @@ public class TimelineTooltip {
         RichTooltip richTooltip = new RichTooltip();
 
         //Min
-        richTooltip.addDescriptionSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.min") + ": " + getMin());
+        richTooltip
+            .addDescriptionSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.min") + ": " + getMin());
 
         //Max
-        richTooltip.addDescriptionSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.max") + ": " + getMax());
+        richTooltip
+            .addDescriptionSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.max") + ": " + getMax());
 
         //Title
         richTooltip.setTitle(getPosition());
@@ -186,7 +187,8 @@ public class TimelineTooltip {
         //Chart
         if (getY() != null) {
             richTooltip.addFooterSection(model.getChart().getColumn());
-            richTooltip.addFooterSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.chart") + ": " + getY());
+            richTooltip
+                .addFooterSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.chart") + ": " + getY());
 
             //Img
             richTooltip.setFooterImage(ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/chart.png"));

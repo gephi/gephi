@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.types;
 
 import java.awt.Color;
@@ -51,18 +52,13 @@ import java.awt.Color;
  * <li>MIXED: An average of source and target color</li>
  * <li>CUSTOM: A custom color</li>
  * <li>ORIGINAL: The original edge color, if exists</li></ul>
- * 
+ *
  * @author Mathieu Bastian
  */
 public class EdgeColor {
 
-    public enum Mode {
-
-        SOURCE, TARGET, MIXED, CUSTOM, ORIGINAL
-    }
-
-    private Color customColor;
     private final Mode mode;
+    private final Color customColor;
 
     public EdgeColor(Mode mode) {
         customColor = Color.BLACK;
@@ -92,12 +88,17 @@ public class EdgeColor {
                 return targetColor;
             case MIXED:
                 return new Color((int) ((sourceColor.getRed() + targetColor.getRed()) / 2f),
-                        (int) ((sourceColor.getGreen() + targetColor.getGreen()) / 2f),
-                        (int) ((sourceColor.getBlue() + targetColor.getBlue()) / 2f),
-                        (int) ((sourceColor.getAlpha() + targetColor.getAlpha()) / 2f));
+                    (int) ((sourceColor.getGreen() + targetColor.getGreen()) / 2f),
+                    (int) ((sourceColor.getBlue() + targetColor.getBlue()) / 2f),
+                    (int) ((sourceColor.getAlpha() + targetColor.getAlpha()) / 2f));
             case CUSTOM:
                 return customColor;
         }
         return null;
+    }
+
+    public enum Mode {
+
+        SOURCE, TARGET, MIXED, CUSTOM, ORIGINAL
     }
 }

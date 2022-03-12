@@ -39,12 +39,12 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.plugin;
 
 import java.awt.Color;
 import java.io.Serializable;
 import java.util.Arrays;
-import org.gephi.appearance.api.Interpolator;
 import org.gephi.appearance.api.Ranking;
 import org.gephi.appearance.spi.RankingTransformer;
 import org.gephi.appearance.spi.Transformer;
@@ -52,17 +52,18 @@ import org.gephi.graph.api.Element;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author mbastian
  */
 @ServiceProvider(service = Transformer.class)
 public class RankingElementColorTransformer implements RankingTransformer<Element> {
 
-    protected final LinearGradient linearGradient = new LinearGradient(new Color[]{new Color(0xEDF8FB), new Color(0x66C2A4), new Color(0x006D2C)}, new float[]{0f, 0.5f, 1f});
+    protected final LinearGradient linearGradient =
+        new LinearGradient(new Color[] {new Color(0xEDF8FB), new Color(0x66C2A4), new Color(0x006D2C)},
+            new float[] {0f, 0.5f, 1f});
 
     @Override
-    public void transform(Element element, Ranking ranking, Interpolator interpolator, Number value) {
-        Color color = linearGradient.getValue(ranking.normalize(value, interpolator));
+    public void transform(Element element, Ranking ranking, Number value, float normalisedValue) {
+        Color color = linearGradient.getValue(normalisedValue);
         element.setColor(color);
     }
 
@@ -80,16 +81,24 @@ public class RankingElementColorTransformer implements RankingTransformer<Elemen
         return linearGradient.getPositions();
     }
 
-    public Color[] getColors() {
-        return linearGradient.getColors();
-    }
-
     public void setColorPositions(float[] positions) {
         linearGradient.setPositions(positions);
     }
 
+    public Color[] getColors() {
+        return linearGradient.getColors();
+    }
+
     public void setColors(Color[] colors) {
         linearGradient.setColors(colors);
+    }
+
+    public int[] getColorsAsRgba() {
+        return linearGradient.getColorsAsRgba();
+    }
+
+    public void setColorsAsRgba(int[] colors) {
+        linearGradient.setColorsAsRgba(colors);
     }
 
     public LinearGradient getLinearGradient() {
@@ -101,7 +110,7 @@ public class RankingElementColorTransformer implements RankingTransformer<Elemen
         private Color[] colors;
         private float[] positions;
 
-        public LinearGradient(Color colors[], float[] positions) {
+        public LinearGradient(Color[] colors, float[] positions) {
             if (colors == null || positions == null) {
                 throw new NullPointerException();
             }
@@ -133,22 +142,30 @@ public class RankingElementColorTransformer implements RankingTransformer<Elemen
 
         private Color tween(Color c1, Color c2, float p) {
             return new Color(
-                    (int) (c1.getRed() * (1 - p) + c2.getRed() * (p)),
-                    (int) (c1.getGreen() * (1 - p) + c2.getGreen() * (p)),
-                    (int) (c1.getBlue() * (1 - p) + c2.getBlue() * (p)),
-                    (int) (c1.getAlpha() * (1 - p) + c2.getAlpha() * (p)));
+                (int) (c1.getRed() * (1 - p) + c2.getRed() * (p)),
+                (int) (c1.getGreen() * (1 - p) + c2.getGreen() * (p)),
+                (int) (c1.getBlue() * (1 - p) + c2.getBlue() * (p)),
+                (int) (c1.getAlpha() * (1 - p) + c2.getAlpha() * (p)));
         }
 
         public Color[] getColors() {
             return colors;
         }
 
-        public float[] getPositions() {
-            return positions;
-        }
-
         public void setColors(Color[] colors) {
             this.colors = colors;
+        }
+
+        public int[] getColorsAsRgba() {
+            return Arrays.stream(colors).mapToInt(c -> (c.getAlpha() << 24) | c.getRGB()).toArray();
+        }
+
+        public void setColorsAsRgba(int[] colors) {
+            this.colors = Arrays.stream(colors).mapToObj(rgba -> new Color(rgba, true)).toArray(Color[]::new);
+        }
+
+        public float[] getPositions() {
+            return positions;
         }
 
         public void setPositions(float[] positions) {
@@ -167,10 +184,7 @@ public class RankingElementColorTransformer implements RankingTransformer<Elemen
             if (!Arrays.deepEquals(this.colors, other.colors)) {
                 return false;
             }
-            if (!Arrays.equals(this.positions, other.positions)) {
-                return false;
-            }
-            return true;
+            return Arrays.equals(this.positions, other.positions);
         }
 
         @Override

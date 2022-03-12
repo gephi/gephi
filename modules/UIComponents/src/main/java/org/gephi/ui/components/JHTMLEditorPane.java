@@ -39,9 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -58,7 +62,12 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.TransferHandler;
+import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.AttributeSet;
@@ -76,88 +85,244 @@ import javax.swing.text.html.HTMLWriter;
 public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, MouseListener {
     //~ Inner Classes ------------------------------------------------------------------------------------------------------------
 
-    /** Private Writer that extracts correctly formatted string from HTMLDocument */
-    private class ExtendedHTMLWriter extends HTMLWriter {
-        //~ Constructors ---------------------------------------------------------------------------------------------------------
-
-        public ExtendedHTMLWriter(Writer w, HTMLDocument doc, int pos, int len) {
-            super(w, doc, pos, len);
-            setLineLength(Integer.MAX_VALUE);
-        }
-
-        //~ Methods --------------------------------------------------------------------------------------------------------------
-        protected boolean isSupportedBreakFlowTag(AttributeSet attr) {
-            Object o = attr.getAttribute(StyleConstants.NameAttribute);
-
-            if (o instanceof HTML.Tag) {
-                HTML.Tag tag = (HTML.Tag) o;
-
-                if ((tag == HTML.Tag.HTML) || (tag == HTML.Tag.HEAD) || (tag == HTML.Tag.BODY) || (tag == HTML.Tag.HR)) {
-                    return false;
-                }
-
-                return (tag).breaksFlow();
-            }
-
-            return false;
-        }
-
-        @Override
-        protected void emptyTag(Element elem) throws BadLocationException, IOException {
-            if (isSupportedBreakFlowTag(elem.getAttributes())) {
-                writeLineSeparator();
-            }
-
-            if (matchNameAttribute(elem.getAttributes(), HTML.Tag.CONTENT)) {
-                text(elem);
-            }
-        }
-
-        @Override
-        protected void endTag(Element elem) throws IOException {
-            if (isSupportedBreakFlowTag(elem.getAttributes())) {
-                writeLineSeparator();
-            }
-        }
-
-        @Override
-        protected void startTag(Element elem) throws IOException, BadLocationException {
-        }
-    }
+    // -----
+    // I18N String constants
+    private static final ResourceBundle messages = ResourceBundle.getBundle("org.gephi.ui.components.Bundle"); // NOI18N
 
     // --- Private classes for copy/paste support --------------------------------
     //
     // NOTE: only vertical formatting is correctly copy/pasted,
     //       horizontal formatting (ul, li) is ignored.
-    /** Private TransferHandler that copies correctly formatted string from HTMLDocument to system clipboard */
-    private class HTMLTextAreaTransferHandler extends TransferHandler {
-        //~ Methods --------------------------------------------------------------------------------------------------------------
+    private static final String CUT_STRING = messages.getString("HTMLTextArea_CutString"); // NOI18N
+    private static final String COPY_STRING = messages.getString("HTMLTextArea_CopyString"); // NOI18N
 
-        @Override
-        public void exportToClipboard(JComponent comp, Clipboard clip, int action) {
-            try {
-                int selStart = getSelectionStart();
-                int selLength = getSelectionEnd() - selStart;
+    //~ Static fields/initializers -----------------------------------------------------------------------------------------------
+    private static final String PASTE_STRING = messages.getString("HTMLTextArea_PasteString"); // NOI18N
+    private static final String DELETE_STRING = messages.getString("HTMLTextArea_DeleteString"); // NOI18N
+    private static final String SELECT_ALL_STRING = messages.getString("HTMLTextArea_SelectAllString"); // NOI18N
+    //~ Instance fields ----------------------------------------------------------------------------------------------------------
+    private ActionListener popupListener;
+    private JMenuItem itemCopy;
+    private JMenuItem itemCut;
+    // -----
+    private JMenuItem itemDelete;
+    private JMenuItem itemPaste;
+    private JMenuItem itemSelectAll;
+    // --- Popup menu support ----------------------------------------------------
+    private JPopupMenu popupMenu;
+    private String originalText;
+    private boolean showPopup = true;
 
-                StringWriter plainTextWriter = new StringWriter();
+    //~ Constructors -------------------------------------------------------------------------------------------------------------
+    public JHTMLEditorPane() {
+        super();
+        setEditorKit(new HTMLEditorKit());
+        setEditable(false);
+        setOpaque(true);
+        setAutoscrolls(true);
+        addHyperlinkListener(this);
+        setTransferHandler(new HTMLTextAreaTransferHandler());
+        setFont(UIManager.getFont("Label.font")); //NOI18N
+        addMouseListener(this);
+    }
 
-                try {
-                    new ExtendedHTMLWriter(plainTextWriter, (HTMLDocument) getDocument(), selStart, selLength).write();
-                } catch (Exception e) {
+    public JHTMLEditorPane(String text) {
+        this();
+        setText(text);
+    }
+
+    //~ Methods ------------------------------------------------------------------------------------------------------------------
+    @Override
+    public void setForeground(Color color) {
+        super.setForeground(color);
+        setText(originalText);
+    }
+
+    public boolean getShowPopup() {
+        return showPopup;
+    }
+
+    public void setShowPopup(boolean showPopup) {
+        this.showPopup = showPopup;
+    }
+
+    @Override
+    public void setText(String value) {
+        if (value == null) {
+            return;
+        }
+
+        originalText = value;
+
+        Font font = getFont();
+        Color textColor = getForeground();
+        value = value.replaceAll("\\n\\r|\\r\\n|\\n|\\r", "<br>"); //NOI18N
+        value = value.replaceAll("<code>", "<code style=\"font-size: " + font.getSize() + "pt;\">"); //NOI18N
+
+        String colorText =
+            "rgb(" + textColor.getRed() + "," + textColor.getGreen() + "," + textColor.getBlue() + ")"; //NOI18N
+        super.setText(
+            "<html><body text=\"" + colorText + "\" style=\"font-size: " + font.getSize() + "pt; font-family: " +
+                font.getName() + ";\">" + value + "</body></html>"); //NOI18N
+    }
+
+    public void deleteSelection() {
+        try {
+            getDocument().remove(getSelectionStart(), getSelectionEnd() - getSelectionStart());
+        } catch (Exception ex) {
+        }
+
+    }
+
+    @Override
+    public void hyperlinkUpdate(HyperlinkEvent e) {
+        if (!isEnabled()) {
+            return;
+        }
+
+        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+            showURL(e.getURL());
+        } else if (e.getEventType() == HyperlinkEvent.EventType.ENTERED) {
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        } else if (e.getEventType() == HyperlinkEvent.EventType.EXITED) {
+            setCursor(Cursor.getDefaultCursor());
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
+            if (isEnabled() && isFocusable() && showPopup) {
+                JPopupMenu popup = getPopupMenu();
+
+                if (popup != null) {
+                    updatePopupMenu();
+
+                    if (!hasFocus()) {
+                        requestFocus(); // required for Select All functionality
+                    }
+
+                    popup.show(this, e.getX(), e.getY());
                 }
-
-                String plainText = NcrToUnicode.decode(plainTextWriter.toString());
-                clip.setContents(new StringSelection(plainText), null);
-
-                if (action == TransferHandler.MOVE) {
-                    getDocument().remove(selStart, selLength);
-                }
-            } catch (BadLocationException ble) {
             }
         }
     }
 
-    /** Class for decoding strings from NCR to Unicode */
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void paste() {
+        try {
+            replaceSelection(Toolkit.getDefaultToolkit().getSystemClipboard().getContents(this)
+                .getTransferData(DataFlavor.stringFlavor).toString());
+        } catch (Exception ex) {
+        }
+    }
+
+    protected JPopupMenu getPopupMenu() {
+        if (popupMenu == null) {
+            popupMenu = createPopupMenu();
+        }
+
+        return popupMenu;
+    }
+
+    protected JPopupMenu createPopupMenu() {
+        JPopupMenu popup = new JPopupMenu();
+
+        popupListener = createPopupListener();
+
+        itemCut = new JMenuItem(CUT_STRING);
+        itemCopy = new JMenuItem(COPY_STRING);
+        itemPaste = new JMenuItem(PASTE_STRING);
+        itemDelete = new JMenuItem(DELETE_STRING);
+        itemSelectAll = new JMenuItem(SELECT_ALL_STRING);
+
+        itemCut.addActionListener(popupListener);
+        itemCopy.addActionListener(popupListener);
+        itemPaste.addActionListener(popupListener);
+        itemDelete.addActionListener(popupListener);
+        itemSelectAll.addActionListener(popupListener);
+
+        popup.add(itemCut);
+        popup.add(itemCopy);
+        popup.add(itemPaste);
+        popup.add(itemDelete);
+        popup.addSeparator();
+        popup.add(itemSelectAll);
+
+        return popup;
+    }
+
+    protected void showURL(URL url) {
+        // override to react to URL clicks
+    }
+
+    protected void updatePopupMenu() {
+        // Cut
+        itemCut.setEnabled(isEditable() && (getSelectedText() != null));
+
+        // Copy
+        itemCopy.setEnabled(getSelectedText() != null);
+
+        // Paste
+        try {
+            Transferable clipboardContent = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(this);
+            itemPaste.setEnabled(isEditable() && (clipboardContent != null) &&
+                clipboardContent.isDataFlavorSupported(DataFlavor.stringFlavor));
+        } catch (Exception e) {
+            itemPaste.setEnabled(false);
+        }
+
+        // Delete
+        if (isEditable()) {
+            itemDelete.setVisible(true);
+            itemDelete.setEnabled(getSelectedText() != null);
+        } else {
+            itemDelete.setVisible(false);
+        }
+
+        // Select All
+        // always visible and enabled...
+    }
+
+    private ActionListener createPopupListener() {
+        return new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == itemCut) {
+                    cut();
+                } else if (e.getSource() == itemCopy) {
+                    copy();
+                } else if (e.getSource() == itemPaste) {
+                    paste();
+                } else if (e.getSource() == itemDelete) {
+                    deleteSelection();
+                } else if (e.getSource() == itemSelectAll) {
+                    selectAll();
+                }
+            }
+        };
+    }
+
+    /**
+     * Class for decoding strings from NCR to Unicode
+     */
     private static class NcrToUnicode {
         //~ Static fields/initializers -------------------------------------------------------------------------------------------
 
@@ -173,16 +338,16 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
                 i1 = str.indexOf("&", i2); //NOI18N
 
                 if (i1 == -1) {
-                    ostr.append(str.substring(i2, str.length()));
+                    ostr.append(str.substring(i2));
 
                     break;
                 }
 
-                ostr.append(str.substring(i2, i1));
+                ostr.append(str, i2, i1);
                 i2 = str.indexOf(";", i1); //NOI18N
 
                 if (i2 == -1) {
-                    ostr.append(str.substring(i1, str.length()));
+                    ostr.append(str.substring(i1));
 
                     break;
                 }
@@ -192,7 +357,8 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
                 if (tok.charAt(0) == '#') { //NOI18N
 
                     if (tok.equals("#160")) { //NOI18N
-                        ostr.append(getEntities().get("nbsp")); //NOI18N // Fixes Issue 92818, "&nbsp;" is resolved as "&#160;" before decoding, so redirecting back to "&nbsp;"
+                        ostr.append(getEntities().get(
+                            "nbsp")); //NOI18N // Fixes Issue 92818, "&nbsp;" is resolved as "&#160;" before decoding, so redirecting back to "&nbsp;"
                     } else {
                         tok = tok.substring(1);
 
@@ -201,7 +367,7 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
 
                             if (tok.trim().charAt(0) == 'x') { //NOI18N
                                 radix = 16;
-                                tok = tok.substring(1, tok.length());
+                                tok = tok.substring(1);
                             }
 
                             ostr.append((char) Integer.parseInt(tok, radix));
@@ -241,7 +407,8 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
                 entities.put("gt", "\u003E"); //NOI18N
                 //Nonbreaking space
 
-                entities.put("nbsp", "\u0020"); //NOI18N // Fixes Issue 92818, "\u00A0" (&nbsp; equivalent) is resolved as incorrect character, thus mapping to standard space
+                entities.put("nbsp",
+                    "\u0020"); //NOI18N // Fixes Issue 92818, "\u00A0" (&nbsp; equivalent) is resolved as incorrect character, thus mapping to standard space
                 //Inverted exclamation point
 
                 entities.put("iexcl", "\u00A1"); //NOI18N
@@ -533,230 +700,85 @@ public class JHTMLEditorPane extends JEditorPane implements HyperlinkListener, M
         }
     }
 
-    //~ Static fields/initializers -----------------------------------------------------------------------------------------------
+    /**
+     * Private Writer that extracts correctly formatted string from HTMLDocument
+     */
+    private class ExtendedHTMLWriter extends HTMLWriter {
+        //~ Constructors ---------------------------------------------------------------------------------------------------------
 
-    // -----
-    // I18N String constants
-    private static final ResourceBundle messages = ResourceBundle.getBundle("org.gephi.ui.components.Bundle"); // NOI18N
-    private static final String CUT_STRING = messages.getString("HTMLTextArea_CutString"); // NOI18N
-    private static final String COPY_STRING = messages.getString("HTMLTextArea_CopyString"); // NOI18N
-    private static final String PASTE_STRING = messages.getString("HTMLTextArea_PasteString"); // NOI18N
-    private static final String DELETE_STRING = messages.getString("HTMLTextArea_DeleteString"); // NOI18N
-    private static final String SELECT_ALL_STRING = messages.getString("HTMLTextArea_SelectAllString"); // NOI18N
-    // -----
-
-    //~ Instance fields ----------------------------------------------------------------------------------------------------------
-    private ActionListener popupListener;
-    private JMenuItem itemCopy;
-    private JMenuItem itemCut;
-    private JMenuItem itemDelete;
-    private JMenuItem itemPaste;
-    private JMenuItem itemSelectAll;
-
-    // --- Popup menu support ----------------------------------------------------
-    private JPopupMenu popupMenu;
-    private String originalText;
-    private boolean showPopup = true;
-
-    //~ Constructors -------------------------------------------------------------------------------------------------------------
-    public JHTMLEditorPane() {
-        super();
-        setEditorKit(new HTMLEditorKit());
-        setEditable(false);
-        setOpaque(true);
-        setAutoscrolls(true);
-        addHyperlinkListener(this);
-        setTransferHandler(new HTMLTextAreaTransferHandler());
-        setFont(UIManager.getFont("Label.font")); //NOI18N
-        addMouseListener(this);
-    }
-
-    public JHTMLEditorPane(String text) {
-        this();
-        setText(text);
-    }
-
-    //~ Methods ------------------------------------------------------------------------------------------------------------------
-    @Override
-    public void setForeground(Color color) {
-        super.setForeground(color);
-        setText(originalText);
-    }
-
-    public void setShowPopup(boolean showPopup) {
-        this.showPopup = showPopup;
-    }
-
-    public boolean getShowPopup() {
-        return showPopup;
-    }
-
-    @Override
-    public void setText(String value) {
-        if (value == null) {
-            return;
+        public ExtendedHTMLWriter(Writer w, HTMLDocument doc, int pos, int len) {
+            super(w, doc, pos, len);
+            setLineLength(Integer.MAX_VALUE);
         }
 
-        originalText = value;
+        //~ Methods --------------------------------------------------------------------------------------------------------------
+        protected boolean isSupportedBreakFlowTag(AttributeSet attr) {
+            Object o = attr.getAttribute(StyleConstants.NameAttribute);
 
-        Font font = getFont();
-        Color textColor = getForeground();
-        value = value.replaceAll("\\n\\r|\\r\\n|\\n|\\r", "<br>"); //NOI18N
-        value = value.replaceAll("<code>", "<code style=\"font-size: " + font.getSize() + "pt;\">"); //NOI18N
+            if (o instanceof HTML.Tag) {
+                HTML.Tag tag = (HTML.Tag) o;
 
-        String colorText = "rgb(" + textColor.getRed() + "," + textColor.getGreen() + "," + textColor.getBlue() + ")"; //NOI18N
-        super.setText("<html><body text=\"" + colorText + "\" style=\"font-size: " + font.getSize() + "pt; font-family: " + font.getName() + ";\">" + value + "</body></html>"); //NOI18N
-    }
-
-    public void deleteSelection() {
-        try {
-            getDocument().remove(getSelectionStart(), getSelectionEnd() - getSelectionStart());
-        } catch (Exception ex) {
-        }
-
-    }
-
-    @Override
-    public void hyperlinkUpdate(HyperlinkEvent e) {
-        if (!isEnabled()) {
-            return;
-        }
-
-        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-            showURL(e.getURL());
-        } else if (e.getEventType() == HyperlinkEvent.EventType.ENTERED) {
-            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        } else if (e.getEventType() == HyperlinkEvent.EventType.EXITED) {
-            setCursor(Cursor.getDefaultCursor());
-        }
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-            if (isEnabled() && isFocusable() && showPopup) {
-                JPopupMenu popup = getPopupMenu();
-
-                if (popup != null) {
-                    updatePopupMenu();
-
-                    if (!hasFocus()) {
-                        requestFocus(); // required for Select All functionality
-                    }
-
-                    popup.show(this, e.getX(), e.getY());
+                if ((tag == HTML.Tag.HTML) || (tag == HTML.Tag.HEAD) || (tag == HTML.Tag.BODY) ||
+                    (tag == HTML.Tag.HR)) {
+                    return false;
                 }
+
+                return (tag).breaksFlow();
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void emptyTag(Element elem) throws BadLocationException, IOException {
+            if (isSupportedBreakFlowTag(elem.getAttributes())) {
+                writeLineSeparator();
+            }
+
+            if (matchNameAttribute(elem.getAttributes(), HTML.Tag.CONTENT)) {
+                text(elem);
             }
         }
-    }
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    @Override
-    public void paste() {
-        try {
-            replaceSelection(Toolkit.getDefaultToolkit().getSystemClipboard().getContents(this).getTransferData(DataFlavor.stringFlavor).toString());
-        } catch (Exception ex) {
-        }
-    }
-
-    protected JPopupMenu getPopupMenu() {
-        if (popupMenu == null) {
-            popupMenu = createPopupMenu();
-        }
-
-        return popupMenu;
-    }
-
-    protected JPopupMenu createPopupMenu() {
-        JPopupMenu popup = new JPopupMenu();
-
-        popupListener = createPopupListener();
-
-        itemCut = new JMenuItem(CUT_STRING);
-        itemCopy = new JMenuItem(COPY_STRING);
-        itemPaste = new JMenuItem(PASTE_STRING);
-        itemDelete = new JMenuItem(DELETE_STRING);
-        itemSelectAll = new JMenuItem(SELECT_ALL_STRING);
-
-        itemCut.addActionListener(popupListener);
-        itemCopy.addActionListener(popupListener);
-        itemPaste.addActionListener(popupListener);
-        itemDelete.addActionListener(popupListener);
-        itemSelectAll.addActionListener(popupListener);
-
-        popup.add(itemCut);
-        popup.add(itemCopy);
-        popup.add(itemPaste);
-        popup.add(itemDelete);
-        popup.addSeparator();
-        popup.add(itemSelectAll);
-
-        return popup;
-    }
-
-    protected void showURL(URL url) {
-        // override to react to URL clicks
-    }
-
-    protected void updatePopupMenu() {
-        // Cut
-        itemCut.setEnabled(isEditable() && (getSelectedText() != null));
-
-        // Copy
-        itemCopy.setEnabled(getSelectedText() != null);
-
-        // Paste
-        try {
-            Transferable clipboardContent = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(this);
-            itemPaste.setEnabled(isEditable() && (clipboardContent != null) && clipboardContent.isDataFlavorSupported(DataFlavor.stringFlavor));
-        } catch (Exception e) {
-            itemPaste.setEnabled(false);
-        }
-
-        // Delete
-        if (isEditable()) {
-            itemDelete.setVisible(true);
-            itemDelete.setEnabled(getSelectedText() != null);
-        } else {
-            itemDelete.setVisible(false);
-        }
-
-    // Select All
-    // always visible and enabled...
-    }
-
-    private ActionListener createPopupListener() {
-        return new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == itemCut) {
-                    cut();
-                } else if (e.getSource() == itemCopy) {
-                    copy();
-                } else if (e.getSource() == itemPaste) {
-                    paste();
-                } else if (e.getSource() == itemDelete) {
-                    deleteSelection();
-                } else if (e.getSource() == itemSelectAll) {
-                    selectAll();
-                }
+        @Override
+        protected void endTag(Element elem) throws IOException {
+            if (isSupportedBreakFlowTag(elem.getAttributes())) {
+                writeLineSeparator();
             }
-        };
+        }
+
+        @Override
+        protected void startTag(Element elem) throws IOException, BadLocationException {
+        }
+    }
+
+    /**
+     * Private TransferHandler that copies correctly formatted string from HTMLDocument to system clipboard
+     */
+    private class HTMLTextAreaTransferHandler extends TransferHandler {
+        //~ Methods --------------------------------------------------------------------------------------------------------------
+
+        @Override
+        public void exportToClipboard(JComponent comp, Clipboard clip, int action) {
+            try {
+                int selStart = getSelectionStart();
+                int selLength = getSelectionEnd() - selStart;
+
+                StringWriter plainTextWriter = new StringWriter();
+
+                try {
+                    new ExtendedHTMLWriter(plainTextWriter, (HTMLDocument) getDocument(), selStart, selLength).write();
+                } catch (Exception e) {
+                }
+
+                String plainText = NcrToUnicode.decode(plainTextWriter.toString());
+                clip.setContents(new StringSelection(plainText), null);
+
+                if (action == TransferHandler.MOVE) {
+                    getDocument().remove(selStart, selLength);
+                }
+            } catch (BadLocationException ble) {
+            }
+        }
     }
 }

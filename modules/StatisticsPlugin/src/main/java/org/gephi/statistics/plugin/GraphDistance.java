@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.statistics.plugin;
 
 import java.io.IOException;
@@ -47,7 +48,15 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Stack;
-import org.gephi.graph.api.*;
+import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.Table;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
@@ -115,6 +124,16 @@ public class GraphDistance implements Statistics, LongTask {
     private boolean isNormalized;
 
     /**
+     * Construct a GraphDistance calculator for the current graph model
+     */
+    public GraphDistance() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getGraphModel() != null) {
+            isDirected = graphController.getGraphModel().isDirected();
+        }
+    }
+
+    /**
      * Gets the average shortest path length in the network
      *
      * @return average shortest path length for all nodes
@@ -138,17 +157,6 @@ public class GraphDistance implements Statistics, LongTask {
     }
 
     /**
-     * Construct a GraphDistance calculator for the current graph model
-     */
-    public GraphDistance() {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (graphController != null && graphController.getGraphModel() != null) {
-            isDirected = graphController.getGraphModel().isDirected();
-        }
-    }
-
-    /**
-     *
      * @param graphModel
      */
     @Override
@@ -189,7 +197,8 @@ public class GraphDistance implements Statistics, LongTask {
 
     }
 
-    public Map<String, double[]> calculateDistanceMetrics(Graph graph, HashMap<Node, Integer> indicies, boolean directed, boolean normalized) {
+    public Map<String, double[]> calculateDistanceMetrics(Graph graph, HashMap<Node, Integer> indicies,
+                                                          boolean directed, boolean normalized) {
         int n = graph.getNodeCount();
 
         HashMap<String, double[]> metrics = new HashMap<>();
@@ -349,8 +358,13 @@ public class GraphDistance implements Statistics, LongTask {
         radius = Integer.MAX_VALUE;
     }
 
+
+    public double computeBetweennessNormalizationFactor(int nodeCount) {
+        return (nodeCount - 1.d) * (nodeCount - 2.d);
+    }
+
     private void calculateCorrection(Graph graph, HashMap<Node, Integer> indicies,
-            double[] nodeBetweenness, boolean directed, boolean normalized) {
+                                     double[] nodeBetweenness, boolean directed, boolean normalized) {
 
         int n = graph.getNodeCount();
 
@@ -359,16 +373,23 @@ public class GraphDistance implements Statistics, LongTask {
             int s_index = indicies.get(s);
 
             if (!directed) {
-                nodeBetweenness[s_index] /= 2;
+                nodeBetweenness[s_index] /= 2.d;
             }
             if (normalized) {
-                nodeBetweenness[s_index] /= directed ? (n - 1) * (n - 2) : (n - 1) * (n - 2) / 2;
+                double betweennessNormalizationFactor = computeBetweennessNormalizationFactor(n);
+                if (!directed) {
+                    betweennessNormalizationFactor /= 2;
+                }
+                nodeBetweenness[s_index] /= betweennessNormalizationFactor;
+
             }
+
         }
     }
 
     private void saveCalculatedValues(Graph graph, HashMap<Node, Integer> indicies,
-            double[] nodeEccentricity, double[] nodeBetweenness, double[] nodeCloseness, double[] nodeHarmonicCloseness) {
+                                      double[] nodeEccentricity, double[] nodeBetweenness, double[] nodeCloseness,
+                                      double[] nodeHarmonicCloseness) {
         for (Node s : graph.getNodes()) {
             int s_index = indicies.get(s);
 
@@ -379,20 +400,20 @@ public class GraphDistance implements Statistics, LongTask {
         }
     }
 
-    public void setNormalized(boolean isNormalized) {
-        this.isNormalized = isNormalized;
-    }
-
     public boolean isNormalized() {
         return isNormalized;
     }
 
-    public void setDirected(boolean isDirected) {
-        this.isDirected = isDirected;
+    public void setNormalized(boolean isNormalized) {
+        this.isNormalized = isNormalized;
     }
 
     public boolean isDirected() {
         return isDirected;
+    }
+
+    public void setDirected(boolean isDirected) {
+        this.isDirected = isDirected;
     }
 
     private String createImageFile(TempDir tempDir, double[] pVals, String pName, String pX, String pY) {
@@ -415,14 +436,14 @@ public class GraphDistance implements Statistics, LongTask {
         dataset.addSeries(dSeries);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                pName,
-                pX,
-                pY,
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
+            pName,
+            pX,
+            pY,
+            dataset,
+            PlotOrientation.VERTICAL,
+            true,
+            false,
+            false);
         chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dSeries, isNormalized);
@@ -430,7 +451,6 @@ public class GraphDistance implements Statistics, LongTask {
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -443,34 +463,36 @@ public class GraphDistance implements Statistics, LongTask {
             TempDir tempDir = TempDirUtils.createTempDir();
             htmlIMG1 = createImageFile(tempDir, betweenness, "Betweenness Centrality Distribution", "Value", "Count");
             htmlIMG2 = createImageFile(tempDir, closeness, "Closeness Centrality Distribution", "Value", "Count");
-            htmlIMG3 = createImageFile(tempDir, harmonicCloseness, "Harmonic Closeness Centrality Distribution", "Value", "Count");
+            htmlIMG3 =
+                createImageFile(tempDir, harmonicCloseness, "Harmonic Closeness Centrality Distribution", "Value",
+                    "Count");
             htmlIMG4 = createImageFile(tempDir, eccentricity, "Eccentricity Distribution", "Value", "Count");
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
 
         String report = "<HTML> <BODY> <h1>Graph Distance  Report </h1> "
-                + "<hr>"
-                + "<br>"
-                + "<h2> Parameters: </h2>"
-                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br />"
-                + "<br /> <h2> Results: </h2>"
-                + "Diameter: " + diameter + "<br />"
-                + "Radius: " + radius + "<br />"
-                + "Average Path length: " + avgDist + "<br />"
-                + htmlIMG1 + "<br /><br />"
-                + htmlIMG2 + "<br /><br />"
-                + htmlIMG3 + "<br /><br />"
-                + htmlIMG4
-                + "<br /><br />" + "<h2> Algorithm: </h2>"
-                + "Ulrik Brandes, <i>A Faster Algorithm for Betweenness Centrality</i>, in Journal of Mathematical Sociology 25(2):163-177, (2001)<br />"
-                + "</BODY> </HTML>";
+            + "<hr>"
+            + "<br>"
+            + "<h2> Parameters: </h2>"
+            + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br />"
+            + "<br /> <h2> Results: </h2>"
+            + "Diameter: " + diameter + "<br />"
+            + "Radius: " + radius + "<br />"
+            + "Average Path length: " + avgDist + "<br />"
+            + htmlIMG1 + "<br /><br />"
+            + htmlIMG2 + "<br /><br />"
+            + htmlIMG3 + "<br /><br />"
+            + htmlIMG4
+            + "<br /><br />" + "<h2> Algorithm: </h2>"
+            +
+            "Ulrik Brandes, <i>A Faster Algorithm for Betweenness Centrality</i>, in Journal of Mathematical Sociology 25(2):163-177, (2001)<br />"
+            + "</BODY> </HTML>";
 
         return report;
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -480,7 +502,6 @@ public class GraphDistance implements Statistics, LongTask {
     }
 
     /**
-     *
      * @param progressTicket
      */
     @Override

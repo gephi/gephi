@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.ui.components;
 
 import java.awt.BorderLayout;
@@ -66,137 +67,10 @@ import org.gephi.ui.utils.UIUtils;
 public class SnippetPanel extends JPanel implements MouseListener, KeyListener, FocusListener {
     //~ Inner Classes ------------------------------------------------------------------------------------------------------------
 
-    public static class Padding extends JPanel {
-        //~ Constructors ---------------------------------------------------------------------------------------------------------
-
-        public Padding() {
-            setBackground(UIUtils.getProfilerResultsBackground());
-            setOpaque(true);
-        }
-
-        //~ Methods --------------------------------------------------------------------------------------------------------------
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.setColor(lineColor);
-            g.drawLine(0, 0, getWidth(), 0);
-        }
-    }
-
-    private static class Title extends JComponent implements Accessible {
-        //~ Instance fields ------------------------------------------------------------------------------------------------------
-
-        String name;
-        private boolean collapsed;
-        private boolean rollOver;
-
-        //~ Constructors ---------------------------------------------------------------------------------------------------------
-        private Title(String name) {
-            this.name = name;
-            setUI(new TitleUI());
-        }
-
-        //~ Methods --------------------------------------------------------------------------------------------------------------
-        public void setRollOver(boolean rollOver) {
-            if (rollOver == this.rollOver) {
-                return;
-            }
-
-            this.rollOver = rollOver;
-            repaint();
-        }
-
-        public void collapse() {
-            collapsed = true;
-            repaint();
-        }
-
-        public void expand() {
-            collapsed = false;
-            repaint();
-        }
-    }
-
-    private static class TitleUI extends ComponentUI {
-        //~ Instance fields ------------------------------------------------------------------------------------------------------
-
-        private final int TITLE_X_OFFSET = 5;
-        private final int TITLE_Y_OFFSET = 2;
-        private final ImageIcon collapsedIcon = new ImageIcon(TitleUI.class.getResource("resources/collapsedSnippet.png")); //NOI18N
-        private final ImageIcon expandedIcon = new ImageIcon(TitleUI.class.getResource("resources/expandedSnippet.png")); //NOI18N
-        private final JLabel plainPainter = new JLabel();
-        private final JLabel boldPainter = new JLabel();
-        private final Font plainFont = plainPainter.getFont().deriveFont(Font.PLAIN);
-        private final Font boldFont = boldPainter.getFont().deriveFont(Font.BOLD);
-        private Dimension preferredSize;
-
-        //~ Methods --------------------------------------------------------------------------------------------------------------
-        @Override
-        public Dimension getPreferredSize(JComponent c) {
-            return preferredSize;
-        }
-
-        @Override
-        public void installUI(JComponent c) {
-            plainPainter.setText(((Title) c).name);
-            plainPainter.setIcon(collapsedIcon);
-            plainPainter.setFont(plainFont);
-            plainPainter.setIconTextGap(5);
-            boldPainter.setText(((Title) c).name);
-            boldPainter.setIcon(expandedIcon);
-            boldPainter.setFont(boldFont);
-            boldPainter.setIconTextGap(5);
-
-            plainPainter.setSize(plainPainter.getPreferredSize());
-            Dimension titlePreferredSize = boldPainter.getPreferredSize();
-            boldPainter.setSize(titlePreferredSize);
-            preferredSize = new Dimension(TITLE_X_OFFSET + titlePreferredSize.width,
-                    titlePreferredSize.height + TITLE_Y_OFFSET * 2);
-        }
-
-        @Override
-        public void paint(Graphics g, JComponent c) {
-
-            Title title = (Title) c;
-
-            g.setColor(lineColor);
-            g.drawLine(0, 0, c.getWidth(), 0);
-
-            if (title.collapsed) { // do not draw bottom line if collapsed
-
-                if (title.rollOver || title.isFocusOwner()) {
-                    g.setColor(focusedBackgroundColor);
-                } else {
-                    g.setColor(backgroundColor);
-                }
-            }
-
-            g.drawLine(0, 1 + plainPainter.getHeight() + TITLE_Y_OFFSET,
-                    c.getWidth(), 1 + plainPainter.getHeight() + TITLE_Y_OFFSET);
-
-            if (title.rollOver || title.isFocusOwner()) {
-                g.setColor(focusedBackgroundColor);
-            } else {
-                g.setColor(backgroundColor);
-            }
-
-            g.fillRect(0, 1, c.getWidth(), plainPainter.getHeight() + TITLE_Y_OFFSET);
-
-            g.translate(TITLE_X_OFFSET, TITLE_Y_OFFSET);
-            if (title.collapsed) {
-                plainPainter.paint(g);
-            } else {
-                boldPainter.paint(g);
-            }
-            g.translate(-TITLE_X_OFFSET, -TITLE_Y_OFFSET);
-        }
-    }
-
     //~ Static fields/initializers -----------------------------------------------------------------------------------------------
     private static Color lineColor;
     private static Color backgroundColor;
     private static Color focusedBackgroundColor;
-
 
     static {
         initColors();
@@ -205,7 +79,7 @@ public class SnippetPanel extends JPanel implements MouseListener, KeyListener, 
     //~ Instance fields ----------------------------------------------------------------------------------------------------------
     private JComponent content;
     private String snippetName;
-    private Title title;
+    private final Title title;
     private boolean collapsed = false;
 
     //~ Constructors -------------------------------------------------------------------------------------------------------------
@@ -245,12 +119,20 @@ public class SnippetPanel extends JPanel implements MouseListener, KeyListener, 
         if (inverseColors) {
             lineColor = UIUtils.getSafeColor(backgroundRed + 41, backgroundGreen + 32, backgroundBlue + 8);
             backgroundColor = UIUtils.getSafeColor(backgroundRed + 7, backgroundGreen + 7, backgroundBlue + 7);
-            focusedBackgroundColor = UIUtils.getSafeColor(backgroundRed + 25, backgroundGreen + 25, backgroundBlue + 25);
+            focusedBackgroundColor =
+                UIUtils.getSafeColor(backgroundRed + 25, backgroundGreen + 25, backgroundBlue + 25);
         } else {
-            lineColor = UIUtils.getSafeColor(backgroundRed - 41 /*214*/, backgroundGreen - 32 /*223*/, backgroundBlue - 8 /*247*/);
-            backgroundColor = UIUtils.getSafeColor(backgroundRed - 7 /*248*/, backgroundGreen - 7 /*248*/, backgroundBlue - 7 /*248*/);
-            focusedBackgroundColor = UIUtils.getSafeColor(backgroundRed - 25 /*230*/, backgroundGreen - 25 /*230*/, backgroundBlue - 25 /*230*/);
+            lineColor = UIUtils
+                .getSafeColor(backgroundRed - 41 /*214*/, backgroundGreen - 32 /*223*/, backgroundBlue - 8 /*247*/);
+            backgroundColor = UIUtils
+                .getSafeColor(backgroundRed - 7 /*248*/, backgroundGreen - 7 /*248*/, backgroundBlue - 7 /*248*/);
+            focusedBackgroundColor = UIUtils
+                .getSafeColor(backgroundRed - 25 /*230*/, backgroundGreen - 25 /*230*/, backgroundBlue - 25 /*230*/);
         }
+    }
+
+    public boolean isCollapsed() {
+        return collapsed;
     }
 
     public void setCollapsed(boolean collapsed) {
@@ -270,24 +152,20 @@ public class SnippetPanel extends JPanel implements MouseListener, KeyListener, 
         revalidate();
     }
 
-    public boolean isCollapsed() {
-        return collapsed;
+    public JComponent getContent() {
+        return content;
     }
 
     public void setContent(JComponent content) {
         this.content = content;
     }
 
-    public JComponent getContent() {
-        return content;
+    public String getSnippetName() {
+        return snippetName;
     }
 
     public void setSnippetName(String snippetName) {
         this.snippetName = snippetName;
-    }
-
-    public String getSnippetName() {
-        return snippetName;
     }
 
     @Override
@@ -345,6 +223,134 @@ public class SnippetPanel extends JPanel implements MouseListener, KeyListener, 
     public void requestFocus() {
         if (title != null) {
             title.requestFocus();
+        }
+    }
+
+    public static class Padding extends JPanel {
+        //~ Constructors ---------------------------------------------------------------------------------------------------------
+
+        public Padding() {
+            setBackground(UIUtils.getProfilerResultsBackground());
+            setOpaque(true);
+        }
+
+        //~ Methods --------------------------------------------------------------------------------------------------------------
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.setColor(lineColor);
+            g.drawLine(0, 0, getWidth(), 0);
+        }
+    }
+
+    private static class Title extends JComponent implements Accessible {
+        //~ Instance fields ------------------------------------------------------------------------------------------------------
+
+        String name;
+        private boolean collapsed;
+        private boolean rollOver;
+
+        //~ Constructors ---------------------------------------------------------------------------------------------------------
+        private Title(String name) {
+            this.name = name;
+            setUI(new TitleUI());
+        }
+
+        //~ Methods --------------------------------------------------------------------------------------------------------------
+        public void setRollOver(boolean rollOver) {
+            if (rollOver == this.rollOver) {
+                return;
+            }
+
+            this.rollOver = rollOver;
+            repaint();
+        }
+
+        public void collapse() {
+            collapsed = true;
+            repaint();
+        }
+
+        public void expand() {
+            collapsed = false;
+            repaint();
+        }
+    }
+
+    private static class TitleUI extends ComponentUI {
+        //~ Instance fields ------------------------------------------------------------------------------------------------------
+
+        private final int TITLE_X_OFFSET = 5;
+        private final int TITLE_Y_OFFSET = 2;
+        private final ImageIcon collapsedIcon =
+            new ImageIcon(TitleUI.class.getResource("resources/collapsedSnippet.png")); //NOI18N
+        private final ImageIcon expandedIcon =
+            new ImageIcon(TitleUI.class.getResource("resources/expandedSnippet.png")); //NOI18N
+        private final JLabel plainPainter = new JLabel();
+        private final JLabel boldPainter = new JLabel();
+        private final Font plainFont = plainPainter.getFont().deriveFont(Font.PLAIN);
+        private final Font boldFont = boldPainter.getFont().deriveFont(Font.BOLD);
+        private Dimension preferredSize;
+
+        //~ Methods --------------------------------------------------------------------------------------------------------------
+        @Override
+        public Dimension getPreferredSize(JComponent c) {
+            return preferredSize;
+        }
+
+        @Override
+        public void installUI(JComponent c) {
+            plainPainter.setText(((Title) c).name);
+            plainPainter.setIcon(collapsedIcon);
+            plainPainter.setFont(plainFont);
+            plainPainter.setIconTextGap(5);
+            boldPainter.setText(((Title) c).name);
+            boldPainter.setIcon(expandedIcon);
+            boldPainter.setFont(boldFont);
+            boldPainter.setIconTextGap(5);
+
+            plainPainter.setSize(plainPainter.getPreferredSize());
+            Dimension titlePreferredSize = boldPainter.getPreferredSize();
+            boldPainter.setSize(titlePreferredSize);
+            preferredSize = new Dimension(TITLE_X_OFFSET + titlePreferredSize.width,
+                titlePreferredSize.height + TITLE_Y_OFFSET * 2);
+        }
+
+        @Override
+        public void paint(Graphics g, JComponent c) {
+
+            Title title = (Title) c;
+
+            g.setColor(lineColor);
+            g.drawLine(0, 0, c.getWidth(), 0);
+
+            if (title.collapsed) { // do not draw bottom line if collapsed
+
+                if (title.rollOver || title.isFocusOwner()) {
+                    g.setColor(focusedBackgroundColor);
+                } else {
+                    g.setColor(backgroundColor);
+                }
+            }
+
+            g.drawLine(0, 1 + plainPainter.getHeight() + TITLE_Y_OFFSET,
+                c.getWidth(), 1 + plainPainter.getHeight() + TITLE_Y_OFFSET);
+
+            if (title.rollOver || title.isFocusOwner()) {
+                g.setColor(focusedBackgroundColor);
+            } else {
+                g.setColor(backgroundColor);
+            }
+
+            g.fillRect(0, 1, c.getWidth(), plainPainter.getHeight() + TITLE_Y_OFFSET);
+
+            g.translate(TITLE_X_OFFSET, TITLE_Y_OFFSET);
+            if (title.collapsed) {
+                plainPainter.paint(g);
+            } else {
+                boldPainter.paint(g);
+            }
+            g.translate(-TITLE_X_OFFSET, -TITLE_Y_OFFSET);
         }
     }
 }

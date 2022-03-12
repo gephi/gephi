@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.spi;
 
 import org.gephi.preview.api.PreviewModel;
@@ -56,22 +57,25 @@ import org.gephi.preview.api.RenderTarget;
  * following annotation to be recognized by the system:
  * <p>
  * <code>@ServiceProvider(service=RenderTargetBuilder.class)</code>
+ *
  * @author Mathieu Bastian
  */
 public interface RenderTargetBuilder {
-    
+
     /**
      * Builds a new render target using the properties and dimensions defined
      * in <code>previewModel</code>.
+     *
      * @param previewModel the preview model to get the dimensions and properties from
      * @return a new render target instance
      */
-    public RenderTarget buildRenderTarget(PreviewModel previewModel);
-    
+    RenderTarget buildRenderTarget(PreviewModel previewModel);
+
     /**
      * Returns the name of the target builder. This value is used by the
      * <code>PreviewController</code> to identify render targets.
+     *
      * @return the name of the target builder
      */
-    public String getName();
+    String getName();
 }

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.impl;
 
 import org.gephi.graph.api.AttributeUtils;
@@ -75,6 +76,11 @@ public class ColumnDraftImpl implements ColumnDraft {
     }
 
     @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @Override
     public Class getTypeClass() {
         return typeClass;
     }
@@ -84,18 +90,13 @@ public class ColumnDraftImpl implements ColumnDraft {
         return defaultValue;
     }
 
-    protected int getIndex() {
-        return index;
-    }
-
-    @Override
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     @Override
     public void setDefaultValue(Object value) {
         this.defaultValue = value;
+    }
+
+    protected int getIndex() {
+        return index;
     }
 
     @Override
@@ -108,7 +109,8 @@ public class ColumnDraftImpl implements ColumnDraft {
         TimeRepresentation timeRepresentation = container.getTimeRepresentation();
         Class typeClassFinal = typeClass;
         //Get final dynamic type:
-        if (dynamic && !TimeSet.class.isAssignableFrom(typeClassFinal) && !TimeMap.class.isAssignableFrom(typeClassFinal)) {
+        if (dynamic && !TimeSet.class.isAssignableFrom(typeClassFinal) &&
+            !TimeMap.class.isAssignableFrom(typeClassFinal)) {
             if (timeRepresentation.equals(TimeRepresentation.TIMESTAMP)) {
                 typeClassFinal = AttributeUtils.getTimestampMapType(typeClassFinal);
             } else {
@@ -131,7 +133,7 @@ public class ColumnDraftImpl implements ColumnDraft {
                 //Failed to parse
             }
         }
-        
+
         return resolvedDefaultValue;
     }
 

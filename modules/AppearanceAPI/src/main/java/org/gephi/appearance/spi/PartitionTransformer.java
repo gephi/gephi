@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2013 Gephi Consortium.
  */
+
 package org.gephi.appearance.spi;
 
 import org.gephi.appearance.api.Partition;
@@ -56,9 +57,9 @@ public interface PartitionTransformer<E extends Element> extends Transformer {
      * Transforms the given element based on the provided partition
      * configuration.
      *
-     * @param element element to transform
+     * @param element   element to transform
      * @param partition partition configuration
-     * @param value element's value for this partition
+     * @param value     element's value for this partition
      */
-    public void transform(E element, Partition partition, Object value);
+    void transform(E element, Partition partition, Object value);
 }

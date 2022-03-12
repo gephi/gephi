@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.spi;
 
 import javax.xml.stream.XMLStreamReader;
@@ -56,11 +57,11 @@ public interface WorkspaceXMLPersistenceProvider extends WorkspacePersistencePro
      * Your implementation must enclose all your data xml in a tag with the name
      * provided in your <code>getIdentifier</code> method.
      *
-     * @param writer XMLStreamWriter for xml serialization of this persistence
-     * provider data
+     * @param writer    XMLStreamWriter for xml serialization of this persistence
+     *                  provider data
      * @param workspace Current workspace being serialized
      */
-    public void writeXML(XMLStreamWriter writer, Workspace workspace);
+    void writeXML(XMLStreamWriter writer, Workspace workspace);
 
     /**
      * This is automatically called when a start element with the tag name
@@ -68,9 +69,9 @@ public interface WorkspaceXMLPersistenceProvider extends WorkspacePersistencePro
      * <p>
      * Your implementation must detect the tag end element to stop reading.
      *
-     * @param reader XMLStreamReader for deserialization of this persistence
-     * provider data previously serialized
+     * @param reader    XMLStreamReader for deserialization of this persistence
+     *                  provider data previously serialized
      * @param workspace Current workspace being deserialized
      */
-    public void readXML(XMLStreamReader reader, Workspace workspace);
+    void readXML(XMLStreamReader reader, Workspace workspace);
 }

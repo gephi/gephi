@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.noverlap;
 
 import javax.swing.Icon;
@@ -50,7 +51,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Jacomy
  */
 @ServiceProvider(service = LayoutBuilder.class)

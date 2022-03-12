@@ -39,13 +39,13 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.timeline;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class StartEndTick {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.importer.api;
 
 import org.gephi.graph.api.Interval;
@@ -61,17 +62,31 @@ import org.joda.time.DateTimeZone;
  */
 public interface ContainerUnloader {
 
-    public Iterable<NodeDraft> getNodes();
+    Iterable<NodeDraft> getNodes();
 
-    public int getNodeCount();
+    int getNodeCount();
 
-    public Iterable<EdgeDraft> getEdges();
+    Iterable<EdgeDraft> getEdges();
 
-    public int getEdgeCount();
+    int getEdgeCount();
 
-    public boolean hasNodeColumn(String key);
+    /**
+     * Returns the number of mutual (directed) edges in the container;
+     *
+     * @return mutual edge count
+     */
+    int getMutualEdgeCount();
 
-    public boolean hasEdgeColumn(String key);
+    boolean hasNodeColumn(String key);
+
+    boolean hasEdgeColumn(String key);
+
+    /**
+     * Returns true if the container contains nodes that were auto-created from edges.
+     *
+     * @return true if contains auto nodes, false otherwise
+     */
+    boolean containsAutoNodes();
 
     /**
      * Returns the node column draft with <code>key</code> as identifier.
@@ -79,7 +94,7 @@ public interface ContainerUnloader {
      * @param key node column key
      * @return column draft or null if not found
      */
-    public ColumnDraft getNodeColumn(String key);
+    ColumnDraft getNodeColumn(String key);
 
     /**
      * Returns the edge column draft with <code>key</code> as identifier.
@@ -87,40 +102,40 @@ public interface ContainerUnloader {
      * @param key edge column key
      * @return column draft or null if not found
      */
-    public ColumnDraft getEdgeColumn(String key);
+    ColumnDraft getEdgeColumn(String key);
 
-    public Iterable<ColumnDraft> getNodeColumns();
+    Iterable<ColumnDraft> getNodeColumns();
 
-    public Iterable<ColumnDraft> getEdgeColumns();
+    Iterable<ColumnDraft> getEdgeColumns();
 
-    public EdgeDirectionDefault getEdgeDefault();
+    EdgeDirectionDefault getEdgeDefault();
 
-    public TimeFormat getTimeFormat();
+    TimeFormat getTimeFormat();
 
-    public TimeRepresentation getTimeRepresentation();
+    TimeRepresentation getTimeRepresentation();
 
-    public DateTimeZone getTimeZone();
+    DateTimeZone getTimeZone();
 
-    public String getSource();
+    String getSource();
 
-    public Class getEdgeTypeLabelClass();
+    Class getEdgeTypeLabelClass();
 
-    public Double getTimestamp();
+    Double getTimestamp();
 
-    public Interval getInterval();
+    Interval getInterval();
 
-    public ElementIdType getElementIdType();
+    ElementIdType getElementIdType();
 
     //PARAMETERS GETTERS
-    public boolean allowSelfLoop();
+    boolean allowSelfLoop();
 
-    public boolean allowAutoNode();
+    boolean allowAutoNode();
 
-    public boolean allowParallelEdges();
+    boolean allowParallelEdges();
 
-    public boolean isAutoScale();
-    
-    public boolean isFillLabelWithId();
+    boolean isAutoScale();
 
-    public EdgeMergeStrategy getEdgesMergeStrategy();
+    boolean isFillLabelWithId();
+
+    EdgeMergeStrategy getEdgesMergeStrategy();
 }

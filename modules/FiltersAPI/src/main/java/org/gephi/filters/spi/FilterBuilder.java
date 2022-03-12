@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.filters.spi;
 
 import javax.swing.Icon;
@@ -71,28 +72,28 @@ public interface FilterBuilder {
      *
      * @return the category this builder belongs to
      */
-    public Category getCategory();
+    Category getCategory();
 
     /**
      * Returns the display name of this filter builder
      *
      * @return the display name
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the icon of this filter builder
      *
      * @return the icon
      */
-    public Icon getIcon();
+    Icon getIcon();
 
     /**
      * Returns this description text of this filter builder
      *
      * @return the description
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * Builds a new <code>Filter</code> instance.
@@ -100,7 +101,7 @@ public interface FilterBuilder {
      * @param workspace workspace
      * @return a new <code>Filter</code> object
      */
-    public Filter getFilter(Workspace workspace);
+    Filter getFilter(Workspace workspace);
 
     /**
      * Returns the settings panel for the filter this builder is building, the
@@ -109,11 +110,12 @@ public interface FilterBuilder {
      * @param filter the filter that the panel is to be configuring
      * @return the filter's settings panel
      */
-    public JPanel getPanel(Filter filter);
+    JPanel getPanel(Filter filter);
 
     /**
      * Notification when the filter is destroyed, to perform clean-up tasks.
+     *
      * @param filter filter to be destroyed
      */
-    public void destroy(Filter filter);
+    void destroy(Filter filter);
 }

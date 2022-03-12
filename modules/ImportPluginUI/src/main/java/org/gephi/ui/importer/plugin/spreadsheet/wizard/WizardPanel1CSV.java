@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.ui.importer.plugin.spreadsheet.wizard;
 
 import java.awt.Component;
@@ -54,7 +55,7 @@ import org.openide.util.HelpCtx;
 public class WizardPanel1CSV implements WizardDescriptor.Panel {
 
     private final ImporterSpreadsheetCSV importer;
-    
+    private final Set<ChangeListener> listeners = new HashSet<>(1); // or can use ChangeSupport in NB 6.0
     /**
      * The visual component that displays this panel. If you need to access the
      * component from this class, just use getComponent().
@@ -89,7 +90,6 @@ public class WizardPanel1CSV implements WizardDescriptor.Panel {
     public boolean isValid() {
         return component.isValidData();
     }
-    private final Set<ChangeListener> listeners = new HashSet<>(1); // or can use ChangeSupport in NB 6.0
 
     @Override
     public final void addChangeListener(ChangeListener l) {

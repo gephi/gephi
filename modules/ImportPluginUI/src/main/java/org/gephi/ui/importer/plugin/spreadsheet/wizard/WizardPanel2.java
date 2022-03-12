@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.ui.importer.plugin.spreadsheet.wizard;
 
 import java.awt.Component;
@@ -60,6 +61,7 @@ public class WizardPanel2 implements WizardDescriptor.Panel {
      */
     private final WizardVisualPanel2 component;
     private final AbstractImporterSpreadsheet importer;
+    private final Set<ChangeListener> listeners = new HashSet<>(1); // or can use ChangeSupport in NB 6.0
 
     WizardPanel2(AbstractImporterSpreadsheet importer) {
         this.importer = importer;
@@ -87,8 +89,6 @@ public class WizardPanel2 implements WizardDescriptor.Panel {
     public boolean isValid() {
         return true;
     }
-
-    private final Set<ChangeListener> listeners = new HashSet<>(1); // or can use ChangeSupport in NB 6.0
 
     @Override
     public final void addChangeListener(ChangeListener l) {

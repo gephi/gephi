@@ -39,29 +39,24 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.timeline;
 
 import java.awt.Color;
 import java.awt.Font;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class TickParameters {
 
-    public enum TickType {
-
-        DATE, DOUBLE, START_END
-    }
-
     private final TickType type;
+    private final Color[] realColors = new Color[] {new Color(0xB4B4B4), new Color(0x5A5A5A), new Color(0x1E1E1E)};
+    private final Color[] dateColors = new Color[] {new Color(0xB4B4B4), new Color(0x5A5A5A)};
     private int width, height;
     private int fontSize = 12;
-    private double fontFactor = 6.;
     private final Font font = new Font("Helvetica", Font.PLAIN, fontSize);
-    private final Color[] realColors = new Color[]{new Color(0xB4B4B4), new Color(0x5A5A5A), new Color(0x1E1E1E)};
-    private final Color[] dateColors = new Color[]{new Color(0xB4B4B4), new Color(0x5A5A5A)};
+    private double fontFactor = 6.;
 
     public TickParameters(TickType type) {
         this.type = type;
@@ -75,12 +70,12 @@ public class TickParameters {
         return width;
     }
 
-    public int getHeight() {
-        return height;
-    }
-
     public void setWidth(int width) {
         this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public void setHeight(int height) {
@@ -121,5 +116,10 @@ public class TickParameters {
 
     public void setFontFactor(double fontFactor) {
         this.fontFactor = fontFactor;
+    }
+
+    public enum TickType {
+
+        DATE, DOUBLE, START_END
     }
 }

@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.timeline;
 
 import java.awt.BasicStroke;
@@ -55,33 +56,10 @@ import java.util.Map;
 import javax.swing.UIManager;
 
 /**
- *
  * @author Julian Bilcke
  */
 public class DrawerSettings {
 
-    public class Background {
-
-        public Color top;
-        public Color bottom;
-        public Paint paint;
-    }
-
-    public class SelectionBox {
-
-        public Color top;
-        public Color bottom;
-        public Paint paint;
-        public int visibleHookWidth; // the "visible hook" (mouse hook, to move the selection box)
-        public int invisibleHookMargin; // let the "invisible hook" be a bit larger on the left..
-        public int minimalWidth;
-        public Color mouseOverTopColor;
-        public Color activatedTopColor;
-        public Color mouseOverBottomColor;
-        public Color activatedBottomColor;
-        public Paint mouseOverPaint;
-        public Paint activatedPaint;
-    }
     public Background background = new Background();
     public SelectionBox selection = new SelectionBox();
     public Stroke defaultStroke;
@@ -91,24 +69,11 @@ public class DrawerSettings {
     public RenderingHints renderingHints;
     public Kernel convolutionKernel;
     public ConvolveOp blurOperator;
-    private int lastWidth = 0;
-    private int lastHeight = 0;
     public int tmMarginTop;
     public int tmMarginBottom;
     public int topChartMargin;
-
-    void update(int width, int height) {
-        if (lastWidth == width && lastHeight == height) {
-            return;
-        }
-        lastWidth = width;
-        lastHeight = height;
-
-//        background.paint = new GradientPaint(0, 0, background.top, 0, height, background.bottom, true);
-        selection.paint = new GradientPaint(0, 0, selection.top, 0, height, selection.bottom, true);
-        selection.mouseOverPaint = new GradientPaint(0, 0, selection.mouseOverTopColor, 0, height, selection.mouseOverBottomColor, true);
-        selection.activatedPaint = new GradientPaint(0, 0, selection.activatedTopColor, 0, height, selection.activatedBottomColor, true);
-    }
+    private int lastWidth = 0;
+    private int lastHeight = 0;
 
     public DrawerSettings() {
         /* DEFINE THEME HERE */
@@ -133,8 +98,10 @@ public class DrawerSettings {
         selection.activatedTopColor = new Color(188, 118, 114, 50);
         selection.mouseOverBottomColor = new Color(60, 143, 96, 50);
         selection.activatedBottomColor = new Color(151, 79, 79, 50);
-        selection.mouseOverPaint = new GradientPaint(0, 0, selection.mouseOverTopColor, 0, 20, selection.mouseOverBottomColor, true);
-        selection.activatedPaint = new GradientPaint(0, 0, selection.activatedTopColor, 0, 20, selection.activatedBottomColor, true);
+        selection.mouseOverPaint =
+            new GradientPaint(0, 0, selection.mouseOverTopColor, 0, 20, selection.mouseOverBottomColor, true);
+        selection.activatedPaint =
+            new GradientPaint(0, 0, selection.activatedTopColor, 0, 20, selection.activatedBottomColor, true);
 
 
         shadowColor = new Color(35, 35, 35, 105);
@@ -148,21 +115,21 @@ public class DrawerSettings {
         tmMarginBottom = 0;
 
         topChartMargin = 16;
-        
+
         //System.out.println("Generating filters for " + this);
         // filters
         Map<Key, Object> map = new HashMap<>();
         // bilinear
         map.put(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         map.put(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
+            RenderingHints.VALUE_RENDER_QUALITY);
 
         // Antialiasing (text and image)
         map.put(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+            RenderingHints.VALUE_ANTIALIAS_ON);
         map.put(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         renderingHints = new RenderingHints(map);
 
@@ -172,5 +139,43 @@ public class DrawerSettings {
 //        convolutionKernel = new Kernel(3, 3, blurKernel);
 //        blurOperator = new ConvolveOp(convolutionKernel, ConvolveOp.EDGE_NO_OP,
 //                renderingHints);
+    }
+
+    void update(int width, int height) {
+        if (lastWidth == width && lastHeight == height) {
+            return;
+        }
+        lastWidth = width;
+        lastHeight = height;
+
+//        background.paint = new GradientPaint(0, 0, background.top, 0, height, background.bottom, true);
+        selection.paint = new GradientPaint(0, 0, selection.top, 0, height, selection.bottom, true);
+        selection.mouseOverPaint =
+            new GradientPaint(0, 0, selection.mouseOverTopColor, 0, height, selection.mouseOverBottomColor, true);
+        selection.activatedPaint =
+            new GradientPaint(0, 0, selection.activatedTopColor, 0, height, selection.activatedBottomColor, true);
+    }
+
+    public class Background {
+
+        public Color top;
+        public Color bottom;
+        public Paint paint;
+    }
+
+    public class SelectionBox {
+
+        public Color top;
+        public Color bottom;
+        public Paint paint;
+        public int visibleHookWidth; // the "visible hook" (mouse hook, to move the selection box)
+        public int invisibleHookMargin; // let the "invisible hook" be a bit larger on the left..
+        public int minimalWidth;
+        public Color mouseOverTopColor;
+        public Color activatedTopColor;
+        public Color mouseOverBottomColor;
+        public Color activatedBottomColor;
+        public Paint mouseOverPaint;
+        public Paint activatedPaint;
     }
 }

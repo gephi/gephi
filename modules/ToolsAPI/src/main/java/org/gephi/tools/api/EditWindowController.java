@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.tools.api;
 
 import org.gephi.graph.api.Edge;
@@ -46,9 +47,10 @@ import org.gephi.graph.api.Node;
 
 /**
  * Controller API for requesting the opening and usage of edit window.
+ *
  * @author Eduardo Ramos
  */
-public interface  EditWindowController {
+public interface EditWindowController {
     void openEditWindow();
 
     void closeEditWindow();

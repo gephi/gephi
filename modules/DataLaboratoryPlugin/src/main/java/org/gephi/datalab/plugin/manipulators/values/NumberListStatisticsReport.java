@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.plugin.manipulators.values;
 
 import javax.swing.Icon;
@@ -55,6 +56,7 @@ import org.openide.util.NbBundle;
 
 /**
  * AttributeValueManipulator that shows a report with statistics values and charts of a dynamic number/number list AttributeValue.
+ *
  * @author Eduardo Ramos
  */
 public class NumberListStatisticsReport implements AttributeValueManipulator {
@@ -66,7 +68,8 @@ public class NumberListStatisticsReport implements AttributeValueManipulator {
     public void setup(Element row, Column column) {
         this.column = column;
         if (AttributeUtils.isNumberType(column.getTypeClass())) {
-            numbers = Lookup.getDefault().lookup(AttributeColumnsController.class).getRowNumbers(row, new Column[]{column});
+            numbers =
+                Lookup.getDefault().lookup(AttributeColumnsController.class).getRowNumbers(row, new Column[] {column});
         }
     }
 

@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -40,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.datalab.spi.general;
 
 import org.gephi.datalab.spi.Manipulator;
@@ -48,8 +48,9 @@ import org.gephi.datalab.spi.Manipulator;
  * <p>Manipulator for general actions that don't need to obtain any data before being executed.</p>
  * <p>They are added as buttons in Data table toolbar.</p>
  * <p>The implementations don't need a builder and can simply be published with <code>@ServiceProvider(service = GeneralActionsManipulator.class)</code> annotation</p>
- * @see Manipulator
+ *
  * @author Eduardo Ramos
+ * @see Manipulator
  */
 public interface GeneralActionsManipulator extends Manipulator {
 

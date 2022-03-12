@@ -39,12 +39,14 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.forceAtlas2;
 
 import org.gephi.graph.spi.LayoutData;
 
 /**
  * Data stored in Nodes and used by ForceAtlas2
+ *
  * @author Mathieu Jacomy
  */
 public class ForceAtlas2LayoutData implements LayoutData {

@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.datalab.tables;
 
 import java.awt.Point;
@@ -55,7 +56,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import org.gephi.datalab.api.AttributeColumnsController;
-import org.gephi.desktop.datalab.*;
+import org.gephi.desktop.datalab.DataTablesModel;
 import org.gephi.desktop.datalab.tables.celleditors.AttributeTypesSupportCellEditor;
 import org.gephi.desktop.datalab.tables.columns.AttributeDataColumn;
 import org.gephi.desktop.datalab.tables.columns.ElementDataColumn;
@@ -86,30 +87,19 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
  * @author Mathieu Bastian
  * @author Eduardo Ramos
  */
 public abstract class AbstractElementsDataTable<T extends Element> implements GraphModelProvider {
 
     protected final JXTable table;
-    protected String filterPattern;
-    protected List<T> selectedElements;
     protected final AttributeColumnsController attributeColumnsController;
-    protected boolean refreshingTable = false;
-    protected Column[] showingColumns = null;
-    protected ElementsDataTableModel<T> model;
-    protected GraphModel graphModel;
-
-    //Renderers:
-    private boolean drawTimeIntervalGraphics = false;
-    private boolean drawSparklines = false;
     private final DefaultTableRenderer arrayRenderer = new DefaultTableRenderer(new ArrayStringConverter());
-    private final DefaultTableRenderer defaultStringRepresentationRenderer = new DefaultTableRenderer(new DefaultStringRepresentationConverter());
+    private final DefaultTableRenderer defaultStringRepresentationRenderer =
+        new DefaultTableRenderer(new DefaultStringRepresentationConverter());
     private final DefaultTableRenderer timeSetRenderer;
     private final DefaultTableRenderer timeMapRenderer;
     private final DefaultTableRenderer doubleRenderer = new DefaultTableRenderer(new DoubleStringConverter());
-
     //Graphics renderers:
     private final IntervalSetGraphicsComponentProvider intervalSetGraphicsComponentProvider;
     private final TimestampSetGraphicsComponentProvider timestampSetGraphicsComponentProvider;
@@ -118,6 +108,15 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
     private final DefaultTableRenderer intervalMapSparklinesGraphicsRenderer;
     private final DefaultTableRenderer timestampMapSparklinesGraphicsRenderer;
     private final DefaultTableRenderer arraySparklinesGraphicsRenderer;
+    protected String filterPattern;
+    protected List<T> selectedElements;
+    protected boolean refreshingTable = false;
+    protected Column[] showingColumns = null;
+    protected ElementsDataTableModel<T> model;
+    protected GraphModel graphModel;
+    //Renderers:
+    private boolean drawTimeIntervalGraphics = false;
+    private boolean drawSparklines = false;
 
     public AbstractElementsDataTable() {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
@@ -136,15 +135,19 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
         timeSetRenderer = new DefaultTableRenderer(new TimeSetStringConverter(this));
         timeMapRenderer = new DefaultTableRenderer(new TimeMapStringConverter(this));
 
-        intervalMapSparklinesGraphicsRenderer = new DefaultTableRenderer(new IntervalMapSparklinesGraphicsComponentProvider(this, table));
-        timestampMapSparklinesGraphicsRenderer = new DefaultTableRenderer(new TimestampMapSparklinesGraphicsComponentProvider(this, table));
-        arraySparklinesGraphicsRenderer = new DefaultTableRenderer(new ArraySparklinesGraphicsComponentProvider(this, table));
+        intervalMapSparklinesGraphicsRenderer =
+            new DefaultTableRenderer(new IntervalMapSparklinesGraphicsComponentProvider(this, table));
+        timestampMapSparklinesGraphicsRenderer =
+            new DefaultTableRenderer(new TimestampMapSparklinesGraphicsComponentProvider(this, table));
+        arraySparklinesGraphicsRenderer =
+            new DefaultTableRenderer(new ArraySparklinesGraphicsComponentProvider(this, table));
 
         prepareCellEditors();
         prepareRenderers();
     }
 
-    public abstract List<? extends ElementDataColumn<T>> getFakeDataColumns(GraphModel graphModel, DataTablesModel dataTablesModel);
+    public abstract List<? extends ElementDataColumn<T>> getFakeDataColumns(GraphModel graphModel,
+                                                                            DataTablesModel dataTablesModel);
 
     private void prepareCellEditors() {
         for (Class<?> typeClass : AttributeUtils.getSupportedTypes()) {
@@ -186,9 +189,9 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
                     typeRenderer = timeMapRenderer;
                 } else if (isNumberType) {
                     boolean isDecimalType = typeClass.equals(Double.class)
-                            || typeClass.equals(double.class)
-                            || typeClass.equals(Float.class)
-                            || typeClass.equals(float.class);
+                        || typeClass.equals(double.class)
+                        || typeClass.equals(Float.class)
+                        || typeClass.equals(float.class);
 
                     if (isDecimalType) {
                         typeRenderer = doubleRenderer;
@@ -212,7 +215,7 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
         return table;
     }
 
-    public boolean setFilterPattern(String regularExpr, int column) {
+    public boolean setFilterPattern(String regularExpr, final int column) {
         try {
             if (Objects.equals(filterPattern, regularExpr)) {
                 return true;
@@ -225,7 +228,17 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
                 if (!regularExpr.startsWith("(?i)")) {   //CASE_INSENSITIVE
                     regularExpr = "(?i)" + regularExpr;
                 }
-                RowFilter rowFilter = RowFilter.regexFilter(regularExpr, column);
+                List<RowFilter<Object,Object>> filters = new ArrayList<>(2);
+                // Not null values
+                filters.add(new RowFilter<>() {
+                    @Override
+                    public boolean include(Entry<?, ?> entry) {
+                        return entry.getValue(column) != null;
+                    }
+                });
+                filters.add(RowFilter.regexFilter(regularExpr, column));
+                RowFilter<Object, Object> rowFilter = RowFilter.andFilter(filters);
+
                 table.setRowFilter(rowFilter);
             }
         } catch (PatternSyntaxException e) {
@@ -290,7 +303,6 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
     }
 
     /**
-     *
      * @param columnIndex View index, not model index
      * @return Column or null if it's a fake column
      */
@@ -300,7 +312,8 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
     }
 
     public void setElementsSelection(List<T> elements) {
-        this.selectedElements = elements;//Keep this selection request to be able to do it if the table is first refreshed later.
+        this.selectedElements =
+            elements;//Keep this selection request to be able to do it if the table is first refreshed later.
         HashSet<T> elementsSet = new HashSet<>();
         elementsSet.addAll(elements);
         table.clearSelection();
@@ -332,13 +345,13 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
         prepareRenderers();
     }
 
+    public boolean isDrawTimeIntervalGraphics() {
+        return drawTimeIntervalGraphics;
+    }
+
     public void setDrawTimeIntervalGraphics(boolean drawTimeIntervalGraphics) {
         this.drawTimeIntervalGraphics = drawTimeIntervalGraphics;
         prepareRenderers();
-    }
-
-    public boolean isDrawTimeIntervalGraphics() {
-        return drawTimeIntervalGraphics;
     }
 
     public T getElementFromRow(int row) {
@@ -374,7 +387,8 @@ public abstract class AbstractElementsDataTable<T extends Element> implements Gr
             if (realIndex < columns.size() && columns.get(realIndex).getColumn() != null) {
                 String id = columns.get(realIndex).getColumn().getId();
 
-                return NbBundle.getMessage(AbstractElementsDataTable.class, "AbstractElementsDataTable.column.tooltip", id);
+                return NbBundle
+                    .getMessage(AbstractElementsDataTable.class, "AbstractElementsDataTable.column.tooltip", id);
             } else {
                 return null;
             }

@@ -39,9 +39,14 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.utils.sparklines;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
@@ -53,8 +58,8 @@ import java.util.ArrayList;
  * <p>Drawing settings are controlled with <code>SparklineParameters</code> class</p>
  * <p>Use <code>SparklineComponent</code> class to easily include interactive sparklines in your GUI</p>
  *
- * @see SparklineParameters
  * @author Eduardo Ramos
+ * @see SparklineParameters
  */
 public class SparklineGraph {
 
@@ -63,7 +68,7 @@ public class SparklineGraph {
     /**
      * Draw a sparkline only providing y axis values (1 x tick per number assumed)
      *
-     * @param values Y axis values
+     * @param values     Y axis values
      * @param parameters Rendering parameters
      * @return Image of the sparkline
      */
@@ -74,8 +79,8 @@ public class SparklineGraph {
     /**
      * Draw a sparkline with x axis and y axis values. X values <b>must</b> be ordered and not repeated.
      *
-     * @param xValues X axis values
-     * @param yValues Y axis values
+     * @param xValues    X axis values
+     * @param yValues    Y axis values
      * @param parameters Rendering parameters
      * @return Image of the sparkline
      */
@@ -88,13 +93,14 @@ public class SparklineGraph {
      * by
      * <code>SparklineGraph</code>
      *
-     * @param yValues Y axis values
-     * @param yMinValue Minimum value of the Y axis, should be correct
-     * @param yMaxValue Maximum value of the Y axis, should be correct
+     * @param yValues    Y axis values
+     * @param yMinValue  Minimum value of the Y axis, should be correct
+     * @param yMaxValue  Maximum value of the Y axis, should be correct
      * @param parameters Rendering parameters
      * @return Image of the sparkline
      */
-    public static BufferedImage draw(Number[] yValues, Number yMinValue, Number yMaxValue, SparklineParameters parameters) {
+    public static BufferedImage draw(Number[] yValues, Number yMinValue, Number yMaxValue,
+                                     SparklineParameters parameters) {
         return draw(null, yValues, yMinValue, yMaxValue, parameters);
     }
 
@@ -103,14 +109,15 @@ public class SparklineGraph {
      * calculations by
      * <code>SparklineGraph</code> X values <b>must</b> be ordered and not repeated.
      *
-     * @param xValues X axis values
-     * @param yValues Y axis values
-     * @param yMinValue Minimum value of the Y axis, should be correct
-     * @param yMaxValue Maximum value of the Y axis, should be correct
+     * @param xValues    X axis values
+     * @param yValues    Y axis values
+     * @param yMinValue  Minimum value of the Y axis, should be correct
+     * @param yMaxValue  Maximum value of the Y axis, should be correct
      * @param parameters Rendering parameters
      * @return Image of the sparkline
      */
-    public static BufferedImage draw(Number[] xValues, Number[] yValues, Number yMinValue, Number yMaxValue, SparklineParameters parameters) {
+    public static BufferedImage draw(Number[] xValues, Number[] yValues, Number yMinValue, Number yMaxValue,
+                                     SparklineParameters parameters) {
         if (parameters == null) {
             throw new IllegalArgumentException("parameters can't be null");
         }
@@ -123,16 +130,21 @@ public class SparklineGraph {
             throw new IllegalArgumentException("X values should have the same length as Y values");
         }
 
-        final BufferedImage image = new BufferedImage(parameters.getWidth(), parameters.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        final Color backgroundColor = parameters.getBackgroundColor() != null ? parameters.getBackgroundColor() : SparklineParameters.DEFAULT_BACKGROUND_COLOR;
-        final Color lineColor = parameters.getLineColor() != null ? parameters.getLineColor() : SparklineParameters.DEFAULT_LINE_COLOR;
-        final Color areaColor = parameters.getAreaColor() != null ? parameters.getAreaColor() : SparklineParameters.DEFAULT_AREA_COLOR;
+        final BufferedImage image =
+            new BufferedImage(parameters.getWidth(), parameters.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        final Color backgroundColor = parameters.getBackgroundColor() != null ? parameters.getBackgroundColor() :
+            SparklineParameters.DEFAULT_BACKGROUND_COLOR;
+        final Color lineColor =
+            parameters.getLineColor() != null ? parameters.getLineColor() : SparklineParameters.DEFAULT_LINE_COLOR;
+        final Color areaColor =
+            parameters.getAreaColor() != null ? parameters.getAreaColor() : SparklineParameters.DEFAULT_AREA_COLOR;
         Color highlightMinColor = parameters.getHighlightMinColor();
         Color highlightMaxColor = parameters.getHighlightMaxColor();
         int width = parameters.getWidth();
         int height = parameters.getHeight();
         ArrayList<HighlightParameters> highlightsList = new ArrayList<>();
-        Color highlightValueColor = parameters.getHighligtValueColor() != null ? parameters.getHighligtValueColor() : SparklineParameters.DEFAULT_HIGHLIGHT_VALUE_COLOR;
+        Color highlightValueColor = parameters.getHighligtValueColor() != null ? parameters.getHighligtValueColor() :
+            SparklineParameters.DEFAULT_HIGHLIGHT_VALUE_COLOR;
         Integer highlightedValueXPosition = parameters.getHighlightedValueXPosition();
         String highlightedValueText = null;
 
@@ -251,12 +263,15 @@ public class SparklineGraph {
                 if ((highlightedValueXPosition - x0) < (x1 - x0) / 2f) {//Highlight left point
                     highlightsList.add(new HighlightParameters(x0, y0, highlightValueColor));
                     if (parameters.getHighlightTextColor() != null) {
-                        highlightedValueText = buildHighlightText(parameters.getHighlightTextMode(), xValues != null ? xValues[i] : i, yValues[i]);
+                        highlightedValueText =
+                            buildHighlightText(parameters.getHighlightTextMode(), xValues != null ? xValues[i] : i,
+                                yValues[i]);
                     }
                 } else {//Highlight right point
                     highlightsList.add(new HighlightParameters(x1, y1, highlightValueColor));
                     if (parameters.getHighlightTextColor() != null) {
-                        highlightedValueText = buildHighlightText(parameters.getHighlightTextMode(), xValues != null ? xValues[i + 1] : i + 1, yValues[i + 1]);
+                        highlightedValueText = buildHighlightText(parameters.getHighlightTextMode(),
+                            xValues != null ? xValues[i + 1] : i + 1, yValues[i + 1]);
                     }
                 }
                 highlightedValueXPosition = null;
@@ -301,7 +316,8 @@ public class SparklineGraph {
     private static void drawHighlight(Graphics2D g, float x, float y, Color highlightColor) {
         Paint oldPaint = g.getPaint();
         g.setPaint(highlightColor);
-        g.fill(new Ellipse2D.Double(x - HIGHLIGHT_RADIUS / 2f, y - HIGHLIGHT_RADIUS / 2f, HIGHLIGHT_RADIUS, HIGHLIGHT_RADIUS));
+        g.fill(new Ellipse2D.Double(x - HIGHLIGHT_RADIUS / 2f, y - HIGHLIGHT_RADIUS / 2f, HIGHLIGHT_RADIUS,
+            HIGHLIGHT_RADIUS));
         g.setPaint(oldPaint);
     }
 
@@ -323,7 +339,8 @@ public class SparklineGraph {
         return max;
     }
 
-    private static String buildHighlightText(SparklineParameters.HighlightTextMode highlightTextMode, Number x, Number y) {
+    private static String buildHighlightText(SparklineParameters.HighlightTextMode highlightTextMode, Number x,
+                                             Number y) {
         StringBuilder sb = new StringBuilder();
         if (highlightTextMode == null) {
             highlightTextMode = SparklineParameters.DEFAULT_HIGHLIGHT_TEXT_MODE;

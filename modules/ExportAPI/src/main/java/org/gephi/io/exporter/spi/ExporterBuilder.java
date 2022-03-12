@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
+
 package org.gephi.io.exporter.spi;
 
 import org.gephi.io.exporter.api.ExportController;
@@ -58,13 +59,15 @@ public interface ExporterBuilder {
 
     /**
      * Builds a new exporter instance, ready to be used.
-     * @return  a new exporter
+     *
+     * @return a new exporter
      */
-    public Exporter buildExporter();
+    Exporter buildExporter();
 
     /**
      * Returns the name of this builder
-     * @return  the name of this exporter
+     *
+     * @return the name of this exporter
      */
-    public String getName();
+    String getName();
 }

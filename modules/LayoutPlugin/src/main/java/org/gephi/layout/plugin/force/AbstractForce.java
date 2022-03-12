@@ -39,22 +39,22 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.force;
 
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.ForceVectorUtils;
 
 /**
- *
  * @author Helder Suzuki
  */
 public abstract class AbstractForce {
 
     public ForceVector calculateForce(Node node1, Node node2) {
         return calculateForce(node1, node2,
-                ForceVectorUtils.distance(node1, node2));
+            ForceVectorUtils.distance(node1, node2));
     }
 
     public abstract ForceVector calculateForce(Node node1, Node node2,
-            float distance);
+                                               float distance);
 }

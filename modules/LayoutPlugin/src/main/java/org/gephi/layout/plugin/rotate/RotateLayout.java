@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.rotate;
 
 import java.util.ArrayList;
@@ -83,11 +84,13 @@ public class RotateLayout extends AbstractLayout implements Layout {
             double py = 0f;
 
             for (Node n : graph.getNodes()) {
-                double dx = n.x() - px;
-                double dy = n.y() - py;
+                if (!n.isFixed()) {
+                    double dx = n.x() - px;
+                    double dy = n.y() - py;
 
-                n.setX((float) (px + dx * cos - dy * sin));
-                n.setY((float) (py + dy * cos + dx * sin));
+                    n.setX((float) (px + dx * cos - dy * sin));
+                    n.setY((float) (py + dy * cos + dx * sin));
+                }
             }
             setConverged(true);
         } finally {
@@ -108,12 +111,12 @@ public class RotateLayout extends AbstractLayout implements Layout {
         List<LayoutProperty> properties = new ArrayList<>();
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class,
-                    NbBundle.getMessage(getClass(), "rotate.angle.name"),
-                    null,
-                    "clockwise.angle.name",
-                    NbBundle.getMessage(getClass(), "rotate.angle.desc"),
-                    "getAngle", "setAngle"));
+                this, Double.class,
+                NbBundle.getMessage(getClass(), "rotate.angle.name"),
+                null,
+                "clockwise.angle.name",
+                NbBundle.getMessage(getClass(), "rotate.angle.desc"),
+                "getAngle", "setAngle"));
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }

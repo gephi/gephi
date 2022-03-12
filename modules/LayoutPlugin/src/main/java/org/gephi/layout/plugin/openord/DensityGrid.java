@@ -39,12 +39,12 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.plugin.openord;
 
 import java.util.ArrayDeque;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class DensityGrid implements Cloneable {
@@ -58,6 +58,10 @@ public class DensityGrid implements Cloneable {
     private float[][] fallOff;
     private ArrayDeque<Node>[][] bins;
 
+    public static float getViewSize() {
+        return (VIEW_SIZE * 0.8f) - (RADIUS / 0.25f) * 2f;
+    }
+
     public void init() {
         density = new float[GRID_SIZE][GRID_SIZE];
         fallOff = new float[RADIUS * 2 + 1][RADIUS * 2 + 1];
@@ -65,8 +69,8 @@ public class DensityGrid implements Cloneable {
 
         for (int i = -RADIUS; i <= RADIUS; i++) {
             for (int j = -RADIUS; j <= RADIUS; j++) {
-                fallOff[i + RADIUS][j + RADIUS] = (float) ((RADIUS - Math.abs((float) i)) / RADIUS)
-                        * (float) ((RADIUS - Math.abs((float) j)) / RADIUS);
+                fallOff[i + RADIUS][j + RADIUS] = ((RADIUS - Math.abs((float) i)) / RADIUS)
+                    * ((RADIUS - Math.abs((float) j)) / RADIUS);
             }
         }
 
@@ -164,9 +168,9 @@ public class DensityGrid implements Cloneable {
         diam = 2 * RADIUS;
 
         if ((xGrid + RADIUS >= GRID_SIZE) || (xGrid < 0)
-                || (yGrid + RADIUS >= GRID_SIZE) || (yGrid < 0)) {
+            || (yGrid + RADIUS >= GRID_SIZE) || (yGrid < 0)) {
             throw new RuntimeException("Error: Exceeded density grid with "
-                    + "xGrid = " + xGrid + " and yGrid = " + yGrid);
+                + "xGrid = " + xGrid + " and yGrid = " + yGrid);
         }
 
         for (int i = 0; i <= diam; i++) {
@@ -205,10 +209,6 @@ public class DensityGrid implements Cloneable {
             bins[yGrid][xGrid] = deque;
         }
         deque.addLast(n);
-    }
-
-    public static float getViewSize() {
-        return (VIEW_SIZE * 0.8f) - (RADIUS / 0.25f) * 2f;
     }
 
     /*@Override

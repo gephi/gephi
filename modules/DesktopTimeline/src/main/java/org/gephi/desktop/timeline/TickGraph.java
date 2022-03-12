@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.timeline;
 
 import java.awt.Font;
@@ -51,23 +52,24 @@ import org.gephi.timeline.api.TimelineModel;
 import org.joda.time.Interval;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class TickGraph {
 
+    private static final int MIN_PIXEL_MARGIN_BETWEEN_TICKS = 5;
     private double min;
     private double max;
     private TickParameters parameters;
     private BufferedImage image;
 
-    private static final int MIN_PIXEL_MARGIN_BETWEEN_TICKS = 5;
-
     public BufferedImage getImage(TimelineModel model, int width, int height) {
         double newMin = model.getCustomMin();
         double newMax = model.getCustomMax();
-        TickParameters.TickType timeFormat = model.getTimeFormat().equals(TimeFormat.DOUBLE) ? TickParameters.TickType.DOUBLE : TickParameters.TickType.DATE;
-        if (parameters == null || newMax != max || newMin != min || parameters.getWidth() != width || parameters.getHeight() != height || !parameters.getType().equals(timeFormat)) {
+        TickParameters.TickType timeFormat =
+            model.getTimeFormat().equals(TimeFormat.DOUBLE) ? TickParameters.TickType.DOUBLE :
+                TickParameters.TickType.DATE;
+        if (parameters == null || newMax != max || newMin != min || parameters.getWidth() != width ||
+            parameters.getHeight() != height || !parameters.getType().equals(timeFormat)) {
             min = newMin;
             max = newMax;
             parameters = new TickParameters(timeFormat);
@@ -79,7 +81,8 @@ public class TickGraph {
     }
 
     private BufferedImage draw() {
-        final BufferedImage img = new BufferedImage(parameters.getWidth(), parameters.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage img =
+            new BufferedImage(parameters.getWidth(), parameters.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
         final Graphics2D g = img.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -99,7 +102,8 @@ public class TickGraph {
 
         //Font
         int fontSize = Math.min(parameters.getFontSize(), (int) (height / 4.));
-        fontSize = fontSize > parameters.getFontSize() / 4 && fontSize <= parameters.getFontSize() / 2 ? parameters.getFontSize() / 2 : fontSize;
+        fontSize = fontSize > parameters.getFontSize() / 4 && fontSize <= parameters.getFontSize() / 2 ?
+            parameters.getFontSize() / 2 : fontSize;
         FontMetrics smallMetrics = null;
         Font smallFont = parameters.getFont();
         Font bigFont;
@@ -132,7 +136,7 @@ public class TickGraph {
                 int x = dateTick.getTickPixelPosition(ms, width);
                 if (x >= 0) {
                     //Height
-                    int h = (int) (Math.min(40, (int) (height / 15.0)));
+                    int h = Math.min(40, (int) (height / 15.0));
 
                     boolean noTickOverlap = x >= previousXLabelEnd + MIN_PIXEL_MARGIN_BETWEEN_TICKS;
 
@@ -176,7 +180,7 @@ public class TickGraph {
                 }
 
                 int xLabel = -1;
-                int yLabel = (int) (fontSize * 4);
+                int yLabel = fontSize * 4;
                 if (x >= 0) {
                     xLabel = x + 4;
                 } else if (x > ((dateTick.getTickPixelPosition(interval.getEndMillis(), width) - x) / -2)) {
@@ -184,7 +188,7 @@ public class TickGraph {
                 }
 
                 if (xLabel >= 0
-                        && noTickOverlap) {
+                    && noTickOverlap) {
                     g.drawString(label, xLabel, yLabel);
                     previousXLabelEnd = x + bigMetrics.stringWidth(label);
                 }
@@ -200,7 +204,8 @@ public class TickGraph {
         Font font = parameters.getFont();
         FontMetrics fontMetrics = null;
         int fontSize = Math.min(parameters.getFontSize(), (int) (height / 4.));
-        fontSize = fontSize > parameters.getFontSize() / 4 && fontSize <= parameters.getFontSize() / 2 ? parameters.getFontSize() / 2 : fontSize;
+        fontSize = fontSize > parameters.getFontSize() / 4 && fontSize <= parameters.getFontSize() / 2 ?
+            parameters.getFontSize() / 2 : fontSize;
         if (font != null && fontSize > parameters.getFontSize() / 4) {
             font = font.deriveFont(Font.PLAIN, fontSize);
             fontMetrics = g.getFontMetrics(font);
@@ -229,7 +234,9 @@ public class TickGraph {
         FontMetrics fontMetrics = null;
         double factor = parameters.getFontFactor();
         int fontSize = Math.min(parameters.getFontSize(), (int) (height / factor));
-        fontSize = fontSize > parameters.getFontSize() / (factor * 2) && fontSize <= parameters.getFontSize() / (factor / 4) ? (int) (parameters.getFontSize() / (factor / 4)) : fontSize;
+        fontSize =
+            fontSize > parameters.getFontSize() / (factor * 2) && fontSize <= parameters.getFontSize() / (factor / 4) ?
+                (int) (parameters.getFontSize() / (factor / 4)) : fontSize;
         if (font != null && fontSize > parameters.getFontSize() / (factor / 2)) {
             font = font.deriveFont(Font.PLAIN, fontSize);
             fontMetrics = g.getFontMetrics(font);
@@ -248,7 +255,7 @@ public class TickGraph {
             int x = graduation.getTickPixelPosition(i, width);
             int rank = graduation.getTickRank(i);
             int h = Math.min(40, (int) (height / 15.0));
-            h = rank == 2 ? (int) (h + h) : rank == 1 ? (int) (h + h / 2.) : h;
+            h = rank == 2 ? (h + h) : rank == 1 ? (int) (h + h / 2.) : h;
             if (x > 0) {
                 g.setColor(parameters.getRealColor(rank));
                 g.drawLine(x, 0, x, h);

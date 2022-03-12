@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import java.util.ArrayList;
@@ -74,8 +75,11 @@ public abstract class CopyOrMoveToWorkspace extends BasicItem implements NodesMa
             if (canExecute()) {
                 subItems.add(new CopyOrMoveToWorkspaceSubItem(null, true, 0, 0, isCopy()));//New workspace
                 ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-                for (final Workspace w : projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
-                    GraphContextMenuItem item = new CopyOrMoveToWorkspaceSubItem(w, w != projectController.getCurrentWorkspace(), 1, i, isCopy());
+                for (final Workspace w : projectController.getCurrentProject().getLookup()
+                    .lookup(WorkspaceProvider.class).getWorkspaces()) {
+                    GraphContextMenuItem item =
+                        new CopyOrMoveToWorkspaceSubItem(w, w != projectController.getCurrentWorkspace(), 1, i,
+                            isCopy());
                     subItems.add(item);
                     i++;
                 }

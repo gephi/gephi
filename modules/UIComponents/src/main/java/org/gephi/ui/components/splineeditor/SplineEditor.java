@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.components.splineeditor;
 
 import java.awt.BorderLayout;
@@ -76,8 +77,8 @@ public class SplineEditor extends JDialog {
     private Component buildHeader() {
         ImageIcon icon = new ImageIcon(getClass().getResource("images/simulator.png"));
         JXHeader header = new JXHeader(NbBundle.getMessage(SplineEditor.class, "splineEditor_title"),
-                NbBundle.getMessage(SplineEditor.class, "splineEditor_header"),
-                icon);
+            NbBundle.getMessage(SplineEditor.class, "splineEditor_header"),
+            icon);
         return header;
     }
 
@@ -91,34 +92,18 @@ public class SplineEditor extends JDialog {
         return display.getControl1();
     }
 
-    public Point2D getControl2() {
-        SplineDisplay display = splineControlPanel.getDisplay();
-        return display.getControl2();
-    }
-
     public void setControl1(Point2D control1) {
         SplineDisplay display = splineControlPanel.getDisplay();
         display.setControl1(control1);
+    }
+
+    public Point2D getControl2() {
+        SplineDisplay display = splineControlPanel.getDisplay();
+        return display.getControl2();
     }
 
     public void setControl2(Point2D control2) {
         SplineDisplay display = splineControlPanel.getDisplay();
         display.setControl2(control2);
     }
-//    public Interpolator getCurrentInterpolator() {
-//        SplineDisplay display = splineControlPanel.getDisplay();
-//        Point2D control1 = display.getControl1();
-//        Point2D control2 = display.getControl2();
-//
-//        //The TimingFramework implementation doesn't respect the SMIL specification about the returned Y value
-//		/*Interpolator splines = new SplineInterpolator((float) control1.getX(),
-//        (float) control1.getY(),
-//        (float) control2.getX(), (float) control2.getY());*/
-//
-//        Interpolator splines = new BezierInterpolator((float) control1.getX(),
-//                (float) control1.getY(),
-//                (float) control2.getX(), (float) control2.getY());
-//
-//        return splines;
-//    }
 }

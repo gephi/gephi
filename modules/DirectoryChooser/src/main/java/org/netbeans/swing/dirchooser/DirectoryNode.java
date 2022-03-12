@@ -40,6 +40,7 @@
  *
  * Contributor(s): Soot Phengsy
  */
+
 package org.netbeans.swing.dirchooser;
 
 import java.io.File;
@@ -62,10 +63,12 @@ public class DirectoryNode extends DefaultMutableTreeNode {
 
     public final static int SINGLE_SELECTION = 0;
     public final static int DIG_IN_SELECTION = 4;
-    /** case insensitive file name's comparator */
+    /**
+     * case insensitive file name's comparator
+     */
     static final FileNameComparator FILE_NAME_COMPARATOR = new FileNameComparator();
     private File directory;
-    private boolean isDir;
+    private final boolean isDir;
     private boolean loaded;
     private boolean isSelected;
 
@@ -78,11 +81,51 @@ public class DirectoryNode extends DefaultMutableTreeNode {
     }
 
     public DirectoryNode(File file, boolean allowsChildren, boolean isSelected,
-            boolean isChecked, boolean isEditable) {
+                         boolean isChecked, boolean isEditable) {
         super(file, allowsChildren);
         this.directory = file;
         this.isDir = directory.isDirectory();
         this.isSelected = isSelected;
+    }
+
+    /*public static boolean isNetBeansProject (File directory) {
+    boolean retVal = false;
+    if (directory != null) {
+    FileObject fo = convertToValidDir(directory);
+    if (fo != null) {
+    if (Utilities.isUnix() && fo.getParent() != null
+    && fo.getParent().getParent() == null) {
+    retVal = false; // Ignore all subfolders of / on unixes
+    // (e.g. /net, /proc)
+    } else {
+    retVal = ProjectManager.getDefault().isProject(fo);
+    }
+    }
+    }
+    return retVal;
+    }*/
+    private static FileObject convertToValidDir(File f) {
+        FileObject fo;
+        File testFile = new File(f.getPath());
+        if (testFile == null || testFile.getParent() == null) {
+            // BTW this means that roots of file systems can't be project
+            // directories.
+            return null;
+        }
+
+        /**
+         *
+         * ATTENTION: on Windows may occure dir.isDirectory () == dir.isFile () ==
+         *
+         * true then its used testFile instead of dir.
+         *
+         */
+        if (!testFile.isDirectory()) {
+            return null;
+        }
+
+        fo = FileUtil.toFileObject(FileUtil.normalizeFile(testFile));
+        return fo;
     }
 
     public boolean isLoaded() {
@@ -99,10 +142,6 @@ public class DirectoryNode extends DefaultMutableTreeNode {
         this.loaded = false;
     }
 
-    public void setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-    }
-
     @Override
     public boolean isLeaf() {
         return !this.isDir;
@@ -115,6 +154,10 @@ public class DirectoryNode extends DefaultMutableTreeNode {
 
     public boolean isSelected() {
         return this.isSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
     public boolean loadChildren(JFileChooser chooser, boolean descend) {
@@ -197,44 +240,15 @@ public class DirectoryNode extends DefaultMutableTreeNode {
 //        return isNetBeansProject(directory);
     }
 
-    /*public static boolean isNetBeansProject (File directory) {
-    boolean retVal = false;
-    if (directory != null) {
-    FileObject fo = convertToValidDir(directory);
-    if (fo != null) {
-    if (Utilities.isUnix() && fo.getParent() != null
-    && fo.getParent().getParent() == null) {
-    retVal = false; // Ignore all subfolders of / on unixes
-    // (e.g. /net, /proc)
-    } else {
-    retVal = ProjectManager.getDefault().isProject(fo);
-    }
-    }
-    }
-    return retVal;
-    }*/
-    private static FileObject convertToValidDir(File f) {
-        FileObject fo;
-        File testFile = new File(f.getPath());
-        if (testFile == null || testFile.getParent() == null) {
-            // BTW this means that roots of file systems can't be project
-            // directories.
-            return null;
-        }
+    /**
+     * Compares files ignoring case sensitivity
+     */
+    private static class FileNameComparator implements Comparator<File> {
 
-        /**
-         *
-         * ATTENTION: on Windows may occure dir.isDirectory () == dir.isFile () ==
-         *
-         * true then its used testFile instead of dir.
-         *
-         */
-        if (!testFile.isDirectory()) {
-            return null;
+        @Override
+        public int compare(File f1, File f2) {
+            return String.CASE_INSENSITIVE_ORDER.compare(f1.getName(), f2.getName());
         }
-
-        fo = FileUtil.toFileObject(FileUtil.normalizeFile(testFile));
-        return fo;
     }
 
     private class DirectoryFilter implements FileFilter {
@@ -246,15 +260,6 @@ public class DirectoryNode extends DefaultMutableTreeNode {
 
         public String getDescription() {
             return "Directory";
-        }
-    }
-
-    /** Compares files ignoring case sensitivity */
-    private static class FileNameComparator implements Comparator<File> {
-
-        @Override
-        public int compare(File f1, File f2) {
-            return String.CASE_INSENSITIVE_ORDER.compare(f1.getName(), f2.getName());
         }
     }
 }

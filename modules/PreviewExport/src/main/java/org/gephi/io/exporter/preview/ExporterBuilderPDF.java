@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.io.exporter.preview;
 
 import org.gephi.io.exporter.api.FileType;
@@ -48,7 +49,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = VectorFileExporterBuilder.class)
@@ -62,7 +62,7 @@ public class ExporterBuilderPDF implements VectorFileExporterBuilder {
     @Override
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".pdf", NbBundle.getMessage(ExporterBuilderPDF.class, "fileType_PDF_Name"));
-        return new FileType[]{ft};
+        return new FileType[] {ft};
     }
 
     @Override

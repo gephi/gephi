@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.visualization.component;
 
 import java.awt.AWTEvent;
@@ -66,20 +67,27 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 @ConvertAsProperties(dtd = "-//org.gephi.visualization.component//Graph//EN",
-        autostore = false)
+    autostore = false)
 @TopComponent.Description(preferredID = "GraphTopComponent",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+    persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.visualization.component.GraphTopComponent")
 @ActionReference(path = "Menu/Window", position = 500)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_GraphTopComponent",
-        preferredID = "GraphTopComponent")
+    preferredID = "GraphTopComponent")
 public class GraphTopComponent extends TopComponent implements AWTEventListener {
 
     private transient AbstractEngine engine;
     private transient VizBarController vizBarController;
-//    private Map<Integer, ContextMenuItemManipulator> keyActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();
+    //    private Map<Integer, ContextMenuItemManipulator> keyActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();
     private transient GraphDrawable drawable;
+    private SelectionToolbar selectionToolbar;
+    private ActionsToolbar actionsToolbar;
+    private JComponent toolbar;
+    private JComponent propertiesBar;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.gephi.visualization.component.CollapsePanel collapsePanel;
+    private javax.swing.JLabel waitingLabel;
 
     public GraphTopComponent() {
         initComponents();
@@ -122,19 +130,29 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             collapsePanel.setVisible(false);
         }
     }
-    private SelectionToolbar selectionToolbar;
-    private ActionsToolbar actionsToolbar;
-    private JComponent toolbar;
-    private JComponent propertiesBar;
+//
+//    private void mapItems(ContextMenuItemManipulator[] items) {
+//        Integer key;
+//        ContextMenuItemManipulator[] subItems;
+//        for (ContextMenuItemManipulator item : items) {
+//            key = item.getMnemonicKey();
+//            if (key != null) {
+//                if (!keyActionMappings.containsKey(key)) {
+//                    keyActionMappings.put(key, item);
+//                }
+//            }
+//            subItems = item.getSubItems();
+//            if (subItems != null) {
+//                mapItems(subItems);
+//            }
+//        }
+//    }
 
     private void initToolPanels() {
         final ToolController tc = Lookup.getDefault().lookup(ToolController.class);
         if (tc != null) {
             if (VizController.getInstance().getVizConfig().isToolbar()) {
                 JPanel westPanel = new JPanel(new BorderLayout(0, 0));
-                if (UIUtils.isAquaLookAndFeel()) {
-                    westPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
-                }
 
                 toolbar = tc.getToolbar();
                 if (toolbar != null) {
@@ -225,23 +243,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     private void initKeyEventContextMenuActionMappings() {
 //        mapItems(Lookup.getDefault().lookupAll(GraphContextMenuItem.class).toArray(new GraphContextMenuItem[0]));
     }
-//
-//    private void mapItems(ContextMenuItemManipulator[] items) {
-//        Integer key;
-//        ContextMenuItemManipulator[] subItems;
-//        for (ContextMenuItemManipulator item : items) {
-//            key = item.getMnemonicKey();
-//            if (key != null) {
-//                if (!keyActionMappings.containsKey(key)) {
-//                    keyActionMappings.put(key, item);
-//                }
-//            }
-//            subItems = item.getSubItems();
-//            if (subItems != null) {
-//                mapItems(subItems);
-//            }
-//        }
-//    }
 
     /**
      * For attending Ctrl+Key events in graph window to launch context menu
@@ -251,7 +252,8 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     public void eventDispatched(AWTEvent event) {
         KeyEvent evt = (KeyEvent) event;
 
-        if (evt.getID() == KeyEvent.KEY_RELEASED && (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK) {
+        if (evt.getID() == KeyEvent.KEY_RELEASED &&
+            (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK) {
 //            final ContextMenuItemManipulator item = keyActionMappings.get(evt.getKeyCode());
 //            if (item != null) {
 //                ((GraphContextMenuItem) item).setup(eventBridge.getGraph(), eventBridge.getSelectedNodes());
@@ -277,14 +279,12 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         setLayout(new java.awt.BorderLayout());
 
         waitingLabel.setBackground(new java.awt.Color(255, 255, 255));
-        org.openide.awt.Mnemonics.setLocalizedText(waitingLabel, org.openide.util.NbBundle.getMessage(GraphTopComponent.class, "GraphTopComponent.waitingLabel.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(waitingLabel, org.openide.util.NbBundle
+            .getMessage(GraphTopComponent.class, "GraphTopComponent.waitingLabel.text")); // NOI18N
         waitingLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         add(waitingLabel, java.awt.BorderLayout.CENTER);
         add(collapsePanel, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.gephi.visualization.component.CollapsePanel collapsePanel;
-    private javax.swing.JLabel waitingLabel;
     // End of variables declaration//GEN-END:variables
 
     @Override

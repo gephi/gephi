@@ -7,7 +7,6 @@ import org.jdesktop.swingx.JXTable;
 import org.joda.time.DateTimeZone;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class TimestampMapSparklinesGraphicsComponentProvider extends AbstractSparklinesGraphicsComponentProvider {
@@ -35,6 +34,6 @@ public class TimestampMapSparklinesGraphicsComponentProvider extends AbstractSpa
         Double[] timestamps = timestampMap.toKeysArray();
         Number[] values = (Number[]) timestampMap.toValuesArray();
 
-        return new Number[][]{timestamps, values};
+        return new Number[][] {timestamps, values};
     }
 }

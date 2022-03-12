@@ -39,19 +39,24 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.utils;
 
 // Copied from org.netbeans.lib.profiler.ui
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
 import java.awt.image.PixelGrabber;
+import java.awt.image.RGBImageFilter;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.AbstractButton;
 import javax.swing.JLabel;
@@ -61,7 +66,6 @@ import javax.swing.JTextArea;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.plaf.basic.BasicButtonListener;
 import javax.swing.table.JTableHeader;
 import org.openide.util.Exceptions;
 
@@ -73,6 +77,8 @@ public final class UIUtils {
     private static Color unfocusedSelFg;
 
     //~ Methods ------------------------------------------------------------------------------------------------------------------
+    private static Color profilerResultsBackground;
+
     /**
      * Determines if current Look and Feel is AquaLookAndFeel.
      *
@@ -88,17 +94,20 @@ public final class UIUtils {
             return new Color(244, 244, 244);
         }
 
-        return getSafeColor((int) (c.getRed() * ALTERNATE_ROW_DARKER_FACTOR), (int) (c.getGreen() * ALTERNATE_ROW_DARKER_FACTOR),
-                (int) (c.getBlue() * ALTERNATE_ROW_DARKER_FACTOR));
+        return getSafeColor((int) (c.getRed() * ALTERNATE_ROW_DARKER_FACTOR),
+            (int) (c.getGreen() * ALTERNATE_ROW_DARKER_FACTOR),
+            (int) (c.getBlue() * ALTERNATE_ROW_DARKER_FACTOR));
     }
 
     public static Color getForegroundColorForBackground(Color background) {
-        return (background.getRed() < 100 || background.getGreen() < 100 || background.getRed() < 100) ? Color.white : Color.black;
+        return (background.getRed() < 100 || background.getGreen() < 100 || background.getRed() < 100) ? Color.white :
+            Color.black;
     }
 
     public static Color getDarkerLine(Color c, float alternateRowDarkerFactor) {
-        return getSafeColor((int) (c.getRed() * alternateRowDarkerFactor), (int) (c.getGreen() * alternateRowDarkerFactor),
-                (int) (c.getBlue() * alternateRowDarkerFactor));
+        return getSafeColor((int) (c.getRed() * alternateRowDarkerFactor),
+            (int) (c.getGreen() * alternateRowDarkerFactor),
+            (int) (c.getBlue() * alternateRowDarkerFactor));
     }
 
     public static int getDefaultRowHeight() {
@@ -107,6 +116,7 @@ public final class UIUtils {
 
     /**
      * Determines if current Look and Feel is GTKLookAndFeel.
+     *
      * @return true if gtk look and feel
      */
     public static boolean isGTKLookAndFeel() {
@@ -116,6 +126,7 @@ public final class UIUtils {
 
     /**
      * Determines if current Look and Feel is Nimbus.
+     *
      * @return true if nimbus look and feel
      */
     public static boolean isNimbusLookAndFeel() {
@@ -125,15 +136,18 @@ public final class UIUtils {
 
     /**
      * Determines if current Look and Feel is GTK using Nimbus theme.
+     *
      * @return true if nimbus gtk theme
      */
     public static boolean isNimbusGTKTheme() {
         // is current Look and Feel GTK using Nimbus theme?
-        return isGTKLookAndFeel() && "nimbus".equals(Toolkit.getDefaultToolkit().getDesktopProperty("gnome.Net/ThemeName")); //NOI18N
+        return isGTKLookAndFeel() &&
+            "nimbus".equals(Toolkit.getDefaultToolkit().getDesktopProperty("gnome.Net/ThemeName")); //NOI18N
     }
 
     /**
      * Determines if current Look and Feel is Nimbus or GTK with Nimbus theme.
+     *
      * @return true if nimbus
      */
     public static boolean isNimbus() {
@@ -143,6 +157,7 @@ public final class UIUtils {
 
     /**
      * Determines if current Look and Feel is MetalLookAndFeel.
+     *
      * @return true if metal look and feel
      */
     public static boolean isMetalLookAndFeel() {
@@ -196,6 +211,8 @@ public final class UIUtils {
         return previousTabIndex;
     }
 
+    // Copied from org.openide.awt.HtmlLabelUI
+
     public static Color getSafeColor(int red, int green, int blue) {
         red = Math.max(red, 0);
         red = Math.min(red, 255);
@@ -208,8 +225,10 @@ public final class UIUtils {
     }
 
     // Copied from org.openide.awt.HtmlLabelUI
+
     /**
      * Get the system-wide unfocused selection background color.
+     *
      * @return unfocused selection background
      */
     public static Color getUnfocusedSelectionBackground() {
@@ -237,9 +256,9 @@ public final class UIUtils {
         return unfocusedSelBg;
     }
 
-    // Copied from org.openide.awt.HtmlLabelUI
     /**
      * Get the system-wide unfocused selection foreground color.
+     *
      * @return unfocused selection foreground
      */
     public static Color getUnfocusedSelectionForeground() {
@@ -260,7 +279,6 @@ public final class UIUtils {
 
         return unfocusedSelFg;
     }
-    private static Color profilerResultsBackground;
 
     private static Color getGTKProfilerResultsBackground() {
         int[] pixels = new int[1];
@@ -272,7 +290,8 @@ public final class UIUtils {
         textArea.doLayout();
 
         // Print the textarea to an image
-        Image image = new BufferedImage(textArea.getSize().width, textArea.getSize().height, BufferedImage.TYPE_INT_RGB);
+        Image image =
+            new BufferedImage(textArea.getSize().width, textArea.getSize().height, BufferedImage.TYPE_INT_RGB);
         textArea.printAll(image.getGraphics());
 
         // Grab appropriate pixels to get the color
@@ -310,6 +329,7 @@ public final class UIUtils {
 
     /**
      * Determines if current Look and Feel is Windows Classic LookAndFeel.
+     *
      * @return true if windows classic look and feel
      */
     public static boolean isWindowsClassicLookAndFeel() {
@@ -322,6 +342,7 @@ public final class UIUtils {
 
     /**
      * Determines if current Look and Feel is WindowsLookAndFeel.
+     *
      * @return true if windows look and feel
      */
     public static boolean isWindowsLookAndFeel() {
@@ -331,6 +352,7 @@ public final class UIUtils {
 
     /**
      * Determines if current Look and Feel is Windows XP LookAndFeel.
+     *
      * @return true if windows xp look and feel
      */
     public static boolean isWindowsXPLookAndFeel() {
@@ -339,7 +361,8 @@ public final class UIUtils {
         }
 
         // is XP theme active in the underlying OS?
-        boolean xpThemeActiveOS = Boolean.TRUE.equals(Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive")); //NOI18N
+        boolean xpThemeActiveOS =
+            Boolean.TRUE.equals(Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive")); //NOI18N
         // is XP theme disabled by the application?
 
         boolean xpThemeDisabled = (System.getProperty("swing.noxp") != null); // NOI18N
@@ -351,6 +374,7 @@ public final class UIUtils {
 
     /**
      * Determines if current Look and Feel is Windows XP LookAndFeel.
+     *
      * @return true if windows vista look and feel
      */
     public static boolean isWindowsVistaLookAndFeel() {
@@ -359,7 +383,8 @@ public final class UIUtils {
         }
 
         // is XP theme active in the underlying OS?
-        boolean xpThemeActiveOS = Boolean.TRUE.equals(Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive")); //NOI18N
+        boolean xpThemeActiveOS =
+            Boolean.TRUE.equals(Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive")); //NOI18N
         // is XP theme disabled by the application?
 
         boolean xpThemeDisabled = (System.getProperty("swing.noxp") != null); // NOI18N
@@ -375,53 +400,15 @@ public final class UIUtils {
     // On JDK 1.5 the XP Windows LaF enforces special border to all buttons, overriding any custom border
     // set by setBorder(). Class responsible for this is WindowsButtonListener. See Issue 71546.
     // Also fixes buttons size in JToolbar.
+
     /**
      * Ensures that focus will be really painted if button is focused and fixes
      * using custom border for JDK 1.5 and XP LaF
+     *
      * @param button button
      */
     public static void fixButtonUI(AbstractButton button) {
-        // JButton
-        if (button.getUI() instanceof com.sun.java.swing.plaf.windows.WindowsButtonUI) {
-            button.setUI(new com.sun.java.swing.plaf.windows.WindowsButtonUI() {
-
-                @Override
-                protected BasicButtonListener createButtonListener(AbstractButton b) {
-                    return new BasicButtonListener(b); // Fix for  Issue 71546
-                }
-
-                @Override
-                protected void paintFocus(Graphics g, AbstractButton b, Rectangle viewRect, Rectangle textRect,
-                        Rectangle iconRect) {
-                    int width = b.getWidth();
-                    int height = b.getHeight();
-                    g.setColor(getFocusColor());
-                    javax.swing.plaf.basic.BasicGraphicsUtils.drawDashedRect(g, dashedRectGapX, dashedRectGapY,
-                            width - dashedRectGapWidth,
-                            height - dashedRectGapHeight);
-                }
-            });
-        } // JToggleButton
-        else if (button.getUI() instanceof com.sun.java.swing.plaf.windows.WindowsToggleButtonUI) {
-            button.setUI(new com.sun.java.swing.plaf.windows.WindowsToggleButtonUI() {
-
-                @Override
-                protected BasicButtonListener createButtonListener(AbstractButton b) {
-                    return new BasicButtonListener(b); // Fix for  Issue 71546
-                }
-
-                @Override
-                protected void paintFocus(Graphics g, AbstractButton b, Rectangle viewRect, Rectangle textRect,
-                        Rectangle iconRect) {
-                    int width = b.getWidth();
-                    int height = b.getHeight();
-                    g.setColor(getFocusColor());
-                    javax.swing.plaf.basic.BasicGraphicsUtils.drawDashedRect(g, dashedRectGapX, dashedRectGapY,
-                            width - dashedRectGapWidth,
-                            height - dashedRectGapHeight);
-                }
-            });
-        }
+        // Doesn't seem to be necessary any more, conflicts with Jigsaw
     }
 
     private static BufferedImage createTableScreenshot(Component component) {
@@ -461,7 +448,7 @@ public final class UIUtils {
         Dimension tableHeaderSize = tableHeader.getSize();
 
         BufferedImage tableScreenshot = new BufferedImage(sourceSize.width, tableHeaderSize.height + sourceSize.height,
-                BufferedImage.TYPE_INT_RGB);
+            BufferedImage.TYPE_INT_RGB);
         final Graphics tableScreenshotGraphics = tableScreenshot.getGraphics();
 
         // Component.printAll has to run in AWT Thread to print component contents correctly
@@ -523,7 +510,8 @@ public final class UIUtils {
             sourceSize = component.getSize();
         }
 
-        BufferedImage componentScreenshot = new BufferedImage(sourceSize.width, sourceSize.height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage componentScreenshot =
+            new BufferedImage(sourceSize.width, sourceSize.height, BufferedImage.TYPE_INT_RGB);
         Graphics componentScreenshotGraphics = componentScreenshot.getGraphics();
         source.printAll(componentScreenshotGraphics);
 
@@ -557,7 +545,8 @@ public final class UIUtils {
 
             @Override
             public void run() {
-                if (component instanceof JTable || (component instanceof JViewport && ((JViewport) component).getView() instanceof JTable)) {
+                if (component instanceof JTable ||
+                    (component instanceof JViewport && ((JViewport) component).getView() instanceof JTable)) {
                     result[0] = createTableScreenshot(component);
                 } else {
                     result[0] = createGeneralComponentScreenshot(component);
@@ -576,5 +565,50 @@ public final class UIUtils {
         }
 
         return result[0];
+    }
+
+    public static Image generateSelectedDarkImage(final Image image) {
+        final ImageFilter filter =  new IconImageFilter() {
+            @Override
+            int getGreyFor(final int gray) {
+                return gray * 75 / 100;
+            }
+        };
+        return map(image, filter);
+    }
+
+    static Image generateFilteredImage(Image image, ImageFilter filter) {
+        final ImageProducer prod = new FilteredImageSource(image.getSource(), filter);
+        return Toolkit.getDefaultToolkit().createImage(prod);
+    }
+
+    private static Image map(Image image, ImageFilter filter) {
+        return generateFilteredImage(image, filter);
+    }
+
+    private abstract static class IconImageFilter extends RGBImageFilter {
+        IconImageFilter() {
+            super();
+            canFilterIndexColorModel = true;
+        }
+
+        @Override
+        public final int filterRGB(final int x, final int y, final int rgb) {
+            final int red = (rgb >> 16) & 0xff;
+            final int green = (rgb >> 8) & 0xff;
+            final int blue = rgb & 0xff;
+            final int gray = getGreyFor((int)((0.30 * red + 0.59 * green + 0.11 * blue) / 3));
+
+            return (rgb & 0xff000000) | (grayTransform(red, gray) << 16) | (grayTransform(green, gray) << 8) | (grayTransform(blue, gray) << 0);
+        }
+
+        private static int grayTransform(final int color, final int gray) {
+            int result = color - gray;
+            if (result < 0) result = 0;
+            if (result > 255) result = 255;
+            return result;
+        }
+
+        abstract int getGreyFor(int gray);
     }
 }

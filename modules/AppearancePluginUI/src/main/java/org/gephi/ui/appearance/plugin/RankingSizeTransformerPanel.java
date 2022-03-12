@@ -39,52 +39,40 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.ui.appearance.plugin;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.appearance.api.RankingFunction;
+import org.gephi.appearance.plugin.RankingLabelSizeTransformer;
 import org.gephi.appearance.plugin.RankingNodeSizeTransformer;
+import org.gephi.appearance.plugin.RankingSizeTransformer;
 import org.openide.util.NbPreferences;
 
 /**
- *
  * @author Mathieu Bastian
  */
 public class RankingSizeTransformerPanel extends javax.swing.JPanel {
 
-    private RankingNodeSizeTransformer sizeTransformer;
+    private RankingSizeTransformer sizeTransformer;
+    private javax.swing.JSpinner maxSize;
+    private javax.swing.JSpinner minSize;
 
     public RankingSizeTransformerPanel() {
         initComponents();
     }
 
     public void setup(RankingFunction function) {
-        sizeTransformer = (RankingNodeSizeTransformer) function.getTransformer();
+        sizeTransformer = function.getTransformer();
 
-        final String MIN_SIZE = "RankingSizeTransformerPanel_" + sizeTransformer.getClass().getSimpleName() + "_min";
-        final String MAX_SIZE = "RankingSizeTransformerPanel_" + sizeTransformer.getClass().getSimpleName() + "_max";
-
-        float minSizeStart = NbPreferences.forModule(RankingSizeTransformerPanel.class).getFloat(MIN_SIZE, sizeTransformer.getMinSize());
-        float maxSizeStart = NbPreferences.forModule(RankingSizeTransformerPanel.class).getFloat(MAX_SIZE, sizeTransformer.getMaxSize());
-        sizeTransformer.setMinSize(minSizeStart);
-        sizeTransformer.setMaxSize(maxSizeStart);
-
-        minSize.setValue(minSizeStart);
-        maxSize.setValue(maxSizeStart);
-        minSize.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                sizeTransformer.setMinSize((Float) minSize.getValue());
-                NbPreferences.forModule(RankingSizeTransformerPanel.class).putFloat(MIN_SIZE, (Float) minSize.getValue());
-            }
+        minSize.setValue(sizeTransformer.getMinSize());
+        maxSize.setValue(sizeTransformer.getMaxSize());
+        minSize.addChangeListener(e -> {
+            sizeTransformer.setMinSize((Float) minSize.getValue());
         });
-        maxSize.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                sizeTransformer.setMaxSize((Float) maxSize.getValue());
-                NbPreferences.forModule(RankingSizeTransformerPanel.class).putFloat(MAX_SIZE, (Float) maxSize.getValue());
-            }
+        maxSize.addChangeListener(e -> {
+            sizeTransformer.setMaxSize((Float) maxSize.getValue());
         });
     }
 
@@ -97,18 +85,21 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        labelMinSize = new javax.swing.JLabel();
+        javax.swing.JLabel labelMinSize = new javax.swing.JLabel();
         minSize = new javax.swing.JSpinner();
-        labelMaxSize = new javax.swing.JLabel();
+        // Variables declaration - do not modify//GEN-BEGIN:variables
+        javax.swing.JLabel labelMaxSize = new javax.swing.JLabel();
         maxSize = new javax.swing.JSpinner();
 
         setPreferredSize(new java.awt.Dimension(225, 114));
 
-        labelMinSize.setText(org.openide.util.NbBundle.getMessage(RankingSizeTransformerPanel.class, "RankingSizeTransformerPanel.labelMinSize.text")); // NOI18N
+        labelMinSize.setText(org.openide.util.NbBundle
+            .getMessage(RankingSizeTransformerPanel.class, "RankingSizeTransformerPanel.labelMinSize.text")); // NOI18N
 
-        minSize.setModel(new javax.swing.SpinnerNumberModel(1.0f, 0.1f, null, 0.5f));
+        minSize.setModel(new javax.swing.SpinnerNumberModel(1.0f, 0.01f, null, 0.5f));
 
-        labelMaxSize.setText(org.openide.util.NbBundle.getMessage(RankingSizeTransformerPanel.class, "RankingSizeTransformerPanel.labelMaxSize.text")); // NOI18N
+        labelMaxSize.setText(org.openide.util.NbBundle
+            .getMessage(RankingSizeTransformerPanel.class, "RankingSizeTransformerPanel.labelMaxSize.text")); // NOI18N
 
         maxSize.setModel(new javax.swing.SpinnerNumberModel(4.0f, 0.5f, null, 0.5f));
 
@@ -116,33 +107,32 @@ public class RankingSizeTransformerPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(labelMinSize)
-                .addGap(8, 8, 8)
-                .addComponent(minSize, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(labelMaxSize)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(maxSize, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(labelMinSize)
+                    .addGap(8, 8, 8)
+                    .addComponent(minSize, javax.swing.GroupLayout.PREFERRED_SIZE, 60,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(labelMaxSize)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(maxSize, javax.swing.GroupLayout.PREFERRED_SIZE, 60,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(minSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(maxSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelMaxSize)
-                    .addComponent(labelMinSize))
-                .addContainerGap(80, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(minSize, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(maxSize, javax.swing.GroupLayout.PREFERRED_SIZE,
+                            javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelMaxSize)
+                        .addComponent(labelMinSize))
+                    .addContainerGap(80, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel labelMaxSize;
-    private javax.swing.JLabel labelMinSize;
-    private javax.swing.JSpinner maxSize;
-    private javax.swing.JSpinner minSize;
     // End of variables declaration//GEN-END:variables
 }

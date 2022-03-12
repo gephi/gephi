@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2016 Gephi Consortium.
  */
+
 package org.gephi.io.importer.plugin.file.spreadsheet.process;
 
 import java.util.Arrays;
@@ -52,48 +53,11 @@ import org.gephi.graph.api.TimeRepresentation;
 import org.joda.time.DateTimeZone;
 
 /**
- *
  * @author Eduardo Ramos
  */
 public class SpreadsheetGeneralConfiguration {
 
-    public enum Mode {
-        NODES_TABLE(Arrays.asList(
-                ImportNodesProcess.NODE_ID,
-                ImportNodesProcess.NODE_LABEL
-        )),
-        EDGES_TABLE(Arrays.asList(
-                ImportEdgesProcess.EDGE_ID,
-                ImportEdgesProcess.EDGE_KIND,
-                ImportEdgesProcess.EDGE_LABEL,
-                ImportEdgesProcess.EDGE_SOURCE,
-                ImportEdgesProcess.EDGE_TARGET,
-                ImportEdgesProcess.EDGE_TYPE
-        )),
-        ADJACENCY_LIST,
-        MATRIX;
-
-        private final Set<String> specialColumnNames;
-
-        private Mode() {
-            this.specialColumnNames = Collections.emptySet();
-        }
-
-        private Mode(List<String> specialColumnNames) {
-            this.specialColumnNames = Collections.unmodifiableSet(new HashSet<>(specialColumnNames));
-        }
-
-        public Set<String> getSpecialColumnNames() {
-            return specialColumnNames;
-        }
-
-        public boolean isSpecialColumn(String column) {
-            return specialColumnNames.contains(column.trim().toLowerCase());
-        }
-    }
-
     protected final Map<String, Class> columnsClasses = new LinkedHashMap<>();
-
     protected Mode mode = Mode.NODES_TABLE;
     protected TimeRepresentation timeRepresentation = TimeRepresentation.INTERVAL;
     protected DateTimeZone timeZone = DateTimeZone.UTC;
@@ -141,5 +105,40 @@ public class SpreadsheetGeneralConfiguration {
 
     public void setColumnClass(String column, Class clazz) {
         columnsClasses.put(column.trim(), clazz);
+    }
+
+    public enum Mode {
+        NODES_TABLE(Arrays.asList(
+            ImportNodesProcess.NODE_ID,
+            ImportNodesProcess.NODE_LABEL
+        )),
+        EDGES_TABLE(Arrays.asList(
+            ImportEdgesProcess.EDGE_ID,
+            ImportEdgesProcess.EDGE_KIND,
+            ImportEdgesProcess.EDGE_LABEL,
+            ImportEdgesProcess.EDGE_SOURCE,
+            ImportEdgesProcess.EDGE_TARGET,
+            ImportEdgesProcess.EDGE_TYPE
+        )),
+        ADJACENCY_LIST,
+        MATRIX;
+
+        private final Set<String> specialColumnNames;
+
+        Mode() {
+            this.specialColumnNames = Collections.emptySet();
+        }
+
+        Mode(List<String> specialColumnNames) {
+            this.specialColumnNames = Collections.unmodifiableSet(new HashSet<>(specialColumnNames));
+        }
+
+        public Set<String> getSpecialColumnNames() {
+            return specialColumnNames;
+        }
+
+        public boolean isSpecialColumn(String column) {
+            return specialColumnNames.contains(column.trim().toLowerCase());
+        }
     }
 }

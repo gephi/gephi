@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.layout.api;
 
 import org.gephi.layout.spi.Layout;
@@ -50,6 +51,7 @@ import org.gephi.project.api.Workspace;
  * <p>
  * This controller is a singleton and can therefore be found in Lookup:
  * <pre>LayoutController lc = Lookup.getDefault().lookup(LayoutController.class);</pre>
+ *
  * @author Mathieu Bastian
  */
 public interface LayoutController {
@@ -57,40 +59,44 @@ public interface LayoutController {
     /**
      * Returns the model of the currently selected {@link Workspace}.
      */
-    public LayoutModel getModel();
+    LayoutModel getModel();
 
     /**
      * Sets the Layout to execute.
+     *
      * @param layout the layout that is to be selected
      */
-    public void setLayout(Layout layout);
+    void setLayout(Layout layout);
 
     /**
      * Executes the current Layout.
      */
-    public void executeLayout();
+    void executeLayout();
 
     /**
      * Executes the current layout for <code>numIterations</code> iterations.
+     *
      * @param numIterations the number of iterations of the algorithm
      */
-    public void executeLayout(int numIterations);
+    void executeLayout(int numIterations);
 
     /**
      * Determine if the current Layout can be executed.
+     *
      * @return <code>true</code> if the layout is executable.
      */
-    public boolean canExecute();
+    boolean canExecute();
 
     /**
      * Stop the Layout's execution.
      */
-    public void stopLayout();
+    void stopLayout();
 
     /**
      * Determine if the current Layout execution can be stopped.
      * If the current Layout is not running, it generally cannot be stopped.
+     *
      * @return <code>true</code> if the layout can be stopped.
      */
-    public boolean canStop();
+    boolean canStop();
 }

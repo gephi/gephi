@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.desktop.layout;
 
 import java.awt.Color;
@@ -82,8 +83,17 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
     private final String NO_SELECTION;
     private LayoutModel model;
-    private LayoutController controller;
-    private LayoutPresetPersistence layoutPresetPersistence;
+    private final LayoutController controller;
+    private final LayoutPresetPersistence layoutPresetPersistence;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel infoLabel;
+    private javax.swing.JComboBox layoutCombobox;
+    private javax.swing.JPanel layoutProvidedPanel;
+    private javax.swing.JToolBar layoutToolbar;
+    private javax.swing.JButton presetsButton;
+    private javax.swing.JPanel propertySheet;
+    private javax.swing.JButton resetButton;
+    private javax.swing.JButton runButton;
 
     public LayoutPanel() {
         NO_SELECTION = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.choose.text");
@@ -100,7 +110,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                 if (layoutCombobox.getSelectedItem().equals(NO_SELECTION) && model.getSelectedLayout() != null) {
                     setSelectedLayout(null);
                 } else if (layoutCombobox.getSelectedItem() instanceof LayoutBuilderWrapper) {
-                    LayoutBuilder builder = ((LayoutBuilderWrapper) layoutCombobox.getSelectedItem()).getLayoutBuilder();
+                    LayoutBuilder builder =
+                        ((LayoutBuilderWrapper) layoutCombobox.getSelectedItem()).getLayoutBuilder();
                     if (model.getSelectedLayout() == null || model.getSelectedBuilder() != builder) {
                         setSelectedLayout(builder);
                     }
@@ -130,7 +141,6 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         });
 
 
-
         presetsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -144,29 +154,37 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                             public void actionPerformed(ActionEvent e) {
                                 layoutPresetPersistence.loadPreset(p, model.getSelectedLayout());
                                 refreshProperties();
-                                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.status.loadPreset", model.getSelectedBuilder().getName(), p.toString()));
+                                StatusDisplayer.getDefault().setStatusText(NbBundle
+                                    .getMessage(LayoutPanel.class, "LayoutPanel.status.loadPreset",
+                                        model.getSelectedBuilder().getName(), p.toString()));
                             }
                         });
                         menu.add(item);
                     }
                 } else {
-                    menu.add("<html><i>" + NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.nopreset") + "</i></html>");
+                    menu.add(
+                        "<html><i>" + NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.nopreset") +
+                            "</i></html>");
                 }
 
-                JMenuItem saveItem = new JMenuItem(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePreset"));
+                JMenuItem saveItem =
+                    new JMenuItem(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePreset"));
                 saveItem.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        String lastPresetName = NbPreferences.forModule(LayoutPanel.class).get("LayoutPanel.lastPresetName", "");
+                        String lastPresetName =
+                            NbPreferences.forModule(LayoutPanel.class).get("LayoutPanel.lastPresetName", "");
                         NotifyDescriptor.InputLine question = new NotifyDescriptor.InputLine(
-                                NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePreset.input"),
-                                NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePreset.input.name"));
+                            NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePreset.input"),
+                            NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePreset.input.name"));
                         question.setInputText(lastPresetName);
                         if (DialogDisplayer.getDefault().notify(question) == NotifyDescriptor.OK_OPTION) {
                             String input = question.getInputText();
                             if (input != null && !input.isEmpty()) {
                                 layoutPresetPersistence.savePreset(input, model.getSelectedLayout());
-                                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.status.savePreset", model.getSelectedBuilder().getName(), input));
+                                StatusDisplayer.getDefault().setStatusText(NbBundle
+                                    .getMessage(LayoutPanel.class, "LayoutPanel.status.savePreset",
+                                        model.getSelectedBuilder().getName(), input));
                                 NbPreferences.forModule(LayoutPanel.class).put("LayoutPanel.lastPresetName", input);
                             }
                         }
@@ -274,7 +292,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                 layoutProvidedPanel.removeAll();
             }
 
-            ((PropertySheet) propertySheet).setNodes(new Node[]{layoutNode});
+            ((PropertySheet) propertySheet).setNodes(new Node[] {layoutNode});
         }
     }
 
@@ -339,8 +357,10 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         add(layoutCombobox, gridBagConstraints);
 
         infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        infoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/layout/resources/layoutInfo.png"))); // NOI18N
-        infoLabel.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.infoLabel.text")); // NOI18N
+        infoLabel.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/layout/resources/layoutInfo.png"))); // NOI18N
+        infoLabel
+            .setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.infoLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -348,8 +368,10 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         gridBagConstraints.insets = new java.awt.Insets(2, 7, 0, 0);
         add(infoLabel, gridBagConstraints);
 
-        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/layout/resources/run.gif"))); // NOI18N
-        runButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.text")); // NOI18N
+        runButton.setIcon(
+            new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/layout/resources/run.gif"))); // NOI18N
+        runButton
+            .setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.text")); // NOI18N
         runButton.setIconTextGap(5);
         runButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         runButton.addActionListener(new java.awt.event.ActionListener() {
@@ -369,13 +391,16 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         layoutToolbar.setRollover(true);
         layoutToolbar.setOpaque(false);
 
-        presetsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/layout/resources/preset.png"))); // NOI18N
-        presetsButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.text")); // NOI18N
+        presetsButton.setIcon(new javax.swing.ImageIcon(
+            getClass().getResource("/org/gephi/desktop/layout/resources/preset.png"))); // NOI18N
+        presetsButton.setText(
+            org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.text")); // NOI18N
         presetsButton.setFocusable(false);
         presetsButton.setIconTextGap(0);
         layoutToolbar.add(presetsButton);
 
-        resetButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.resetButton.text")); // NOI18N
+        resetButton
+            .setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.resetButton.text")); // NOI18N
         resetButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -415,7 +440,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         add(propertySheet, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+    private void resetButtonActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
         reset();
     }//GEN-LAST:event_resetButtonActionPerformed
 
@@ -426,34 +452,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
             run();
         }
     }//GEN-LAST:event_runButtonActionPerformed
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel infoLabel;
-    private javax.swing.JComboBox layoutCombobox;
-    private javax.swing.JPanel layoutProvidedPanel;
-    private javax.swing.JToolBar layoutToolbar;
-    private javax.swing.JButton presetsButton;
-    private javax.swing.JPanel propertySheet;
-    private javax.swing.JButton resetButton;
-    private javax.swing.JButton runButton;
     // End of variables declaration//GEN-END:variables
-
-    private static class LayoutBuilderWrapper {
-
-        private LayoutBuilder layoutBuilder;
-
-        public LayoutBuilderWrapper(LayoutBuilder layoutBuilder) {
-            this.layoutBuilder = layoutBuilder;
-        }
-
-        public LayoutBuilder getLayoutBuilder() {
-            return layoutBuilder;
-        }
-
-        @Override
-        public String toString() {
-            return layoutBuilder.getName();
-        }
-    }
 
     private RichTooltip buildTooltip(LayoutBuilder builder) {
         String description = "";
@@ -478,6 +477,24 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         return richTooltip;
     }
 
+    private static class LayoutBuilderWrapper {
+
+        private final LayoutBuilder layoutBuilder;
+
+        public LayoutBuilderWrapper(LayoutBuilder layoutBuilder) {
+            this.layoutBuilder = layoutBuilder;
+        }
+
+        public LayoutBuilder getLayoutBuilder() {
+            return layoutBuilder;
+        }
+
+        @Override
+        public String toString() {
+            return layoutBuilder.getName();
+        }
+    }
+
     private static class LayoutDescriptionImage {
 
         private static final int STAR_WIDTH = 16;
@@ -487,13 +504,13 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         private static final int LINE_GAP = 4;
         private static final int Y_BEGIN = 10;
         private static final int IMAGE_RIGHT_MARIN = 10;
-        private Image greenIcon;
-        private Image grayIcon;
+        private final Image greenIcon;
+        private final Image grayIcon;
         private Graphics g;
-        private String qualityStr;
-        private String speedStr;
+        private final String qualityStr;
+        private final String speedStr;
         private int textMaxSize;
-        private LayoutUI layoutUI;
+        private final LayoutUI layoutUI;
 
         public LayoutDescriptionImage(LayoutUI layoutUI) {
             this.layoutUI = layoutUI;
@@ -508,7 +525,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
             g.drawString(qualityStr, 0, STAR_HEIGHT + Y_BEGIN - 2);
             paintStarPanel(g, textMaxSize + TEXT_GAP, Y_BEGIN, STAR_MAX, layoutUI.getQualityRank());
             g.drawString(speedStr, 0, STAR_HEIGHT * 2 + LINE_GAP + Y_BEGIN - 2);
-            paintStarPanel(g, textMaxSize + TEXT_GAP, STAR_HEIGHT + LINE_GAP + Y_BEGIN, STAR_MAX, layoutUI.getSpeedRank());
+            paintStarPanel(g, textMaxSize + TEXT_GAP, STAR_HEIGHT + LINE_GAP + Y_BEGIN, STAR_MAX,
+                layoutUI.getSpeedRank());
         }
 
         public Image getImage() {

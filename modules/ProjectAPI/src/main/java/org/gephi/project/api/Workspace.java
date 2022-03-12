@@ -39,6 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.project.api;
 
 import org.gephi.project.spi.WorkspacePersistenceProvider;
@@ -61,11 +62,11 @@ import org.openide.util.Lookup;
  * <code>add()</code> method when initialize:
  * <pre>public void initialize(Workspace workspace) {
  *      workspace.add(new MyDataModel())
- *}
+ * }
  * </pre> When a workspace is selected, retrieve the workspace's data model:
  * <pre>public void select(Workspace workspace) {
  *      MyDataModel model = workspace.getLookup().lookup(MyDataModel.class);
- *}
+ * }
  * </pre>
  *
  * @author Mathieu Bastian
@@ -77,14 +78,14 @@ public interface Workspace extends Lookup.Provider {
      *
      * @param instance the instance that is to be pushed to the lookup
      */
-    public void add(Object instance);
+    void add(Object instance);
 
     /**
      * Removes an instance from this workspaces lookup.
      *
      * @param instance the instance that is to be removed from the lookup
      */
-    public void remove(Object instance);
+    void remove(Object instance);
 
     /**
      * Get any instance in the current lookup. All important API in Gephi are
@@ -103,19 +104,19 @@ public interface Workspace extends Lookup.Provider {
      * @return the workspace's lookup
      */
     @Override
-    public Lookup getLookup();
+    Lookup getLookup();
 
     /**
      * Returns the project this workspace belong to
      *
      * @return the workspace's project
      */
-    public Project getProject();
+    Project getProject();
 
     /**
      * Returns the workspace unique identifier
      *
      * @return the workspace id
      */
-    public int getId();
+    int getId();
 }

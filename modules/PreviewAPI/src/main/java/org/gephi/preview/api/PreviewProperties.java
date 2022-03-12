@@ -39,6 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
+
 package org.gephi.preview.api;
 
 import java.awt.Color;
@@ -72,7 +73,7 @@ import org.gephi.utils.Serialization;
  * <p>
  * To batch put a set of property values the best way is to create a <code>PreviewPreset</code>
  * and call the <code>applyPreset()</code> method.
- * 
+ *
  * @author Mathieu Bastian
  * @see PreviewPreset
  */
@@ -87,21 +88,51 @@ public class PreviewProperties {
     }
 
     /**
+     * Converts any value to a serialized String.
+     * Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     * <p>
+     * Note: Method moved to Utils module (org.gephi.utils.Serialization).
+     *
+     * @param value Value to serialize as String
+     * @return Result String or null if the value can't be serialized with a <code>PropertyEditor</code>
+     */
+    public static String getValueAsText(Object value) {
+        return Serialization.getValueAsText(value);
+    }
+
+    /**
+     * Deserializes a serialized String of the given class.
+     * Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     * <p>
+     * Note: Method moved to Utils module (org.gephi.utils.Serialization).
+     *
+     * @param valueStr   String to deserialize
+     * @param valueClass Class of the serialized value
+     * @return Deserialized value or null if it can't be deserialized with a <code>PropertyEditor</code>
+     */
+    public static Object readValueFromText(String valueStr, Class valueClass) {
+        return Serialization.readValueFromText(valueStr, valueClass);
+    }
+
+    /**
      * Add <code>property</code> to the properties.
      * <p>
      * The property should have a unique name and the method will throw an exception
      * if not.
+     *
      * @param property the property to add to the properties
      * @throws IllegalArgumentException if <code>property</code> already exists
      */
     public void addProperty(PreviewProperty property) {
         if (properties.containsKey(property.getName())) {
-            throw new RuntimeException("The property " + property.getName() + " already exists. Each property name should be unique.");
+            throw new RuntimeException(
+                "The property " + property.getName() + " already exists. Each property name should be unique.");
         }
         for (String parent : property.dependencies) {
             PreviewProperty p = properties.get(parent);
             if (p != null && !p.getType().equals(Boolean.class)) {
-                throw new IllegalArgumentException("The property " + property.getName() + " has dependencies to non-boolean property " + p.getName());
+                throw new IllegalArgumentException(
+                    "The property " + property.getName() + " has dependencies to non-boolean property " + p.getName());
             }
         }
         properties.put(property.getName(), property);
@@ -113,6 +144,7 @@ public class PreviewProperties {
 
     /**
      * Returns <code>true</code> if a property <code>name</code> exists.
+     *
      * @param name the name of the property to lookup
      * @return <code>true</code> if the property exists, <code>false</code> otherwise
      */
@@ -122,7 +154,8 @@ public class PreviewProperties {
 
     /**
      * Puts the property's value.
-     * @param name the name of the property
+     *
+     * @param name  the name of the property
      * @param value the value
      */
     public void putValue(String name, Object value) {
@@ -133,17 +166,19 @@ public class PreviewProperties {
             simpleValues.put(name, value);
         }
     }
-    
+
     /**
      * Removes a simple value if existing
+     *
      * @param name Simple value name
      */
-    public void removeSimpleValue(String name){
+    public void removeSimpleValue(String name) {
         simpleValues.remove(name);
     }
 
     /**
      * Returns the property value as an int.
+     *
      * @param property the property's name
      * @return the property's value or <code>0</code> if not found
      * @throws ClassCastException if the property can't be cast to <code>Number</code>
@@ -154,6 +189,7 @@ public class PreviewProperties {
 
     /**
      * Returns the property value as a float.
+     *
      * @param property the property's name
      * @return the property's value or <code>0</code> if not found
      * @throws ClassCastException if the property can't be cast to <code>Number</code>
@@ -164,6 +200,7 @@ public class PreviewProperties {
 
     /**
      * Returns the property value as a double.
+     *
      * @param property the property's name
      * @return the property's value or <code>0.0</code> if not found
      * @throws ClassCastException if the property can't be cast to <code>Number</code>
@@ -175,15 +212,17 @@ public class PreviewProperties {
     /**
      * Returns the property value as an string. If the value is not a <code>String</code>
      * it calls the <code>toString()</code> method.
+     *
      * @param property the property's name
      * @return the property's value or <code>""</code> if not found
      */
     public String getStringValue(String property) {
-        return getValue(property, "").toString();
+        return getValue(property, "");
     }
 
     /**
      * Returns an the property value as a <code>Color</code>.
+     *
      * @param property the property's name
      * @return the property's value or <code>null</code> if not found
      * @throws ClassCastException if the property can't be cast to <code>Color</code>
@@ -194,6 +233,7 @@ public class PreviewProperties {
 
     /**
      * Returns an the property value as a <code>Font</code>.
+     *
      * @param property the property's name
      * @return the property's value or <code>null</code> if not found
      * @throws ClassCastException if the property can't be cast to <code>Font</code>
@@ -204,6 +244,7 @@ public class PreviewProperties {
 
     /**
      * Returns the property value as a boolean.
+     *
      * @param property the property's name
      * @return the property's value or <code>false</code> if not found
      * @throws ClassCastException if the property can't be cast to <code>Boolean</code>
@@ -214,7 +255,8 @@ public class PreviewProperties {
 
     /**
      * Returns the property value and cast it to the <code>T</code> type.
-     * @param <T> the type to cast the property value to
+     *
+     * @param <T>      the type to cast the property value to
      * @param property the property's name
      * @return the property's value or <code>null</code> if not found
      * @throws ClassCastException if the property can't be cast to <code>T</code>
@@ -222,7 +264,7 @@ public class PreviewProperties {
     public <T> T getValue(String property) {
         PreviewProperty p = getProperty(property);
         if (p != null && p.getValue() != null) {
-            T value = (T) p.getValue();
+            T value = p.getValue();
             return value;
         } else if (simpleValues.containsKey(property)) {
             return (T) simpleValues.get(property);
@@ -232,8 +274,9 @@ public class PreviewProperties {
 
     /**
      * Returns the property value and cast it to the <code>T</code> type.
-     * @param <T> the type to cast the property value to
-     * @param property the property's name
+     *
+     * @param <T>          the type to cast the property value to
+     * @param property     the property's name
      * @param defaultValue the default value if not found
      * @return the property's value or <code>defaultValue</code> if not found
      * @throws ClassCastException if the property can't be cast to <code>T</code>
@@ -241,7 +284,7 @@ public class PreviewProperties {
     public <T> T getValue(String property, T defaultValue) {
         PreviewProperty p = getProperty(property);
         if (p != null && p.getValue() != null) {
-            T value = (T) p.getValue();
+            T value = p.getValue();
             return value;
         } else if (simpleValues.containsKey(property)) {
             return (T) simpleValues.get(property);
@@ -251,7 +294,8 @@ public class PreviewProperties {
 
     /**
      * Returns the property value as a <code>Number</code>.
-     * @param property the property's name
+     *
+     * @param property     the property's name
      * @param defaultValue the default value if not found
      * @return the property's value or <code>defaultValue</code> if not found
      * @throws ClassCastException if the property can't be cast to <code>Number</code>
@@ -259,24 +303,26 @@ public class PreviewProperties {
     public Number getNumberValue(String property, Number defaultValue) {
         PreviewProperty p = getProperty(property);
         if (p != null && p.getValue() != null && p.getValue() instanceof Number) {
-            Number value = (Number) p.getValue();
+            Number value = p.getValue();
             return value;
         } else if (simpleValues.containsKey(property) && simpleValues.get(property) instanceof Number) {
             return (Number) simpleValues.get(property);
         }
         return defaultValue;
     }
-    
+
     /**
      * Return all simple values.
+     *
      * @return all simple values
      */
-    public Set<Entry<String, Object>> getSimpleValues(){
+    public Set<Entry<String, Object>> getSimpleValues() {
         return simpleValues.entrySet();
-    }    
+    }
 
     /**
      * Returns all properties.
+     *
      * @return all properties
      */
     public PreviewProperty[] getProperties() {
@@ -304,6 +350,7 @@ public class PreviewProperties {
      * Returns all properties with <code>category</code> as category. A property
      * can belong to only one category. Default categories names are defined in
      * {@link PreviewProperty}.
+     *
      * @param category the category properties belong to
      * @return all properties in <code>category</code>
      */
@@ -319,6 +366,7 @@ public class PreviewProperties {
 
     /**
      * Returns the property defined as <code>name</code>.
+     *
      * @param name the property's name
      * @return the property with this name or <code>null</code> if not found
      */
@@ -329,6 +377,7 @@ public class PreviewProperties {
     /**
      * Returns all properties with <code>source</code> as source. A property
      * can belong to only one source.
+     *
      * @param source the source properties belong to
      * @return all properties in <code>source</code>
      */
@@ -344,6 +393,7 @@ public class PreviewProperties {
 
     /**
      * Returns all properties which defined <code>property</code> as a dependency.
+     *
      * @param property the parent property
      * @return all properties with <code>property</code> as a parent property
      */
@@ -361,6 +411,7 @@ public class PreviewProperties {
 
     /**
      * Returns all properties <code>property</code> defined as dependencies.
+     *
      * @param property the property to find parent properties from
      * @return all properties <code>property</code> depends on
      */
@@ -378,6 +429,7 @@ public class PreviewProperties {
 
     /**
      * Sets all preset's property values to this properties.
+     *
      * @param previewPreset the preset to get values from
      */
     public void applyPreset(PreviewPreset previewPreset) {
@@ -389,30 +441,5 @@ public class PreviewProperties {
                 simpleValues.put(entry.getKey(), entry.getValue());
             }
         }
-    }
-    
-    /**
-     * Converts any value to a serialized String.
-     * Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
-     * 
-     * Note: Method moved to Utils module (org.gephi.utils.Serialization).
-     * @param value Value to serialize as String
-     * @return Result String or null if the value can't be serialized with a <code>PropertyEditor</code>
-     */
-    public static String getValueAsText(Object value) {
-        return Serialization.getValueAsText(value);
-    }
-
-    /**
-     * Deserializes a serialized String of the given class.
-     * Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
-     * 
-     * Note: Method moved to Utils module (org.gephi.utils.Serialization).
-     * @param valueStr String to deserialize
-     * @param valueClass Class of the serialized value
-     * @return Deserialized value or null if it can't be deserialized with a <code>PropertyEditor</code>
-     */
-    public static Object readValueFromText(String valueStr, Class valueClass) {
-        return Serialization.readValueFromText(valueStr, valueClass);
     }
 }

@@ -8,17 +8,21 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>org.gephi</groupId>
     <artifactId>desktop-branding</artifactId>
     <version>0.9.3-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>DesktopBranding</name>
 
+    <properties>
+        <!-- Disable AutoUpdate in development -->
+        <enableAutoUpdate>false</enableAutoUpdate>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-progress</artifactId>
+            <artifactId>desktop-window</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -35,6 +39,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>core-library-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-utils</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -97,37 +105,95 @@
             <artifactId>org-openide-awt</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.getsentry.raven</groupId>
-            <artifactId>raven</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry</artifactId>
         </dependency>
-        
-        <!-- Raven depends on slf4j-api and needs it to work. So manage with dependency directly -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
+        <!-- required by Sentry -->
+	    <dependency>
+	        <groupId>com.google.code.gson</groupId>
+	        <artifactId>gson</artifactId>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Copy and filtering tasks -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <!-- Copy and replace %{gephi.app.version} variable in two Bundle.properties file that contains the application title -->
+                    <execution>
+                        <id>generate-bundles</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/main/nbm-branding</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <includes>
+                                        <include>core/core.jar/org/netbeans/core/startup/Bundle.properties</include>
+                                        <include>modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties</include>
+                                    </includes>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+
+                    <!-- Configure AutoUpdate URLs and whether it's on or off -->
+                    <execution>
+                        <id>generate-autoupdate-urls</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/classes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <includes>
+                                        <include>org/gephi/branding/desktop/layer.xml</include>
+                                    </includes>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- NBM Options -->
+            <plugin>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
+                <extensions>true</extensions>
                 <configuration>
-                    <publicPackages>
-                    </publicPackages>
+                    <brandingToken>${brandingToken}</brandingToken>
+                    <cluster>${brandingToken}</cluster>
+                    <!-- TODO: Understand why validation fail when this is removed -->
+                    <verifyRuntime>warn</verifyRuntime>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>default-branding</id>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- The deployment profile is built for releases  -->
+        <profile>
+            <id>deployment</id>
+            <properties>
+                <enableAutoUpdate>true</enableAutoUpdate>
+            </properties>
+        </profile>
+    </profiles>
 </project>
