@@ -80,7 +80,7 @@ public class Upgrader {
             if (latestPreviousVersion != null &&
                 !latestPreviousVersion.getName().replace(".", "").equals(currentVersion)) {
                 File source = new File(latestPreviousVersion, "dev");
-                source = source.exists() ? new File(source, "config") : new File(latestPreviousVersion, "config");
+                source = source.exists() ? source : latestPreviousVersion;
                 File dest = Places.getUserDirectory();
                 if (source.exists() && dest.exists()) {
                     NbPreferences.forModule(Upgrader.class).put(UPGRADER_LAST_VERSION, currentVersion);
