@@ -45,6 +45,7 @@ package org.gephi.visualization.api;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import java.util.List;
 
 /**
  * @author Mathieu Bastian
@@ -64,4 +65,8 @@ public interface VisualizationController {
     public Column[] getEdgeTextColumns();
 
     public Column[] getNodeTextColumns();
+
+    public List<Node> getSelectedNodes();
+
+    public List<Edge> getSelectedEdges();
 }

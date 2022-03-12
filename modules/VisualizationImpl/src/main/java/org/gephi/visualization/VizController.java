@@ -70,6 +70,9 @@ import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.ServiceProvider;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author Mathieu Bastian
  */
@@ -246,6 +249,22 @@ public class VizController implements VisualizationController {
             currentModel.setAutoSelectNeighbor(false);
             selectionManager.selectEdges(edges);
         }
+    }
+
+    @Override
+    public List<Node> getSelectedNodes() {
+        if (selectionManager != null) {
+            return selectionManager.getSelectedNodes();
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<Edge> getSelectedEdges() {
+        if (selectionManager != null) {
+            return selectionManager.getSelectedEdges();
+        }
+        return Collections.emptyList();
     }
 
     @Override
