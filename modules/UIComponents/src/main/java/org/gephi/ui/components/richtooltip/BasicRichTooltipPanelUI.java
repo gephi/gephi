@@ -369,6 +369,10 @@ class BasicRichTooltipPanelUI extends RichTooltipPanelUI {
 
         @Override
         public void layoutContainer(Container parent) {
+            if (parent.getWidth() <= 1) {
+                // Prevent further ArrayIndexOutOfBoundsException in some cases
+                return;
+            }
             removeExistingComponents();
 
             Font font = FlamingoUtilities.getFont(parent, "Ribbon.font",
