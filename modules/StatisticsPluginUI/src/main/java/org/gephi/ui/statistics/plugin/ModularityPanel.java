@@ -57,6 +57,7 @@ public class ModularityPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox randomizeCheckbox;
     private javax.swing.JTextField resolutionTextField;
     private javax.swing.JCheckBox useWeightCheckbox;
+    // End of variables declaration//GEN-END:variables
 
     public ModularityPanel() {
         initComponents();
@@ -216,5 +217,4 @@ public class ModularityPanel extends javax.swing.JPanel {
                         javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

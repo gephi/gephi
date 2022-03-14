@@ -50,9 +50,9 @@ import org.openide.util.Lookup;
  */
 public class GraphDistancePanel extends javax.swing.JPanel {
 
-    protected javax.swing.JRadioButton directedRadioButton;
-    protected javax.swing.JRadioButton undirectedRadioButton;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton directedRadioButton;
+    private javax.swing.JRadioButton undirectedRadioButton;
     private org.jdesktop.swingx.JXLabel descriptionLabel;
     private javax.swing.ButtonGroup directedButtonGroup;
     private org.jdesktop.swingx.JXHeader header;
@@ -63,6 +63,7 @@ public class GraphDistancePanel extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXLabel jXLabel2;
     private org.jdesktop.swingx.JXLabel jXLabel3;
     private javax.swing.JCheckBox normalizeButton;
+    // End of variables declaration//GEN-END:variables
 
     public GraphDistancePanel() {
         initComponents();
@@ -248,5 +249,4 @@ public class GraphDistancePanel extends javax.swing.JPanel {
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_directedRadioButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_directedRadioButtonActionPerformed
-    // End of variables declaration//GEN-END:variables
 }

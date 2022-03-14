@@ -57,6 +57,7 @@ public class ConnectedComponentPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JRadioButton undirectedRadioButton;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form ConnectedComponentPanel
@@ -152,6 +153,5 @@ public class ConnectedComponentPanel extends javax.swing.JPanel {
                     .addContainerGap(148, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 
 }
