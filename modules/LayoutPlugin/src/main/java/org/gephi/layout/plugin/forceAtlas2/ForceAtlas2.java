@@ -522,7 +522,7 @@ public class ForceAtlas2 implements Layout {
         setLinLogMode(false);
         setAdjustSizes(false);
         setEdgeWeightInfluence(1.);
-        setNormalizeEdgeWeights(true);
+        setNormalizeEdgeWeights(false);
 
         // Performance
         setJitterTolerance(1d);
