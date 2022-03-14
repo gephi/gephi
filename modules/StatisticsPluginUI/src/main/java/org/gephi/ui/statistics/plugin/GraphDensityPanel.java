@@ -50,11 +50,12 @@ import org.openide.util.Lookup;
  */
 public class GraphDensityPanel extends javax.swing.JPanel {
 
-    protected javax.swing.JRadioButton directedRadioButton;
-    protected javax.swing.JRadioButton undirectedRadioButton;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton directedRadioButton;
+    private javax.swing.JRadioButton undirectedRadioButton;
     private javax.swing.ButtonGroup directedButtonGroup;
     private org.jdesktop.swingx.JXHeader header;
+    // End of variables declaration//GEN-END:variables
 
     public GraphDensityPanel() {
         initComponents();
@@ -130,5 +131,4 @@ public class GraphDensityPanel extends javax.swing.JPanel {
                     .addContainerGap(84, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

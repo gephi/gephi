@@ -50,11 +50,11 @@ import org.openide.util.Lookup;
  */
 public class PageRankPanel extends javax.swing.JPanel {
 
-    protected javax.swing.JRadioButton directedRadioButton;
-    protected javax.swing.JTextField epsilonTextField;
-    protected javax.swing.JTextField probTextField;
-    protected javax.swing.JRadioButton undirectedRadioButton;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton directedRadioButton;
+    private javax.swing.JTextField epsilonTextField;
+    private javax.swing.JTextField probTextField;
+    private javax.swing.JRadioButton undirectedRadioButton;
     private javax.swing.ButtonGroup directedButtonGroup;
     private javax.swing.JCheckBox edgeWeightCheckbox;
     private org.jdesktop.swingx.JXHeader jXHeader1;
@@ -62,6 +62,7 @@ public class PageRankPanel extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXLabel jXLabel2;
     private javax.swing.JLabel labelE;
     private javax.swing.JLabel labelP;
+    // End of variables declaration//GEN-END:variables
 
     public PageRankPanel() {
         initComponents();
@@ -247,5 +248,4 @@ public class PageRankPanel extends javax.swing.JPanel {
                     .addContainerGap(36, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

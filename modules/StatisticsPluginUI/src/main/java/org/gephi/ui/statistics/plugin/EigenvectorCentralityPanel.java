@@ -58,6 +58,7 @@ public class EigenvectorCentralityPanel extends javax.swing.JPanel {
     private javax.swing.JTextField iterationTextField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JRadioButton undirectedRadioButton;
+    // End of variables declaration//GEN-END:variables
 
     /**
      * Creates new form EigenvectorCentralityPanel
@@ -178,6 +179,5 @@ public class EigenvectorCentralityPanel extends javax.swing.JPanel {
         java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undirectedRadioButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_undirectedRadioButtonActionPerformed
-    // End of variables declaration//GEN-END:variables
 
 }

@@ -50,12 +50,13 @@ import org.openide.util.Lookup;
  */
 public class DegreeDistributionPanel extends javax.swing.JPanel {
 
-    protected javax.swing.JRadioButton directedRadioButton;
-    protected javax.swing.JRadioButton undirectedRadioButton;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton directedRadioButton;
+    private javax.swing.JRadioButton undirectedRadioButton;
     private org.jdesktop.swingx.JXLabel descriptionLabel;
     private javax.swing.ButtonGroup directedButtonGroup;
     private org.jdesktop.swingx.JXHeader header;
+    // End of variables declaration//GEN-END:variables
 
     public DegreeDistributionPanel() {
         initComponents();
@@ -141,5 +142,4 @@ public class DegreeDistributionPanel extends javax.swing.JPanel {
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
 }

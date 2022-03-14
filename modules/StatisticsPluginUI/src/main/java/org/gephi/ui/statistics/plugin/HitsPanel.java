@@ -50,15 +50,16 @@ import org.openide.util.Lookup;
  */
 public class HitsPanel extends javax.swing.JPanel {
 
-    protected javax.swing.JRadioButton directedRadioButton;
-    protected javax.swing.JTextField epsilonTextField;
-    protected javax.swing.JRadioButton undirectedRadioButton;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton directedRadioButton;
+    private javax.swing.JTextField epsilonTextField;
+    private javax.swing.JRadioButton undirectedRadioButton;
     private org.jdesktop.swingx.JXLabel descriptionLabel;
     private javax.swing.ButtonGroup directedButtonGroup;
     private org.jdesktop.swingx.JXLabel epsilonLabel;
     private org.jdesktop.swingx.JXHeader header;
     private javax.swing.JLabel labelEpsilon;
+    // End of variables declaration//GEN-END:variables
 
     public HitsPanel() {
         initComponents();
@@ -129,26 +130,26 @@ public class HitsPanel extends javax.swing.JPanel {
         directedRadioButton.setText(
             org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.directedRadioButton.text")); // NOI18N
 
-        descriptionLabel.setLineWrap(true);
         descriptionLabel.setText(
             org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.descriptionLabel.text")); // NOI18N
         descriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        descriptionLabel.setLineWrap(true);
 
         header.setDescription(
             org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.header.description")); // NOI18N
         header.setTitle(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.header.title")); // NOI18N
 
         epsilonLabel.setForeground(new java.awt.Color(102, 102, 102));
-        epsilonLabel.setLineWrap(true);
         epsilonLabel
             .setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.epsilonLabel.text")); // NOI18N
         epsilonLabel.setFont(epsilonLabel.getFont().deriveFont(epsilonLabel.getFont().getSize() - 1f));
+        epsilonLabel.setLineWrap(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 662, Short.MAX_VALUE)
+                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 662, Short.MAX_VALUE)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -191,5 +192,5 @@ public class HitsPanel extends javax.swing.JPanel {
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    // End of variables declaration//GEN-END:variables
+
 }
