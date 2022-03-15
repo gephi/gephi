@@ -50,15 +50,15 @@ public class ModularityPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jdesktop.swingx.JXLabel desriptionLabel;
     private org.jdesktop.swingx.JXHeader header;
+    private javax.swing.JTextField initialModularityClassIndexTextField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel labelEdgeWeight;
+    private javax.swing.JLabel labelInitialModularityClassIndex;
     private javax.swing.JLabel labelRandomize;
     private org.jdesktop.swingx.JXLabel labelResolution;
-    private org.jdesktop.swingx.JXLabel labelInitialModularityClassIndex;
     private javax.swing.JCheckBox randomizeCheckbox;
     private javax.swing.JTextField resolutionTextField;
     private javax.swing.JCheckBox useWeightCheckbox;
-    private javax.swing.JTextField initialModularityClassIndexTextField;
     // End of variables declaration//GEN-END:variables
 
     public ModularityPanel() {
@@ -128,126 +128,113 @@ public class ModularityPanel extends javax.swing.JPanel {
         labelEdgeWeight = new javax.swing.JLabel();
         labelRandomize = new javax.swing.JLabel();
         labelResolution = new org.jdesktop.swingx.JXLabel();
-        labelInitialModularityClassIndex = new org.jdesktop.swingx.JXLabel();
+        labelInitialModularityClassIndex = new javax.swing.JLabel();
         initialModularityClassIndexTextField = new javax.swing.JTextField();
 
-        randomizeCheckbox.setText(org.openide.util.NbBundle
-            .getMessage(ModularityPanel.class, "ModularityPanel.randomizeCheckbox.text")); // NOI18N
+        randomizeCheckbox.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.randomizeCheckbox.text")); // NOI18N
         randomizeCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 
-        desriptionLabel.setLineWrap(true);
-        desriptionLabel.setText(org.openide.util.NbBundle
-            .getMessage(ModularityPanel.class, "ModularityPanel.desriptionLabel.text")); // NOI18N
+        desriptionLabel.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.desriptionLabel.text")); // NOI18N
         desriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        desriptionLabel.setLineWrap(true);
 
-        header.setDescription(org.openide.util.NbBundle
-            .getMessage(ModularityPanel.class, "ModularityPanel.header.description")); // NOI18N
-        header.setTitle(
-            org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.header.title")); // NOI18N
+        header.setDescription(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.header.description")); // NOI18N
+        header.setTitle(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.header.title")); // NOI18N
 
-        useWeightCheckbox.setText(org.openide.util.NbBundle
-            .getMessage(ModularityPanel.class, "ModularityPanel.useWeightCheckbox.text")); // NOI18N
+        useWeightCheckbox.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.useWeightCheckbox.text")); // NOI18N
 
-        resolutionTextField.setText(org.openide.util.NbBundle
-            .getMessage(ModularityPanel.class, "ModularityPanel.resolutionTextField.text")); // NOI18N
-        resolutionTextField.setToolTipText(org.openide.util.NbBundle
-            .getMessage(ModularityPanel.class, "ModularityPanel.resolutionTextField.toolTipText")); // NOI18N
+        resolutionTextField.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.resolutionTextField.text")); // NOI18N
+        resolutionTextField.setToolTipText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.resolutionTextField.toolTipText")); // NOI18N
 
-        jLabel1.setText(
-            org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.jLabel1.text")); // NOI18N
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.jLabel1.text")); // NOI18N
 
-        labelEdgeWeight.setFont(labelEdgeWeight.getFont().deriveFont(labelEdgeWeight.getFont().getSize() - 1f));
+        labelEdgeWeight.setFont(labelEdgeWeight.getFont().deriveFont(labelEdgeWeight.getFont().getSize()-1f));
         labelEdgeWeight.setForeground(new java.awt.Color(102, 102, 102));
-        labelEdgeWeight.setText(org.openide.util.NbBundle
-            .getMessage(ModularityPanel.class, "ModularityPanel.labelEdgeWeight.text")); // NOI18N
+        labelEdgeWeight.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.labelEdgeWeight.text")); // NOI18N
 
-        labelRandomize.setFont(labelRandomize.getFont().deriveFont(labelRandomize.getFont().getSize() - 1f));
+        labelRandomize.setFont(labelRandomize.getFont().deriveFont(labelRandomize.getFont().getSize()-1f));
         labelRandomize.setForeground(new java.awt.Color(102, 102, 102));
-        labelRandomize.setText(org.openide.util.NbBundle
-            .getMessage(ModularityPanel.class, "ModularityPanel.labelRandomize.text")); // NOI18N
+        labelRandomize.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.labelRandomize.text")); // NOI18N
 
         labelResolution.setForeground(new java.awt.Color(102, 102, 102));
-        labelResolution.setLineWrap(true);
-        labelResolution.setText(org.openide.util.NbBundle
-            .getMessage(ModularityPanel.class, "ModularityPanel.labelResolution.text")); // NOI18N
+        labelResolution.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.labelResolution.text")); // NOI18N
         labelResolution.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        labelResolution.setFont(labelResolution.getFont().deriveFont(labelResolution.getFont().getSize() - 1f));
+        labelResolution.setFont(labelResolution.getFont().deriveFont(labelResolution.getFont().getSize()-1f));
+        labelResolution.setLineWrap(true);
         labelResolution.setPreferredSize(new java.awt.Dimension(500, 12));
 
-        labelInitialModularityClassIndex.setForeground(new java.awt.Color(102, 102, 102));
-        labelInitialModularityClassIndex.setLineWrap(true);
-        labelInitialModularityClassIndex.setText(org.openide.util.NbBundle
-            .getMessage(ModularityPanel.class, "ModularityPanel.labelInitialModularityClassIndex.text")); // NOI18N
-        labelInitialModularityClassIndex.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        labelInitialModularityClassIndex.setFont(labelInitialModularityClassIndex.getFont().deriveFont(labelInitialModularityClassIndex.getFont().getSize() - 1f));
-        labelInitialModularityClassIndex.setPreferredSize(new java.awt.Dimension(500, 12));
+        labelInitialModularityClassIndex.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.labelInitialModularityClassIndex.text")); // NOI18N
+
+        initialModularityClassIndexTextField.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.initialModularityClassIndexTextField.text")); // NOI18N
+        initialModularityClassIndexTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                initialModularityClassIndexTextFieldActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addGroup(layout.createSequentialGroup()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(63, 63, 63)
-                            .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGap(381, 381, 381))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(20, 20, 20)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(randomizeCheckbox)
-                                    .addGap(25, 25, 25)
-                                    .addComponent(labelRandomize, javax.swing.GroupLayout.DEFAULT_SIZE, 386,
-                                        Short.MAX_VALUE))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(useWeightCheckbox)
-                                        .addComponent(resolutionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 108,
-                                            javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(labelInitialModularityClassIndex)
-                                        .addComponent(initialModularityClassIndexTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 108,
-                                            javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel1))
-                                    .addGap(18, 18, 18)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(labelResolution, javax.swing.GroupLayout.DEFAULT_SIZE, 0,
-                                            Short.MAX_VALUE)
-                                        .addComponent(labelEdgeWeight, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
-                    .addContainerGap())
+            .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(randomizeCheckbox)
+                        .addGap(25, 25, 25)
+                        .addComponent(labelRandomize, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(useWeightCheckbox)
+                            .addComponent(resolutionTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                            .addComponent(jLabel1)
+                            .addComponent(labelInitialModularityClassIndex, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(initialModularityClassIndexTextField))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labelResolution, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(labelEdgeWeight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(381, 381, 381)))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 64,
-                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(randomizeCheckbox)
-                        .addComponent(labelRandomize))
-                    .addGap(15, 15, 15)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(useWeightCheckbox)
-                        .addComponent(labelEdgeWeight))
-                    .addGap(18, 18, 18)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(resolutionTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(labelInitialModularityClassIndex)
-                            .addComponent(initialModularityClassIndexTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        )
-                        .addComponent(labelResolution, javax.swing.GroupLayout.DEFAULT_SIZE,
-                            javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGap(26, 26, 26)
-                    .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(randomizeCheckbox)
+                    .addComponent(labelRandomize))
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(useWeightCheckbox)
+                    .addComponent(labelEdgeWeight))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(resolutionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(labelResolution, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(labelInitialModularityClassIndex)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(initialModularityClassIndexTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
+
+        initialModularityClassIndexTextField.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.initialModularityClassIndexTextField.AccessibleContext.accessibleDescription")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
+
+    private void initialModularityClassIndexTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initialModularityClassIndexTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_initialModularityClassIndexTextFieldActionPerformed
 }
