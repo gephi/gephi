@@ -49,4 +49,5 @@ package org.gephi.appearance.api;
  */
 public interface GraphFunction extends Function {
 
+  public AppearanceModel.GraphFunction getGraphFunction();
 }

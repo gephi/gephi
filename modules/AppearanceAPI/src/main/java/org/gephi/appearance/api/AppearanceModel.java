@@ -42,6 +42,7 @@
 
 package org.gephi.appearance.api;
 
+import org.gephi.appearance.spi.Transformer;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
@@ -112,6 +113,24 @@ public interface AppearanceModel {
      * @return all node functions
      */
     Function[] getNodeFunctions();
+
+    /**
+     * Returns the node function for the given column and transformer.
+     *
+     * @param column column
+     * @param transformer transformer
+     * @return node function or null if not found
+     */
+    Function getNodeFunction(Column column, Class<? extends Transformer> transformer);
+
+    /**
+     * Returns the edge function for the given column and transformer.
+     *
+     * @param column column
+     * @param transformer transformer
+     * @return edge function or null if not found
+     */
+    Function getEdgeFunction(Column column, Class<? extends Transformer> transformer);
 
     /**
      * Returns all edge functions for the given graph.

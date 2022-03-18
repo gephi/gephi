@@ -160,6 +160,34 @@ public class AppearanceModelImpl implements AppearanceModel {
     }
 
     @Override
+    public Function getNodeFunction(Column column, Class<? extends Transformer> transformer) {
+        return getFunction(column, transformer);
+    }
+
+    @Override
+    public Function getEdgeFunction(Column column, Class<? extends Transformer> transformer) {
+        return getFunction(column, transformer);
+    }
+
+    private Function getFunction(Column column, Class<? extends Transformer> transformer) {
+        if (column.isProperty()) {
+            GraphFunction graphFunction = convertColumnToGraphFunction(column);
+            List<GraphFunctionImpl> funcs =
+                column.getTable().isNodeTable() ? getNodeRankingFunctions() : getRankingAndPartitionEdgeFunctions();
+            return funcs.stream()
+                .filter(f -> f.getTransformer().getClass().equals(transformer) &&
+                    f.getGraphFunction().equals(graphFunction))
+                .filter(FunctionImpl::isValid)
+                .findFirst().orElse(null);
+        } else {
+            return getAttributeFunctions(column.getTable()).stream()
+                .filter(f -> f.getTransformer().getClass().equals(transformer) && f.getColumn().equals(column))
+                .filter(FunctionImpl::isValid)
+                .findFirst().orElse(null);
+        }
+    }
+
+    @Override
     public Partition getNodePartition(Column column) {
         return nodeAttributePartitions.get(column);
     }
@@ -261,13 +289,13 @@ public class AppearanceModelImpl implements AppearanceModel {
         this.transformNullValues = transformNullValues;
     }
 
-    private List<FunctionImpl> getNodeRankingFunctions() {
+    private List<GraphFunctionImpl> getNodeRankingFunctions() {
         return nodeTransformers.stream().filter(t -> t instanceof RankingTransformer)
             .flatMap(t -> getDegreeFunctions(t).stream()).collect(Collectors.toList());
     }
 
-    private List<FunctionImpl> getAttributeFunctions(Table table) {
-        List<FunctionImpl> res = new ArrayList<>();
+    private List<AttributeFunctionImpl> getAttributeFunctions(Table table) {
+        List<AttributeFunctionImpl> res = new ArrayList<>();
         List<Transformer> transformers = table.isNodeTable() ? nodeTransformers : edgeTransformers;
         for (Column column : table) {
             if (!column.isProperty()) {
@@ -281,8 +309,8 @@ public class AppearanceModelImpl implements AppearanceModel {
         return res;
     }
 
-    private List<FunctionImpl> getAttributeFunctions(Column column, Transformer transformer) {
-        List<FunctionImpl> res = new ArrayList<>();
+    private List<AttributeFunctionImpl> getAttributeFunctions(Column column, Transformer transformer) {
+        List<AttributeFunctionImpl> res = new ArrayList<>();
         if (transformer instanceof RankingTransformer && column.isNumber()) {
             if (transformer.isNode() && column.getTable().isNodeTable()) {
                 RankingImpl ranking =
@@ -352,15 +380,15 @@ public class AppearanceModelImpl implements AppearanceModel {
         TransformerUI transformerUI = getTransformerUI(transformer);
 
         res.add(
-            new GraphFunctionImpl(this, getId("node", transformer, "degree"),
+            new GraphFunctionImpl(this, GraphFunction.NODE_DEGREE, getId("node", transformer, "degree"),
                 NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.Degree.name"),
                 Node.class, transformer, transformerUI, degreeRanking));
 
-        res.add(new GraphFunctionImpl(this, getId("node", transformer, "indegree"),
+        res.add(new GraphFunctionImpl(this, GraphFunction.NODE_INDEGREE, getId("node", transformer, "indegree"),
             NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.InDegree.name"),
             Node.class, transformer, transformerUI, inDegreeRanking));
         res.add(
-            new GraphFunctionImpl(this, getId("node", transformer, "outdegree"),
+            new GraphFunctionImpl(this, GraphFunction.NODE_OUTDEGREE, getId("node", transformer, "outdegree"),
                 NbBundle.getMessage(AppearanceModelImpl.class, "NodeGraphFunction.OutDegree.name"),
                 Node.class, transformer, transformerUI, outDegreeRanking));
         return res;
@@ -372,14 +400,14 @@ public class AppearanceModelImpl implements AppearanceModel {
             TransformerUI transformerUI = getTransformerUI(t);
 
             if (t instanceof RankingTransformer) {
-                res.add(new GraphFunctionImpl(this, getId("edge", t, "weight"),
+                res.add(new GraphFunctionImpl(this, GraphFunction.EDGE_WEIGHT, getId("edge", t, "weight"),
                     NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Weight.name"), Edge.class, t,
                     transformerUI, edgeWeightRanking));
             }
 
             if (t instanceof PartitionTransformer) {
                 res.add(
-                    new GraphFunctionImpl(this, getId("edge", t, "type"),
+                    new GraphFunctionImpl(this, GraphFunction.EDGE_TYPE, getId("edge", t, "type"),
                         NbBundle.getMessage(AppearanceModelImpl.class, "EdgeGraphFunction.Type.name"),
                         Edge.class, t, transformerUI, edgeTypePartition));
             }
@@ -421,6 +449,22 @@ public class AppearanceModelImpl implements AppearanceModel {
     private List<Transformer> initEdgeTransformers() {
         return Lookup.getDefault().lookupAll(Transformer.class).stream().filter(Transformer::isEdge).collect(
             Collectors.toList());
+    }
+
+    private GraphFunction convertColumnToGraphFunction(Column column) {
+        GraphFunction graphFunction = null;
+        if (column.equals(graphModel.defaultColumns().degree())) {
+            graphFunction = GraphFunction.NODE_DEGREE;
+        } else if (column.equals(graphModel.defaultColumns().inDegree())) {
+            graphFunction = GraphFunction.NODE_INDEGREE;
+        } else if (column.equals(graphModel.defaultColumns().outDegree())) {
+            graphFunction = GraphFunction.NODE_OUTDEGREE;
+        } else if (column.equals(graphModel.defaultColumns().edgeType())) {
+            graphFunction = GraphFunction.EDGE_TYPE;
+        } else if (column.getTable().isEdgeTable() && column.getId().equals("weight")) {
+            graphFunction = GraphFunction.EDGE_WEIGHT;
+        }
+        return graphFunction;
     }
 
     private String getId(String prefix, Transformer transformer, Column column) {
