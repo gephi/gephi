@@ -29,7 +29,7 @@
     <distributionManagement>
         <site>
             <id>github</id>
-            <url>scm:git:ssh://git@github.com/gephi/gephi.git</url>
+            <url>scm:git:ssh://git@github.com/gephi/gephi-repository.git</url>
         </site>
     </distributionManagement>
 
@@ -447,6 +447,8 @@
                 <configuration>
                     <!-- Set up the gephi.conf for the final artifact -->
                     <etcConfFile>${basedir}/target/${brandingToken}.conf</etcConfFile>
+                    <!-- Source of the NBMs for auto update -->
+                    <distBase>central::default::${gephi.update.center.source}</distBase>
                 </configuration>
                 <executions>
                     <execution>
@@ -995,9 +997,29 @@
                                 <goals>
                                     <goal>autoupdate</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Copy only update.xml and update.xml.gz to a custom autoupdate_site folder -->
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/site</outputDirectory>
+                                    <target>
+                                        <copy todir="${project.build.directory}/autoupdate_site">
+                                            <fileset dir="${project.build.directory}/netbeans_site">
+                                                <include name="updates.xml*"/>
+                                                <type type="file"/>
+                                            </fileset>
+                                        </copy>
+                                    </target>
                                 </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
@@ -1117,7 +1139,7 @@
             </properties>
         </profile>
 
-        <!-- Profile that pushes the /site folder to GitHub's gh-pages -->
+        <!-- Profile that pushes the /autoupdate_site folder to GitHub's gephi-repository -->
         <profile>
             <id>push-site</id>
             <build>
@@ -1127,9 +1149,11 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-scm-publish-plugin</artifactId>
                         <configuration>
-                            <scmBranch>gh-pages</scmBranch>
+                            <content>${project.build.directory}/autoupdate_site</content>
+                            <dryRun>true</dryRun>
+                            <scmBranch>main</scmBranch>
                             <checkinComment>Creating site for ${project.version}</checkinComment>
-                            <subDirectory>${project.version}</subDirectory>
+                            <subDirectory>gephi/autoupdate/${gephi.minor.version}</subDirectory>
                         </configuration>
                     </plugin>
                 </plugins>

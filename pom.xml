@@ -143,7 +143,10 @@
         <gephi.platform.localization.version>1.1-NB80</gephi.platform.localization.version>
         
         <!-- Modules specification version, overrides project version -->
-        <gephi.modules.specification.version>0.9.3</gephi.modules.specification.version>
+        <gephi.modules.specification.version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</gephi.modules.specification.version>
+
+        <!-- Gephi's minor version, used for auto update and user directory -->
+        <gephi.minor.version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}${parsedVersion.qualifier?}</gephi.minor.version>
 
         <!-- Java compilation settings -->
         <gephi.javac.release>11</gephi.javac.release>
@@ -162,8 +165,9 @@
         <gephi.netbeans.useOSGiDependencies>false</gephi.netbeans.useOSGiDependencies>
         <gephi.app.title>Gephi ${project.version}</gephi.app.title>
         
-        <!-- Update centers URLs -->
-        <gephi.update.center.official.url>https://raw.githubusercontent.com/gephi/gephi/gh-pages/${project.version}/netbeans_site/updates.xml</gephi.update.center.official.url>
+        <!-- Update centers settings -->
+        <gephi.update.center.source>https://repo1.maven.org/maven2</gephi.update.center.source>
+        <gephi.update.center.official.url>https://raw.githubusercontent.com/gephi/gephi-repository/main/gephi/autoupdate/${gephi.minor.version}/updates.xml</gephi.update.center.official.url>
         <gephi.update.center.thirdparty.url>https://raw.githubusercontent.com/gephi/gephi-plugins/gh-pages/plugins/${project.version}/updates.xml</gephi.update.center.thirdparty.url>
 
         <!-- JRE locations -->
@@ -242,7 +246,7 @@
 
         <gephi.maven-surefire-plugin.version>2.22.2</gephi.maven-surefire-plugin.version>
 
-        <gephi.build-helper-maven-plugin.version>3.2.0</gephi.build-helper-maven-plugin.version>
+        <gephi.build-helper-maven-plugin.version>3.3.0</gephi.build-helper-maven-plugin.version>
 
         <gephi.nbm-maven-plugin.version>4.6</gephi.nbm-maven-plugin.version>
         
@@ -967,6 +971,20 @@
                         </configuration> 
                     </execution> 
                 </executions> 
+            </plugin>
+
+            <!-- Extracts detailed version properties -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>parse-version</id>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Jar plugin, required for NBM -->
