@@ -157,4 +157,21 @@ public class AttributePartitionTest {
         Assert.assertTrue(p.getValues(graph).contains(null));
         Assert.assertTrue(p.getSortedValues(graph).contains(null));
     }
+
+    @Test
+    public void testSetColors() {
+        Graph graph = GraphGenerator.build().generateSmallRandomGraph().addIntNodeColumn().getGraph();
+        Column column = graph.getModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
+
+        Node n1 = graph.getNode(GraphGenerator.FIRST_NODE);
+        Node n2 = graph.getNode(GraphGenerator.SECOND_NODE);
+
+        n1.setAttribute(column, 42);
+        n2.setAttribute(column, 42);
+
+        AttributePartitionImpl p = new AttributePartitionImpl(column);
+        p.setColors(graph, new Color[] {Color.MAGENTA, Color.BLUE});
+
+        Assert.assertEquals(Color.MAGENTA, p.getColor(42));
+    }
 }

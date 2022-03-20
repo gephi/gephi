@@ -67,6 +67,7 @@ public interface Partition {
      * Returns the collection of values this partition represents. Each value
      * has at least one element.
      *
+     * @param graph graph this partition applies to
      * @return values
      */
     Collection getValues(Graph graph);
@@ -75,6 +76,7 @@ public interface Partition {
      * Returns the same collection as {@link #getValues(Graph graph) } but sorted
      * descendant in counts.
      *
+     * @param graph graph this partition applies to
      * @return sorted values
      */
     Collection getSortedValues(Graph graph);
@@ -82,6 +84,7 @@ public interface Partition {
     /**
      * Returns the number of elements that have a value in this partition.
      *
+     * @param graph graph this partition applies to
      * @return element count
      */
     int getElementCount(Graph graph);
@@ -90,6 +93,7 @@ public interface Partition {
      * Returns the number of elements for the given value.
      *
      * @param value value
+     * @param graph graph this partition applies to
      * @return value count
      */
     int count(Object value, Graph graph);
@@ -120,6 +124,14 @@ public interface Partition {
     void setColor(Object value, Color color);
 
     /**
+     * Sets the colors for all values. It uses the descending value count as order from <code>getSortedValues()</code>.
+     *
+     * @param graph  graph this partition applies to
+     * @param colors colors to set
+     */
+    void setColors(Graph graph, Color[] colors);
+
+    /**
      * Returns the percentage of elements with the given value.
      *
      * @param value value
@@ -130,6 +142,7 @@ public interface Partition {
     /**
      * Returns the number of values this partition represents.
      *
+     * @param graph this element belongs to
      * @return value count
      */
     int size(Graph graph);
