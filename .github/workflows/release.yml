@@ -41,7 +41,9 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       
       - name: Build and publish package Linux
-        run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,create-targz
+        run: |
+          mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,create-targz
+          cd modules/application && mvn scm-publish:publish-scm -P push-site
         if: runner.os == 'Linux'
         env:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
