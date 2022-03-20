@@ -29,7 +29,7 @@
     <distributionManagement>
         <site>
             <id>github</id>
-            <url>scm:git:ssh://git@github.com/gephi/gephi-repository.git</url>
+            <url>scm:git:ssh://git@github.com/gephi/gephi.git</url>
         </site>
     </distributionManagement>
 
@@ -1151,9 +1151,9 @@
                         <configuration>
                             <content>${project.build.directory}/autoupdate_site</content>
                             <dryRun>true</dryRun>
-                            <scmBranch>main</scmBranch>
+                            <scmBranch>gh-pages</scmBranch>
                             <checkinComment>Creating site for ${project.version}</checkinComment>
-                            <subDirectory>gephi/autoupdate/${gephi.minor.version}</subDirectory>
+                            <subDirectory>${gephi.minor.version}/autoupdate</subDirectory>
                         </configuration>
                     </plugin>
                 </plugins>
