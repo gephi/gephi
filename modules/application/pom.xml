@@ -29,7 +29,7 @@
     <distributionManagement>
         <site>
             <id>github</id>
-            <url>https://github.com/gephi/gephi.git</url>
+            <url>scm:git:https://github.com/gephi/gephi.git</url>
         </site>
     </distributionManagement>
 
@@ -1150,7 +1150,6 @@
                         <artifactId>maven-scm-publish-plugin</artifactId>
                         <configuration>
                             <content>${project.build.directory}/autoupdate_site</content>
-                            <dryRun>true</dryRun>
                             <scmBranch>gh-pages</scmBranch>
                             <checkinComment>Creating site for ${project.version}</checkinComment>
                             <subDirectory>${gephi.minor.version}/autoupdate</subDirectory>
