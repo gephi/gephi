@@ -49,6 +49,7 @@ jobs:
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Build and publish package Windows
         run: mvn -T 4 --batch-mode '-Djava.awt.headless=true' '-Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }}' clean deploy -P deployment,replace-windows-icon,create-exe
