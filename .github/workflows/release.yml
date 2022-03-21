@@ -39,7 +39,13 @@ jobs:
         env:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-      
+
+      - name: Configure Git user
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+        if: runner.os == 'Linux'
+
       - name: Build and publish package Linux
         run: |
           mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,create-targz
