@@ -189,12 +189,12 @@ public class AppearanceModelImpl implements AppearanceModel {
 
     @Override
     public Partition getNodePartition(Column column) {
-        return nodeAttributePartitions.get(column);
+        return initAttributePartition(column);
     }
 
     @Override
     public Partition getEdgePartition(Column column) {
-        return edgeAttributePartitions.get(column);
+        return initAttributePartition(column);
     }
 
     protected RankingImpl[] getNodeRankings() {
@@ -359,6 +359,17 @@ public class AppearanceModelImpl implements AppearanceModel {
                 edgeAttributePartitions.put(column, new AttributePartitionImpl(column));
             }
         }
+    }
+
+    private AttributePartitionImpl initAttributePartition(Column column) {
+        if (!column.isProperty()) {
+            if (column.getTable().isNodeTable()) {
+                return nodeAttributePartitions.computeIfAbsent(column, k -> new AttributePartitionImpl(column));
+            } else if (column.getTable().isEdgeTable()) {
+                return edgeAttributePartitions.computeIfAbsent(column, k -> new AttributePartitionImpl(column));
+            }
+        }
+        return null;
     }
 
     private List<FunctionImpl> getNodeSimpleFunctions() {

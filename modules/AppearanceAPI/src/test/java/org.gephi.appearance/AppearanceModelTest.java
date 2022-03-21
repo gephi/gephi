@@ -41,8 +41,6 @@ public class AppearanceModelTest {
         GraphGenerator generator = GraphGenerator.build().withWorkspace().generateTinyGraph().addIntNodeColumn();
         AppearanceModelImpl model = new AppearanceModelImpl(generator.getWorkspace());
 
-        model.getNodeFunctions();
-
         Column ageCol = generator.getGraphModel().getNodeTable().getColumn(GraphGenerator.INT_COLUMN);
         Assert.assertNotNull(model.getNodePartition(ageCol));
 
