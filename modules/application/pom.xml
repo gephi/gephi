@@ -29,7 +29,7 @@
     <distributionManagement>
         <site>
             <id>github</id>
-            <url>scm:git:ssh://git@github.com/gephi/gephi.git</url>
+            <url>https://github.com/gephi/gephi.git</url>
         </site>
     </distributionManagement>
 
