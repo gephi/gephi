@@ -1151,8 +1151,9 @@
                         <configuration>
                             <content>${project.build.directory}/autoupdate_site</content>
                             <scmBranch>gh-pages</scmBranch>
-                            <checkinComment>Creating site for ${project.version}</checkinComment>
+                            <checkinComment>Autoupdate update for ${project.version}</checkinComment>
                             <subDirectory>${gephi.minor.version}/autoupdate</subDirectory>
+                            <serverId>github</serverId>
                         </configuration>
                     </plugin>
                 </plugins>
