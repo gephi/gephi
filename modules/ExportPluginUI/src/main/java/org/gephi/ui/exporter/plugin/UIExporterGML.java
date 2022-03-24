@@ -103,7 +103,7 @@ public class UIExporterGML implements ExporterUI {
         private final static String EXPORT_NODE_SIZE = "GML_exportNodeSize";
         private final static String EXPORT_EDGE_SIZE = "GML_exportEdgeSize";
         private final static String EXPORT_COLOR = "GML_exportColor";
-        private final static String EXPORT_NOT_RECOGNIZES_ELEMENTS = "GML_exportNotRecognizedElements";
+        private final static String EXPORT_UNKNOWNS = "GML_exportNotRecognizedElements";
         private final static String NORMALIZE = "GML_normalize";
         private final static String SPACES = "GML_spaces";
         // Default
@@ -115,7 +115,7 @@ public class UIExporterGML implements ExporterUI {
             exporter.setExportEdgeSize(get(EXPORT_EDGE_SIZE, DEFAULT.isExportEdgeSize()));
             exporter.setExportLabel(get(EXPORT_LABEL, DEFAULT.isExportLabel()));
             exporter.setExportNodeSize(get(EXPORT_NODE_SIZE, DEFAULT.isExportNodeSize()));
-            exporter.setExportNotRecognizedElements(get(EXPORT_NOT_RECOGNIZES_ELEMENTS,
+            exporter.setExportNotRecognizedElements(get(EXPORT_UNKNOWNS,
                 DEFAULT.isExportNotRecognizedElements()));
             exporter.setNormalize(get(NORMALIZE, DEFAULT.isNormalize()));
             exporter.setSpaces(get(SPACES, DEFAULT.getSpaces()));
@@ -127,7 +127,7 @@ public class UIExporterGML implements ExporterUI {
             put(EXPORT_EDGE_SIZE, exporter.isExportEdgeSize());
             put(EXPORT_LABEL, exporter.isExportLabel());
             put(EXPORT_NODE_SIZE, exporter.isExportNodeSize());
-            put(EXPORT_NOT_RECOGNIZES_ELEMENTS, exporter.isExportNotRecognizedElements());
+            put(EXPORT_UNKNOWNS, exporter.isExportNotRecognizedElements());
             put(NORMALIZE, exporter.isNormalize());
             put(SPACES, exporter.getSpaces());
         }
