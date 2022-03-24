@@ -810,7 +810,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 final boolean notAlreadyRemoved = edge != null
                     && edgeMap.containsKey(edge.getId());
 
-                if (notAlreadyRemoved && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
+                if (notAlreadyRemoved && edge.getDirection() != null && edge.getDirection().equals(EdgeDirection.DIRECTED)) {
                     EdgeDraftImpl opposite = getOpposite(edge);
                     if (opposite != null && edgeMap.containsKey(opposite.getId())) {
                         mergeDirectedEdges(opposite, edge);
