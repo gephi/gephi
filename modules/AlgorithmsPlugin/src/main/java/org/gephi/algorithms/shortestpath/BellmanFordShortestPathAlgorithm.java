@@ -63,6 +63,23 @@ public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgori
         predecessors = new HashMap<>();
     }
 
+    protected boolean relax(Edge edge) {
+        Node source = edge.getSource();
+        Node target = edge.getTarget();
+        double distSource = distances.get(source);
+        double distTarget = distances.get(target);
+        double weight = edgeWeight(edge);
+
+        double sourceWeight = distSource + weight;
+        if (sourceWeight < distTarget) {
+            distances.put(target, sourceWeight);
+            maxDistance = Math.max(maxDistance, sourceWeight);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void compute() {
 
