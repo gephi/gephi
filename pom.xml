@@ -168,7 +168,7 @@
         <!-- Update centers settings -->
         <gephi.update.center.source>https://repo1.maven.org/maven2</gephi.update.center.source>
         <gephi.update.center.official.url>https://raw.githubusercontent.com/gephi/gephi/gh-pages/${gephi.minor.version}/autoupdate/updates.xml</gephi.update.center.official.url>
-        <gephi.update.center.thirdparty.url>https://raw.githubusercontent.com/gephi/gephi-plugins/gh-pages/plugins/${project.version}/updates.xml</gephi.update.center.thirdparty.url>
+        <gephi.update.center.thirdparty.url>https://raw.githubusercontent.com/gephi/gephi-plugins/gh-pages/plugins/${gephi.minor.version}/updates.xml</gephi.update.center.thirdparty.url>
 
         <!-- JRE locations -->
         <!-- for more details about the parameters supported by this API, see https://api.adoptium.net/q/swagger-ui/#/Binary/getBinary -->
