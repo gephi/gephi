@@ -409,6 +409,11 @@
                 <version>${netbeans.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-modules-autoupdate-services</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>graphstore</artifactId>
                 <version>${graphstore.version}</version>
@@ -1168,7 +1173,7 @@
                         <extensions>true</extensions>
                         <configuration>
                             <!-- Keystore location -->
-                            <keystore>src/keystore/keystore.ks</keystore>
+                            <keystore>keystore.ks</keystore>
                             <keystorealias>gephi</keystorealias>
                             <keystorepassword>${keystore.password}</keystorepassword>
                         </configuration>

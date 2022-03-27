@@ -40,6 +40,11 @@ jobs:
           ENCRYPTION_SECRET: ${{ secrets.ENCRYPTION_SECRET }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
+      - name: Get NBM Keystore
+        run: |
+          echo "${{ secrets.NBM_KEYSTORE }}" > keystore.ks.asc
+          gpg -d --passphrase "${{ secrets.NBM_KEYSTORE_ENC_PASSPHRASE }}" --batch keystore.ks.asc > keystore.ks
+
       - name: Build and publish package Linux
         run: mvn -T 4 --batch-mode -Djava.awt.headless=true -Dkeystore.password=${{ secrets.KEYSTORE_PASSWD }} clean deploy -P deployment,create-modules,create-sources,create-javadoc,create-autoupdate,create-targz
         if: runner.os == 'Linux'

@@ -65,10 +65,6 @@
                     <groupId>org.netbeans.modules</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>org-netbeans-core-output2</artifactId>
-                    <groupId>org.netbeans.modules</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>org-netbeans-libs-jsr223</artifactId>
                     <groupId>org.netbeans.api</groupId>
                 </exclusion>
