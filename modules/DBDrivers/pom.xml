@@ -59,6 +59,11 @@
                     <verifyRuntime>warn</verifyRuntime><!-- Avoid problem with postgresql driver using checkerframework -->
                     <publicPackages>
                         <publicPackage>org.gephi.io.database.drivers</publicPackage>
+                        <publicPackage>com.microsoft.sqlserver.*</publicPackage>
+                        <publicPackage>microsoft.sql.*</publicPackage>
+                        <publicPackage>com.mysql.*</publicPackage>
+                        <publicPackage>org.postgresql.*</publicPackage>
+                        <publicPackage>org.sqlite.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
