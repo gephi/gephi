@@ -53,8 +53,8 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -476,9 +476,9 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
         private transient final Set<AbstractButton> controlButtons;
 
         public ControlToolbar() {
-            rankingSouthControls = new HashSet<>();
-            partitionSouthControls = new HashSet<>();
-            controlButtons = new HashSet<>();
+            rankingSouthControls = new LinkedHashSet<>();
+            partitionSouthControls = new LinkedHashSet<>();
+            controlButtons = new LinkedHashSet<>();
         }
 
         public void addRankingButton(AbstractButton btn) {
@@ -512,11 +512,11 @@ public class AppearanceToolbar implements AppearanceUIModelListener {
             clear();
             if (model != null) {
                 removeAll();
-                for (AbstractButton btn : partitionSouthControls) {
+                for (AbstractButton btn : rankingSouthControls) {
                     add(btn);
                 }
-                for (AbstractButton btn : rankingSouthControls) {
-                    if (!partitionSouthControls.contains(btn)) {
+                for (AbstractButton btn : partitionSouthControls) {
+                    if (!rankingSouthControls.contains(btn)) {
                         add(btn);
                     }
                 }

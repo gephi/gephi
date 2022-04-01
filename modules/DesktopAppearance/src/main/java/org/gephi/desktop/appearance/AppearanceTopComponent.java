@@ -156,7 +156,7 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
             refreshCombo();
         } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.REFRESH_FUNCTION)) {
             refreshCenterPanel();
-        } else if(pce.getPropertyName().equals(AppearanceUIModelEvent.SET_TRANSFORM_NULL_VALUES)) {
+        } else if (pce.getPropertyName().equals(AppearanceUIModelEvent.SET_TRANSFORM_NULL_VALUES)) {
             refreshControls();
             refreshCenterPanel();
         }
@@ -357,8 +357,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
 
     private void initControls() {
         //Add ranking controls
-        toolbar.addRankingControl(rankingLocalScaleButton);
         toolbar.addRankingControl(splineButton);
+        toolbar.addRankingControl(rankingLocalScaleButton);
         toolbar.addRankingControl(transformNullValuesButton);
 
         //Add partition controls
@@ -605,7 +605,8 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         partitionLocalScaleButton.setIcon(new javax.swing.ImageIcon(
             getClass().getResource("/org/gephi/desktop/appearance/resources/funnel.png"))); // NOI18N
         partitionLocalScaleButton.setToolTipText(org.openide.util.NbBundle
-            .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.partitionLocalScaleButton.toolTipText")); // NOI18N
+            .getMessage(AppearanceTopComponent.class,
+                "AppearanceTopComponent.partitionLocalScaleButton.toolTipText")); // NOI18N
         partitionLocalScaleButton.setFocusable(false);
         partitionLocalScaleButton
             .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((new javax.swing.ImageIcon(
@@ -615,11 +616,13 @@ public class AppearanceTopComponent extends TopComponent implements Lookup.Provi
         transformNullValuesButton.setIcon(new javax.swing.ImageIcon(
             getClass().getResource("/org/gephi/desktop/appearance/resources/transformNull.png"))); // NOI18N
         transformNullValuesButton.setToolTipText(org.openide.util.NbBundle
-            .getMessage(AppearanceTopComponent.class, "AppearanceTopComponent.transformNullValues.toolTipText")); // NOI18N
+            .getMessage(AppearanceTopComponent.class,
+                "AppearanceTopComponent.transformNullValues.toolTipText")); // NOI18N
         transformNullValuesButton.setFocusable(false);
         transformNullValuesButton
             .setSelectedIcon(new javax.swing.ImageIcon(UIUtils.generateSelectedDarkImage((new javax.swing.ImageIcon(
-                getClass().getResource("/org/gephi/desktop/appearance/resources/transformNull.png")).getImage())))); // NOI18N
+                getClass().getResource("/org/gephi/desktop/appearance/resources/transformNull.png"))
+                .getImage())))); // NOI18N
         controlToolbar.add(transformNullValuesButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(splineButton, org.openide.util.NbBundle
