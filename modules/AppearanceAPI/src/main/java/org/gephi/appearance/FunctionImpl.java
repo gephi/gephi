@@ -71,6 +71,7 @@ public abstract class FunctionImpl implements Function {
     protected final AtomicInteger version;
     // Version
     protected WeakReference<Graph> lastGraph;
+    protected boolean lastTransformNullValues;
 
     protected FunctionImpl(AppearanceModelImpl model, String name, Class<? extends Element> elementClass, Column column,
                            Transformer transformer, TransformerUI transformerUI, PartitionImpl partition,
@@ -93,6 +94,7 @@ public abstract class FunctionImpl implements Function {
         this.version =
             new AtomicInteger(partition != null ? partition.getVersion(model.getPartitionGraph()) : Integer.MIN_VALUE);
         this.lastGraph = partition != null ? new WeakReference<>(model.getPartitionGraph()) : null;
+        this.lastTransformNullValues = model.isTransformNullValues();
     }
 
     @Override
@@ -155,6 +157,12 @@ public abstract class FunctionImpl implements Function {
                         lastGraph = new WeakReference<>(graph);
                     }
                 }
+
+                // Check if transformNullValues was changed
+                if (lastTransformNullValues != model.isTransformNullValues()) {
+                    viewChanged = true;
+                }
+                lastTransformNullValues = model.isTransformNullValues();
             }
 
             int newVersion = partition.getVersion(graph);
