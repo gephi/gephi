@@ -50,6 +50,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.module.ModuleDescriptor;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -84,6 +85,14 @@ public class Installer extends ModuleInstall {
 
     private static final String LATEST_GEPHI_VERSION_URL =
         "https://raw.githubusercontent.com/gephi/gephi/gh-pages/latest";
+
+    protected static boolean isNewVersion(String latest, String current) {
+        String gephiVersionTst = current.replaceAll("[0-9]{12}", "").replaceAll("[a-zA-Z -]", "");
+        latest = latest.replaceAll("[a-zA-Z -]", "");
+        int res = ModuleDescriptor.Version.parse(gephiVersionTst)
+            .compareTo(ModuleDescriptor.Version.parse(latest));
+        return res < 0;
+    }
 
     @Override
     public void restored() {
@@ -136,11 +145,12 @@ public class Installer extends ModuleInstall {
             }
         });
 
-        if(Utilities.isMac()) {
+        if (Utilities.isMac()) {
             try {
                 Desktop.getDesktop().setOpenFileHandler(new ProjectOpenFilesHandler());
             } catch (Exception e) {
-                Logger.getLogger(Installer.class.getName()).log(Level.WARNING, "Can't setup OpenFilesHandler", e);
+                Logger.getLogger(Installer.class.getName())
+                    .log(Level.WARNING, "Can't setup OpenFilesHandler", e);
             }
         }
     }
@@ -154,7 +164,8 @@ public class Installer extends ModuleInstall {
 
         int option = JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(),
             NbBundle.getMessage(Installer.class, "CloseConfirmation.message"),
-            NbBundle.getMessage(Installer.class, "CloseConfirmation.message"), JOptionPane.YES_NO_CANCEL_OPTION,
+            NbBundle.getMessage(Installer.class, "CloseConfirmation.message"),
+            JOptionPane.YES_NO_CANCEL_OPTION,
             JOptionPane.WARNING_MESSAGE);
         if (option == JOptionPane.YES_OPTION) {
             Lookup.getDefault().lookup(ProjectControllerUI.class).saveProject();
@@ -166,7 +177,8 @@ public class Installer extends ModuleInstall {
     }
 
     private void checkForNewMajorRelease() {
-        boolean doCheck = NbPreferences.forModule(Installer.class).getBoolean("check_latest_version", true);
+        boolean doCheck =
+            NbPreferences.forModule(Installer.class).getBoolean("check_latest_version", true);
         if (doCheck) {
             InputStream stream = null;
             BufferedReader reader = null;
@@ -184,18 +196,20 @@ public class Installer extends ModuleInstall {
                 reader = new BufferedReader(new InputStreamReader(stream));
 
                 String latest = reader.readLine();
-                latest = latest.replaceAll("[a-zA-Z .-]", "");
-                String gephiVersionTst = gephiVersion.replaceAll("[0-9]{12}", "").replaceAll("[a-zA-Z .-]", "");
-                if (Integer.parseInt(latest) > Integer.parseInt(gephiVersionTst)) {
+
+                if (isNewVersion(latest, gephiVersion)) {
                     //Show update dialog
                     JCheckBox checkbox =
-                        new JCheckBox(NbBundle.getMessage(Installer.class, "MajorReleaseCheck.dontShowAgain"), false);
+                        new JCheckBox(NbBundle.getMessage(Installer.class, "MajorReleaseCheck.dontShowAgain"),
+                            false);
                     String message =
-                        NbBundle.getMessage(Installer.class, "MajorReleaseCheck.message", latest, gephiVersion);
+                        NbBundle
+                            .getMessage(Installer.class, "MajorReleaseCheck.message", latest, gephiVersion);
                     int option = JOptionPane.showConfirmDialog(null, new Object[] {message, checkbox},
                         NbBundle.getMessage(Installer.class, "MajorReleaseCheck.newVersion"),
                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                    NbPreferences.forModule(Installer.class).putBoolean("check_latest_version", !checkbox.isSelected());
+                    NbPreferences.forModule(Installer.class)
+                        .putBoolean("check_latest_version", !checkbox.isSelected());
                     if (option == JOptionPane.OK_OPTION) {
                         Desktop.getDesktop().browse(new URI("http://gephi.org/users/download/"));
                     }
@@ -235,7 +249,8 @@ public class Installer extends ModuleInstall {
 
         @Override
         public void publish(LogRecord record) {
-            if ((record.getMessage() == null || record.getMessage().isEmpty()) && record.getThrown() == null) {
+            if ((record.getMessage() == null || record.getMessage().isEmpty()) &&
+                record.getThrown() == null) {
                 //Nothing to log
                 return;
             }
@@ -284,7 +299,8 @@ public class Installer extends ModuleInstall {
                     pw.close();
                     throwable = sw.toString();
                 }
-                return String.format(outputFormat, record.getLevel().getName(), formattedMessage, throwable);
+                return String
+                    .format(outputFormat, record.getLevel().getName(), formattedMessage, throwable);
             }
         }
     }
