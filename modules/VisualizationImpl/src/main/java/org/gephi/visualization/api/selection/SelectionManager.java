@@ -132,6 +132,7 @@ public class SelectionManager implements VizArchitecture {
     }
 
     public void setCustomSelection() {
+        engine.setRectangleSelection(false);
         vizConfig.setSelectionEnable(false);
         vizConfig.setDraggingEnable(false);
         vizConfig.setCustomSelection(true);
